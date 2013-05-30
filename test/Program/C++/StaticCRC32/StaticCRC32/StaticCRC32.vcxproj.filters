@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\common">
+      <UniqueIdentifier>{58167185-24c7-4e0c-8dd5-73a47e5366ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\crc">
+      <UniqueIdentifier>{defb37e2-c2da-400b-967b-89d7da211895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\main">
+      <UniqueIdentifier>{5da3ed2d-8134-4c85-b4b2-13645c4c6f6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\test">
+      <UniqueIdentifier>{c5e6ea36-d9fe-45f0-90ac-5eba78874174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\common">
+      <UniqueIdentifier>{24aed17d-baa4-4bf4-9daa-0926672db3e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\crc">
+      <UniqueIdentifier>{15682e56-d6d0-41db-b385-c39b91804163}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\main">
+      <UniqueIdentifier>{5bc6397f-16a8-4eef-8d97-952b4644fcb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\test">
+      <UniqueIdentifier>{764eedb8-0714-4d89-9304-94c9f9d7a731}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\common\size.h">
+      <Filter>ヘッダー ファイル\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\crc\crc32_table.h">
+      <Filter>ヘッダー ファイル\crc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\crc\crc32_template.h">
+      <Filter>ヘッダー ファイル\crc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\crc\crc32.h">
+      <Filter>ヘッダー ファイル\crc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\test_def_crc_b.h">
+      <Filter>ヘッダー ファイル\test</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\test_size.h">
+      <Filter>ヘッダー ファイル\test</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\test_crc32.h">
+      <Filter>ヘッダー ファイル\test</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\test_def_crc_a.h">
+      <Filter>ヘッダー ファイル\test</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\crc\crc32.cpp">
+      <Filter>ソース ファイル\crc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\crc\crc32_table.cpp">
+      <Filter>ソース ファイル\crc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main\main.cpp">
+      <Filter>ソース ファイル\main</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\test_def_crc_b.cpp">
+      <Filter>ソース ファイル\test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\test_size.cpp">
+      <Filter>ソース ファイル\test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\test_crc32.cpp">
+      <Filter>ソース ファイル\test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\test_def_crc_a.cpp">
+      <Filter>ソース ファイル\test</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -9,7 +9,8 @@
 
 #include "lib/TemplateTest.h"
 
-#define countof(x) (sizeof(x) / sizeof(x[0]))
+//#define countof(x) (sizeof(x) / sizeof(x[0]))
+template<class T, std::size_t n> std::size_t countof(const T(&arr)[n]){ return n; }
 
 void sub1();
 void sub2();
@@ -17,7 +18,7 @@ void sub2();
 int main(const int argc, const char* argv[])
 {
 	std::cout << "- main():START -" << std::endl;
-
+	
 	sub1();
 	sub2();
 

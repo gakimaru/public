@@ -19,6 +19,8 @@ public:
 	~template_class();
 public:
 	void test() const;
+	int test1(const int num) const;
+	int test2(const int num) const;
 };
 
 class base1

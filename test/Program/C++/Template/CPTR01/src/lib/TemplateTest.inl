@@ -29,7 +29,19 @@ template_class<T>::~template_class()
 template<class T>
 void template_class<T>::test() const
 {
-	std::cout << "var" << this->var << ", sizeof(var)=" << sizeof(this->var) << std::endl;
+	std::cout << "template_class<T>::test var" << this->var << ", sizeof(var)=" << sizeof(this->var) << std::endl;
+}
+template<class T>
+int template_class<T>::test1(const int num) const
+{
+	std::cout << "template_class<T>::test1 var=" << this->var << ", num=" << num << std::endl;
+	return 0;
+}
+template<class T>
+int template_class<T>::test2(const int num) const
+{
+	std::cout << "template_class<T>::test2 var=" << this->var << ", num=" << num << std::endl;
+	return 0;
 }
 
 template<class T>

@@ -3,8 +3,8 @@
 
 #include "lib/TemplateTest.inl"
 
-template int min<int>(int, int);
-template int max<int>(int, int);
+template int min<>(int, int);
+template int max<>(int, int);
 
 template class template_class<int>;
 template class template_class<double>;

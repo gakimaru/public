@@ -13,10 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\boost">
+      <UniqueIdentifier>{9c571f86-07ba-4a42-8519-27e1d4418aa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\boost\backtrace">
+      <UniqueIdentifier>{6e3dedef-c118-4b38-a25f-0f83a71461bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\boost">
+      <UniqueIdentifier>{c5d8f752-ffcb-4e5c-a777-ff40463ba207}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="boost\backtrace\src\backtrace.cpp">
+      <Filter>ソース ファイル\boost\backtrace</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="boost\backtrace.hpp">
+      <Filter>ヘッダー ファイル\boost</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,7 +9,14 @@
 //・プリント処理のスレッド化対応
 //・ノーティファイ処理（画面表示処理）対応
 //・アサーション対応
+//・バックトレース出力（boost/backtraceを使用する）
 //・std::ostream対応
+
+//テスト：boostのバックトレース処理
+//※リンクライブラリに dbghelp.lib も追加
+//※例外のキャッチが必須な点と、ゲーム用の開発で使えるか不明なのが難点（WindowsとUnix系OSでは使える模様）
+#include <iostream>
+#include <boost/backtrace.hpp>
 
 #define WINDOWS
 
@@ -1210,6 +1217,19 @@ namespace debug
 				sprintf_s(buff, buff_size, fmt, message_info->m_text);
 			else
 				printf(fmt, message_info->m_text);
+		}
+		//テスト：boostのバックトレース処理
+		if (with_call_info)
+		{
+			std::cerr << "- Backtrace!! -" << std::endl;
+			try
+			{
+				throw boost::runtime_error("Test");
+			}
+			catch (std::exception const &e)
+			{
+				std::cerr << boost::trace(e);
+			}
 		}
 	}
 	void printInfo(const T_THREAD_INFO* thread_info, const T_CALL_POINT_INFO*const* call_point_info_list, const int call_point_info_num, const T_MESSAGE_BLOCK_INFO* message_block_info, const T_MESSAGE_INFO* message_info, const bool with_call_info)

@@ -43,6 +43,32 @@ int main(const int argc, const char* argv[])
 		std::sort(vec.begin(), vec.end(), std::greater<int>());	std::cout << "sorted2:"; std::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " ")); std::cout << std::endl;
 		std::sort(vec.begin(), vec.end(), std::less<int>());	std::cout << "sorted3:"; std::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " ")); std::cout << std::endl;
 	}
+	{
+		//‚ŠKŠÖ”
+		struct is_even
+		{
+			typedef bool result_type;
+			bool operator()(int x) const { return x % 2 == 0; }
+		};
+		std::vector<int> vec;
+		vec.push_back(1);
+		vec.push_back(3);
+		vec.push_back(5);
+		vec.push_back(6);
+		vec.push_back(7);
+		vec.push_back(9);
+		std::cout << "vec: "; std::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " ")); std::cout << std::endl;
+		std::vector<int>::iterator found = std::find_if(vec.begin(), vec.end(), is_even());
+		if (found != vec.end())
+		{
+			std::cout << "  is_found(even)=" << *found << " [Indeex=" << std::distance(vec.begin(), found) << "]" << std::endl;
+		}
+		else
+		{
+			std::cout << "  is_found(even)=not found." << std::endl;
+
+		}
+	}
 
 	std::cout << "- main():END -" << std::endl;
 	

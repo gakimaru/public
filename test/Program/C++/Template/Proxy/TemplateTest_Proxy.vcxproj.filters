@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\process">
+      <UniqueIdentifier>{4f4d3a0e-21d1-46cd-bbf9-b37ea9347dff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\process">
+      <UniqueIdentifier>{81a8c423-6f5d-4cfb-b2ab-94a8ddde1aa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\lib">
+      <UniqueIdentifier>{012550f0-08b4-43d8-be6d-f8a7e7e046ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\proxies">
+      <UniqueIdentifier>{f4856efc-7d93-4aaf-ba1d-3376b3b23b74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\lib\proxy_base">
+      <UniqueIdentifier>{baefc316-4fa6-40c2-bb15-fbbe5c964ba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\proxies">
+      <UniqueIdentifier>{20045be9-4ee5-4e1e-b212-9e69eb09fdba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\lib">
+      <UniqueIdentifier>{32101aea-82e6-4fc7-90ab-dad3a3fd2110}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\lib\proxy_base">
+      <UniqueIdentifier>{6f24d728-9fff-4a1d-8637-1c9428fa0ff9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\lib\composite_base">
+      <UniqueIdentifier>{35f33b8c-0dc5-4a08-b786-b1363447e979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\lib\composite_base">
+      <UniqueIdentifier>{4ef66410-968a-4f99-8d91-4dae1ecf9e81}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\process\process.cpp">
+      <Filter>ソース ファイル\process</Filter>
+    </ClCompile>
+    <ClCompile Include="src\proxy\proxy_map.cpp">
+      <Filter>ソース ファイル\proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\proxy\proxy_chara.cpp">
+      <Filter>ソース ファイル\proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\src\proxy_base\proxy_base.cpp">
+      <Filter>ソース ファイル\lib\proxy_base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\process\data_chara.cpp">
+      <Filter>ソース ファイル\process</Filter>
+    </ClCompile>
+    <ClCompile Include="src\process\data_map.cpp">
+      <Filter>ソース ファイル\process</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\src\composite_base\composite_base.cpp">
+      <Filter>ソース ファイル\lib\composite_base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\process\composite.cpp">
+      <Filter>ソース ファイル\process</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\process\process.h">
+      <Filter>ヘッダー ファイル\process</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\include\proxy_base\proxy_base.h">
+      <Filter>ヘッダー ファイル\lib\proxy_base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proxies\proxy_chara.h">
+      <Filter>ヘッダー ファイル\proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proxies\proxy_map.h">
+      <Filter>ヘッダー ファイル\proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="include\process\data_chara.h">
+      <Filter>ヘッダー ファイル\process</Filter>
+    </ClInclude>
+    <ClInclude Include="include\process\data_map.h">
+      <Filter>ヘッダー ファイル\process</Filter>
+    </ClInclude>
+    <ClInclude Include="include\process\composite.h">
+      <Filter>ヘッダー ファイル\process</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\include\composite_base\composite_base.h">
+      <Filter>ヘッダー ファイル\lib\composite_base</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lib\include\proxy_base\proxy_base.inl">
+      <Filter>ヘッダー ファイル\lib\proxy_base</Filter>
+    </None>
+    <None Include="lib\include\composite_base\composite_base.inl">
+      <Filter>ヘッダー ファイル\lib\composite_base</Filter>
+    </None>
+  </ItemGroup>
+</Project>

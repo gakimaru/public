@@ -12,6 +12,16 @@ void CProxyPrintMap::cbPrintMessage(const int par1, const char* par2) const
 	std::cout << "CProxyPrintMap::printMessage(par1=" << par1 << ", par2=\"" << par2 << "\")" << std::endl;
 }
 
+void CProxyPrintMap::destructor()
+{
+	std::cout << "CProxyPrintMap::destructor()" << std::endl;
+}
+
+CProxyPrintMap::~CProxyPrintMap()
+{
+	std::cout << "CProxyPrintMap::~CProxyPrintMap()" << std::endl;
+	this->destructor();
+}
 void CProxyUpdateMap::cbUpdate(const float elapsed_time) const
 {
 	std::cout << "CProxyUpdateMap::ppdate(elapsed_time=" << elapsed_time << ")" << std::endl;
@@ -20,6 +30,17 @@ void CProxyUpdateMap::cbUpdate(const float elapsed_time) const
 void CProxyUpdateMap::cbAnimation() const
 {
 	std::cout << "CProxyUpdateMap::animation()" << std::endl;
+}
+
+void CProxyUpdateMap::destructor()
+{
+	std::cout << "CProxyUpdateMap::destructor()" << std::endl;
+}
+
+CProxyUpdateMap::~CProxyUpdateMap()
+{
+	std::cout << "CProxyUpdateMap::~CProxyUpdateMap()" << std::endl;
+	this->destructor();
 }
 
 void CProxyDrawMap::cbPreDraw(const int index, void* data) const
@@ -32,10 +53,37 @@ void CProxyDrawMap::cbPostDraw(const int index, void* data) const
 	std::cout << "CProxyUpdateMap::postDraw(index=" << index << ", data=" << data << ")" << std::endl;
 }
 
+void CProxyDrawMap::destructor()
+{
+	std::cout << "CProxyDrawMap::destructor()" << std::endl;
+}
+
+CProxyDrawMap::~CProxyDrawMap()
+{
+	std::cout << "CProxyDrawMap::~CProxyDrawMap()" << std::endl;
+	this->destructor();
+}
+
+void CCompositeMap::destructor()
+{
+	std::cout << "CCompositeMap::destructor()" << std::endl;
+	this->CCompositeProcess::destructor();
+}
+
+CCompositeMap::~CCompositeMap()
+{
+	std::cout << "CCompositeMap::~CCompositeMap()" << std::endl;
+	this->destructor();
+}
+
 //明示的なインスタンス化
 #include "proxy_base/proxy_base.inl"
 template class CProxyPrint::vtable_initializer<CProxyPrintMap>;
 template class CProxyUpdate::vtable_initializer<CProxyUpdateMap>;
 template class CProxyDraw::vtable_initializer<CProxyDrawMap>;
+
+//明示的なインスタンス化
+#include "composite_base/composite_base.inl"
+template class CComponent::vtable_initializer<CCompositeMap>;
 
 // End of file

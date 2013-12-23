@@ -23,7 +23,8 @@ public:
 		CProxyPrint(*this)
 	{
 	}
-//	~CProxyPrintChara();
+	void destructor();
+	~CProxyPrintChara();
 private:
 	CCharaData* m_this;
 };
@@ -35,7 +36,7 @@ public:
 	void cbUpdate(const float elapsed_time) const;
 	void cbAnimation() const;
 private:
-	//	explicit CProxyUpdateChara(){}
+//	explicit CProxyUpdateChara(){}
 	explicit CProxyUpdateChara(CProxyUpdateChara&){}
 public:
 	explicit CProxyUpdateChara() :
@@ -43,7 +44,8 @@ public:
 		CProxyUpdate(*this)
 	{
 	}
-	//	~CProxyUpdateChara();
+	void destructor();
+	~CProxyUpdateChara();
 private:
 	CCharaData* m_this;
 };
@@ -55,7 +57,7 @@ public:
 	void cbPreDraw(const int index, void* data) const;
 	void cbPostDraw(const int index, void* data) const;
 private:
-	//	explicit CProxyDrawChara(){}
+//	explicit CProxyDrawChara(){}
 	explicit CProxyDrawChara(CProxyDrawChara&){}
 public:
 	explicit CProxyDrawChara() :
@@ -63,7 +65,8 @@ public:
 		CProxyDraw(*this)
 	{
 	}
-	//	~CProxyDrawChara();
+	void destructor();
+	~CProxyDrawChara();
 private:
 	CCharaData* m_this;
 };
@@ -72,14 +75,15 @@ class CCompositeChara : public CCompositeProcess
 {
 public:
 	CCompositeChara(CCharaData* me) :
-		m_this(me),
-		CCompositeProcess(&this->m_proxyPrint, &this->m_proxyUpdate, &this->m_proxyDraw)
+		CCompositeProcess(*this, &this->m_proxyPrint, &this->m_proxyUpdate, &this->m_proxyDraw),
+		m_this(me)
 	{
 		this->m_proxyPrint.m_this = me;
 		this->m_proxyUpdate.m_this = me;
 		this->m_proxyDraw.m_this = me;
 	}
-	//	~CCompositeChara();
+	void destructor();
+	~CCompositeChara();
 private:
 	CCharaData* m_this;
 	CProxyPrintChara m_proxyPrint;

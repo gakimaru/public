@@ -11,10 +11,10 @@ namespace
 
 	void initComponents()
 	{
-		CComposite* comp_map1 = new CCompositeMap(new CMapData("Map1"));
-		CComposite* comp_map2 = new CCompositeMap(new CMapData("Map2"));
-		CComposite* comp_chara1 = new CCompositeChara(new CCharaData("Chara1"));
-		CComposite* comp_chara2 = new CCompositeChara(new CCharaData("Chara2"));
+		CCompositeProcess* comp_map1 = new CCompositeMap(new CMapData("Map1"));
+		CCompositeProcess* comp_map2 = new CCompositeMap(new CMapData("Map2"));
+		CCompositeProcess* comp_chara1 = new CCompositeChara(new CCharaData("Chara1"));
+		CCompositeProcess* comp_chara2 = new CCompositeChara(new CCharaData("Chara2"));
 		s_component_top = comp_map1;
 		comp_map1->addNext(comp_map2);
 		comp_map1->addChild(comp_chara1);
@@ -51,11 +51,7 @@ namespace
 	{
 		if (s_component_top)
 		{
-			CComposite* p = s_component_top->getComposition();
-			if (p)
-			{
-				p->removeChildren();
-			}
+			s_component_top->removeNextAll();
 			delete s_component_top;
 			s_component_top = nullptr;
 		}

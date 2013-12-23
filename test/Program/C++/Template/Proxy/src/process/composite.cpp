@@ -1,17 +1,20 @@
+#include <iostream>
+
 #include "process/composite.h"
 
-//CCompositeProcess::CCompositeProcess() :
-//CComposite(),
-//m_proxyPrint(nullptr)
-//{
-//}
-
-CCompositeProcess::CCompositeProcess(CProxyPrint* proxy_print, CProxyUpdate* proxy_update, CProxyDraw* proxy_draw) :
-CComposite(),
-m_proxyPrint(proxy_print),
-m_proxyUpdate(proxy_update),
-m_proxyDraw(proxy_draw)
+void CCompositeProcess::destructor()
 {
+	std::cout << "CCompositeProcess::destructor()" << std::endl;
+	m_proxyPrint->destructor();
+	m_proxyUpdate->destructor();
+	m_proxyDraw->destructor();
+	this->CComposite::destructor();
+}
+
+CCompositeProcess::~CCompositeProcess()
+{
+	std::cout << "CCompositeProcess::~CCompositeProcess()" << std::endl;
+	this->destructor();
 }
 
 // End of file

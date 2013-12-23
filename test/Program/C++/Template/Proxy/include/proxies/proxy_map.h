@@ -23,7 +23,8 @@ public:
 		CProxyPrint(*this)
 	{
 	}
-//	~CProxyPrintMap();
+	void destructor();
+	~CProxyPrintMap();
 private:
 	CMapData* m_this;
 };
@@ -43,7 +44,8 @@ public:
 		CProxyUpdate(*this)
 	{
 	}
-//	~CProxyUpdateMap();
+	void destructor();
+	~CProxyUpdateMap();
 private:
 	CMapData* m_this;
 };
@@ -63,7 +65,8 @@ public:
 		CProxyDraw(*this)
 	{
 	}
-//	~CProxyDrawMap();
+	void destructor();
+	~CProxyDrawMap();
 private:
 	CMapData* m_this;
 };
@@ -72,14 +75,15 @@ class CCompositeMap : public CCompositeProcess
 {
 public:
 	CCompositeMap(CMapData* me) :
-		m_this(me),
-		CCompositeProcess(&this->m_proxyPrint, &this->m_proxyUpdate, &this->m_proxyDraw)
+		CCompositeProcess(*this, &this->m_proxyPrint, &this->m_proxyUpdate, &this->m_proxyDraw),
+		m_this(me)
 	{
 		this->m_proxyPrint.m_this = me;
 		this->m_proxyUpdate.m_this = me;
 		this->m_proxyDraw.m_this = me;
 	}
-//	~CCompositeMap();
+	void destructor();
+	~CCompositeMap();
 private:
 	CMapData* m_this;
 	CProxyPrintMap m_proxyPrint;

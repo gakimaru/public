@@ -8,7 +8,8 @@ template <class T>
 CProxyPrint::vtable CProxyPrint::vtable_initializer<T>::m_vtable =
 {
 	&CProxyPrint::vtable_initializer<T>::proxyPrintName,
-	&CProxyPrint::vtable_initializer<T>::proxyPrintMessage
+	&CProxyPrint::vtable_initializer<T>::proxyPrintMessage,
+	&CProxyPrint::vtable_initializer<T>::proxyDestructor
 };
 
 template <class T>
@@ -24,10 +25,18 @@ void CProxyPrint::vtable_initializer<T>::proxyPrintMessage(void* me, const int p
 }
 
 template <class T>
+void CProxyPrint::vtable_initializer<T>::proxyDestructor(void* me)
+{
+//	reinterpret_cast<T*>(me)->~T();
+	reinterpret_cast<T*>(me)->destructor();
+}
+
+template <class T>
 CProxyUpdate::vtable CProxyUpdate::vtable_initializer<T>::m_vtable =
 {
 	&CProxyUpdate::vtable_initializer<T>::proxyUpdate,
-	&CProxyUpdate::vtable_initializer<T>::proxyAnimation
+	&CProxyUpdate::vtable_initializer<T>::proxyAnimation,
+	&CProxyUpdate::vtable_initializer<T>::proxyDestructor
 };
 
 template <class T>
@@ -43,10 +52,18 @@ void CProxyUpdate::vtable_initializer<T>::proxyAnimation(void* me)
 }
 
 template <class T>
+void CProxyUpdate::vtable_initializer<T>::proxyDestructor(void* me)
+{
+//	reinterpret_cast<T*>(me)->~T();
+	reinterpret_cast<T*>(me)->destructor();
+}
+
+template <class T>
 CProxyDraw::vtable CProxyDraw::vtable_initializer<T>::m_vtable =
 {
 	&CProxyDraw::vtable_initializer<T>::proxyPreDraw,
-	&CProxyDraw::vtable_initializer<T>::proxyPostDraw
+	&CProxyDraw::vtable_initializer<T>::proxyPostDraw,
+	&CProxyDraw::vtable_initializer<T>::proxyDestructor
 };
 
 template <class T>
@@ -59,6 +76,13 @@ template <class T>
 void CProxyDraw::vtable_initializer<T>::proxyPostDraw(void* me, const int index, void* data)
 {
 	reinterpret_cast<T*>(me)->cbPostDraw(index, data);
+}
+
+template <class T>
+void CProxyDraw::vtable_initializer<T>::proxyDestructor(void* me)
+{
+//	reinterpret_cast<T*>(me)->~T();
+	reinterpret_cast<T*>(me)->destructor();
 }
 
 #endif//__PROXY_BASE_INL__

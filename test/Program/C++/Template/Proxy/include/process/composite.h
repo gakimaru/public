@@ -23,9 +23,16 @@ private:
 	explicit CCompositeProcess();
 	explicit CCompositeProcess(CCompositeProcess&);
 public:
-//	explicit CCompositeProcess();
-	explicit CCompositeProcess(CProxyPrint* proxy_print, CProxyUpdate* proxy_update, CProxyDraw* proxy_draw);
-//	~CCompositeProcess();
+	template<class T>
+	explicit CCompositeProcess(T& me, CProxyPrint* proxy_print, CProxyUpdate* proxy_update, CProxyDraw* proxy_draw):
+		CComposite(me),
+		m_proxyPrint(proxy_print),
+		m_proxyUpdate(proxy_update),
+		m_proxyDraw(proxy_draw)
+	{
+	}
+	void destructor();
+	~CCompositeProcess();
 private:
 	CProxyPrint* m_proxyPrint;
 	CProxyUpdate* m_proxyUpdate;

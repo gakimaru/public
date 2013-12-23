@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "composite_base/composite_base.h"
 
 void CComponent::addNext(CComponent* next)
@@ -31,12 +33,37 @@ void CComponent::remove(CComponent* parent, CComponent* prev)
 	delete this;
 }
 
+void CComponent::removeNextAll()
+{
+	if (this->m_next)
+	{
+		this->m_next->removeNextAll();
+		delete this->m_next;
+		this->m_next = nullptr;
+	}
+}
+
+void CComponent::destructor()
+{
+	std::cout << "CComponent::destructor()" << std::endl;
+}
+
 CComponent::~CComponent()
 {
+	std::cout << "CComponent::~CComponent()" << std::endl;
+	this->m_vtable->pDestructor(reinterpret_cast<void*>(this));
+}
+
+void CLeaf::destructor()
+{
+	std::cout << "CLeaf::destructor()" << std::endl;
+	CComponent::destructor();
 }
 
 CLeaf::~CLeaf()
 {
+	std::cout << "CLeaf::~CLeaf()" << std::endl;
+	this->destructor();
 }
 
 void CComposite::addChild(CComponent* child)
@@ -88,9 +115,17 @@ void CComposite::removeChildren()
 	this->m_childTop = nullptr;
 }
 
+void CComposite::destructor()
+{
+	std::cout << "CComposite::destructor()" << std::endl;
+	this->removeChildren();
+	CComponent::destructor();
+}
+
 CComposite::~CComposite()
 {
-	this->removeChildren();
+	std::cout << "CComposite::~CComposite()" << std::endl;
+	this->destructor();
 }
 
 // End of file

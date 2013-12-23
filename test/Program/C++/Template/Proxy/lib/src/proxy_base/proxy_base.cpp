@@ -10,6 +10,16 @@ void CProxyPrint::printMessage(const int par1, const char* par2) const
 	this->m_vtable->pPrintMessage(m_this, par1, par2);
 }
 
+void CProxyPrint::destructor()
+{
+	this->m_vtable->pDestructor(m_this);
+}
+
+CProxyPrint::~CProxyPrint()
+{
+	this->destructor();
+}
+
 void CProxyUpdate::update(const float elapsed_time) const
 {
 	this->m_vtable->pUpdate(m_this, elapsed_time);
@@ -20,6 +30,16 @@ void CProxyUpdate::animation() const
 	this->m_vtable->pAnimation(m_this);
 }
 
+void CProxyUpdate::destructor()
+{
+	this->m_vtable->pDestructor(m_this);
+}
+
+CProxyUpdate::~CProxyUpdate()
+{
+	this->destructor();
+}
+
 void CProxyDraw::preDraw(const int index, void* data) const
 {
 	this->m_vtable->pPreDraw(m_this, index, data);
@@ -28,6 +48,16 @@ void CProxyDraw::preDraw(const int index, void* data) const
 void CProxyDraw::postDraw(const int index, void* data) const
 {
 	this->m_vtable->pPostDraw(m_this, index, data);
+}
+
+void CProxyDraw::destructor()
+{
+	this->m_vtable->pDestructor(m_this);
+}
+
+CProxyDraw::~CProxyDraw()
+{
+	this->destructor();
 }
 
 // End of file

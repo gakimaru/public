@@ -14,35 +14,55 @@ public:
 	CComponent* getNext() const { return this->m_next; }
 	void addNext(CComponent* next);
 	void remove(CComponent* parent, CComponent* prev);
+	void removeNextAll();
 	CLeaf* getLeaf() { return this->m_isComposition ? nullptr : reinterpret_cast<CLeaf*>(this); }
 	CComposite* getComposition() { return this->m_isComposition ? reinterpret_cast<CComposite*>(this) : nullptr; }
 protected:
 	explicit CComponent(){}
 	explicit CComponent(CComponent&){}
 public:
-	explicit CComponent(const bool is_composition):
+	template<class T>
+	explicit CComponent(T& me, const bool is_composition):
 		m_isComposition(is_composition),
-		m_next(nullptr)
+		m_next(nullptr),
+		m_vtable(&vtable_initializer<T>::m_vtable)
 	{
 	}
+	void destructor();
 	~CComponent();
 protected:
 	bool m_isComposition;
 	CComponent* m_next;
+
+private:
+	struct vtable
+	{
+		void(*pDestructor)(void*);
+	};
+	template <class T>
+	class vtable_initializer
+	{
+	public:
+		static CComponent::vtable m_vtable;
+		static void proxyDestructor(void* me);
+	};
+	vtable* m_vtable;
 };
 
 class CLeaf : public CComponent
 {
-private:
-//	explicit CLeaf(){}
+protected:
+	explicit CLeaf(){}
 	explicit CLeaf(CLeaf&){}
 public:
-	explicit CLeaf():
-		CComponent(false)
+	template<class T>
+	explicit CLeaf(T& me) :
+		CComponent(me, false)
 	{
 	}
+	void destructor();
 	~CLeaf();
-private:
+protected:
 };
 
 class CComposite : public CComponent
@@ -53,17 +73,19 @@ public:
 	void addChild(CComponent* child);
 	void removeChild(CComponent* child);
 	void removeChildren();
-private:
-//	explicit CComposite(){}
+protected:
+	explicit CComposite(){}
 	explicit CComposite(CComposite&){}
 public:
-	explicit CComposite() :
-		CComponent(true),
+	template<class T>
+	explicit CComposite(T& me) :
+		CComponent(me, true),
 		m_childTop(nullptr)
 	{
 	}
+	void destructor();
 	~CComposite();
-private:
+protected:
 	CComponent* m_childTop;
 };
 

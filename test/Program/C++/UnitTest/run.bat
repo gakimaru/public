@@ -11,6 +11,10 @@ rem CHCP 1200 >NUL
 rem --- コードページ指定：日本語（シフトJIS） ---
 CHCP 932 >NUL
 
+rem --- 開始 ---
+ECHO.
+ECHO ********** テスト開始 **********
+
 rem --- テスト処理(1) ---
 ECHO.
 CALL :RUN_CMD Debug\UnitTest.exe
@@ -43,7 +47,7 @@ ECHO 実行結果=%RESULT%
 
 rem --- 終了 ---
 ECHO.
-CALL :PAUSE_MSG 実行終了
+CALL :PAUSE_MSG ********** テスト終了 **********
 EXIT /B %RESULT%
 
 

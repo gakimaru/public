@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "game_main.h"
+#include "game/game_main.h"
 
 int main(const int argc, const char* argv[])
 {

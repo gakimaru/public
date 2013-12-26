@@ -18,12 +18,14 @@
 #ifdef UT_ENABLED
 
 #include <stdio.h>
+#include <string.h>
 #include <stdarg.h>
 #include <string>
 #include <sstream>
+#include <exception>
+#include <assert.h>
 
 #ifndef ASSERT
-#include <assert.h>
 #define ASSERT(expr) assert(expr)
 #endif//ASSERT
 
@@ -83,15 +85,97 @@ namespace UnitTest
 		static void outputRunUTEnd(const char* target_module_name, const int target_group_id, const int total_passed, const int total_missed);
 		static void outputRunUTModuleBegin(const char* module_name, const int group_id);
 		static void outputRunUTModuleEnd(const char* module_name, const int group_id, const int passed, const int missed);
-		static void outputUTResult(const bool is_child, int* passed, int* missed, const bool result, const char* expr, const char* value, const char* ope, const char* expect);
-		template<typename T, typename S, std::size_t S_SIZE>
-		static T calcResult(T value, S (&str)[S_SIZE])
+		class CExprCResultObjBase
 		{
-			std::ostringstream os;
-			os << value;
-			strcpy_s(str, S_SIZE, os.str().c_str());
-			return value;
-		}
+		public:
+			CExprCResultObjBase() : m_result(true), m_hasResult(false), m_hasException(false), m_hasExprStr(false), m_hasValueStr(false), m_hasOpeStr(false), m_hasExpectStr(false), m_exprStr(), m_valuieStr(), m_opeStr(), m_expectStr(), m_exceptionStr(){}
+			~CExprCResultObjBase(){}
+
+		public:
+			void setResult(const bool result){ this->m_result = result; }
+			bool getResult() const { return this->m_result; }
+			void setHasResult(const bool has_result){ this->m_hasResult = has_result; }
+			bool hasResult() const { return this->m_hasResult; }
+			void setException(std::exception const& e){ this->m_hasException = true; this->m_exceptionStr = e.what(); }
+			bool hasException() const { return this->m_hasException; }
+			bool hasExprStr() const { return this->m_hasExprStr; }
+			bool hasValueStr() const { return this->m_hasValueStr; }
+			bool hasOpeStr() const { return this->m_hasOpeStr; }
+			bool hasExpectStr() const { return this->m_hasExpectStr; }
+			void setExprStr(const char* expr){ if (expr){ this->m_exprStr = expr; this->m_hasExprStr = true; } }
+			const char* getExprStr() const { return m_exprStr.c_str(); }
+			void setValueStr(const char* value){ if (value){ this->m_valuieStr = value; this->m_hasValueStr = true; } }
+			const char* getValueStr() const { return m_valuieStr.c_str(); }
+			void setOpeStr(const char* ope){ if (ope){ this->m_opeStr = ope; this->m_hasOpeStr = true; } }
+			const char* getOpeStr() const { return this->m_opeStr.c_str(); }
+			void setExpectStr(const char* expect){ if (expect){ this->m_expectStr = expect; this->m_hasExpectStr = true; } }
+			const char* getExpectStr() const { return this->m_expectStr.c_str(); }
+			const char* getExceptionStr() const { return this->m_exceptionStr.c_str(); }
+			void setStrSet(const char* expr, const char* ope, const char* expect){ this->setExprStr(expr); this->setOpeStr(ope); this->setExpectStr(expect); }
+
+		private:
+			bool m_result;
+			bool m_hasResult;
+			bool m_hasException;
+			bool m_hasExprStr;
+			bool m_hasValueStr;
+			bool m_hasOpeStr;
+			bool m_hasExpectStr;
+			std::string m_exprStr;
+			std::string m_valuieStr;
+			std::string m_opeStr;
+			std::string m_expectStr;
+			std::string m_exceptionStr;
+		};
+		template<typename T>
+		class CExprCResultObj : public CExprCResultObjBase
+		{
+		public:
+			CExprCResultObj(const T value, const char* ope, const T expect) : m_hasValue(false), m_hasExpect(false), m_value(0), m_expect(0), CExprCResultObjBase()
+			{
+				this->setValue(value);
+				this->setOpeStr(ope);
+				this->setExpect(expect);
+				this->setResult(false);
+				this->setHasResult(false);
+				if (ope)
+				{
+					if (strcmp(ope, "==") == 0){ this->setResult(this->m_value == this->m_expect); this->setHasResult(true); }
+					else if (strcmp(ope, "!=") == 0){ this->setResult(this->m_value != this->m_expect); this->setHasResult(true); }
+					else if (strcmp(ope, "<") == 0){ this->setResult(this->m_value < this->m_expect); this->setHasResult(true); }
+					else if (strcmp(ope, "<=") == 0){ this->setResult(this->m_value <= this->m_expect); this->setHasResult(true); }
+					else if (strcmp(ope, ">") == 0){ this->setResult(this->m_value > this->m_expect); this->setHasResult(true); }
+					else if (strcmp(ope, ">=") == 0){ this->setResult(this->m_value >= this->m_expect); this->setHasResult(true); }
+				}
+			}
+			CExprCResultObj(const T value) : m_hasValue(false), m_hasExpect(false), m_value(0), m_expect(0), CExprCResultObjBase(){ this->setValue(value); }
+			CExprCResultObj() : m_hasValue(false), m_hasExpect(false), m_value(0), m_expect(0), CExprCResultObjBase(){}
+			~CExprCResultObj(){ this->~CExprCResultObjBase(); }
+
+		public:
+			void setValue(const T value){ this->m_value = value; this->m_hasValue = true; std::ostringstream os; os << value; this->setValueStr(os.str().c_str()); }
+			T getValue() const { return this->m_value; }
+			void setExpect(const T expect){ this->m_expect = expect; this->m_hasExpect = true; }
+			T getExpect() const { return this->m_expectStr; }
+		//	template<typename S, std::size_t S_SIZE>
+		//	void toStr(S(&str)[S_SIZE])
+		//	{
+		//		std::ostringstream os;
+		//		os << m_value;
+		//		strcpy_s(str, S_SIZE, os.str().c_str());
+		//	}
+		private:
+			T m_value;
+			T m_expect;
+			bool m_hasValue;
+			bool m_hasExpect;
+		};
+		template<typename T>
+		static CExprCResultObj<T>* makeResultObj2(const T value, const char* ope, const T expect){ return new CExprCResultObj<T>(value, ope, expect); }
+		template<typename T>
+		static CExprCResultObj<T>* makeResultObj1(const T value){ return new CExprCResultObj<T>(value); }
+		static CExprCResultObj<int>* makeResultObj0(){ return new CExprCResultObj<int>(); }
+		static void outputUTResult(const bool is_child, int* passed, int* missed, CExprCResultObjBase* result_obj);
 	};
 }; //namespace UnitTest
 
@@ -115,7 +199,6 @@ public: \
 		const int __group_id = group_id; \
 		__passed = 0; \
 		__missed = 0; \
-		char __value_str[64]; \
 		UnitTest::CCollection::outputRunUTModuleBegin(__module_name, __group_id);
 #define UT_END() \
 		UnitTest::CCollection::outputRunUTModuleEnd(__module_name, __group_id, __passed, __missed); \
@@ -124,16 +207,16 @@ public: \
 }; \
 	static __CUnitTestModle __unit_test_obj; \
 }; //namespace __UnitTest_##module_name
-#define UT_PRINT_RESULT(is_child, expr, value) UnitTest::CCollection::outputUTResult(is_child, nullptr, nullptr, true, #expr, __value_str, nullptr, nullptr)
-#define UT_PRINT_EXPR(is_child, expr) expr; UnitTest::CCollection::outputUTResult(is_child, nullptr, nullptr, true, #expr, nullptr, nullptr, nullptr)
-#define UT_PRINT_EXPR_WITH_RET(is_child, expr, value) value; UnitTest::CCollection::outputUTResult(is_child, nullptr, nullptr, true, #expr, __value_str, nullptr, nullptr)
-#define UT_CLAC_AND_PRINT_RESULT(is_child, expr, value, ope, expect) UnitTest::CCollection::outputUTResult(is_child, &__passed, &__missed, ((value) ope (expect)), #expr, __value_str, #ope, #expect)
-#define UT_EXPECT(expr, ope, expect) UT_CLAC_AND_PRINT_RESULT(false, expr, UnitTest::CCollection::calcResult(expr, __value_str), ope, expect)
-#define UT_EXPECT_CHILD(expr, ope, expect) UT_CLAC_AND_PRINT_RESULT(true, expr, UnitTest::CCollection::calcResult(expr, __value_str), ope, expect)
-#define UT_EXPR(expr) UT_PRINT_EXPR(false, expr)
-#define UT_EXPR_CHILD(expr) UT_PRINT_EXPR(true, expr)
-#define UT_EXPR_WITH_RET(expr) UT_PRINT_EXPR_WITH_RET(false, expr, UnitTest::CCollection::calcResult(expr, __value_str))
-#define UT_EXPR_WITH_RET_CHILD(expr) UT_PRINT_EXPR_WITH_RET(true, expr, UnitTest::CCollection::calcResult(expr, __value_str))
+#define _UT_PRINT_EXPR_AND_RESULT(is_child, expr, ope, expect) { UnitTest::CCollection::CExprCResultObjBase* ___result_obj = nullptr; try { ___result_obj = UnitTest::CCollection::makeResultObj2(expr, #ope, expect); ___result_obj->setExprStr(#expr); ___result_obj->setExpectStr(#expect);                                 UnitTest::CCollection::outputUTResult(is_child, &__passed, &__missed, ___result_obj); } catch(std::exception const &e) { if(!___result_obj) ___result_obj = UnitTest::CCollection::makeResultObj0(); ___result_obj->setExprStr(#expr); ___result_obj->setOpeStr(#ope); ___result_obj->setExpectStr(#expect); ___result_obj->setResult(false); ___result_obj->setException(e); UnitTest::CCollection::outputUTResult(is_child, nullptr, &__missed, ___result_obj); } if(___result_obj){delete ___result_obj; } }
+#define _UT_PRINT_EXPR_AND_VALUE(is_child, expr)               { UnitTest::CCollection::CExprCResultObjBase* ___result_obj = nullptr; try { ___result_obj = UnitTest::CCollection::makeResultObj1(expr);               ___result_obj->setExprStr(#expr);                                       ___result_obj->setResult(true); UnitTest::CCollection::outputUTResult(is_child, nullptr,   nullptr,   ___result_obj); } catch(std::exception const &e) { if(!___result_obj) ___result_obj = UnitTest::CCollection::makeResultObj0();                                                                                                         ___result_obj->setResult(false); ___result_obj->setException(e); UnitTest::CCollection::outputUTResult(is_child, nullptr, &__missed, ___result_obj); } if(___result_obj){delete ___result_obj; } }
+#define _UT_PRINT_EXPR(is_child, expr)                         { UnitTest::CCollection::CExprCResultObjBase* ___result_obj = nullptr; try { ___result_obj = UnitTest::CCollection::makeResultObj0();                   ___result_obj->setExprStr(#expr);                                       ___result_obj->setResult(true); UnitTest::CCollection::outputUTResult(is_child, nullptr,   nullptr,   ___result_obj); } catch(std::exception const &e) { if(!___result_obj) ___result_obj = UnitTest::CCollection::makeResultObj0();                                                                                                         ___result_obj->setResult(false); ___result_obj->setException(e); UnitTest::CCollection::outputUTResult(is_child, nullptr, &__missed, ___result_obj); } if(___result_obj){delete ___result_obj; } }
+
+#define UT_EXPECT(expr, ope, expect)       _UT_PRINT_EXPR_AND_RESULT(false, expr, ope, expect);
+#define UT_EXPECT_CHILD(expr, ope, expect) _UT_PRINT_EXPR_AND_RESULT(true,  expr, ope, expect);
+#define UT_EXPR_WITH_RET(expr)             _UT_PRINT_EXPR_AND_VALUE(false, expr)
+#define UT_EXPR_WITH_RET_CHILD(expr)       _UT_PRINT_EXPR_AND_VALUE(true,  expr)
+#define UT_EXPR(expr)                      _UT_PRINT_EXPR(false, expr)
+#define UT_EXPR_CHILD(expr)                _UT_PRINT_EXPR(true, expr)
 
 #ifndef UT_TARGET_MODULE
 #define UT_TARGET_MODULE nullptr

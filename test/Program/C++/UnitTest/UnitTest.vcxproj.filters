@@ -19,33 +19,54 @@
     <Filter Include="lib\include">
       <UniqueIdentifier>{ab14e68e-ce6d-4453-bd5e-99695fc79272}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\src">
+      <UniqueIdentifier>{9fc9d3d9-39f7-437f-9181-3db48418a1e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sample">
+      <UniqueIdentifier>{66e1f5b4-3152-4c8a-866f-c3b2952ca988}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sample\src">
+      <UniqueIdentifier>{7c4b7db7-a3df-4c26-8521-72901f31e1e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sample\include">
+      <UniqueIdentifier>{ed253ea1-0841-43b2-a655-af92212d365a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sample\include\game">
+      <UniqueIdentifier>{f2773549-1e6b-4f00-bbb8-19ba3a9da20c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sample\src\game">
+      <UniqueIdentifier>{8df205c7-eae7-4545-a29f-bad0d9239fd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sample\src\game\modules">
+      <UniqueIdentifier>{23c40184-ea7f-49cf-8415-77ecffaa1316}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\module_b.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\game_main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\module_a.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="lib\src\unit_test.cpp">
-      <Filter>lib</Filter>
+      <Filter>lib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="sample\src\main.cpp">
+      <Filter>sample\src</Filter>
+    </ClCompile>
+    <ClCompile Include="sample\src\game\game_main.cpp">
+      <Filter>sample\src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="sample\src\game\modules\module_a.cpp">
+      <Filter>sample\src\game\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="sample\src\game\modules\module_b.cpp">
+      <Filter>sample\src\game\modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\game_main.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="lib\include\unit_test.h">
       <Filter>lib\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\unit_test_id.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="sample\include\game\game_main.h">
+      <Filter>sample\include\game</Filter>
+    </ClInclude>
+    <ClInclude Include="sample\include\game\unit_test_id.h">
+      <Filter>sample\include\game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

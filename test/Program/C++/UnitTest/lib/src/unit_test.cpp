@@ -4,6 +4,9 @@
 
 #include <stdio.h>
 
+#include <windows.h>
+#include <conio.h>
+
 namespace UnitTest
 {
 	//ユニットテスト情報
@@ -117,24 +120,34 @@ namespace UnitTest
 	//ユニットテスト結果表示
 #if 0
 	//for Unix
-#define _COLOR_RESET() output("\x1b[0m")
-#define _COLOR_NORMAL() output("\x1b[40m\x1b[37m")
-#define _COLOR_OK() output("\x1b[40m\x1b[34m")
-#define _COLOR_NG() output("\x1b[41m\x1b[37m")
-#define _COLOR_EXPR() output("\x1b[40m\x1b[32m")
-#define _COLOR_OPE() output("\x1b[40m\x1b[37m")
-#define _COLOR_EXPECT() output("\x1b[40m\x1b[32m")
-#define _COLOR_VALUE() output("\x1b[40m\x1b[32m")
+	#define _COLOR_BEGIN()
+	#define _COLOR_RESET() output("\x1b[0m")
+	#define _COLOR_NORMAL() output("\x1b[40m\x1b[37m")
+	#define _COLOR_OK() output("\x1b[40m\x1b[34m")
+	#define _COLOR_NG() output("\x1b[41m\x1b[37m")
+	#define _COLOR_UNKNOWN() output("\x1b[44m\x1b[31m")
+	#define _COLOR_EXPR() output("\x1b[40m\x1b[32m")
+	#define _COLOR_OPE() output("\x1b[40m\x1b[37m")
+	#define _COLOR_EXPECT() output("\x1b[40m\x1b[32m")
+	#define _COLOR_VALUE() output("\x1b[40m\x1b[32m")
+	#define _COLOR_EXCEPTION() output("\x1b[41m\x1b[37m")
+	#define _COLOR_END()
 #else
 	//for Windows
-	#define _COLOR_RESET()
-	#define _COLOR_NORMAL()
-	#define _COLOR_OK()
-	#define _COLOR_NG()
-	#define _COLOR_EXPR()
-	#define _COLOR_OPE()
-	#define _COLOR_EXPECT()
-	#define _COLOR_VALUE()
+	CONSOLE_SCREEN_BUFFER_INFO _csb_info_backuped;
+	HANDLE 	_hStdout = INVALID_HANDLE_VALUE;
+	#define _COLOR_BEGIN(){_hStdout = GetStdHandle(STD_OUTPUT_HANDLE); GetConsoleScreenBufferInfo(_hStdout, &_csb_info_backuped);}
+	#define _COLOR_RESET(){SetConsoleTextAttribute(_hStdout, _csb_info_backuped.wAttributes);}
+	#define _COLOR_NORMAL(){SetConsoleTextAttribute(_hStdout, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY);}
+	#define _COLOR_OK(){SetConsoleTextAttribute(_hStdout, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY|BACKGROUND_BLUE|BACKGROUND_INTENSITY);}
+	#define _COLOR_NG(){SetConsoleTextAttribute(_hStdout, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY|BACKGROUND_RED|BACKGROUND_INTENSITY);}
+	#define _COLOR_UNKOWN(){SetConsoleTextAttribute(_hStdout, FOREGROUND_RED|FOREGROUND_INTENSITY|BACKGROUND_GREEN|BACKGROUND_RED|BACKGROUND_INTENSITY);}
+	#define _COLOR_EXPR(){SetConsoleTextAttribute(_hStdout, FOREGROUND_GREEN|FOREGROUND_INTENSITY);}
+	#define _COLOR_OPE(){SetConsoleTextAttribute(_hStdout, FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY);}
+	#define _COLOR_EXPECT(){SetConsoleTextAttribute(_hStdout, FOREGROUND_GREEN|FOREGROUND_INTENSITY);}
+	#define _COLOR_VALUE(){SetConsoleTextAttribute(_hStdout, FOREGROUND_GREEN|FOREGROUND_INTENSITY);}
+	#define _COLOR_EXCEPTION(){SetConsoleTextAttribute(_hStdout, BACKGROUND_BLUE|BACKGROUND_RED|BACKGROUND_INTENSITY);}
+	#define _COLOR_END(){SetConsoleTextAttribute(_hStdout, _csb_info_backuped.wAttributes); _hStdout = INVALID_HANDLE_VALUE;}
 #endif
 	void CCollection::setOutputFunc(UNIT_TEST_OUTPUT_FUNC_P func)
 	{
@@ -152,6 +165,8 @@ namespace UnitTest
 	}
 	void CCollection::outputRunUTBegin(const char* target_module_name, const int target_group_id)
 	{
+		_COLOR_BEGIN();
+		_COLOR_RESET();
 		_COLOR_NORMAL();
 		output("\n");
 		output("Start unit test: ");
@@ -169,83 +184,188 @@ namespace UnitTest
 		}
 		output("\n");
 		output("============================================================\n");
+		_COLOR_END();
 	}
 	void CCollection::outputRunUTEnd(const char* target_module_name, const int target_group_id, const int passed_total, const int missed_total)
 	{
+		_COLOR_BEGIN();
+		_COLOR_RESET();
+		_COLOR_NORMAL();
 		output("\n");
 		output("============================================================\n");
-		output("Finish unit test: Total [test=%d, passed=%d, missed=%d]\n", passed_total + missed_total, passed_total, missed_total);
-		output("\n");
+		output("Finish unit test: Total [test=%d, passed=", passed_total + missed_total);
+		if (passed_total > 0)
+		{
+			_COLOR_OK();
+			output("%d", passed_total);
+		}
+		else
+		{
+			_COLOR_NORMAL();
+			output("%d", passed_total);
+		}
 		_COLOR_NORMAL();
+		output(", missed=");
+		if (missed_total > 0)
+		{
+			_COLOR_NG();
+			output("%d", missed_total);
+		}
+		else
+		{
+			_COLOR_NORMAL();
+			output("%d", missed_total);
+		}
+		_COLOR_NORMAL();
+		output("] -----\n");
+		output("\n");
+		_COLOR_END();
 	}
 	void CCollection::outputRunUTModuleBegin(const char* module_name, const int group_id)
 	{
+		_COLOR_BEGIN();
+		_COLOR_RESET();
+		_COLOR_NORMAL();
 		output("\n");
 		output("----- Start unit test module: \"%s\" (Group=%d) -----\n", module_name, group_id);
+		_COLOR_END();
 	}
 	void CCollection::outputRunUTModuleEnd(const char* module_name, const int group_id, const int passed, const int missed)
 	{
-		output("----- Finish unit test module: [test=%d, passed=%d, missed=%d] -----\n", passed + missed, passed, missed);
-	}
-	void CCollection::outputUTResult(const bool is_child, int* passed, int* missed, const bool result, const char* expr, const char* value, const char* ope, const char* expect)
-	{
+		_COLOR_BEGIN();
 		_COLOR_RESET();
 		_COLOR_NORMAL();
-		bool print_expect = true;
-		if (passed && missed && ope && expect)
+		output("----- Finish unit test module: [test=%d, passed=", passed + missed);
+		if (passed > 0)
 		{
-			print_expect = true;
-			if (result)
+			_COLOR_OK();
+			output("%d", passed);
+		}
+		else
+		{
+			_COLOR_NORMAL();
+			output("%d", passed);
+		}
+		_COLOR_NORMAL();
+		output(", missed=");
+		if (missed > 0)
+		{
+			_COLOR_NG();
+			output("%d", missed);
+		}
+		else
+		{
+			_COLOR_NORMAL();
+			output("%d", missed);
+		}
+		_COLOR_NORMAL();
+		output("] -----\n");
+		_COLOR_END();
+	}
+	void CCollection::outputUTResult(const bool is_child, int* passed, int* missed, CExprCResultObjBase* result_obj)
+	{
+		_COLOR_BEGIN();
+		_COLOR_RESET();
+		_COLOR_NORMAL();
+		bool is_count_passed = false;
+		bool is_count_missed = false;
+		if (result_obj->hasOpeStr() && result_obj->hasExpectStr())
+		{
+			if (result_obj->hasResult())
 			{
-				++(*passed);
-				_COLOR_OK();
-				output(" [OK] ");
+				if (result_obj->getResult())
+				{
+					is_count_passed = true;
+					_COLOR_NORMAL();
+					output(" ");
+					_COLOR_OK();
+					output("[OK]");
+					_COLOR_NORMAL();
+					output(" ");
+				}
+				else
+				{
+					is_count_missed = true;
+					_COLOR_NG();
+					output("*[NG!]");
+				}
 			}
 			else
 			{
-				++(*missed);
-				_COLOR_NG();
-				output("*[NG!]");
+				is_count_missed = true;
+				_COLOR_UNKOWN();
+				output("*[??]");
+				_COLOR_NORMAL();
+				output(" ");
 			}
 			_COLOR_NORMAL();
 			output(" <-- ");
 		}
 		else
 		{
-			print_expect = false;
 			_COLOR_NORMAL();
 			output("      ");
 			output("     ");
 		}
 		if (is_child)
 		{
+			_COLOR_NORMAL();
 			output("    ");
 		}
-		if (expr)
+		if (result_obj->hasExprStr())
 		{
 			_COLOR_EXPR();
-			output("%s", expr);
+			output("%s", result_obj->getExprStr());
 		}
-		if (print_expect)
+		if (result_obj->hasOpeStr())
 		{
-			if (ope)
-			{
-				_COLOR_OPE();
-				output(" %s ", ope);
-			}
-			if (expect)
-			{
-				_COLOR_EXPECT();
-				output("%s", expect);
-			}
+			_COLOR_NORMAL();
+			output(" ");
+			_COLOR_OPE();
+			output("%s", result_obj->getOpeStr());
+			_COLOR_NORMAL();
+			output(" ");
 		}
-		if (value)
+		if (result_obj->hasExpectStr())
 		{
+			_COLOR_EXPECT();
+			output("%s", result_obj->getExpectStr());
+		}
+		if (result_obj->hasValueStr())
+		{
+			_COLOR_NORMAL();
+			output(" (ret=");
 			_COLOR_VALUE();
-			output(" (%s)", value);
+			output("%s", result_obj->getValueStr());
+			_COLOR_NORMAL();
+			output(")");
+		}
+		if (result_obj->hasException())
+		{
+			is_count_missed = true;
+			_COLOR_NORMAL();
+			output(" ");
+			_COLOR_EXCEPTION();
+			output("<EXCEPTION!!");
+			const char* msg = result_obj->getExceptionStr();
+			if (msg)
+			{
+				output(":%s", msg);
+			}
+			output(">");
 		}
 		_COLOR_RESET();
 		output("\n");
+		_COLOR_END();
+		
+		if (is_count_passed && passed)
+		{
+			++(*passed);
+		}
+		if (is_count_missed && missed)
+		{
+			++(*missed);
+		}
 	}
 };
 

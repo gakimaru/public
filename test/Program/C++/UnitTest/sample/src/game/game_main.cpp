@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "game_main.h"
+#include "game/game_main.h"
 #include "unit_test.h"
-#include "unit_test_id.h"
+#include "game/unit_test_id.h"
 
 //ゲームメインクラス
 

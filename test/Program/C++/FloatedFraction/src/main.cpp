@@ -55,6 +55,7 @@ int main(const int argc, const char* argv[])
 			int getV_fraction_lshift_bits_fixed()const{ return isZero() ? 0 : getS_bits() + getE_bits(); }
 			int getV_fraction_lshift_bits_adjusted()const{ return getV_fraction_lshift_bits_fixed() <= -getV_fraction_lshift_bits() ? getV_fraction_lshift_bits_fixed() - 1 : getV_fraction_lshift_bits_fixed() - (-getV_fraction_lshift_bits()); }
 			int getV_fraction_rshift_bits_adjusted()const{ return getV_fraction_lshift_bits_fixed() <= -getV_fraction_lshift_bits() ? -getV_fraction_lshift_bits() - 1 : 0; }
+			
 			unsigned int getV_decimal()const{ return ((getV_normalized() >> getV_decimal_rshift_bits()) & getV_decimal_mask()) << getV_decimal_lshift_bits(); }
 			unsigned int getV_fraction()const{ return (((getV_normalized() >> getV_fraction_rshift_bits()) & getV_fraction_mask()) << getV_fraction_lshift_bits_adjusted()) >> getV_fraction_rshift_bits_adjusted(); }
 		} s;
@@ -104,7 +105,6 @@ int main(const int argc, const char* argv[])
 	for (int i = 0; i < num; ++i)
 	{
 		printf("%24.14f=0x%08x(s=%1u,e=0x%02x(%4d),v=0x%06x(%2u,0x%08x)\n", n[i].f, n[i].i, n[i].s.getS(), n[i].s.getE(), n[i].s.getE_adjusted(), n[i].s.getV_normalized(), n[i].s.getV_decimal(), n[i].s.getV_fraction());
-		printf("(%08x,%d,%d,%d)\n", n[i].s.getV_fraction_mask(), n[i].s.getV_fraction_bits(), n[i].s.getV_fraction_lshift_bits_adjusted(), n[i].s.getV_fraction_rshift_bits_adjusted());
 	}
 	return EXIT_SUCCESS;
 }

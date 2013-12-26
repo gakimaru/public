@@ -8,7 +8,7 @@
 
 class CCompositeChara;
 
-class CProxyPrintChara : public CProxyPrint
+class CProxyPrintChara : public CProxyPrintCommon<CProxyPrintChara>
 {
 	friend class CCompositeChara;
 public:
@@ -20,7 +20,7 @@ private:
 public:
 	explicit CProxyPrintChara() :
 		m_this(nullptr),
-		CProxyPrint(*this)
+		CProxyPrintCommon<CProxyPrintChara>(*this)
 	{
 	}
 	void destructor();
@@ -29,7 +29,7 @@ private:
 	CCharaData* m_this;
 };
 
-class CProxyUpdateChara : public CProxyUpdate
+class CProxyUpdateChara : public CProxyUpdateCommon<CProxyUpdateChara>
 {
 	friend class CCompositeChara;
 public:
@@ -41,7 +41,7 @@ private:
 public:
 	explicit CProxyUpdateChara() :
 		m_this(nullptr),
-		CProxyUpdate(*this)
+		CProxyUpdateCommon<CProxyUpdateChara>(*this)
 	{
 	}
 	void destructor();
@@ -50,7 +50,7 @@ private:
 	CCharaData* m_this;
 };
 
-class CProxyDrawChara : public CProxyDraw
+class CProxyDrawChara : public CProxyDrawCommon<CProxyDrawChara>
 {
 	friend class CCompositeChara;
 public:
@@ -62,7 +62,7 @@ private:
 public:
 	explicit CProxyDrawChara() :
 		m_this(nullptr),
-		CProxyDraw(*this)
+		CProxyDrawCommon<CProxyDrawChara>(*this)
 	{
 	}
 	void destructor();

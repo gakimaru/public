@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "proxy_base/proxy_base.h"
 
 void CProxyPrint::printName() const
@@ -12,11 +14,13 @@ void CProxyPrint::printMessage(const int par1, const char* par2) const
 
 void CProxyPrint::destructor()
 {
+	std::cout << "CProxyPrint::destructor()" << std::endl;
 	this->m_vtable->pDestructor(m_this);
 }
 
 CProxyPrint::~CProxyPrint()
 {
+	std::cout << "CProxyPrint::~CProxyPrint()" << std::endl;
 	this->destructor();
 }
 
@@ -32,11 +36,13 @@ void CProxyUpdate::animation() const
 
 void CProxyUpdate::destructor()
 {
+	std::cout << "CProxyUpdate::destructor()" << std::endl;
 	this->m_vtable->pDestructor(m_this);
 }
 
 CProxyUpdate::~CProxyUpdate()
 {
+	std::cout << "CProxyUpdate::~CProxyUpdate()" << std::endl;
 	this->destructor();
 }
 
@@ -52,11 +58,13 @@ void CProxyDraw::postDraw(const int index, void* data) const
 
 void CProxyDraw::destructor()
 {
+	std::cout << "CProxyUpdate::destructor()" << std::endl;
 	this->m_vtable->pDestructor(m_this);
 }
 
 CProxyDraw::~CProxyDraw()
 {
+	std::cout << "CProxyUpdate::~CProxyDraw()" << std::endl;
 	this->destructor();
 }
 

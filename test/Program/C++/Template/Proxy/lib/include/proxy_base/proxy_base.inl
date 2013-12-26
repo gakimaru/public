@@ -31,6 +31,19 @@ void CProxyPrint::vtable_initializer<T>::proxyDestructor(void* me)
 	reinterpret_cast<T*>(me)->destructor();
 }
 
+template<class derived>
+void CProxyPrintCommon<derived>::destructor()
+{
+	std::cout << "CProxyPrintCommon<derived>::destructor()" << std::endl;
+}
+
+template<class derived>
+CProxyPrintCommon<derived>::~CProxyPrintCommon()
+{
+	std::cout << "CProxyPrintCommon<derived>::~CProxyPrintCommon()" << std::endl;
+	this->destructor();
+}
+
 template <class T>
 CProxyUpdate::vtable CProxyUpdate::vtable_initializer<T>::m_vtable =
 {
@@ -58,6 +71,19 @@ void CProxyUpdate::vtable_initializer<T>::proxyDestructor(void* me)
 	reinterpret_cast<T*>(me)->destructor();
 }
 
+template<class derived>
+void CProxyUpdateCommon<derived>::destructor()
+{
+	std::cout << "CProxyUpdateCommon<derived>::destructor()" << std::endl;
+}
+
+template<class derived>
+CProxyUpdateCommon<derived>::~CProxyUpdateCommon()
+{
+	std::cout << "CProxyUpdateCommon<derived>::~CProxyUpdateCommon()" << std::endl;
+	this->destructor();
+}
+
 template <class T>
 CProxyDraw::vtable CProxyDraw::vtable_initializer<T>::m_vtable =
 {
@@ -83,6 +109,19 @@ void CProxyDraw::vtable_initializer<T>::proxyDestructor(void* me)
 {
 //	reinterpret_cast<T*>(me)->~T();
 	reinterpret_cast<T*>(me)->destructor();
+}
+
+template<class derived>
+void CProxyDrawCommon<derived>::destructor()
+{
+	std::cout << "CProxyDrawCommon<derived>::destructor()" << std::endl;
+}
+
+template<class derived>
+CProxyDrawCommon<derived>::~CProxyDrawCommon()
+{
+	std::cout << "CProxyDrawCommon<derived>::~CProxyDrawCommon()" << std::endl;
+	this->destructor();
 }
 
 #endif//__PROXY_BASE_INL__

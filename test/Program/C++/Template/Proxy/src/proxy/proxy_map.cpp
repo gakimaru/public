@@ -15,6 +15,7 @@ void CProxyPrintMap::cbPrintMessage(const int par1, const char* par2) const
 void CProxyPrintMap::destructor()
 {
 	std::cout << "CProxyPrintMap::destructor()" << std::endl;
+	this->CProxyPrintCommon<CProxyPrintMap>::destructor();
 }
 
 CProxyPrintMap::~CProxyPrintMap()
@@ -35,6 +36,7 @@ void CProxyUpdateMap::cbAnimation() const
 void CProxyUpdateMap::destructor()
 {
 	std::cout << "CProxyUpdateMap::destructor()" << std::endl;
+	this->CProxyUpdateCommon<CProxyUpdateMap>::destructor();
 }
 
 CProxyUpdateMap::~CProxyUpdateMap()
@@ -56,6 +58,7 @@ void CProxyDrawMap::cbPostDraw(const int index, void* data) const
 void CProxyDrawMap::destructor()
 {
 	std::cout << "CProxyDrawMap::destructor()" << std::endl;
+	this->CProxyDrawCommon<CProxyDrawMap>::destructor();
 }
 
 CProxyDrawMap::~CProxyDrawMap()
@@ -81,6 +84,9 @@ CCompositeMap::~CCompositeMap()
 template class CProxyPrint::vtable_initializer<CProxyPrintMap>;
 template class CProxyUpdate::vtable_initializer<CProxyUpdateMap>;
 template class CProxyDraw::vtable_initializer<CProxyDrawMap>;
+template class CProxyPrintCommon<CProxyPrintMap>;
+template class CProxyUpdateCommon<CProxyUpdateMap>;
+template class CProxyDrawCommon<CProxyDrawMap>;
 
 //明示的なインスタンス化
 #include "composite_base/composite_base.inl"

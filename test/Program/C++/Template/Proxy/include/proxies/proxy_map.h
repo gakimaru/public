@@ -8,7 +8,7 @@
 
 class CCompositeMap;
 
-class CProxyPrintMap : public CProxyPrint
+class CProxyPrintMap : public CProxyPrintCommon<CProxyPrintMap>
 {
 	friend class CCompositeMap;
 public:
@@ -20,7 +20,7 @@ private:
 public:
 	explicit CProxyPrintMap() :
 		m_this(nullptr),
-		CProxyPrint(*this)
+		CProxyPrintCommon<CProxyPrintMap>(*this)
 	{
 	}
 	void destructor();
@@ -29,7 +29,7 @@ private:
 	CMapData* m_this;
 };
 
-class CProxyUpdateMap : public CProxyUpdate
+class CProxyUpdateMap : public CProxyUpdateCommon<CProxyUpdateMap>
 {
 	friend class CCompositeMap;
 public:
@@ -41,7 +41,7 @@ private:
 public:
 	explicit CProxyUpdateMap() :
 		m_this(nullptr),
-		CProxyUpdate(*this)
+		CProxyUpdateCommon<CProxyUpdateMap>(*this)
 	{
 	}
 	void destructor();
@@ -50,7 +50,7 @@ private:
 	CMapData* m_this;
 };
 
-class CProxyDrawMap : public CProxyDraw
+class CProxyDrawMap : public CProxyDrawCommon<CProxyDrawMap>
 {
 	friend class CCompositeMap;
 public:
@@ -62,7 +62,7 @@ private:
 public:
 	explicit CProxyDrawMap() :
 		m_this(nullptr),
-		CProxyDraw(*this)
+		CProxyDrawCommon<CProxyDrawMap>(*this)
 	{
 	}
 	void destructor();

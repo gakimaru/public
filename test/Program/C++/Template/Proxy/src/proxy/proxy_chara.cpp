@@ -15,6 +15,7 @@ void CProxyPrintChara::cbPrintMessage(const int par1, const char* par2) const
 void CProxyPrintChara::destructor()
 {
 	std::cout << "CProxyDrawChara::destructor()" << std::endl;
+	this->CProxyPrintCommon<CProxyPrintChara>::destructor();
 }
 
 CProxyPrintChara::~CProxyPrintChara()
@@ -36,6 +37,7 @@ void CProxyUpdateChara::cbAnimation() const
 void CProxyUpdateChara::destructor()
 {
 	std::cout << "CProxyUpdateChara::destructor()" << std::endl;
+	this->CProxyUpdateCommon<CProxyUpdateChara>::destructor();
 }
 
 CProxyUpdateChara::~CProxyUpdateChara()
@@ -57,6 +59,7 @@ void CProxyDrawChara::cbPostDraw(const int index, void* data) const
 void CProxyDrawChara::destructor()
 {
 	std::cout << "CProxyDrawChara::destructor()" << std::endl;
+	this->CProxyDrawCommon<CProxyDrawChara>::destructor();
 }
 
 CProxyDrawChara::~CProxyDrawChara()
@@ -82,6 +85,9 @@ CCompositeChara::~CCompositeChara()
 template class CProxyPrint::vtable_initializer<CProxyPrintChara>;
 template class CProxyUpdate::vtable_initializer<CProxyUpdateChara>;
 template class CProxyDraw::vtable_initializer<CProxyDrawChara>;
+template class CProxyPrintCommon<CProxyPrintChara>;
+template class CProxyUpdateCommon<CProxyUpdateChara>;
+template class CProxyDrawCommon<CProxyDrawChara>;
 
 //明示的なインスタンス化
 #include "composite_base/composite_base.inl"

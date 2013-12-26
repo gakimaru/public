@@ -48,6 +48,21 @@ private:
 	void* m_this;
 	vtable* m_vtable;
 };
+template<class derived>
+class CProxyPrintCommon : public CProxyPrint
+{
+protected:
+	explicit CProxyPrintCommon(){}
+	explicit CProxyPrintCommon(CProxyPrintCommon<derived>&){}
+public:
+	template<class T>
+	explicit CProxyPrintCommon(T& me) :
+		CProxyPrint(me)
+	{
+	}
+	void destructor();
+	~CProxyPrintCommon();
+};
 
 class CProxyUpdate
 {
@@ -86,6 +101,21 @@ private:
 	void* m_this;
 	vtable* m_vtable;
 };
+template<class derived>
+class CProxyUpdateCommon : public CProxyUpdate
+{
+protected:
+	explicit CProxyUpdateCommon(){}
+	explicit CProxyUpdateCommon(CProxyUpdateCommon<derived>&){}
+public:
+	template<class T>
+	explicit CProxyUpdateCommon(T& me) :
+		CProxyUpdate(me)
+	{
+	}
+	void destructor();
+	~CProxyUpdateCommon();
+};
 
 class CProxyDraw
 {
@@ -123,6 +153,21 @@ private:
 	};
 	void* m_this;
 	vtable* m_vtable;
+};
+template<class derived>
+class CProxyDrawCommon : public CProxyDraw
+{
+protected:
+	explicit CProxyDrawCommon(){}
+	explicit CProxyDrawCommon(CProxyDrawCommon<derived>&){}
+public:
+	template<class T>
+	explicit CProxyDrawCommon(T& me) :
+		CProxyDraw(me)
+	{
+	}
+	void destructor();
+	~CProxyDrawCommon();
 };
 
 #endif//__PROXY_BASE_H__

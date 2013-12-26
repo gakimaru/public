@@ -1,64 +1,193 @@
-#include <stdio.h>
-
 #include "unit_test.h"
 
-#ifdef UNIT_TEST_ENABLED
+#ifdef UT_ENABLED
+
+#include <stdio.h>
 
 namespace UnitTest
 {
+	//ユニットテスト情報
 	static const int UNIT_TEST_FUNC_LIST_NUM_MAX = 1024;
-
-	int CMain::m_funcListNum = 0;
-	CMain::T_UNIT_TEST_FUNC_INFO CMain::m_funcList[UNIT_TEST_FUNC_LIST_NUM_MAX];
+	static int s_funcListNum = 0;
+	static CCollection::UNIT_TEST_FUNC_INFO s_funcList[UNIT_TEST_FUNC_LIST_NUM_MAX];
+	static int s_lastPassedTotal = 0;
+	static int s_lastMissedTotal = 0;
+	static int outputFuncDefault(const char* fmt, va_list list)
+	{
+		return vfprintf(stdout, fmt, list);
+	}
+	static CCollection::UNIT_TEST_OUTPUT_FUNC_P s_outputFunc = outputFuncDefault;
 
 	//ユニットテストメインクラス
 
-	//コンストラクタ
-	CMain::CMain()
-	{
-	}
-
-	//デストラクタ
-	CMain::~CMain()
-	{
-	}
-
 	//ユニットテスト登録
-	bool CMain::addFuncInfo(T_UNIT_TEST_FUNC func, const bool is_especially)
+	bool CCollection::addFuncInfo(UNIT_TEST_FUNC_P func, const char* module_name, const int group_id)
 	{
-		if (m_funcListNum >= UNIT_TEST_FUNC_LIST_NUM_MAX)
+		if (s_funcListNum >= UNIT_TEST_FUNC_LIST_NUM_MAX)
 		{
 			return false;
 		}
-		T_UNIT_TEST_FUNC_INFO* info = &m_funcList[m_funcListNum++];
+		UNIT_TEST_FUNC_INFO* info = &s_funcList[s_funcListNum++];
 		info->m_func = func;
-		info->m_isEspecially = is_especially;
+		info->m_moduleName = module_name;
+		info->m_groupId = group_id;
+		info->passed = 0;
+		info->missed = 0;
 		return true;
+	}
+
+	//アクセッサ
+	int CCollection::getFuncInfoListNum()
+	{
+		return s_funcListNum;
+	}
+	const CCollection::UNIT_TEST_FUNC_INFO* CCollection::getFuncInfoListTop()
+	{
+		return s_funcList;
+	}
+	const CCollection::UNIT_TEST_FUNC_INFO* CCollection::getFuncInfo(const int index)
+	{
+		return index >= 0 && index < s_funcListNum ? &s_funcList[index] : nullptr;
+	}
+	const CCollection::UNIT_TEST_FUNC_INFO* CCollection::getFuncInfo(const char* module_name)
+	{
+		UNIT_TEST_FUNC_INFO* info = s_funcList;
+		for (int i = 0; i < s_funcListNum; ++i, ++info)
+		{
+			if (strcmp(module_name, info->m_moduleName) == 0)
+			{
+				return  &s_funcList[i];
+			}
+		}
+		return nullptr;
+	}
+	int CCollection::getLastPassedTotal()
+	{
+		return s_lastPassedTotal;
+	}
+	int CCollection::getLastMissedTotal()
+	{
+		return s_lastMissedTotal;
+	}
+	
+	//前回の実行結果をリセット
+	void CCollection::resetLastResult()
+	{
+		s_lastPassedTotal = 0;
+		s_lastMissedTotal = 0;
+		UNIT_TEST_FUNC_INFO* info = s_funcList;
+		for (int i = 0; i < s_funcListNum; ++i, ++info)
+		{
+			info->passed = 0;
+			info->missed = 0;
+		}
+	}
+
+	//ユニットテスト実行
+	int CCollection::runUnitTest(const char* target_module_name, const int target_group_id)
+	{
+		int passed_total = 0;
+		int missed_total = 0;
+		outputRunUTBegin(target_module_name, target_group_id);
+		UNIT_TEST_FUNC_INFO* info = s_funcList;
+		for (int i = 0; i < s_funcListNum; ++i, ++info)
+		{
+			if ((target_module_name == nullptr || (target_module_name != nullptr && info->m_moduleName != nullptr && strcmp(target_module_name, info->m_moduleName) == 0)) &&
+				(target_group_id == 0 || (target_group_id != 0 && target_group_id == info->m_groupId)))
+			{
+				int passed = 0;
+				int missed = 0;
+				info->m_func(passed, missed);
+				passed_total += passed;
+				missed_total += missed;
+				info->passed = passed;
+				info->missed = missed;
+			}
+		}
+		s_lastPassedTotal = passed_total;
+		s_lastMissedTotal = missed_total;
+		outputRunUTEnd(target_module_name, target_group_id, passed_total, missed_total);
+		return missed_total;
+	}
+	int CCollection::runUnitTestStandard()
+	{
+		return runUnitTest(UT_TARGET_MODULE, UT_TARGET_GROUP);
 	}
 
 	//ユニットテスト結果表示
 #if 0
 	//for Unix
-#define _COLOR_RESET() printf("\x1b[0m")
-#define _COLOR_NORMAL() printf("\x1b[40m\x1b[37m")
-#define _COLOR_OK() printf("\x1b[40m\x1b[34m")
-#define _COLOR_NG() printf("\x1b[41m\x1b[37m")
-#define _COLOR_EXPR() printf("\x1b[40m\x1b[32m")
-#define _COLOR_OPE() printf("\x1b[40m\x1b[37m")
-#define _COLOR_EXPECT() printf("\x1b[40m\x1b[32m")
-#define _COLOR_VALUE() printf("\x1b[40m\x1b[32m")
+#define _COLOR_RESET() output("\x1b[0m")
+#define _COLOR_NORMAL() output("\x1b[40m\x1b[37m")
+#define _COLOR_OK() output("\x1b[40m\x1b[34m")
+#define _COLOR_NG() output("\x1b[41m\x1b[37m")
+#define _COLOR_EXPR() output("\x1b[40m\x1b[32m")
+#define _COLOR_OPE() output("\x1b[40m\x1b[37m")
+#define _COLOR_EXPECT() output("\x1b[40m\x1b[32m")
+#define _COLOR_VALUE() output("\x1b[40m\x1b[32m")
 #else
 	//for Windows
-#define _COLOR_RESET()
-#define _COLOR_NORMAL()
-#define _COLOR_OK()
-#define _COLOR_NG()
-#define _COLOR_EXPR()
-#define _COLOR_OPE()
-#define _COLOR_EXPECT()
-#define _COLOR_VALUE()
+	#define _COLOR_RESET()
+	#define _COLOR_NORMAL()
+	#define _COLOR_OK()
+	#define _COLOR_NG()
+	#define _COLOR_EXPR()
+	#define _COLOR_OPE()
+	#define _COLOR_EXPECT()
+	#define _COLOR_VALUE()
 #endif
-	void CMain::printResult(const bool is_child, int* passed, int* missed, const bool result, const char* expr, const char* value, const char* ope, const char* expect)
+	void CCollection::setOutputFunc(UNIT_TEST_OUTPUT_FUNC_P func)
+	{
+		s_outputFunc = func;
+	}
+	int CCollection::output(const char* fmt, ...)
+	{
+		if (!s_outputFunc)
+			return 0;
+		va_list list;
+		va_start(list, fmt);
+		const int ret = s_outputFunc(fmt, list);
+		va_end(list);
+		return ret;
+	}
+	void CCollection::outputRunUTBegin(const char* target_module_name, const int target_group_id)
+	{
+		_COLOR_NORMAL();
+		output("\n");
+		output("Start unit test: ");
+		if (target_module_name)
+		{
+			output("[Target module=\"%s\"]", target_module_name);
+		}
+		if (target_group_id != 0)
+		{
+			output("[Target group=%d]", target_group_id);
+		}
+		if (!target_module_name && target_group_id == 0)
+		{
+			output("[Target=All]");
+		}
+		output("\n");
+		output("============================================================\n");
+	}
+	void CCollection::outputRunUTEnd(const char* target_module_name, const int target_group_id, const int passed_total, const int missed_total)
+	{
+		output("\n");
+		output("============================================================\n");
+		output("Finish unit test: Total [test=%d, passed=%d, missed=%d]\n", passed_total + missed_total, passed_total, missed_total);
+		output("\n");
+		_COLOR_NORMAL();
+	}
+	void CCollection::outputRunUTModuleBegin(const char* module_name, const int group_id)
+	{
+		output("\n");
+		output("----- Start unit test module: \"%s\" (Group=%d) -----\n", module_name, group_id);
+	}
+	void CCollection::outputRunUTModuleEnd(const char* module_name, const int group_id, const int passed, const int missed)
+	{
+		output("----- Finish unit test module: [test=%d, passed=%d, missed=%d] -----\n", passed + missed, passed, missed);
+	}
+	void CCollection::outputUTResult(const bool is_child, int* passed, int* missed, const bool result, const char* expr, const char* value, const char* ope, const char* expect)
 	{
 		_COLOR_RESET();
 		_COLOR_NORMAL();
@@ -70,98 +199,56 @@ namespace UnitTest
 			{
 				++(*passed);
 				_COLOR_OK();
-				printf(" [OK] ");
+				output(" [OK] ");
 			}
 			else
 			{
 				++(*missed);
 				_COLOR_NG();
-				printf("*[NG!]");
+				output("*[NG!]");
 			}
 			_COLOR_NORMAL();
-			printf(" <-- ");
+			output(" <-- ");
 		}
 		else
 		{
 			print_expect = false;
 			_COLOR_NORMAL();
-			printf("      ");
-			printf("     ");
+			output("      ");
+			output("     ");
 		}
 		if (is_child)
 		{
-			printf("    ");
+			output("    ");
 		}
 		if (expr)
 		{
 			_COLOR_EXPR();
-			printf("%s", expr);
+			output("%s", expr);
 		}
 		if (print_expect)
 		{
 			if (ope)
 			{
 				_COLOR_OPE();
-				printf(" %s ", ope);
+				output(" %s ", ope);
 			}
 			if (expect)
 			{
 				_COLOR_EXPECT();
-				printf("%s", expect);
+				output("%s", expect);
 			}
 		}
 		if (value)
 		{
 			_COLOR_VALUE();
-			printf(" (%s)", value);
+			output(" (%s)", value);
 		}
 		_COLOR_RESET();
-		printf("\n");
-	}
-
-	//ユニットテスト実行
-	int CMain::runUnitTest(const bool especially_only)
-	{
-		int passed_total = 0;
-		int missed_total = 0;
-		_COLOR_NORMAL();
-		printf("Unit Test: ");
-		if (especially_only)
-			printf("[Especially Only]");
-		else
-			printf("[All]");
-		printf("\n");
-		printf("============================================================\n");
-		T_UNIT_TEST_FUNC_INFO* info = m_funcList;
-		for (int i = 0; i < m_funcListNum; ++i, ++info)
-		{
-			if (!especially_only || (especially_only && info->m_isEspecially))
-			{
-				int passed = 0;
-				int missed = 0;
-				printf("\n");
-				info->m_func(passed, missed);
-				passed_total += passed;
-				missed_total += missed;
-			}
-		}
-		printf("\n");
-		printf("============================================================\n");
-		printf("Total(test=%d, passed=%d, missed=%d)\n", passed_total + missed_total, passed_total, missed_total);
-		printf("\n");
-		_COLOR_NORMAL();
-		return missed_total;
-	}
-	int CMain::runUnitTestAll()
-	{
-		return runUnitTest(false);
-	}
-	int CMain::runUnitTestEspecially()
-	{
-		return runUnitTest(true);
+		output("\n");
 	}
 };
 
-#endif//UNIT_TEST_ENABLED
+#endif//UT_ENABLED
 
 // End of file

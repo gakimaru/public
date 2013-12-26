@@ -19,19 +19,25 @@ ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(2) ---
 ECHO.
-CALL :RUN_CMD Debug_UnitTest\UnitTest.exe
+CALL :RUN_CMD Debug_UT_ENABLED\UnitTest.exe
 SET RESULT=%ERRORLEVEL%
 ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(3) ---
 ECHO.
-CALL :RUN_CMD Debug_UnitTestAll\UnitTest.exe
+CALL :RUN_CMD Debug_UT_ENABLED_AUTO\UnitTest.exe
 SET RESULT=%ERRORLEVEL%
 ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(4) ---
 ECHO.
-CALL :RUN_CMD Debug_UnitTestEspecially\UnitTest.exe
+CALL :RUN_CMD Debug_UT_ENABLED_AUTO_TARGET_MODULE\UnitTest.exe
+SET RESULT=%ERRORLEVEL%
+ECHO 実行結果=%RESULT%
+
+rem --- テスト処理(5) ---
+ECHO.
+CALL :RUN_CMD Debug_UT_ENABLED_AUTO_TARGET_GROUP\UnitTest.exe
 SET RESULT=%ERRORLEVEL%
 ECHO 実行結果=%RESULT%
 

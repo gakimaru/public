@@ -5,21 +5,21 @@
 
 int main(const int argc, const char* argv[])
 {
+	printf("- main() [BEGIN] ...\n");
+	
 	CGameMain* game_main = new CGameMain(argc, argv);
 
 	//初期化処理
 	game_main->initialize();
 
 	//メイン処理
-#if !defined(UNIT_TEST_ENABLED)
 	game_main->main();
-#else//UNIT_TEST_ENABLED
-	game_main->unitTestMain();
-#endif//UNIT_TEST_ENABLED
 
 	//終了処理
-	game_main->finalize();
+	game_main->finalize(); 
 
+	printf("- main() [END]\n");
+	
 	//main関数終了
 //	exit(*game_main);  //exit() を実行するとデストラクタが実行されないので、
 	return *game_main; //やむを得ない中断時以外はなるべく main() 関数の return を使う事。

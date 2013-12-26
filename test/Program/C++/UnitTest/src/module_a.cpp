@@ -10,10 +10,8 @@ public:
 };
 
 //ユニットテスト
-#define UT_IS_ESPECIALLY false //通常はこのマクロを有効化した状態でコミットする事！
-//#define UT_IS_ESPECIALLY true //単独実行したい時だけ一時的にこのマクロを有効化して、ユニットテストを単独モードで実行する
-UT_BEGIN(CModuleA, UT_IS_ESPECIALLY)//モジュール名を指定する。　※他のユニットテストモジュールと名前が重複しないように注意！
-                                    //                          ※モジュール名をマクロで指定する事も不可！（マクロ名がモジュール名になってしまう）
+#include "unit_test_id.h"
+UT_BEGIN(CModuleA, UT_GROUP_USER_A)//モジュール名とグループIDを指定　※特定のモジュール名やグループIDに絞ったテストを実行可能
 {
 	CModuleA _CModuleA;
 	UT_EXPECT(_CModuleA.func(1, 2), == , 3);

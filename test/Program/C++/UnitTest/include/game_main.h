@@ -2,8 +2,6 @@
 #ifndef __GAME_MAIN_H__
 #define __GAME_MAIN_H__
 
-#include "unit_test.h"
-
 //ゲームメインクラス
 class CGameMain
 {
@@ -77,11 +75,6 @@ public:
 
 	//メイン処理
 	int main();
-
-#ifdef UNIT_TEST_ENABLED
-	//ユニットテストメイン処理
-	int unitTestMain();
-#endif//UNIT_TEST_ENABLED
 
 private:
 	//実行時パラメータ

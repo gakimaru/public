@@ -13,11 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ソース ファイル\lib">
+    <Filter Include="lib">
       <UniqueIdentifier>{4ac7ad70-edf1-46cd-9313-265157b86599}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\lib">
-      <UniqueIdentifier>{e1cd1882-3379-424b-9caa-0852b776db26}</UniqueIdentifier>
+    <Filter Include="lib\include">
+      <UniqueIdentifier>{ab14e68e-ce6d-4453-bd5e-99695fc79272}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -34,7 +34,7 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="lib\src\unit_test.cpp">
-      <Filter>ソース ファイル\lib</Filter>
+      <Filter>lib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -42,7 +42,10 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="lib\include\unit_test.h">
-      <Filter>ヘッダー ファイル\lib</Filter>
+      <Filter>lib\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\unit_test_id.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

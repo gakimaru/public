@@ -157,13 +157,6 @@ namespace UnitTest
 			T getValue() const { return this->m_value; }
 			void setExpect(const T expect){ this->m_expect = expect; this->m_hasExpect = true; }
 			T getExpect() const { return this->m_expectStr; }
-		//	template<typename S, std::size_t S_SIZE>
-		//	void toStr(S(&str)[S_SIZE])
-		//	{
-		//		std::ostringstream os;
-		//		os << m_value;
-		//		strcpy_s(str, S_SIZE, os.str().c_str());
-		//	}
 		private:
 			T m_value;
 			T m_expect;

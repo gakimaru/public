@@ -61,14 +61,14 @@ int CGameMain::main()
 	//※UT_ENABLED が定義されている時だけ処理が有効化される
 	//　プログラム中の任意の場所から呼び出せる。
 	UT_OUTPUT("手動ユニットテスト:ALL\n");
-	UT_RUN_ALL();             //UT_AUTO と無関係に全モジュールのテストを実行するマクロ
+	UT_RUN_ALL(UnitTest::UT_ATTR_ANY);                //UT_AUTO と無関係に全モジュールのテストを実行するマクロ
 	UT_OUTPUT("手動ユニットテスト:MODULE(\"CModuleB\")\n");
-	UT_RUN_MODULE("CModuleB");//UT_AUTO と無関係に指定のモジュールのテストを実行するマクロ
+	UT_RUN_MODULE("CModuleB", UnitTest::UT_ATTR_ANY); //UT_AUTO と無関係に指定のモジュールのテストを実行するマクロ
 	UT_OUTPUT("手動ユニットテスト:GROUP(2)\n");
-	UT_RUN_GROUP(2);          //UT_AUTO と無関係に指定のグループのテストを実行するマクロ
+	UT_RUN_GROUP(2, UnitTest::UT_ATTR_ANY);           //UT_AUTO と無関係に指定のグループのテストを実行するマクロ
 	UT_OUTPUT("手動ユニットテスト:STANDARD\n");
-	UT_RUN_STANDARD();        //UT_AUTO と無関係にモジュールのテストを実行するマクロ
-	                          //※UT_TARGET_MODULE と UT_TARGET_GROUP の定義の影響を受けて、実行されるユニットテストが限定される。
+	UT_RUN_STANDARD(UnitTest::UT_ATTR_AUTO);          //UT_AUTO と無関係にモジュールのテストを実行するマクロ
+	                                                  //※UT_TARGET_MODULE と UT_TARGET_GROUP の定義の影響を受けて、実行されるユニットテストが限定される。
 #endif
 
 #if 1

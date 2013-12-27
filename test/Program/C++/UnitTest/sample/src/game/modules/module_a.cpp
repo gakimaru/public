@@ -22,7 +22,7 @@ public:
 
 //ユニットテスト
 #include "game/unit_test_id.h"
-UT_BEGIN(CModuleA, UT_GROUP_USER_A)//モジュール名とグループIDを指定　※特定のモジュール名やグループIDに絞ったテストを実行可能
+UT_BEGIN(CModuleA, UT_GROUP_USER_A, UnitTest::UT_ATTR_AUTO)//モジュール名とグループIDを指定　※特定のモジュール名やグループIDに絞ったテストを実行可能
 {
 	CModuleA _CModuleA;
 	UT_EXPECT(_CModuleA.func1(1, 2), == , 3);

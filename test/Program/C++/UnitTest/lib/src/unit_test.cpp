@@ -24,7 +24,7 @@ namespace UnitTest
 	//ユニットテストメインクラス
 
 	//ユニットテスト登録
-	bool CCollection::addFuncInfo(UNIT_TEST_FUNC_P func, const char* module_name, const int group_id)
+	bool CCollection::addFuncInfo(UNIT_TEST_FUNC_P func, const char* module_name, const int group_id, const T_UT_ATTR attr)
 	{
 		if (s_funcListNum >= UNIT_TEST_FUNC_LIST_NUM_MAX)
 		{
@@ -34,6 +34,7 @@ namespace UnitTest
 		info->m_func = func;
 		info->m_moduleName = module_name;
 		info->m_groupId = group_id;
+		info->m_attr = attr;
 		info->passed = 0;
 		info->missed = 0;
 		return true;
@@ -87,16 +88,17 @@ namespace UnitTest
 	}
 
 	//ユニットテスト実行
-	int CCollection::runUnitTest(const char* target_module_name, const int target_group_id)
+	int CCollection::runUnitTest(const char* target_module_name, const int target_group_id, const T_UT_ATTR target_attr)
 	{
 		int passed_total = 0;
 		int missed_total = 0;
-		outputRunUTBegin(target_module_name, target_group_id);
+		outputRunUTBegin(target_module_name, target_group_id, target_attr);
 		UNIT_TEST_FUNC_INFO* info = s_funcList;
 		for (int i = 0; i < s_funcListNum; ++i, ++info)
 		{
 			if ((target_module_name == nullptr || (target_module_name != nullptr && info->m_moduleName != nullptr && strcmp(target_module_name, info->m_moduleName) == 0)) &&
-				(target_group_id == 0 || (target_group_id != 0 && target_group_id == info->m_groupId)))
+				(target_group_id == 0 || (target_group_id != 0 && target_group_id == info->m_groupId)) &&
+				(target_attr == UT_ATTR_ANY || (target_attr != UT_ATTR_ANY && (target_attr & info->m_attr) != UT_ATTR_NONE)))
 			{
 				int passed = 0;
 				int missed = 0;
@@ -109,12 +111,12 @@ namespace UnitTest
 		}
 		s_lastPassedTotal = passed_total;
 		s_lastMissedTotal = missed_total;
-		outputRunUTEnd(target_module_name, target_group_id, passed_total, missed_total);
+		outputRunUTEnd(target_module_name, target_group_id, target_attr, passed_total, missed_total);
 		return missed_total;
 	}
-	int CCollection::runUnitTestStandard()
+	int CCollection::runUnitTestStandard(const T_UT_ATTR target_attr)
 	{
-		return runUnitTest(UT_TARGET_MODULE, UT_TARGET_GROUP);
+		return runUnitTest(UT_TARGET_MODULE, UT_TARGET_GROUP, target_attr);
 	}
 
 	//ユニットテスト結果表示
@@ -163,7 +165,7 @@ namespace UnitTest
 		va_end(list);
 		return ret;
 	}
-	void CCollection::outputRunUTBegin(const char* target_module_name, const int target_group_id)
+	void CCollection::outputRunUTBegin(const char* target_module_name, const int target_group_id, const UnitTest::T_UT_ATTR target_attr)
 	{
 		_COLOR_BEGIN();
 		_COLOR_RESET();
@@ -182,11 +184,19 @@ namespace UnitTest
 		{
 			output("[Target=All]");
 		}
+		if (target_attr != UT_ATTR_ANY)
+		{
+			output("[Attr=0x%08x]", target_attr);
+		}
+		else
+		{
+			output("[Attr=ANY]");
+		}
 		output("\n");
 		output("============================================================\n");
 		_COLOR_END();
 	}
-	void CCollection::outputRunUTEnd(const char* target_module_name, const int target_group_id, const int passed_total, const int missed_total)
+	void CCollection::outputRunUTEnd(const char* target_module_name, const int target_group_id, const UnitTest::T_UT_ATTR target_attr, const int passed_total, const int missed_total)
 	{
 		_COLOR_BEGIN();
 		_COLOR_RESET();
@@ -221,16 +231,16 @@ namespace UnitTest
 		output("\n");
 		_COLOR_END();
 	}
-	void CCollection::outputRunUTModuleBegin(const char* module_name, const int group_id)
+	void CCollection::outputRunUTModuleBegin(const char* module_name, const int group_id, const UnitTest::T_UT_ATTR attr)
 	{
 		_COLOR_BEGIN();
 		_COLOR_RESET();
 		_COLOR_NORMAL();
 		output("\n");
-		output("----- Start unit test module: \"%s\" (Group=%d) -----\n", module_name, group_id);
+		output("----- Start unit test module: \"%s\" (Group=%d,Attr=0x%08x) -----\n", module_name, group_id, attr);
 		_COLOR_END();
 	}
-	void CCollection::outputRunUTModuleEnd(const char* module_name, const int group_id, const int passed, const int missed)
+	void CCollection::outputRunUTModuleEnd(const char* module_name, const int group_id, const UnitTest::T_UT_ATTR attr, const int passed, const int missed)
 	{
 		_COLOR_BEGIN();
 		_COLOR_RESET();

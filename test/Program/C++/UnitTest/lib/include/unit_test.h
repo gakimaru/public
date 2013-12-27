@@ -31,6 +31,16 @@
 
 namespace UnitTest
 {
+	//ユニットテスト実行属性
+	typedef unsigned int T_UT_ATTR;
+	enum E_UT_ATTR
+	{
+		UT_ATTR_NONE = 0x00000000, //属性無し
+		UT_ATTR_ANY = 0xffffffff,  //全て
+		UT_ATTR_AUTO = 0x00000001, //自動実行用
+		UT_ATTR_NOAUTO = 0x00000002, //非自動実行用
+	};
+	
 	//ユニットテストメインクラス
 	class CCollection
 	{
@@ -45,6 +55,7 @@ namespace UnitTest
 			CCollection::UNIT_TEST_FUNC_P m_func;
 			const char* m_moduleName;
 			int m_groupId;
+			T_UT_ATTR m_attr;
 			int passed;
 			int missed;
 		};
@@ -71,20 +82,20 @@ namespace UnitTest
 
 	public:
 		//ユニットテスト実行
-		static int runUnitTest(const char* target_module_name = nullptr, const int target_group_id = 0);
-		static int runUnitTestStandard();
+		static int runUnitTest(const char* target_module_name = nullptr, const int target_group_id = 0, const T_UT_ATTR target_attr = UT_ATTR_ANY);
+		static int runUnitTestStandard(const T_UT_ATTR target_attr = UT_ATTR_ANY);
 
 	public:
 		//ユニットテスト登録
-		static bool addFuncInfo(UNIT_TEST_FUNC_P func, const char* module_name, const int group_id);
+		static bool addFuncInfo(UNIT_TEST_FUNC_P func, const char* module_name, const int group_id, const T_UT_ATTR attr);
 
 		//ユニットテスト結果表示
 		static void setOutputFunc(UNIT_TEST_OUTPUT_FUNC_P func);
 		static int output(const char* fmt, ...);
-		static void outputRunUTBegin(const char* target_module_name, const int target_group_id);
-		static void outputRunUTEnd(const char* target_module_name, const int target_group_id, const int total_passed, const int total_missed);
-		static void outputRunUTModuleBegin(const char* module_name, const int group_id);
-		static void outputRunUTModuleEnd(const char* module_name, const int group_id, const int passed, const int missed);
+		static void outputRunUTBegin(const char* target_module_name, const int target_group_id, const T_UT_ATTR target_attr);
+		static void outputRunUTEnd(const char* target_module_name, const int target_group_id, const T_UT_ATTR target_attr, const int total_passed, const int total_missed);
+		static void outputRunUTModuleBegin(const char* module_name, const int group_id, const T_UT_ATTR attr);
+		static void outputRunUTModuleEnd(const char* module_name, const int group_id, const T_UT_ATTR attr, const int passed, const int missed);
 		class CExprCResultObjBase
 		{
 		public:
@@ -172,32 +183,33 @@ namespace UnitTest
 	};
 }; //namespace UnitTest
 
-#define UT_BEGIN(module_name, group_id) \
+#define UT_BEGIN(module_name, group_id, attr) \
 namespace __UnitTest_##module_name \
 { \
-class __CUnitTestModle \
-{ \
-public: \
-	__CUnitTestModle() \
+	class __CUnitTestModle \
 	{ \
-		UnitTest::CCollection::addFuncInfo(runUnitTest, #module_name, group_id); \
-	} \
-	~__CUnitTestModle() \
-	{ \
-	} \
-public: \
-	static int runUnitTest(int& __passed, int& __missed) \
-	{ \
-		const char* __module_name = #module_name; \
-		const int __group_id = group_id; \
-		__passed = 0; \
-		__missed = 0; \
-		UnitTest::CCollection::outputRunUTModuleBegin(__module_name, __group_id);
+	public: \
+		__CUnitTestModle() \
+		{ \
+			UnitTest::CCollection::addFuncInfo(runUnitTest, #module_name, group_id, attr); \
+		} \
+		~__CUnitTestModle() \
+		{ \
+		} \
+	public: \
+		static int runUnitTest(int& __passed, int& __missed) \
+		{ \
+			const char* __module_name = #module_name; \
+			const int __group_id = group_id; \
+			const UnitTest::T_UT_ATTR __attr = attr; \
+			__passed = 0; \
+			__missed = 0; \
+			UnitTest::CCollection::outputRunUTModuleBegin(__module_name, __group_id, __attr);
 #define UT_END() \
-		UnitTest::CCollection::outputRunUTModuleEnd(__module_name, __group_id, __passed, __missed); \
-		return __missed; \
-	} \
-}; \
+			UnitTest::CCollection::outputRunUTModuleEnd(__module_name, __group_id, __attr, __passed, __missed); \
+			return __missed; \
+		} \
+	}; \
 	static __CUnitTestModle __unit_test_obj; \
 }; //namespace __UnitTest_##module_name
 #define _UT_PRINT_EXPR_AND_RESULT(is_child, expr, ope, expect) { UnitTest::CCollection::CExprCResultObjBase* ___result_obj = nullptr; try { ___result_obj = UnitTest::CCollection::makeResultObj2(expr, #ope, expect); ___result_obj->setExprStr(#expr); ___result_obj->setExpectStr(#expect);                                 UnitTest::CCollection::outputUTResult(is_child, &__passed, &__missed, ___result_obj); } catch(std::exception const &e) { if(!___result_obj) ___result_obj = UnitTest::CCollection::makeResultObj0(); ___result_obj->setExprStr(#expr); ___result_obj->setOpeStr(#ope); ___result_obj->setExpectStr(#expect); ___result_obj->setResult(false); ___result_obj->setException(e); UnitTest::CCollection::outputUTResult(is_child, nullptr, &__missed, ___result_obj); } if(___result_obj){delete ___result_obj; } }
@@ -217,16 +229,16 @@ public: \
 #ifndef UT_TARGET_GROUP
 #define UT_TARGET_GROUP 0
 #endif//UT_TARGET_GROUP
-#define UT_RUN_ALL() UnitTest::CCollection::runUnitTest()
-#define UT_RUN_MODULE(module_name) UnitTest::CCollection::runUnitTest(module_name)
-#define UT_RUN_GROUP(group_id) UnitTest::CCollection::runUnitTest(nullptr, group_id)
-#define UT_RUN_STANDARD() UnitTest::CCollection::runUnitTestStandard()
+#define UT_RUN_ALL(attr) UnitTest::CCollection::runUnitTest(nullptr, 0, attr)
+#define UT_RUN_MODULE(module_name, attr) UnitTest::CCollection::runUnitTest(module_name, 0, attr)
+#define UT_RUN_GROUP(group_id, attr) UnitTest::CCollection::runUnitTest(nullptr, group_id, attr)
+#define UT_RUN_STANDARD(attr) UnitTest::CCollection::runUnitTestStandard(attr)
 #define UT_RETURN_WHEN_MISSED() {if(UnitTest::CCollection::getLastMissedTotal() > 0) return UnitTest::CCollection::getLastMissedTotal();}
 #define UT_EXIT_WHEN_MISSED() {if(UnitTest::CCollection::getLastMissedTotal() > 0) exit(UnitTest::CCollection::getLastMissedTotal());}
 #define UT_ABORT_WHEN_MISSED() {if(UnitTest::CCollection::getLastMissedTotal() > 0) abort();}
 #define UT_ASSERT_WHEN_MISSED() ASSERT(UnitTest::CCollection::getLastMissedTotal() == 0)
 #ifdef UT_AUTO
-#define UT_RUN_MAIN() UnitTest::CCollection::runUnitTestStandard(); UT_RETURN_WHEN_MISSED()
+#define UT_RUN_MAIN() UnitTest::CCollection::runUnitTestStandard(UnitTest::UT_ATTR_AUTO); UT_RETURN_WHEN_MISSED()
 #else//UT_AUTO
 #define UT_RUN_MAIN()
 #endif//UT_AUTO
@@ -265,10 +277,10 @@ namespace __UnitTest_##class_name \
 #define UT_EXPR_CHILD(expr)
 #define UT_EXPR_WITH_RET(expr)
 #define UT_EXPR_WITH_RET_CHILD(expr)
-#define UT_RUN_ALL()
-#define UT_RUN_MODULE(module_name)
-#define UT_RUN_GROUP(group_id)
-#define UT_RUN_STANDARD()
+#define UT_RUN_ALL(attr)
+#define UT_RUN_MODULE(module_name, attr)
+#define UT_RUN_GROUP(group_id, attr)
+#define UT_RUN_STANDARD(attr)
 #define UT_RETURN_WHEN_MISSED()
 #define UT_EXIT_WHEN_MISSED()
 #define UT_ABORT_WHEN_MISSED()

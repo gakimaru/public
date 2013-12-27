@@ -19,16 +19,16 @@ ECHO.
 ECHO ********** テスト開始 **********
 
 rem --- テスト処理(1) ---
-ECHO.
-CALL :RUN_CMD Debug\UnitTest.exe
-SET RESULT=%ERRORLEVEL%
-ECHO 実行結果=%RESULT%
+rem ECHO.
+rem CALL :RUN_CMD Debug\UnitTest.exe
+rem SET RESULT=%ERRORLEVEL%
+rem ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(2) ---
-ECHO.
-CALL :RUN_CMD Debug_UT_ENABLED\UnitTest.exe
-SET RESULT=%ERRORLEVEL%
-ECHO 実行結果=%RESULT%
+rem ECHO.
+rem CALL :RUN_CMD Debug_UT_ENABLED\UnitTest.exe
+rem SET RESULT=%ERRORLEVEL%
+rem ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(3) ---
 ECHO.
@@ -37,16 +37,16 @@ SET RESULT=%ERRORLEVEL%
 ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(4) ---
-ECHO.
-CALL :RUN_CMD Debug_UT_ENABLED_AUTO_TARGET_MODULE\UnitTest.exe
-SET RESULT=%ERRORLEVEL%
-ECHO 実行結果=%RESULT%
+rem ECHO.
+rem CALL :RUN_CMD Debug_UT_ENABLED_AUTO_TARGET_MODULE\UnitTest.exe
+rem SET RESULT=%ERRORLEVEL%
+rem ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(5) ---
-ECHO.
-CALL :RUN_CMD Debug_UT_ENABLED_AUTO_TARGET_GROUP\UnitTest.exe
-SET RESULT=%ERRORLEVEL%
-ECHO 実行結果=%RESULT%
+rem ECHO.
+rem CALL :RUN_CMD Debug_UT_ENABLED_AUTO_TARGET_GROUP\UnitTest.exe
+rem SET RESULT=%ERRORLEVEL%
+rem ECHO 実行結果=%RESULT%
 
 rem --- 終了 ---
 ECHO.

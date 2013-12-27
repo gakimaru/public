@@ -52,9 +52,10 @@ int CGameMain::main()
 	//　UT_TARGET_MODULE と UT_TARGET_GROUP の定義の影響を受けて、実行されるユニットテストが限定される。
 	//　メイン処理の最初に実行されるようにしておく。メモリ管理などの基本的な初期化処理が終わった後が良い。
 	//※ユニットテストの結果に一つでもミスがあったら return する。return 値はミス数。
+	//　その前に、パラメータで指定された変数に同結果値を格納する。
 	//　この return 値を main関数の return 値にする。
 	//　これにより、jenkins などのツールからユニットテストの結果をハンドリングできる。
-	UT_RUN_MAIN();
+	UT_RUN_MAIN(this->m_mainResult);
 	
 #if 1
 	//手動ユニットテスト

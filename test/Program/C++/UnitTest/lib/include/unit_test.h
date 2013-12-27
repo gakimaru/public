@@ -184,7 +184,7 @@ namespace UnitTest
 }; //namespace UnitTest
 
 #define UT_BEGIN(module_name, group_id, attr) \
-namespace __UnitTest_##module_name \
+namespace __UnitTest_module_##module_name##__ \
 { \
 	class __CUnitTestModle \
 	{ \
@@ -238,9 +238,9 @@ namespace __UnitTest_##module_name \
 #define UT_ABORT_WHEN_MISSED() {if(UnitTest::CCollection::getLastMissedTotal() > 0) abort();}
 #define UT_ASSERT_WHEN_MISSED() ASSERT(UnitTest::CCollection::getLastMissedTotal() == 0)
 #ifdef UT_AUTO
-#define UT_RUN_MAIN() UnitTest::CCollection::runUnitTestStandard(UnitTest::UT_ATTR_AUTO); UT_RETURN_WHEN_MISSED()
+#define UT_RUN_MAIN(result_var) UnitTest::CCollection::runUnitTestStandard(UnitTest::UT_ATTR_AUTO); result_var = UnitTest::CCollection::getLastMissedTotal(); UT_RETURN_WHEN_MISSED()
 #else//UT_AUTO
-#define UT_RUN_MAIN()
+#define UT_RUN_MAIN(result_var)
 #endif//UT_AUTO
 #define UT_RESET_LAST_RESULT() UnitTest::CCollection::resetLastResult()
 #define UT_LAST_PASSED_TOTAL() UnitTest::CCollection::getLastPassedTotal()
@@ -251,8 +251,8 @@ namespace __UnitTest_##module_name \
 
 #else//UT_ENABLED
 
-#define UT_BEGIN(class_name, is_especially) \
-namespace __UnitTest_##class_name \
+#define UT_BEGIN(module_name, group_id, attr) \
+namespace __UnitTest_module_##module_name##__ \
 { \
 	template<class T> \
 	class __CUnitTestModle_dummy \
@@ -285,7 +285,7 @@ namespace __UnitTest_##class_name \
 #define UT_EXIT_WHEN_MISSED()
 #define UT_ABORT_WHEN_MISSED()
 #define UT_ASSERT_WHEN_MISSED()
-#define UT_RUN_MAIN()
+#define UT_RUN_MAIN(result_var)
 #define UT_RESET_LAST_RESULT()
 #define UT_LAST_PASSED_TOTAL() 0
 #define UT_LAST_MISSED_TOTAL() 0

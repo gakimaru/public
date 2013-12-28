@@ -31,6 +31,9 @@
 
 namespace UnitTest
 {
+	class CCollection;
+	class CElapsedTime;
+	
 	//ユニットテスト実行属性
 	typedef unsigned int T_UT_ATTR;
 	enum E_UT_ATTR
@@ -41,6 +44,26 @@ namespace UnitTest
 		UT_ATTR_NOAUTO = 0x00000002, //非自動実行用
 	};
 	
+	//ユニットテスト比較演算子指定用定数
+	enum E_UT_OPE
+	{
+		UT_OPE_UNKNOWN = 0, //??
+		UT_OPE_EQ, //== 
+		UT_OPE_NE, //!=
+		UT_OPE_GT, //>
+		UT_OPE_GE, //>=
+		UT_OPE_LT, //<
+		UT_OPE_LE, //<=
+		UT_OPE_NUM,
+	};
+	struct T_UT_OPE_UNKNOWN_DUMMY{};
+	struct T_UT_OPE_EQ_DUMMY{};
+	struct T_UT_OPE_NE_DUMMY{};
+	struct T_UT_OPE_GT_DUMMY{};
+	struct T_UT_OPE_GE_DUMMY{};
+	struct T_UT_OPE_LT_DUMMY{};
+	struct T_UT_OPE_LE_DUMMY{};
+
 	//ユニットテストメインクラス
 	class CCollection
 	{
@@ -58,6 +81,7 @@ namespace UnitTest
 			T_UT_ATTR m_attr;
 			int passed;
 			int missed;
+			double elapsed_time;
 		};
 	public:
 		//コンストラクタ
@@ -93,36 +117,38 @@ namespace UnitTest
 		static void setOutputFunc(UNIT_TEST_OUTPUT_FUNC_P func);
 		static int output(const char* fmt, ...);
 		static void outputRunUTBegin(const char* target_module_name, const int target_group_id, const T_UT_ATTR target_attr);
-		static void outputRunUTEnd(const char* target_module_name, const int target_group_id, const T_UT_ATTR target_attr, const int total_passed, const int total_missed);
+		static void outputRunUTEnd(const char* target_module_name, const int target_group_id, const T_UT_ATTR target_attr, const int total_passed, const int total_missed, const double elapsed_time);
 		static void outputRunUTModuleBegin(const char* module_name, const int group_id, const T_UT_ATTR attr);
-		static void outputRunUTModuleEnd(const char* module_name, const int group_id, const T_UT_ATTR attr, const int passed, const int missed);
+		static void outputRunUTModuleEnd(const char* module_name, const int group_id, const T_UT_ATTR attr, const int passed, const int missed, const double elapsed_time);
+		
+		//ユニットテスト結果格納クラス
 		class CExprCResultObjBase
 		{
 		public:
-			CExprCResultObjBase() : m_result(true), m_hasResult(false), m_hasException(false), m_hasExprStr(false), m_hasValueStr(false), m_hasOpeStr(false), m_hasExpectStr(false), m_exprStr(), m_valuieStr(), m_opeStr(), m_expectStr(), m_exceptionStr(){}
-			~CExprCResultObjBase(){}
+			CExprCResultObjBase();
+			~CExprCResultObjBase();
 
 		public:
 			void setResult(const bool result){ this->m_result = result; }
 			bool getResult() const { return this->m_result; }
 			void setHasResult(const bool has_result){ this->m_hasResult = has_result; }
 			bool hasResult() const { return this->m_hasResult; }
-			void setException(std::exception const& e){ this->m_hasException = true; this->m_exceptionStr = e.what(); }
+			void setException(std::exception const& e);
 			bool hasException() const { return this->m_hasException; }
 			bool hasExprStr() const { return this->m_hasExprStr; }
 			bool hasValueStr() const { return this->m_hasValueStr; }
 			bool hasOpeStr() const { return this->m_hasOpeStr; }
 			bool hasExpectStr() const { return this->m_hasExpectStr; }
-			void setExprStr(const char* expr){ if (expr){ this->m_exprStr = expr; this->m_hasExprStr = true; } }
+			void setExprStr(const char* expr);
 			const char* getExprStr() const { return m_exprStr.c_str(); }
-			void setValueStr(const char* value){ if (value){ this->m_valuieStr = value; this->m_hasValueStr = true; } }
+			void setValueStr(const char* value);
 			const char* getValueStr() const { return m_valuieStr.c_str(); }
-			void setOpeStr(const char* ope){ if (ope){ this->m_opeStr = ope; this->m_hasOpeStr = true; } }
+			void setOpeStr(const char* ope);
+			const char* setOpeStrFromId(const E_UT_OPE ope);
 			const char* getOpeStr() const { return this->m_opeStr.c_str(); }
-			void setExpectStr(const char* expect){ if (expect){ this->m_expectStr = expect; this->m_hasExpectStr = true; } }
+			void setExpectStr(const char* expect);
 			const char* getExpectStr() const { return this->m_expectStr.c_str(); }
 			const char* getExceptionStr() const { return this->m_exceptionStr.c_str(); }
-			void setStrSet(const char* expr, const char* ope, const char* expect){ this->setExprStr(expr); this->setOpeStr(ope); this->setExpectStr(expect); }
 
 		private:
 			bool m_result;
@@ -142,44 +168,193 @@ namespace UnitTest
 		class CExprCResultObj : public CExprCResultObjBase
 		{
 		public:
-			CExprCResultObj(const T value, const char* ope, const T expect) : m_hasValue(false), m_hasExpect(false), m_value(0), m_expect(0), CExprCResultObjBase()
+			CExprCResultObj(const T value, const T expect) :
+				m_hasValue(true),
+				m_hasExpect(true),
+				m_value(value),
+				m_expect(expect),
+				CExprCResultObjBase()
+			{
+			}
+			CExprCResultObj(const T value) :
+				m_hasValue(false),
+				m_hasExpect(false),
+				m_value(0),
+				m_expect(0), CExprCResultObjBase()
 			{
 				this->setValue(value);
-				this->setOpeStr(ope);
-				this->setExpect(expect);
-				this->setResult(false);
-				this->setHasResult(false);
-				if (ope)
-				{
-					if (strcmp(ope, "==") == 0){ this->setResult(this->m_value == this->m_expect); this->setHasResult(true); }
-					else if (strcmp(ope, "!=") == 0){ this->setResult(this->m_value != this->m_expect); this->setHasResult(true); }
-					else if (strcmp(ope, "<") == 0){ this->setResult(this->m_value < this->m_expect); this->setHasResult(true); }
-					else if (strcmp(ope, "<=") == 0){ this->setResult(this->m_value <= this->m_expect); this->setHasResult(true); }
-					else if (strcmp(ope, ">") == 0){ this->setResult(this->m_value > this->m_expect); this->setHasResult(true); }
-					else if (strcmp(ope, ">=") == 0){ this->setResult(this->m_value >= this->m_expect); this->setHasResult(true); }
-				}
 			}
-			CExprCResultObj(const T value) : m_hasValue(false), m_hasExpect(false), m_value(0), m_expect(0), CExprCResultObjBase(){ this->setValue(value); }
-			CExprCResultObj() : m_hasValue(false), m_hasExpect(false), m_value(0), m_expect(0), CExprCResultObjBase(){}
-			~CExprCResultObj(){ this->~CExprCResultObjBase(); }
+			CExprCResultObj() : 
+				m_hasValue(false), 
+				m_hasExpect(false), 
+				m_value(0),
+				m_expect(0),
+				CExprCResultObjBase()
+			{
+			}
+			~CExprCResultObj()
+			{
+				this->~CExprCResultObjBase(); 
+			}
 
 		public:
-			void setValue(const T value){ this->m_value = value; this->m_hasValue = true; std::ostringstream os; os << value; this->setValueStr(os.str().c_str()); }
+			void setValue(const T value)
+			{
+				this->m_value = value;
+				this->m_hasValue = true;
+				std::ostringstream os;
+				os << value;
+				this->setValueStr(os.str().c_str());
+			}
 			T getValue() const { return this->m_value; }
-			void setExpect(const T expect){ this->m_expect = expect; this->m_hasExpect = true; }
+			void setExpect(const T expect)
+			{
+				this->m_expect = expect;
+				this->m_hasExpect = true;
+			}
 			T getExpect() const { return this->m_expectStr; }
+			
+		public:
+			void setOpeStrFromType(T_UT_OPE_UNKNOWN_DUMMY ope)
+			{
+				this->setOpeStrFromId(UT_OPE_UNKNOWN);
+			}
+			void setOpeStrFromType(T_UT_OPE_EQ_DUMMY ope)
+			{
+				this->setOpeStrFromId(UT_OPE_EQ);
+			}
+			void setOpeStrFromType(T_UT_OPE_NE_DUMMY ope)
+			{
+				this->setOpeStrFromId(UT_OPE_NE);
+			}
+			void setOpeStrFromType(T_UT_OPE_GT_DUMMY ope)
+			{
+				this->setOpeStrFromId(UT_OPE_GT);
+			}
+			void setOpeStrFromType(T_UT_OPE_GE_DUMMY ope)
+			{
+				this->setOpeStrFromId(UT_OPE_GE);
+			}
+			void setOpeStrFromType(T_UT_OPE_LT_DUMMY ope)
+			{
+				this->setOpeStrFromId(UT_OPE_LT);
+			}
+			void setOpeStrFromType(T_UT_OPE_LE_DUMMY ope)
+			{
+				this->setOpeStrFromId(UT_OPE_LE);
+			}
+			void calcResult(T_UT_OPE_UNKNOWN_DUMMY ope)
+			{
+				this->setOpeStrFromType(ope);
+				obj.setResult(false);
+				obj.setHasResult(false);
+			}
+			void calcResult(T_UT_OPE_EQ_DUMMY ope)
+			{
+				this->setOpeStrFromType(ope);
+				this->setResult(this->m_value == this->m_expect);
+				this->setHasResult(true);
+			}
+			void calcResult(T_UT_OPE_NE_DUMMY ope)
+			{
+				this->setOpeStrFromType(ope);
+				this->setResult(this->m_value != this->m_expect);
+				this->setHasResult(true);
+			}
+			void calcResult(T_UT_OPE_GT_DUMMY ope)
+			{
+				this->setOpeStrFromType(ope);
+				this->setResult(this->m_value > this->m_expect);
+				this->setHasResult(true);
+			}
+			void calcResult(T_UT_OPE_GE_DUMMY ope)
+			{
+				this->setOpeStrFromType(ope);
+				this->setResult(this->m_value >= this->m_expect);
+				this->setHasResult(true);
+			}
+			void calcResult(T_UT_OPE_LT_DUMMY ope)
+			{
+				this->setOpeStrFromType(ope);
+				this->setResult(this->m_value < this->m_expect);
+				this->setHasResult(true);
+			}
+			void calcResult(T_UT_OPE_LE_DUMMY ope)
+			{
+				this->setOpeStrFromType(ope);
+				this->setResult(this->m_value <= this->m_expect);
+				this->setHasResult(true);
+			}
+		
 		private:
 			T m_value;
 			T m_expect;
 			bool m_hasValue;
 			bool m_hasExpect;
 		};
+		template<typename T, typename OPE>
+		static CExprCResultObj<T>* makeResultObj2(const T value, typename T expect, OPE ope, const char* expr_str, const char* expect_str)
+		{
+			CExprCResultObj<T>* obj = new CExprCResultObj<T>(value, expect);
+			obj->setValue(value);
+			obj->setExpect(expect);
+			obj->setExprStr(expr_str);
+			obj->setExpectStr(expect_str);
+			obj->calcResult(ope);
+			return obj;
+		}
+		template<typename OPE>
+		static CExprCResultObj<int>* makeResultObj2ex(OPE ope, const char* expr_str, const char* expect_str)
+		{
+			CExprCResultObj<int>* obj = new CExprCResultObj<int>();
+			obj->setExprStr(expr_str);
+			obj->setExpectStr(expect_str);
+			obj->setOpeStrFromType(ope);
+			obj->setResult(false);
+			obj->setHasResult(false);
+			return obj;
+		}
 		template<typename T>
-		static CExprCResultObj<T>* makeResultObj2(const T value, const char* ope, const T expect){ return new CExprCResultObj<T>(value, ope, expect); }
-		template<typename T>
-		static CExprCResultObj<T>* makeResultObj1(const T value){ return new CExprCResultObj<T>(value); }
-		static CExprCResultObj<int>* makeResultObj0(){ return new CExprCResultObj<int>(); }
-		static void outputUTResult(const bool is_child, int* passed, int* missed, CExprCResultObjBase* result_obj);
+		static CExprCResultObj<T>* makeResultObj1(const T value, const char* expr_str)
+		{
+			CExprCResultObj<T>* obj = new CExprCResultObj<T>(value);
+			obj->setExprStr(expr_str);
+			obj->setResult(false);
+			obj->setHasResult(false);
+			return obj;
+		}
+		static CExprCResultObj<int>* makeResultObj1ex(const char* expr_str)
+		{
+			CExprCResultObj<int>* obj = new CExprCResultObj<int>();
+			obj->setExprStr(expr_str);
+			obj->setResult(false);
+			obj->setHasResult(false);
+			return obj;
+		}
+		static void outputUTResult(const bool is_child, int* passed, int* missed, CElapsedTime* elapsed_time, CExprCResultObjBase* result_obj);
+	};
+	
+	//処理時間計測
+	class CElapsedTime
+	{
+	public:
+		typedef double TIMERCOUNT;
+	public:
+		CElapsedTime();
+		~CElapsedTime();
+	public:
+		TIMERCOUNT getBeginTime() const { return this->m_beginTime; }
+		TIMERCOUNT getEndTime() const { return this->m_endTime; }
+		TIMERCOUNT getElapsedTime() const { return this->m_elapsedTime; }
+		double getResult() const { return static_cast<double>(this->m_elapsedTime); }
+	public:
+		TIMERCOUNT finish();
+	private:
+		TIMERCOUNT getTimer();
+	private:
+		TIMERCOUNT m_beginTime;
+		TIMERCOUNT m_endTime;
+		TIMERCOUNT m_elapsedTime;
 	};
 }; //namespace UnitTest
 
@@ -189,11 +364,11 @@ namespace __UnitTest_module_##module_name##__ \
 	class __CUnitTestModle \
 	{ \
 	public: \
-		__CUnitTestModle() \
+	__CUnitTestModle() \
 		{ \
 			UnitTest::CCollection::addFuncInfo(runUnitTest, #module_name, group_id, attr); \
 		} \
-		~__CUnitTestModle() \
+	~__CUnitTestModle() \
 		{ \
 		} \
 	public: \
@@ -201,20 +376,22 @@ namespace __UnitTest_module_##module_name##__ \
 		{ \
 			const char* __module_name = #module_name; \
 			const int __group_id = group_id; \
+			UnitTest::CElapsedTime __elapsed_time; \
 			const UnitTest::T_UT_ATTR __attr = attr; \
 			__passed = 0; \
 			__missed = 0; \
 			UnitTest::CCollection::outputRunUTModuleBegin(__module_name, __group_id, __attr);
 #define UT_END() \
-			UnitTest::CCollection::outputRunUTModuleEnd(__module_name, __group_id, __attr, __passed, __missed); \
+			__elapsed_time.finish(); \
+			UnitTest::CCollection::outputRunUTModuleEnd(__module_name, __group_id, __attr, __passed, __missed, __elapsed_time.getResult()); \
 			return __missed; \
 		} \
 	}; \
 	static __CUnitTestModle __unit_test_obj; \
 }; //namespace __UnitTest_##module_name
-#define _UT_PRINT_EXPR_AND_RESULT(is_child, expr, ope, expect) { UnitTest::CCollection::CExprCResultObjBase* ___result_obj = nullptr; try { ___result_obj = UnitTest::CCollection::makeResultObj2(expr, #ope, expect); ___result_obj->setExprStr(#expr); ___result_obj->setExpectStr(#expect);                                 UnitTest::CCollection::outputUTResult(is_child, &__passed, &__missed, ___result_obj); } catch(std::exception const &e) { if(!___result_obj) ___result_obj = UnitTest::CCollection::makeResultObj0(); ___result_obj->setExprStr(#expr); ___result_obj->setOpeStr(#ope); ___result_obj->setExpectStr(#expect); ___result_obj->setResult(false); ___result_obj->setException(e); UnitTest::CCollection::outputUTResult(is_child, nullptr, &__missed, ___result_obj); } if(___result_obj){delete ___result_obj; } }
-#define _UT_PRINT_EXPR_AND_VALUE(is_child, expr)               { UnitTest::CCollection::CExprCResultObjBase* ___result_obj = nullptr; try { ___result_obj = UnitTest::CCollection::makeResultObj1(expr);               ___result_obj->setExprStr(#expr);                                       ___result_obj->setResult(true); UnitTest::CCollection::outputUTResult(is_child, nullptr,   nullptr,   ___result_obj); } catch(std::exception const &e) { if(!___result_obj) ___result_obj = UnitTest::CCollection::makeResultObj0();                                                                                                         ___result_obj->setResult(false); ___result_obj->setException(e); UnitTest::CCollection::outputUTResult(is_child, nullptr, &__missed, ___result_obj); } if(___result_obj){delete ___result_obj; } }
-#define _UT_PRINT_EXPR(is_child, expr)                         { UnitTest::CCollection::CExprCResultObjBase* ___result_obj = nullptr; try { ___result_obj = UnitTest::CCollection::makeResultObj0();                   ___result_obj->setExprStr(#expr);                                       ___result_obj->setResult(true); UnitTest::CCollection::outputUTResult(is_child, nullptr,   nullptr,   ___result_obj); } catch(std::exception const &e) { if(!___result_obj) ___result_obj = UnitTest::CCollection::makeResultObj0();                                                                                                         ___result_obj->setResult(false); ___result_obj->setException(e); UnitTest::CCollection::outputUTResult(is_child, nullptr, &__missed, ___result_obj); } if(___result_obj){delete ___result_obj; } }
+#define _UT_PRINT_EXPR_AND_RESULT(is_child, expr, ope, expect) { UnitTest::CCollection::CExprCResultObjBase* ___result_obj = nullptr; try { UnitTest::CElapsedTime ___elapsed_time; ___result_obj = UnitTest::CCollection::makeResultObj2(expr, expect, ope, #expr, #expect); ___elapsed_time.finish();                                 UnitTest::CCollection::outputUTResult(is_child, &__passed, &__missed, &___elapsed_time, ___result_obj); } catch(std::exception const &e) { if(!___result_obj) ___result_obj = UnitTest::CCollection::makeResultObj2ex(ope, #expr, #expect); ___result_obj->setException(e); UnitTest::CCollection::outputUTResult(is_child, nullptr, &__missed, nullptr, ___result_obj); } if(___result_obj){delete ___result_obj; } }
+#define _UT_PRINT_EXPR_AND_VALUE(is_child, expr)               { UnitTest::CCollection::CExprCResultObjBase* ___result_obj = nullptr; try { UnitTest::CElapsedTime ___elapsed_time; ___result_obj = UnitTest::CCollection::makeResultObj1(expr,              #expr);          ___elapsed_time.finish(); ___result_obj->setResult(true); UnitTest::CCollection::outputUTResult(is_child, nullptr,   nullptr,   &___elapsed_time, ___result_obj); } catch(std::exception const &e) { if(!___result_obj) ___result_obj = UnitTest::CCollection::makeResultObj1ex(     #expr);          ___result_obj->setException(e); UnitTest::CCollection::outputUTResult(is_child, nullptr, &__missed, nullptr, ___result_obj); } if(___result_obj){delete ___result_obj; } }
+#define _UT_PRINT_EXPR(is_child, expr)                         { UnitTest::CCollection::CExprCResultObjBase* ___result_obj = nullptr; try {                                         ___result_obj = UnitTest::CCollection::makeResultObj1ex(                 #expr);                                    ___result_obj->setResult(true); UnitTest::CCollection::outputUTResult(is_child, nullptr,   nullptr,   nullptr,          ___result_obj); } catch(std::exception const &e) { if(!___result_obj) ___result_obj = UnitTest::CCollection::makeResultObj1ex(     #expr);          ___result_obj->setException(e); UnitTest::CCollection::outputUTResult(is_child, nullptr, &__missed, nullptr, ___result_obj); } if(___result_obj){delete ___result_obj; } }
 
 #define UT_EXPECT(expr, ope, expect)       _UT_PRINT_EXPR_AND_RESULT(false, expr, ope, expect);
 #define UT_EXPECT_CHILD(expr, ope, expect) _UT_PRINT_EXPR_AND_RESULT(true,  expr, ope, expect);
@@ -222,6 +399,19 @@ namespace __UnitTest_module_##module_name##__ \
 #define UT_EXPR_WITH_RET_CHILD(expr)       _UT_PRINT_EXPR_AND_VALUE(true,  expr)
 #define UT_EXPR(expr)                      _UT_PRINT_EXPR(false, expr)
 #define UT_EXPR_CHILD(expr)                _UT_PRINT_EXPR(true, expr)
+
+#define UT_EXPECT_EQ(expr, expect)       UT_EXPECT(expr, UnitTest::T_UT_OPE_EQ_DUMMY(), expect)
+#define UT_EXPECT_NE(expr, expect)       UT_EXPECT(expr, UnitTest::T_UT_OPE_NE_DUMMY(), expect)
+#define UT_EXPECT_GT(expr, expect)       UT_EXPECT(expr, UnitTest::T_UT_OPE_GT_DUMMY(), expect)
+#define UT_EXPECT_GE(expr, expect)       UT_EXPECT(expr, UnitTest::T_UT_OPE_GE_DUMMY(), expect)
+#define UT_EXPECT_LT(expr, expect)       UT_EXPECT(expr, UnitTest::T_UT_OPE_LT_DUMMY(), expect)
+#define UT_EXPECT_LE(expr, expect)       UT_EXPECT(expr, UnitTest::T_UT_OPE_LE_DUMMY(), expect)
+#define UT_EXPECT_EQ_CHILD(expr, expect) UT_EXPECT_CHILD(expr, UnitTest::T_UT_OPE_EQ_DUMMY(), expect);
+#define UT_EXPECT_NE_CHILD(expr, expect) UT_EXPECT_CHILD(expr, UnitTest::T_UT_OPE_NE_DUMMY(), expect);
+#define UT_EXPECT_GT_CHILD(expr, expect) UT_EXPECT_CHILD(expr, UnitTest::T_UT_OPE_GT_DUMMY(), expect);
+#define UT_EXPECT_GE_CHILD(expr, expect) UT_EXPECT_CHILD(expr, UnitTest::T_UT_OPE_GE_DUMMY(), expect);
+#define UT_EXPECT_LT_CHILD(expr, expect) UT_EXPECT_CHILD(expr, UnitTest::T_UT_OPE_LT_DUMMY(), expect);
+#define UT_EXPECT_LE_CHILD(expr, expect) UT_EXPECT_CHILD(expr, UnitTest::T_UT_OPE_LE_DUMMY(), expect);
 
 #ifndef UT_TARGET_MODULE
 #define UT_TARGET_MODULE nullptr
@@ -277,6 +467,18 @@ namespace __UnitTest_module_##module_name##__ \
 #define UT_EXPR_CHILD(expr)
 #define UT_EXPR_WITH_RET(expr)
 #define UT_EXPR_WITH_RET_CHILD(expr)
+#define UT_EXPECT_EQ(expr, expect)
+#define UT_EXPECT_NE(expr, expect)
+#define UT_EXPECT_GT(expr, expect)
+#define UT_EXPECT_GE(expr, expect)
+#define UT_EXPECT_LT(expr, expect)
+#define UT_EXPECT_LE(expr, expect)
+#define UT_EXPECT_EQ_CHILD(expr, expect)
+#define UT_EXPECT_NE_CHILD(expr, expect)
+#define UT_EXPECT_GT_CHILD(expr, expect)
+#define UT_EXPECT_GE_CHILD(expr, expect)
+#define UT_EXPECT_LT_CHILD(expr, expect)
+#define UT_EXPECT_LE_CHILD(expr, expect)
 #define UT_RUN_ALL(attr)
 #define UT_RUN_MODULE(module_name, attr)
 #define UT_RUN_GROUP(group_id, attr)

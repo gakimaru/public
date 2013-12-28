@@ -25,12 +25,12 @@ public:
 UT_BEGIN(CModuleA, UT_GROUP_USER_A, UnitTest::UT_ATTR_AUTO)//モジュール名とグループIDを指定　※特定のモジュール名やグループIDに絞ったテストを実行可能
 {
 	CModuleA _CModuleA;
-	UT_EXPECT(_CModuleA.func1(1, 2), == , 3);
-	UT_EXPECT(_CModuleA.func1(3, 4), == , 7);
-	UT_EXPECT(_CModuleA.func1(4, 5), != , 9);
-	UT_EXPECT(_CModuleA.func2(), == , true);
-	UT_EXPECT(_CModuleA.func2(), != , true);
-	UT_EXPECT(_CModuleA.func3(), == , true);
+	UT_EXPECT_EQ(_CModuleA.func1(1, 2), 3);
+	UT_EXPECT_EQ(_CModuleA.func1(3, 4), 7);
+	UT_EXPECT_NE(_CModuleA.func1(4, 5), 9);
+	UT_EXPECT_EQ(_CModuleA.func2(), true);
+	UT_EXPECT_NE(_CModuleA.func2(), true);
+	UT_EXPECT_EQ(_CModuleA.func3(), true);
 }
 UT_END()
 

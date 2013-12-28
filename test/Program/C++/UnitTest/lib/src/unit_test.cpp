@@ -4,8 +4,10 @@
 
 #include <stdio.h>
 
-#include <windows.h>
-#include <conio.h>
+//for Windows
+#include <windows.h> //コンソールのカラー表示用にインクルード
+#include <conio.h>   //（同上）
+#include <winbase.h> //パフォーマンスカウンターの計測用にインクルード
 
 namespace UnitTest
 {
@@ -37,6 +39,7 @@ namespace UnitTest
 		info->m_attr = attr;
 		info->passed = 0;
 		info->missed = 0;
+		info->elapsed_time = 0.;
 		return true;
 	}
 
@@ -84,14 +87,16 @@ namespace UnitTest
 		{
 			info->passed = 0;
 			info->missed = 0;
+			info->elapsed_time = 0.;
 		}
 	}
-
+	
 	//ユニットテスト実行
 	int CCollection::runUnitTest(const char* target_module_name, const int target_group_id, const T_UT_ATTR target_attr)
 	{
 		int passed_total = 0;
 		int missed_total = 0;
+		CElapsedTime elapsed_time_total;
 		outputRunUTBegin(target_module_name, target_group_id, target_attr);
 		UNIT_TEST_FUNC_INFO* info = s_funcList;
 		for (int i = 0; i < s_funcListNum; ++i, ++info)
@@ -102,16 +107,20 @@ namespace UnitTest
 			{
 				int passed = 0;
 				int missed = 0;
+				CElapsedTime elapsed_time;
 				info->m_func(passed, missed);
+				elapsed_time.finish();
 				passed_total += passed;
 				missed_total += missed;
 				info->passed = passed;
 				info->missed = missed;
+				info->elapsed_time = elapsed_time.getResult();
 			}
 		}
+		elapsed_time_total.finish();
 		s_lastPassedTotal = passed_total;
 		s_lastMissedTotal = missed_total;
-		outputRunUTEnd(target_module_name, target_group_id, target_attr, passed_total, missed_total);
+		outputRunUTEnd(target_module_name, target_group_id, target_attr, passed_total, missed_total, elapsed_time_total.getResult());
 		return missed_total;
 	}
 	int CCollection::runUnitTestStandard(const T_UT_ATTR target_attr)
@@ -132,6 +141,7 @@ namespace UnitTest
 	#define _COLOR_OPE() output("\x1b[40m\x1b[37m")
 	#define _COLOR_EXPECT() output("\x1b[40m\x1b[32m")
 	#define _COLOR_VALUE() output("\x1b[40m\x1b[32m")
+	#define _COLOR_ELAPSED_TIME() output("\x1b[40m\x1b[32m")
 	#define _COLOR_EXCEPTION() output("\x1b[41m\x1b[37m")
 	#define _COLOR_END()
 #else
@@ -148,6 +158,7 @@ namespace UnitTest
 	#define _COLOR_OPE(){SetConsoleTextAttribute(_hStdout, FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY);}
 	#define _COLOR_EXPECT(){SetConsoleTextAttribute(_hStdout, FOREGROUND_GREEN|FOREGROUND_INTENSITY);}
 	#define _COLOR_VALUE(){SetConsoleTextAttribute(_hStdout, FOREGROUND_GREEN|FOREGROUND_INTENSITY);}
+	#define _COLOR_ELAPSED_TIME(){SetConsoleTextAttribute(_hStdout, FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_INTENSITY);}
 	#define _COLOR_EXCEPTION(){SetConsoleTextAttribute(_hStdout, BACKGROUND_BLUE|BACKGROUND_RED|BACKGROUND_INTENSITY);}
 	#define _COLOR_END(){SetConsoleTextAttribute(_hStdout, _csb_info_backuped.wAttributes); _hStdout = INVALID_HANDLE_VALUE;}
 #endif
@@ -196,7 +207,7 @@ namespace UnitTest
 		output("============================================================\n");
 		_COLOR_END();
 	}
-	void CCollection::outputRunUTEnd(const char* target_module_name, const int target_group_id, const UnitTest::T_UT_ATTR target_attr, const int passed_total, const int missed_total)
+	void CCollection::outputRunUTEnd(const char* target_module_name, const int target_group_id, const UnitTest::T_UT_ATTR target_attr, const int passed_total, const int missed_total, const double elapsed_time_total)
 	{
 		_COLOR_BEGIN();
 		_COLOR_RESET();
@@ -227,7 +238,15 @@ namespace UnitTest
 			output("%d", missed_total);
 		}
 		_COLOR_NORMAL();
-		output("] -----\n");
+		output("] ");
+		_COLOR_NORMAL();
+		output(" (t=");
+		_COLOR_ELAPSED_TIME();
+		output("%.12lf", elapsed_time_total);
+		_COLOR_NORMAL();
+		output(")");
+		_COLOR_NORMAL();
+		output(" -----\n");
 		output("\n");
 		_COLOR_END();
 	}
@@ -240,7 +259,7 @@ namespace UnitTest
 		output("----- Start unit test module: \"%s\" (Group=%d,Attr=0x%08x) -----\n", module_name, group_id, attr);
 		_COLOR_END();
 	}
-	void CCollection::outputRunUTModuleEnd(const char* module_name, const int group_id, const UnitTest::T_UT_ATTR attr, const int passed, const int missed)
+	void CCollection::outputRunUTModuleEnd(const char* module_name, const int group_id, const UnitTest::T_UT_ATTR attr, const int passed, const int missed, const double elapsed_time)
 	{
 		_COLOR_BEGIN();
 		_COLOR_RESET();
@@ -269,10 +288,18 @@ namespace UnitTest
 			output("%d", missed);
 		}
 		_COLOR_NORMAL();
-		output("] -----\n");
+		output("] ");
+		_COLOR_NORMAL();
+		output(" (t=");
+		_COLOR_ELAPSED_TIME();
+		output("%.12lf", elapsed_time);
+		_COLOR_NORMAL();
+		output(")");
+		_COLOR_NORMAL();
+		output(" -----\n");
 		_COLOR_END();
 	}
-	void CCollection::outputUTResult(const bool is_child, int* passed, int* missed, CExprCResultObjBase* result_obj)
+	void CCollection::outputUTResult(const bool is_child, int* passed, int* missed, CElapsedTime* elapsed_time, CExprCResultObjBase* result_obj)
 	{
 		_COLOR_BEGIN();
 		_COLOR_RESET();
@@ -350,6 +377,15 @@ namespace UnitTest
 			_COLOR_NORMAL();
 			output(")");
 		}
+		if (elapsed_time)
+		{
+			_COLOR_NORMAL();
+			output(" (t=");
+			_COLOR_ELAPSED_TIME();
+			output("%.12lf", elapsed_time->getResult());
+			_COLOR_NORMAL();
+			output(")");
+		}
 		if (result_obj->hasException())
 		{
 			is_count_missed = true;
@@ -375,6 +411,101 @@ namespace UnitTest
 		if (is_count_missed && missed)
 		{
 			++(*missed);
+		}
+	}
+
+	//処理時間計測
+	CElapsedTime::CElapsedTime() :
+		m_beginTime(0.f),
+		m_endTime(0.f),
+		m_elapsedTime(0.f)
+	{
+		this->m_beginTime = getTimer();
+	}
+	CElapsedTime::~CElapsedTime()
+	{
+	}
+	CElapsedTime::TIMERCOUNT CElapsedTime::finish()
+	{
+		this->m_endTime = getTimer();
+		this->m_elapsedTime = this->m_endTime - this->m_beginTime;
+		return this->m_endTime;
+	}
+	CElapsedTime::TIMERCOUNT CElapsedTime::getTimer()
+	{
+		//for Windows
+		static bool freq_initialized = false;
+		static LARGE_INTEGER freq;
+		if (!freq_initialized)
+		{
+			QueryPerformanceFrequency(&freq);
+			freq_initialized = true;
+		}
+		LARGE_INTEGER counter;
+		QueryPerformanceCounter(&counter);
+		const TIMERCOUNT timer = static_cast<TIMERCOUNT>(counter.QuadPart) / static_cast<TIMERCOUNT>(freq.QuadPart) / static_cast<TIMERCOUNT>(1000.0);
+		return timer;
+	}
+
+	//ユニットテスト結果格納クラス
+	CCollection::CExprCResultObjBase::CExprCResultObjBase() :
+		m_result(true),
+		m_hasResult(false),
+		m_hasException(false),
+		m_hasExprStr(false),
+		m_hasValueStr(false),
+		m_hasOpeStr(false),
+		m_hasExpectStr(false),
+		m_exprStr(),
+		m_valuieStr(),
+		m_opeStr(),
+		m_expectStr(),
+		m_exceptionStr()
+	{
+	}
+	CCollection::CExprCResultObjBase::~CExprCResultObjBase()
+	{
+	}
+	void CCollection::CExprCResultObjBase::setException(std::exception const& e)
+	{
+		this->m_hasException = true; this->m_exceptionStr = e.what(); 
+	}
+	void CCollection::CExprCResultObjBase::setExprStr(const char* expr)
+	{
+		if (expr)
+		{
+			this->m_exprStr = expr; 
+			this->m_hasExprStr = true;
+		} 
+	}
+	void CCollection::CExprCResultObjBase::setValueStr(const char* value)
+	{
+		if (value)
+		{
+			this->m_valuieStr = value; 
+			this->m_hasValueStr = true;
+		}
+	}
+	void CCollection::CExprCResultObjBase::setOpeStr(const char* ope)
+	{
+		if (ope)
+		{
+			this->m_opeStr = ope;
+			this->m_hasOpeStr = true;
+		}
+	}
+	const char* CCollection::CExprCResultObjBase::setOpeStrFromId(const E_UT_OPE ope)
+	{
+		static const char* ope_str[UT_OPE_NUM] = { "??", "==", "!=", ">", ">=", "<", "<=" };
+		this->setOpeStr(ope_str[ope]);
+		return this->getOpeStr();
+	}
+	void CCollection::CExprCResultObjBase::setExpectStr(const char* expect)
+	{
+		if (expect)
+		{
+			this->m_expectStr = expect;
+			this->m_hasExpectStr = true;
 		}
 	}
 };

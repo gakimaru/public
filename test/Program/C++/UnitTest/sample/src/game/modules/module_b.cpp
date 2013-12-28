@@ -30,10 +30,14 @@ UT_BEGIN(CModuleB, UT_GROUP_USER_B, UnitTest::UT_ATTR_AUTO)//ƒ‚ƒWƒ…[ƒ‹–¼‚ÆƒOƒ‹
 {
 	CModuleB _CModuleB;
 	int out_par = 0;
-	UT_EXPECT(_CModuleB.func1(1, 2, 3), ==, 1+2+3);
-	UT_EXPECT(_CModuleB.func1(3, 4, 5), >, 60);
-	UT_EXPR(_CModuleB.func2(1, 2, out_par)); UT_EXPECT_CHILD(out_par, == , 2);
-	UT_EXPR(_CModuleB.func2(3, 4, out_par)); UT_EXPECT_CHILD(out_par, <, 12);
+	UT_EXPECT_EQ(_CModuleB.func1(1, 2, 3), 1+2+3);
+	UT_EXPECT_NE(_CModuleB.func1(3, 4, 5), 60);
+	UT_EXPECT_GT(_CModuleB.func1(5, 6, 7), 10);
+	UT_EXPECT_GE(_CModuleB.func1(7, 8, 9), 20);
+	UT_EXPECT_LT(_CModuleB.func1(9, 10, 11), 30);
+	UT_EXPECT_LE(_CModuleB.func1(11, 12, 13), 40);
+	UT_EXPR(_CModuleB.func2(1, 2, out_par)); UT_EXPECT_EQ_CHILD(out_par, 2);
+	UT_EXPR(_CModuleB.func2(3, 4, out_par)); UT_EXPECT_NE_CHILD(out_par, 12);
 }
 UT_END()
 UT_BEGIN(CModuleC, UT_GROUP_USER_B, UnitTest::UT_ATTR_NOAUTO)//ƒ‚ƒWƒ…[ƒ‹–¼‚ÆƒOƒ‹[ƒvID‚ðŽw’è@¦“Á’è‚Ìƒ‚ƒWƒ…[ƒ‹–¼‚âƒOƒ‹[ƒvID‚Éi‚Á‚½ƒeƒXƒg‚ðŽÀs‰Â”\@¦”ñŽ©“®ŽÀs‘®«•t—^
@@ -41,10 +45,10 @@ UT_BEGIN(CModuleC, UT_GROUP_USER_B, UnitTest::UT_ATTR_NOAUTO)//ƒ‚ƒWƒ…[ƒ‹–¼‚ÆƒOƒ
 	CModuleC _CModuleC;
 	float out_par1 = 0.f;
 	float out_par2 = 0.f;
-	UT_EXPR_WITH_RET(_CModuleC.func(1.1f, 2.2f, out_par1, out_par2)); UT_EXPECT_CHILD(out_par1, == , 2.f); UT_EXPECT_CHILD(out_par2, <, 0.f);
-	UT_EXPR_WITH_RET(_CModuleC.func(3.3f, 4.4f, out_par1, out_par2)); UT_EXPECT_CHILD(out_par1, != , 7.f); UT_EXPECT_CHILD(out_par2, >, 0.f);
-	UT_EXPR_WITH_RET(_CModuleC.func(5.5f, 6.6f, out_par1, out_par2)); UT_EXPECT_CHILD(out_par1, <= , 20.f); UT_EXPECT_CHILD(out_par2, >=, 10.f);
-	UT_EXPR_WITH_RET(_CModuleC.func(7.7f, 8.8f, out_par1, out_par2)); UT_EXPECT_CHILD(out_par1, ? , 1.f); UT_EXPECT_CHILD(out_par2, _ , 2.f);
+	UT_EXPR_WITH_RET(_CModuleC.func(1.1f, 2.2f, out_par1, out_par2)); UT_EXPECT_EQ_CHILD(out_par1, 2.f); UT_EXPECT_LT_CHILD(out_par2, 0.f);
+	UT_EXPR_WITH_RET(_CModuleC.func(3.3f, 4.4f, out_par1, out_par2)); UT_EXPECT_NE_CHILD(out_par1, 7.f); UT_EXPECT_GT_CHILD(out_par2, 0.f);
+	UT_EXPR_WITH_RET(_CModuleC.func(5.5f, 6.6f, out_par1, out_par2)); UT_EXPECT_LE_CHILD(out_par1, 20.f); UT_EXPECT_GE_CHILD(out_par2, 10.f);
+	UT_EXPR_WITH_RET(_CModuleC.func(7.7f, 8.8f, out_par1, out_par2)); UT_EXPECT_LT_CHILD(out_par1, 1.f); UT_EXPECT_LE_CHILD(out_par2, 2.f);
 }
 UT_END()
 

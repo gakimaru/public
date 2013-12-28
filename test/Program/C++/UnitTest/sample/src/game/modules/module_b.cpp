@@ -26,7 +26,10 @@ public:
 
 //ƒ†ƒjƒbƒgƒeƒXƒg
 #include "game/unit_test_id.h"
-UT_BEGIN(CModuleB, UT_GROUP_USER_B, UnitTest::UT_ATTR_AUTO)//ƒ‚ƒWƒ…[ƒ‹–¼‚ÆƒOƒ‹[ƒvID‚ðŽw’è@¦“Á’è‚Ìƒ‚ƒWƒ…[ƒ‹–¼‚âƒOƒ‹[ƒvID‚Éi‚Á‚½ƒeƒXƒg‚ðŽÀs‰Â”\
+UT_BEGIN(CModuleB, UT_GROUP_USER_B, UnitTest::UT_ATTR_AUTO)//ƒ‚ƒWƒ…[ƒ‹–¼‚ÆƒOƒ‹[ƒvIDA‘®«‚ðŽw’è ¦“Á’è‚Ìƒ‚ƒWƒ…[ƒ‹–¼‚âƒOƒ‹[ƒvID‚Éi‚Á‚½ƒeƒXƒg‚ðŽÀs‰Â”\B
+                                                           //                                     ¦main‚©‚çŽ©“®ŽÀs‚·‚é‚É‚Í UT_ATTR_AUTO ‘®«‚ð•t—^‚·‚é•K—v‚ª‚ ‚éB
+														   //                                       ‘®«‚Í‘æ0ƒrƒbƒg–Ú‚ªŽ©“®ŽÀs—p‚É—\–ñ‚³‚ê‚Ä‚¢‚éˆÈŠO‚ÍŽ©—R‚ÉŽg‚Á‚Ä—Ç‚¢B
+														   //                                       ƒeƒXƒgŽÀsŽž‚É‘ÎÛ‘®«‚ÌŽw’è‚ª‚ ‚èAƒrƒbƒgƒ}ƒXƒNi&‰‰ŽZ‚ÌŒ‹‰Ê‚ª0ˆÈŠO‚©‚Ç‚¤‚©j‚ÅŽÀs‚Ì‰Â”Û‚ª”»’è‚³‚ê‚éŽd‘g‚ÝB
 {
 	CModuleB _CModuleB;
 	int out_par = 0;
@@ -40,7 +43,7 @@ UT_BEGIN(CModuleB, UT_GROUP_USER_B, UnitTest::UT_ATTR_AUTO)//ƒ‚ƒWƒ…[ƒ‹–¼‚ÆƒOƒ‹
 	UT_EXPR(_CModuleB.func2(3, 4, out_par)); UT_EXPECT_NE_CHILD(out_par, 12);
 }
 UT_END()
-UT_BEGIN(CModuleC, UT_GROUP_USER_B, UnitTest::UT_ATTR_NOAUTO)//ƒ‚ƒWƒ…[ƒ‹–¼‚ÆƒOƒ‹[ƒvID‚ðŽw’è@¦“Á’è‚Ìƒ‚ƒWƒ…[ƒ‹–¼‚âƒOƒ‹[ƒvID‚Éi‚Á‚½ƒeƒXƒg‚ðŽÀs‰Â”\@¦”ñŽ©“®ŽÀs‘®«•t—^
+UT_BEGIN(CModuleC, UT_GROUP_USER_B, UnitTest::UT_ATTR_NOAUTO)//ƒ‚ƒWƒ…[ƒ‹–¼‚ÆƒOƒ‹[ƒvIDA‘®«‚ðŽw’è
 {
 	CModuleC _CModuleC;
 	float out_par1 = 0.f;

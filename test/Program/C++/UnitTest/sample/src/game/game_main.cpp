@@ -62,7 +62,7 @@ int CGameMain::main()
 	//※UT_ENABLED が定義されている時だけ処理が有効化される
 	//　プログラム中の任意の場所から呼び出せる。
 	UT_OUTPUT("手動ユニットテスト:ALL\n");
-	UT_RUN_ALL(UnitTest::UT_ATTR_ANY);                //UT_AUTO と無関係に全モジュールのテストを実行するマクロ
+	UT_RUN_ALL(UnitTest::UT_ATTR_ANY);                //UT_AUTO と無関係に全モジュールのテストを実行するマクロ ※実行対象属性を指定する。テスト登録されている関数の属性とのビットマスク（両者の&演算の結果が0以外かどうか）によって実行対象がマスクされる。
 	UT_OUTPUT("手動ユニットテスト:MODULE(\"CModuleB\")\n");
 	UT_RUN_MODULE("CModuleB", UnitTest::UT_ATTR_ANY); //UT_AUTO と無関係に指定のモジュールのテストを実行するマクロ
 	UT_OUTPUT("手動ユニットテスト:GROUP(2)\n");

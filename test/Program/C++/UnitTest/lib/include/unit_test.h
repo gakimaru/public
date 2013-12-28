@@ -346,7 +346,8 @@ namespace UnitTest
 		TIMERCOUNT getBeginTime() const { return this->m_beginTime; }
 		TIMERCOUNT getEndTime() const { return this->m_endTime; }
 		TIMERCOUNT getElapsedTime() const { return this->m_elapsedTime; }
-		double getResult() const { return static_cast<double>(this->m_elapsedTime); }
+		double getResult() const { return static_cast<double>(this->m_elapsedTime); }//経過時間（秒）
+		double getResultMS() const { return static_cast<double>(this->m_elapsedTime) * 1000.0; }//経過時間（ミリ秒）
 	public:
 		TIMERCOUNT finish();
 	private:
@@ -383,7 +384,7 @@ namespace __UnitTest_module_##module_name##__ \
 			UnitTest::CCollection::outputRunUTModuleBegin(__module_name, __group_id, __attr);
 #define UT_END() \
 			__elapsed_time.finish(); \
-			UnitTest::CCollection::outputRunUTModuleEnd(__module_name, __group_id, __attr, __passed, __missed, __elapsed_time.getResult()); \
+			UnitTest::CCollection::outputRunUTModuleEnd(__module_name, __group_id, __attr, __passed, __missed, __elapsed_time.getResultMS()); \
 			return __missed; \
 		} \
 	}; \

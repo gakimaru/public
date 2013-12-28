@@ -114,13 +114,13 @@ namespace UnitTest
 				missed_total += missed;
 				info->passed = passed;
 				info->missed = missed;
-				info->elapsed_time = elapsed_time.getResult();
+				info->elapsed_time = elapsed_time.getResultMS();
 			}
 		}
 		elapsed_time_total.finish();
 		s_lastPassedTotal = passed_total;
 		s_lastMissedTotal = missed_total;
-		outputRunUTEnd(target_module_name, target_group_id, target_attr, passed_total, missed_total, elapsed_time_total.getResult());
+		outputRunUTEnd(target_module_name, target_group_id, target_attr, passed_total, missed_total, elapsed_time_total.getResultMS());
 		return missed_total;
 	}
 	int CCollection::runUnitTestStandard(const T_UT_ATTR target_attr)
@@ -238,11 +238,11 @@ namespace UnitTest
 			output("%d", missed_total);
 		}
 		_COLOR_NORMAL();
-		output("] ");
+		output("]");
 		_COLOR_NORMAL();
-		output(" (t=");
+		output("(t=");
 		_COLOR_ELAPSED_TIME();
-		output("%.12lf", elapsed_time_total);
+		output("%.6lf ms", elapsed_time_total);
 		_COLOR_NORMAL();
 		output(")");
 		_COLOR_NORMAL();
@@ -288,11 +288,11 @@ namespace UnitTest
 			output("%d", missed);
 		}
 		_COLOR_NORMAL();
-		output("] ");
+		output("]");
 		_COLOR_NORMAL();
-		output(" (t=");
+		output("(t=");
 		_COLOR_ELAPSED_TIME();
-		output("%.12lf", elapsed_time);
+		output("%.6lf ms", elapsed_time);
 		_COLOR_NORMAL();
 		output(")");
 		_COLOR_NORMAL();
@@ -382,7 +382,7 @@ namespace UnitTest
 			_COLOR_NORMAL();
 			output(" (t=");
 			_COLOR_ELAPSED_TIME();
-			output("%.12lf", elapsed_time->getResult());
+			output("%.6lf ms", elapsed_time->getResultMS());
 			_COLOR_NORMAL();
 			output(")");
 		}
@@ -443,7 +443,7 @@ namespace UnitTest
 		}
 		LARGE_INTEGER counter;
 		QueryPerformanceCounter(&counter);
-		const TIMERCOUNT timer = static_cast<TIMERCOUNT>(counter.QuadPart) / static_cast<TIMERCOUNT>(freq.QuadPart) / static_cast<TIMERCOUNT>(1000.0);
+		const TIMERCOUNT timer = static_cast<TIMERCOUNT>(counter.QuadPart) / static_cast<TIMERCOUNT>(freq.QuadPart);
 		return timer;
 	}
 

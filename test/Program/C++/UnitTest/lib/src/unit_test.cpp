@@ -238,13 +238,9 @@ namespace UnitTest
 			output("%d", missed_total);
 		}
 		_COLOR_NORMAL();
-		output("]");
-		_COLOR_NORMAL();
-		output("(t=");
+		output("] ");
 		_COLOR_ELAPSED_TIME();
 		output("%.6lf ms", elapsed_time_total);
-		_COLOR_NORMAL();
-		output(")");
 		_COLOR_NORMAL();
 		output(" -----\n");
 		output("\n");
@@ -290,11 +286,9 @@ namespace UnitTest
 		_COLOR_NORMAL();
 		output("]");
 		_COLOR_NORMAL();
-		output("(t=");
+		output(" ");
 		_COLOR_ELAPSED_TIME();
 		output("%.6lf ms", elapsed_time);
-		_COLOR_NORMAL();
-		output(")");
 		_COLOR_NORMAL();
 		output(" -----\n");
 		_COLOR_END();
@@ -380,11 +374,9 @@ namespace UnitTest
 		if (elapsed_time)
 		{
 			_COLOR_NORMAL();
-			output(" (t=");
+			output(" ");
 			_COLOR_ELAPSED_TIME();
 			output("%.6lf ms", elapsed_time->getResultMS());
-			_COLOR_NORMAL();
-			output(")");
 		}
 		if (result_obj->hasException())
 		{

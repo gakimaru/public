@@ -14,37 +14,44 @@ rem CHCP 1200 >NUL
 rem --- コードページ指定：日本語（シフトJIS） ---
 CHCP 932 >NUL
 
+rem --- ガイド付きプロファイルのインストルメントを実行する為に VC++ のパスを通す ---
+CALL "D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
+
+rem --- 実行対象ビルド ---
+rem SET BUILD_TARGET=Debug
+SET BUILD_TARGET=Release
+
 rem --- 開始 ---
 ECHO.
 ECHO ********** テスト開始 **********
 
 rem --- テスト処理(1) ---
 ECHO.
-CALL :RUN_CMD Debug\UnitTest.exe
+CALL :RUN_CMD %BUILD_TARGET%\UnitTest.exe
 SET RESULT=%ERRORLEVEL%
 ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(2) ---
 ECHO.
-CALL :RUN_CMD Debug_UT_ENABLED\UnitTest.exe
+CALL :RUN_CMD %BUILD_TARGET%_UT_ENABLED\UnitTest.exe
 SET RESULT=%ERRORLEVEL%
 ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(3) ---
 ECHO.
-CALL :RUN_CMD Debug_UT_ENABLED_AUTO\UnitTest.exe
+CALL :RUN_CMD %BUILD_TARGET%_UT_ENABLED_AUTO\UnitTest.exe
 SET RESULT=%ERRORLEVEL%
 ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(4) ---
 ECHO.
-CALL :RUN_CMD Debug_UT_ENABLED_AUTO_TARGET_MODULE\UnitTest.exe
+CALL :RUN_CMD %BUILD_TARGET%_UT_ENABLED_AUTO_TARGET_MODULE\UnitTest.exe
 SET RESULT=%ERRORLEVEL%
 ECHO 実行結果=%RESULT%
 
 rem --- テスト処理(5) ---
 ECHO.
-CALL :RUN_CMD Debug_UT_ENABLED_AUTO_TARGET_GROUP\UnitTest.exe
+CALL :RUN_CMD %BUILD_TARGET%_UT_ENABLED_AUTO_TARGET_GROUP\UnitTest.exe
 SET RESULT=%ERRORLEVEL%
 ECHO 実行結果=%RESULT%
 

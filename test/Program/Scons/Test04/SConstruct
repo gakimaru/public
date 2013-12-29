@@ -1,0 +1,41 @@
+import os
+import glob
+
+# MyBuilder
+bld = Builder(
+    action = 'g++.exe -x c++ -E -I include00 -I include01 -I include02 -include script_header_common01.h -include script_header_common02.h -DXXX -DYYY -c $SOURCE -o $TARGET',
+    suffix = '.script.i',
+    src_suffix = '.script',
+)
+
+# Regist MyBuilder
+env = Environment(
+    ENV = os.environ,
+    BUILDERS = {'MyBuilder' : bld},
+    #NG
+    #CC = 'g++.exe',
+    #LINK = 'g++.exe',
+    #CCFLAGS = [ '-x', 'c++', '-E', '-I', 'include00', '-I', 'include01', '-I', 'include02', '-include', 'script_header_common01.h', '-include', 'script_header_common02.h', '-DXXX', '-DYYY', '-c', '$SOURCE' ],
+    #LINKFLAGS = [ '-x', 'c++', '-E', '-I', 'include00', '-I', 'include01', '-I', 'include02', '-include', 'script_header_common01.h', '-include', 'script_header_common02.h', '-DXXX', '-DYYY', '-c', '$SOURCE' ],
+    #CPPSUFFIXES = [ '.script' ],
+    ##OBJSUFFIX = '.script.i',
+    #OBJSUFFIX = '.script',
+    #PROGSUFFIX = '.script.i',
+)
+#print env.Dump()
+
+# Source files
+input_files = [
+    'src/test00.script',
+    'src/test01/test01.script',
+    'src/test02/test02a.script',
+    'src/test02/test02b.script',
+]
+
+# Run
+#for input_file in [ glob.glob('src/*.script'), glob.glob('src/*/*.script') ]: #NG
+#for input_file in glob.iglob('src/*.script'): #NG
+for input_file in input_files:
+    #print '\t', input_file
+    env.MyBuilder(input_file)
+    #env.Program(input_file)

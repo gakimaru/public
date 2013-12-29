@@ -45,11 +45,14 @@ rem   --tree=all オプションを付けると、ターゲットの依存関係が表示される。
 
 rem --- C++プリプロセッサテスト ---
 rem ※商用利用可能な無償コンパイラ Microsoft Visual C++ 2008 Express を使用する
+rem   http://homepage2.nifty.com/nonnon/Chinamini/20110001/20110307.html
 
 rem SET SCRIPT_BASE=%~dp0
 rem SET CL_OPT=/nologo /TP /E /I "%SCRIPT_BASE%include00" /I "%SCRIPT_BASE%include01" /I "%SCRIPT_BASE%include02" /FI "script_header_common01.h" /FI "script_header_common02.h" /D=XXX /D=YYY
-rem CL.exe %CL_OPT% %SCRIPT_BASE%src\test01.script > %SCRIPT_BASE%preprocess\test01.i.script
-rem CL.exe %CL_OPT% %SCRIPT_BASE%src\test02.script > %SCRIPT_BASE%preprocess\test02.i.script
+rem CL.exe %CL_OPT% %SCRIPT_BASE%src\test00.script > %SCRIPT_BASE%preprocess\test00.script.i
+rem CL.exe %CL_OPT% %SCRIPT_BASE%src\test01\test01.script > %SCRIPT_BASE%preprocess\test01.script.i
+rem CL.exe %CL_OPT% %SCRIPT_BASE%src\test02\test02a.script > %SCRIPT_BASE%preprocess\test02a.script.i
+rem CL.exe %CL_OPT% %SCRIPT_BASE%src\test02\test02b.script > %SCRIPT_BASE%preprocess\test02b.script.i
 
 rem 【CL.exe プリプロセッサ入出力に関係する主なオプション】 「★」は使用オプション
 rem   /P  ... ファイルを前処理する (.iファイルに出力)

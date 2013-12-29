@@ -1,0 +1,8 @@
+//ファイル：test00.script
+
+ScriptTest00()
+{
+	return;
+}
+
+// End of file

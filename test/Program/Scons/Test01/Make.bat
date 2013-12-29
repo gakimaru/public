@@ -18,6 +18,7 @@ rem --- Python のパスを通す ---
 SET PYTHON_DIR=D:\Python\27\x64
 SET PATH=%PYTHON_DIR%\;%PYTHON_DIR%\Scripts\;%PATH%
 
+rem --- TEMP 調整 ---
 rem ★環境変数 TEMP と TMP に日本語が入っているとSconsが動作しないので注意。
 rem   ユーザー名に日本語が含まれているとそのような状態になる
 rem   対策として、環境変数の内容を強引に書き換えておく

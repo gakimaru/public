@@ -1,0 +1,13 @@
+//ファイル：test02a.script
+
+#include "script_header02.h"
+#include "script_header02ex.h"
+
+ScriptTest02A(a, b)
+{
+	a = DEF02_A;
+	b = DEF02_B;
+	c = DEF02_C;
+}
+
+// End of file

@@ -1,0 +1,12 @@
+■SWI-Prolog（Windows用Prolog）のインストール
+
+参考：
+  http://yohshiy.blog.fc2.com/blog-entry-225.html
+  
+  ※インストールの課程で、拡張子をデフォルトの .pl から .prl に変更している点に注意。
+    （.pl は Perl の拡張子と重複するため）
+
+インストーラー：
+  http://www.swi-prolog.org/download/stable
+
+以上

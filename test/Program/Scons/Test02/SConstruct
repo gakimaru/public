@@ -1,0 +1,33 @@
+import os.path
+
+txtdir = "txt"
+
+Command(os.path.join(txtdir, "hoge.txt"), None,
+        [
+            "ECHO abspath: ${TARGET.abspath} > $TARGET",
+            "ECHO dir: ${TARGET.dir} >> $TARGET",
+            "ECHO notdir: ${TARGET.file} >> $TARGET",
+            "ECHO basename: ${TARGET.base} >> $TARGET",
+            "ECHO suffix: ${TARGET.suffix} >> $TARGET"
+        ])
+
+fuga_txt_name = "fuga.txt"
+fuga_txt = os.path.join(txtdir, fuga_txt_name)
+fuga_txt_abspath = os.path.abspath(fuga_txt)
+fuga_txt_dir = os.path.dirname(fuga_txt)
+fuga_txt_notdir = os.path.basename(fuga_txt)
+fuga_txt_basename = os.path.splitext(fuga_txt)[0]
+fuga_txt_suffix = os.path.splitext(fuga_txt)[1]
+
+Command(fuga_txt, None,
+        """
+            ECHO abspath: %(fuga_txt_abspath)s > $TARGET
+            ECHO dir: %(fuga_txt_dir)s >> $TARGET
+            ECHO notdir: %(fuga_txt_notdir)s >> $TARGET
+            ECHO basename: %(fuga_txt_basename)s >> $TARGET
+            ECHO suffix: %(fuga_txt_suffix)s >> $TARGET
+        """ % locals()
+       )
+
+Command("piyo.txt", [os.path.join(txtdir, "hoge.txt"), fuga_txt],
+        "TYPE $SOURCES > $TARGET")

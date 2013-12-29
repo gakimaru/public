@@ -1,0 +1,65 @@
+■Sconsのインストール手順
+
+・Sconsとは ... Makefile のようなビルド用ツール。Python製。
+                出力ファイルの依存ファイルの更新状態判定には、Makefileのようなファイルのタイムスタンプによる判定だけではなく、MD5ハッシュの比較もサポートされているとの事。
+                C言語ソース内の #include 文を読み取り、依存ファイルを自動的に抽出する仕組みも用意されているとの事。
+
+1) Python Ver.2.x(x86) をインストール
+  
+  http://www.python.org/
+  
+  ※以下、Python(x86用) Ver.2.7 を C:\Python27\ （デフォルト）にインストールするものとして説明。
+    
+    C:\Python27\
+      python.exe ... Python の実行ファイルはインストールフォルダの直下に配置される。
+  
+  ※Sconsは、Pythonの最新バージョン（Ver.3.x系）に非対応の為、Ver.2.x系をインストールする。
+  
+  ※Sconsインストール時は x86用のレジストリを参照する。
+    x64用がインストールされていても検知しないので注意。
+    なお、x64用のインストール後に、そのレジストリをx86用のレジストリに書き写す事でもOK。
+     
+      - x86用のレジストリ ... \\HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Python\PythonCore\2.7\
+      - x64用のレジストリ ... \\HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\
+
+2) Scons をインストール
+  
+  http://www.scons.org/
+  
+  ※以下、Scons Ver.2.3.0 をインストールするものとして説明。
+  
+  ※セットアッププログラム（scons-2.3.0-setup.exe）を実行すると、Pythonのインストールフォルダに、Sconsのファイルがコピーされる。
+    
+    C:\Python27\
+      Scripts\
+        scons.bat ... Scons の起動バッチ
+        scons.py  ... Scons の起動スクリプト
+        scons*.*  ... Scons の他の構成ファイル
+      Lib\
+        site-packages\
+          scons-2.3.0\  ... Scons の構成ファイル
+
+3) Python のパスを通す
+  
+  ※C:\Python27\ と C:\Python27\Scripts\ のパスが通っていると、Scons が実行できる。
+
+4) Scons の実行
+  
+  ※コマンドプロンプトで scons とタイプして実行すればOK。
+    デフォルトでは、SConstruct というファイルを読み込んで処理する。
+    （make がデフォルトで Makefile を読み込んだ処理するようなもの）
+
+5) SConstruct の書き方
+  
+  ※ネットの記事などを参照。
+
+
+＜参考＞
+Scons を .exeファイル化した scons.exe も存在する。この場合、Pythonのインストールは不要。
+http://sourceforge.jp/projects/sfnet_sconsexe.berlios/
+
+これはおそらく、py2exeというツールを使用して、Pythonスクリプトを.exeファイル化したもの。
+http://quoops.cocolog-nifty.com/blog/2010/09/sconsexe.html
+
+
+以上

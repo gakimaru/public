@@ -1,0 +1,3 @@
+Command("out01.txt", None, 'ECHO This is $TARGET > $TARGET')
+Command("out02.txt", None, 'ECHO This is $TARGET > $TARGET')
+Command("out01and02.txt", ["out01.txt", "out02.txt"], 'TYPE $SOURCES > $TARGET')

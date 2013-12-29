@@ -1,0 +1,13 @@
+% 三段論法
+
+% 事実 : ソクラテスは人間である
+human(socrates).
+
+% 事実 : プラトンは人間である
+human(plato).
+
+% 事実 : アリストテレスは人間である
+human(aristotle). 
+
+% ルール : 人間は死ぬ
+die(X) :- human(X).

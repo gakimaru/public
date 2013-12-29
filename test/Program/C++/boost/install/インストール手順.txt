@@ -1,0 +1,60 @@
+≪boost C++ library Visual C++ 環境へのインストール手順≫
+
+【構成】
+・対象バージョン：1.55
+・対象開発プラットフォーム：Microsoft Visual C++ 2013 (MSVC12)
+・ライブラリアーカイブの展開先：E:\lib\boost\build\1_55\
+・ライブラリのインストール先：
+    インクルードパス：E:\lib\boost\boost-1_55\x86\ (boost\フォルダ以下に展開)
+                      E:\lib\boost\boost-1_55\x64\ (boost\フォルダ以下に展開)
+    ライブラリパス：E:\lib\boost\boost-1_55\x86\lib\
+                    E:\lib\boost\boost-1_55\x64\lib\
+・ライブラリインストール時のワークフォルダ：E:\lib\boost\install\1_55\
+
+1) bootstrap.bat の実行
+    
+    1-1) E:\lib\boost\build\1_55\ に、boostrap_start.bat を作成し、
+         同フォルダ上の bootstrap.bat を呼び出すようにする。
+         実行後に PAUSE して結果を確認できるようにしておく。
+    
+    1-2) なぜか boost\tools\build\v2\engine\build.bat が正しく MSVC12 を認識しないので、
+         正しく動作するように下記の修正を行う。
+         （Windows8.1 64bit + VS2013Pro + VS2012Pro + VC++2008Express がインストールされている環境）
+          
+          tools\build\v2\engine\build.bat を修正。
+          問題の詳細と修正内容は、同フォルダ上の build.bat.修正内容.txt に記載。
+    
+    1-3) boostrap_start.bat を実行する。
+         同フォルダ上に、b2.exe と bjam.exe が作成される。
+         エラーが出ない事を確認する。
+         ログファイル bootstrap.log も確認する。
+
+2) b2.exe の実行とインストール
+    
+    2-1) E:\lib\boost\build\1_55\ に、b2_start.bat を作成し、
+         適切なオプションで b2.exe を実行するようにする。
+         下記のオプションを設定。
+           install
+           toolset=msvc-12.0
+           link=static
+           threading=multi
+           variant=debug,release
+           runtime-link=static,shared
+           architecture=x86
+           address-model=32/64
+           --prefix=***
+           -j8
+         
+         オプションの説明については下記のサイトを参考に。
+           https://sites.google.com/site/boostjp/howtobuild
+           http://d.hatena.ne.jp/mintsu123/20130629/1372516484
+    
+    2-2) serialization のビルドが失敗するので、下記のソースを修正する。
+           boost\archive\iterators\
+             transform_width.hpp  ... #include <algorithm> を追加。
+                                      「std::min」が無いというエラーの対策。
+    
+    2-3) b2_start.bat を実行すると、ライブラリの作成とインストールが行われる。
+         ログファイル b2_x**.log を出力するので、エラーが出ない事を確認する。
+
+以上

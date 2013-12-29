@@ -1,0 +1,14 @@
+★boost\tools\build\v2\engine\build.bat の不具合修正
+(Build for boost Ver.1.55.0)
+
+意味不明だが、42行目の「call :Clear_Error」で
+なぜか190行目の「call :Test_Path cl.exe」に
+ジャンプしまうなど、意味不明の不具合が起こる。
+
+その対策として、190行目に「REM ???」という一文を挿入。
+この対策の根拠は全くなし。
+何かしらの編集を行うと直ったり悪化したりする。
+直接の原因不明。
+
+（板垣）
+以上

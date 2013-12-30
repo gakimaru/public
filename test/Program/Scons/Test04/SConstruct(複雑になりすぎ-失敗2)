@@ -74,6 +74,14 @@ def convertSourceToTarget(source_file):
                   )
     return target_file
 
+# Depend file path -> Target file path
+def convertDependToTarget(depend_file):
+    target_file = re.sub(r'' + DEPEND_FILE_SUFFIX.replace('.', '\\.') + '$',
+                         PREPROCESS_FILE_SUFFIX, 
+                         depend_file.replace('\\', '/')
+                  )
+    return target_file
+
 # Source file path -> Depend file path
 def convertSourceToDepend(source_file):
     depend_file = re.sub(r'' + SOURCE_FILE_SUFFIX.replace('.', '\\.') + '$',
@@ -81,6 +89,61 @@ def convertSourceToDepend(source_file):
                         convertSourceDirToPreprocess(source_file)
                  )
     return depend_file
+
+# Depend file path -> Object file path (Dummy)
+def convertDependToObject(depend_file):
+    object_file = re.sub(r'^.*\/',
+                         '', 
+                         re.sub(r'' + DEPEND_FILE_SUFFIX.replace('.', '\\.') + '$',
+                                '.o',
+                                depend_file.replace('\\', '/')
+                         )
+                   )
+    return object_file
+
+def dummyAction():
+    return []
+
+def dummyFunction(node, env, path):
+    return []
+
+def parseDependFile(node, env, path):
+    depend_file = str(node)
+    target_file = convertDependToTarget(depend_file)
+    object_file = convertDependToObject(depend_file)
+    #print "***** parseDependFile(%s, %s, %s)" % (depend_file, target_file, object_file)
+    file_text_now = open(depend_file, 'r').read()
+    file_text_new = re.sub(r'^' + object_file, target_file, file_text_now)
+    if file_text_now != file_text_new:
+        open(depend_file, 'w').write(file_text_new)
+    ParseDepends(depend_file)
+    return []
+
+def checkDependFileExist(node, env):
+    print "***** checkDependFileExist(%s)" % (str(node))
+    return node.exists()
+
+source_file_scanner = Scanner(
+    function = dummyFunction,
+    skeys = [ SOURCE_FILE_SUFFIX ],
+    scan_check = checkDependFileExist
+)
+
+depend_file_scanner = Scanner(
+    function = parseDependFile,
+    skeys = [ DEPEND_FILE_SUFFIX ],
+    scan_check = checkDependFileExist
+)
+depend_file_builder_core = Builder(
+    action = '$CC -M -MF $TARGET $CFLAGS $CCFLAGS $_CCCOMCOM -c $SOURCE',
+    target_scanner = depend_file_scanner
+)
+
+depend_file_builder = Builder(
+    action = dummyAction(),
+    src_builder = depend_file_builder_core,
+    source_scanner = source_file_scanner
+)
 
 # Environment
 env = Environment(
@@ -96,7 +159,8 @@ env = Environment(
     INCPREFIX = '-I',
     CPPPATH = INCLUDE_DIRS,
     CPPDEFPREFIX = '-D',
-    CPPDEFINES = DEFINE_MACROS
+    CPPDEFINES = DEFINE_MACROS,
+    BUILDERS = {'DependFileBuilder': depend_file_builder}
 )
 
 # Adjust environment
@@ -125,8 +189,11 @@ for source_file in SOURCE_FILES:
     source_file = source_file.replace('\\', '/')
     target_file = convertSourceToTarget(source_file)
     depend_file = convertSourceToDepend(source_file)
-    depend_file_obj = env.Object(target = depend_file, source = source_file, CCFLAGS = '-M', CCCOM = '$CC -MF $TARGET -c $CFLAGS $CCFLAGS $_CCCOMCOM $SOURCES')
-    target_obj      = env.Object(target = target_file, source = source_file)
-    ParseDepends(depend_file)
-    #env.Requires(target_obj, depend_file_obj)
-    #env.SideEffect(depend_file_obj, target_obj)
+    #depend_obj = env.Object(target = depend_file, source = source_file, CCFLAGS = '-M', CCCOM = '$CC -MF $TARGET -c $CFLAGS $CCFLAGS $_CCCOMCOM $SOURCES')
+    depend_file_obj = env.DependFileBuilder(target = depend_file, source = source_file)
+    target_obj = env.Object(target = target_file, source = source_file)
+    env.Requires(depend_file_obj, source_file)
+    env.Requires(target_obj, depend_file_obj)
+    #env.Depends(target_file, FORCE_INCLUDE_FILES)
+    #env.SideEffect(depend_file1_obj, target_obj)
+    #env.SideEffect(depend_file2_obj, target_obj)

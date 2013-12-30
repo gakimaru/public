@@ -35,12 +35,14 @@ ECHO.
 ECHO ********** テスト開始 **********
 
 rem --- Scons を実行 ---
-CALL :RUN_CMD CALL scons.bat --tree=all
+CALL :RUN_CMD CALL scons.bat --tree=all --debug=explain
 
 rem 【実行時オプション】
 rem   -c オプションを付けると、ターゲットファイルを削除してくれる（make clean と同じ動作）
 rem   --debug=explain オプションを付けると、ビルド実行時の理由が表示される。
 rem   --tree=all オプションを付けると、ターゲットの依存関係が表示される。
+rem   -Q オプションをつけると scons が静かになり主に gcc のメッセージが表示されます。
+rem   install オプションをつけると make install の振る舞いをします。
 
 rem --- C++プリプロセッサテスト ---
 rem ※MinGWのGCCを使用する
@@ -48,10 +50,10 @@ rem   http://www3.u-toyama.ac.jp/kihara/pgm/gcc.html
 
 rem SET SCRIPT_BASE=%~dp0
 rem SET CCFLAGS=-x c++ -E -I "%SCRIPT_BASE%include00" -I "%SCRIPT_BASE%include01" -I "%SCRIPT_BASE%include02" -include "script_header_common01.h" -include "script_header_common02.h" -DXXX -DYYY
-rem CALL :RUN_CMD g++.exe %CCFLAGS% -c %SCRIPT_BASE%src\test00.script -o %SCRIPT_BASE%preprocess\test00.script.i
-rem CALL :RUN_CMD g++.exe %CCFLAGS% -c %SCRIPT_BASE%src\test01\test01.script -o %SCRIPT_BASE%preprocess\test01.script.i
-rem CALL :RUN_CMD g++.exe %CCFLAGS% -c %SCRIPT_BASE%src\test02\test02a.script -o %SCRIPT_BASE%preprocess\test02a.script.i
-rem CALL :RUN_CMD g++.exe %CCFLAGS% -c %SCRIPT_BASE%src\test02\test02b.script -o %SCRIPT_BASE%preprocess\test02b.script.i
+rem CALL :RUN_CMD g++.exe %CCFLAGS% -c %SCRIPT_BASE%src\test00.script -M -MF %SCRIPT_BASE%preprocess\test00.script.d -o %SCRIPT_BASE%preprocess\test00.script.i
+rem CALL :RUN_CMD g++.exe %CCFLAGS% -c %SCRIPT_BASE%src\test01\test01.script -M -MF %SCRIPT_BASE%preprocess\test01\test01.script.d -o %SCRIPT_BASE%preprocess\test01\test01.script.i
+rem CALL :RUN_CMD g++.exe %CCFLAGS% -c %SCRIPT_BASE%src\test02\test02a.script -M -MF %SCRIPT_BASE%preprocess\test02\test02a.script.d -o %SCRIPT_BASE%preprocess\test02\test02a.script.i
+rem CALL :RUN_CMD g++.exe %CCFLAGS% -c %SCRIPT_BASE%src\test02\test02b.script -M -MF %SCRIPT_BASE%preprocess\test02\test02b.script.d -o %SCRIPT_BASE%preprocess\test02\test02b.script.i
 
 rem 【g++.exe プリプロセッサ入出力に関係する主なオプション】 「★」は使用オプション
 rem ★-c  ... ソース・ファイルのコンパイル、 または、 アセンブルを行いますが、
@@ -150,7 +152,7 @@ rem   -C  ... プリプロセッサに対して、 コメントを破棄しないよう指示します。
 rem           `-E'オプションとともに使います。
 rem   -P  ... プリプロセッサに対して、 `#line'指示子を生成しないよう指示します。
 rem           `-E'オプションとともに使います。
-rem   -M  ... プリプロセッサに対して、 makeコマンドで使うのに適した、 個々の
+rem ★-M  ... プリプロセッサに対して、 makeコマンドで使うのに適した、 個々の
 rem           オブジェクト・ファイルの依存関係を記述したルール情報を出力
 rem           するよう指示します。 プリプロセッサは、 個々のソース・ファイルに
 rem           対して、 そのソース・ファイルに対応するオブジェクト・ファイル名が
@@ -181,6 +183,13 @@ rem           ファイルと同じディレクトリに存在するものと想定します。 `-MG'を
 rem           指定する場合には、 `-M'か`-MM'のいずれかをあわせて指定しなければ
 rem           なりません。 `-MD'や`-MMD'が指定されている場合には、 `-MG'は
 rem           サポートされません。
+rem ★-MF file
+rem       ... When used with '-M' or '-MM', specifies a file to write the
+rem           dependencies to. If no '-MF' switch is given the preprocessor
+rem           sends the rules to the same place it would have sent preprocessed
+rem           output. 
+rem           When used with the driver options '-MD' or '-MMD', '-MF' overrides
+rem           the default dependency output file. 
 rem   -H  ... 通常の処理に加えて、 使用される個々のヘッダ・ファイルの名前を
 rem           表示します。 
 rem   -Aquestion(answer)

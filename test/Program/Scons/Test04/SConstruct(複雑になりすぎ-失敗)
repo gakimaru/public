@@ -1,0 +1,212 @@
+import os
+import glob
+import re
+
+import SCons.Tool
+import SCons.Tool.cc
+import SCons.Defaults
+
+# Include file directories
+INCLUDE_DIRS = [
+    '.',
+    'include00',
+    'include01',
+    'include02',
+]
+
+# force include files
+FORCE_INCLUDE_FILES = [
+    'include00/script_header_common01.h',
+    'include00/script_header_common02.h'
+]
+
+# Define macros
+DEFINE_MACROS = [
+    'XXX',
+    'YYY',
+]
+
+# Basic directories
+SOURCE_DIR_TOP = 'src/'
+PREPROCESS_DIR_TOP = 'preprocess/'
+
+# File suffixes
+SOURCE_FILE_SUFFIX = '.script'
+PREPROCESS_FILE_SUFFIX = '.script.i'
+DEPEND_FILE1_SUFFIX = '.script.d1'
+DEPEND_FILE2_SUFFIX = '.script.d2'
+
+# Source files
+#SOURCE_FILES = [
+#    'src/test00' + SOURCE_FILE_SUFFIX,
+#    'src/test01/test01' + SOURCE_FILE_SUFFIX,
+#    'src/test02/test02a' + SOURCE_FILE_SUFFIX,
+#    'src/test02/test02b' + SOURCE_FILE_SUFFIX,
+#]
+#print 'SOURCE_FILES=', SOURCE_FILES
+#SOURCE_FILES = glob.glob(SOURCE_DIR_TOP + '*'   + SOURCE_FILE_SUFFIX) + \
+#               glob.glob(SOURCE_DIR_TOP + '*/*' + SOURCE_FILE_SUFFIX)
+#print 'SOURCE_FILES=', SOURCE_FILES
+#SOURCE_FILES = list(glob.iglob(SOURCE_DIR_TOP + '*' + SOURCE_FILE_SUFFIX)) + \
+#               list(glob.iglob(SOURCE_DIR_TOP + '*/*' + SOURCE_FILE_SUFFIX))
+#print 'SOURCE_FILES=', SOURCE_FILES
+SOURCE_FILES = []
+source_file_pattern = re.compile(SOURCE_FILE_SUFFIX.replace('.', '\\.') + '$')
+for path,dirs,files in os.walk(SOURCE_DIR_TOP):
+    for file in files:
+        file_path = os.path.join(path, file).replace('\\', '/')
+        if source_file_pattern.search(file_path) is not None:
+            SOURCE_FILES = SOURCE_FILES + [file_path]
+#print 'SOURCE_FILES=', SOURCE_FILES
+
+# Source file path -> Preprocess file path
+def convertSourceDirToPreprocess(source_file):
+    preprocess_file = re.sub(r'' + '^' + SOURCE_DIR_TOP.replace('/', '\\/'),
+                             PREPROCESS_DIR_TOP, 
+                             source_file.replace('\\', '/')
+                      )
+    return preprocess_file
+
+# Source file path -> Target file path
+def convertSourceToTarget(source_file):
+    target_file = re.sub(r'' + SOURCE_FILE_SUFFIX.replace('.', '\\.') + '$',
+                         PREPROCESS_FILE_SUFFIX, 
+                         convertSourceDirToPreprocess(source_file)
+                  )
+    return target_file
+
+# Depend file1 path -> Target file path
+def convertDepen1ToTarget(depend_file1):
+    target_file = re.sub(r'' + DEPEND_FILE1_SUFFIX.replace('.', '\\.') + '$',
+                         PREPROCESS_FILE_SUFFIX, 
+                         depend_file1.replace('\\', '/')
+                  )
+    return target_file
+
+# Source file path -> Depend file1 path
+def convertSourceToDepend1(source_file):
+    depend_file1 = re.sub(r'' + SOURCE_FILE_SUFFIX.replace('.', '\\.') + '$',
+                         DEPEND_FILE1_SUFFIX, 
+                         convertSourceDirToPreprocess(source_file)
+                  )
+    return depend_file1
+
+# Source file path -> Depend file2 path
+def convertSourceToDepend2(source_file):
+    depend_file2 = re.sub(r'' + SOURCE_FILE_SUFFIX.replace('.', '\\.') + '$',
+                         DEPEND_FILE2_SUFFIX, 
+                         convertSourceDirToPreprocess(source_file)
+                  )
+    return depend_file2
+
+# Depend file1 path -> Depend file2 path
+def convertDepen1ToDepend2(depend_file1):
+    depend_file2 = re.sub(r'' + DEPEND_FILE1_SUFFIX.replace('.', '\\.') + '$',
+                          DEPEND_FILE2_SUFFIX,
+                          depend_file1.replace('\\', '/')
+                   )
+    return depend_file2
+
+# Depend file1 path -> Object file path (Dummy)
+def convertDepend1ToObject(depend_file1):
+    object_file = re.sub(r'^.*\/',
+                         '', 
+                         re.sub(r'' + DEPEND_FILE1_SUFFIX.replace('.', '\\.') + '$',
+                                '.o',
+                                depend_file1.replace('\\', '/')
+                         )
+                   )
+    return object_file
+
+# Parse depend file
+def parseDependFile(node, env, path):
+    depend_file1 = str(node)
+    depend_file2 = convertDepen1ToDepend2(depend_file1)
+    target_file = convertDepen1ToTarget(depend_file1)
+    object_file = convertDepend1ToObject(depend_file1)
+    #print "***** parseDependFile(%s, %s, %s, %s)" % (depend_file1, depend_file2, target_file, object_file)
+    file_text = open(depend_file1, 'r').read()
+    #print "  BEFORE:", file_text
+    file_text = re.sub(r'^' + object_file, target_file, file_text)
+    #print "  AFTER:", file_text
+    open(depend_file2, 'w').write(file_text)
+    ParseDepends(depend_file2)
+    return []
+
+def checkDependFileExist(node, env):
+    #print ">>>>> checkDependFileExist(%s)" % str(node)
+    return node.exists()
+
+depend_file_scanner = Scanner(
+    function = parseDependFile,
+    skeys = [ DEPEND_FILE1_SUFFIX ],
+    scan_check = checkDependFileExist
+)
+
+depend_file1_builder = Builder(
+    action = '$CC -M -MF $TARGET $CFLAGS $CCFLAGS $_CCCOMCOM -c $SOURCE',
+)
+
+depend_file2_builder = Builder(
+    #action = Copy('$TARGET', '$SOURCE'),
+    action = '',
+    suffix = DEPEND_FILE2_SUFFIX,
+    source_scanner = depend_file_scanner
+)
+
+# Environment
+env = Environment(
+    #LANG = 'ja_JP.UTF-8',
+    #LANG = 'ja_JP.eucJP',
+    LANG = 'ja_JP.SJIS',
+    TOOLS = ['mingw'],
+    ENV = os.environ,
+    CC = 'g++',
+    CPPFLAGS = [ '-x', 'c++', '-E' ],
+    CPPSUFFIXES = [ SOURCE_FILE_SUFFIX ],
+    OBJSUFFIX = PREPROCESS_FILE_SUFFIX,
+    INCPREFIX = '-I',
+    CPPPATH = INCLUDE_DIRS,
+    CPPDEFPREFIX = '-D',
+    CPPDEFINES = DEFINE_MACROS,
+    BUILDERS = {'DependFile1Builder': depend_file1_builder,
+                'DependFile2Builder': depend_file2_builder,
+               }
+)
+
+# Adjust environment
+static_obj,shared_obj = SCons.Tool.createObjBuilders(env)
+static_obj.add_action(SOURCE_FILE_SUFFIX, SCons.Defaults.CXXAction)
+shared_obj.add_action(SOURCE_FILE_SUFFIX, SCons.Defaults.ShCXXAction)
+static_obj.add_emitter(SOURCE_FILE_SUFFIX, SCons.Defaults.StaticObjectEmitter)
+shared_obj.add_emitter(SOURCE_FILE_SUFFIX, SCons.Defaults.SharedObjectEmitter)
+
+# Adjust environment
+for force_include_file in FORCE_INCLUDE_FILES:
+    env.Append(CPPFLAGS = '-include')
+    env.Append(CPPFLAGS = force_include_file)
+
+#print env.Dump()
+
+# Matchin method for newest file
+#env.Decider('timestamp-newer')
+#env.Decider('make')
+#env.Decider('timestamp-match')
+#env.Decider('MD5-timestamp')
+env.Decider('MD5')
+
+# Run
+for source_file in SOURCE_FILES:
+    source_file = source_file.replace('\\', '/')
+    target_file = convertSourceToTarget(source_file)
+    depend_file1 = convertSourceToDepend1(source_file)
+    depend_file2 = convertSourceToDepend2(source_file)
+    #depend_obj = env.Object(target = depend_file, source = source_file, CCFLAGS = '-M', CCCOM = '$CC -MF $TARGET -c $CFLAGS $CCFLAGS $_CCCOMCOM $SOURCES')
+    depend_file1_obj = env.DependFile1Builder(target = depend_file1, source = source_file)
+    depend_file2_obj = env.DependFile2Builder(target = depend_file2, source = depend_file1)
+    env.Requires(depend_file2_obj, depend_file1_obj)
+    target_obj = env.Object(target = target_file, source = source_file)
+    env.Requires(target_obj, depend_file2_obj)
+    #env.Depends(target_file, FORCE_INCLUDE_FILES)
+    #env.SideEffect(depend_file1_obj, target_obj)
+    #env.SideEffect(depend_file2_obj, target_obj)

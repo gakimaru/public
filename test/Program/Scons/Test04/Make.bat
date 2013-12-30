@@ -35,7 +35,7 @@ ECHO.
 ECHO ********** テスト開始 **********
 
 rem --- Scons を実行 ---
-CALL :RUN_CMD CALL scons.bat --tree=all > test.log
+CALL :RUN_CMD CALL scons.bat --tree=all
 
 rem 【実行時オプション】
 rem   -c オプションを付けると、ターゲットファイルを削除してくれる（make clean と同じ動作）

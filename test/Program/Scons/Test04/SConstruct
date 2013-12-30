@@ -1,27 +1,33 @@
 import os
 import glob
+import re
 
-# MyBuilder
-bld = Builder(
-    action = 'g++.exe -x c++ -E -I include00 -I include01 -I include02 -include script_header_common01.h -include script_header_common02.h -DXXX -DYYY -c $SOURCE -o $TARGET',
-    suffix = '.script.i',
-    src_suffix = '.script',
-)
+import SCons.Tool
+import SCons.Tool.cc
+import SCons.Defaults
 
-# Regist MyBuilder
+SRC_SUFFIX = '.script'
+OBJ_SUFFIX = '.script.i'
+
+# Environment
 env = Environment(
+    LANG = 'ja_JP.UTF-8',
+    TOOLS = ['mingw'],
     ENV = os.environ,
-    BUILDERS = {'MyBuilder' : bld},
-    #NG
-    #CC = 'g++.exe',
-    #LINK = 'g++.exe',
-    #CCFLAGS = [ '-x', 'c++', '-E', '-I', 'include00', '-I', 'include01', '-I', 'include02', '-include', 'script_header_common01.h', '-include', 'script_header_common02.h', '-DXXX', '-DYYY', '-c', '$SOURCE' ],
-    #LINKFLAGS = [ '-x', 'c++', '-E', '-I', 'include00', '-I', 'include01', '-I', 'include02', '-include', 'script_header_common01.h', '-include', 'script_header_common02.h', '-DXXX', '-DYYY', '-c', '$SOURCE' ],
-    #CPPSUFFIXES = [ '.script' ],
-    ##OBJSUFFIX = '.script.i',
-    #OBJSUFFIX = '.script',
-    #PROGSUFFIX = '.script.i',
+    CC = 'g++',
+    CPPFLAGS = [ '-x', 'c++', '-E', '-include', 'script_header_common01.h', '-include', 'script_header_common02.h' ],
+    CPPSUFFIXES = [ SRC_SUFFIX ],
+    OBJSUFFIX = OBJ_SUFFIX,
+    INCPREFIX = '-I',
+    CPPPATH = [ 'include00', 'include01', 'include02' ],
+    CPPDEFPREFIX = '-D',
+    CPPDEFINES = [ 'XXX', 'YYY' ],
 )
+static_obj, shared_obj = SCons.Tool.createObjBuilders(env)
+static_obj.add_action(SRC_SUFFIX, SCons.Defaults.CXXAction)
+shared_obj.add_action(SRC_SUFFIX, SCons.Defaults.ShCXXAction)
+static_obj.add_emitter(SRC_SUFFIX, SCons.Defaults.StaticObjectEmitter)
+shared_obj.add_emitter(SRC_SUFFIX, SCons.Defaults.SharedObjectEmitter)
 #print env.Dump()
 
 # Source files
@@ -36,6 +42,6 @@ input_files = [
 #for input_file in [ glob.glob('src/*.script'), glob.glob('src/*/*.script') ]: #NG
 #for input_file in glob.iglob('src/*.script'): #NG
 for input_file in input_files:
-    #print '\t', input_file
-    env.MyBuilder(input_file)
-    #env.Program(input_file)
+    target_file = re.sub(r'\.' + SRC_SUFFIX + '$', OBJ_SUFFIX, re.sub(r'^src\/', 'preprocess/', input_file))
+    #print input_file, ' -> ', target_file
+    env.Object(target = target_file, source = input_file)

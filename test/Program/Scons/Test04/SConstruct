@@ -34,6 +34,7 @@ PREPROCESS_DIR_TOP = 'preprocess/'
 SOURCE_FILE_SUFFIX = '.script'
 PREPROCESS_FILE_SUFFIX = '.script.i'
 DEPEND_FILE_SUFFIX = '.script.d'
+DEPEND_FILE_ADJ_SUFFIX = '.script.d2'
 
 # Source files
 #SOURCE_FILES = [
@@ -60,27 +61,150 @@ for path,dirs,files in os.walk(SOURCE_DIR_TOP):
 
 # Source file path -> Preprocess file path
 def convertSourceDirToPreprocess(source_file):
-    preprocess_file = re.sub(r'' + '^' + SOURCE_DIR_TOP.replace('/', '\\/'),
-                             PREPROCESS_DIR_TOP, 
-                             source_file.replace('\\', '/')
+    preprocess_file = re.sub(
+                          r'' + '^' + SOURCE_DIR_TOP.replace('/', '\\/'),
+                          PREPROCESS_DIR_TOP, 
+                          source_file.replace('\\', '/')
                       )
     return preprocess_file
 
 # Source file path -> Target file path
 def convertSourceToTarget(source_file):
-    target_file = re.sub(r'' + SOURCE_FILE_SUFFIX.replace('.', '\\.') + '$',
-                         PREPROCESS_FILE_SUFFIX, 
-                         convertSourceDirToPreprocess(source_file)
+    target_file = re.sub(
+                      r'' + SOURCE_FILE_SUFFIX.replace('.', '\\.') + '$',
+                      PREPROCESS_FILE_SUFFIX, 
+                      convertSourceDirToPreprocess(source_file)
                   )
     return target_file
 
 # Source file path -> Depend file path
 def convertSourceToDepend(source_file):
-    depend_file = re.sub(r'' + SOURCE_FILE_SUFFIX.replace('.', '\\.') + '$',
-                        DEPEND_FILE_SUFFIX, 
-                        convertSourceDirToPreprocess(source_file)
-                 )
+    depend_file = re.sub(
+                      r'' + SOURCE_FILE_SUFFIX.replace('.', '\\.') + '$',
+                      DEPEND_FILE_SUFFIX, 
+                      convertSourceDirToPreprocess(source_file)
+                  )
     return depend_file
+
+# Source file path -> Adjusted depend file path
+def convertSourceToDependAdj(source_file):
+    depend_file_adj = re.sub(
+                          r'' + SOURCE_FILE_SUFFIX.replace('.', '\\.') + '$',
+                          DEPEND_FILE_ADJ_SUFFIX, 
+                          convertSourceDirToPreprocess(source_file)
+                      )
+    return depend_file_adj
+
+# Depend file path -> Adjusted depend file path
+def convertDependToDependAdj(depend_file):
+    depend_file_adj = re.sub(
+                          r'' + DEPEND_FILE_SUFFIX.replace('.', '\\.') + '$',
+                          DEPEND_FILE_ADJ_SUFFIX, 
+                          depend_file.replace('\\', '/')
+                      )
+    return depend_file_adj
+
+# Depend file path -> Target file path
+def convertDependToTarget(depend_file):
+    target_file = re.sub(
+                      r'' + DEPEND_FILE_SUFFIX.replace('.', '\\.') + '$',
+                      PREPROCESS_FILE_SUFFIX, 
+                      depend_file.replace('\\', '/')
+                  )
+    return target_file
+
+# Depend file path -> Object file path (Dummy)
+def convertDependToObject(depend_file):
+    object_file = re.sub(
+                      r'^.*\/',
+                      '', 
+                      re.sub(r'' + DEPEND_FILE_SUFFIX.replace('.', '\\.') + '$',
+                          '.o',
+                          depend_file.replace('\\', '/')
+                      )
+                  )
+    return object_file
+
+#
+def parseDependFile(node, env, path):
+    depend_file = str(node)
+    depend_file_adj = convertDependToDependAdj(depend_file)
+    target_file = convertDependToTarget(depend_file)
+    object_file = convertDependToObject(depend_file)
+    #print '***** parseDependFile: depend_file=%s, depend_file_adj=%s, target_file=%s, object_file=%s' % (depend_file, depend_file_adj, target_file, object_file)
+    file_text_adj_now = '';
+    if os.path.exists(depend_file_adj):
+        file_text_adj_now = open(depend_file_adj, 'r').read()
+    file_text = '';
+    if os.path.exists(depend_file):
+        if os.path.exists(depend_file):
+            #i = open(depend_file, 'r')
+            #ile_text = fi.read()
+            #i.close()
+            file_text = open(depend_file, 'r').read()
+    file_text_adj_new = re.sub(r'^' + object_file, target_file, file_text)
+    if file_text_adj_now != file_text_adj_new:
+        #fo = open(depend_file_adj, 'w')
+        #print '    >>>>>>>>>>> depend_file_adj=', depend_file_adj, ', file_text_adj_new=', file_text_adj_new, ', fo=', fo
+        #fo.write(file_text_adj_new)
+        #fo.close()
+        open(depend_file_adj, 'w').write(file_text_adj_new)
+        if os.path.exists(depend_file_adj):
+            print 'Created or updated "' + depend_file_adj + '".'
+        else:
+            print 'Failed to create "' + depend_file_adj + '".'
+    return []
+
+def parseDependFileAdj(node, env, path):
+    depend_file_adj = str(node)
+    #print '***** parseDependFileAdj: depend_file_adj=', depend_file_adj
+    env.ParseDepends(depend_file_adj)
+    return []
+
+#
+def checkDependFile(node, env):
+    #print '***** checkDependFile:', str(node)
+    return node.exists()
+
+def checkDependFileAdj(node, env):
+    #print '***** checkDependFileAdj:', str(node)
+    return node.exists()
+
+#
+scan_depend_file = Scanner(
+                       function = parseDependFile,
+                       skeys = [ DEPEND_FILE_SUFFIX ],
+                       scan_check = checkDependFile
+                   )
+
+scan_depend_adj_file = Scanner(
+                           function = parseDependFileAdj,
+                           skeys = [ DEPEND_FILE_ADJ_SUFFIX ],
+                           scan_check = checkDependFileAdj
+                       )
+
+#
+build_depend_file = Builder(
+                        #anction = '$CC -MF $TARGET -c $CFLAGS $CCFLAGS $_CCCOMCOM $SOURCES',
+                        anction = 'ECHO +++++ build_depend_file: TARGET=$TARGET, SOURCE=$SOURCE',
+                        suffix = DEPEND_FILE_ADJ_SUFFIX,
+                        src_suffix = DEPEND_FILE_SUFFIX,
+                    )
+
+#
+def dummy(target, source):
+    return []
+
+parse_depend_file = Builder(
+                        #action = Copy('$TARGET', '$SOURCE'),
+                        #action = 'TYPE $SOURCE > $TARGET',
+                        action = dummy('$TARGET', '$SOURCE'),
+                        suffix = DEPEND_FILE_ADJ_SUFFIX,
+                        src_suffix = DEPEND_FILE_SUFFIX,
+                        src_builer = build_depend_file,
+                        source_scanner = scan_depend_file,
+                        target_scanner = scan_depend_adj_file
+                    )
 
 # Environment
 env = Environment(
@@ -96,7 +220,8 @@ env = Environment(
     INCPREFIX = '-I',
     CPPPATH = INCLUDE_DIRS,
     CPPDEFPREFIX = '-D',
-    CPPDEFINES = DEFINE_MACROS
+    CPPDEFINES = DEFINE_MACROS,
+    BUILDERS = {'parseDependFile': parse_depend_file}
 )
 
 # Adjust environment
@@ -125,8 +250,16 @@ for source_file in SOURCE_FILES:
     source_file = source_file.replace('\\', '/')
     target_file = convertSourceToTarget(source_file)
     depend_file = convertSourceToDepend(source_file)
+    depend_file_adj = convertSourceToDependAdj(source_file)
+    
     depend_file_obj = env.Object(target = depend_file, source = source_file, CCFLAGS = '-M', CCCOM = '$CC -MF $TARGET -c $CFLAGS $CCFLAGS $_CCCOMCOM $SOURCES')
-    target_obj      = env.Object(target = target_file, source = source_file)
-    ParseDepends(depend_file)
-    #env.Requires(target_obj, depend_file_obj)
+    depend_file_adj_obj = env.parseDependFile(target = depend_file_adj, source = depend_file)
+    target_obj = env.Object(target = target_file, source = source_file)
+    
+    #env.Requires(depend_file_obj, source_file)
+    #env.Requires(depend_file_adj_obj, depend_file_obj)
+    #env.Requires(target_obj, depend_file_adj_obj)
+    #env.Requires(target_obj, source_file)
+    #env.SideEffect(source_file, target_obj)
     #env.SideEffect(depend_file_obj, target_obj)
+    #env.SideEffect(depend_file_adj_obj, target_obj)

@@ -1,0 +1,5 @@
+[
+	{"id":1, "name":"Yamada", "param": {"str": 10, "vit": 2.0, "ext": [1, 2, 3], "is_boss": true } },
+	{"id":2, "name":"Tanaka", "param": {"str": 11, "vit": 2.1, "ext": [4, 5, 6], "is_boss": false } },
+	{"id":3, "name":"Sato", "param": {"str": 12, "vit": 2.2, "ext": [7, 8, 9], "is_boss": true } },
+]

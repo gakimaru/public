@@ -23,8 +23,10 @@ public:
 		CProxyPrintCommon<CProxyPrintMap>(*this)
 	{
 	}
-	void destructor();
 	~CProxyPrintMap();
+public:
+	void cbDispose();
+	
 private:
 	CMapData* m_this;
 };
@@ -44,8 +46,10 @@ public:
 		CProxyUpdateCommon<CProxyUpdateMap>(*this)
 	{
 	}
-	void destructor();
 	~CProxyUpdateMap();
+public:
+	void cbDispose();
+	
 private:
 	CMapData* m_this;
 };
@@ -65,8 +69,10 @@ public:
 		CProxyDrawCommon<CProxyDrawMap>(*this)
 	{
 	}
-	void destructor();
 	~CProxyDrawMap();
+public:
+	void cbDispose();
+	
 private:
 	CMapData* m_this;
 };
@@ -82,8 +88,10 @@ public:
 		this->m_proxyUpdate.m_this = me;
 		this->m_proxyDraw.m_this = me;
 	}
-	void destructor();
 	~CCompositeMap();
+public:
+	void cbDispose();
+	
 private:
 	CMapData* m_this;
 	CProxyPrintMap m_proxyPrint;

@@ -2,19 +2,19 @@
 
 #include "process/composite.h"
 
-void CCompositeProcess::destructor()
+void CCompositeProcess::cbDispose()
 {
-	std::cout << "CCompositeProcess::destructor()" << std::endl;
-	m_proxyPrint->destructor();
-	m_proxyUpdate->destructor();
-	m_proxyDraw->destructor();
-	this->CComposite::destructor();
+	std::cout << "CCompositeProcess::cbDispose()" << std::endl;
+	m_proxyPrint->dispose();
+	m_proxyUpdate->dispose();
+	m_proxyDraw->dispose();
+	this->CComposite::cbDispose();
 }
 
 CCompositeProcess::~CCompositeProcess()
 {
 	std::cout << "CCompositeProcess::~CCompositeProcess()" << std::endl;
-	this->destructor();
+	this->dispose();
 }
 
 // End of file

@@ -43,27 +43,33 @@ void CComponent::removeNextAll()
 	}
 }
 
-void CComponent::destructor()
-{
-	std::cout << "CComponent::destructor()" << std::endl;
-}
-
 CComponent::~CComponent()
 {
 	std::cout << "CComponent::~CComponent()" << std::endl;
-	this->m_vtable->pDestructor(reinterpret_cast<void*>(this));
+	this->dispose();
 }
 
-void CLeaf::destructor()
+void CComponent::dispose()
 {
-	std::cout << "CLeaf::destructor()" << std::endl;
-	CComponent::destructor();
+	std::cout << "CComponent::dispose()" << std::endl;
+	this->m_vtable->pDispose(reinterpret_cast<void*>(this));
+}
+
+void CComponent::cbDispose()
+{
+	std::cout << "CComponent::cbDispose()" << std::endl;
 }
 
 CLeaf::~CLeaf()
 {
 	std::cout << "CLeaf::~CLeaf()" << std::endl;
-	this->destructor();
+	this->dispose();
+}
+
+void CLeaf::cbDispose()
+{
+	std::cout << "CLeaf::cbDispose()" << std::endl;
+	this->CComponent::cbDispose();
 }
 
 void CComposite::addChild(CComponent* child)
@@ -115,17 +121,17 @@ void CComposite::removeChildren()
 	this->m_childTop = nullptr;
 }
 
-void CComposite::destructor()
-{
-	std::cout << "CComposite::destructor()" << std::endl;
-	this->removeChildren();
-	CComponent::destructor();
-}
-
 CComposite::~CComposite()
 {
 	std::cout << "CComposite::~CComposite()" << std::endl;
-	this->destructor();
+	this->dispose();
+}
+
+void CComposite::cbDispose()
+{
+	std::cout << "CComposite::cbDispose()" << std::endl;
+	this->removeChildren();
+	this->CComponent::cbDispose();
 }
 
 // End of file

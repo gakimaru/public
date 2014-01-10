@@ -9,7 +9,7 @@ CProxyPrint::vtable CProxyPrint::vtable_initializer<T>::m_vtable =
 {
 	&CProxyPrint::vtable_initializer<T>::proxyPrintName,
 	&CProxyPrint::vtable_initializer<T>::proxyPrintMessage,
-	&CProxyPrint::vtable_initializer<T>::proxyDestructor
+	&CProxyPrint::vtable_initializer<T>::proxyDispose
 };
 
 template <class T>
@@ -25,23 +25,24 @@ void CProxyPrint::vtable_initializer<T>::proxyPrintMessage(void* me, const int p
 }
 
 template <class T>
-void CProxyPrint::vtable_initializer<T>::proxyDestructor(void* me)
+void CProxyPrint::vtable_initializer<T>::proxyDispose(void* me)
 {
 //	reinterpret_cast<T*>(me)->~T();
-	reinterpret_cast<T*>(me)->destructor();
-}
-
-template<class derived>
-void CProxyPrintCommon<derived>::destructor()
-{
-	std::cout << "CProxyPrintCommon<derived>::destructor()" << std::endl;
+	reinterpret_cast<T*>(me)->cbDispose();
 }
 
 template<class derived>
 CProxyPrintCommon<derived>::~CProxyPrintCommon()
 {
 	std::cout << "CProxyPrintCommon<derived>::~CProxyPrintCommon()" << std::endl;
-	this->destructor();
+	this->dispose();
+}
+
+template<class derived>
+void CProxyPrintCommon<derived>::cbDispose()
+{
+	std::cout << "CProxyPrintCommon<derived>::cbDispose()" << std::endl;
+	this->CProxyPrint::cbDispose();
 }
 
 template <class T>
@@ -49,7 +50,7 @@ CProxyUpdate::vtable CProxyUpdate::vtable_initializer<T>::m_vtable =
 {
 	&CProxyUpdate::vtable_initializer<T>::proxyUpdate,
 	&CProxyUpdate::vtable_initializer<T>::proxyAnimation,
-	&CProxyUpdate::vtable_initializer<T>::proxyDestructor
+	&CProxyUpdate::vtable_initializer<T>::proxyDispose
 };
 
 template <class T>
@@ -65,23 +66,24 @@ void CProxyUpdate::vtable_initializer<T>::proxyAnimation(void* me)
 }
 
 template <class T>
-void CProxyUpdate::vtable_initializer<T>::proxyDestructor(void* me)
+void CProxyUpdate::vtable_initializer<T>::proxyDispose(void* me)
 {
 //	reinterpret_cast<T*>(me)->~T();
-	reinterpret_cast<T*>(me)->destructor();
-}
-
-template<class derived>
-void CProxyUpdateCommon<derived>::destructor()
-{
-	std::cout << "CProxyUpdateCommon<derived>::destructor()" << std::endl;
+	reinterpret_cast<T*>(me)->cbDispose();
 }
 
 template<class derived>
 CProxyUpdateCommon<derived>::~CProxyUpdateCommon()
 {
 	std::cout << "CProxyUpdateCommon<derived>::~CProxyUpdateCommon()" << std::endl;
-	this->destructor();
+	this->dispose();
+}
+
+template<class derived>
+void CProxyUpdateCommon<derived>::cbDispose()
+{
+	std::cout << "CProxyUpdateCommon<derived>::cbDispose()" << std::endl;
+	this->CProxyUpdate::cbDispose();
 }
 
 template <class T>
@@ -89,7 +91,7 @@ CProxyDraw::vtable CProxyDraw::vtable_initializer<T>::m_vtable =
 {
 	&CProxyDraw::vtable_initializer<T>::proxyPreDraw,
 	&CProxyDraw::vtable_initializer<T>::proxyPostDraw,
-	&CProxyDraw::vtable_initializer<T>::proxyDestructor
+	&CProxyDraw::vtable_initializer<T>::proxyDispose
 };
 
 template <class T>
@@ -104,24 +106,25 @@ void CProxyDraw::vtable_initializer<T>::proxyPostDraw(void* me, const int index,
 	reinterpret_cast<T*>(me)->cbPostDraw(index, data);
 }
 
-template <class T>
-void CProxyDraw::vtable_initializer<T>::proxyDestructor(void* me)
-{
-//	reinterpret_cast<T*>(me)->~T();
-	reinterpret_cast<T*>(me)->destructor();
-}
-
-template<class derived>
-void CProxyDrawCommon<derived>::destructor()
-{
-	std::cout << "CProxyDrawCommon<derived>::destructor()" << std::endl;
-}
-
 template<class derived>
 CProxyDrawCommon<derived>::~CProxyDrawCommon()
 {
 	std::cout << "CProxyDrawCommon<derived>::~CProxyDrawCommon()" << std::endl;
-	this->destructor();
+	this->dispose();
+}
+
+template<class derived>
+void CProxyDrawCommon<derived>::cbDispose()
+{
+	std::cout << "CProxyDrawCommon<derived>::cbDispose()" << std::endl;
+	this->CProxyDraw::cbDispose();
+}
+
+template <class T>
+void CProxyDraw::vtable_initializer<T>::proxyDispose(void* me)
+{
+//	reinterpret_cast<T*>(me)->~T();
+	reinterpret_cast<T*>(me)->cbDispose();
 }
 
 #endif//__PROXY_BASE_INL__

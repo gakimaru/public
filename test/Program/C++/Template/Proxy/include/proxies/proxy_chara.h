@@ -23,8 +23,10 @@ public:
 		CProxyPrintCommon<CProxyPrintChara>(*this)
 	{
 	}
-	void destructor();
 	~CProxyPrintChara();
+public:
+	void cbDispose();
+	
 private:
 	CCharaData* m_this;
 };
@@ -44,8 +46,10 @@ public:
 		CProxyUpdateCommon<CProxyUpdateChara>(*this)
 	{
 	}
-	void destructor();
 	~CProxyUpdateChara();
+public:
+	void cbDispose();
+	
 private:
 	CCharaData* m_this;
 };
@@ -65,8 +69,10 @@ public:
 		CProxyDrawCommon<CProxyDrawChara>(*this)
 	{
 	}
-	void destructor();
 	~CProxyDrawChara();
+public:
+	void cbDispose();
+	
 private:
 	CCharaData* m_this;
 };
@@ -82,8 +88,10 @@ public:
 		this->m_proxyUpdate.m_this = me;
 		this->m_proxyDraw.m_this = me;
 	}
-	void destructor();
 	~CCompositeChara();
+public:
+	void cbDispose();
+	
 private:
 	CCharaData* m_this;
 	CProxyPrintChara m_proxyPrint;

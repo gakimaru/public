@@ -26,15 +26,17 @@ public:
 		m_vtable(&vtable_initializer<T>::m_vtable)
 	{
 	}
-	void destructor();
 	~CProxyPrint();
+	void dispose();
+public:
+	void cbDispose();
 
 private:
 	struct vtable
 	{
 		void(*pPrintName)(void*);
 		void(*pPrintMessage)(void*, const int par1, const char* par2);
-		void(*pDestructor)(void*);
+		void(*pDispose)(void*);
 	};
 	template <class T>
 	class vtable_initializer
@@ -43,7 +45,7 @@ private:
 		static vtable m_vtable;
 		static void proxyPrintName(void* me);
 		static void proxyPrintMessage(void* me, const int par1, const char* par2);
-		static void proxyDestructor(void* me);
+		static void proxyDispose(void* me);
 	};
 	void* m_this;
 	vtable* m_vtable;
@@ -60,8 +62,9 @@ public:
 		CProxyPrint(me)
 	{
 	}
-	void destructor();
 	~CProxyPrintCommon();
+public:
+	void cbDispose();
 };
 
 class CProxyUpdate
@@ -79,15 +82,17 @@ public:
 		m_vtable(&vtable_initializer<T>::m_vtable)
 	{
 	}
-	void destructor();
 	~CProxyUpdate();
+	void dispose();
+public:
+	void cbDispose();
 
 private:
 	struct vtable
 	{
 		void(*pUpdate)(void*, const float);
 		void(*pAnimation)(void*);
-		void(*pDestructor)(void*);
+		void(*pDispose)(void*);
 	};
 	template <class T>
 	class vtable_initializer
@@ -96,7 +101,7 @@ private:
 		static vtable m_vtable;
 		static void proxyUpdate(void* me, const float elapsed_time);
 		static void proxyAnimation(void* me);
-		static void proxyDestructor(void* me);
+		static void proxyDispose(void* me);
 	};
 	void* m_this;
 	vtable* m_vtable;
@@ -113,8 +118,9 @@ public:
 		CProxyUpdate(me)
 	{
 	}
-	void destructor();
 	~CProxyUpdateCommon();
+public:
+	void cbDispose();
 };
 
 class CProxyDraw
@@ -132,15 +138,17 @@ public:
 		m_vtable(&vtable_initializer<T>::m_vtable)
 	{
 	}
-	void destructor();
 	~CProxyDraw();
+	void dispose();
+public:
+	void cbDispose();
 
 private:
 	struct vtable
 	{
 		void(*pPreDraw)(void*, const int index, void* data);
 		void(*pPostDraw)(void*, const int index, void* data);
-		void(*pDestructor)(void*);
+		void(*pDispose)(void*);
 	};
 	template <class T>
 	class vtable_initializer
@@ -149,7 +157,7 @@ private:
 		static vtable m_vtable;
 		static void proxyPreDraw(void* me, const int index, void* data);
 		static void proxyPostDraw(void* me, const int index, void* data);
-		static void proxyDestructor(void* me);
+		static void proxyDispose(void* me);
 	};
 	void* m_this;
 	vtable* m_vtable;
@@ -166,8 +174,9 @@ public:
 		CProxyDraw(me)
 	{
 	}
-	void destructor();
 	~CProxyDrawCommon();
+public:
+	void cbDispose();
 };
 
 #endif//__PROXY_BASE_H__

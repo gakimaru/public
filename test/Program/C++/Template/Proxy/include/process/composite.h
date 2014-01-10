@@ -31,8 +31,10 @@ public:
 		m_proxyDraw(proxy_draw)
 	{
 	}
-	void destructor();
 	~CCompositeProcess();
+public:
+	void cbDispose();
+	
 private:
 	CProxyPrint* m_proxyPrint;
 	CProxyUpdate* m_proxyUpdate;

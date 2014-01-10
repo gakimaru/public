@@ -12,16 +12,16 @@ void CProxyPrintChara::cbPrintMessage(const int par1, const char* par2) const
 	std::cout << "CProxyPrintChara::printMessage(par1=" << par1 << ", par2=\"" << par2 << "\")" << std::endl;
 }
 
-void CProxyPrintChara::destructor()
-{
-	std::cout << "CProxyDrawChara::destructor()" << std::endl;
-	this->CProxyPrintCommon<CProxyPrintChara>::destructor();
-}
-
 CProxyPrintChara::~CProxyPrintChara()
 {
 	std::cout << "CProxyPrintChara::~CProxyPrintChara()" << std::endl;
-	this->destructor();
+	this->dispose();
+}
+
+void CProxyPrintChara::cbDispose()
+{
+	std::cout << "CProxyPrintChara::cbDispose()" << std::endl;
+	this->CProxyPrintCommon<CProxyPrintChara>::cbDispose();
 }
 
 void CProxyUpdateChara::cbUpdate(const float elapsed_time) const
@@ -34,16 +34,16 @@ void CProxyUpdateChara::cbAnimation() const
 	std::cout << "CProxyUpdateChara::animation()" << std::endl;
 }
 
-void CProxyUpdateChara::destructor()
-{
-	std::cout << "CProxyUpdateChara::destructor()" << std::endl;
-	this->CProxyUpdateCommon<CProxyUpdateChara>::destructor();
-}
-
 CProxyUpdateChara::~CProxyUpdateChara()
 {
 	std::cout << "CProxyUpdateChara::~CProxyUpdateChara()" << std::endl;
-	this->destructor();
+	this->dispose();
+}
+
+void CProxyUpdateChara::cbDispose()
+{
+	std::cout << "CProxyUpdateChara::cbDispose()" << std::endl;
+	this->CProxyUpdateCommon<CProxyUpdateChara>::cbDispose();
 }
 
 void CProxyDrawChara::cbPreDraw(const int index, void* data) const
@@ -56,28 +56,28 @@ void CProxyDrawChara::cbPostDraw(const int index, void* data) const
 	std::cout << "CProxyUpdateChara::postDraw(index=" << index << ", data=" << data << ")" << std::endl;
 }
 
-void CProxyDrawChara::destructor()
-{
-	std::cout << "CProxyDrawChara::destructor()" << std::endl;
-	this->CProxyDrawCommon<CProxyDrawChara>::destructor();
-}
-
 CProxyDrawChara::~CProxyDrawChara()
 {
 	std::cout << "CProxyDrawChara::~CProxyDrawChara()" << std::endl;
-	this->destructor();
+	this->dispose();
 }
 
-void CCompositeChara::destructor()
+void CProxyDrawChara::cbDispose()
 {
-	std::cout << "CCompositeChara::destructor()" << std::endl;
-	this->CCompositeProcess::destructor();
+	std::cout << "CProxyDrawChara::cbDispose()" << std::endl;
+	this->CProxyDrawCommon<CProxyDrawChara>::cbDispose();
 }
 
 CCompositeChara::~CCompositeChara()
 {
 	std::cout << "CCompositeChara::~CCompositeChara()" << std::endl;
-	this->destructor();
+	this->dispose();
+}
+
+void CCompositeChara::cbDispose()
+{
+	std::cout << "CCompositeChara::cbDispose()" << std::endl;
+	this->CCompositeProcess::cbDispose();
 }
 
 //明示的なインスタンス化

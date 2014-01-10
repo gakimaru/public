@@ -28,8 +28,11 @@ public:
 		m_vtable(&vtable_initializer<T>::m_vtable)
 	{
 	}
-	void destructor();
 	~CComponent();
+	void dispose();
+public:
+	void cbDispose();
+	
 protected:
 	bool m_isComposition;
 	CComponent* m_next;
@@ -37,14 +40,14 @@ protected:
 private:
 	struct vtable
 	{
-		void(*pDestructor)(void*);
+		void(*pDispose)(void*);
 	};
 	template <class T>
 	class vtable_initializer
 	{
 	public:
 		static CComponent::vtable m_vtable;
-		static void proxyDestructor(void* me);
+		static void proxyDispose(void* me);
 	};
 	vtable* m_vtable;
 };
@@ -60,9 +63,9 @@ public:
 		CComponent(me, false)
 	{
 	}
-	void destructor();
 	~CLeaf();
-protected:
+public:
+	void cbDispose();
 };
 
 class CComposite : public CComponent
@@ -83,8 +86,10 @@ public:
 		m_childTop(nullptr)
 	{
 	}
-	void destructor();
 	~CComposite();
+public:
+	void cbDispose();
+
 protected:
 	CComponent* m_childTop;
 };

@@ -12,17 +12,18 @@ void CProxyPrintMap::cbPrintMessage(const int par1, const char* par2) const
 	std::cout << "CProxyPrintMap::printMessage(par1=" << par1 << ", par2=\"" << par2 << "\")" << std::endl;
 }
 
-void CProxyPrintMap::destructor()
-{
-	std::cout << "CProxyPrintMap::destructor()" << std::endl;
-	this->CProxyPrintCommon<CProxyPrintMap>::destructor();
-}
-
 CProxyPrintMap::~CProxyPrintMap()
 {
 	std::cout << "CProxyPrintMap::~CProxyPrintMap()" << std::endl;
-	this->destructor();
+	this->dispose();
 }
+
+void CProxyPrintMap::cbDispose()
+{
+	std::cout << "CProxyPrintMap::cbDispose()" << std::endl;
+	this->CProxyPrintCommon<CProxyPrintMap>::cbDispose();
+}
+
 void CProxyUpdateMap::cbUpdate(const float elapsed_time) const
 {
 	std::cout << "CProxyUpdateMap::ppdate(elapsed_time=" << elapsed_time << ")" << std::endl;
@@ -33,16 +34,16 @@ void CProxyUpdateMap::cbAnimation() const
 	std::cout << "CProxyUpdateMap::animation()" << std::endl;
 }
 
-void CProxyUpdateMap::destructor()
-{
-	std::cout << "CProxyUpdateMap::destructor()" << std::endl;
-	this->CProxyUpdateCommon<CProxyUpdateMap>::destructor();
-}
-
 CProxyUpdateMap::~CProxyUpdateMap()
 {
 	std::cout << "CProxyUpdateMap::~CProxyUpdateMap()" << std::endl;
-	this->destructor();
+	this->dispose();
+}
+
+void CProxyUpdateMap::cbDispose()
+{
+	std::cout << "CProxyUpdateMap::cbDispose()" << std::endl;
+	this->CProxyUpdateCommon<CProxyUpdateMap>::cbDispose();
 }
 
 void CProxyDrawMap::cbPreDraw(const int index, void* data) const
@@ -55,28 +56,28 @@ void CProxyDrawMap::cbPostDraw(const int index, void* data) const
 	std::cout << "CProxyUpdateMap::postDraw(index=" << index << ", data=" << data << ")" << std::endl;
 }
 
-void CProxyDrawMap::destructor()
-{
-	std::cout << "CProxyDrawMap::destructor()" << std::endl;
-	this->CProxyDrawCommon<CProxyDrawMap>::destructor();
-}
-
 CProxyDrawMap::~CProxyDrawMap()
 {
 	std::cout << "CProxyDrawMap::~CProxyDrawMap()" << std::endl;
-	this->destructor();
+	this->dispose();
 }
 
-void CCompositeMap::destructor()
+void CProxyDrawMap::cbDispose()
 {
-	std::cout << "CCompositeMap::destructor()" << std::endl;
-	this->CCompositeProcess::destructor();
+	std::cout << "CProxyDrawMap::cbDispose()" << std::endl;
+	this->CProxyDrawCommon<CProxyDrawMap>::cbDispose();
 }
 
 CCompositeMap::~CCompositeMap()
 {
 	std::cout << "CCompositeMap::~CCompositeMap()" << std::endl;
-	this->destructor();
+	this->dispose();
+}
+
+void CCompositeMap::cbDispose()
+{
+	std::cout << "CCompositeMap::cbDispose()" << std::endl;
+	this->CCompositeProcess::cbDispose();
 }
 
 //明示的なインスタンス化

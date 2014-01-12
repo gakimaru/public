@@ -1,25 +1,29 @@
+//JSONテキストをロード
 function loadJSON(file_path)
 {
 	var ForReading = 1, ForWriting = 2;
 	var fs = new ActiveXObject("Scripting.FileSystemObject");
 	var file = fs.OpenTextFile(file_path, ForReading, true);
-	var json = file.ReadAll();
+	var json_text = file.ReadAll();
 	file.Close();
-	return json;
+	return json_text;
 }
 
-function parseJSON(json)
+//JSONテキストをパースしてJSONオブジェクトを返す
+function parseJSON(json_text)
 {
-	var obj = eval("(" + json + ")");
-	return obj;
+	//eval() 実行の際、JSONテキストを「(」～「)」で囲む必要がある
+	var json_obj = eval("(" + json_text + ")");
+	return json_obj;
 }
 
-function printObjs(objs)
+//JSONオブジェクトの配列を表示
+function printObjs(json_obj)
 {
-	for(no in objs)
+	for(idx in json_obj.arr)
 	{
-		var obj = objs[no];
-		WScript.echo("[" + no + "]{");
+		var obj = json_obj.arr[idx];
+		WScript.echo("[" + idx + "]{");
 		WScript.echo("\tid=" + obj.id);
 		WScript.echo("\tname=\"" + obj.name + "\"");
 		WScript.echo("\tparam=");
@@ -31,11 +35,13 @@ function printObjs(objs)
 	}
 }
 
+//テストメイン
 function testMain()
 {
-	var json = loadJSON("test.json");
-	var objs = parseJSON(json);
-	printObjs(objs);
+	var json_text = loadJSON("test.json");
+	var json_obj = parseJSON(json_text);
+	printObjs(json_obj);
 }
 
+//実行
 testMain();

@@ -5,6 +5,10 @@
      |
      |-[Program]
      |  |
+     |  |-[C#]
+     |  |  |
+     |  |  `-[JSON]            ... C#によるJSON解析およびC#スクリプトのランタイムコンパイル＆実行のテスト
+     |  |
      |  |-[C++]
      |  |  |
      |  |  |-[boost]
@@ -13,10 +17,14 @@
      |  |  |  |
      |  |  |  `-[serializer]   ... boost::serialization をテスト
      |  |  |
+     |  |  |-[CalcExpression]  ... 計算式の状況に応じた右値評価のテスト
+     |  |  |
      |  |  |-[DebugPrint]      ... デバッグ用ロギング処理／boost::backtraceのテスト
      |  |  |-[DebugPrintTest]  ... デバッグ用ロギング処理の試作
      |  |  |
      |  |  |-[FloatedFraction] ... 浮動小数点小数のバイナリデータ構造確認
+     |  |  |
+     |  |  |-[GDConv]          ... ゲームデータ構造定義データの構成テスト
      |  |  |
      |  |  |-[OpenGL]          ... OpenGLとGLSLのごく簡単なテスト（シェーダーのテストが目的）
      |  |  |
@@ -40,6 +48,10 @@
      |  |  |
      |  |  `-[Test01]          ... F#を試しに使ってみた
      |  |
+     |  |-[JScript]
+     |  |  |
+     |  |  `-[JSON]            ... JScriptによるJSON解析テスト（VBA, VBScript, PowerShellのサンプルも置いている）
+     |  |
      |  |-[Prolog]
      |  |  |
      |  |  `-[Test01]          ... Prologを試しに使ってみた
@@ -59,25 +71,38 @@
 
 ####[document]####
      |
-     `-[Gitマニュアル・調査資料]
+     |-[Gitマニュアル・調査資料]
+     |  |
+     |  |- [00]Readme.txt
+     |  |- [01]Subversionユーザーの為のGit活用の勧め.pptx
+     |  |- [02]TortoiseGitセットアップ手順.docx
+     |  |- [03]TortoiseGitのhttp(s)通信およびパスワードの記憶と破棄について.docx
+     |  |- [04]TortoiseGitのSSH通信およびパスフレーズの記憶と破棄について.docx
+     |  |- [05]TortoiseGitによるSSH通信用秘密鍵・公開鍵生成手順.docx
+     |  |- [06]TortoiseGitの使い方とワークフロー.docx
+     |  |- [資料01]Gitサーバー比較.xlsx
+     |  |- [資料02]Gitに関する推奨書籍.docx
+     |  |
+     |  |- [Tools]
+     |  |   |
+     |  |   `-[git_erase_wincred_all] ... TortoiseGit が wincred で記憶する
+     |  |                                 ユーザー認証情報を一括削除する為の
+     |  |                                 ごく簡単なツール
+     |  `[PDF]
+     |    |
+     |    |- ... 上記のドキュメントをPDFファイル化したもの
+     |
+     `-[仕様・設計書]
         |
-        |- [00]Readme.txt
-        |- [01]Subversionユーザーの為のGit活用の勧め.pptx
-        |- [02]TortoiseGitセットアップ手順.docx
-        |- [03]TortoiseGitのhttp(s)通信およびパスワードの記憶と破棄について.docx
-        |- [04]TortoiseGitのSSH通信およびパスフレーズの記憶と破棄について.docx
-        |- [05]TortoiseGitによるSSH通信用秘密鍵・公開鍵生成手順.docx
-        |- [06]TortoiseGitの使い方とワークフロー.docx
-        |- [資料01]Gitサーバー比較.xlsx
-        |- [資料02]Gitに関する推奨書籍.docx
+        |-[_PDF]
+        |  |
+        |  |-[データ・アセット管理]
+        |  |  |
+        |  |  |- ゲームデータ仕様.pdf
         |
-        |- [Tools]
-        |   |
-        |   `-[git_erase_wincred_all] ... TortoiseGit が wincred で記憶する
-        |                                 ユーザー認証情報を一括削除する為の
-        |                                 ごく簡単なツール
-        `[PDF]
-          |
-          |- ... 上記のドキュメントをPDFファイル化したもの
+        |-[データ・アセット管理]
+        |  |
+        |  |- ゲームデータ仕様.docx
+        |
 
 以上

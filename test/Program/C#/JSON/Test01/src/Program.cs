@@ -345,14 +345,14 @@ namespace Test01
 
                 //実行前状態表示
                 Console.WriteLine();
-                Console.WriteLine("実行前：json_objd.name=\"{0}\", .data={1}", json_obj.name, json_obj.data);
+                Console.WriteLine("実行前：json_obj.name=\"{0}\", .data={1}", json_obj.name, json_obj.data);
 
                 //スクリプト内のメソッド呼び出し　※JSONテキスト解析済みオブジェクトを受け渡し
                 string ret_msg = script_obj.checkJSONData(json_obj);
 
                 //実行後結果表示
                 Console.WriteLine();
-                Console.WriteLine("実行後：json_objd.name=\"{0}\", .data={1}", json_obj.name, json_obj.data);
+                Console.WriteLine("実行後：json_obj.name=\"{0}\", .data={1}", json_obj.name, json_obj.data);
                 if(ret_msg != null)
                 {
                     Console.WriteLine("  戻り値=\"{0}\"", ret_msg);

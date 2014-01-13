@@ -1,0 +1,261 @@
+# 1 "sub\\test4.json"
+# 1 "<command-line>"
+# 1 "sub\\test4.json"
+
+{
+ "name": "CharaData",
+ "majorVer": 1,
+ "minorVer": 0,
+ "comment": "キャラパラメータ構造定義",
+
+ "headerFileName": "charaData.h",
+ "declFileName": "charaDataDecle.cpp",
+
+ "isUsePragmaOnce": true,
+ "headerIncludeFiles": ["types.h"],
+
+ "declIncludeFiles": ["gameDataDecl.h"],
+
+
+ "headerNamespace": ["charaDataDef"],
+
+ "declNamespace": ["charaDataDecl"],
+
+
+ "funcNameForGetDecl": "getGameDataDecl",
+
+
+
+ "mainStruct":
+ {
+  "name": "T_CHARA",
+  "comment": "キャラ構造体",
+
+  "isMakeSource": true,
+
+
+
+  "primaryKey": "id",
+
+  "secondaryKey": "name",
+
+
+  "indexes": ["kana"],
+
+
+
+  "members":
+  [
+
+   {
+    "name": "id",
+    "comment": "識別ID",
+    "key": "id",
+
+    "type": "crc",
+
+
+
+
+
+
+    "typeName": "CRC32"
+
+
+   },
+
+   {
+    "name": "name",
+    "comment": "名前",
+    "type": "str"
+
+
+
+
+
+   },
+
+   {
+    "name": "condition",
+    "comment": "有効化条件式",
+    "type": "expr"
+# 94 "sub\\test4.json"
+   },
+
+   {
+    "name": "power",
+    "comment": "力",
+    "key": "param.power",
+
+    "type": "i8",
+    "default": 1,
+    "isRequired": false,
+
+
+
+
+    "min": 0,
+    "max": 100
+
+
+
+   },
+
+   {
+    "name": "tol",
+    "comment": "耐性",
+    "key": "param.tol",
+    "type": "f32",
+    "isArray": true,
+
+
+    "arraySize": [ 10 ]
+
+
+   },
+
+   {
+    "name": "abilities",
+    "comment": "アビリティ",
+    "key": "abilities",
+    "type": "u32",
+    "isVariableArray": true,
+    "arraySizeName": "abilitiesNum",
+
+    "arraySizeType": "i8"
+
+
+
+
+
+
+
+   },
+
+   {
+    "name": "param",
+    "comment": "パラメータ",
+    "key": "param",
+    "type": "struct",
+
+    "typeName": "T_PARAM"
+
+   },
+
+   {
+    "name": "fixed",
+    "comment": "固定値",
+    "key": null,
+
+    "type": "i16",
+    "default": 1,
+   },
+  ],
+
+  "membersOrder":
+
+
+
+  [
+   "id",
+   "power",
+   "abilitiesNum",
+   "fixed",
+   "tol",
+   "name",
+   "condition",
+   "abilities",
+   "param"
+  ]
+ },
+
+ "subStructs":
+ [
+  {
+   "name": "T_PARAM",
+   "comment": "パラメータ構造体",
+
+   "isMakeSource": true,
+   "isInternalStructure": true,
+
+   "members":
+   [
+    {
+     "name": "atk",
+     "comment": "攻撃力",
+     "key": "atk",
+
+
+     "type": "i16"
+    },
+    {
+     "name": "def",
+     "comment": "守備力",
+     "type": "i16"
+    },
+    {
+     "name": "specials",
+     "comment": "特殊能力",
+     "type": "struct",
+     "typeName": "T_SPECIAL_PARAM",
+     "isVariableArray": true,
+     "arraySizeName": "specialsNum"
+    }
+   ],
+
+   "membersOrder":
+   [
+    "atk",
+    "def",
+    "specialNum",
+    "special"
+   ]
+  },
+  {
+   "name": "T_SPECIAL_PARAM",
+   "comment": "特殊パラメータ構造体",
+
+   "isMakeSource": true,
+   "isInternalStructure": false,
+
+   "members":
+   [
+    {
+     "name": "dark",
+     "comment": "闇",
+     "type": "u32"
+    },
+    {
+     "name": "shine",
+     "comment": "光",
+     "type": "u32"
+    }
+   ]
+  }
+ ],
+
+
+
+
+
+ "rules":
+ [
+  {
+# 265 "sub\\test4.json"
+   "rule":
+   " 				var atk = obj.param.atk; 				var def = obj.param.def; 				if(atk < def) 				{ 					return \"ATK(\" + atk + \")は、DEF(\" + def + \") 以上の値にして下さい。\"; 				} 				obj.tol[2] = obj.tol[0] + obj.tol[1]; /*値を書き換え可能*/ 				return null; 			"
+# 276 "sub\\test4.json"
+  },
+  {
+
+   "rule":
+   " 				if(obj.tol[0] > 0 && obj.tol[1] > 0) 				{ 					return \"「耐性」は、どれか一つだけ入力して下さい。\"; 				} 				return null; 			"
+
+
+
+
+
+
+  }
+ ],
+}

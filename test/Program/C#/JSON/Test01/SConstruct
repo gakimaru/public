@@ -1,0 +1,41 @@
+import os
+import glob
+
+# MyBuilder
+bld1 = Builder(
+    action = 'g++.exe -x c++ -E -P -c $SOURCE -o $TARGET',
+    suffix = '.i.json',
+    src_suffix = '.json',
+)
+bld2 = Builder(
+    action = 'g++.exe -x c++ -E -c $SOURCE -o $TARGET',
+    suffix = '.i.json',
+    src_suffix = '.json',
+)
+
+# Regist MyBuilder
+env1 = Environment(
+    ENV = os.environ,
+    BUILDERS = {'MyBuilder' : bld1},
+)
+env2 = Environment(
+    ENV = os.environ,
+    BUILDERS = {'MyBuilder' : bld2},
+)
+
+# Source files
+input_files1 = [
+    'test1.json',
+    'sub/test3.json',
+]
+input_files2 = [
+    'test2.json',
+    'sub/test4.json',
+]
+
+# Run
+for input_file in input_files1:
+    env1.MyBuilder(input_file)
+
+for input_file in input_files2:
+    env2.MyBuilder(input_file)

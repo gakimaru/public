@@ -5,16 +5,16 @@
 //マクロを使用
 namespace for_define
 {
-#ifdef countof
-#undef countof
+#ifdef lengthOfArray
+#undef lengthOfArray
 #endif
 #ifdef offsetof
 #undef offsetof
 #endif
-#define countof1(var) (sizeof(var) / sizeof(var[0]))
-#define countof2(var) (sizeof(var[0]) / sizeof(var[0][0]))
-#define countof3(var) (sizeof(var[0][0]) / sizeof(var[0][0][0]))
-#define countof(var) countof1(var)
+#define lengthofarray1(var) (sizeof(var) / sizeof(var[0]))
+#define lengthofarray2(var) (sizeof(var[0]) / sizeof(var[0][0]))
+#define lengthofarray3(var) (sizeof(var[0][0]) / sizeof(var[0][0][0]))
+#define lengthOfArray(var) lengthofarray1(var)
 #define offsetof(T, member) reinterpret_cast<std::size_t>(&reinterpret_cast<T*>(0)->member)
 	void test_func()
 	{
@@ -28,9 +28,9 @@ namespace for_define
 		int var3[2][3] = { 0 };
 		int var4[2][3][4] = { 0 };
 		std::cout << "sizeof(va11)=" << std::setw(3) << std::right << sizeof(var1) << std::endl;
-		std::cout << "sizeof(va12)=" << std::setw(3) << std::right << sizeof(var2) << ", countof1(var2)=" << std::setw(3) << std::right << countof1(var2) << std::endl;
-		std::cout << "sizeof(va13)=" << std::setw(3) << std::right << sizeof(var3) << ", countof1(var3)=" << std::setw(3) << std::right << countof1(var3) << ", countof2(var3)=" << std::setw(3) << std::right << countof2(var3) << std::endl;
-		std::cout << "sizeof(va14)=" << std::setw(3) << std::right << sizeof(var4) << ", countof1(var4)=" << std::setw(3) << std::right << countof1(var4) << ", countof2(var4)=" << std::setw(3) << std::right << countof2(var4) << ", countof3(var4)=" << std::setw(3) << std::right << countof3(var4) << std::endl;
+		std::cout << "sizeof(va12)=" << std::setw(3) << std::right << sizeof(var2) << ", lengthofarray1(var2)=" << std::setw(3) << std::right << lengthofarray1(var2) << std::endl;
+		std::cout << "sizeof(va13)=" << std::setw(3) << std::right << sizeof(var3) << ", lengthofarray1(var3)=" << std::setw(3) << std::right << lengthofarray1(var3) << ", lengthofarray2(var3)=" << std::setw(3) << std::right << lengthofarray2(var3) << std::endl;
+		std::cout << "sizeof(va14)=" << std::setw(3) << std::right << sizeof(var4) << ", lengthofarray1(var4)=" << std::setw(3) << std::right << lengthofarray1(var4) << ", lengthofarray2(var4)=" << std::setw(3) << std::right << lengthofarray2(var4) << ", lengthofarray3(var4)=" << std::setw(3) << std::right << lengthofarray3(var4) << std::endl;
 
 		struct DATA1
 		{
@@ -52,10 +52,10 @@ namespace for_define
 		std::cout << "sizeof(DATA1)=" << std::setw(3) << std::right << sizeof(DATA1) << ", offsetof(DATA1, member_a)=" << std::setw(3) << std::right << offsetof(DATA1, member_a) << ", offsetof(DATA1, member_b)=" << std::setw(3) << std::right << offsetof(DATA1, member_b) << ", offsetof(DATA1, member_c)=" << std::setw(3) << std::right << offsetof(DATA1, member_c) << ", offsetof(DATA1, member_d)=" << std::setw(3) << std::right << offsetof(DATA1, member_d) << std::endl;
 		std::cout << "sizeof(DATA2)=" << std::setw(3) << std::right << sizeof(DATA2) << ", offsetof(DATA2, member_a)=" << std::setw(3) << std::right << offsetof(DATA2, member_a) << ", offsetof(DATA2, member_b)=" << std::setw(3) << std::right << offsetof(DATA2, member_b) << ", offsetof(DATA2, member_c)=" << std::setw(3) << std::right << offsetof(DATA2, member_c) << ", offsetof(DATA2, member_d)=" << std::setw(3) << std::right << offsetof(DATA2, member_d) << std::endl;
 	}
-#undef countof1
-#undef countof2
-#undef countof3
-#undef countof
+#undef lengthofarray1
+#undef lengthofarray2
+#undef lengthofarray3
+#undef lengthOfArray
 #undef offsetof
 }
 
@@ -63,17 +63,17 @@ namespace for_define
 namespace for_template
 {
 	template<typename T, std::size_t N1>
-	std::size_t countOf1(const T (&var)[N1])
+	std::size_t lengthOfArray1(const T (&var)[N1])
 	{
 		return N1;
 	}
 	template<typename T, std::size_t N1, std::size_t N2>
-	std::size_t countOf2(const T (&var)[N1][N2])
+	std::size_t lengthOfArray2(const T (&var)[N1][N2])
 	{
 		return N2;
 	}
 	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3>
-	std::size_t countOf3(const T (&var)[N1][N2][N3])
+	std::size_t lengthOfArray3(const T (&var)[N1][N2][N3])
 	{
 		return N3;
 	}
@@ -108,10 +108,10 @@ namespace for_template
 	{
 		return sizeof(T);
 	}
-#define countof1(var) countOf1(var)
-#define countof2(var) countOf2(var)
-#define countof3(var) countOf3(var)
-#define countof(var) countOf1(var)
+#define lengthofarray1(var) lengthOfArray1(var)
+#define lengthofarray2(var) lengthOfArray2(var)
+#define lengthofarray3(var) lengthOfArray3(var)
+#define lengthOfArray(var) lengthOfArray1(var)
 #define offsetof(T, member) offsetOf((T*)(0), &(((T*)(0))->member))
 	void test_func()
 	{
@@ -125,9 +125,9 @@ namespace for_template
 		int var3[2][3] = { 0 };
 		int var4[2][3][4] = { 0 };
 		std::cout << "sizeof(va11)=" << std::setw(3) << std::right << sizeof(var1) << std::endl;
-		std::cout << "sizeof(va12)=" << std::setw(3) << std::right << sizeof(var2) << ", countof1(var2)=" << std::setw(3) << std::right << countof1(var2) << std::endl;
-		std::cout << "sizeof(va13)=" << std::setw(3) << std::right << sizeof(var3) << ", countof1(var3)=" << std::setw(3) << std::right << countof1(var3) << ", countof2(var3)=" << std::setw(3) << std::right << countof2(var3) << std::endl;
-		std::cout << "sizeof(va14)=" << std::setw(3) << std::right << sizeof(var4) << ", countof1(var4)=" << std::setw(3) << std::right << countof1(var4) << ", countof2(var4)=" << std::setw(3) << std::right << countof2(var4) << ", countof3(var4)=" << std::setw(3) << std::right << countof3(var4) << std::endl;
+		std::cout << "sizeof(va12)=" << std::setw(3) << std::right << sizeof(var2) << ", lengthofarray1(var2)=" << std::setw(3) << std::right << lengthofarray1(var2) << std::endl;
+		std::cout << "sizeof(va13)=" << std::setw(3) << std::right << sizeof(var3) << ", lengthofarray1(var3)=" << std::setw(3) << std::right << lengthofarray1(var3) << ", lengthofarray2(var3)=" << std::setw(3) << std::right << lengthofarray2(var3) << std::endl;
+		std::cout << "sizeof(va14)=" << std::setw(3) << std::right << sizeof(var4) << ", lengthofarray1(var4)=" << std::setw(3) << std::right << lengthofarray1(var4) << ", lengthofarray2(var4)=" << std::setw(3) << std::right << lengthofarray2(var4) << ", lengthofarray3(var4)=" << std::setw(3) << std::right << lengthofarray3(var4) << std::endl;
 
 		struct DATA1
 		{
@@ -155,10 +155,10 @@ namespace for_template
 		std::cout << "sizeOf(obj1)=" << std::setw(3) << std::right << sizeOf(obj1) << ", offsetOf(obj1, obj1.member_a)=" << std::setw(3) << std::right << offsetOf(obj1, obj1.member_a) << ", offsetOf(obj1, obj1.member_b)=" << std::setw(3) << std::right << offsetOf(obj1, obj1.member_b) << ", offsetOf(obj1, obj1.member_c)=" << std::setw(3) << std::right << offsetOf(obj1, obj1.member_c) << ", offsetOf(obj1, obj1.member_d)=" << std::setw(3) << std::right << offsetOf(obj1, obj1.member_d) << std::endl;          //offsetOf()ではポインター変数の扱いに注意！（ポインター変数の member_d をそのまま渡しているとおかしな結果になる）
 		std::cout << "sizeOf(obj2)=" << std::setw(3) << std::right << sizeOf(obj2) << ", offsetOf(obj2, obj2->member_a)=" << std::setw(3) << std::right << offsetOf(obj2, obj2->member_a) << ", offsetOf(obj2, obj2->member_b)=" << std::setw(3) << std::right << offsetOf(obj2, obj2->member_b) << ", offsetOf(obj2, obj2->member_c)=" << std::setw(3) << std::right << offsetOf(obj2, obj2->member_c) << ", offsetOf(obj2, obj2->member_d)=" << std::setw(3) << std::right << offsetOf(obj2, &obj2->member_d) << std::endl; //                                          （member_d のポインターを渡す事で問題を解消）
 	}
-#undef countof1
-#undef countof2
-#undef countof3
-#undef countof
+#undef lengthofarray1
+#undef lengthofarray2
+#undef lengthofarray3
+#undef lengthOfArray
 #undef offsetof
 }
 

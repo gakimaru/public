@@ -1,39 +1,43 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+#include <vector>
+#include <iterator>
+//#include <algorithm>
+
 #include <glm/glm.hpp>
 
 //================================================================================
-//Observerƒpƒ^[ƒ“
+//Observerãƒ‘ã‚¿ãƒ¼ãƒ³
 
 //----------------------------------------
-//y€”õzC++11”ñ‘Î‰‚ÌƒRƒ“ƒpƒCƒ‰‚È‚çAoverride, final ƒL[ƒ[ƒh‚ğ‰½‚à‚µ‚È‚¢ƒ}ƒNƒ‚Å‘ã—p
+//ã€æº–å‚™ã€‘C++11éå¯¾å¿œã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ãªã‚‰ã€override, final ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ã‚’ä½•ã‚‚ã—ãªã„ãƒã‚¯ãƒ­ã§ä»£ç”¨
 //#define override
 //#define final
 
 //----------------------------------------
 
 //--------------------
-//yƒ‰ƒCƒuƒ‰ƒŠ‘¤zˆÏ÷ƒCƒ“ƒ^[ƒtƒF[ƒX
+//ã€ãƒ©ã‚¤ãƒ–ãƒ©ãƒªå´ã€‘å§”è­²ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 template<class T>
 class IDelegate
 {
 public:
-	//XVˆ—
+	//æ›´æ–°å‡¦ç†
 	virtual void update(T& target) = 0;
 };
 
 //--------------------
-//yƒ‰ƒCƒuƒ‰ƒŠ‘¤zˆÏ÷ƒIƒuƒWƒFƒNƒg“o˜^ƒNƒ‰ƒX
+//ã€ãƒ©ã‚¤ãƒ–ãƒ©ãƒªå´ã€‘å§”è­²ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç™»éŒ²ã‚¯ãƒ©ã‚¹
 template<class T>
 class CDelegateRegister
 {
 public:
-	//ˆÏ÷ƒIƒuƒWƒFƒNƒg“o˜^
+	//å§”è­²ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç™»éŒ²
 	void registDelegate(IDelegate<T>* delegate){ m_delegate = delegate; }
-	//XVˆ—
+	//æ›´æ–°å‡¦ç†
 	void update()
 	{
 		printf("CDelegateRegister<T>::update() : m_delete->update()\n");
@@ -43,87 +47,87 @@ public:
 		}
 	}
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CDelegateRegister(T& target) : m_target(target), m_delegate(nullptr) {}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	T& m_target;//‘ÎÛƒIƒuƒWƒFƒNƒg
-	IDelegate<T>* m_delegate;//ˆÏ÷ƒIƒuƒWƒFƒNƒg
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	T& m_target;//å¯¾è±¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+	IDelegate<T>* m_delegate;//å§”è­²ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 };
 
 //--------------------
-//yƒ‰ƒCƒuƒ‰ƒŠ‘¤z‹¤’ÊƒVƒXƒeƒ€‚PƒNƒ‰ƒX
+//ã€ãƒ©ã‚¤ãƒ–ãƒ©ãƒªå´ã€‘å…±é€šã‚·ã‚¹ãƒ†ãƒ ï¼‘ã‚¯ãƒ©ã‚¹
 class CCommonSystem1
 {
 public:
-	//ˆÏ÷ƒIƒuƒWƒFƒNƒg“o˜^
+	//å§”è­²ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç™»éŒ²
 	void registDelegate(IDelegate<CCommonSystem1>* delegate){ m_delegateRegister.registDelegate(delegate); }
-	//XVˆ—
+	//æ›´æ–°å‡¦ç†
 	void update()
 	{
 		printf("CCommonSystem1::update()\n");
 
-		//XVˆ—‚ÌˆÏ÷
+		//æ›´æ–°å‡¦ç†ã®å§”è­²
 		m_delegateRegister.update();
 	}
-	//ƒƒbƒZ[ƒWæ“¾
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å–å¾—
 	const char* getMessage() const{ return "CCommonSystem1's message";  }
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CCommonSystem1() : m_delegateRegister(*this) {}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	CDelegateRegister<CCommonSystem1> m_delegateRegister;//ˆÏ÷ƒIƒuƒWƒFƒNƒg
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	CDelegateRegister<CCommonSystem1> m_delegateRegister;//å§”è­²ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 };
 
 //--------------------
-//yƒ‰ƒCƒuƒ‰ƒŠ‘¤z‹¤’ÊƒVƒXƒeƒ€‚QƒNƒ‰ƒX
+//ã€ãƒ©ã‚¤ãƒ–ãƒ©ãƒªå´ã€‘å…±é€šã‚·ã‚¹ãƒ†ãƒ ï¼’ã‚¯ãƒ©ã‚¹
 class CCommonSystem2
 {
 public:
-	//ˆÏ÷ƒIƒuƒWƒFƒNƒg“o˜^
+	//å§”è­²ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç™»éŒ²
 	void registDelegate(IDelegate<CCommonSystem2>* delegate){ m_delegateRegister.registDelegate(delegate); }
-	//XVˆ—
+	//æ›´æ–°å‡¦ç†
 	void update()
 	{
 		printf("CCommonSystem2::update()\n");
 
-		//XVˆ—‚ÌˆÏ÷
+		//æ›´æ–°å‡¦ç†ã®å§”è­²
 		m_delegateRegister.update();
 	}
-	//ƒVƒXƒeƒ€–¼æ“¾
+	//ã‚·ã‚¹ãƒ†ãƒ åå–å¾—
 	const char* getSystemName() const{ return "Common System 2"; }
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CCommonSystem2() : m_delegateRegister(*this) {}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	CDelegateRegister<CCommonSystem2> m_delegateRegister;//ˆÏ÷ƒIƒuƒWƒFƒNƒg
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	CDelegateRegister<CCommonSystem2> m_delegateRegister;//å§”è­²ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 };
 
 //----------------------------------------
 
 //--------------------
-//yƒ^ƒCƒgƒ‹‘¤z“Æ©ƒVƒXƒeƒ€
+//ã€ã‚¿ã‚¤ãƒˆãƒ«å´ã€‘ç‹¬è‡ªã‚·ã‚¹ãƒ†ãƒ 
 class CMySystem
 {
 public:
-	//‹¤’Êˆ—‚PŒü‚¯‚ÌŠg’£XVˆ—
+	//å…±é€šå‡¦ç†ï¼‘å‘ã‘ã®æ‹¡å¼µæ›´æ–°å‡¦ç†
 	void updateSystem1(CCommonSystem1& target)
 	{
 		printf("CMySystem::updateSystem1() : target.getMessage()=\"%s\"\n", target.getMessage());
 	}
-	//‹¤’Êˆ—‚QŒü‚¯‚ÌŠg’£XVˆ—
+	//å…±é€šå‡¦ç†ï¼’å‘ã‘ã®æ‹¡å¼µæ›´æ–°å‡¦ç†
 	void updateSystem2(CCommonSystem2& target)
 	{
 		printf("CMySystem::updateSystem2() : target.getSystemName()=\"%s\"\n", target.getSystemName());
 	}
 private:
-	//‹¤’Êˆ—ƒVƒXƒeƒ€‚PŒü‚¯‚ÌƒIƒuƒU[ƒo[iˆÏ÷ƒIƒuƒWƒFƒNƒgj
+	//å…±é€šå‡¦ç†ã‚·ã‚¹ãƒ†ãƒ ï¼‘å‘ã‘ã®ã‚ªãƒ–ã‚¶ãƒ¼ãƒãƒ¼ï¼ˆå§”è­²ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼‰
 	class CObserver1 : public IDelegate<CCommonSystem1>
 	{
 	public:
-		//XVˆ—
+		//æ›´æ–°å‡¦ç†
 		void update(CCommonSystem1& target) override
 		{
 			m_this.updateSystem1(target);
@@ -133,11 +137,11 @@ private:
 	private:
 		CMySystem& m_this;
 	};
-	//‹¤’Êˆ—ƒVƒXƒeƒ€‚QŒü‚¯‚ÌƒIƒuƒU[ƒo[iˆÏ÷ƒIƒuƒWƒFƒNƒgj
+	//å…±é€šå‡¦ç†ã‚·ã‚¹ãƒ†ãƒ ï¼’å‘ã‘ã®ã‚ªãƒ–ã‚¶ãƒ¼ãƒãƒ¼ï¼ˆå§”è­²ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼‰
 	class CObserver2 : public IDelegate<CCommonSystem2>
 	{
 	public:
-		//XVˆ—
+		//æ›´æ–°å‡¦ç†
 		void update(CCommonSystem2& target) override
 		{
 			m_this.updateSystem2(target);
@@ -148,125 +152,125 @@ private:
 		CMySystem& m_this;
 	};
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CMySystem(CCommonSystem1& sys1, CCommonSystem2& sys2) :
 		m_observer1(*this),
 		m_observer2(*this)
 	{
-		//ƒIƒuƒU[ƒo[“o˜^
+		//ã‚ªãƒ–ã‚¶ãƒ¼ãƒãƒ¼ç™»éŒ²
 		sys1.registDelegate(&m_observer1);
 		sys2.registDelegate(&m_observer2);
 	}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	CObserver1 m_observer1;//‹¤’Êˆ—ƒVƒXƒeƒ€‚PŒü‚¯‚ÌƒIƒuƒU[ƒo[
-	CObserver2 m_observer2;//‹¤’Êˆ—ƒVƒXƒeƒ€‚QŒü‚¯‚ÌƒIƒuƒU[ƒo[
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	CObserver1 m_observer1;//å…±é€šå‡¦ç†ã‚·ã‚¹ãƒ†ãƒ ï¼‘å‘ã‘ã®ã‚ªãƒ–ã‚¶ãƒ¼ãƒãƒ¼
+	CObserver2 m_observer2;//å…±é€šå‡¦ç†ã‚·ã‚¹ãƒ†ãƒ ï¼’å‘ã‘ã®ã‚ªãƒ–ã‚¶ãƒ¼ãƒãƒ¼
 };
 
 //----------------------------------------
-//Observerƒpƒ^[ƒ“ƒeƒXƒgƒƒCƒ“ŠÖ”
+//Observerãƒ‘ã‚¿ãƒ¼ãƒ³ãƒ†ã‚¹ãƒˆãƒ¡ã‚¤ãƒ³é–¢æ•°
 void testObserver()
 {
 	printf("\n- testObserver() -\n\n");
 
-	CCommonSystem1 sys1; //‹¤’ÊƒVƒXƒeƒ€‚P
-	CCommonSystem2 sys2; //‹¤’ÊƒVƒXƒeƒ€‚Q
-	CMySystem my_sys(sys1, sys2); //“Æ©ƒVƒXƒeƒ€
+	CCommonSystem1 sys1; //å…±é€šã‚·ã‚¹ãƒ†ãƒ ï¼‘
+	CCommonSystem2 sys2; //å…±é€šã‚·ã‚¹ãƒ†ãƒ ï¼’
+	CMySystem my_sys(sys1, sys2); //ç‹¬è‡ªã‚·ã‚¹ãƒ†ãƒ 
 
-	//‹¤’ÊƒVƒXƒeƒ€‚ÌXVˆ—
+	//å…±é€šã‚·ã‚¹ãƒ†ãƒ ã®æ›´æ–°å‡¦ç†
 	sys1.update();
 	sys2.update();
-	//¦‹¤’ÊƒVƒXƒeƒ€‘¤‚Ìˆ—Às‚ÉAu“Æ©ƒVƒXƒeƒ€v‚ÌƒIƒuƒU[ƒo[‚Éˆ—‚ªˆÏ÷‚³‚ê‚é
+	//â€»å…±é€šã‚·ã‚¹ãƒ†ãƒ å´ã®å‡¦ç†å®Ÿè¡Œæ™‚ã«ã€ã€Œç‹¬è‡ªã‚·ã‚¹ãƒ†ãƒ ã€ã®ã‚ªãƒ–ã‚¶ãƒ¼ãƒãƒ¼ã«å‡¦ç†ãŒå§”è­²ã•ã‚Œã‚‹
 }
 
 //================================================================================
-//Adapterƒpƒ^[ƒ“
+//Adapterãƒ‘ã‚¿ãƒ¼ãƒ³
 
 //----------------------------------------
-//y€”õzC++11”ñ‘Î‰‚ÌƒRƒ“ƒpƒCƒ‰‚È‚çAoverride, final ƒL[ƒ[ƒh‚ğ‰½‚à‚µ‚È‚¢ƒ}ƒNƒ‚Å‘ã—p
+//ã€æº–å‚™ã€‘C++11éå¯¾å¿œã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ãªã‚‰ã€override, final ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ã‚’ä½•ã‚‚ã—ãªã„ãƒã‚¯ãƒ­ã§ä»£ç”¨
 //#define override
 //#define final
 
 //----------------------------------------
-//y€”õzƒxƒNƒgƒ‹‰‰ZŒ^’è‹`
-typedef glm::vec3 vec3;//GLM—˜—p
+//ã€æº–å‚™ã€‘ãƒ™ã‚¯ãƒˆãƒ«æ¼”ç®—å‹å®šç¾©
+typedef glm::vec3 vec3;//GLMåˆ©ç”¨
 
 //----------------------------------------
-//y€”õz‹¤’ÊŠÖ”
-template<typename T, std::size_t N1> std::size_t lengthOfArray(const T(&var)[N1]){ return N1; } //”z—ñ‚Ì—v‘f”‚ğ•Ô‚·iŒ^ˆÀ‘S”Åj
-//template<typename T> T max(T var1, Tvar2){ return var1 > var2 ? var1 : var2; }                //‘å‚«‚¢•û‚Ì’l‚ğ•Ô‚·iŒ^ˆÀ‘S”Åj
-//#define lengthOfArray(var) (sizeof(var1) / sizeof(var1[0])                                    //”z—ñ‚Ì—v‘f”‚ğ•Ô‚·
-#define max(var1, var2) (var1 > var2 ? var1 : var2)                                             //‘å‚«‚¢•û‚Ì’l‚ğ•Ô‚·
+//ã€æº–å‚™ã€‘å…±é€šé–¢æ•°
+template<typename T, std::size_t N1> std::size_t lengthOfArray(const T(&var)[N1]){ return N1; } //é…åˆ—ã®è¦ç´ æ•°ã‚’è¿”ã™ï¼ˆå‹å®‰å…¨ç‰ˆï¼‰
+//template<typename T> T max(T var1, Tvar2){ return var1 > var2 ? var1 : var2; }                //å¤§ãã„æ–¹ã®å€¤ã‚’è¿”ã™ï¼ˆå‹å®‰å…¨ç‰ˆï¼‰
+//#define lengthOfArray(var) (sizeof(var1) / sizeof(var1[0])                                    //é…åˆ—ã®è¦ç´ æ•°ã‚’è¿”ã™
+#define max(var1, var2) (var1 > var2 ? var1 : var2)                                             //å¤§ãã„æ–¹ã®å€¤ã‚’è¿”ã™
 
 //----------------------------------------
 
 //--------------------
 //NPC
-class CNPC //¦‰½‚Ì‹¤’ÊƒCƒ“ƒ^[ƒtƒF[ƒX‚àÀ‘•‚µ‚Ä‚¢‚È‚¢
+class CNPC //â€»ä½•ã®å…±é€šã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚‚å®Ÿè£…ã—ã¦ã„ãªã„
 {
 public:
-	const char* getName() const { return m_name; }       //–¼‘O‚ğæ“¾
-	const vec3& getPos() const { return m_pos; }         //ˆÊ’u‚ğæ“¾
-	void setPos(const vec3 pos) { m_pos = pos; }         //ˆÊ’u‚ğXV
-	float getRotY() const { return m_rot_y; }            //Y²‚ÌŒü‚«‚ğæ“¾
-	void setRotY(const float rot_y) { m_rot_y = rot_y; } //Y²‚ÌŒü‚«‚ğXV
+	const char* getName() const { return m_name; }       //åå‰ã‚’å–å¾—
+	const vec3& getPos() const { return m_pos; }         //ä½ç½®ã‚’å–å¾—
+	void setPos(const vec3 pos) { m_pos = pos; }         //ä½ç½®ã‚’æ›´æ–°
+	float getRotY() const { return m_rot_y; }            //Yè»¸ã®å‘ãã‚’å–å¾—
+	void setRotY(const float rot_y) { m_rot_y = rot_y; } //Yè»¸ã®å‘ãã‚’æ›´æ–°
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CNPC(const char* name, const vec3 pos, const float rot_y) :
 		m_name(name),
 		m_pos(pos),
 		m_rot_y(rot_y)
 	{}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	const char* m_name;//–¼‘O
-	vec3 m_pos;        //ˆÊ’u
-	float m_rot_y;     //Y²‚ÌŒü‚«
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	const char* m_name;//åå‰
+	vec3 m_pos;        //ä½ç½®
+	float m_rot_y;     //Yè»¸ã®å‘ã
 };
 
 //--------------------
-//•ó” 
-class CTBox //¦‰½‚Ì‹¤’ÊƒCƒ“ƒ^[ƒtƒF[ƒX‚àÀ‘•‚µ‚Ä‚¢‚È‚¢
+//å®ç®±
+class CTBox //â€»ä½•ã®å…±é€šã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚‚å®Ÿè£…ã—ã¦ã„ãªã„
 {
 public:
-	int getID() const { return m_id; }           //ID‚ğæ“¾
-	const vec3& getPos() const { return m_pos; } //ˆÊ’u‚ğæ“¾
-	float getRotY() const { return m_rot_y; }    //Y²‚ÌŒü‚«‚ğæ“¾
+	int getID() const { return m_id; }           //IDã‚’å–å¾—
+	const vec3& getPos() const { return m_pos; } //ä½ç½®ã‚’å–å¾—
+	float getRotY() const { return m_rot_y; }    //Yè»¸ã®å‘ãã‚’å–å¾—
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CTBox(const int id, const vec3 pos, const float rot_y) :
 		m_id(id),
 		m_pos(pos),
 		m_rot_y(rot_y)
 	{}
 private:
-	//ƒtƒB[ƒ‹ƒh
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 	const int m_id;     //ID
-	const vec3 m_pos;   //ˆÊ’u
-	const float m_rot_y;//Y²‚ÌŒü‚«
+	const vec3 m_pos;   //ä½ç½®
+	const float m_rot_y;//Yè»¸ã®å‘ã
 };
 
 //----------------------------------------
 
 //--------------------
-//ŠO•”ƒVƒXƒeƒ€‚P
+//å¤–éƒ¨ã‚·ã‚¹ãƒ†ãƒ ï¼‘
 namespace other_system1
 {
-	//•Ï”
+	//å¤‰æ•°
 	static int s_npc_num = 0;
 	static CNPC* s_npc[10];
 	
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void init()
 	{
-		s_npc[s_npc_num++] = new CNPC("‘¾˜Y", vec3(10.f, 11.f, 12.f), 0.1f);
-		s_npc[s_npc_num++] = new CNPC("Ÿ˜Y", vec3(20.f, 21.f, 22.f), 0.2f);
-		s_npc[s_npc_num++] = new CNPC("O˜Y", vec3(30.f, 31.f, 32.f), 0.3f);
-		s_npc[s_npc_num++] = new CNPC("l˜N", vec3(40.f, 41.f, 42.f), 0.4f);
-		s_npc[s_npc_num++] = new CNPC("ŒÜ˜N", vec3(50.f, 51.f, 52.f), 0.5f);
+		s_npc[s_npc_num++] = new CNPC("å¤ªéƒ", vec3(10.f, 11.f, 12.f), 0.1f);
+		s_npc[s_npc_num++] = new CNPC("æ¬¡éƒ", vec3(20.f, 21.f, 22.f), 0.2f);
+		s_npc[s_npc_num++] = new CNPC("ä¸‰éƒ", vec3(30.f, 31.f, 32.f), 0.3f);
+		s_npc[s_npc_num++] = new CNPC("å››æœ—", vec3(40.f, 41.f, 42.f), 0.4f);
+		s_npc[s_npc_num++] = new CNPC("äº”æœ—", vec3(50.f, 51.f, 52.f), 0.5f);
 	}
 	
-	//ü•Ó‚ÌNPCî•ñ‚ğûW
+	//å‘¨è¾ºã®NPCæƒ…å ±ã‚’åé›†
 	int findAroundNPC(CNPC* ref_npc[], const int ref_max)
 	{
 		int ref_num = 0;
@@ -279,14 +283,14 @@ namespace other_system1
 }
 
 //--------------------
-//ŠO•”ƒVƒXƒeƒ€‚Q
+//å¤–éƒ¨ã‚·ã‚¹ãƒ†ãƒ ï¼’
 namespace other_system2
 {
-	//•Ï”
+	//å¤‰æ•°
 	static int s_tbox_num = 0;
 	static CTBox* s_tbox[10];
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void init()
 	{
 		s_tbox[s_tbox_num++] = new CTBox(101, vec3(15.f, 15.f, 15.f), 1.1f);
@@ -296,7 +300,7 @@ namespace other_system2
 		s_tbox[s_tbox_num++] = new CTBox(105, vec3(55.f, 55.f, 55.f), 1.5f);
 	}
 
-	//ü•Ó‚Ì•ó” î•ñ‚ğûW
+	//å‘¨è¾ºã®å®ç®±æƒ…å ±ã‚’åé›†
 	int findAroundTBox(CTBox* ref_tbox[], const int ref_max)
 	{
 		int ref_num = 0;
@@ -311,103 +315,103 @@ namespace other_system2
 //----------------------------------------
 
 //--------------------
-//ƒ^[ƒQƒbƒg—pƒAƒ_ƒvƒ^[ƒCƒ“ƒ^[ƒtƒF[ƒX
+//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç”¨ã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 class ITargetAdapter
 {
 public:
-	virtual void getIdentifier(char* buff, const size_t buff_size) const = 0;//¯•Êî•ñ‚ğæ“¾
-	virtual const vec3& getPos() const = 0;                                  //ˆÊ’u‚ğæ“¾
-	virtual float getRotY() const = 0;                                       //Y²‚ÌŒü‚«‚ğæ“¾
+	virtual void getIdentifier(char* buff, const size_t buff_size) const = 0;//è­˜åˆ¥æƒ…å ±ã‚’å–å¾—
+	virtual const vec3& getPos() const = 0;                                  //ä½ç½®ã‚’å–å¾—
+	virtual float getRotY() const = 0;                                       //Yè»¸ã®å‘ãã‚’å–å¾—
 };
 
 //--------------------
-//NPCŒü‚¯ƒ^[ƒQƒbƒg—pƒAƒ_ƒvƒ^[
+//NPCå‘ã‘ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç”¨ã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼
 class CTargetAdapterNPC : public ITargetAdapter
 {
 public:
-	//¯•Êî•ñ‚ğæ“¾
+	//è­˜åˆ¥æƒ…å ±ã‚’å–å¾—
 	void getIdentifier(char* buff, const size_t buff_size) const override
 	{
 		sprintf_s(buff, buff_size, "NPC\"%s\"", m_npc.getName());
 	}
-	//ˆÊ’u‚ğæ“¾
+	//ä½ç½®ã‚’å–å¾—
 	const vec3& getPos() const override
 	{ 
 		return m_npc.getPos();
 	}
-	//Y²‚ÌŒü‚«‚ğæ“¾
+	//Yè»¸ã®å‘ãã‚’å–å¾—
 	float getRotY() const override
 	{
 		return m_npc.getRotY();
 	}
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CTargetAdapterNPC(CNPC& npc) :
 		m_npc(npc)
 	{}
 private:
-	//ƒtƒB[ƒ‹ƒh
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 	CNPC& m_npc;//NPC
 };
 
 //--------------------
-//•ó” Œü‚¯ƒ^[ƒQƒbƒg—pƒAƒ_ƒvƒ^[
+//å®ç®±å‘ã‘ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç”¨ã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼
 class CTargetAdapterTBox : public ITargetAdapter
 {
 public:
-	//¯•Êî•ñ‚ğæ“¾
+	//è­˜åˆ¥æƒ…å ±ã‚’å–å¾—
 	void getIdentifier(char* buff, const size_t buff_size) const override
 	{
-		sprintf_s(buff, buff_size, "•ó” (%d)", m_tbox.getID());
+		sprintf_s(buff, buff_size, "å®ç®±(%d)", m_tbox.getID());
 	}
-	//ˆÊ’u‚ğæ“¾
+	//ä½ç½®ã‚’å–å¾—
 	const vec3& getPos() const override
 	{
 		return m_tbox.getPos();
 	}
-	//Y²‚ÌŒü‚«‚ğæ“¾
+	//Yè»¸ã®å‘ãã‚’å–å¾—
 	float getRotY() const override
 	{
 		return m_tbox.getRotY();
 	}
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CTargetAdapterTBox(CTBox& tbox) :
 		m_tbox(tbox)
 	{}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	CTBox& m_tbox;//•ó” 
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	CTBox& m_tbox;//å®ç®±
 };
 
 //----------------------------------------
 
 //--------------------
-//ƒ^[ƒQƒbƒgˆ——p”z’unew
+//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆå‡¦ç†ç”¨é…ç½®new
 class CTargetCollector;
-void* operator new(std::size_t size, const CTargetCollector*, void* buff){ return buff; }//ƒRƒ“ƒXƒgƒ‰ƒNƒ^Às—p‚É—^‚¦‚ç‚ê‚½ƒ|ƒCƒ“ƒ^[‚ğ‚»‚Ì‚Ü‚Ü•Ô‚·‚¾‚¯
-void operator delete(void* mem, const CTargetCollector*, void* buff){}//ƒ_ƒ~[F‚È‚É‚µ‚È‚¢i”z’unew‚Ædelete‚Íˆê‘Î‚Å“o˜^‚µ‚È‚¢‚Æƒ_ƒj
+void* operator new(std::size_t size, const CTargetCollector*, void* buff){ return buff; }//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å®Ÿè¡Œç”¨ã«ä¸ãˆã‚‰ã‚ŒãŸãƒã‚¤ãƒ³ã‚¿ãƒ¼ã‚’ãã®ã¾ã¾è¿”ã™ã ã‘
+void operator delete(void* mem, const CTargetCollector*, void* buff){}//ãƒ€ãƒŸãƒ¼ï¼šãªã«ã—ãªã„ï¼ˆé…ç½®newã¨deleteã¯ä¸€å¯¾ã§ç™»éŒ²ã—ãªã„ã¨ãƒ€ãƒ¡ï¼‰
 
 //--------------------
-//ƒ^[ƒQƒbƒgûWˆ—ƒNƒ‰ƒX
+//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆåé›†å‡¦ç†ã‚¯ãƒ©ã‚¹
 class CTargetCollector
 {
 public:
-	//ü•Ó‚Ìƒ^[ƒQƒbƒgî•ñ‚ğûW
+	//å‘¨è¾ºã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ã‚’åé›†
 	void findAroundTarget()
 	{
-		//ü•Ó‚ÌNPCî•ñ‚ğûW
+		//å‘¨è¾ºã®NPCæƒ…å ±ã‚’åé›†
 		CNPC* ref_npc[4];
 		const int ref_npc_num = other_system1::findAroundNPC(ref_npc, lengthOfArray(ref_npc));
 
-		//ü•Ó‚Ì•ó” î•ñ‚ğûW
+		//å‘¨è¾ºã®å®ç®±æƒ…å ±ã‚’åé›†
 		CTBox* ref_tbox[3];
 		const int ref_tbox_num = other_system2::findAroundTBox(ref_tbox, lengthOfArray(ref_tbox));
 
-		//ƒ^[ƒQƒbƒgî•ñ‚É’u‚«Š·‚¦
+		//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ã«ç½®ãæ›ãˆ
 		m_numTargets = 0;
 		{
-			//NPCî•ñ‚ğƒ^[ƒQƒbƒgî•ñ‚É’u‚«Š·‚¦
+			//NPCæƒ…å ±ã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ã«ç½®ãæ›ãˆ
 			for (int index = 0; index < ref_npc_num; ++index)
 			{
 				if (m_numTargets < MAX_TARGETS)
@@ -423,7 +427,7 @@ public:
 					}
 				}
 			}
-			//•ó” î•ñ‚ğƒ^[ƒQƒbƒgî•ñ‚É’u‚«Š·‚¦
+			//å®ç®±æƒ…å ±ã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ã«ç½®ãæ›ãˆ
 			for (int index = 0; index < ref_tbox_num; ++index)
 			{
 				if (m_numTargets < MAX_TARGETS)
@@ -439,11 +443,9 @@ public:
 					}
 				}
 			}
-			//ƒ^[ƒQƒbƒgî•ñ‚Ìƒ\[ƒgiƒXƒNƒŠ[ƒ“À•W‚Å‰¡•À‚Ñ‚Éj
-			//...‚Ì‘ã‚í‚è‚ÉƒVƒƒƒbƒtƒ‹
-			time_t timer;
-			time(&timer);
-			srand(static_cast<unsigned int>(timer));
+			//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ã®ã‚½ãƒ¼ãƒˆï¼ˆã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã§æ¨ªä¸¦ã³ã«ï¼‰
+			//...ã®ä»£ã‚ã‚Šã«ã‚·ãƒ£ãƒƒãƒ•ãƒ«
+			srand(static_cast<unsigned int>(time(nullptr)));
 			const int shuffle_num = rand() % 20;
 			for (int num = 0; num < shuffle_num; ++num)
 			{
@@ -455,53 +457,53 @@ public:
 			}
 		}
 	}
-	//ƒ^[ƒQƒbƒgî•ñ‚ğæ“¾
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ã‚’å–å¾—
 	ITargetAdapter* getTarget(const int index)
 	{
 		if (index < 0 || index >= m_numTargets)
 			return nullptr;
 		return m_target[index];
 	}
-	//ƒ^[ƒQƒbƒgî•ñ”‚ğæ“¾
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±æ•°ã‚’å–å¾—
 	int getTargetNum() const{ return m_numTargets; }
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CTargetCollector() :
 		m_numTargets(0)
 	{}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	static const std::size_t MAX_TARGETS = 10;                                                                       //ƒ^[ƒQƒbƒgî•ñ‚ÌÅ‘å”
-	static const std::size_t MAX_SIZE_OF_TARGET_ADAPTER = max(sizeof(CTargetAdapterNPC), sizeof(CTargetAdapterTBox));//ƒ^[ƒQƒbƒgî•ñ—pƒoƒbƒtƒ@‚ÌƒTƒCƒY
-	char m_targetBuff[MAX_TARGETS][MAX_SIZE_OF_TARGET_ADAPTER];//ƒ^[ƒQƒbƒgî•ñ—p‚Ìƒoƒbƒtƒ@
-	ITargetAdapter* m_target[MAX_TARGETS];                     //ƒ^[ƒQƒbƒgî•ñ
-	int m_numTargets;                                          //ƒ^[ƒQƒbƒg”
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	static const std::size_t MAX_TARGETS = 10;                                                                       //ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ã®æœ€å¤§æ•°
+	static const std::size_t MAX_SIZE_OF_TARGET_ADAPTER = max(sizeof(CTargetAdapterNPC), sizeof(CTargetAdapterTBox));//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ç”¨ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
+	char m_targetBuff[MAX_TARGETS][MAX_SIZE_OF_TARGET_ADAPTER];//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ç”¨ã®ãƒãƒƒãƒ•ã‚¡
+	ITargetAdapter* m_target[MAX_TARGETS];                     //ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±
+	int m_numTargets;                                          //ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæ•°
 };
 
 //----------------------------------------
-//Adapterƒpƒ^[ƒ“ƒeƒXƒgƒƒCƒ“ŠÖ”
+//Adapterãƒ‘ã‚¿ãƒ¼ãƒ³ãƒ†ã‚¹ãƒˆãƒ¡ã‚¤ãƒ³é–¢æ•°
 void testAdapter()
 {
 	printf("\n- testAdapter() -\n\n");
 	
-	//ŠO•”ƒVƒXƒeƒ€‚P‰Šú‰»
+	//å¤–éƒ¨ã‚·ã‚¹ãƒ†ãƒ ï¼‘åˆæœŸåŒ–
 	other_system1::init();
 
-	//ŠO•”ƒVƒXƒeƒ€‚Q‰Šú‰»
+	//å¤–éƒ¨ã‚·ã‚¹ãƒ†ãƒ ï¼’åˆæœŸåŒ–
 	other_system2::init();
 
-	//ü•Ó‚Ìƒ^[ƒQƒbƒgî•ñ‚ğûW
+	//å‘¨è¾ºã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ã‚’åé›†
 	CTargetCollector target_coll;
 	target_coll.findAroundTarget();
 
-	//ƒ^[ƒQƒbƒgî•ñ‚ğ•\¦
-	//¦ƒ^[ƒQƒbƒg‚ªNPC‚©•ó” ‚©‹C‚É‚¹‚¸ˆê—¥‚Ìˆ—‚ğs‚Á‚Ä‚¢‚é
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæƒ…å ±ã‚’è¡¨ç¤º
+	//â€»ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒNPCã‹å®ç®±ã‹æ°—ã«ã›ãšä¸€å¾‹ã®å‡¦ç†ã‚’è¡Œã£ã¦ã„ã‚‹
 	for (int index = 0; index < target_coll.getTargetNum(); ++index)
 	{
 		ITargetAdapter* target = target_coll.getTarget(index);
 		if (target)
 		{
-			//ƒAƒ_ƒvƒ^[‚Ìì—p‚É‚æ‚èAÀÛ‚É‚ÍNPC‚Æ•ó” ‚Ì‚»‚ê‚¼‚êŒÅ—L‚Ìˆ—‚ªÀs‚³‚ê‚Ä‚¢‚é
+			//ã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼ã®ä½œç”¨ã«ã‚ˆã‚Šã€å®Ÿéš›ã«ã¯NPCã¨å®ç®±ã®ãã‚Œãã‚Œå›ºæœ‰ã®å‡¦ç†ãŒå®Ÿè¡Œã•ã‚Œã¦ã„ã‚‹
 			char identifier[128];
 			target->getIdentifier(identifier, sizeof(identifier));
 			const vec3& pos = target->getPos();
@@ -512,150 +514,150 @@ void testAdapter()
 }
 
 //================================================================================
-//Proxyƒpƒ^[ƒ“(1)
+//Proxyãƒ‘ã‚¿ãƒ¼ãƒ³(1)
 
 //----------------------------------------
-//y€”õzC++11”ñ‘Î‰‚ÌƒRƒ“ƒpƒCƒ‰‚È‚çAoverride, final ƒL[ƒ[ƒh‚ğ‰½‚à‚µ‚È‚¢ƒ}ƒNƒ‚Å‘ã—p
+//ã€æº–å‚™ã€‘C++11éå¯¾å¿œã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ãªã‚‰ã€override, final ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ã‚’ä½•ã‚‚ã—ãªã„ãƒã‚¯ãƒ­ã§ä»£ç”¨
 //#define override
 //#define final
 
 //----------------------------------------
 
 //--------------------
-//ƒLƒƒƒ‰ƒNƒ^[ƒCƒ“ƒ^[ƒtƒF[ƒXƒNƒ‰ƒX
+//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹
 class CCharacter;
 class ICharacter
 {
 public:
-	//ˆ—XV
+	//å‡¦ç†æ›´æ–°
 	virtual void update() = 0;
-	//•`‰æˆ—
+	//æç”»å‡¦ç†
 	virtual void draw() = 0;
-	//\’zÏ‚İƒtƒ‰ƒOæ“¾
+	//æ§‹ç¯‰æ¸ˆã¿ãƒ•ãƒ©ã‚°å–å¾—
 	virtual bool isBuilt() const = 0;
-	//–{‘Ìæ“¾
+	//æœ¬ä½“å–å¾—
 	virtual const CCharacter* getReal() const = 0;
 };
 
 //--------------------
-//ƒLƒƒƒ‰ƒNƒ^[ƒNƒ‰ƒX
+//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚¯ãƒ©ã‚¹
 class CCharacter : public ICharacter
 {
 public:
-	//ˆ—XV
+	//å‡¦ç†æ›´æ–°
 	void update() override
 	{
-		//ˆ—Œo‰ß
+		//å‡¦ç†çµŒé
 		++m_step;
 		
-		//2ƒXƒeƒbƒvˆÈãŒo‰ß‚µ‚½‚çA1/4‚ÌŠm—¦‚Å\’zŠ®—¹‚Æ‚¢‚¤‚±‚Æ‚É‚·‚é
+		//2ã‚¹ãƒ†ãƒƒãƒ—ä»¥ä¸ŠçµŒéã—ãŸã‚‰ã€1/4ã®ç¢ºç‡ã§æ§‹ç¯‰å®Œäº†ã¨ã„ã†ã“ã¨ã«ã™ã‚‹
 		if (m_step > 2 && rand() % 4 == 0)
 		{
 			m_isBuilt = true;
 		}
 	}
-	//•`‰æˆ—
+	//æç”»å‡¦ç†
 	void draw() override
 	{
 		printf("This is real \"%s\"!\n", m_name);
 	}
-	//\’zÏ‚İƒtƒ‰ƒOæ“¾
+	//æ§‹ç¯‰æ¸ˆã¿ãƒ•ãƒ©ã‚°å–å¾—
 	bool isBuilt() const override
 	{
 		return m_isBuilt;
 	}
-	//–{‘Ìæ“¾
+	//æœ¬ä½“å–å¾—
 	const CCharacter* getReal() const override
 	{
 		return this;
 	}
 public:
-	//ƒAƒNƒZƒbƒT
-	const char* getName() const { return m_name; }//–¼‘Oæ“¾
-	int getStep() const { return m_step; }        //ˆ—ƒXƒeƒbƒvæ“¾
+	//ã‚¢ã‚¯ã‚»ãƒƒã‚µ
+	const char* getName() const { return m_name; }//åå‰å–å¾—
+	int getStep() const { return m_step; }        //å‡¦ç†ã‚¹ãƒ†ãƒƒãƒ—å–å¾—
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CCharacter(const char* name) :
 		m_name(name),
 		m_step(0),
 		m_isBuilt(false)
 	{}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	const char* m_name;//–¼‘O
-	int m_step;//ˆ—ƒXƒeƒbƒv
-	bool m_isBuilt;//\’zÏ‚İƒtƒ‰ƒO
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	const char* m_name;//åå‰
+	int m_step;//å‡¦ç†ã‚¹ãƒ†ãƒƒãƒ—
+	bool m_isBuilt;//æ§‹ç¯‰æ¸ˆã¿ãƒ•ãƒ©ã‚°
 };
 
 //----------------------------------------
 
 //--------------------
-//ƒ[ƒfƒBƒ“ƒO’†‚ÌƒLƒƒƒ‰ƒNƒ^[‘ã—ƒNƒ‰ƒX
+//ãƒ­ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ä¸­ã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ä»£ç†ã‚¯ãƒ©ã‚¹
 class CCharacterProxy : public ICharacter
 {
 public:
-	//ˆ—XV
+	//å‡¦ç†æ›´æ–°
 	virtual void update() override
 	{
-		m_realObj->update();//ˆÏ÷
+		m_realObj->update();//å§”è­²
 	}
-	//•`‰æˆ—
+	//æç”»å‡¦ç†
 	virtual void draw()
 	{
 		printf("Now is loading \"%s\"... (step=%d)\n", m_realObj->getName(), m_realObj->getStep());
 	}
-	//\’zÏ‚İƒtƒ‰ƒOæ“¾
+	//æ§‹ç¯‰æ¸ˆã¿ãƒ•ãƒ©ã‚°å–å¾—
 	bool isBuilt() const override
 	{
 		return false;
 	}
-	//–{‘Ìæ“¾
+	//æœ¬ä½“å–å¾—
 	const CCharacter* getReal() const override
 	{
 		return m_realObj;
 	}
 public:
-	//–{—ˆ‚ÌÀ‘Ì‚ğƒZƒbƒg
+	//æœ¬æ¥ã®å®Ÿä½“ã‚’ã‚»ãƒƒãƒˆ
 	void setRealObj(CCharacter* real_obj)
 	{
 		m_realObj = real_obj;
 	}
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CCharacterProxy() :
 		m_realObj(nullptr)
 	{}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	CCharacter* m_realObj;//–{—ˆ‚ÌÀ‘Ì
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	CCharacter* m_realObj;//æœ¬æ¥ã®å®Ÿä½“
 };
 
 //--------------------
-//ƒLƒƒƒ‰ƒNƒ^[ƒRƒŒƒNƒVƒ‡ƒ“
+//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³
 class CCharacterCollection
 {
 public:
 	//--------------------
-	//ƒCƒeƒŒ[ƒ^[ƒNƒ‰ƒX
+	//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚¯ãƒ©ã‚¹
 	class CIterator
 	{
 	public:
-		//ƒCƒeƒŒ[ƒ^[—pŒ^éŒ¾
+		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç”¨å‹å®£è¨€
 		typedef CIterator type;
 		typedef ICharacter* value_type;
 	public:
-		//ƒCƒeƒŒ[ƒ^[—pƒIƒyƒŒ[ƒ^[
-		operator value_type() { return m_chara; }            //ƒLƒƒƒXƒg
-		operator const value_type() const { return m_chara; }//ƒLƒƒƒXƒg
-		value_type operator->() { return m_chara; }             //QÆ
-		const value_type operator->() const { return m_chara; } //constQÆ
-		ICharacter& operator*() { return *m_chara; }            //À‘Ì‰»
-		const ICharacter& operator*() const { return *m_chara; }//constÀ‘Ì‰»
-		type& operator++() { ++m_index; m_chara = m_coll[m_index]; return *this; }//‘O’uƒCƒ“ƒNƒŠƒƒ“ƒg
-		type operator++(int) { type prev = *this; ++(*this); return prev; }       //Œã’uƒCƒ“ƒNƒŠƒƒ“ƒg
-		type& operator--() { --m_index; m_chara = m_coll[m_index]; return *this; }//‘O’uƒfƒNƒŠƒƒ“ƒg
-		type operator--(int) { type prev = *this; --(*this); return prev; }       //Œã’uƒfƒNƒŠƒƒ“ƒg
-		bool operator==(const type& ite) const//”äŠr
+		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç”¨ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+		operator value_type() { return m_chara; }            //ã‚­ãƒ£ã‚¹ãƒˆ
+		operator const value_type() const { return m_chara; }//ã‚­ãƒ£ã‚¹ãƒˆ
+		value_type operator->() { return m_chara; }             //å‚ç…§
+		const value_type operator->() const { return m_chara; } //constå‚ç…§
+		ICharacter& operator*() { return *m_chara; }            //å®Ÿä½“åŒ–
+		const ICharacter& operator*() const { return *m_chara; }//constå®Ÿä½“åŒ–
+		type& operator++() { ++m_index; m_chara = m_coll[m_index]; return *this; }//å‰ç½®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+		type operator++(int) { type prev = *this; ++(*this); return prev; }       //å¾Œç½®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+		type& operator--() { --m_index; m_chara = m_coll[m_index]; return *this; }//å‰ç½®ãƒ‡ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+		type operator--(int) { type prev = *this; --(*this); return prev; }       //å¾Œç½®ãƒ‡ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+		bool operator==(const type& ite) const//æ¯”è¼ƒ
 		{
 			if (m_chara == nullptr && ite.m_chara == nullptr)
 				return true;
@@ -663,8 +665,12 @@ public:
 				return false;
 			return m_chara->getReal() == ite->getReal();
 		}
+		bool operator!=(const type& ite) const//æ¯”è¼ƒ
+		{
+			return !(*this == ite);
+		}
 	public:
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		CIterator(CCharacterCollection& coll, const int index) :
 			m_coll(coll),
 			m_index(index)
@@ -672,19 +678,19 @@ public:
 			m_chara = m_coll[index];
 		}
 	private:
-		//ƒtƒB[ƒ‹ƒh
-		CCharacterCollection& m_coll;//ƒLƒƒƒ‰ƒNƒ^[ƒRƒŒƒNƒVƒ‡ƒ“
-		int m_index;                 //ƒRƒŒƒNƒVƒ‡ƒ“‚ÌƒJƒŒƒ“ƒgƒCƒ“ƒfƒbƒNƒX
-		ICharacter* m_chara;         //ƒLƒƒƒ‰ƒNƒ^[ƒIƒuƒWƒFƒNƒg
+		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+		CCharacterCollection& m_coll;//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³
+		int m_index;                 //ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ã®ã‚«ãƒ¬ãƒ³ãƒˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+		ICharacter* m_chara;         //ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	};
 
 public:
-	//ƒCƒeƒŒ[ƒ^\—pƒƒ\ƒbƒh
-	CIterator begin() { CIterator ite(*this, 0); return ite; }       //æ“ªƒCƒeƒŒ[ƒ^[‚ğ•Ô‚·
-	CIterator end() { CIterator ite(*this, m_charaNum); return ite; }//I’[ƒCƒeƒŒ[ƒ^[‚ğ•Ô‚·
-	bool empty() const { return m_charaNum == 0; }                   //—v‘f‚ª‹ó‚©H
-	int size() const { return m_charaNum; }                          //—v‘f”‚ğ•Ô‚·
-	ICharacter* operator[](const int index)                          //—v‘f‚ğ•Ô‚·@¦‚±‚±‚ÅƒvƒƒLƒV[‚É‘Î‰
+	//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿â€•ç”¨ãƒ¡ã‚½ãƒƒãƒ‰
+	CIterator begin() { CIterator ite(*this, 0); return ite; }       //å…ˆé ­ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+	CIterator end() { CIterator ite(*this, m_charaNum); return ite; }//çµ‚ç«¯ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™
+	bool empty() const { return m_charaNum == 0; }                   //è¦ç´ ãŒç©ºã‹ï¼Ÿ
+	int size() const { return m_charaNum; }                          //è¦ç´ æ•°ã‚’è¿”ã™
+	ICharacter* operator[](const int index)                          //è¦ç´ ã‚’è¿”ã™ã€€â€»ã“ã“ã§ãƒ—ãƒ­ã‚­ã‚·ãƒ¼ã«å¯¾å¿œ
 	{
 		if (index < 0 || index >= m_charaNum)
 			return nullptr;
@@ -692,15 +698,15 @@ public:
 		ICharacter* chara = realChara;
 		if (!realChara->isBuilt())
 		{
-			//\’z‚ªÏ‚ñ‚Å‚¢‚È‚¢ê‡AƒvƒƒLƒV\‚ğ•Ô‚·
-			static CCharacterProxy proxy;//ƒvƒƒLƒV[‚ÌƒCƒ“ƒXƒ^ƒ“ƒXiÄ—˜—p‚·‚éFˆêí‚ÌFlyweightƒpƒ^[ƒ“j
+			//æ§‹ç¯‰ãŒæ¸ˆã‚“ã§ã„ãªã„å ´åˆã€ãƒ—ãƒ­ã‚­ã‚·â€•ã‚’è¿”ã™
+			static CCharacterProxy proxy;//ãƒ—ãƒ­ã‚­ã‚·ãƒ¼ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ï¼ˆå†åˆ©ç”¨ã™ã‚‹ï¼šä¸€ç¨®ã®Flyweightãƒ‘ã‚¿ãƒ¼ãƒ³ï¼‰
 			proxy.setRealObj(realChara);
 			chara = &proxy;
 		}
 		return chara;
 	}
 public:
-	//ƒLƒƒƒ‰’Ç‰Á
+	//ã‚­ãƒ£ãƒ©è¿½åŠ 
 	void addChara(const char* name)
 	{
 		if (m_charaNum >= CHARA_MAX)
@@ -712,14 +718,14 @@ public:
 		}
 	}
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CCharacterCollection() :
 		m_charaNum(0)
 	{}
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~CCharacterCollection()
 	{
-		//‘S‚Äíœ
+		//å…¨ã¦å‰Šé™¤
 		for (int index = 0; index < m_charaNum; ++index)
 		{
 			if (m_chara[index])
@@ -730,14 +736,14 @@ public:
 		}
 	}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	static const int CHARA_MAX = 32;//ƒLƒƒƒ‰î•ñ‚ÌÅ‘å”
-	CCharacter* m_chara[CHARA_MAX]; //ƒLƒƒƒ‰î•ñ
-	int m_charaNum;                 //ƒLƒƒƒ‰î•ñ”
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	static const int CHARA_MAX = 32;//ã‚­ãƒ£ãƒ©æƒ…å ±ã®æœ€å¤§æ•°
+	CCharacter* m_chara[CHARA_MAX]; //ã‚­ãƒ£ãƒ©æƒ…å ±
+	int m_charaNum;                 //ã‚­ãƒ£ãƒ©æƒ…å ±æ•°
 };
-//©ìfor_each
+//è‡ªä½œfor_each
 template<class T, class F>
-void for_each(T ite, T end, F functor)
+void my_for_each(T ite, T end, F functor)
 {
 	for (; ite != end; ++ite)
 	{
@@ -745,7 +751,7 @@ void for_each(T ite, T end, F functor)
 	}
 }
 template<class T, class F, class P1>
-void for_each(T ite, T end, F functor, P1& param1)
+void my_for_each(T ite, T end, F functor, P1& param1)
 {
 	for (; ite != end; ++ite)
 	{
@@ -756,10 +762,10 @@ void for_each(T ite, T end, F functor, P1& param1)
 //----------------------------------------
 
 //--------------------
-//‹¤’Êˆ—ƒVƒXƒeƒ€
+//å…±é€šå‡¦ç†ã‚·ã‚¹ãƒ†ãƒ 
 namespace common_system
 {
-	//ƒLƒƒƒ‰ƒNƒ^[XVˆ—iŠÖ”ƒIƒuƒWƒFƒNƒgj
+	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼æ›´æ–°å‡¦ç†ï¼ˆé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼‰
 	struct Update
 	{
 		void operator()(ICharacter* chara)
@@ -768,7 +774,7 @@ namespace common_system
 		}
 	};
 	
-	//ƒLƒƒƒ‰ƒNƒ^[•`‰æˆ—iŠÖ”ƒIƒuƒWƒFƒNƒgj
+	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼æç”»å‡¦ç†ï¼ˆé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼‰
 	struct Draw
 	{
 		void operator()(ICharacter* chara)
@@ -777,7 +783,7 @@ namespace common_system
 		}
 	};
 
-	//ƒLƒƒƒ‰ƒNƒ^[\’zŠ®—¹ƒ`ƒFƒbƒN
+	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼æ§‹ç¯‰å®Œäº†ãƒã‚§ãƒƒã‚¯
 	struct isBuiltAll
 	{
 		void operator()(ICharacter* chara, bool& is_built_all)
@@ -791,27 +797,27 @@ namespace common_system
 };
 
 //----------------------------------------
-//Proxyƒpƒ^[ƒ“(2)ƒeƒXƒgƒƒCƒ“ŠÖ”
+//Proxyãƒ‘ã‚¿ãƒ¼ãƒ³(2)ãƒ†ã‚¹ãƒˆãƒ¡ã‚¤ãƒ³é–¢æ•°
 void testProxy1()
 {
 	printf("\n- testProxy1() -\n\n");
 
-	//ƒLƒƒƒ‰ƒNƒ^[¶¬
+	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ç”Ÿæˆ
 	CCharacterCollection chara_coll;
-	chara_coll.addChara("‘¾˜Y");
-	chara_coll.addChara("Ÿ˜Y");
-	chara_coll.addChara("O˜Y");
-	chara_coll.addChara("l˜Y");
-	chara_coll.addChara("ŒÜ˜Y");
+	chara_coll.addChara("å¤ªéƒ");
+	chara_coll.addChara("æ¬¡éƒ");
+	chara_coll.addChara("ä¸‰éƒ");
+	chara_coll.addChara("å››éƒ");
+	chara_coll.addChara("äº”éƒ");
 
-	//‘SƒLƒƒƒ‰ƒNƒ^[‚Ì\’z‚ªŠ®—¹‚·‚é‚Ü‚Åˆ—
+	//å…¨ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®æ§‹ç¯‰ãŒå®Œäº†ã™ã‚‹ã¾ã§å‡¦ç†
 	for (int step = 0; ; ++step)
 	{
 		printf("- step: %d -\n", step);
-		for_each(chara_coll.begin(), chara_coll.end(), common_system::Update());
-		for_each(chara_coll.begin(), chara_coll.end(), common_system::Draw());
+		my_for_each(chara_coll.begin(), chara_coll.end(), common_system::Update());
+		my_for_each(chara_coll.begin(), chara_coll.end(), common_system::Draw());
 		bool is_built_all = true;
-		for_each(chara_coll.begin(), chara_coll.end(), common_system::isBuiltAll(), is_built_all);
+		my_for_each(chara_coll.begin(), chara_coll.end(), common_system::isBuiltAll(), is_built_all);
 		if (is_built_all)
 		{
 			printf("- finish. -\n");
@@ -821,20 +827,20 @@ void testProxy1()
 }
 
 //================================================================================
-//Proxyƒpƒ^[ƒ“(2)FŠÈˆÕ”ÅƒXƒ}[ƒgƒ|ƒCƒ“ƒ^[
+//Proxyãƒ‘ã‚¿ãƒ¼ãƒ³(2)ï¼šç°¡æ˜“ç‰ˆã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãƒ¼
 
 //----------------------------------------
-//ŠÈˆÕ”ÅƒXƒ}[ƒgƒ|ƒCƒ“ƒ^[‚Ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒX
+//ç°¡æ˜“ç‰ˆã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãƒ¼ã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚¯ãƒ©ã‚¹
 template<class T>
 class CSmartPtr
 {
 private:
-	//QÆî•ñŒ^
+	//å‚ç…§æƒ…å ±å‹
 	struct T_REF_INFO
 	{
-		T* m_realObj;//–{“–‚ÌƒIƒuƒWƒFƒNƒg
-		int m_refCount;//QÆƒJƒEƒ“ƒ^
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		T* m_realObj;//æœ¬å½“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+		int m_refCount;//å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		T_REF_INFO(T* real_obj, const int ref_count) :
 			m_realObj(real_obj),
 			m_refCount(ref_count)
@@ -845,55 +851,55 @@ private:
 		{}
 	};
 public:
-	//ƒIƒyƒŒ[ƒ^‚ğÀ‘•‚µ‚Ä–{—ˆ‚ÌƒIƒuƒWƒFƒNƒg‚ğ‹U‘•i‘ã—j
+	//ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ã‚’å®Ÿè£…ã—ã¦æœ¬æ¥ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å½è£…ï¼ˆä»£ç†ï¼‰
 	T* operator->(){ return m_refInfo ? m_refInfo->m_realObj : nullptr; }
 	const T* operator->() const { return m_refInfo ? m_refInfo->m_realObj : nullptr; }
 	T& operator*(){ return *m_refInfo->m_realObj; }
 	const T& operator*() const { return *m_refInfo->m_realObj; }
-	//‘ã“ü‰‰ZqFƒXƒ}[ƒgƒ|ƒCƒ“ƒ^[‚ğ‘ã“ü
+	//ä»£å…¥æ¼”ç®—å­ï¼šã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãƒ¼ã‚’ä»£å…¥
 	CSmartPtr<T>& operator=(CSmartPtr<T>& obj)
 	{
-		//‚·‚Å‚ÉQÆ‚µ‚Ä‚¢‚é‚È‚ç‚È‚É‚à‚µ‚È‚¢
+		//ã™ã§ã«å‚ç…§ã—ã¦ã„ã‚‹ãªã‚‰ãªã«ã‚‚ã—ãªã„
 		if (m_refInfo == obj.m_refInfo)
 			return *this;
 		
-		//QÆƒJƒEƒ“ƒ^‚ğƒJƒEƒ“ƒgƒ_ƒEƒ“
+		//å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 		release();
 			
-		//QÆî•ñ‚ğƒRƒs[
+		//å‚ç…§æƒ…å ±ã‚’ã‚³ãƒ”ãƒ¼
 		m_refInfo = obj.m_refInfo;
 			
-		//QÆƒJƒEƒ“ƒ^‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		//å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
 		addRef();
 		
 		return *this;
 	}
-	//‘ã“ü‰‰ZqFƒ|ƒCƒ“ƒ^[‚ğ‘ã“ü
+	//ä»£å…¥æ¼”ç®—å­ï¼šãƒã‚¤ãƒ³ã‚¿ãƒ¼ã‚’ä»£å…¥
 	CSmartPtr<T>& operator=(T* real_obj)
 	{
-		//‚·‚Å‚ÉQÆ‚µ‚Ä‚¢‚é‚È‚ç‚È‚É‚à‚µ‚È‚¢
+		//ã™ã§ã«å‚ç…§ã—ã¦ã„ã‚‹ãªã‚‰ãªã«ã‚‚ã—ãªã„
 		if (m_refInfo && m_refInfo->m_realObj == real_obj)
 			return *this;
 		
-		//QÆƒJƒEƒ“ƒ^‚ğƒJƒEƒ“ƒgƒ_ƒEƒ“
+		//å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 		release();
 		
-		if (real_obj)//nullptr ‘ã“ü‚Í‚È‚É‚à‚µ‚È‚¢
+		if (real_obj)//nullptr ä»£å…¥æ™‚ã¯ãªã«ã‚‚ã—ãªã„
 		{
-			//QÆî•ñ‚ğ¶¬
+			//å‚ç…§æƒ…å ±ã‚’ç”Ÿæˆ
 			m_refInfo = new T_REF_INFO(real_obj, 1);
 		}
 		return *this;
 	}
 private:
-	//QÆƒJƒEƒ“ƒ^‚ğƒJƒEƒ“ƒgƒAƒbƒv
+	//å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
 	void addRef()
 	{
 		if (!m_refInfo)
 			return;
 		++m_refInfo->m_refCount;
 	}
-	//QÆƒJƒEƒ“ƒ^‚ğƒJƒEƒ“ƒgƒ_ƒEƒ“
+	//å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 	void release()
 	{
 		if (!m_refInfo)
@@ -903,146 +909,314 @@ private:
 			--m_refInfo->m_refCount;
 			if (m_refInfo->m_refCount == 0)
 			{
-				//QÆƒJƒEƒ“ƒ^‚ª0‚É‚È‚Á‚½‚çƒIƒuƒWƒFƒNƒg‚ğíœ
+				//å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ãŒ0ã«ãªã£ãŸã‚‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‰Šé™¤
 				if (m_refInfo->m_realObj)
 				{
-					delete m_refInfo->m_realObj;//–{“–‚ÌƒIƒuƒWƒFƒNƒg‚ğíœ
+					delete m_refInfo->m_realObj;//æœ¬å½“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‰Šé™¤
 					m_refInfo->m_realObj = nullptr;
 				}
-				delete m_refInfo;//QÆî•ñ‚àíœ
+				delete m_refInfo;//å‚ç…§æƒ…å ±ã‚‚å‰Šé™¤
 			}
 		}
 		m_refInfo = nullptr;
 	}
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CSmartPtr(T* real_obj)
 	{
-		//QÆî•ñ‚ğ¶¬
+		//å‚ç…§æƒ…å ±ã‚’ç”Ÿæˆ
 		m_refInfo = new T_REF_INFO(real_obj, 1);
 	}
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CSmartPtr(CSmartPtr<T>& smart_ptr)
 	{
-		//QÆî•ñ‚ğƒRƒs[
+		//å‚ç…§æƒ…å ±ã‚’ã‚³ãƒ”ãƒ¼
 		m_refInfo = smart_ptr.m_refInfo;
 		
-		//QÆƒJƒEƒ“ƒ^‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		//å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
 		addRef();
 	}
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~CSmartPtr()
 	{
-		//QÆƒJƒEƒ“ƒ^‚ğƒJƒEƒ“ƒgƒ_ƒEƒ“
+		//å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 		release();
 	}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	T_REF_INFO* m_refInfo;//QÆî•ñ
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	T_REF_INFO* m_refInfo;//å‚ç…§æƒ…å ±
 };
 
 //----------------------------------------
-//ƒeƒXƒg—pƒNƒ‰ƒX
-//¦‚±‚ê©‘Ì‚Í‰½‚ÌƒCƒ“ƒ^[ƒtƒF[ƒX‚à‚½‚È‚¢•’Ê‚ÌƒNƒ‰ƒX
-//@‚±‚ÌƒNƒ‰ƒX‚ğƒXƒ}[ƒgƒ|ƒCƒ“ƒ^[‚Åˆµ‚¤
+//ãƒ†ã‚¹ãƒˆç”¨ã‚¯ãƒ©ã‚¹
+//â€»ã“ã‚Œè‡ªä½“ã¯ä½•ã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚‚æŒãŸãªã„æ™®é€šã®ã‚¯ãƒ©ã‚¹
+//ã€€ã“ã®ã‚¯ãƒ©ã‚¹ã‚’ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãƒ¼ã§æ‰±ã†
 class CTest
 {
 public:
-	//ƒAƒNƒZƒbƒT
+	//ã‚¢ã‚¯ã‚»ãƒƒã‚µ
 	const char* getName() const { return m_name; }
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CTest(const char* name)
 	{
 		printf("CTest::Ctest(\"%s\")\n", name);
 		m_name = name;
 	}
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~CTest()
 	{
 		printf("CTest::~Ctest() : m_name=\"%s\"\n", m_name);
 	}
 private:
-	//ƒtƒB[ƒ‹ƒh
-	const char* m_name;//–¼‘O
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	const char* m_name;//åå‰
 };
 
 //----------------------------------------
-//Proxyƒpƒ^[ƒ“(2)ƒeƒXƒgƒƒCƒ“ŠÖ”
+//Proxyãƒ‘ã‚¿ãƒ¼ãƒ³(2)ãƒ†ã‚¹ãƒˆãƒ¡ã‚¤ãƒ³é–¢æ•°
 void testProxy2()
 {
 	printf("\n- testProxy2() -\n\n");
 
-	//ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^[‚Å CTest ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬
-	//©—R‚ÉƒRƒs[‚µ‚Ä‚àA“KØ‚ÈŠJ•ú‚ğs‚Á‚Ä‚­‚ê‚é
-	//y’ˆÓz
-	//ŠÖ”‚ÉƒXƒ}[ƒgƒ|ƒCƒ“ƒ^[‚ğ“n‚·‚ÍA’l“n‚µ‚É‚µ‚È‚¢‚Æ
-	//ŠÖ”“à‚Ådelete‚ª”­¶‚·‚é–‚É’ˆÓB
+	//ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãƒ¼ã§ CTest ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
+	//è‡ªç”±ã«ã‚³ãƒ”ãƒ¼ã—ã¦ã‚‚ã€é©åˆ‡ãªé–‹æ”¾ã‚’è¡Œã£ã¦ãã‚Œã‚‹
+	//ã€æ³¨æ„ã€‘
+	//é–¢æ•°ã«ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãƒ¼ã‚’æ¸¡ã™æ™‚ã¯ã€å€¤æ¸¡ã—ã«ã—ãªã„ã¨
+	//é–¢æ•°å†…ã§deleteãŒç™ºç”Ÿã™ã‚‹äº‹ã«æ³¨æ„ã€‚
 
 	printf("(begin function)\n");
-	CSmartPtr<CTest> obj1 = new CTest("‘¾˜Y");
+	CSmartPtr<CTest> obj1 = new CTest("å¤ªéƒ");
 	printf("[01] obj1->getName()=\"%s\"\n", obj1->getName());
 	printf("     (*obj1).getName()=\"%s\"\n", (*obj1).getName());
-	CSmartPtr<CTest> obj2 = new CTest("Ÿ˜Y");
+	CSmartPtr<CTest> obj2 = new CTest("æ¬¡éƒ");
 	printf("[02] obj2->getName()=\"%s\"\n", obj2->getName());
-	CSmartPtr<CTest> obj3 = new CTest("O˜Y");
+	CSmartPtr<CTest> obj3 = new CTest("ä¸‰éƒ");
 	printf("[03] obj3->getName()=\"%s\"\n", obj3->getName());
 	{
 		printf("(begin block)\n");
-		CSmartPtr<CTest> obj4 = new CTest("l˜N");
+		CSmartPtr<CTest> obj4 = new CTest("å››æœ—");
 		printf("[04] obj4->getName()=\"%s\"\n", obj4->getName());
-		CSmartPtr<CTest> obj5 = new CTest("ŒÜ˜Y");
+		CSmartPtr<CTest> obj5 = new CTest("äº”éƒ");
 		printf("[05] obj5->getName()=\"%s\"\n", obj5->getName());
 		printf("obj2 = obj4\n");
-		obj2 = obj4;//ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^[‚Ì‘ã“üFuŸ˜Yv‚Ì delete ‚ªs‚í‚ê‚é
+		obj2 = obj4;//ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãƒ¼ã®ä»£å…¥ï¼šã€Œæ¬¡éƒã€ã® delete ãŒè¡Œã‚ã‚Œã‚‹
 		printf("[06] obj1->getName()=\"%s\"\n", obj1->getName());
 		printf("     obj2->getName()=\"%s\"\n", obj2->getName());
 		printf("     obj3->getName()=\"%s\"\n", obj3->getName());
 		printf("     obj4->getName()=\"%s\"\n", obj4->getName());
 		printf("     obj5->getName()=\"%s\"\n", obj5->getName());
 		printf("obj1 = obj2\n");
-		obj1 = obj2;//ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^[‚Ì‘ã“üFu‘¾˜Yv‚Ì delete ‚ªs‚í‚ê‚é
+		obj1 = obj2;//ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãƒ¼ã®ä»£å…¥ï¼šã€Œå¤ªéƒã€ã® delete ãŒè¡Œã‚ã‚Œã‚‹
 		printf("[07] obj1->getName()=\"%s\"\n", obj1->getName());
 		printf("     obj2->getName()=\"%s\"\n", obj2->getName());
 		printf("     obj3->getName()=\"%s\"\n", obj3->getName());
 		printf("     obj4->getName()=\"%s\"\n", obj4->getName());
 		printf("     obj5->getName()=\"%s\"\n", obj5->getName());
-		//ƒuƒƒbƒNI—¹FuŒÜ˜Yv‚Ìdelete ‚ªs‚í‚ê‚é
+		//ãƒ–ãƒ­ãƒƒã‚¯çµ‚äº†ï¼šã€Œäº”éƒã€ã®delete ãŒè¡Œã‚ã‚Œã‚‹
 		printf("(end block)\n");
 	}
 	printf("[08] obj1->getName()=\"%s\"\n", obj1->getName());
 	printf("     obj2->getName()=\"%s\"\n", obj2->getName());
 	printf("     obj3->getName()=\"%s\"\n", obj3->getName());
 	printf("obj3 = nullptr\n");
-	obj3 = nullptr;//obj3‚ğ–¾¦“I‚É‰ğ•úFuO˜Yv‚Ìdelete ‚ªs‚í‚ê‚é
+	obj3 = nullptr;//obj3ã‚’æ˜ç¤ºçš„ã«è§£æ”¾ï¼šã€Œä¸‰éƒã€ã®delete ãŒè¡Œã‚ã‚Œã‚‹
 	printf("[09] obj1->getName()=\"%s\"\n", obj1->getName());
 	printf("     obj2->getName()=\"%s\"\n", obj2->getName());
-//	printf("     obj3->getName()=\"%s\"\n", obj3->getName());//ƒGƒ‰[
+//	printf("     obj3->getName()=\"%s\"\n", obj3->getName());//ã‚¨ãƒ©ãƒ¼
 	printf("obj2 = nullptr\n");
-	obj2 = nullptr;//obj2‚ğ–¾¦“I‚É‰ğ•úFul˜Nv‚Ìdelete ‚Ís‚í‚ê‚È‚¢
+	obj2 = nullptr;//obj2ã‚’æ˜ç¤ºçš„ã«è§£æ”¾ï¼šã€Œå››æœ—ã€ã®delete ã¯è¡Œã‚ã‚Œãªã„
 	printf("[10] obj1->getName()=\"%s\"\n", obj1->getName());
-//	printf("     obj2->getName()=\"%s\"\n", obj2->getName());//ƒGƒ‰[
-//	printf("     obj3->getName()=\"%s\"\n", obj3->getName());//ƒGƒ‰[
-	//obj1‚Í–¾¦“I‚È‰ğ•ú‚µ‚È‚¢
+//	printf("     obj2->getName()=\"%s\"\n", obj2->getName());//ã‚¨ãƒ©ãƒ¼
+//	printf("     obj3->getName()=\"%s\"\n", obj3->getName());//ã‚¨ãƒ©ãƒ¼
+	//obj1ã¯æ˜ç¤ºçš„ãªè§£æ”¾ã—ãªã„
 	printf("(end function)\n");
-	//ŠÖ”I—¹FŠÖ”‚ğ”²‚¯‚é‚Éul˜Nv‚Ì delete ‚ªs‚í‚ê‚é
+	//é–¢æ•°çµ‚äº†ï¼šé–¢æ•°ã‚’æŠœã‘ã‚‹æ™‚ã«ã€Œå››æœ—ã€ã® delete ãŒè¡Œã‚ã‚Œã‚‹
 }
 
 //================================================================================
-//ƒeƒXƒgƒƒCƒ“ŠÖ”
+void testSTLvector()
+{
+	printf("\n- testSTLvector() -\n\n");
+
+	class MyClass
+	{
+	public:
+		MyClass(const char* name) :
+			m_name(name)
+		{}
+		~MyClass(){}
+	private:
+		const char* m_name;
+	};
+	printf("std::vector<MyClass> array;\n");
+	std::vector<MyClass> array;
+	printf("array.reserve(3);\n");
+	array.reserve(3);
+	printf("array.push_back(MyClass(\"å¤ªéƒ\"));\n");
+	array.push_back(MyClass("å¤ªéƒ"));
+	printf("array.size()=%d\n", array.size());
+	printf("array.capacity()=%d\n", array.capacity());
+	printf("array.push_back(MyClass(\"æ¬¡éƒ\"));\n");
+	array.push_back(MyClass("æ¬¡éƒ"));
+	printf("array.push_back(MyClass(\"ä¸‰éƒ\"));\n");
+	array.push_back(MyClass("ä¸‰éƒ"));
+	printf("array.push_back(MyClass(\"å››æœ—\"));\n");
+	array.push_back(MyClass("å››éƒ"));
+	printf("array.size()=%d\n", array.size());
+	printf("array.capacity()=%d\n", array.capacity());
+	printf("array.erase(array.begin());\n");
+	array.erase(array.begin());
+	printf("array.size()=%d\n", array.size());
+	printf("array.capacity()=%d\n", array.capacity());
+	printf("std::vector<MyClass>(array).swap(array);\n");
+	std::vector<MyClass>(array).swap(array);
+	printf("array.size()=%d\n", array.size());
+	printf("array.capacity()=%d\n", array.capacity());
+	printf("std::vector<MyClass>().swap(array);\n");
+	std::vector<MyClass>().swap(array);
+	printf("array.size()=%d\n", array.size());
+	printf("array.capacity()=%d\n", array.capacity());
+}
+
+//================================================================================
+//è‡ªä½œã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ãƒ†ã‚¹ãƒˆ
+
+#include <iterator>
+#include <algorithm>
+#include <stdio.h>
+
+//ãƒ†ã‚¹ãƒˆã‚¯ãƒ©ã‚¹
+class MyClass
+{
+public:
+	//ã‚¢ã‚¯ã‚»ãƒƒã‚µ
+	const char* getName() const { return m_name; }//åå‰
+public:
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	MyClass(const char* name) :
+		m_name(name)
+	{}
+private:
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	const char* m_name;//åå‰
+};
+
+//è‡ªä½œã‚³ãƒ³ãƒ†ãƒŠç”¨é…ç½®new
+class MyContainer;
+void* operator new(size_t size, MyContainer& con, void* buff){ return buff; }
+void operator delete(void* p, MyContainer& con, void* buff){}
+
+//è‡ªä½œã‚³ãƒ³ãƒ†ãƒŠ
+class MyContainer
+{
+public:
+	//è‡ªä½œã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+	class Iterator : public std::iterator<std::forward_iterator_tag, MyClass>
+	{
+	public:
+		//ã‚³ãƒ³ãƒ†ãƒŠè¦ç´ ã‚¢ã‚¯ã‚»ã‚¹ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+		MyClass& operator*() { return *m_obj; }
+		MyClass* operator->() { return m_obj; }
+		const MyClass& operator*() const { return *m_obj; }
+		const MyClass* operator->() const { return m_obj; }
+		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+		Iterator& operator++() { m_obj = m_cont[++m_index]; return *this; }
+		Iterator operator++(int) { Iterator prev = *this; m_obj = m_cont[++m_index]; return prev; }
+		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®æ¯”è¼ƒ
+		bool operator==(const Iterator& ite) const { return m_obj == ite.m_obj; }
+		bool operator!=(const Iterator& ite) const { return m_obj != ite.m_obj; }
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+		Iterator(MyContainer& coll, int index) :
+			m_cont(coll),
+			m_index(index),
+			m_obj(nullptr)
+		{
+			m_obj = m_cont[m_index];
+		}
+	private:
+		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+		MyContainer& m_cont;//ã‚³ãƒ³ãƒ†ãƒŠ
+		int m_index;        //å‚ç…§è¦ç´ ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+		MyClass* m_obj;     //ã‚³ãƒ³ãƒ†ãƒŠè¦ç´ ã®å‚ç…§
+	};
+public:
+	//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿â€•å–å¾—
+	Iterator begin(){ return Iterator(*this, 0); }  //å…ˆé ­
+	Iterator end(){ return Iterator(*this, m_num); }//æœ«å°¾
+	//è¦ç´ æƒ…å ±å–å¾—
+	bool empty() const { return m_num == 0; }//è¦ç´ ãŒç©ºï¼Ÿ
+	int size() const { return m_num; }       //è¦ç´ æ•°
+	//è¦ç´ å–å¾—
+	MyClass* operator[](const int index)
+	{
+		if (index < 0 || index >= m_num)
+			return nullptr;
+		return reinterpret_cast<MyClass*>(m_buff[index]);
+	}
+	//è¦ç´ è¿½åŠ 
+	MyClass* add(const char* name)
+	{
+		if (m_num >= ELEM_MAX)
+			return nullptr;
+		return new(*this, m_buff[m_num++])MyClass(name);//æ—¢å­˜ã®ãƒãƒƒãƒ•ã‚¡ã«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ§‹ç¯‰ï¼ˆè§£æ”¾ä¸è¦ï¼‰
+	}
+public:
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	MyContainer() :
+		m_num(0)
+	{}
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	~MyContainer()
+	{}
+private:
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	static const int ELEM_MAX = 8;         //æœ€å¤§è¦ç´ æ•°
+	char m_buff[ELEM_MAX][sizeof(MyClass)];//è¦ç´ ç”¨ã®ãƒãƒƒãƒ•ã‚¡
+	int m_num;                             //è¦ç´ æ•°
+};
+
+//è‡ªä½œã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ãƒ†ã‚¹ãƒˆ
+void testMyIterator()
+{
+	printf("\n- testMyIterator() -\n\n");
+
+	//ã‚³ãƒ³ãƒ†ãƒŠä½œæˆ
+	MyContainer cont;
+	cont.add("å¤ªéƒ");
+	cont.add("æ¬¡éƒ");
+	cont.add("ä¸‰éƒ");
+	
+	//for_eachç”¨é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼ˆãƒ•ã‚¡ãƒ³ã‚¯ã‚¿ï¼‰
+	struct MyFunctor{
+		void operator()(MyClass& obj){ printf("name=\"%s\"\n", obj.getName()); }
+	};
+	
+	//å…¨ã‚³ãƒ³ãƒ†ãƒŠè¦ç´ å‡¦ç†
+	for_each(cont.begin(), cont.end(), MyFunctor());
+}
+
+//================================================================================
+//ãƒ†ã‚¹ãƒˆãƒ¡ã‚¤ãƒ³é–¢æ•°
 void testMain()
 {
-	//ObserverƒeƒXƒg
+	//Observerãƒ†ã‚¹ãƒˆ
 	testObserver();
 	
-	//AdapterƒeƒXƒg
+	//Adapterãƒ†ã‚¹ãƒˆ
 	testAdapter();
 
-	//ProxyƒeƒXƒg(1)
+	//Proxyãƒ†ã‚¹ãƒˆ(1)
 	testProxy1();
 
-	//ProxyƒeƒXƒg(2)
+	//Proxyãƒ†ã‚¹ãƒˆ(2)
 	testProxy2();
+
+	//std::vectorãƒ†ã‚¹ãƒˆ
+	testSTLvector();
+
+	//è‡ªä½œã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ãƒ†ã‚¹ãƒˆ
+	testMyIterator();
 }
 
 //================================================================================

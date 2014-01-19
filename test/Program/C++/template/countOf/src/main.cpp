@@ -22,6 +22,14 @@ namespace for_define
 		std::cout << "----- for_define::test_func() -----" << std::endl;
 		
 		//ˆÈ‰ºAfor_template::test_func() ‚Æ“¯‚¶
+		{
+			int var1[10] = {};
+			int var2[20][30] = {};
+			int var3[40][50][60] = {};
+			printf("var1[%d]\n", lengthofarray1(var1));
+			printf("var2[%d][%d]\n", lengthofarray1(var2), lengthofarray2(var2));
+			printf("var3[%d][%d][%d]\n", lengthofarray1(var3), lengthofarray2(var3), lengthofarray3(var3));
+		}
 
 		int var1 = 0;
 		int var2[2] = { 0 };
@@ -118,6 +126,15 @@ namespace for_template
 		std::cout << std::endl;
 		std::cout << "----- for_template::test_func() -----" << std::endl;
 		
+		{
+			int var1[10] = {};
+			int var2[20][30] = {};
+			int var3[40][50][60] = {};
+			printf("var1[%d]\n", lengthOfArray1(var1));
+			printf("var2[%d][%d]\n", lengthOfArray1(var2), lengthOfArray2(var2));
+			printf("var3[%d][%d][%d]\n", lengthOfArray1(var3), lengthOfArray2(var3), lengthOfArray3(var3));
+		}
+
 		//ˆÈ‰ºAfor_define::test_func() ‚Æ“¯‚¶
 
 		int var1 = 0;

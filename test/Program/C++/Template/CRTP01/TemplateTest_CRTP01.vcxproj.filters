@@ -30,10 +30,22 @@
     <ClCompile Include="src\lib\TemplateTest.cpp">
       <Filter>ソース ファイル\lib</Filter>
     </ClCompile>
-    <ClCompile Include="sub1.cpp">
+    <ClCompile Include="src\sub1.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="sub2.cpp">
+    <ClCompile Include="src\sub2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sub3.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sub4.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sub5.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sub6.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

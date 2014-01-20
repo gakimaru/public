@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6BCC7A4C-D070-4FF2-92D8-CE426027385A}</ProjectGuid>
+    <ProjectGuid>{2CC97BEC-EF3D-49C1-B701-DC133C374FBF}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>TemplateTest_CRTP01</RootNamespace>
+    <RootNamespace>PrecompiledHeader</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -41,34 +41,71 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <CustomBuildBeforeTargets>
+    </CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildBeforeTargets>
+    </CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>pch;include</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>common.h</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>ECHO ---------- ビルド前イベント ----------</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>ECHO ---------- ビルド後イベント ----------</Command>
+    </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>ECHO ---------- リンク前イベント ----------</Command>
+    </PreLinkEvent>
+    <CustomBuildStep>
+      <Command>ECHO ---------- カスタムビルドステップ ----------
+
+ECHO InputFile=$(InputFile)
+ECHO InputPath=$(InputPath)
+ECHO InputFile=%(InputFile)
+ECHO InputPath=%(InputPath)
+
+ECHO FullPath=$(FullPath)
+ECHO FullPath=%(FullPath)
+
+ECHO Filename=$(Filename)
+ECHO Filename=%(Filename)
+
+ECHO テスト &gt; src/test2.txt</Command>
+      <Outputs>src/test2.txt</Outputs>
+      <Inputs>src/test1.txt</Inputs>
+      <TreatOutputAsContent>
+      </TreatOutputAsContent>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>common.h</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -76,21 +113,46 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PreBuildEvent>
+      <Command>ECHO ---------- ビルド前イベント ----------</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>ECHO ---------- ビルド後イベント ----------</Command>
+    </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>ECHO ---------- リンク前イベント ----------</Command>
+    </PreLinkEvent>
+    <CustomBuildStep>
+      <Command>ECHO ---------- カスタムビルドステップ ----------
+
+ECHO InputFile=$(InputFile)
+ECHO InputPath=$(InputPath)
+ECHO InputFile=%(InputFile)
+ECHO InputPath=%(InputPath)
+
+ECHO FullPath=$(FullPath)
+ECHO FullPath=%(FullPath)
+
+ECHO Filename=$(Filename)
+ECHO Filename=%(Filename)
+
+ECHO テスト &gt; src/test2.txt</Command>
+      <Outputs>src/test2.txt</Outputs>
+      <Inputs>src/test1.txt</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\lib\TemplateTest.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\sub3.cpp" />
-    <ClCompile Include="src\sub4.cpp" />
-    <ClCompile Include="src\sub5.cpp" />
-    <ClCompile Include="src\sub6.cpp" />
-    <ClCompile Include="src\TemplateInstance.cpp" />
-    <ClCompile Include="src\sub1.cpp" />
-    <ClCompile Include="src\sub2.cpp" />
+    <ClInclude Include="include\other.h" />
+    <ClInclude Include="include\types.h" />
+    <ClInclude Include="pch\common.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\lib\TemplateTest.h" />
-    <ClInclude Include="src\lib\TemplateTest.inl" />
+    <ClCompile Include="pch\common.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\other.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

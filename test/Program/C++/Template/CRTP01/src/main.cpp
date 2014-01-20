@@ -18,13 +18,27 @@ void sub2();
 int main(const int argc, const char* argv[])
 {
 	std::cout << "- main():START -" << std::endl;
-	
+
 	sub1();
 	sub2();
 
+	extern void testCRTP();
+	testCRTP();
+	
+	extern void testPolicy();
+	testPolicy();
+	
+	extern void testPolicyAndCRTP();
+	testPolicyAndCRTP();
+	
+	extern void testVTable();
+	testVTable();
+	
+	extern void testSFINAE();
+	testSFINAE();
 	//‚¨‚Ü‚¯FSTL‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğƒeƒXƒg
 	{
-		std::cout << "- Sort normal array -" << std::endl;
+		std::cout << std::endl << "- Sort normal array -" << std::endl << std::endl;
 		int arr[] = { 1, 2, 3, 4, 5 };
 		std::random_shuffle(&arr[0], &arr[countof(arr)]);		     std::cout << "init:   "; std::copy(&arr[0], &arr[countof(arr)], std::ostream_iterator<int>(std::cout, " ")); std::cout << std::endl;
 		std::sort(&arr[0], &arr[countof(arr)]);		                 std::cout << "sorted1:"; std::copy(&arr[0], &arr[countof(arr)], std::ostream_iterator<int>(std::cout, " ")); std::cout << std::endl;
@@ -32,7 +46,7 @@ int main(const int argc, const char* argv[])
 		std::sort(&arr[0], &arr[countof(arr)], std::less<int>());    std::cout << "sorted3:"; std::copy(&arr[0], &arr[countof(arr)], std::ostream_iterator<int>(std::cout, " ")); std::cout << std::endl;
 	}
 	{
-		std::cout << "- Sort std::vector -" << std::endl;
+		std::cout << std::endl << "- Sort std::vector -" << std::endl << std::endl;
 		std::vector<int> vec;
 		vec.push_back(1);
 		vec.push_back(2);
@@ -46,6 +60,7 @@ int main(const int argc, const char* argv[])
 	}
 	{
 		//‚ŠKŠÖ”
+		std::cout << std::endl << "- ‚ŠKŠÖ” -" << std::endl << std::endl;
 		struct is_even
 		{
 			typedef bool result_type;
@@ -71,7 +86,7 @@ int main(const int argc, const char* argv[])
 		}
 	}
 
-	std::cout << "- main():END -" << std::endl;
+	std::cout << std::endl << "- main():END -" << std::endl;
 	
 	return EXIT_SUCCESS;
 }

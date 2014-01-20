@@ -4,7 +4,7 @@
 
 void sub2()
 {
-	std::cout << "- sub2() -" << std::endl;
+	std::cout << std::endl << "- sub2() -" << std::endl << std::endl;
 
 	normalFunc();
 

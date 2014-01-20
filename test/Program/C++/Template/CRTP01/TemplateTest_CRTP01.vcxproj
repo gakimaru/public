@@ -80,6 +80,10 @@
   <ItemGroup>
     <ClCompile Include="src\lib\TemplateTest.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\sub3.cpp" />
+    <ClCompile Include="src\sub4.cpp" />
+    <ClCompile Include="src\sub5.cpp" />
+    <ClCompile Include="src\sub6.cpp" />
     <ClCompile Include="src\TemplateInstance.cpp" />
     <ClCompile Include="src\sub1.cpp" />
     <ClCompile Include="src\sub2.cpp" />

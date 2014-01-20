@@ -5,8 +5,8 @@
 
 #include <algorithm>
 
-//ƒeƒ“ƒvƒŒ[ƒgŠÖ”‚ªƒRƒ“ƒpƒCƒ‹‚ÉƒŠƒeƒ‰ƒ‹’l‚É“WŠJ‚³‚ê‚é–‚ğƒeƒXƒgiÅ“K‰»ƒŒƒxƒ‹‚ÉˆË‘¶j
-//¦Às‚ÉA[ƒfƒoƒbƒO]¨[ƒEƒCƒ“ƒhƒE]¨[‹tƒAƒZƒ“ƒuƒ‹]‚ÅAƒAƒZƒ“ƒuƒ‰‚ÌƒR[ƒh‚ğŠm”F‚·‚éB
+//ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆé–¢æ•°ãŒã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æ™‚ã«ãƒªãƒ†ãƒ©ãƒ«å€¤ã«å±•é–‹ã•ã‚Œã‚‹äº‹ã‚’ãƒ†ã‚¹ãƒˆï¼ˆæœ€é©åŒ–ãƒ¬ãƒ™ãƒ«ã«ä¾å­˜ï¼‰
+//â€»å®Ÿè¡Œæ™‚ã«ã€[ãƒ‡ãƒãƒƒã‚°]â†’[ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦]â†’[é€†ã‚¢ã‚»ãƒ³ãƒ–ãƒ«]ã§ã€ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã®ã‚³ãƒ¼ãƒ‰ã‚’ç¢ºèªã™ã‚‹ã€‚
 template<typename T> T max(T n1, T n2){                   return n1 > n2 ? n1 : n2; }
 template<typename T> T max(T n1, T n2, T n3){             return n1 > n2 ? n1 : max(n2, n3); }
 template<typename T> T max(T n1, T n2, T n3, T n4){       return n1 > n2 ? n1 : max(n2, n3, n4); }
@@ -26,15 +26,15 @@ void test_func1()
 	std::cout << "max(1, 2, 3, 4, 5) = " << max(1, 2, 3, 4, 5) << std::endl;
 }
 
-//‰Â•Ï’·ƒeƒ“ƒvƒŒ[ƒgˆø””Å‚Ìmax()
-//’l‚ª“ñ‚Â‚Ì max()
+//å¯å¤‰é•·ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå¼•æ•°ç‰ˆã®max()
+//å€¤ãŒäºŒã¤ã® max()
 template<typename T1, typename T2>
 T1 vmax(T1 n1, T2 n2){ return n1 > n2 ? n1 : n2; }
-//’l‚ªO‚ÂˆÈã‚Ì max() : Ä‹Aˆ—i’Fƒeƒ“ƒvƒŒ[ƒg‚Ì“Áê‰»‚Å‚Í‚È‚­AŠÖ”‚ÌƒI[ƒo[ƒ[ƒh‚ÅÄ‹N‚ğIŒ‹‚³‚¹‚Ä‚¢‚éj
+//å€¤ãŒä¸‰ã¤ä»¥ä¸Šã® max() : å†å¸°å‡¦ç†ï¼ˆæ³¨ï¼šãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã®ç‰¹æ®ŠåŒ–ã§ã¯ãªãã€é–¢æ•°ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰ã§å†èµ·ã‚’çµ‚çµã•ã›ã¦ã„ã‚‹ï¼‰
 template<typename T1, typename T2, typename T3, typename... Tx>
-T1 vmax(T1 n1, T2 n2, T3 n3, Tx... nx){ return vmax(vmax(n1, n2), n3, nx...); } //nx‚ª‹ó‚É‚È‚Á‚½‚ç’l‚ª“ñ‚Â‚Ì•û‚ªŒÄ‚Î‚ê‚é
+T1 vmax(T1 n1, T2 n2, T3 n3, Tx... nx){ return vmax(vmax(n1, n2), n3, nx...); } //nxãŒç©ºã«ãªã£ãŸã‚‰å€¤ãŒäºŒã¤ã®æ–¹ãŒå‘¼ã°ã‚Œã‚‹
 
-//‰Â•Ï’·ƒeƒ“ƒvƒŒ[ƒgˆø”ƒeƒXƒg
+//å¯å¤‰é•·ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå¼•æ•°ãƒ†ã‚¹ãƒˆ
 template<class First>
 void func()
 {
@@ -63,7 +63,7 @@ void test_func1v()
 	func<int, short, char>();
 }
 
-//“¯‚¶–‚ğƒ}ƒNƒ‚ÅÀ‘•‚µ‚½ê‡
+//åŒã˜äº‹ã‚’ãƒã‚¯ãƒ­ã§å®Ÿè£…ã—ãŸå ´åˆ
 #define max2(n1, n2)             (n1 > n2 ? n1 : n2)
 #define max3(n1, n2, n3)         (n1 > n2 ? n1 : max2(n2, n3))
 #define max4(n1, n2, n3, n4)     (n1 > n2 ? n1 : max3(n2, n3, n4))
@@ -82,10 +82,10 @@ void test_func2()
 	std::cout << "max4(1, 2, 3, 4, 5) = " << max5(1, 2, 3, 4, 5) << std::endl;
 }
 
-//y‰—pzŠô‚Â‚©‚ÌƒNƒ‰ƒX‚Ì’†‚ÅÅ‘å‚ÌƒTƒCƒY‚ğ—\‚ß’²‚×‚Ä‚¨‚­
-//¦—á‚¦‚ÎAƒeƒ“ƒvƒŒ[ƒgƒƒ\ƒbƒh‚Å¶¬‚·‚é•¡”í‚ÌƒIƒuƒWƒFƒNƒg‚Ìˆ×‚ÉAŒÅ—L‚Ìƒoƒbƒtƒ@‚ğ—pˆÓ‚µ‚Ä‚¨‚­ê‡‚È‚ÇBƒoƒbƒtƒ@ƒTƒCƒY‚ğ©“®ŒvZ‚·‚éˆ×‚Ég—pB
-//¦ƒˆ‚ÈƒŠƒeƒ‰ƒ‹’l‚ğˆµ‚Á‚½’è”‚Æ‚Ìˆá‚¢‚àƒ`ƒFƒbƒN‚µ‚Ä‚¨‚­
-//¦Œ‹˜_iVisual C++ 2013jFƒeƒ“ƒvƒŒ[ƒgŠÖ”‚É‚æ‚éƒRƒ“ƒpƒCƒ‹‚ÌƒŠƒeƒ‰ƒ‹’l¶¬‚Í¬Œ÷‚·‚é‚ªA•K‚¸ƒf[ƒ^—Ìˆæ‚ÉŒ‹‰Ê‚ªŠi”[‚³‚êAƒR[ƒhã‚Å‚ÌƒŠƒeƒ‰ƒ‹’l“WŠJ‚Í‚³‚ê‚È‚¢B‚»‚ê‚ª•K—v‚È‚ç#define‚ğg‚¤‚©AC++11‚Ìconstexpr‚ÌÀ‘•‚ğ‘Ò‚Â•K—v‚ª‚ ‚éB
+//ã€å¿œç”¨ã€‘å¹¾ã¤ã‹ã®ã‚¯ãƒ©ã‚¹ã®ä¸­ã§æœ€å¤§ã®ã‚µã‚¤ã‚ºã‚’äºˆã‚èª¿ã¹ã¦ãŠã
+//â€»ä¾‹ãˆã°ã€ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ¡ã‚½ãƒƒãƒ‰ã§ç”Ÿæˆã™ã‚‹è¤‡æ•°ç¨®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç‚ºã«ã€å›ºæœ‰ã®ãƒãƒƒãƒ•ã‚¡ã‚’ç”¨æ„ã—ã¦ãŠãå ´åˆãªã©ã€‚ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚ºã‚’è‡ªå‹•è¨ˆç®—ã™ã‚‹ç‚ºã«ä½¿ç”¨ã€‚
+//â€»ç´”ç²‹ãªãƒªãƒ†ãƒ©ãƒ«å€¤ã‚’æ‰±ã£ãŸå®šæ•°ã¨ã®é•ã„ã‚‚ãƒã‚§ãƒƒã‚¯ã—ã¦ãŠã
+//â€»çµè«–ï¼ˆVisual C++ 2013ï¼‰ï¼šãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆé–¢æ•°ã«ã‚ˆã‚‹ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æ™‚ã®ãƒªãƒ†ãƒ©ãƒ«å€¤ç”Ÿæˆã¯æˆåŠŸã™ã‚‹ãŒã€å¿…ãšãƒ‡ãƒ¼ã‚¿é ˜åŸŸã«çµæœãŒæ ¼ç´ã•ã‚Œã€ã‚³ãƒ¼ãƒ‰ä¸Šã§ã®ãƒªãƒ†ãƒ©ãƒ«å€¤å±•é–‹ã¯ã•ã‚Œãªã„ã€‚ãã‚ŒãŒå¿…è¦ãªã‚‰#defineã‚’ä½¿ã†ã‹ã€C++11ã®constexprã®å®Ÿè£…ã‚’å¾…ã¤å¿…è¦ãŒã‚ã‚‹ã€‚
 class CBase
 {
 public:
@@ -111,29 +111,29 @@ public:
 #define MAX_CLASS_SIZE1 max(sizeof(CA), sizeof(CB), sizeof(CC))//#define
 #define MAX_CLASS_SIZE1x max3(sizeof(CA), sizeof(CB), sizeof(CC))//#define
 #define LITERAL1 1//#define
-const std::size_t MAX_CLASS_SIZE2 = max(sizeof(CA), sizeof(CB), sizeof(CC));//ƒOƒ[ƒoƒ‹’è”
-const std::size_t MAX_CLASS_SIZE2x = max3(sizeof(CA), sizeof(CB), sizeof(CC));//ƒOƒ[ƒoƒ‹’è”
+const std::size_t MAX_CLASS_SIZE2 = max(sizeof(CA), sizeof(CB), sizeof(CC));//ã‚°ãƒ­ãƒ¼ãƒãƒ«å®šæ•°
+const std::size_t MAX_CLASS_SIZE2x = max3(sizeof(CA), sizeof(CB), sizeof(CC));//ã‚°ãƒ­ãƒ¼ãƒãƒ«å®šæ•°
 const std::size_t LITERAL2 = 2;
-static const std::size_t MAX_CLASS_SIZE3 = max(sizeof(CA), sizeof(CB), sizeof(CC));//staticƒOƒ[ƒoƒ‹’è”
-static const std::size_t MAX_CLASS_SIZE3x = max3(sizeof(CA), sizeof(CB), sizeof(CC));//staticƒOƒ[ƒoƒ‹’è”
+static const std::size_t MAX_CLASS_SIZE3 = max(sizeof(CA), sizeof(CB), sizeof(CC));//staticã‚°ãƒ­ãƒ¼ãƒãƒ«å®šæ•°
+static const std::size_t MAX_CLASS_SIZE3x = max3(sizeof(CA), sizeof(CB), sizeof(CC));//staticã‚°ãƒ­ãƒ¼ãƒãƒ«å®šæ•°
 static const std::size_t LITERAL3 = 3;
 namespace NS
 {
-	const std::size_t MAX_CLASS_SIZE4 = max(sizeof(CA), sizeof(CB), sizeof(CC));//ƒl[ƒ€ƒXƒy[ƒX’è”
-	const std::size_t MAX_CLASS_SIZE4x = max3(sizeof(CA), sizeof(CB), sizeof(CC));//ƒl[ƒ€ƒXƒy[ƒX’è”
+	const std::size_t MAX_CLASS_SIZE4 = max(sizeof(CA), sizeof(CB), sizeof(CC));//ãƒãƒ¼ãƒ ã‚¹ãƒšãƒ¼ã‚¹å®šæ•°
+	const std::size_t MAX_CLASS_SIZE4x = max3(sizeof(CA), sizeof(CB), sizeof(CC));//ãƒãƒ¼ãƒ ã‚¹ãƒšãƒ¼ã‚¹å®šæ•°
 	const std::size_t LITERAL4 = 4;
-	static const std::size_t MAX_CLASS_SIZE5 = max(sizeof(CA), sizeof(CB), sizeof(CC));//staticƒl[ƒ€ƒXƒy[ƒX’è”
-	static const std::size_t MAX_CLASS_SIZE5x = max3(sizeof(CA), sizeof(CB), sizeof(CC));//staticƒl[ƒ€ƒXƒy[ƒX’è”
+	static const std::size_t MAX_CLASS_SIZE5 = max(sizeof(CA), sizeof(CB), sizeof(CC));//staticãƒãƒ¼ãƒ ã‚¹ãƒšãƒ¼ã‚¹å®šæ•°
+	static const std::size_t MAX_CLASS_SIZE5x = max3(sizeof(CA), sizeof(CB), sizeof(CC));//staticãƒãƒ¼ãƒ ã‚¹ãƒšãƒ¼ã‚¹å®šæ•°
 	static const std::size_t LITERAL5 = 5;
 
 };
 void test_func3()
 {
-	const std::size_t MAX_CLASS_SIZE6 = max(sizeof(CA), sizeof(CB), sizeof(CC));//ƒ[ƒJƒ‹’è”
-	const std::size_t MAX_CLASS_SIZE6x = max(sizeof(CA), sizeof(CB), sizeof(CC));//ƒ[ƒJƒ‹’è”
+	const std::size_t MAX_CLASS_SIZE6 = max(sizeof(CA), sizeof(CB), sizeof(CC));//ãƒ­ãƒ¼ã‚«ãƒ«å®šæ•°
+	const std::size_t MAX_CLASS_SIZE6x = max(sizeof(CA), sizeof(CB), sizeof(CC));//ãƒ­ãƒ¼ã‚«ãƒ«å®šæ•°
 	const std::size_t LITERAL6 = 6;
-	static const std::size_t MAX_CLASS_SIZE7 = max(sizeof(CA), sizeof(CB), sizeof(CC));//staticƒ[ƒJƒ‹’è”
-	static const std::size_t MAX_CLASS_SIZE7x = max(sizeof(CA), sizeof(CB), sizeof(CC));//staticƒ[ƒJƒ‹’è”
+	static const std::size_t MAX_CLASS_SIZE7 = max(sizeof(CA), sizeof(CB), sizeof(CC));//staticãƒ­ãƒ¼ã‚«ãƒ«å®šæ•°
+	static const std::size_t MAX_CLASS_SIZE7x = max(sizeof(CA), sizeof(CB), sizeof(CC));//staticãƒ­ãƒ¼ã‚«ãƒ«å®šæ•°
 	static const std::size_t LITERAL7 = 7;
 
 	std::cout << "max(sizeof(CA), sizeof(CB), sizeof(CC))" << std::endl;
@@ -162,17 +162,17 @@ void test_func3()
 	std::cout << "  LITERAL7 = " << LITERAL7 << std::endl;
 }
 
-//’è”
+//å®šæ•°
 static const int sc1 = max(1, 2, 3, 4, 5);  //OK
 static const int sc2 = max5(1, 2, 3, 4, 5); //OK
 const int c1 = max(1, 2, 3, 4, 5);          //OK
 const int c2 = max5(1, 2, 3, 4, 5);         //OK
 
-//ƒNƒ‰ƒX“à‚Ì’è”^‰Šú’l
+//ã‚¯ãƒ©ã‚¹å†…ã®å®šæ•°ï¼åˆæœŸå€¤
 class CClass
 {
 public:
-//	static const int sc1 = max(1, 2, 3, 4, 5);  //NG:ƒRƒ“ƒpƒCƒ‹ƒGƒ‰[
+//	static const int sc1 = max(1, 2, 3, 4, 5);  //NG:ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚¨ãƒ©ãƒ¼
 	static const int sc2 = max5(1, 2, 3, 4, 5); //OK
 	const int c1 = max(1, 2, 3, 4, 5);          //OK
 	const int c2 = max5(1, 2, 3, 4, 5);         //OK
@@ -184,42 +184,42 @@ public:
 	int v2;
 };
 
-//—ñ‹“
+//åˆ—æŒ™
 enum
 {
-//	e1 = max(1, 2, 3, 4, 5),  //NG:ƒRƒ“ƒpƒCƒ‹ƒGƒ‰[
+//	e1 = max(1, 2, 3, 4, 5),  //NG:ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚¨ãƒ©ãƒ¼
 	e2 = max5(1, 2, 3, 4, 5), //OK
 };
 
-//‚×‚«æ
+//ã¹ãä¹—
 template<int N, int E>
 struct Pow{
 	static const int value = N * Pow<N, E - 1>::value;
 };
-//‚×‚«æFÄ‹AI“_‚Ì‚½‚ß‚Ì“Áê‰»
+//ã¹ãä¹—ï¼šå†å¸°çµ‚ç‚¹ã®ãŸã‚ã®ç‰¹æ®ŠåŒ–
 template<int N>
 struct Pow<N, 0>{
 	static const int value = 1;
 };
 
-//À•WŒ^
+//åº§æ¨™å‹
 template<typename T>
 struct POINT
 {
 	T x;
 	T y;
-	//’ÊíƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//é€šå¸¸ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	POINT(T x_, T y_) :
 		x(x_),
 		y(y_)
 	{}
-	//ƒRƒs[ƒeƒ“ƒvƒŒ[ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ”ãƒ¼ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	template<typename U>
 	POINT(POINT<U>& o) :
 		x(static_cast<T>(o.x)),
 		y(static_cast<T>(o.y))
 	{}
-	//ƒRƒs[ƒeƒ“ƒvƒŒ[ƒgƒIƒyƒŒ[ƒ^
+	//ã‚³ãƒ”ãƒ¼ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 	template<typename U>
 	POINT<T>& operator=(POINT<U>& o)
 	{
@@ -229,7 +229,7 @@ struct POINT
 	}
 };
 
-//ˆ—Å“K‰»à–¾—pƒNƒ‰ƒXFÅ“K‰»‘O
+//å‡¦ç†æœ€é©åŒ–èª¬æ˜ç”¨ã‚¯ãƒ©ã‚¹ï¼šæœ€é©åŒ–å‰
 void func_old(int data1[], int n1, int data2[], int n2)
 {
 	printf("<BEFORE>\n");
@@ -281,7 +281,7 @@ void func_old(int data1[], int n1, int data2[], int n2)
 	}
 	printf(" (sum=%d, avg=%.1f)\n", sum2, static_cast<float>(sum2) / static_cast<float>(n2));
 }
-//ˆ—Å“K‰»à–¾—pƒNƒ‰ƒXFÅ“K‰»‡@
+//å‡¦ç†æœ€é©åŒ–èª¬æ˜ç”¨ã‚¯ãƒ©ã‚¹ï¼šæœ€é©åŒ–â‘ 
 int func_new1_round(int data)
 {
 	if (data < 10)
@@ -335,7 +335,7 @@ void func_new1(int data1[], int n1, int data2[], int n2)
 	}
 	printf(" (sum=%d, avg=%.1f)\n", sum2, static_cast<float>(sum2) / static_cast<float>(n2));
 }
-//ˆ—Å“K‰»à–¾—pƒNƒ‰ƒXFÅ“K‰»‡A
+//å‡¦ç†æœ€é©åŒ–èª¬æ˜ç”¨ã‚¯ãƒ©ã‚¹ï¼šæœ€é©åŒ–â‘¡
 void func_new2(int data1[], int n1, int data2[], int n2)
 {
 	struct round{
@@ -391,7 +391,7 @@ void func_new2(int data1[], int n1, int data2[], int n2)
 	}
 	printf(" (sum=%d, avg=%.1f)\n", sum2, static_cast<float>(sum2) / static_cast<float>(n2));
 }
-//ˆ—Å“K‰»à–¾—pƒNƒ‰ƒXFÅ“K‰»‡B
+//å‡¦ç†æœ€é©åŒ–èª¬æ˜ç”¨ã‚¯ãƒ©ã‚¹ï¼šæœ€é©åŒ–â‘¢
 template<typename T, class F>
 void for_each_array(T* data, int n, F& functor)
 {
@@ -446,7 +446,7 @@ std::size_t lengthOfAray(T (&var)[N]){ return N; }
 
 void test_func4()
 {
-	//ˆ—Å“K‰»à–¾—pˆ—
+	//å‡¦ç†æœ€é©åŒ–èª¬æ˜ç”¨å‡¦ç†
 	{
 		int data1[] = {1, 2, 3, 39, 200, 53, 8, 74, 12};
 		int data2[] = {13, 6, 76, 43, 23, 125, 1 };
@@ -468,7 +468,7 @@ void test_func4()
 		func_new3(data1, lengthOfAray(data1), data2, lengthOfAray(data2));
 	}
 
-	//‚×‚«æƒeƒXƒg
+	//ã¹ãä¹—ãƒ†ã‚¹ãƒˆ
 	const int n1 = Pow<2, 0>::value;
 	const int n2 = Pow<2, 1>::value;
 	const int n3 = Pow<2, 2>::value;
@@ -476,7 +476,7 @@ void test_func4()
 	const int n5 = Pow<10, 4>::value;
 	printf("{%d, %d, %d, %d, %d}\n", n1, n2, n3, n4, n5);
 	
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^ƒeƒ“ƒvƒŒ[ƒgƒeƒXƒg
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ†ã‚¹ãƒˆ
 	POINT<int> p1(1, 2);
 	POINT<float> p2(p1);
 	POINT<long> p3(0, 0);
@@ -485,7 +485,7 @@ void test_func4()
 	printf("p2=(%.1f, %.1f)\n", p2.x, p2.y);
 	printf("p3=(%ld, %ld)\n", p3.x, p3.y);
 
-	//ƒNƒ‰ƒX’è”ƒeƒXƒg
+	//ã‚¯ãƒ©ã‚¹å®šæ•°ãƒ†ã‚¹ãƒˆ
 	CClass o;
 //	printf("%d\n", CClass::sc1);
 	printf("%d\n", CClass::sc2);
@@ -499,7 +499,7 @@ void test_func4()
 	printf("%d\n", c2);
 }
 
-//ƒƒCƒ“
+//ãƒ¡ã‚¤ãƒ³
 int main(const int argc, const char* argv[])
 {
 	test_func1();

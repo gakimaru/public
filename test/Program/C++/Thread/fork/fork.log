@@ -1,0 +1,58 @@
+$ ./fork.exe
+- Start Fork Test -
+P0( 5348,12044) -> [0] CREATED:C1( 6464, 5348)
+START: C1( 6464, 5348)
+C1( 6464, 5348) -> [1] CREATED:C2( 6752, 6464)
+START: C2( 6752, 6464)
+P0( 5348,12044) -> [1] CREATED:C1(11556, 5348)
+START: C1(11556, 5348)
+C2( 6752, 6464) -> [2] CREATED:C3( 1760, 6752)
+START: C3( 1760, 6752)
+[C3( 1760, 6752)] ... Process(1/4): text="TEST",value=1003
+C1( 6464, 5348) -> [2] CREATED:C2(12152, 6464)
+START: C2(12152, 6464)
+C1(11556, 5348) -> [2] CREATED:C2(10372,11556)
+START: C2(10372,11556)
+[C2( 6752, 6464)] ... Process(1/3): text="TEST",value=1002
+[C3( 1760, 6752)] ... Process(2/4): text="TEST",value=1013
+P0( 5348,12044) -> [2] CREATED:C1( 8972, 5348)
+START: C1( 8972, 5348)
+[C2(12152, 6464)] ... Process(1/3): text="TEST",value=1002
+[C2(10372,11556)] ... Process(1/3): text="TEST",value=1002
+[C2( 6752, 6464)] ... Process(2/3): text="TEST",value=1012
+[C3( 1760, 6752)] ... Process(3/4): text="TEST",value=1023
+[C1( 8972, 5348)] ... Process(1/2): text="TEST",value=1001
+[C2(12152, 6464)] ... Process(2/3): text="TEST",value=1012
+[C1( 6464, 5348)] ... Process(1/2): text="TEST",value=1001
+[C1(11556, 5348)] ... Process(1/2): text="TEST",value=1001
+[C2(10372,11556)] ... Process(2/3): text="TEST",value=1012
+[C2( 6752, 6464)] ... Process(3/3): text="TEST",value=1022
+[C3( 1760, 6752)] ... Process(4/4): text="TEST",value=1033
+[P0( 5348,12044)] ... Process(1/1): text="TEST",value=1000
+[C1( 8972, 5348)] ... Process(2/2): text="TEST",value=1011
+[C1( 6464, 5348)] ... Process(2/2): text="TEST",value=1011
+[C2(12152, 6464)] ... Process(3/3): text="TEST",value=1022
+[C2(10372,11556)] ... Process(3/3): text="TEST",value=1022
+[C1(11556, 5348)] ... Process(2/2): text="TEST",value=1011
+END: C3( 1760, 6752)
+[C2( 6752, 6464)] ... Wait( 1760) ...
+[C2( 6752, 6464)] ... Wait( 1760) End status=0
+END: C2( 6752, 6464)
+END: C1( 8972, 5348)
+[P0( 5348,12044)] ... Wait( 6464) ...
+END: C2(12152, 6464)
+[C1( 6464, 5348)] ... Wait( 6752) ...
+END: C2(10372,11556)
+[C1(11556, 5348)] ... Wait(10372) ...
+[C1( 6464, 5348)] ... Wait( 6752) End status=0
+[C1( 6464, 5348)] ... Wait(12152) ...
+[C1( 6464, 5348)] ... Wait(12152) End status=0
+END: C1( 6464, 5348)
+[C1(11556, 5348)] ... Wait(10372) End status=0
+END: C1(11556, 5348)
+[P0( 5348,12044)] ... Wait( 6464) End status=0
+[P0( 5348,12044)] ... Wait(11556) ...
+[P0( 5348,12044)] ... Wait(11556) End status=0
+[P0( 5348,12044)] ... Wait( 8972) ...
+[P0( 5348,12044)] ... Wait( 8972) End status=0
+- End Fork Test -

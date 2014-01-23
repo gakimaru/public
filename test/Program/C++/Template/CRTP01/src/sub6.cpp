@@ -22,7 +22,7 @@ private:
 
 //固定配列版for_each
 template<class T, size_t N, class F>
-void for_each(T (&obj)[N], F& functor)
+inline void for_each(T (&obj)[N], F& functor)
 {
 	bool is_first = true;
 	T* p = obj;
@@ -34,7 +34,7 @@ void for_each(T (&obj)[N], F& functor)
 
 //ポインター型の固定配列版for_each　※部分特殊化
 template<class T, std::size_t N, class F>
-void for_each(T*(&obj)[N], F& functor)
+inline void for_each(T*(&obj)[N], F& functor)
 {
 	bool is_first = true;
 	T** p = obj;
@@ -46,7 +46,7 @@ void for_each(T*(&obj)[N], F& functor)
 
 //動的配列版for_each①：配列要素数を渡す
 template<class T, class F>
-void for_each(T* p, int n, F& functor)
+inline void for_each(T* p, int n, F& functor)
 {
 	bool is_first = true;
 	for (int i = 0; i < n; ++i, ++p)
@@ -57,7 +57,7 @@ void for_each(T* p, int n, F& functor)
 
 //動的配列版for_each②：配列の終端+1を渡す
 template<class T, class F>
-void for_each(T* p, T* end, F& functor)
+inline void for_each(T* p, T* end, F& functor)
 {
 	bool is_first = true;
 	while (p != end)
@@ -69,7 +69,7 @@ void for_each(T* p, T* end, F& functor)
 
 //STLコンテナ版for_each
 template<class T, class F>
-void for_each(T& con, F& functor)
+inline void for_each(T& con, F& functor)
 {
 	bool is_first = true;
 	typename T::iterator ite = con.begin();
@@ -83,7 +83,7 @@ void for_each(T& con, F& functor)
 
 //独自コンテナ版for_each
 template<class T, class F>
-void for_each(typename T::MY_TYPE& con, F& functor)//独自コンテナには ::MY_TYPE メンバーが定義されている
+inline void for_each(typename T::MY_TYPE& con, F& functor)//独自コンテナには ::MY_TYPE メンバーが定義されている
 {
 	bool is_first = true;
 	typename T::DATA_TYPE* p = con.begin();
@@ -98,7 +98,7 @@ void for_each(typename T::MY_TYPE& con, F& functor)//独自コンテナには ::MY_TYPE 
 //関数オブジェクト　※templateなので関数の外で定義
 template<typename T>
 struct functor {
-	void operator()(T& o, bool& is_first)
+	inline void operator()(T& o, bool& is_first)
 	{
 		std::cout << (is_first ? "" : ", ") << o;
 		is_first = false;

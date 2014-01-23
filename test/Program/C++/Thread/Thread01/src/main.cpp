@@ -7,6 +7,10 @@
 #include <windows.h>
 #include <process.h>
 
+//スレッドローカルストレージ(TLS)テスト
+__declspec(thread) unsigned int tls_tid = 0;//Visual C++固有版TLS指定
+//thread_local unsigned int tls_tid = 0;//C++11仕様版TLS指定：Visual C++ 2013 では未対応
+
 //テスト用情報
 struct TEST_INFO
 {
@@ -48,6 +52,9 @@ unsigned int WINAPI threadFunc(void* param_p)
 
 	//スレッド情報
 	unsigned int tid_tmp = GetCurrentThreadId();
+
+	//スレッドローカルストレージ(TLS)テスト
+	tls_tid = tid_tmp;
 
 	//大元のスレッド判定用フラグをOFF
 	tinfo.is_root_thread = false;
@@ -147,12 +154,18 @@ void createChildThreads(const char* thread_name, TEST_INFO& test, THREAD_INFO& t
 	for (int i = 0; i < test.loop_max; ++i)
 	{
 		//ダミーメッセージ表示
-		printf("[%s] ... Process(%d/%d): text=\"%s\",value=%d\n", thread_name, i + 1, test.loop_max, test.text, test.value);
+		printf("[%s] ... Process(%d/%d): text=\"%s\",value=%d (tls_tid=%d)\n", thread_name, i + 1, test.loop_max, test.text, test.value, tls_tid);
 		fflush(stdout);
 		test.value += 10;
 
 		//1秒スリープ
 		Sleep(1000);
+	}
+
+	if (tinfo.is_root_thread)
+	{
+		Sleep(1000);
+		return;
 	}
 
 	//子スレッドの終了待ち
@@ -204,6 +217,9 @@ int main(const int argc, const char* argv[])
 		     //parent_tid
 		true,//is_root_thread
 	};
+
+	//スレッドローカルストレージ(TLS)テスト
+	tls_tid = tinfo.parent_tid;
 
 	//スレッド名を作成
 	// P + 子スレッドのレベル + ( 自スレッドID , 親スレッドID )

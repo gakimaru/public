@@ -90,7 +90,7 @@ public:
 
 //for_each
 template<class T, size_t N, class F>
-void for_each(T* (&obj)[N], F& functor)
+inline void for_each(T* (&obj)[N], F& functor)
 {
 	T** p = obj;
 	for (int i = 0; i < N; ++i, ++p)
@@ -111,11 +111,11 @@ void testPolicy()
 		new CMissile
 	};
 	//update実行用関数オブジェクト
-	struct update_functor{ void operator()(ISceneObject* obj){ obj->update(); } };
+	struct update_functor{ inline void operator()(ISceneObject* obj){ obj->update(); } };
 	//draw実行用関数オブジェクト
-	struct draw_functor{ void operator()(ISceneObject* obj){ obj->draw(); } };
+	struct draw_functor{ inline void operator()(ISceneObject* obj){ obj->draw(); } };
 	//delete用関数オブジェクト
-	struct delete_functor{ void operator()(ISceneObject* obj){ delete obj; } };
+	struct delete_functor{ inline void operator()(ISceneObject* obj){ delete obj; } };
 	//全シーンオブジェクトのupdate実行
 	printf("[update]\n");
 	for_each(scene_objs, update_functor());

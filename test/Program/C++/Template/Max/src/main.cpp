@@ -7,10 +7,10 @@
 
 //テンプレート関数がコンパイル時にリテラル値に展開される事をテスト（最適化レベルに依存）
 //※実行時に、[デバッグ]→[ウインドウ]→[逆アセンブル]で、アセンブラのコードを確認する。
-template<typename T> T max(T n1, T n2){                   return n1 > n2 ? n1 : n2; }
-template<typename T> T max(T n1, T n2, T n3){             return n1 > n2 ? n1 : max(n2, n3); }
-template<typename T> T max(T n1, T n2, T n3, T n4){       return n1 > n2 ? n1 : max(n2, n3, n4); }
-template<typename T> T max(T n1, T n2, T n3, T n4, T n5){ return n1 > n2 ? n1 : max(n2, n3, n4, n5); }
+template<typename T> inline T max(T n1, T n2){                   return n1 > n2 ? n1 : n2; }
+template<typename T> inline T max(T n1, T n2, T n3){ return n1 > n2 ? n1 : max(n2, n3); }
+template<typename T> inline T max(T n1, T n2, T n3, T n4){ return n1 > n2 ? n1 : max(n2, n3, n4); }
+template<typename T> inline T max(T n1, T n2, T n3, T n4, T n5){ return n1 > n2 ? n1 : max(n2, n3, n4, n5); }
 
 void test_func1()
 {
@@ -29,19 +29,19 @@ void test_func1()
 //可変長テンプレート引数版のmax()
 //値が二つの max()
 template<typename T1, typename T2>
-T1 vmax(T1 n1, T2 n2){ return n1 > n2 ? n1 : n2; }
+inline T1 vmax(T1 n1, T2 n2){ return n1 > n2 ? n1 : n2; }
 //値が三つ以上の max() : 再帰処理（注：テンプレートの特殊化ではなく、関数のオーバーロードで再起を終結させている）
 template<typename T1, typename T2, typename T3, typename... Tx>
-T1 vmax(T1 n1, T2 n2, T3 n3, Tx... nx){ return vmax(vmax(n1, n2), n3, nx...); } //nxが空になったら値が二つの方が呼ばれる
+inline T1 vmax(T1 n1, T2 n2, T3 n3, Tx... nx){ return vmax(vmax(n1, n2), n3, nx...); } //nxが空になったら値が二つの方が呼ばれる
 
 //可変長テンプレート引数テスト
 template<class First>
-void func()
+inline void func()
 {
 	std::cout << typeid(First).name() << std::endl;
 }
 template<class First, class Second, class... Rest>
-void func()
+inline void func()
 {
 	func<First>();
 	func<Second, Rest...>();

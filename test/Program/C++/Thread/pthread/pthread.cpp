@@ -7,6 +7,10 @@
 #include <pthread.h>
 #include <unistd.h>
 
+//スレッドローカルストレージ(TLS)テスト
+__thread pthread_t tls_pth = 0;//CC版TLS指定
+//thread_local pthread_t tls_pth = 0;//C++11仕様版
+
 //テスト用情報
 struct TEST_INFO
 {
@@ -48,6 +52,9 @@ void* threadFunc(void* param_p)
 	
 	//スレッド情報
 	pthread_t pth_tmp = pthread_self();
+	
+	//スレッドローカルストレージ(TLS)テスト
+	tls_pth = pth_tmp;
 	
 	//大元のスレッド判定用フラグをOFF
 	tinfo.is_root_thread = false;
@@ -144,7 +151,7 @@ void createChildThreads(const char* thread_name, TEST_INFO& test, THREAD_INFO& t
 	for(int i = 0; i < test.loop_max; ++i)
 	{
 		//ダミーメッセージ表示
-		printf("[%s] ... Process(%d/%d): text=\"%s\",value=%d\n", thread_name, i + 1, test.loop_max, test.text, test.value);
+		printf("[%s] ... Process(%d/%d): text=\"%s\",value=%d (tls_tid=%010p)\n", thread_name, i + 1, test.loop_max, test.text, test.value, tls_pth);
 		fflush(stdout);
 		test.value += 10;
 		
@@ -200,6 +207,9 @@ int main(const int argc, const char* argv[])
 		     //pareant_pth
 		true,//is_root_thread
 	};
+	
+	//スレッドローカルストレージ(TLS)テスト
+	tls_pth = tinfo.parent_pth;
 	
 	//スレッド名を作成
 	// P + 子スレッドのレベル + ( 自スレッド_t , 親スレッド_t )

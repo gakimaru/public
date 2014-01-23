@@ -71,48 +71,48 @@ namespace for_define
 namespace for_template
 {
 	template<typename T, std::size_t N1>
-	std::size_t lengthOfArray1(const T (&var)[N1])
+	inline std::size_t lengthOfArray1(const T (&var)[N1])
 	{
 		return N1;
 	}
 	template<typename T, std::size_t N1, std::size_t N2>
-	std::size_t lengthOfArray2(const T (&var)[N1][N2])
+	inline std::size_t lengthOfArray2(const T(&var)[N1][N2])
 	{
 		return N2;
 	}
 	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3>
-	std::size_t lengthOfArray3(const T (&var)[N1][N2][N3])
+	inline std::size_t lengthOfArray3(const T(&var)[N1][N2][N3])
 	{
 		return N3;
 	}
 	template<typename T1, typename T2>
-	int offsetOf(T1& p1, T2& p2)
+	inline int offsetOf(T1& p1, T2& p2)
 	{
 		return (const volatile char*)(&p2) - (const volatile char*)(&p1);
 	}
 	template<typename T1, typename T2>
-	int offsetOf(T1* p1, T2* p2)
+	inline int offsetOf(T1* p1, T2* p2)
 	{
 		return (const volatile char*)(p2)-(const volatile char*)(p1);
 	}
 	template<typename T1, typename T2>
-	int offsetOf(T1& p1, T2* p2)
+	inline int offsetOf(T1& p1, T2* p2)
 	{
 		return (const volatile char*)(p2)-(const volatile char*)(&p1);
 	}
 	template<typename T1, typename T2>
-	int offsetOf(T1* p1, T2& p2)
+	inline int offsetOf(T1* p1, T2& p2)
 	{
 		return (const volatile char*)(&p2) - (const volatile char*)(p1);
 	}
 	template<typename T>
-	std::size_t sizeOf(T val)
+	inline std::size_t sizeOf(T val)
 	{
 		return sizeof(T);
 	}
 	//追加：ポインターでも実体でも値（クラス／構造体）のサイズを返す sizeof()
 	template<typename T>
-	std::size_t sizeOf(T* val)
+	inline std::size_t sizeOf(T* val)
 	{
 		return sizeof(T);
 	}

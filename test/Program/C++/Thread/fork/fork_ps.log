@@ -1,4 +1,4 @@
-$ ps -ef| grep fork
+$ ps -ef | grep fork
      user    5348   12044 pty0     07:48:54 /cygdrive/c/Work/test/Program/C++/Thread/fork/fork
      user    1760    6752 pty0     07:48:56 /cygdrive/c/Work/test/Program/C++/Thread/fork/fork
      user   11556    5348 pty0     07:48:56 /cygdrive/c/Work/test/Program/C++/Thread/fork/fork

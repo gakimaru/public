@@ -162,12 +162,6 @@ void createChildThreads(const char* thread_name, TEST_INFO& test, THREAD_INFO& t
 		Sleep(1000);
 	}
 
-	if (tinfo.is_root_thread)
-	{
-		Sleep(1000);
-		return;
-	}
-
 	//子スレッドの終了待ち
 	for (int i = 0; i < CHILD_THREAD_NUM; ++i)
 	{
@@ -193,7 +187,7 @@ void createChildThreads(const char* thread_name, TEST_INFO& test, THREAD_INFO& t
 	}
 }
 
-//posix thread テスト
+//Windows thread テスト
 int main(const int argc, const char* argv[])
 {
 	//プログラム実行開始

@@ -48,7 +48,8 @@ void* threadFunc(void* param_p)
 		THREAD_PARAM* param = (THREAD_PARAM*)param_p;
 		memcpy(&test, &param->test, sizeof(TEST_INFO));
 		memcpy(&tinfo, &param->thread, sizeof(THREAD_INFO));
-	}
+	//	free(param_p);	//この時点で受け取ったメモリは不要だが、元のスレッドでfree しないとハングする
+		}
 	
 	//スレッド情報
 	pthread_t pth_tmp = pthread_self();

@@ -1,2 +1,2 @@
 #!/bin/sh
-gcc pthread.cpp -o pthread.exe
+g++ pthread.cpp -o pthread.exe

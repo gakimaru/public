@@ -1,0 +1,12 @@
+a.cpp:7:6:void func2()	48	static
+a.cpp:14:6:void func1()	48	static
+a.cpp:27:5:int main(int, const char**)	112	static
+a.cpp:69:2:auto_run_test_class::auto_run_test_class()	32	static
+a.cpp:73:2:auto_run_test_class::~auto_run_test_class()	32	static
+a.cpp:82:6:void auto_run_test_func_constructor_1()	32	static
+a.cpp:88:6:void auto_run_test_func_constructor_2()	32	static
+a.cpp:94:6:void auto_run_test_func_destructor_1()	32	static
+a.cpp:100:6:void auto_run_test_func_destructor_2()	32	static
+a.cpp:103:1:void __static_initialization_and_destruction_0(int, int)	32	static
+a.cpp:103:1:cpp)	32	static
+a.cpp:103:1:cpp)	32	static

@@ -1,2 +1,2 @@
 #!/bin/sh
-gcc fork.cpp -o fork.exe
+g++ fork.cpp -o fork.exe

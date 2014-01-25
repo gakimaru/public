@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <sys/types.h>
 
 #include <windows.h>
 #include <process.h>
@@ -85,7 +82,11 @@ unsigned int WINAPI threadFunc(void* param_p)
 	//子スレッド終了メッセージ
 	printf("END: %s\n", thread_name);
 	fflush(stdout);
-
+	
+	//スレッド終了
+	_endthreadex(0);	//これを呼ぶ場合、呼び出し元でCloseHandle() してはダメ
+						//また、ローカル変数オブジェクトのデストラクタが呼び出されないので注意！
+						//呼ばない場合は、呼び出し元で CloseHandle() すること
 	return 0;
 }
 
@@ -175,6 +176,9 @@ void createChildThreads(const char* thread_name, TEST_INFO& test, THREAD_INFO& t
 
 			//ウェイト
 			WaitForSingleObject(hthread_tmp, INFINITE);
+			
+			//子プロセスのハンドルをクローズ
+		//	CloseHandle(hthread_tmp);//スレッド終了時に _endthreadex() を呼んでいるなら CloseHandle() 不要
 
 			//メモリ解放
 			free(param[i]);

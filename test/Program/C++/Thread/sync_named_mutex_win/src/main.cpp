@@ -81,7 +81,14 @@ int main(const int argc, const char* argv[])
 	HANDLE hMutex = INVALID_HANDLE_VALUE;
 	
 	//名前付きミューテックス生成
-	hMutex = CreateMutex(nullptr, false, COMMON_MUTEX_NAME);
+	{
+		hMutex = CreateMutex(nullptr, false, COMMON_MUTEX_NAME);
+
+	//	//属性を指定して生成する場合
+	//	SECURITY_ATTRIBUTES attr = { sizeof(SECURITY_ATTRIBUTES), nullptr, true };//子プロセスにハンドルを継承する
+	//	SECURITY_ATTRIBUTES attr = { sizeof(SECURITY_ATTRIBUTES), nullptr, false };//子プロセスにハンドルを継承しない　※デフォルト
+	//	hMutex = CreateMutex(&attr, false, COMMON_MUTEX_NAME);
+	}
 
 	//スレッド作成
 	static const int THREAD_NUM = 3;

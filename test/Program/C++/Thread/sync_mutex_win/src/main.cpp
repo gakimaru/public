@@ -72,7 +72,14 @@ unsigned int WINAPI threadFunc(void* param_p)
 int main(const int argc, const char* argv[])
 {
 	//ミューテックス生成
-	s_hMutex = CreateMutex(nullptr, false, nullptr);
+	{
+		s_hMutex = CreateMutex(nullptr, false, nullptr);
+		
+	//	//属性を指定して生成する場合
+	//	SECURITY_ATTRIBUTES attr = { sizeof(SECURITY_ATTRIBUTES), nullptr, true };//子プロセスにハンドルを継承する
+	//	SECURITY_ATTRIBUTES attr = { sizeof(SECURITY_ATTRIBUTES), nullptr, false };//子プロセスにハンドルを継承しない　※デフォルト
+	//	s_hMutex = CreateMutex(&attr, false, nullptr);
+	}
 
 	//スレッド作成
 	static const int THREAD_NUM = 3;

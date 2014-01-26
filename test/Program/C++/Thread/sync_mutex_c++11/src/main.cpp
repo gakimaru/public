@@ -7,7 +7,7 @@
 #include <Windows.h> //時間計測用
 
 //ミューテックスオブジェクト
-std::mutex s_mutex;
+static std::mutex s_mutex;
 
 //共有データ
 static int s_commonData = 0;

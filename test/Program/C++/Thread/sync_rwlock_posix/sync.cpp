@@ -45,8 +45,8 @@ void* threadFuncW(void* param_p)
 		++common_data;
 		++tls_data;
 
-		//若干ランダムでスリープ（0～4 msec）
-		usleep((rand() % 5) * 1000);
+		//若干ランダムでスリープ（0～499 msec）
+		usleep((rand() % 500) * 1000);
 		
 		//データ書き戻し
 		s_commonData = common_data;
@@ -87,13 +87,14 @@ void* threadFuncR(void* param_p)
 		//リードロック取得
 		pthread_rwlock_rdlock(&s_lock);
 	//	pthread_rwlock_tryrdlock(&s_lock);//取得できない時に他の処理を行いたい場合は pthread_rwlock_tryrdlock() を使用する
+	//	pthread_rwlock_wrlock(&s_lock);//全てライトロックだった場合と処理効率を比較
 		
 		//データ表示（前）
 		printf("(R)%s: [BEFORE] commonData=%d, tlsData=%d\n", name, s_commonData, s_tlsData);
 		fflush(stdout);
 		
-		//若干ランダムでスリープ（0～4 msec）
-		usleep((rand() % 5) * 1000);
+		//若干ランダムでスリープ（0～499 msec）
+		usleep((rand() % 500) * 1000);
 		
 		//データ表示（後）
 		printf("(R)%s: [AFTER]  commonData=%d, tlsData=%d\n", name, s_commonData, s_tlsData);
@@ -144,9 +145,30 @@ int main(const int argc, const char* argv[])
 	}
 	
 	//スレッド終了待ち
-	pthread_join(pth[0], NULL);
-	pthread_join(pth[1], NULL);
-	pthread_join(pth[2], NULL);
+	{
+		struct timeval begin;
+		gettimeofday(&begin, NULL);
+		
+		for(int i = 0; i < THREAD_NUM; ++i)
+		{
+			pthread_join(pth[i], NULL);
+		}
+		
+		struct timeval end;
+		gettimeofday(&end, NULL);
+		struct timeval prog;
+		if( end.tv_usec >= begin.tv_usec)
+		{
+			prog.tv_sec = end.tv_sec - begin.tv_sec;
+			prog.tv_usec = end.tv_usec - begin.tv_usec;
+		}
+		else
+		{
+			prog.tv_sec = end.tv_sec - begin.tv_sec - 1;
+			prog.tv_usec = 1000000 - begin.tv_usec + end.tv_usec;
+		}
+		printf("Time = %d.%06d sec\n", prog.tv_sec, prog.tv_usec);
+	}
 	
 	//リード／ライトロックの取得と解放を大量に実行して時間を計測
 	{

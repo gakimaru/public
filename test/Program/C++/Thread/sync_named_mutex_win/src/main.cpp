@@ -127,7 +127,7 @@ int main(const int argc, const char* argv[])
 		printf("Named Mutex * %d = %.6f sec\n", TEST_TIMES, time);
 	}
 
-	//ミューテックス破棄
+	//名前付きミューテックス破棄
 	CloseHandle(hMutex);
 
 	return EXIT_SUCCESS;

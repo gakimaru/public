@@ -1,26 +1,26 @@
 $ ./sync.exe
-- begin:Taro   -
-Taro  : [BEFORE] commonData=0, tlsData=0
-- begin:Jiro   -
 - begin:Saburo -
-Taro  : [AFTER]  commonData=1, tlsData=1
-Taro  : [BEFORE] commonData=1, tlsData=1
-Taro  : [AFTER]  commonData=2, tlsData=2
-Taro  : [BEFORE] commonData=2, tlsData=2
-Taro  : [AFTER]  commonData=3, tlsData=3
+Saburo: [BEFORE] commonData=0, tlsData=0
+Saburo: [AFTER]  commonData=1, tlsData=1
+- begin:Taro   -
+Taro  : [BEFORE] commonData=1, tlsData=0
+- begin:Jiro   -
+Taro  : [AFTER]  commonData=2, tlsData=1
+Taro  : [BEFORE] commonData=2, tlsData=1
+Taro  : [AFTER]  commonData=3, tlsData=2
+Taro  : [BEFORE] commonData=3, tlsData=2
+Taro  : [AFTER]  commonData=4, tlsData=3
 - end:Taro   -
-Saburo: [BEFORE] commonData=3, tlsData=0
-Saburo: [AFTER]  commonData=4, tlsData=1
-Saburo: [BEFORE] commonData=4, tlsData=1
-Saburo: [AFTER]  commonData=5, tlsData=2
-Saburo: [BEFORE] commonData=5, tlsData=2
-Saburo: [AFTER]  commonData=6, tlsData=3
-- end:Saburo -
-Jiro  : [BEFORE] commonData=6, tlsData=0
-Jiro  : [AFTER]  commonData=7, tlsData=1
-Jiro  : [BEFORE] commonData=7, tlsData=1
-Jiro  : [AFTER]  commonData=8, tlsData=2
-Jiro  : [BEFORE] commonData=8, tlsData=2
-Jiro  : [AFTER]  commonData=9, tlsData=3
+Jiro  : [BEFORE] commonData=4, tlsData=0
+Jiro  : [AFTER]  commonData=5, tlsData=1
+Jiro  : [BEFORE] commonData=5, tlsData=1
+Jiro  : [AFTER]  commonData=6, tlsData=2
+Jiro  : [BEFORE] commonData=6, tlsData=2
+Jiro  : [AFTER]  commonData=7, tlsData=3
+Saburo: [BEFORE] commonData=7, tlsData=1
 - end:Jiro   -
-Mutex * 10000000 = 3.042708 sec
+Saburo: [AFTER]  commonData=8, tlsData=2
+Saburo: [BEFORE] commonData=8, tlsData=2
+Saburo: [AFTER]  commonData=9, tlsData=3
+- end:Saburo -
+Mutex * 10000000 = 0.220019 sec

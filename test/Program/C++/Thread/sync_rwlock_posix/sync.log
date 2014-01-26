@@ -1,0 +1,50 @@
+$ ./sync.exe
+- begin:(R)Taro   -
+(R)Taro  : [BEFORE] commonData=0, tlsData=0
+- begin:(R)Jiro   -
+(R)Jiro  : [BEFORE] commonData=0, tlsData=0
+- begin:(R)Saburo -
+(R)Saburo: [BEFORE] commonData=0, tlsData=0
+- begin:(W)Shiro  -
+- begin:(W)Goro   -
+- begin:(W)Rokuro -
+(R)Taro  : [AFTER]  commonData=0, tlsData=0
+(R)Saburo: [AFTER]  commonData=0, tlsData=0
+(R)Jiro  : [AFTER]  commonData=0, tlsData=0
+(W)Shiro : [BEFORE] commonData=0, tlsData=0
+(W)Shiro : [AFTER]  commonData=1, tlsData=1
+(W)Shiro : [BEFORE] commonData=1, tlsData=1
+(W)Shiro : [AFTER]  commonData=2, tlsData=2
+(W)Shiro : [BEFORE] commonData=2, tlsData=2
+(W)Shiro : [AFTER]  commonData=3, tlsData=3
+- end:(W)Shiro  -
+(W)Goro  : [BEFORE] commonData=3, tlsData=0
+(W)Goro  : [AFTER]  commonData=4, tlsData=1
+(W)Goro  : [BEFORE] commonData=4, tlsData=1
+(W)Goro  : [AFTER]  commonData=5, tlsData=2
+(W)Goro  : [BEFORE] commonData=5, tlsData=2
+(W)Goro  : [AFTER]  commonData=6, tlsData=3
+- end:(W)Goro   -
+(W)Rokuro: [BEFORE] commonData=6, tlsData=0
+(W)Rokuro: [AFTER]  commonData=7, tlsData=1
+(R)Saburo: [BEFORE] commonData=7, tlsData=0
+(R)Saburo: [AFTER]  commonData=7, tlsData=0
+(W)Rokuro: [BEFORE] commonData=7, tlsData=1
+(W)Rokuro: [AFTER]  commonData=8, tlsData=2
+(R)Saburo: [BEFORE] commonData=8, tlsData=0
+(R)Saburo: [AFTER]  commonData=8, tlsData=0
+- end:(R)Saburo -
+(W)Rokuro: [BEFORE] commonData=8, tlsData=2
+(W)Rokuro: [AFTER]  commonData=9, tlsData=3
+- end:(W)Rokuro -
+(R)Taro  : [BEFORE] commonData=9, tlsData=0
+(R)Jiro  : [BEFORE] commonData=9, tlsData=0
+(R)Taro  : [AFTER]  commonData=9, tlsData=0
+(R)Jiro  : [AFTER]  commonData=9, tlsData=0
+(R)Taro  : [BEFORE] commonData=9, tlsData=0
+(R)Jiro  : [BEFORE] commonData=9, tlsData=0
+(R)Jiro  : [AFTER]  commonData=9, tlsData=0
+(R)Taro  : [AFTER]  commonData=9, tlsData=0
+- end:(R)Jiro   -
+- end:(R)Taro   -
+Mutex * 10000000 = 1.892388 sec

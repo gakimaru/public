@@ -1,2 +1,0 @@
-$ ps -ef | grep pthread
-     user    8140   11912 pty0     11:38:07 /cygdrive/e/Work/test/Program/C++/Thread/pthread/pthread

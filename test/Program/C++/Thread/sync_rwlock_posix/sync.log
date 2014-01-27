@@ -1,51 +1,51 @@
-$ ./sync.exe
-- begin:(R)Jiro   -
-(R)Jiro  : [BEFORE] commonData=0, tlsData=0
-- begin:(W)Shiro  -
-- begin:(W)Goro   -
-- begin:(R)Saburo -
-(R)Saburo: [BEFORE] commonData=0, tlsData=0
-- begin:(R)Taro   -
-(R)Taro  : [BEFORE] commonData=0, tlsData=0
-- begin:(W)Rokuro -
-(R)Taro  : [AFTER]  commonData=0, tlsData=0
-(R)Taro  : [BEFORE] commonData=0, tlsData=0
-(R)Jiro  : [AFTER]  commonData=0, tlsData=0
-(R)Jiro  : [BEFORE] commonData=0, tlsData=0
-(R)Saburo: [AFTER]  commonData=0, tlsData=0
-(R)Saburo: [BEFORE] commonData=0, tlsData=0
-(R)Jiro  : [AFTER]  commonData=0, tlsData=0
-(R)Jiro  : [BEFORE] commonData=0, tlsData=0
-(R)Taro  : [AFTER]  commonData=0, tlsData=0
-(R)Taro  : [BEFORE] commonData=0, tlsData=0
-(R)Saburo: [AFTER]  commonData=0, tlsData=0
-(R)Saburo: [BEFORE] commonData=0, tlsData=0
-(R)Saburo: [AFTER]  commonData=0, tlsData=0
-- end:(R)Saburo -
-(R)Jiro  : [AFTER]  commonData=0, tlsData=0
-- end:(R)Jiro   -
-(R)Taro  : [AFTER]  commonData=0, tlsData=0
-(W)Shiro : [BEFORE] commonData=0, tlsData=0
-- end:(R)Taro   -
-(W)Shiro : [AFTER]  commonData=1, tlsData=1
-(W)Goro  : [BEFORE] commonData=1, tlsData=0
-(W)Goro  : [AFTER]  commonData=2, tlsData=1
-(W)Rokuro: [BEFORE] commonData=2, tlsData=0
-(W)Rokuro: [AFTER]  commonData=3, tlsData=1
-(W)Shiro : [BEFORE] commonData=3, tlsData=1
-(W)Shiro : [AFTER]  commonData=4, tlsData=2
-(W)Goro  : [BEFORE] commonData=4, tlsData=1
-(W)Goro  : [AFTER]  commonData=5, tlsData=2
-(W)Rokuro: [BEFORE] commonData=5, tlsData=1
-(W)Rokuro: [AFTER]  commonData=6, tlsData=2
-(W)Shiro : [BEFORE] commonData=6, tlsData=2
-(W)Shiro : [AFTER]  commonData=7, tlsData=3
-(W)Goro  : [BEFORE] commonData=7, tlsData=2
-- end:(W)Shiro  -
-(W)Goro  : [AFTER]  commonData=8, tlsData=3
-(W)Rokuro: [BEFORE] commonData=8, tlsData=2
-- end:(W)Goro   -
-(W)Rokuro: [AFTER]  commonData=9, tlsData=3
-- end:(W)Rokuro -
-Time = 3.434638 sec
-Mutex * 10000000 = 0.955045 sec
+$ ./sync
+- begin:(R)次郎 -
+(R)次郎: [BEFORE] commonData=0, tlsData=0
+- begin:(R)三郎 -
+(R)三郎: [BEFORE] commonData=0, tlsData=0
+- begin:(W)竹子 -
+- begin:(W)松子 -
+- begin:(R)太郎 -
+(R)太郎: [BEFORE] commonData=0, tlsData=0
+- begin:(W)梅子 -
+(R)太郎: [AFTER]  commonData=0, tlsData=0
+(R)太郎: [BEFORE] commonData=0, tlsData=0
+(R)次郎: [AFTER]  commonData=0, tlsData=0
+(R)次郎: [BEFORE] commonData=0, tlsData=0
+(R)三郎: [AFTER]  commonData=0, tlsData=0
+(R)三郎: [BEFORE] commonData=0, tlsData=0
+(R)次郎: [AFTER]  commonData=0, tlsData=0
+(R)次郎: [BEFORE] commonData=0, tlsData=0
+(R)太郎: [AFTER]  commonData=0, tlsData=0
+(R)太郎: [BEFORE] commonData=0, tlsData=0
+(R)三郎: [AFTER]  commonData=0, tlsData=0
+(R)三郎: [BEFORE] commonData=0, tlsData=0
+(R)三郎: [AFTER]  commonData=0, tlsData=0
+- end:(R)三郎 -
+(R)次郎: [AFTER]  commonData=0, tlsData=0
+- end:(R)次郎 -
+(R)太郎: [AFTER]  commonData=0, tlsData=0
+(W)竹子: [BEFORE] commonData=0, tlsData=0
+- end:(R)太郎 -
+(W)竹子: [AFTER]  commonData=1, tlsData=1
+(W)松子: [BEFORE] commonData=1, tlsData=0
+(W)松子: [AFTER]  commonData=2, tlsData=1
+(W)梅子: [BEFORE] commonData=2, tlsData=0
+(W)梅子: [AFTER]  commonData=3, tlsData=1
+(W)竹子: [BEFORE] commonData=3, tlsData=1
+(W)竹子: [AFTER]  commonData=4, tlsData=2
+(W)松子: [BEFORE] commonData=4, tlsData=1
+(W)松子: [AFTER]  commonData=5, tlsData=2
+(W)梅子: [BEFORE] commonData=5, tlsData=1
+(W)梅子: [AFTER]  commonData=6, tlsData=2
+(W)竹子: [BEFORE] commonData=6, tlsData=2
+(W)竹子: [AFTER]  commonData=7, tlsData=3
+(W)松子: [BEFORE] commonData=7, tlsData=2
+- end:(W)竹子 -
+(W)松子: [AFTER]  commonData=8, tlsData=3
+(W)梅子: [BEFORE] commonData=8, tlsData=2
+- end:(W)松子 -
+(W)梅子: [AFTER]  commonData=9, tlsData=3
+- end:(W)梅子 -
+Time = 3.426866 sec
+Read-WriteLock * 10000000 = 0.914415 sec

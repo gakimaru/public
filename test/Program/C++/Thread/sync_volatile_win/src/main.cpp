@@ -27,9 +27,9 @@ unsigned int WINAPI threadFunc(void* param_p)
 	for (int i = 0; i < 3; ++i)
 	{
 		//volatile変数でロック取得待ち　※インラインアセンブラを使用するので
-		//                                volatile 型でなくてもこの処理は成立する
-		//                              ※xchg のような命令を用いないとロックが不確実なので
-		//                                 C言語の演算子だけでは不十分
+		//                                volatile 型でなくてもこの処理は成立する。
+		//                              ※xchg のような命令を用いないとロックが不確実。
+		//                                 C言語の演算子だけでは不十分。
 		__asm					//ロック取得用インラインアセンブラ（x86系)
 		{
 			mov		eax, 1		//フラグ更新準備
@@ -124,8 +124,8 @@ int main(const int argc, const char* argv[])
 		}
 		LARGE_INTEGER end;
 		QueryPerformanceCounter(&end);
-		float time = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
-		printf("Volatile * %d = %.6f sec\n", TEST_TIMES, time);
+		float duration = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
+		printf("Volatile * %d = %.6f sec\n", TEST_TIMES, duration);
 	}
 
 	return EXIT_SUCCESS;

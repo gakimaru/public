@@ -123,8 +123,8 @@ int main(const int argc, const char* argv[])
 		}
 		LARGE_INTEGER end;
 		QueryPerformanceCounter(&end);
-		float time = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
-		printf("Named Mutex * %d = %.6f sec\n", TEST_TIMES, time);
+		float duration = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
+		printf("Named Mutex * %d = %.6f sec\n", TEST_TIMES, duration);
 	}
 
 	//名前付きミューテックス破棄

@@ -4,7 +4,7 @@
 #include <thread>
 #include <mutex>
 
-#include <Windows.h> //時間計測用
+#include <chrono> //時間計測用
 
 //ミューテックスオブジェクト
 static std::mutex s_mutex;
@@ -14,6 +14,7 @@ static int s_commonData = 0;
 
 //スレッド固有データ
 __declspec(thread) int s_tlsData = 0;
+//thread_local int s_tlsData = 0;//Visual C++ 2013 では thread_local キーワードが使えない
 
 //スレッド
 void threadFunc(const char* name)
@@ -81,20 +82,16 @@ int main(const int argc, const char* argv[])
 
 	//ミューテックスの取得と解放を大量に実行して時間を計測
 	{
-		LARGE_INTEGER freq;
-		QueryPerformanceFrequency(&freq);
-		LARGE_INTEGER begin;
-		QueryPerformanceCounter(&begin);
+		auto begin = std::chrono::high_resolution_clock::now();
 		static const int TEST_TIMES = 10000000;
 		for (int i = 0; i < TEST_TIMES; ++i)
 		{
 			s_mutex.lock();
 			s_mutex.unlock();
 		}
-		LARGE_INTEGER end;
-		QueryPerformanceCounter(&end);
-		float time = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
-		printf("Mutex * %d = %.6f sec\n", TEST_TIMES, time);
+		auto end = std::chrono::high_resolution_clock::now();
+		auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast< std::chrono::microseconds >(end - begin).count()) / 1000000.);
+		printf("Mutex * %d = %.6f sec\n", TEST_TIMES, duration);
 	}
 
 	return EXIT_SUCCESS;

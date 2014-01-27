@@ -1,2 +1,2 @@
-echo $ ./sync.exe > sync.log
-./sync.exe | tee -a sync.log &
+echo $ ./sync > sync.log
+./sync | tee -a sync.log &

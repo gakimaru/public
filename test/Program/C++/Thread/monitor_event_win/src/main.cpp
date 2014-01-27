@@ -92,7 +92,6 @@ unsigned int WINAPI priorThreadFunc(void* param_p)
 		//先行スレッド処理完了イベントセット
 		for (int i = 0; i < s_followThreadNum; ++i)
 		{
-			ResetEvent(s_hFollowEvent[i]);
 			SetEvent(s_hPriorEvent[i]);
 		}
 		//※PulseEvent() は SetEvent() のように、先行してシグナル状態を作るようなことができず、
@@ -166,7 +165,6 @@ unsigned int WINAPI followThreadFunc(void* param_p)
 		fflush(stdout);
 		
 		//後続スレッド処理完了イベントセット
-		ResetEvent(s_hPriorEvent[thread_no]);
 		SetEvent(s_hFollowEvent[thread_no]);
 
 		//スレッド切り替えのためのスリープ
@@ -206,7 +204,7 @@ int main(const int argc, const char* argv[])
 	//スレッド作成
 	static const int FOLLOW_THREAD_NUM = 5;
 	static const int THREAD_NUM = 1 + FOLLOW_THREAD_NUM;
-	static_assert(FOLLOW_THREAD_NUM <= FOLLOW_THREAD_MAX, "THREAD_NUM is over.");
+	static_assert(FOLLOW_THREAD_NUM <= FOLLOW_THREAD_MAX, "FOLLOW_THREAD_NUM is over.");
 	s_followThreadNum = FOLLOW_THREAD_NUM;
 	unsigned int tid[THREAD_NUM] = {};
 	HANDLE hThread[THREAD_NUM] =
@@ -243,8 +241,8 @@ int main(const int argc, const char* argv[])
 		}
 		LARGE_INTEGER end;
 		QueryPerformanceCounter(&end);
-		float time = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
-		printf("Event * %d = %.6f sec\n", TEST_TIMES, time);
+		float duration = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
+		printf("Event * %d = %.6f sec\n", TEST_TIMES, duration);
 	}
 
 	//イベント破棄

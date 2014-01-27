@@ -22,4 +22,4 @@
 三郎: [BEFORE] commonData=8, tlsData=2
 三郎: [AFTER]  commonData=9, tlsData=3
 - end:三郎 -
-Mutex * 10000000 = 4.311848 sec
+Mutex * 10000000 = 4.880666 sec

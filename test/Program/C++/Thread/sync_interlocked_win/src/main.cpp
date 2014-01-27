@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include <Process.h>
 
-//インターロック変数
+//インターロック操作用変数
 static LONG s_lock = 0;
 
 //共有データ
@@ -26,7 +26,7 @@ unsigned int WINAPI threadFunc(void* param_p)
 	//処理
 	for (int i = 0; i < 3; ++i)
 	{
-		//インターロック変数でロック取得待ち
+		//インターロック操作でロック取得待ち
 		while (InterlockedExchange(&s_lock, 1) == 1){}
 		
 		//データ表示（前）
@@ -52,7 +52,7 @@ unsigned int WINAPI threadFunc(void* param_p)
 		printf("%s: [AFTER]  commonData=%d, tlsData=%d\n", name, s_commonData, s_tlsData);
 		fflush(stdout);
 
-		//インターロック変数でロック解放
+		//インターロック操作でロック解放
 		InterlockedExchange(&s_lock, 0);
 		
 		//スレッド切り替えのためのスリープ
@@ -71,7 +71,7 @@ unsigned int WINAPI threadFunc(void* param_p)
 //テスト
 int main(const int argc, const char* argv[])
 {
-	//インターロック変数初期化
+	//インターロック操作用変数初期化
 	s_lock = 0;
 
 	//スレッド作成
@@ -93,7 +93,7 @@ int main(const int argc, const char* argv[])
 		CloseHandle(hThread[i]);
 	}
 
-	//インターロック変数でロックの取得と解放を大量に実行して時間を計測
+	//インターロック操作でロックの取得と解放を大量に実行して時間を計測
 	{
 		LARGE_INTEGER freq;
 		QueryPerformanceFrequency(&freq);
@@ -107,8 +107,8 @@ int main(const int argc, const char* argv[])
 		}
 		LARGE_INTEGER end;
 		QueryPerformanceCounter(&end);
-		float time = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
-		printf("Interlocked * %d = %.6f sec\n", TEST_TIMES, time);
+		float duration = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
+		printf("Interlocked * %d = %.6f sec\n", TEST_TIMES, duration);
 	}
 
 	return EXIT_SUCCESS;

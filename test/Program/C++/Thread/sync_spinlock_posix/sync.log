@@ -1,26 +1,26 @@
-$ ./sync.exe
-- begin:Saburo -
-Saburo: [BEFORE] commonData=0, tlsData=0
-Saburo: [AFTER]  commonData=1, tlsData=1
-- begin:Taro   -
-Taro  : [BEFORE] commonData=1, tlsData=0
-- begin:Jiro   -
-Taro  : [AFTER]  commonData=2, tlsData=1
-Taro  : [BEFORE] commonData=2, tlsData=1
-Taro  : [AFTER]  commonData=3, tlsData=2
-Taro  : [BEFORE] commonData=3, tlsData=2
-Taro  : [AFTER]  commonData=4, tlsData=3
-- end:Taro   -
-Jiro  : [BEFORE] commonData=4, tlsData=0
-Jiro  : [AFTER]  commonData=5, tlsData=1
-Jiro  : [BEFORE] commonData=5, tlsData=1
-Jiro  : [AFTER]  commonData=6, tlsData=2
-Jiro  : [BEFORE] commonData=6, tlsData=2
-Jiro  : [AFTER]  commonData=7, tlsData=3
-Saburo: [BEFORE] commonData=7, tlsData=1
-- end:Jiro   -
-Saburo: [AFTER]  commonData=8, tlsData=2
-Saburo: [BEFORE] commonData=8, tlsData=2
-Saburo: [AFTER]  commonData=9, tlsData=3
-- end:Saburo -
-Mutex * 10000000 = 0.220019 sec
+$ ./sync
+- begin:三郎 -
+三郎: [BEFORE] commonData=0, tlsData=0
+三郎: [AFTER]  commonData=1, tlsData=1
+- begin:次郎 -
+次郎: [BEFORE] commonData=1, tlsData=0
+- begin:太郎 -
+次郎: [AFTER]  commonData=2, tlsData=1
+太郎: [BEFORE] commonData=2, tlsData=0
+太郎: [AFTER]  commonData=3, tlsData=1
+次郎: [BEFORE] commonData=3, tlsData=1
+次郎: [AFTER]  commonData=4, tlsData=2
+三郎: [BEFORE] commonData=4, tlsData=1
+三郎: [AFTER]  commonData=5, tlsData=2
+次郎: [BEFORE] commonData=5, tlsData=2
+次郎: [AFTER]  commonData=6, tlsData=3
+太郎: [BEFORE] commonData=6, tlsData=1
+- end:次郎 -
+太郎: [AFTER]  commonData=7, tlsData=2
+三郎: [BEFORE] commonData=7, tlsData=2
+三郎: [AFTER]  commonData=8, tlsData=3
+太郎: [BEFORE] commonData=8, tlsData=2
+- end:三郎 -
+太郎: [AFTER]  commonData=9, tlsData=3
+- end:太郎 -
+Spinlock * 10000000 = 0.188224 sec

@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <condition_variable>
-#include <mutex>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <atomic>
 
-#include <Windows.h> //時間計測用
+#include <chrono> //時間計測用
 
 //スレッド情報
-static const int FOLLOW_THREAD_MAX = 10;          //後続スレッド最大数
-static volatile LONG s_followThreadNum = 0;       //後続スレッド数
-static volatile LONG s_followThreadNo = 0;        //後続スレッド番号発番用
-static volatile bool s_IsQuirProiorThread = false;//先行スレッド終了フラグ
+static const int FOLLOW_THREAD_MAX = 10;              //後続スレッド最大数
+static volatile int s_followThreadNum = 0;            //後続スレッド数
+static volatile std::atomic<int> s_followThreadNo = 0;//後続スレッド番号発番用
+static volatile bool s_IsQuirProiorThread = false;    //先行スレッド終了フラグ
 
 //条件変数
 //※条件変数は、必ず条件変数＋ミューテックス＋変数のセットで扱う
@@ -24,6 +25,7 @@ static int s_commonData = 0;
 
 //スレッド固有データ
 __declspec(thread) int s_tlsData = 0;
+//thread_local int s_tlsData = 0;//Visual C++ 2013 では thread_local キーワードが使えない
 
 //【処理説明】
 //先行スレッドが共有データを作成し、それが完了したら
@@ -56,6 +58,7 @@ void priorThreadFunc(const char* name)
 				while (!s_followFinished[i])//待機終了条件を満たしていない場合
 					s_followCond[i].wait(lock);//待機（ロック開放→待機→待機終了→ロック取得が行われる）
 			}
+			//※待機をタイムアウトさせたい場合は .wait_for() メソッドを用いる。
 		}
 
 		//ループカウンタ進行＆終了判定
@@ -94,7 +97,7 @@ void priorThreadFunc(const char* name)
 		++tls_data;
 
 		//若干ランダムでスリープ（0～499 msec）
-		Sleep(rand() % 500);
+		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 500));
 
 		//データ書き戻し
 		s_commonData = common_data;
@@ -113,12 +116,13 @@ void priorThreadFunc(const char* name)
 				s_followCond[i].notify_one();//解除待ちしているスレッドに通知
 			}
 		}
+		//※一つの条件変数で多数のスレッドを待機させている場合は、
+		//　.notify_all() メソッドも使える。
 
 		//スレッド切り替えのためのスリープ
-		Sleep(0);
+		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 	//	//スレッド切り替え
-	//	SwitchToThread();//OSに任せて再スケジューリング
-	//	Yield();//廃止
+	//	std::this_thread::yield();//OSに任せて再スケジューリング
 	}
 
 	//終了
@@ -130,7 +134,7 @@ void priorThreadFunc(const char* name)
 void followThreadFunc(const char* name)
 {
 	//後続スレッド数カウントアップ
-	LONG thread_no = InterlockedIncrement(&s_followThreadNo) - 1;
+	const int thread_no = s_followThreadNo++;
 
 	//開始
 	printf("- begin:(F)[%d]%s -\n", thread_no, name);
@@ -152,6 +156,7 @@ void followThreadFunc(const char* name)
 			while (s_followFinished[thread_no])//待機終了条件を満たしていない場合
 				s_followCond[thread_no].wait(lock);//待機（ロック開放→待機→待機終了→ロック取得が行われる）
 		}
+		//※待機をタイムアウトさせたい場合は .wait_for() メソッドを用いる。
 
 		//終了確認
 		if (s_IsQuirProiorThread)
@@ -182,7 +187,7 @@ void followThreadFunc(const char* name)
 		++tls_data;
 
 		//若干ランダムでスリープ（0～500 msec）
-		Sleep(rand() % 500);
+		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 500));
 
 		//データ書き戻し
 		s_tlsData = tls_data;
@@ -199,10 +204,9 @@ void followThreadFunc(const char* name)
 		}
 
 		//スレッド切り替えのためのスリープ
-		Sleep(0);
+		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 	//	//スレッド切り替え
-	//	SwitchToThread();//OSに任せて再スケジューリング
-	//	Yield();//廃止
+	//	std::this_thread::yield();//OSに任せて再スケジューリング
 	}
 
 	//終了
@@ -216,11 +220,10 @@ int main(const int argc, const char* argv[])
 	//スレッド作成
 	static const int FOLLOW_THREAD_NUM = 5;
 	static const int THREAD_NUM = 1 + FOLLOW_THREAD_NUM;
-	static_assert(FOLLOW_THREAD_NUM <= FOLLOW_THREAD_MAX, "THREAD_NUM is over.");
+	static_assert(FOLLOW_THREAD_NUM <= FOLLOW_THREAD_MAX, "FOLLOW_THREAD_NUM is over.");
 	s_followThreadNum = FOLLOW_THREAD_NUM;
 	for (int i = 0; i < THREAD_NUM - 1; ++i)
 		s_followFinished[i] = true;
-	static_assert(THREAD_NUM - 1 <= FOLLOW_THREAD_MAX, "THREAD_NUM is over.");
 	std::thread thread_obj00 = std::thread(priorThreadFunc, "先行");
 	std::thread thread_obj01 = std::thread(followThreadFunc, "後続01");
 	std::thread thread_obj02 = std::thread(followThreadFunc, "後続02");
@@ -238,10 +241,7 @@ int main(const int argc, const char* argv[])
 
 	//イベントの取得と解放を大量に実行して時間を計測
 	{
-		LARGE_INTEGER freq;
-		QueryPerformanceFrequency(&freq);
-		LARGE_INTEGER begin;
-		QueryPerformanceCounter(&begin);
+		auto begin = std::chrono::high_resolution_clock::now();
 		static const int TEST_TIMES = 10000000;
 		for (int i = 0; i < TEST_TIMES; ++i)
 		{
@@ -251,10 +251,9 @@ int main(const int argc, const char* argv[])
 				s_followCond[0].notify_one();
 			}
 		}
-		LARGE_INTEGER end;
-		QueryPerformanceCounter(&end);
-		float time = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
-		printf("Event * %d = %.6f sec\n", TEST_TIMES, time);
+		auto end = std::chrono::high_resolution_clock::now();
+		auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast< std::chrono::microseconds >(end - begin).count()) / 1000000.);
+		printf("Cond-Sginal * %d = %.6f sec\n", TEST_TIMES, duration);
 	}
 
 	return EXIT_SUCCESS;

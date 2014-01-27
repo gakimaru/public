@@ -22,4 +22,4 @@
 三郎: [BEFORE] commonData=8, tlsData=2
 三郎: [AFTER]  commonData=9, tlsData=3
 - end:三郎 -
-Critical Section * 10000000 = 0.195269 sec
+Critical Section * 10000000 = 0.197762 sec

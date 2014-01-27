@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
 
 #include <pthread.h> 
 #include <unistd.h>
 
-#include <sys/time.h>
+#include <sys/time.h> //時間計測用
 
 //スピンロック
 static pthread_spinlock_t s_lock;
@@ -85,17 +84,18 @@ int main(const int argc, const char* argv[])
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
 		pthread_attr_setstacksize(&attr, 1024);//スタックサイズ指定
-		pthread_create(&pth[0], &attr, threadFunc, (void*)"Taro  ");
-		pthread_create(&pth[1], &attr, threadFunc, (void*)"Jiro  ");
-		pthread_create(&pth[2], &attr, threadFunc, (void*)"Saburo");
+		pthread_create(&pth[0], &attr, threadFunc, (void*)"太郎");
+		pthread_create(&pth[1], &attr, threadFunc, (void*)"次郎");
+		pthread_create(&pth[2], &attr, threadFunc, (void*)"三郎");
 	}
 	
 	//スレッド終了待ち
-	pthread_join(pth[0], NULL);
-	pthread_join(pth[1], NULL);
-	pthread_join(pth[2], NULL);
+	for(int i = 0; i < THREAD_NUM; ++i)
+	{
+		pthread_join(pth[i], NULL);
+	}
 	
-	//スピンロックの取得と解放を大量に実行して時間を計測
+	//セマフォの取得と解放を大量に実行して時間を計測
 	{
 		struct timeval begin;
 		gettimeofday(&begin, NULL);
@@ -107,18 +107,18 @@ int main(const int argc, const char* argv[])
 		}
 		struct timeval end;
 		gettimeofday(&end, NULL);
-		struct timeval prog;
+		struct timeval duration;
 		if( end.tv_usec >= begin.tv_usec)
 		{
-			prog.tv_sec = end.tv_sec - begin.tv_sec;
-			prog.tv_usec = end.tv_usec - begin.tv_usec;
+			duration.tv_sec = end.tv_sec - begin.tv_sec;
+			duration.tv_usec = end.tv_usec - begin.tv_usec;
 		}
 		else
 		{
-			prog.tv_sec = end.tv_sec - begin.tv_sec - 1;
-			prog.tv_usec = 1000000 - begin.tv_usec + end.tv_usec;
+			duration.tv_sec = end.tv_sec - begin.tv_sec - 1;
+			duration.tv_usec = 1000000 - begin.tv_usec + end.tv_usec;
 		}
-		printf("Mutex * %d = %d.%06d sec\n", TEST_TIMES, prog.tv_sec, prog.tv_usec);
+		printf("Spinlock * %d = %d.%06d sec\n", TEST_TIMES, duration.tv_sec, duration.tv_usec);
 	}
 	
 	//スピンロック破棄

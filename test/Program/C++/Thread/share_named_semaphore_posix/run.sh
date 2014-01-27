@@ -1,2 +1,2 @@
-echo $ ./share.exe > share.log
-./share.exe | tee -a share.log &
+echo $ ./share > share.log
+./share | tee -a share.log &

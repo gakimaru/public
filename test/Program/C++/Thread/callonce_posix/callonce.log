@@ -1,0 +1,9 @@
+$ ./callonce
+- begin:太郎 -
+CallOnce処理：初期化中...
+- begin:次郎 -
+- begin:三郎 -
+CallOnce処理：終了
+- end:太郎 -
+- end:次郎 -
+- end:三郎 -

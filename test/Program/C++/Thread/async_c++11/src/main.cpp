@@ -49,7 +49,7 @@ void testNormalCalc()
 	
 	//時間計測終了
 	auto end = std::chrono::high_resolution_clock::now();
-	auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast< std::chrono::microseconds >(end - begin).count()) / 1000000.);
+	auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) / 1000000.);
 	
 	//結果表示
 	printf("----------------------------------------\n");
@@ -78,7 +78,7 @@ void testAsyncCalc()
 	
 	//時間計測終了
 	auto end = std::chrono::high_resolution_clock::now();
-	auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast< std::chrono::microseconds >(end - begin).count()) / 1000000.);
+	auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) / 1000000.);
 
 	//結果表示
 	printf("----------------------------------------\n");
@@ -122,7 +122,7 @@ void testAsyncCalcEx()
 		
 		//時間計測終了
 		auto end = std::chrono::high_resolution_clock::now();
-		auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast< std::chrono::microseconds >(end - begin).count()) / 1000000.);
+		auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) / 1000000.);
 		
 		//結果表示
 		printf("----------------------------------------\n");
@@ -135,57 +135,61 @@ void testAsyncCalcEx()
 	}
 	
 	//非同期関数でソート
-	//※大量にバッファを消費する。また、アルゴリズムを高速化できてもバッファコピーに時間がかかる。
+	//※大量にバッファを消費する
 	{
 		//時間計測開始
 		auto begin = std::chrono::high_resolution_clock::now();
 
 		//処理準備：シャッフル済みリストをコピー
 		std::vector<int> list = list_org;
-		
+		const int list_size = list.size();
+
 		//4分割で並列クイックソート
-		std::vector<int> list_tmp_a[4];
 		std::future<void> r_a[4];
-		const int list_size = list.size() / 4;
 		{
-			auto sort_lambda = [&r_a, &list, &list_tmp_a, &list_size](const int index)
+			//非同期処理には、関数ポインター以外にも、関数オブジェクトやラムダ式を渡すことができる
+			auto sort_lambda = [&list](const int index, const int list_begin, const int list_end)
 			{
-				std::vector<int>::iterator ite_begin = list.begin() + index * list_size;
-				std::vector<int>::iterator ite_end = ite_begin + list_size;
-				list_tmp_a[index] = std::vector<int>(ite_begin, ite_end);
-				std::sort(list_tmp_a[index].begin(), list_tmp_a[index].end());
+				std::vector<int>::iterator ite_begin = list.begin() + list_begin;
+				std::vector<int>::iterator ite_end = list.begin() + list_end;
+				std::sort(ite_begin, ite_end);
 			};
-			r_a[0] = std::async(sort_lambda, 0);
-			r_a[1] = std::async(sort_lambda, 1);
-			r_a[2] = std::async(sort_lambda, 2);
-			r_a[3] = std::async(sort_lambda, 3);
+			r_a[0] = std::async(sort_lambda, 0, list_size / 4 * 0, list_size / 4 * 1);
+			r_a[1] = std::async(sort_lambda, 1, list_size / 4 * 1, list_size / 4 * 2);
+			r_a[2] = std::async(sort_lambda, 2, list_size / 4 * 2, list_size / 4 * 3);
+			r_a[3] = std::async(sort_lambda, 3, list_size / 4 * 3, list_size);
 		}
-		
+
 		//2分割で並列マージソート
-		std::vector<int> list_tmp_b[2];
 		std::future<void> r_b[2];
 		{
-			auto merge_sort_lambda = [&r_a, &list_tmp_a, &list_tmp_b, &list_size](const int index)
+			//非同期処理には、関数ポインター以外にも、関数オブジェクトやラムダ式を渡すことができる
+			auto merge_sort_lambda = [&r_a, &list](const int index, const int list_begin, const int list_mid, const int list_end)
 			{
-				list_tmp_b[index] = std::vector<int>(list_size * 2);
-				const int i1 = index * 2 + 0;
-				const int i2 = index * 2 + 1;
-				r_a[i1].wait();
-				r_a[i2].wait();
-				std::merge(list_tmp_a[i1].begin(), list_tmp_a[i1].end(), list_tmp_a[i2].begin(), list_tmp_a[i2].end(), list_tmp_b[index].begin());
+				r_a[index * 2 + 0].wait();
+				r_a[index * 2 + 1].wait();
+				std::vector<int>::iterator ite_begin = list.begin() + list_begin;
+				std::vector<int>::iterator ite_mid = list.begin() + list_mid;
+				std::vector<int>::iterator ite_end = list.begin() + list_end;
+				std::inplace_merge(ite_begin, ite_mid, ite_end);//二つのリストからマージソートする場合には std::merge() が使える
 			};
-			r_b[0] = std::async(merge_sort_lambda, 0);
-			r_b[1] = std::async(merge_sort_lambda, 1);
+			r_b[0] = std::async(merge_sort_lambda, 0, list_size / 2 * 0, list_size / 2 * 0 + list_size / 4, list_size / 2 * 1);
+			r_b[1] = std::async(merge_sort_lambda, 1, list_size / 2 * 1, list_size / 2 * 1 + list_size / 4, list_size);
 		}
 		
 		//マージソート（完了）
-		r_b[0].wait();
-		r_b[1].wait();
-		std::merge(list_tmp_b[0].begin(), list_tmp_b[0].end(), list_tmp_b[1].begin(), list_tmp_b[1].end(), list.begin());
+		{
+			r_b[0].wait();
+			r_b[1].wait();
+			std::vector<int>::iterator ite_begin = list.begin();
+			std::vector<int>::iterator ite_mid = list.begin() + list_size / 2;
+			std::vector<int>::iterator ite_end = list.end();
+			std::inplace_merge(ite_begin, ite_mid, ite_end);//二つのリストからマージソートする場合には std::merge() が使える
+		}
 
 		//時間計測終了
 		auto end = std::chrono::high_resolution_clock::now();
-		auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast< std::chrono::microseconds >(end - begin).count()) / 1000000.);
+		auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) / 1000000.);
 		
 		//結果表示
 		printf("----------------------------------------\n");

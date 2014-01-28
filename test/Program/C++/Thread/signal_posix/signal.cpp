@@ -21,7 +21,8 @@ pthread_t s_threadSyncSignal;
 
 //受信シグナルバッファ（シグナルハンドラ内処理用）
 //※シグナルハンドラ内では「非同期安全な関数」以外使用できない。malloc や prnitf もNG。
-//　シグナルハンドラで受信したシグナルを、専用の処理スレッドに受け渡す。
+//　そのため、シグナルハンドラで受信したシグナルをプールし、
+//　専用の処理スレッドに受け渡すようにする。
 struct SIG_INFO
 {
 	int sig;
@@ -134,6 +135,7 @@ void signalHandler(int sig)
 	SIG_INFO info = makeSigInfo(sig);
 	pushSigBuff(info);
 }
+
 //アラーム用シグナルハンドラ関数
 void alarmFunc(int sig)
 {
@@ -220,16 +222,24 @@ void* threadFuncSyncSignal(void* param_p)
 	pthread_sigmask(SIG_BLOCK, &s_sigSet, NULL);
 	//※これにより、ここで設定したシグナルは、このスレッドに
 	//　キューイングされるようになり、sigwait() で取り出せるようになる。
-	//※先に同じシグナルに対するシグナルハンドラーが設定されていても、
+	//【Linuxの挙動】
+	//※プロセスに対するシグナルには反応しない。
+	//【Cygwinの挙動】
+	//※プロセスに対するシグナルに反応する。
+	//　先に同じシグナルに対するシグナルハンドラーが設定されていても、
 	//　こちらが優先される。（両方は反応しない）
 	
 	//同期シグナル処理
 	while(1)
 	{
 		//シグナル受信待ち
+		//【Linuxの挙動】
 		//※マスク対象シグナル以外のシグナルが直接送られてくると
-		//　sigwait() がエラーを返すので注意！
-		//　（一度エラーが出ると、キューが残り続けて復帰できない）
+		//　普通に受信するものの、キューから削除されず復帰できない。
+		//【Cygwinの挙動】
+		//※マスク対象シグナル以外のシグナルが直接送られてくると
+		//　sigwait() がエラーを返す。
+		//　キューから削除されないので、復帰できない。
 		int sig;
 		if(sigwait(&s_sigSet, &sig) != 0)
 		{
@@ -264,8 +274,12 @@ int main(const int argc, const char* argv[])
 	
 	//同期シグナル用のシグナルマスク作成
 	sigemptyset(&s_sigSet);
-	sigaddset(&s_sigSet, SIGTRAP);//トレース/ブレークポイントによるトラップ
+//	sigaddset(&s_sigSet, SIGINT); //割り込み（CTRL + C）
+	sigaddset(&s_sigSet, SIGQUIT);//終了とコアダンプ（CTRL + \）
+	sigaddset(&s_sigSet, SIGCONT);//停止していれば再開
 	sigaddset(&s_sigSet, SIGTSTP);//端末からの中断シグナル（CTRL + Z）
+	sigaddset(&s_sigSet, SIGTRAP);//トレース/ブレークポイントによるトラップ
+//	sigaddset(&s_sigSet, SIGUSR1);//ユーザー定義シグナル 1
 	sigaddset(&s_sigSet, SIGUSR2);//ユーザー定義シグナル 2
 	
 	//スレッド作成
@@ -283,8 +297,10 @@ int main(const int argc, const char* argv[])
 	signal(SIGINT,  signalHandler);//割り込み（CTRL + C）
 	signal(SIGQUIT, signalHandler);//終了とコアダンプ（CTRL + \）
 	signal(SIGCONT, signalHandler);//停止していれば再開
+	signal(SIGTSTP, signalHandler);//端末からの中断シグナル（CTRL + Z）
+//	signal(SIGTRAP, signalHandler);//トレース/ブレークポイントによるトラップ
 	signal(SIGUSR1, signalHandler);//ユーザー定義シグナル 1
-	signal(SIGUSR2, signalHandler);//ユーザー定義シグナル 2
+//	signal(SIGUSR2, signalHandler);//ユーザー定義シグナル 2
 	
 	//アラーム用のシグナルハンドラを登録　※非同期シグナル処理
 	signal(SIGALRM, alarmFunc);

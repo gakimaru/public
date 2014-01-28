@@ -9,10 +9,10 @@
 #include <chrono> //時間計測用
 
 //スレッド情報
-static const int FOLLOW_THREAD_MAX = 10;              //後続スレッド最大数
-static volatile int s_followThreadNum = 0;            //後続スレッド数
-static volatile std::atomic<int> s_followThreadNo = 0;//後続スレッド番号発番用
-static volatile bool s_IsQuirProiorThread = false;    //先行スレッド終了フラグ
+static const int FOLLOW_THREAD_MAX = 10;          //後続スレッド最大数
+static volatile int s_followThreadNum = 0;        //後続スレッド数
+static std::atomic<int> s_followThreadNo = 0;     //後続スレッド番号発番用
+static volatile bool s_IsQuirProiorThread = false;//先行スレッド終了フラグ
 
 //条件変数
 //※条件変数は、必ず条件変数＋ミューテックス＋変数のセットで扱う
@@ -255,6 +255,7 @@ int main(const int argc, const char* argv[])
 		auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast< std::chrono::microseconds >(end - begin).count()) / 1000000.);
 		printf("Cond-Sginal * %d = %.6f sec\n", TEST_TIMES, duration);
 	}
+
 
 	return EXIT_SUCCESS;
 }

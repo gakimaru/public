@@ -90,8 +90,6 @@ int main(const int argc, const char* argv[])
 		{
 			while (s_lock.test_and_set()){}
 			s_lock.clear();
-		//	while (s_lock.test_and_set(std::memory_order_seq_cst)){}
-		//	s_lock.clear(std::memory_order_release);
 		}	
 		auto end = std::chrono::high_resolution_clock::now();
 		auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast< std::chrono::microseconds >(end - begin).count()) / 1000000.);

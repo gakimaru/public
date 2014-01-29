@@ -232,7 +232,7 @@ int main(const int argc, const char* argv[])
 		printf("Watch-atomic * %d = %.6f sec\n", TEST_TIMES, duration);
 	}
 
-	//イベントの取得と解放を大量に実行して時間を計測(2)
+	//アトミック操作を大量に実行して時間を計測(2)
 	{
 		auto begin = std::chrono::high_resolution_clock::now();
 		static const int TEST_TIMES = 10000000;
@@ -248,12 +248,13 @@ int main(const int argc, const char* argv[])
 			//http://www.justsoftwaresolutions.co.uk/threading/intel-memory-ordering-and-c++-memory-model.html
 			//【メモリオーダーの意味】（x86命令相当の場合）
 			//Memory Ordering,           Store,         Load
+			//------------------------- --------------- --------------
 			//std::memory_order_relaxed  MOV[mem],reg   MOV reg,[mem]                             ←メモリバリアなし：メモリ更新と読み込みの順序性を保証しない
 			//std::memory_order_consume  (n/a)          MOV reg,[mem]  (Data-Dependency Ordering) ←読み込み専用のメモリバリア（少し弱い）※ストア処理で使うとエラー（交換可）
-			//std::memory_order_acquire  (n/a)          MOV reg,[mem]                             ←読み込み専用のメモリバリア            ※ストア処理で使うとエラー（交換可）
-			//std::memory_order_release  MOV[mem],reg   (n/a)                                     ←書き込み専用のメモリバリア            ※ロード処理で使うとエラー（交換可）
+			//std::memory_order_acquire  (n/a)          MOV reg,[mem]                             ←読み込み専用のメモリバリア　　　　　　※ストア処理で使うとエラー（交換可）
+			//std::memory_order_release  MOV[mem],reg   (n/a)                                     ←書き込み専用のメモリバリア　　　　　　※ロード処理で使うとエラー（交換可）
 			//std::memory_order_acq_rel  MOV[mem],reg   MOV reg,[mem] (acquire & release)         ←交換専用のメモリバリア　　　　　　　　※ロード／ストア処理で使うとエラー
-			//std::memory_order_seq_cst  XCHG[mem],reg  MOV reg,[mem] (Sequential consistency)    ←読み書きメモリバリア（強力）　　　　　※デフォルト
+			//std::memory_order_seq_cst  XCHG[mem],reg  MOV reg,[mem] (Sequential consistency)    ←読み書きメモリバリア（強力）　　　　　※デフォルト（必ずしも低速というわけでではない）
 			//・Load  ... レジスタ ← メモリ
 			//・Store ... レジスタ → メモリ
 			
@@ -299,36 +300,36 @@ int main(const int argc, const char* argv[])
 			//      これは、CPUにメモリバリア命令が出されて順序性を保証しないと、CPUの最適化により、
 			//      更新の順序が入れ替わることがあるため。（「アウト・オブ・オーダー実行」と呼ばれる最適化）
 			//[グローバル変数]
-			//volatile int a;
-			//volatile int b;
-			//volatile int c;
-			//volatile int d;
+			//volatile bool flg_a;
+			//volatile bool flg_b;
+			//volatile int val_a;
+			//volatile int val_b;
 			//[スレッドA]
-			//a = 12;
-			//b = 34;
-			//if(d == 78)
-			//    std::cout << c;
+			//val_a = 123;
+			//flg_a = true;
+			//if(flg_b)
+			//    std::cout << val_b;
 			//[スレッドB]
-			//c = 56;
-			//d = 78;
-			//if(b == 34)
-			//    std::cout << a;
+			//val_b = 789;
+			//flg_b = true;
+			//if(flg_a)
+			//    std::cout << val_a;
 			//※この問題は、必要な箇所で必要なメモリバリアを明示することで対処できる
 			//[グローバル変数]
-			//volatile int a;
-			//volatile std::atmic<int> b;
-			//volatile int c;
-			//volatile std::atmic<int> d;
+			//std::atmic<bool> flg_a;
+			//std::atmic<bool> flg_b;
+			//volatile int val_a;
+			//volatile int val_b;
 			//[スレッドA]
-			//a = 12;
-			//b.store(34, std::memory_order_release );
-			//if(d.load(std::memory_order_acquire) == 78)
-			//    std::cout << c;
+			//val_a = 123;
+			//flg_a.store(true, std::memory_order_release);
+			//if(flg_b.load(std::memory_order_acquire))
+			//    std::cout << val_b;
 			//[スレッドB]
-			//c = 56;
-			//d.store(78, std::memory_order_release );
-			//if(b.load(std::memory_order_acquire) == 34)
-			//    std::cout << a;
+			//val_b = 789;
+			//flg_b.store(true, std::memory_order_release );
+			//if(flg_a.load(std::memory_order_acquire))
+			//    std::cout << val_a;
 
 			//http://msdn.microsoft.com/ja-jp/library/hh874684.aspx
 			//template<class Ty>

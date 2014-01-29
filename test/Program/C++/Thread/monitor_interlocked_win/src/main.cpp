@@ -221,7 +221,7 @@ int main(const int argc, const char* argv[])
 		CloseHandle(hThread[i]);
 	}
 
-	//イベントの取得と解放を大量に実行して時間を計測
+	//インターロック操作を大量に実行して時間を計測
 	{
 		LARGE_INTEGER freq;
 		QueryPerformanceFrequency(&freq);

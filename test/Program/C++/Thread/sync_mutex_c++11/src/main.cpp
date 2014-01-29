@@ -29,6 +29,8 @@ void threadFunc(const char* name)
 		//ミューテックス取得
 		s_mutex.lock();
 	//	s_mutex.try_lock();//取得できない時に他の処理を行いたい場合は try_lock() を使用する
+		                   //タイムアウトしたい場合は timed_mutex クラスを使用する
+		                   //再帰ロックしたい場合は recursive_mutex クラスを使用する
 
 		//データ表示（前）
 		printf("%s: [BEFORE] commonData=%d, tlsData=%d\n", name, s_commonData, s_tlsData);
@@ -55,7 +57,7 @@ void threadFunc(const char* name)
 
 		//ミューテックス解放
 		s_mutex.unlock();
-		
+
 		//スレッド切り替えのためのスリープ
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 	//	//スレッド切り替え

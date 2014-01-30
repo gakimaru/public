@@ -5,14 +5,13 @@
 #include <atomic>
 
 #include <chrono> //時間計測用
-
-#include <iostream>
+#include <random> //乱数生成用
 
 //スレッド情報
-static const int FOLLOW_THREAD_MAX = 10;     //後続スレッド最大数
-static volatile int s_followThreadNum = 0;   //後続スレッド数
-static std::atomic<int> s_followThreadNo = 0;//後続スレッド番号発番用
-static volatile bool s_IsQuirProiorThread = false;    //先行スレッド終了フラグ
+static const int FOLLOW_THREAD_MAX = 10;          //後続スレッド最大数
+static volatile int s_followThreadNum = 0;        //後続スレッド数
+static std::atomic<int> s_followThreadNo = 0;     //後続スレッド番号発番用
+static volatile bool s_IsQuirProiorThread = false;//先行スレッド終了フラグ
 
 //モニター用変数
 enum E_PROCESS
@@ -46,6 +45,11 @@ void priorThreadFunc(const char* name)
 	printf("- begin:(P)%s -\n", name);
 	fflush(stdout);
 
+	//乱数
+	std::random_device seed_gen;
+	std::mt19937 rnd(seed_gen());
+	std::uniform_int_distribution<int> sleep_time(0, 499);
+
 	//初期化
 	s_IsQuirProiorThread = false;//先行処理終了フラグ
 
@@ -74,7 +78,7 @@ void priorThreadFunc(const char* name)
 			//先行スレッド処理完了：全待機スレッドを起床
 			for (int i = 0; i < s_followThreadNum; ++i)
 			{
-				s_followFinished[i] = E_PROCESS::PRIOR_IDLE;
+				s_followFinished[i].store(E_PROCESS::PRIOR_IDLE);
 			}
 
 			break;
@@ -93,7 +97,7 @@ void priorThreadFunc(const char* name)
 		++tls_data;
 
 		//若干ランダムでスリープ（0～499 msec）
-		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 500));
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time(rnd)));
 
 		//データ書き戻し
 		s_commonData = common_data;
@@ -106,7 +110,7 @@ void priorThreadFunc(const char* name)
 		//先行スレッド処理完了：全待機スレッドを起床
 		for (int i = 0; i < s_followThreadNum; ++i)
 		{
-			s_followFinished[i] = E_PROCESS::PRIOR_IDLE;
+			s_followFinished[i].store(E_PROCESS::PRIOR_IDLE);
 		}
 
 		//スレッド切り替えのためのスリープ
@@ -130,8 +134,13 @@ void followThreadFunc(const char* name)
 	printf("- begin:(F)[%d]%s -\n", thread_no, name);
 	fflush(stdout);
 
-	//継続スレッド処理完了：待機スレッドを起床
-	s_followFinished[thread_no] = E_PROCESS::FOLLOW_IDLE;
+	//乱数
+	std::random_device seed_gen;
+	std::mt19937 rnd(seed_gen());
+	std::uniform_int_distribution<int> sleep_time(0, 499);
+
+	//後続スレッド処理完了：待機スレッドを起床
+	s_followFinished[thread_no].store(E_PROCESS::FOLLOW_IDLE);
 
 	//処理
 	while (1)
@@ -162,7 +171,7 @@ void followThreadFunc(const char* name)
 		++tls_data;
 
 		//若干ランダムでスリープ（0～500 msec）
-		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 500));
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time(rnd)));
 
 		//データ書き戻し
 		s_tlsData = tls_data;
@@ -171,8 +180,8 @@ void followThreadFunc(const char* name)
 		printf("(F)[%d]%s: [AFTER]  commonData=%d, tlsData=%d\n", thread_no, name, s_commonData, s_tlsData);
 		fflush(stdout);
 		
-		//継続スレッド処理完了：待機スレッドを起床
-		s_followFinished[thread_no] = E_PROCESS::FOLLOW_IDLE;
+		//後続スレッド処理完了：待機スレッドを起床
+		s_followFinished[thread_no].store(E_PROCESS::FOLLOW_IDLE);
 
 		//スレッド切り替えのためのスリープ
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
@@ -188,10 +197,6 @@ void followThreadFunc(const char* name)
 //テスト
 int main(const int argc, const char* argv[])
 {
-	//初期化
-	for (int i = 0; i < s_followThreadNum; ++i)
-		s_followFinished[i] = E_PROCESS::FOLLOW_IDLE;
-	
 	//スレッド作成
 	static const int FOLLOW_THREAD_NUM = 5;
 	static const int THREAD_NUM = 1 + FOLLOW_THREAD_NUM;
@@ -214,7 +219,7 @@ int main(const int argc, const char* argv[])
 	thread_obj04.join();
 	thread_obj05.join();
 
-	//イベントの取得と解放を大量に実行して時間を計測
+	//アトミック変数の取得と解放を大量に実行して時間を計測
 	{
 		auto begin = std::chrono::high_resolution_clock::now();
 		static const int TEST_TIMES = 10000000;

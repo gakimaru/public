@@ -25,6 +25,9 @@ void* threadFuncW(void* param_p)
 	printf("- begin:(W)%s -\n", name);
 	fflush(stdout);
 
+	//若干ランダムでスリープ（0～499 msec）
+	usleep((rand() % 500) * 1000);
+
 	//処理
 	for (int i = 0; i < 3; ++i)
 	{
@@ -58,10 +61,8 @@ void* threadFuncW(void* param_p)
 		//ライトロック取得
 		pthread_rwlock_unlock(&s_lock);
 		
-		//スレッド切り替えのためのスリープ
-		usleep(0);
-	//	//スレッド切り替え
-	//	sched_yield();//同じ優先度の他のスレッドに切り替え
+		//若干ランダムでスリープ（0～499 msec）
+		usleep((rand() % 500) * 1000);
 	}
 	
 	//終了
@@ -79,6 +80,9 @@ void* threadFuncR(void* param_p)
 	//開始
 	printf("- begin:(R)%s -\n", name);
 	fflush(stdout);
+
+	//若干ランダムでスリープ（0～499 msec）
+	usleep((rand() % 500) * 1000);
 
 	//処理
 	for (int i = 0; i < 3; ++i)
@@ -102,10 +106,8 @@ void* threadFuncR(void* param_p)
 		//リードロック取得
 		pthread_rwlock_unlock(&s_lock);
 		
-		//スレッド切り替えのためのスリープ
-		usleep(0);
-	//	//スレッド切り替え
-	//	sched_yield();//同じ優先度の他のスレッドに切り替え
+		//若干ランダムでスリープ（0～499 msec）
+		usleep((rand() % 500) * 1000);
 	}
 	
 	//終了

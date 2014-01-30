@@ -19,7 +19,7 @@ static pthread_cond_t s_followCond[FOLLOW_THREAD_MAX];      //後続スレッド
 static pthread_mutex_t s_followCondMutex[FOLLOW_THREAD_MAX];//後続スレッド処理完了条件変数ミューテックス
 static volatile bool s_followFinished[FOLLOW_THREAD_MAX];   //後続スレッド処理完了フラグ
 
-//バリア
+//【バリア処理追加】バリア
 static pthread_barrier_t s_barrier;
 
 //共有データ
@@ -33,6 +33,7 @@ __thread int s_tlsData = 0;
 //複数の後続スレッドがスタート。
 //後続スレッドは共有データを読み込むだけのため、並列で動作。
 //後続スレッドの処理が全て完了したら、また先行スレッドが稼働。
+//【バリア処理追加】後続スレッドの処理完了時は、バリアで足並みを揃える。
 //以上を何度か繰り返し、先行スレッドが終了したら全スレッド終了。
 //※メインループ⇒描画スレッドのようなリレー処理への応用を想定。
 
@@ -61,8 +62,8 @@ void* priorThreadFunc(void* param_p)
 			while (!s_followFinished[i])//待機終了条件を満たしていない場合
 				pthread_cond_wait(&s_followCond[i], &s_followCondMutex[i]);//待機（ロック開放→待機→待機終了→ロック取得が行われる）
 			pthread_mutex_unlock(&s_followCondMutex[i]);//ロック解放
+			//※待機をタイムアウトさせたい場合は pthread_cond_timedwait() 関数を用いる。
 		}
-		//※待機をタイムアウトさせたい場合は pthread_cond_timedwait() 関数を用いる。
 
 		//ループカウンタ進行＆終了判定
 		if (loop_counter++ == LOOP_COUNT_MAX)
@@ -116,9 +117,9 @@ void* priorThreadFunc(void* param_p)
 			s_followFinished[i] = false;//後続スレッドの処理完了状態を解除
 			pthread_cond_signal(&s_followCond[i]);//解除待ちしているスレッドに通知
 			pthread_mutex_unlock(&s_followCondMutex[i]);//ロック解放
+			//※一つの条件変数で多数のスレッドを待機させている場合は、
+			//　pthread_cond_broadcast() 関数も使える。
 		}
-		//※一つの条件変数で多数のスレッドを待機させている場合は、
-		//　pthread_cond_broadcast() 関数も使える。
 
 		//スレッド切り替えのためのスリープ
 		usleep(0);
@@ -147,7 +148,7 @@ void* followThreadFunc(void* param_p)
 	printf("- begin:(F)[%d]%s -\n", thread_no, name);
 	fflush(stdout);
 
-	//継続スレッド処理完了：待機スレッドを起床
+	//後続スレッド処理完了：待機スレッドを起床
 	{
 		pthread_mutex_lock(&s_followCondMutex[thread_no]);//ロック取得
 		s_followFinished[thread_no] = true;//後続スレッドの処理完了状態をON
@@ -164,6 +165,7 @@ void* followThreadFunc(void* param_p)
 			while (s_followFinished[thread_no])//待機終了条件を満たしていない場合
 				pthread_cond_wait(&s_followCond[thread_no], &s_followCondMutex[thread_no]);//待機（ロック開放→待機→待機終了→ロック取得が行われる）
 			pthread_mutex_unlock(&s_followCondMutex[thread_no]);//ロック解放
+			//※待機をタイムアウトさせたい場合は pthread_cond_timedwait() 関数を用いる。
 		}
 
 		//終了確認
@@ -173,7 +175,7 @@ void* followThreadFunc(void* param_p)
 			printf("(F)[%d]%s: [QUIT]\n", thread_no, name);
 			fflush(stdout);
 			
-			//継続スレッド処理完了：待機スレッドを起床
+			//後続スレッド処理完了：待機スレッドを起床
 			{
 				pthread_mutex_lock(&s_followCondMutex[thread_no]);//ロック取得
 				s_followFinished[thread_no] = true;//後続スレッドの処理完了状態をON
@@ -184,7 +186,9 @@ void* followThreadFunc(void* param_p)
 			break;
 		}
 
-		//若干ランダムでスリープ（0～500 msec）
+		//【バリア処理追加】若干ランダムでスリープ（0～500 msec）
+		//バリア処理の効果を確認するために追加した処理
+		//各スレッドの処理タイミングがバラバラになるように
 		usleep((rand() % 500) * 1000);
 
 		//データ表示（前）
@@ -200,6 +204,9 @@ void* followThreadFunc(void* param_p)
 
 		//若干ランダムでスリープ（0～500 msec）
 		usleep((rand() % 500) * 1000);
+		
+		//【バリア処理追加】以降、バリア処理の効果を確認するために追加した処理
+		//各スレッドの処理タイミングがバラバラになるようにしている
 		
 		//中間表示1（後）
 		printf("(F)[%d]%s: [STEP1] commonData=%d, tlsData=%d\n", thread_no, name, s_commonData, s_tlsData);
@@ -222,22 +229,26 @@ void* followThreadFunc(void* param_p)
 		//若干ランダムでスリープ（0～500 msec）
 		usleep((rand() % 500) * 1000);
 
+		//【バリア処理追加】バリア処理の効果を確認するために追加した処理は、ここまで
+
 		//データ書き戻し
 		s_tlsData = tls_data;
 		
-		//バリアにより、全後続スレッドの処理タイミングを揃える
+		//【バリア処理追加】バリアにより、全後続スレッドの処理タイミングを揃える
 		pthread_barrier_wait(&s_barrier);
 		
 		//データ表示（後）
 		printf("(F)[%d]%s: [AFTER]  commonData=%d, tlsData=%d\n", thread_no, name, s_commonData, s_tlsData);
 		fflush(stdout);
 		
-		//継続スレッド処理完了：待機スレッドを起床
+		//後続スレッド処理完了：待機スレッドを起床
 		{
 			pthread_mutex_lock(&s_followCondMutex[thread_no]);//ロック取得
 			s_followFinished[thread_no] = true;//後続スレッドの処理完了状態をON
 			pthread_cond_signal(&s_followCond[thread_no]);//解除待ちしているスレッドに通知
 			pthread_mutex_unlock(&s_followCondMutex[thread_no]);//ロック取得
+			//※一つの条件変数で多数のスレッドを待機させている場合は、
+			//　pthread_cond_broadcast() 関数も使える。
 		}
 
 		//スレッド切り替えのためのスリープ
@@ -269,9 +280,9 @@ int main(const int argc, const char* argv[])
 	//スレッド作成
 	static const int FOLLOW_THREAD_NUM = 5;
 	static const int THREAD_NUM = 1 + FOLLOW_THREAD_NUM;
-//	static_assert(FOLLOW_THREAD_NUM <= FOLLOW_THREAD_MAX, "FOLLOW_THREAD_NUM is over.");
+	//static_assert(FOLLOW_THREAD_NUM <= FOLLOW_THREAD_MAX, "FOLLOW_THREAD_NUM is over.");
 	s_followThreadNum = FOLLOW_THREAD_NUM;
-	pthread_barrier_init(&s_barrier, 0, s_followThreadNum);//バリア初期化
+	pthread_barrier_init(&s_barrier, 0, s_followThreadNum);//【バリア処理追加】バリア初期化
 	for (int i = 0; i < THREAD_NUM - 1; ++i)
 		s_followFinished[i] = true;
 	pthread_t pth[THREAD_NUM];
@@ -293,7 +304,7 @@ int main(const int argc, const char* argv[])
 		pthread_join(pth[i], NULL);
 	}
 
-	//イベントの取得と解放を大量に実行して時間を計測
+	//条件変数の取得と解放を大量に実行して時間を計測
 	{
 		struct timeval begin;
 		gettimeofday(&begin, NULL);
@@ -321,7 +332,7 @@ int main(const int argc, const char* argv[])
 		printf("Cond-Sginal * %d = %d.%06d sec\n", TEST_TIMES, duration.tv_sec, duration.tv_usec);
 	}
 
-	//バリア破棄
+	//【バリア処理追加】バリア破棄
 	pthread_barrier_destroy(&s_barrier);
 	
 	//条件変数＆ミューテックス破棄

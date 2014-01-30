@@ -37,8 +37,12 @@ void* threadFunc(void* param_p)
 	{
 		//セマフォ取得
 		{
-			struct sembuf sb = {0, -1, 0};
-			semop(s_semaphore, &sb, 1);
+			struct sembuf sb[1] = {{0, -1, 0}};//インデックス0番のセマフォのカウンタを -1 する
+ 			semop(s_semaphore, sb, 1);         //この時カウンタが 0ならブロックされる
+ 			                                   //セマフォ操作データ sembuf の要素数は一つ
+			                                   //取得失敗時にエラー終了させたい場合は
+			                                   //sembuf::sem_flag に IPC_NOWAIT を指定する
+			                                   //タイムアウトしたい場合は semtimedop() を使用する
 		}
 		
 		//共有リソースを獲得
@@ -76,14 +80,12 @@ void* threadFunc(void* param_p)
 		fflush(stdout);
 
 		//共有リソースを解放
-		pthread_mutex_lock(&s_mutex);
 		s_usingCommonResource[index] = false;
-		pthread_mutex_unlock(&s_mutex);
 		
 		//セマフォ解放
 		{
-			struct sembuf sb = {0, 1, 0};
-			semop(s_semaphore, &sb, 1);
+			struct sembuf sb[1] = {{0, 1, 0}};//インデックス0番のセマフォのカウンタを +1 する
+			semop(s_semaphore, sb, 1);        //セマフォ操作データ sembuf の要素数は一つ
 		}
 		
 		//スレッド切り替えのためのスリープ
@@ -105,17 +107,12 @@ int main(const int argc, const char* argv[])
 	{
 		key_t key = ftok("share.cpp", 'S');//セマフォを一意に識別するためのキーとして、
 		                                   //実在するファイルのユニークIDを利用
-		s_semaphore = semget(key, 1, S_IRWXU|IPC_CREAT);
+		s_semaphore = semget(key, 1, S_IRWXU|IPC_CREAT);//セマフォを一つ生成、全ユーザー＆グループ読み書き許可
+		semctl(s_semaphore, 0, SETVAL, 0);//インデックス0番のセマフォの初期値を 0にする（取得できない状態）
+	//	//セマフォの初期値を設定する場合は、semctl() に SETVALと初期値を渡して呼び出す
 	//	union semun arg;
-	//	arg.val = 0;
-	//	semctl(s_semaphore, 0, SETVAL, arg);
-		semctl(s_semaphore, 0, SETVAL, 0);
-	}
-	
-	//ミューテックス生成
-	//※PTHREAD_MUTEX_INITIALIZER で初期化している場合は不要
-	{
-	//	pthread_mutex_init(&s_mutex, NULL);
+	//	arg.val = COMMON_RESOURCE_NUM; 
+	//	semctl(s_semaphore, 0, SETVAL, arg); //インデックス0番のセマフォの初期値を COMMON_RESOURCE_NUM にする
 	}
 	
 	//スレッド作成
@@ -147,8 +144,8 @@ int main(const int argc, const char* argv[])
 	{
 		for (int i = 0; i < COMMON_RESOURCE_NUM; ++i)
 		{
-			struct sembuf sb = {0, 1, 0};
-			semop(s_semaphore, &sb, 1);
+			struct sembuf sb[1] = {{0, 1, 0}};//インデックス0番のセマフォのカウンタを +1 する
+			semop(s_semaphore, sb, 1);        //セマフォ操作データ sembuf の要素数は一つ
 		}
 		printf("Common-resources have been prepared. (num=%d)\n", COMMON_RESOURCE_NUM);
 		fflush(stdout);
@@ -168,12 +165,12 @@ int main(const int argc, const char* argv[])
 		for (int i = 0; i < TEST_TIMES; ++i)
 		{
 			{
-				struct sembuf sb = {0, -1, 0};
-				semop(s_semaphore, &sb, 1);
+				struct sembuf sb[1] = {{0, -1, 0}};
+				semop(s_semaphore, sb, 1);
 			}
 			{
-				struct sembuf sb = {0, 1, 0};
-				semop(s_semaphore, &sb, 1);
+				struct sembuf sb[1] = {{0, 1, 0}};
+				semop(s_semaphore, sb, 1);
 			}
 		}
 		struct timeval end;
@@ -192,18 +189,9 @@ int main(const int argc, const char* argv[])
 		printf("Semaphore * %d = %d.%06d sec\n", TEST_TIMES, duration.tv_sec, duration.tv_usec);
 	}
 	
-	//ミューテックス破棄
-	//※PTHREAD_MUTEX_INITIALIZER で初期化している場合は不要
-	{
-	//	pthread_mutex_destroy(&s_mutex);
-	}
-	
 	//セマフォ破棄
 	{
-	//	union semun arg;
-	//	arg.val = 0;
-	//	semctl(s_semaphore, 0, IPC_RMID, arg);
-		semctl(s_semaphore, 0, IPC_RMID, 0);
+		semctl(s_semaphore, 0, IPC_RMID, 0);//インデックス0番のセマフォを破棄
 	}
 	
 	return EXIT_SUCCESS;

@@ -7,6 +7,7 @@
 #include <atomic>
 
 #include <chrono> //時間計測用
+#include <random> //乱数生成用
 
 //スレッド情報
 static const int FOLLOW_THREAD_MAX = 10;          //後続スレッド最大数
@@ -42,6 +43,11 @@ void priorThreadFunc(const char* name)
 	printf("- begin:(P)%s -\n", name);
 	fflush(stdout);
 
+	//乱数
+	std::random_device seed_gen;
+	std::mt19937 rnd(seed_gen());
+	std::uniform_int_distribution<int> sleep_time(0, 499);
+
 	//初期化
 	s_IsQuirProiorThread = false;//先行処理終了フラグ
 
@@ -57,8 +63,8 @@ void priorThreadFunc(const char* name)
 				std::unique_lock<std::mutex> lock(s_followCondMutex[i]);//ロック取得（ブロックから抜ける時に自動解放）
 				while (!s_followFinished[i])//待機終了条件を満たしていない場合
 					s_followCond[i].wait(lock);//待機（ロック開放→待機→待機終了→ロック取得が行われる）
+				//※待機をタイムアウトさせたい場合は .wait_for() メソッドを用いる。
 			}
-			//※待機をタイムアウトさせたい場合は .wait_for() メソッドを用いる。
 		}
 
 		//ループカウンタ進行＆終了判定
@@ -97,7 +103,7 @@ void priorThreadFunc(const char* name)
 		++tls_data;
 
 		//若干ランダムでスリープ（0～499 msec）
-		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 500));
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time(rnd)));
 
 		//データ書き戻し
 		s_commonData = common_data;
@@ -114,10 +120,10 @@ void priorThreadFunc(const char* name)
 				std::unique_lock<std::mutex> lock(s_followCondMutex[i]);//ロック取得（ブロックから抜ける時に自動解放）
 				s_followFinished[i] = false;//後続スレッドの処理完了状態を解除
 				s_followCond[i].notify_one();//解除待ちしているスレッドに通知
+				//※一つの条件変数で多数のスレッドを待機させている場合は、
+				//　.notify_all() メソッドも使える。
 			}
 		}
-		//※一つの条件変数で多数のスレッドを待機させている場合は、
-		//　.notify_all() メソッドも使える。
 
 		//スレッド切り替えのためのスリープ
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
@@ -140,7 +146,12 @@ void followThreadFunc(const char* name)
 	printf("- begin:(F)[%d]%s -\n", thread_no, name);
 	fflush(stdout);
 
-	//継続スレッド処理完了：待機スレッドを起床
+	//乱数
+	std::random_device seed_gen;
+	std::mt19937 rnd(seed_gen());
+	std::uniform_int_distribution<int> sleep_time(0, 499);
+
+	//後続スレッド処理完了：待機スレッドを起床
 	{
 		std::unique_lock<std::mutex> lock(s_followCondMutex[thread_no]);//ロック取得（ブロックから抜ける時に自動解放）
 		s_followFinished[thread_no] = true;//後続スレッドの処理完了状態をON
@@ -155,8 +166,8 @@ void followThreadFunc(const char* name)
 			std::unique_lock<std::mutex> lock(s_followCondMutex[thread_no]);//ロック取得（ブロックから抜ける時に自動解放）
 			while (s_followFinished[thread_no])//待機終了条件を満たしていない場合
 				s_followCond[thread_no].wait(lock);//待機（ロック開放→待機→待機終了→ロック取得が行われる）
+			//※待機をタイムアウトさせたい場合は .wait_for() メソッドを用いる。
 		}
-		//※待機をタイムアウトさせたい場合は .wait_for() メソッドを用いる。
 
 		//終了確認
 		if (s_IsQuirProiorThread)
@@ -165,7 +176,7 @@ void followThreadFunc(const char* name)
 			printf("(F)[%d]%s: [QUIT]\n", thread_no, name);
 			fflush(stdout);
 			
-			//継続スレッド処理完了：待機スレッドを起床
+			//後続スレッド処理完了：待機スレッドを起床
 			{
 				std::unique_lock<std::mutex> lock(s_followCondMutex[thread_no]);//ロック取得（ブロックから抜ける時に自動解放）
 				s_followFinished[thread_no] = true;//後続スレッドの処理完了状態をON
@@ -187,7 +198,7 @@ void followThreadFunc(const char* name)
 		++tls_data;
 
 		//若干ランダムでスリープ（0～500 msec）
-		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 500));
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time(rnd)));
 
 		//データ書き戻し
 		s_tlsData = tls_data;
@@ -196,11 +207,13 @@ void followThreadFunc(const char* name)
 		printf("(F)[%d]%s: [AFTER]  commonData=%d, tlsData=%d\n", thread_no, name, s_commonData, s_tlsData);
 		fflush(stdout);
 		
-		//継続スレッド処理完了：待機スレッドを起床
+		//後続スレッド処理完了：待機スレッドを起床
 		{
 			std::unique_lock<std::mutex> lock(s_followCondMutex[thread_no]);//ロック取得（ブロックから抜ける時に自動解放）
 			s_followFinished[thread_no] = true;//後続スレッドの処理完了状態をON
 			s_followCond[thread_no].notify_one();//解除待ちしているスレッドに通知
+			//※一つの条件変数で多数のスレッドを待機させている場合は、
+			//　.notify_all() メソッドも使える。
 		}
 
 		//スレッド切り替えのためのスリープ
@@ -239,7 +252,7 @@ int main(const int argc, const char* argv[])
 	thread_obj04.join();
 	thread_obj05.join();
 
-	//イベントの取得と解放を大量に実行して時間を計測
+	//条件変数の取得と解放を大量に実行して時間を計測
 	{
 		auto begin = std::chrono::high_resolution_clock::now();
 		static const int TEST_TIMES = 10000000;

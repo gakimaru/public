@@ -15,16 +15,6 @@ void threadFunc(const char* name, std::shared_future<int> value)
 	fflush(stdout);
 }
 
-//配列用 for_each
-template<typename T, std::size_t N, typename F>
-inline void for_each_array(T(&val)[N], F functor)
-{
-	for (int i = 0; i < N; ++i)
-	{
-		functor(val[i]);
-	}
-}
-
 //テスト
 int main(const int argc, const char* argv)
 {
@@ -43,15 +33,14 @@ int main(const int argc, const char* argv)
 
 	//スレッド生成
 	static const char* names[] = { "太郎", "次郎", "三郎" };
-	for_each_array(names, [&f_val](const char* name)
-		{
-			//スレッド生成
-			std::thread th = std::thread(threadFunc, name, f_val);
+	for(auto name : names)
+	{
+		//スレッド生成
+		std::thread th = std::thread(threadFunc, name, f_val);
 			
-			//スレッドの完了を待たないので、切り離しておく
-			th.detach();
-		}
-	);
+		//スレッドの完了を待たないので、切り離しておく
+		th.detach();
+	}
 
 	//1秒スリープ
 	printf("main: [sleep ...]\n");

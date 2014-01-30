@@ -103,7 +103,7 @@ int main(const int argc, const char* argv[])
 		CloseHandle(hThread[i]);
 	}
 
-	//volatile変数でロックの取得と解放を大量に実行して時間を計測
+	//インラインアセンブラでロックの取得と解放を大量に実行して時間を計測
 	{
 		LARGE_INTEGER freq;
 		QueryPerformanceFrequency(&freq);
@@ -129,7 +129,7 @@ int main(const int argc, const char* argv[])
 		LARGE_INTEGER end;
 		QueryPerformanceCounter(&end);
 		float duration = static_cast<float>(static_cast<double>(end.QuadPart - begin.QuadPart) / static_cast<double>(freq.QuadPart));
-		printf("Volatile * %d = %.6f sec\n", TEST_TIMES, duration);
+		printf("Assembler * %d = %.6f sec\n", TEST_TIMES, duration);
 	}
 
 	return EXIT_SUCCESS;

@@ -5,24 +5,24 @@ $ ./share
 - begin:次郎 -
 Common-resources have been prepared. (num=2)
 三郎: [BEFORE] commonResource[1]=2000, tlsData=0
-四朗 : [BEFORE] commonResource[0]=1000, tlsData=0
-四朗 : [AFTER]  commonResource[0]=1001, tlsData=1
+四朗: [BEFORE] commonResource[0]=1000, tlsData=0
+四朗: [AFTER]  commonResource[0]=1001, tlsData=1
 太郎: [BEFORE] commonResource[0]=1001, tlsData=0
 三郎: [AFTER]  commonResource[1]=2001, tlsData=1
 次郎: [BEFORE] commonResource[1]=2001, tlsData=0
 太郎: [AFTER]  commonResource[0]=1002, tlsData=1
-四朗 : [BEFORE] commonResource[0]=1002, tlsData=1
+四朗: [BEFORE] commonResource[0]=1002, tlsData=1
 次郎: [AFTER]  commonResource[1]=2002, tlsData=1
 太郎: [BEFORE] commonResource[1]=2002, tlsData=1
 太郎: [AFTER]  commonResource[1]=2003, tlsData=2
 三郎: [BEFORE] commonResource[1]=2003, tlsData=1
-四朗 : [AFTER]  commonResource[0]=1003, tlsData=2
+四朗: [AFTER]  commonResource[0]=1003, tlsData=2
 次郎: [BEFORE] commonResource[0]=1003, tlsData=1
 三郎: [AFTER]  commonResource[1]=2004, tlsData=2
 太郎: [BEFORE] commonResource[1]=2004, tlsData=2
 次郎: [AFTER]  commonResource[0]=1004, tlsData=2
-四朗 : [BEFORE] commonResource[0]=1004, tlsData=2
-四朗 : [AFTER]  commonResource[0]=1005, tlsData=3
+四朗: [BEFORE] commonResource[0]=1004, tlsData=2
+四朗: [AFTER]  commonResource[0]=1005, tlsData=3
 三郎: [BEFORE] commonResource[0]=1005, tlsData=2
 太郎: [AFTER]  commonResource[1]=2005, tlsData=3
 次郎: [BEFORE] commonResource[1]=2005, tlsData=2

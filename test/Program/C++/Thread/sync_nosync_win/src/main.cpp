@@ -76,9 +76,9 @@ int main(const int argc, const char* argv[])
 	unsigned int tid[THREAD_NUM] = {};
 	HANDLE hThread[THREAD_NUM] =
 	{
-		(HANDLE)_beginthreadex(nullptr, 0, threadFunc, "太郎", 0, &tid[0]),
-		(HANDLE)_beginthreadex(nullptr, 0, threadFunc, "次郎", 0, &tid[1]),
-		(HANDLE)_beginthreadex(nullptr, 0, threadFunc, "三郎", 0, &tid[2])
+		(HANDLE)_beginthreadex(nullptr, 1024, threadFunc, "太郎", 0, &tid[0]),
+		(HANDLE)_beginthreadex(nullptr, 1024, threadFunc, "次郎", 0, &tid[1]),
+		(HANDLE)_beginthreadex(nullptr, 1024, threadFunc, "三郎", 0, &tid[2])
 	};
 	
 	//スレッド終了待ち

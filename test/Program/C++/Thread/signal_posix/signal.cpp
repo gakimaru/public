@@ -23,6 +23,9 @@ pthread_t s_threadSyncSignal;
 //※シグナルハンドラ内では「非同期安全な関数」以外使用できない。malloc や prnitf もNG。
 //　そのため、シグナルハンドラで受信したシグナルをプールし、
 //　専用の処理スレッドに受け渡すようにする。
+//※サンプルとしてややこしく見えるが、「受信シグナルバッファ」は、
+//　あくまでも受信したシグナルを画面に表示するために作った仕組みであり、
+//　シグナルハンドラーや同期シグナルを扱うために必須の処理ではない
 struct SIG_INFO
 {
 	int sig;
@@ -272,7 +275,7 @@ int main(const int argc, const char* argv[])
 	printf("- begin:main(%x) -\n", pthread_self());
 	fflush(stdout);
 	
-	//同期シグナル用のシグナルマスク作成
+	//同期シグナル（スレッド）用のシグナルマスク作成
 	sigemptyset(&s_sigSet);
 //	sigaddset(&s_sigSet, SIGINT); //割り込み（CTRL + C）
 	sigaddset(&s_sigSet, SIGQUIT);//終了とコアダンプ（CTRL + \）
@@ -311,6 +314,7 @@ int main(const int argc, const char* argv[])
 	
 	//スレッド終了待ち
 	pthread_join(s_threadWathc, NULL);
+	//※同期シグナルスレッドはデタッチしているので終了待ちしない
 	
 	//終了
 	printf("- end:main(%x) -\n", pthread_self());

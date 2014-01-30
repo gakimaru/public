@@ -5,6 +5,7 @@
 #include <atomic>
 
 #include <chrono> //時間計測用
+#include <random> //乱数生成用
 
 //アトミック操作用変数
 static std::atomic<int> s_lock = 0;
@@ -22,6 +23,11 @@ void threadFunc(const char* name)
 	//開始
 	printf("- begin:%s -\n", name);
 	fflush(stdout);
+
+	//乱数
+	std::random_device seed_gen;
+	std::mt19937 rnd(seed_gen());
+	std::uniform_int_distribution<int> sleep_time(0, 4);
 
 	//処理
 	for (int i = 0; i < 3; ++i)
@@ -42,8 +48,8 @@ void threadFunc(const char* name)
 		++tls_data;
 
 		//若干ランダムでスリープ（0～4 msec）
-		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 5));
-
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time(rnd))); 
+		
 		//データ書き戻し
 		s_commonData = common_data;
 		s_tlsData = tls_data;
@@ -53,7 +59,7 @@ void threadFunc(const char* name)
 		fflush(stdout);
 
 		//アトミック操作でロック解放
-		s_lock = 0;
+		s_lock.exchange(0);
 
 		//スレッド切り替えのためのスリープ
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
@@ -69,9 +75,6 @@ void threadFunc(const char* name)
 //テスト
 int main(const int argc, const char* argv[])
 {
-	//アトミック操作用変数初期化
-	s_lock = 0;
-
 	//スレッド作成
 	std::thread thread_obj1 = std::thread(threadFunc, "太郎");
 	std::thread thread_obj2 = std::thread(threadFunc, "次郎");
@@ -89,7 +92,7 @@ int main(const int argc, const char* argv[])
 		for (int i = 0; i < TEST_TIMES; ++i)
 		{
 			while (s_lock.exchange(1) == 1){}
-			s_lock = 0;
+			s_lock.exchange(0);
 		}
 		auto end = std::chrono::high_resolution_clock::now();
 		auto duration = static_cast<float>(static_cast<double>(std::chrono::duration_cast< std::chrono::microseconds >(end - begin).count()) / 1000000.);

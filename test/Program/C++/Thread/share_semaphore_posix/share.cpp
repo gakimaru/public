@@ -36,7 +36,7 @@ void* threadFunc(void* param_p)
 	{
 		//セマフォ取得
 		sem_wait(&s_semaphore);
-	//	sem_trywait(&s_mutex);//取得できない時に他の処理を行いたい場合は sem_trywait() もしくは  sem_timedwait() を使用する
+	//	sem_trywait(&s_semaphore);//取得できない時に他の処理を行いたい場合は sem_trywait() もしくは  sem_timedwait() を使用する
 		
 		//共有リソースを獲得
 		int index = 0;
@@ -73,9 +73,7 @@ void* threadFunc(void* param_p)
 		fflush(stdout);
 
 		//共有リソースを解放
-		pthread_mutex_lock(&s_mutex);
 		s_usingCommonResource[index] = false;
-		pthread_mutex_unlock(&s_mutex);
 		
 		//セマフォ解放
 		sem_post(&s_semaphore);
@@ -98,6 +96,7 @@ int main(const int argc, const char* argv[])
 	//セマフォ生成
 	{
 		sem_init(&s_semaphore, 0, 0);//プロセス間で共有しないセマフォ
+		                             //セマフォの初期値を 0にする（取得できない状態）
 	}
 	
 	//ミューテックス生成

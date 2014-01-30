@@ -5,6 +5,7 @@
 #include <atomic>
 
 #include <chrono> //時間計測用
+#include <random> //乱数生成用
 
 //アトミック操作用変数
 static std::atomic_flag s_lock = ATOMIC_FLAG_INIT;
@@ -22,6 +23,11 @@ void threadFunc(const char* name)
 	//開始
 	printf("- begin:%s -\n", name);
 	fflush(stdout);
+
+	//乱数
+	std::random_device seed_gen;
+	std::mt19937 rnd(seed_gen());
+	std::uniform_int_distribution<int> sleep_time(0, 4);
 
 	//処理
 	for (int i = 0; i < 3; ++i)
@@ -42,7 +48,7 @@ void threadFunc(const char* name)
 		++tls_data;
 
 		//若干ランダムでスリープ（0～4 msec）
-		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 5));
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time(rnd)));
 
 		//データ書き戻し
 		s_commonData = common_data;

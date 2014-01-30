@@ -74,8 +74,8 @@ void* threadFunc(void* param_p)
 int main(const int argc, const char* argv[])
 {
 	//スピンロック生成
-//	pthread_spin_init(&s_lock, PTHREAD_PROCESS_SHARED);
 	pthread_spin_init(&s_lock, PTHREAD_PROCESS_PRIVATE);//単独プロセス専用
+//	pthread_spin_init(&s_lock, PTHREAD_PROCESS_SHARED);//プロセス間で共有
 	
 	//スレッド作成
 	static const int THREAD_NUM = 3;
@@ -95,7 +95,7 @@ int main(const int argc, const char* argv[])
 		pthread_join(pth[i], NULL);
 	}
 	
-	//セマフォの取得と解放を大量に実行して時間を計測
+	//スピにロックの取得と解放を大量に実行して時間を計測
 	{
 		struct timeval begin;
 		gettimeofday(&begin, NULL);

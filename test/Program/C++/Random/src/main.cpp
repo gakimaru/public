@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <array>
+
+#include <cstdint>
 #include <random>
 
 //カスタム乱数生成器
@@ -206,6 +209,9 @@ int main(const int argc, const char* argv[])
 		printf("\n- C++11の新しい乱数を使用 -\n", probability_num);
 		std::mt19937 engine1;
 		std::mt19937 engine2;
+		std::uint32_t min = engine1.min();//乱数の最小値
+		std::uint32_t max = engine1.max();//乱数の最大値
+		std::uint32_t r = engine1();      //乱数取得
 		std::uniform_int_distribution<int> distribution(0, probability_num - 1);
 		int probability1[probability_num] = {};
 		int probability2[probability_num] = {};
@@ -269,6 +275,26 @@ int main(const int argc, const char* argv[])
 			printf("最小: [%3d] = %d回\n", min_probability, min);
 			printf("最大: [%3d] = %d回\n", max_probability, max);
 			printf("差 = %d\n", max - min);
+		}
+		//非決定的な乱数生成エンジン（予測不能な乱数生成器）
+		//※ハードウェアのノイズやマウスの動きといったものから乱数を生成する手法。遅い。
+		//　当然、シードを固定するようなこともできない。
+		{
+			printf("std::random_device\n");
+			std::random_device rnd;
+			std::uniform_int_distribution<int> dist(10, 20);
+			for (int i = 0; i < 20; ++i)
+			{
+				int r = dist(rnd);
+				printf(" %d", r);
+			}
+			printf("\n");
+			std::uniform_int_distribution<int> dist1(10, 20);
+			std::uniform_real_distribution<float> dist2(0.5f, 1.2f);
+			std::normal_distribution<> dist3(100.0, 20.0);
+			for (int i = 0; i < 10; ++i)
+				printf("%d,%.5f,%.5llf\n", dist1(rnd), dist2(rnd), dist3(rnd));
+			printf("%d,%d,%d,%d,%d\n", sizeof(std::mt19937), sizeof(std::mt19937_64), sizeof(std::minstd_rand0), sizeof(std::minstd_rand), sizeof(std::random_device));
 		}
 	}
 

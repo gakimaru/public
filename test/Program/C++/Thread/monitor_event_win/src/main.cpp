@@ -47,7 +47,7 @@ unsigned int WINAPI priorThreadFunc(void* param_p)
 	while (1)
 	{
 		//全後続スレッド処理完了待ち
-		WaitForMultipleObjects(s_followThreadNum, s_hFollowEvent, true, INFINITE);
+		WaitForMultipleObjects(s_followThreadNum, s_hFollowEvent, true, INFINITE);//待機が完了しない時に他の処理を行いたい場合はタイムアウト値を指定する
 
 		//ループカウンタ進行＆終了判定
 		if (loop_counter++ == LOOP_COUNT_MAX)
@@ -131,7 +131,7 @@ unsigned int WINAPI followThreadFunc(void* param_p)
 	while (1)
 	{
 		//先行スレッド処理完了イベント待ち
-		WaitForSingleObject(s_hPriorEvent[thread_no], INFINITE);//取得できない時に他の処理を行いたい場合はタイムアウト値を指定する
+		WaitForSingleObject(s_hPriorEvent[thread_no], INFINITE);//待機が完了しない時に他の処理を行いたい場合はタイムアウト値を指定する
 		
 		//終了確認
 		if (s_IsQuirProiorThread)
@@ -187,7 +187,9 @@ int main(const int argc, const char* argv[])
 	{
 		for (int i = 0; i < FOLLOW_THREAD_MAX; ++i)
 		{
+			//先行スレッド→後続スレッド通知用イベント（PulseEventが信頼できないので、後続スレッド数分作成）
 			s_hPriorEvent[i] = CreateEvent(nullptr, false, false, nullptr);//手動リセット=false（自動リセット）, 初期状態=false（リセット状態）
+			//後続スレッド→先行スレッド通知用イベント
 			s_hFollowEvent[i] = CreateEvent(nullptr, false, false, nullptr);//手動リセット=false（自動リセット）, 初期状態=false（リセット状態）
 		}
 
@@ -196,7 +198,9 @@ int main(const int argc, const char* argv[])
 	//	SECURITY_ATTRIBUTES attr = { sizeof(SECURITY_ATTRIBUTES), nullptr, false };//子プロセスにハンドルを継承しない　※デフォルト
 	//	for (int i = 0; i < FOLLOW_THREAD_MAX; ++i)
 	//	{
+	//		//先行スレッド→後続スレッド通知用イベント（PulseEventが信頼できないので、後続スレッド数分作成）
 	//		s_hPriorEvent[i] = CreateEvent(&attr, true, false, nullptr);
+	//		//後続スレッド→先行スレッド通知用イベント
 	//		s_hFollowEvent[i] = CreateEvent(&attr, false, false, nullptr);
 	//	}
 	}
@@ -209,12 +213,12 @@ int main(const int argc, const char* argv[])
 	unsigned int tid[THREAD_NUM] = {};
 	HANDLE hThread[THREAD_NUM] =
 	{
-		(HANDLE)_beginthreadex(nullptr, 0, priorThreadFunc, "先行", 0, &tid[0]),
-		(HANDLE)_beginthreadex(nullptr, 0, followThreadFunc, "後続01", 0, &tid[1]),
-		(HANDLE)_beginthreadex(nullptr, 0, followThreadFunc, "後続02", 0, &tid[1]),
-		(HANDLE)_beginthreadex(nullptr, 0, followThreadFunc, "後続03", 0, &tid[1]),
-		(HANDLE)_beginthreadex(nullptr, 0, followThreadFunc, "後続04", 0, &tid[1]),
-		(HANDLE)_beginthreadex(nullptr, 0, followThreadFunc, "後続05", 0, &tid[1]),
+		(HANDLE)_beginthreadex(nullptr, 1024, priorThreadFunc, "先行", 0, &tid[0]),
+		(HANDLE)_beginthreadex(nullptr, 1024, followThreadFunc, "後続01", 0, &tid[1]),
+		(HANDLE)_beginthreadex(nullptr, 1024, followThreadFunc, "後続02", 0, &tid[1]),
+		(HANDLE)_beginthreadex(nullptr, 1024, followThreadFunc, "後続03", 0, &tid[1]),
+		(HANDLE)_beginthreadex(nullptr, 1024, followThreadFunc, "後続04", 0, &tid[1]),
+		(HANDLE)_beginthreadex(nullptr, 1024, followThreadFunc, "後続05", 0, &tid[1]),
 	};
 	
 	//スレッド終了待ち

@@ -33,14 +33,14 @@ void* threadFunc(void* param_p)
 	fflush(stdout);
 
 	//名前付きセマフォオープン
-	sem_t* semaphore = sem_open(COMMON_SEMAPHORE_NAME, 0);
+	sem_t* semaphore = sem_open(COMMON_SEMAPHORE_NAME, 0);//すでに存在しているセマフォをオープン
 
 	//処理
 	for (int i = 0; i < 3; ++i)
 	{
 		//セマフォ取得
 		sem_wait(semaphore);
-	//	sem_trywait(&s_mutex);//取得できない時に他の処理を行いたい場合は sem_trywait() もしくは  sem_timedwait() を使用する
+	//	sem_trywait(&s_semaphore);//取得できない時に他の処理を行いたい場合は sem_trywait() もしくは  sem_timedwait() を使用する
 		
 		//共有リソースを獲得
 		int index = 0;
@@ -77,9 +77,7 @@ void* threadFunc(void* param_p)
 		fflush(stdout);
 
 		//共有リソースを解放
-		pthread_mutex_lock(&s_mutex);
 		s_usingCommonResource[index] = false;
-		pthread_mutex_unlock(&s_mutex);
 		
 		//セマフォ解放
 		sem_post(semaphore);
@@ -105,7 +103,9 @@ int main(const int argc, const char* argv[])
 	//名前付きセマフォ生成
 	sem_t* semaphore = NULL;
 	{
-		semaphore = sem_open(COMMON_SEMAPHORE_NAME, O_CREAT, S_IRWXU, 0);
+		semaphore = sem_open(COMMON_SEMAPHORE_NAME, O_CREAT, S_IRWXU, 0);//全ユーザー＆グループ読み書き許可の
+		                                                                 //セマフォを生成
+		                                                                 //セマフォの初期値を 0にする（取得できない状態）
 	}
 	
 	//ミューテックス生成
@@ -189,8 +189,8 @@ int main(const int argc, const char* argv[])
 	
 	//セマフォ破棄
 	{
-		sem_close(semaphore);
-		sem_unlink(COMMON_SEMAPHORE_NAME);
+		sem_close(semaphore);//クローズ
+		sem_unlink(COMMON_SEMAPHORE_NAME);//破棄（きちんと破棄しないとプロセス終了後も残るので注意）
 	}
 	
 	return EXIT_SUCCESS;

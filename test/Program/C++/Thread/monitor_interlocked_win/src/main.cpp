@@ -133,7 +133,7 @@ unsigned int WINAPI followThreadFunc(void* param_p)
 	printf("- begin:(F)[%d]%s -\n", thread_no, name);
 	fflush(stdout);
 
-	//継続スレッド処理完了：待機スレッドを起床
+	//後続スレッド処理完了：待機スレッドを起床
 	s_followFinished[thread_no] = E_PROCESS::FOLLOW_IDLE;
 
 	//処理
@@ -173,7 +173,7 @@ unsigned int WINAPI followThreadFunc(void* param_p)
 		printf("(F)[%d]%s: [AFTER]  commonData=%d, tlsData=%d\n", thread_no, name, s_commonData, s_tlsData);
 		fflush(stdout);
 
-		//継続スレッド処理完了：待機スレッドを起床
+		//後続スレッド処理完了：待機スレッドを起床
 		s_followFinished[thread_no] = E_PROCESS::FOLLOW_IDLE;
 
 		//スレッド切り替えのためのスリープ

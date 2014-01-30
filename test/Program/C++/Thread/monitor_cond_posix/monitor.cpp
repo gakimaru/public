@@ -58,8 +58,8 @@ void* priorThreadFunc(void* param_p)
 			while (!s_followFinished[i])//待機終了条件を満たしていない場合
 				pthread_cond_wait(&s_followCond[i], &s_followCondMutex[i]);//待機（ロック開放→待機→待機終了→ロック取得が行われる）
 			pthread_mutex_unlock(&s_followCondMutex[i]);//ロック解放
+			//※待機をタイムアウトさせたい場合は pthread_cond_timedwait() 関数を用いる。
 		}
-		//※待機をタイムアウトさせたい場合は pthread_cond_timedwait() 関数を用いる。
 
 		//ループカウンタ進行＆終了判定
 		if (loop_counter++ == LOOP_COUNT_MAX)
@@ -113,9 +113,9 @@ void* priorThreadFunc(void* param_p)
 			s_followFinished[i] = false;//後続スレッドの処理完了状態を解除
 			pthread_cond_signal(&s_followCond[i]);//解除待ちしているスレッドに通知
 			pthread_mutex_unlock(&s_followCondMutex[i]);//ロック解放
+			//※一つの条件変数で多数のスレッドを待機させている場合は、
+			//　pthread_cond_broadcast() 関数も使える。
 		}
-		//※一つの条件変数で多数のスレッドを待機させている場合は、
-		//　pthread_cond_broadcast() 関数も使える。
 
 		//スレッド切り替えのためのスリープ
 		usleep(0);
@@ -144,7 +144,7 @@ void* followThreadFunc(void* param_p)
 	printf("- begin:(F)[%d]%s -\n", thread_no, name);
 	fflush(stdout);
 
-	//継続スレッド処理完了：待機スレッドを起床
+	//後続スレッド処理完了：待機スレッドを起床
 	{
 		pthread_mutex_lock(&s_followCondMutex[thread_no]);//ロック取得
 		s_followFinished[thread_no] = true;//後続スレッドの処理完了状態をON
@@ -161,6 +161,7 @@ void* followThreadFunc(void* param_p)
 			while (s_followFinished[thread_no])//待機終了条件を満たしていない場合
 				pthread_cond_wait(&s_followCond[thread_no], &s_followCondMutex[thread_no]);//待機（ロック開放→待機→待機終了→ロック取得が行われる）
 			pthread_mutex_unlock(&s_followCondMutex[thread_no]);//ロック解放
+			//※待機をタイムアウトさせたい場合は pthread_cond_timedwait() 関数を用いる。
 		}
 
 		//終了確認
@@ -170,7 +171,7 @@ void* followThreadFunc(void* param_p)
 			printf("(F)[%d]%s: [QUIT]\n", thread_no, name);
 			fflush(stdout);
 			
-			//継続スレッド処理完了：待機スレッドを起床
+			//後続スレッド処理完了：待機スレッドを起床
 			{
 				pthread_mutex_lock(&s_followCondMutex[thread_no]);//ロック取得
 				s_followFinished[thread_no] = true;//後続スレッドの処理完了状態をON
@@ -202,12 +203,14 @@ void* followThreadFunc(void* param_p)
 		printf("(F)[%d]%s: [AFTER]  commonData=%d, tlsData=%d\n", thread_no, name, s_commonData, s_tlsData);
 		fflush(stdout);
 		
-		//継続スレッド処理完了：待機スレッドを起床
+		//後続スレッド処理完了：待機スレッドを起床
 		{
 			pthread_mutex_lock(&s_followCondMutex[thread_no]);//ロック取得
 			s_followFinished[thread_no] = true;//後続スレッドの処理完了状態をON
 			pthread_cond_signal(&s_followCond[thread_no]);//解除待ちしているスレッドに通知
 			pthread_mutex_unlock(&s_followCondMutex[thread_no]);//ロック取得
+			//※一つの条件変数で多数のスレッドを待機させている場合は、
+			//　pthread_cond_broadcast() 関数も使える。
 		}
 
 		//スレッド切り替えのためのスリープ
@@ -262,7 +265,7 @@ int main(const int argc, const char* argv[])
 		pthread_join(pth[i], NULL);
 	}
 
-	//イベントの取得と解放を大量に実行して時間を計測
+	//条件変数の取得と解放を大量に実行して時間を計測
 	{
 		struct timeval begin;
 		gettimeofday(&begin, NULL);

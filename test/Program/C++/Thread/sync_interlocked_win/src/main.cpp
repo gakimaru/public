@@ -71,17 +71,14 @@ unsigned int WINAPI threadFunc(void* param_p)
 //テスト
 int main(const int argc, const char* argv[])
 {
-	//インターロック操作用変数初期化
-	s_lock = 0;
-
 	//スレッド作成
 	static const int THREAD_NUM = 3;
 	unsigned int tid[THREAD_NUM] = {};
 	HANDLE hThread[THREAD_NUM] =
 	{
-		(HANDLE)_beginthreadex(nullptr, 0, threadFunc, "太郎", 0, &tid[0]),
-		(HANDLE)_beginthreadex(nullptr, 0, threadFunc, "次郎", 0, &tid[1]),
-		(HANDLE)_beginthreadex(nullptr, 0, threadFunc, "三郎", 0, &tid[2])
+		(HANDLE)_beginthreadex(nullptr, 1024, threadFunc, "太郎", 0, &tid[0]),
+		(HANDLE)_beginthreadex(nullptr, 1024, threadFunc, "次郎", 0, &tid[1]),
+		(HANDLE)_beginthreadex(nullptr, 1024, threadFunc, "三郎", 0, &tid[2])
 	};
 	
 	//スレッド終了待ち

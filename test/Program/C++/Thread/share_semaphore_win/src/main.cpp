@@ -69,9 +69,7 @@ unsigned int WINAPI threadFunc(void* param_p)
 		fflush(stdout);
 
 		//共有リソースを解放
-		EnterCriticalSection(&s_lock);//クリティカルセクション取得
 		s_usingCommonResource[index] = false;
-		LeaveCriticalSection(&s_lock);//クリティカルセクション解放
 		
 		//セマフォ解放
 		LONG prev_count;
@@ -111,10 +109,10 @@ int main(const int argc, const char* argv[])
 	unsigned int tid[THREAD_NUM] = {};
 	HANDLE hThread[THREAD_NUM] =
 	{
-		(HANDLE)_beginthreadex(nullptr, 0, threadFunc, "太郎", 0, &tid[0]),
-		(HANDLE)_beginthreadex(nullptr, 0, threadFunc, "次郎", 0, &tid[1]),
-		(HANDLE)_beginthreadex(nullptr, 0, threadFunc, "三郎", 0, &tid[2]),
-		(HANDLE)_beginthreadex(nullptr, 0, threadFunc, "四郎", 0, &tid[3])
+		(HANDLE)_beginthreadex(nullptr, 1024, threadFunc, "太郎", 0, &tid[0]),
+		(HANDLE)_beginthreadex(nullptr, 1024, threadFunc, "次郎", 0, &tid[1]),
+		(HANDLE)_beginthreadex(nullptr, 1024, threadFunc, "三郎", 0, &tid[2]),
+		(HANDLE)_beginthreadex(nullptr, 1024, threadFunc, "四郎", 0, &tid[3])
 	};
 
 	//若干スリープ

@@ -83,8 +83,8 @@ int main(const int argc, const char* argv[])
 	{
 	//	pthread_mutexattr_t attr;
 	//	pthread_mutexattr_init(&attr);
-	//	pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);//プロセス間で共有
 	//	pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_PRIVATE);//単独プロセス専用　※デフォルト
+	//	pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);//プロセス間で共有
 	//	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_FAST_NP);//高速（Fast）ミューテックス属性　※デフォルト
 	//	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);//再帰的な (recursive) ミューテックス属性　※多重ロックに対して多重開放が必要
 	//	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK_NP);//エラー検査を行う (error checking) ミューテックス属性　※デッドロック検出（pthread_mutex_lock() がエラーコード EDEADLK を返す）

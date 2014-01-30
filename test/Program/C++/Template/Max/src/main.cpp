@@ -3,6 +3,7 @@
 #include <iostream>
 #include <varargs.h>
 
+#include <vector>
 #include <algorithm>
 
 //テンプレート関数がコンパイル時にリテラル値に展開される事をテスト（最適化レベルに依存）
@@ -542,6 +543,50 @@ void test_func4()
 		int data1[] = { 1, 2, 3, 39, 200, 53, 8, 74, 12 };
 		int data2[] = { 13, 6, 76, 43, 23, 125, 1 };
 		func_new5(data1, lengthOfAray(data1), data2, lengthOfAray(data2));
+	}
+	{
+		//範囲に基づく for ループ：固定長配列
+		int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		printf("data=");
+		for (int elem : data)
+		{
+			printf(" %d", elem);
+		}
+		printf("\n");
+	}
+	{
+		//範囲に基づく for ループ：STLコンテナ
+		std::vector<const char*> data;
+		data.push_back("太郎");
+		data.push_back("次郎");
+		data.push_back("三郎");
+		printf("data=");
+		for (auto elem: data)
+		{
+			printf(" %s", elem);
+		}
+		printf("\n");
+	}
+	{
+		//範囲に基づく for ループ：自作コンテナ
+		struct DATA
+		{
+			char* begin(){ return m_data + 0; }
+			char* end(){ return m_data + sizeof(m_data) / sizeof(m_data[0]); }
+			char m_data[10];
+		};
+		DATA data = { {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} };
+		for (auto& elem : data) //begin(), end() がイテレータを返すものならなんにでも使える
+		                        //値を書き戻したければ要素型に & を付けて参照型にする
+		{
+			elem += 100;
+		}
+		printf("data=");
+		for (auto elem : data)
+		{
+			printf(" %d", elem);
+		}
+		printf("\n");
 	}
 
 	//べき乗テスト

@@ -1,0 +1,101 @@
+$ ./monitor
+- begin:(F)[0]後続03 -
+- begin:(P)先行 -
+(P)先行: [BEFORE] commonData=0, tlsData=0
+- begin:(F)[1]後続02 -
+- begin:(F)[2]後続05 -
+- begin:(F)[3]後続04 -
+- begin:(F)[4]後続01 -
+(P)先行: [AFTER]  commonData=1, tlsData=1
+(F)[1]後続02: [BEFORE] commonData=1, tlsData=0
+(F)[4]後続01: [BEFORE] commonData=1, tlsData=0
+(F)[0]後続03: [BEFORE] commonData=1, tlsData=0
+(F)[2]後続05: [BEFORE] commonData=1, tlsData=0
+(F)[3]後続04: [BEFORE] commonData=1, tlsData=0
+(F)[0]後続03: [STEP1] commonData=1, tlsData=0
+(F)[0]後続03: [STEP2] commonData=1, tlsData=0
+(F)[1]後続02: [STEP1] commonData=1, tlsData=0
+(F)[0]後続03: [STEP3] commonData=1, tlsData=0
+(F)[1]後続02: [STEP2] commonData=1, tlsData=0
+(F)[3]後続04: [STEP1] commonData=1, tlsData=0
+(F)[4]後続01: [STEP1] commonData=1, tlsData=0
+(F)[2]後続05: [STEP1] commonData=1, tlsData=0
+(F)[3]後続04: [STEP2] commonData=1, tlsData=0
+(F)[2]後続05: [STEP2] commonData=1, tlsData=0
+(F)[3]後続04: [STEP3] commonData=1, tlsData=0
+(F)[1]後続02: [STEP3] commonData=1, tlsData=0
+(F)[2]後続05: [STEP3] commonData=1, tlsData=0
+(F)[4]後続01: [STEP2] commonData=1, tlsData=0
+(F)[4]後続01: [STEP3] commonData=1, tlsData=0
+(F)[0]後続03: [AFTER]  commonData=1, tlsData=1
+(F)[3]後続04: [AFTER]  commonData=1, tlsData=1
+(F)[2]後続05: [AFTER]  commonData=1, tlsData=1
+(F)[1]後続02: [AFTER]  commonData=1, tlsData=1
+(F)[4]後続01: [AFTER]  commonData=1, tlsData=1
+(P)先行: [BEFORE] commonData=1, tlsData=1
+(P)先行: [AFTER]  commonData=2, tlsData=2
+(F)[2]後続05: [BEFORE] commonData=2, tlsData=1
+(F)[2]後続05: [STEP1] commonData=2, tlsData=1
+(F)[1]後続02: [BEFORE] commonData=2, tlsData=1
+(F)[3]後続04: [BEFORE] commonData=2, tlsData=1
+(F)[2]後続05: [STEP2] commonData=2, tlsData=1
+(F)[1]後続02: [STEP1] commonData=2, tlsData=1
+(F)[0]後続03: [BEFORE] commonData=2, tlsData=1
+(F)[3]後続04: [STEP1] commonData=2, tlsData=1
+(F)[0]後続03: [STEP1] commonData=2, tlsData=1
+(F)[3]後続04: [STEP2] commonData=2, tlsData=1
+(F)[4]後続01: [BEFORE] commonData=2, tlsData=1
+(F)[0]後続03: [STEP2] commonData=2, tlsData=1
+(F)[2]後続05: [STEP3] commonData=2, tlsData=1
+(F)[1]後続02: [STEP2] commonData=2, tlsData=1
+(F)[1]後続02: [STEP3] commonData=2, tlsData=1
+(F)[3]後続04: [STEP3] commonData=2, tlsData=1
+(F)[4]後続01: [STEP1] commonData=2, tlsData=1
+(F)[0]後続03: [STEP3] commonData=2, tlsData=1
+(F)[4]後続01: [STEP2] commonData=2, tlsData=1
+(F)[4]後続01: [STEP3] commonData=2, tlsData=1
+(F)[2]後続05: [AFTER]  commonData=2, tlsData=2
+(F)[4]後続01: [AFTER]  commonData=2, tlsData=2
+(F)[3]後続04: [AFTER]  commonData=2, tlsData=2
+(F)[0]後続03: [AFTER]  commonData=2, tlsData=2
+(F)[1]後続02: [AFTER]  commonData=2, tlsData=2
+(P)先行: [BEFORE] commonData=2, tlsData=2
+(P)先行: [AFTER]  commonData=3, tlsData=3
+(F)[0]後続03: [BEFORE] commonData=3, tlsData=2
+(F)[4]後続01: [BEFORE] commonData=3, tlsData=2
+(F)[3]後続04: [BEFORE] commonData=3, tlsData=2
+(F)[2]後続05: [BEFORE] commonData=3, tlsData=2
+(F)[1]後続02: [BEFORE] commonData=3, tlsData=2
+(F)[1]後続02: [STEP1] commonData=3, tlsData=2
+(F)[4]後続01: [STEP1] commonData=3, tlsData=2
+(F)[0]後続03: [STEP1] commonData=3, tlsData=2
+(F)[0]後続03: [STEP2] commonData=3, tlsData=2
+(F)[3]後続04: [STEP1] commonData=3, tlsData=2
+(F)[2]後続05: [STEP1] commonData=3, tlsData=2
+(F)[1]後続02: [STEP2] commonData=3, tlsData=2
+(F)[3]後続04: [STEP2] commonData=3, tlsData=2
+(F)[4]後続01: [STEP2] commonData=3, tlsData=2
+(F)[0]後続03: [STEP3] commonData=3, tlsData=2
+(F)[3]後続04: [STEP3] commonData=3, tlsData=2
+(F)[2]後続05: [STEP2] commonData=3, tlsData=2
+(F)[1]後続02: [STEP3] commonData=3, tlsData=2
+(F)[4]後続01: [STEP3] commonData=3, tlsData=2
+(F)[2]後続05: [STEP3] commonData=3, tlsData=2
+(F)[3]後続04: [AFTER]  commonData=3, tlsData=3
+(F)[2]後続05: [AFTER]  commonData=3, tlsData=3
+(F)[4]後続01: [AFTER]  commonData=3, tlsData=3
+(F)[1]後続02: [AFTER]  commonData=3, tlsData=3
+(F)[0]後続03: [AFTER]  commonData=3, tlsData=3
+(P)先行: [QUIT]
+- end:(P)先行 -
+(F)[1]後続02: [QUIT]
+- end:(F)[1]後続02 -
+(F)[4]後続01: [QUIT]
+- end:(F)[4]後続01 -
+(F)[3]後続04: [QUIT]
+- end:(F)[3]後続04 -
+(F)[0]後続03: [QUIT]
+- end:(F)[0]後続03 -
+(F)[2]後続05: [QUIT]
+- end:(F)[2]後続05 -
+Cond-Sginal * 10000000 = 0.937633 sec

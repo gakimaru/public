@@ -197,8 +197,8 @@ typedef glm::vec3 vec3;//GLM利用
 
 //----------------------------------------
 //【準備】共通関数
-template<typename T, std::size_t N1> std::size_t lengthOfArray(const T(&var)[N1]){ return N1; } //配列の要素数を返す（型安全版）
-//template<typename T> T max(T var1, Tvar2){ return var1 > var2 ? var1 : var2; }                //大きい方の値を返す（型安全版）
+template<typename T, std::size_t N1> inline std::size_t lengthOfArray(const T(&var)[N1]){ return N1; } //配列の要素数を返す（型安全版）
+//template<typename T> inline T max(T var1, Tvar2){ return var1 > var2 ? var1 : var2; }                //大きい方の値を返す（型安全版）
 //#define lengthOfArray(var) (sizeof(var1) / sizeof(var1[0])                                    //配列の要素数を返す
 #define max(var1, var2) (var1 > var2 ? var1 : var2)                                             //大きい方の値を返す
 
@@ -743,15 +743,16 @@ private:
 };
 //自作for_each
 template<class T, class F>
-void my_for_each(T ite, T end, F functor)
+inline void my_for_each(T ite, T end, F functor)
 {
 	for (; ite != end; ++ite)
 	{
 		functor(ite);
 	}
 }
+//自作for_each（関数オブジェクトがパラメータを受け取るバージョン）
 template<class T, class F, class P1>
-void my_for_each(T ite, T end, F functor, P1& param1)
+inline void my_for_each(T ite, T end, F functor, P1& param1)
 {
 	for (; ite != end; ++ite)
 	{
@@ -768,7 +769,7 @@ namespace common_system
 	//キャラクター更新処理（関数オブジェクト）
 	struct Update
 	{
-		void operator()(ICharacter* chara)
+		inline void operator()(ICharacter* chara)
 		{
 			chara->update();
 		}
@@ -777,7 +778,7 @@ namespace common_system
 	//キャラクター描画処理（関数オブジェクト）
 	struct Draw
 	{
-		void operator()(ICharacter* chara)
+		inline void operator()(ICharacter* chara)
 		{
 			chara->draw();
 		}
@@ -786,7 +787,7 @@ namespace common_system
 	//キャラクター構築完了チェック
 	struct isBuiltAll
 	{
-		void operator()(ICharacter* chara, bool& is_built_all)
+		inline void operator()(ICharacter* chara, bool& is_built_all)
 		{
 			if (!chara->isBuilt())
 			{
@@ -1189,7 +1190,7 @@ void testMyIterator()
 	
 	//for_each用関数オブジェクト（ファンクタ）
 	struct MyFunctor{
-		void operator()(MyClass& obj){ printf("name=\"%s\"\n", obj.getName()); }
+		inline void operator()(MyClass& obj){ printf("name=\"%s\"\n", obj.getName()); }
 	};
 	
 	//全コンテナ要素処理

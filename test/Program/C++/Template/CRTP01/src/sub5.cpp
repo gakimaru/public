@@ -158,7 +158,7 @@ CBase::VTABLE CClassB::s_vtalble = {
 
 //for_each
 template<class T, size_t N, class F>
-void for_each(T* (&obj)[N], F& functor)
+inline void for_each(T* (&obj)[N], F& functor)
 {
 	T** p = obj;
 	for (int i = 0; i < N; ++i, ++p)

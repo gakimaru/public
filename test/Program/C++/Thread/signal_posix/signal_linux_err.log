@@ -1,0 +1,7 @@
+$ ./signal &
+- begin:main(2dce1720) -
+- begin:threadFuncSyncSignal(2dcdf700) -
+- begin:threadFuncWatch(2d2de700) -
+[SIGUSR1] (thread=2dce1720) tls=0
+[SIGALRM] (thread=2dce1720) tls=1
+./run.sh: line 8: 49051 ユーザ定義シグナル 2     ./signal

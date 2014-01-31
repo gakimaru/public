@@ -1,0 +1,10 @@
+main: [START]
+太郎: [BEFORE]
+次郎: [BEFORE]
+三郎: [BEFORE]
+main: [sleep ...]
+main: [set_value()]
+三郎: [AFTER] value=123
+次郎: [AFTER] value=123
+太郎: [AFTER] value=123
+main: [END]

@@ -1,16 +1,17 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <varargs.h>
 
+#include <vector>
 #include <algorithm>
 
 //テンプレート関数がコンパイル時にリテラル値に展開される事をテスト（最適化レベルに依存）
 //※実行時に、[デバッグ]→[ウインドウ]→[逆アセンブル]で、アセンブラのコードを確認する。
-template<typename T> T max(T n1, T n2){                   return n1 > n2 ? n1 : n2; }
-template<typename T> T max(T n1, T n2, T n3){             return n1 > n2 ? n1 : max(n2, n3); }
-template<typename T> T max(T n1, T n2, T n3, T n4){       return n1 > n2 ? n1 : max(n2, n3, n4); }
-template<typename T> T max(T n1, T n2, T n3, T n4, T n5){ return n1 > n2 ? n1 : max(n2, n3, n4, n5); }
+template<typename T> inline T max(T n1, T n2){ return n1 > n2 ? n1 : n2; }
+template<typename T> inline T max(T n1, T n2, T n3){ return n1 > n2 ? n1 : max(n2, n3); }
+template<typename T> inline T max(T n1, T n2, T n3, T n4){ return n1 > n2 ? n1 : max(n2, n3, n4); }
+template<typename T> inline T max(T n1, T n2, T n3, T n4, T n5){ return n1 > n2 ? n1 : max(n2, n3, n4, n5); }
 
 void test_func1()
 {
@@ -29,19 +30,19 @@ void test_func1()
 //可変長テンプレート引数版のmax()
 //値が二つの max()
 template<typename T1, typename T2>
-T1 vmax(T1 n1, T2 n2){ return n1 > n2 ? n1 : n2; }
+inline T1 vmax(T1 n1, T2 n2){ return n1 > n2 ? n1 : n2; }
 //値が三つ以上の max() : 再帰処理（注：テンプレートの特殊化ではなく、関数のオーバーロードで再起を終結させている）
 template<typename T1, typename T2, typename T3, typename... Tx>
-T1 vmax(T1 n1, T2 n2, T3 n3, Tx... nx){ return vmax(vmax(n1, n2), n3, nx...); } //nxが空になったら値が二つの方が呼ばれる
+inline T1 vmax(T1 n1, T2 n2, T3 n3, Tx... nx){ return vmax(vmax(n1, n2), n3, nx...); } //nxが空になったら値が二つの方が呼ばれる
 
 //可変長テンプレート引数テスト
 template<class First>
-void func()
+inline void func()
 {
 	std::cout << typeid(First).name() << std::endl;
 }
 template<class First, class Second, class... Rest>
-void func()
+inline void func()
 {
 	func<First>();
 	func<Second, Rest...>();
@@ -57,7 +58,7 @@ void test_func1v()
 	const int v6 = vmax(6, 5, 4, 3, 2, 1);
 	const int v7 = vmax(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 	printf("{%d, %d, %d, %d, %d, %d, %d}\n", v1, v2, v3, v4, v5, v6, v7);
-	
+
 	func<int>();
 	func<int, short>();
 	func<int, short, char>();
@@ -172,7 +173,7 @@ const int c2 = max5(1, 2, 3, 4, 5);         //OK
 class CClass
 {
 public:
-//	static const int sc1 = max(1, 2, 3, 4, 5);  //NG:コンパイルエラー
+	//	static const int sc1 = max(1, 2, 3, 4, 5);  //NG:コンパイルエラー
 	static const int sc2 = max5(1, 2, 3, 4, 5); //OK
 	const int c1 = max(1, 2, 3, 4, 5);          //OK
 	const int c2 = max5(1, 2, 3, 4, 5);         //OK
@@ -187,7 +188,7 @@ public:
 //列挙
 enum
 {
-//	e1 = max(1, 2, 3, 4, 5),  //NG:コンパイルエラー
+	//	e1 = max(1, 2, 3, 4, 5),  //NG:コンパイルエラー
 	e2 = max5(1, 2, 3, 4, 5), //OK
 };
 
@@ -402,17 +403,15 @@ void for_each_array(T* data, int n, F& functor)
 }
 void func_new3(int data1[], int n1, int data2[], int n2)
 {
-	static int sum;
 	struct print{
 		void all(const char* name, int data[], int n)
 		{
 			sum = 0;
 			printf("%s=", name);
-		//	for_each_array(data, n, *this);
-			std::for_each(data, data + n, *this);
+			for_each_array(data, n, *this);
 			printf(" (sum=%d, avg=%.1f)\n", sum, static_cast<float>(sum) / static_cast<float>(n));
 		}
-		//int sum;
+		int sum;
 		void operator()(int data)
 		{
 			sum += data;
@@ -432,24 +431,92 @@ void func_new3(int data1[], int n1, int data2[], int n2)
 	printf("<BEFORE>\n");
 	o.all("data1", data1, n1);
 	o.all("data2", data2, n2);
-//	for_each_array(data1, n1, round());
-//	for_each_array(data2, n2, round());
-	std::for_each(data1, data1 + n1, round());
+	for_each_array(data1, n1, round());
+	for_each_array(data2, n2, round());
+	printf("<AFTER>\n");
+	o.all("data1", data1, n1);
+	o.all("data2", data2, n2);
+}
+//処理最適化説明用クラス：最適化④
+void func_new4(int data1[], int n1, int data2[], int n2)
+{
+	static int sum;
+	struct print{
+		void all(const char* name, int data[], int n)
+		{
+			sum = 0;
+			printf("%s=", name);
+			std::for_each(data, data + n, *this);
+			printf(" (sum=%d, avg=%.1f)\n", sum, static_cast<float>(sum) / static_cast<float>(n));
+		}
+		void operator()(int data)
+		{
+			sum += data;
+			printf(" %d", data);
+		}
+	};
+	struct round{
+		void operator()(int& data)
+		{
+			if (data < 10)
+				data = 10;
+			else if (data > 100)
+				data = 100;
+		}
+	};
+	print o;
+	printf("<BEFORE>\n");
+	o.all("data1", data1, n1);
+	o.all("data2", data2, n2);
+	std::for_each(data1, data1 + n1, round());//STL板
 	std::for_each(data2, data2 + n2, round());
 	printf("<AFTER>\n");
 	o.all("data1", data1, n1);
 	o.all("data2", data2, n2);
 }
+//処理最適化説明用クラス：最適化⑤
+void func_new5(int data1[], int n1, int data2[], int n2)
+{
+	auto lambda_print = [](int& sum, const char* name, int data[], int n) -> void
+	{
+		sum = 0;
+		printf("%s=", name);
+		std::for_each(data, data + n, [&sum](int data)
+		{
+			sum += data;
+			printf(" %d", data);
+		}
+		);
+		printf(" (sum=%d, avg=%.1f)\n", sum, static_cast<float>(sum) / static_cast<float>(n));
+	};
+	auto lambda_round = [](int& data)
+	{
+		if (data < 10)
+			data = 10;
+		else if (data > 100)
+			data = 100;
+	};
+	int sum1 = 0;
+	int sum2 = 0;
+	printf("<BEFORE>\n");
+	lambda_print(sum1, "data1", data1, n1);
+	lambda_print(sum2, "data2", data2, n2);
+	std::for_each(data1, data1 + n1, lambda_round);
+	std::for_each(data2, data2 + n2, lambda_round);
+	printf("<AFTER>\n");
+	lambda_print(sum1, "data1", data1, n1);
+	lambda_print(sum2, "data2", data2, n2);
+}
 
 template<typename T, std::size_t N>
-std::size_t lengthOfAray(T (&var)[N]){ return N; }
+std::size_t lengthOfAray(T(&var)[N]){ return N; }
 
 void test_func4()
 {
 	//処理最適化説明用処理
 	{
-		int data1[] = {1, 2, 3, 39, 200, 53, 8, 74, 12};
-		int data2[] = {13, 6, 76, 43, 23, 125, 1 };
+		int data1[] = { 1, 2, 3, 39, 200, 53, 8, 74, 12 };
+		int data2[] = { 13, 6, 76, 43, 23, 125, 1 };
 		func_old(data1, lengthOfAray(data1), data2, lengthOfAray(data2));
 	}
 	{
@@ -467,6 +534,60 @@ void test_func4()
 		int data2[] = { 13, 6, 76, 43, 23, 125, 1 };
 		func_new3(data1, lengthOfAray(data1), data2, lengthOfAray(data2));
 	}
+	{
+		int data1[] = { 1, 2, 3, 39, 200, 53, 8, 74, 12 };
+		int data2[] = { 13, 6, 76, 43, 23, 125, 1 };
+		func_new4(data1, lengthOfAray(data1), data2, lengthOfAray(data2));
+	}
+	{
+		int data1[] = { 1, 2, 3, 39, 200, 53, 8, 74, 12 };
+		int data2[] = { 13, 6, 76, 43, 23, 125, 1 };
+		func_new5(data1, lengthOfAray(data1), data2, lengthOfAray(data2));
+	}
+	{
+		//範囲に基づく for ループ：固定長配列
+		int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		printf("data=");
+		for (int elem : data)
+		{
+			printf(" %d", elem);
+		}
+		printf("\n");
+	}
+	{
+		//範囲に基づく for ループ：STLコンテナ
+		std::vector<const char*> data;
+		data.push_back("太郎");
+		data.push_back("次郎");
+		data.push_back("三郎");
+		printf("data=");
+		for (auto elem: data)
+		{
+			printf(" %s", elem);
+		}
+		printf("\n");
+	}
+	{
+		//範囲に基づく for ループ：自作コンテナ
+		struct DATA
+		{
+			char* begin(){ return m_data + 0; }
+			char* end(){ return m_data + sizeof(m_data) / sizeof(m_data[0]); }
+			char m_data[10];
+		};
+		DATA data = { {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} };
+		for (auto& elem : data) //begin(), end() がイテレータを返すものならなんにでも使える
+		                        //値を書き戻したければ要素型に & を付けて参照型にする
+		{
+			elem += 100;
+		}
+		printf("data=");
+		for (auto elem : data)
+		{
+			printf(" %d", elem);
+		}
+		printf("\n");
+	}
 
 	//べき乗テスト
 	const int n1 = Pow<2, 0>::value;
@@ -475,7 +596,7 @@ void test_func4()
 	const int n4 = Pow<2, 3>::value;
 	const int n5 = Pow<10, 4>::value;
 	printf("{%d, %d, %d, %d, %d}\n", n1, n2, n3, n4, n5);
-	
+
 	//コンストラクタテンプレートテスト
 	POINT<int> p1(1, 2);
 	POINT<float> p2(p1);
@@ -487,7 +608,7 @@ void test_func4()
 
 	//クラス定数テスト
 	CClass o;
-//	printf("%d\n", CClass::sc1);
+	//	printf("%d\n", CClass::sc1);
 	printf("%d\n", CClass::sc2);
 	printf("%d\n", o.c1);
 	printf("%d\n", o.c2);

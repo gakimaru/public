@@ -107,7 +107,7 @@
         |  |
         |  |- 【未】「サービス」によるマルチスレッドの効率化.docx
         |  |- マルチスレッドプログラミングの基礎
-        |  `- 【未】効率化と安全性のためのロック制御.docx
+        |  `- 効率化と安全性のためのロック制御.docx
         |
         |-[メモリ管理]
         |  |
@@ -158,6 +158,8 @@
      |  |  |
      |  |  |-[CalcExpression]    ... 計算式の状況に応じた右値評価のテスト
      |  |  |
+     |  |  |-[constexpr]         ... constexpr のテスト
+     |  |  |
      |  |  |-[DebugPrint]        ... デバッグ用ロギング処理／boost::backtraceのテスト
      |  |  |-[DebugPrintTest]    ... デバッグ用ロギング処理の試作
      |  |  |
@@ -193,7 +195,49 @@
      |  |  |
      |  |  |-[Thread]
      |  |  |  |
-     |  |  |  `- ...             ... 40個以上のマルチスレッド関係技術の確認
+     |  |  |  |-[alarm_fork]                  ... Unix alarmとforkのテスト（雑）
+     |  |  |  |-[alarm_thread]                ... Unix alarmとpthreadのテスト（雑）
+     |  |  |  |-[aync_c++11]                  ... C++11 非同期関数テスト
+     |  |  |  |-[callonce_C++11]              ... C++11 CallOnceテスト
+     |  |  |  |-[callonce_posix]              ... POSIX CallOnceテスト
+     |  |  |  |-[Fiber]                       ... WIN32 ファイバースレッドテスト
+     |  |  |  |-[fork]                        ... Unix forkテスト
+     |  |  |  |-[monitor_atomic_c++11]        ... C++11 アトミック型を使用したモニターのテスト
+     |  |  |  |-[monitor_barrier_posix]       ... POSIX Barrierを使用したモニターのテスト
+     |  |  |  |-[monitor_cond_c++11]          ... C++11 条件変数を使用したモニターのテスト
+     |  |  |  |-[monitor_cond_posix]          ... POSIX 条件変数を使用したモニターのテスト
+     |  |  |  |-[monitor_event_win]           ... WIN32 イベントを使用したモニターのテスト
+     |  |  |  |-[monitor_interlocked_win]     ... WIN32 インターロック操作を使用したモニターのテスト
+     |  |  |  |-[monirot_named_event_win]     ... WIN32 名前付きイベントを使用したモニターのテスト
+     |  |  |  |-[OpenMP]                      ... OpenMPのテスト
+     |  |  |  |-[promise_c++11]               ... C++11 先物のテスト
+     |  |  |  |-[share_named_semaphore_posix] ... POSIX 名前付きセマフォのテスト
+     |  |  |  |-[share_named_semaphore_win]   ... WIN32 名前付きセマフォのテスト
+     |  |  |  |-[share_semaphore_posix]       ... POSIX セマフォのテスト
+     |  |  |  |-[share_semaphore_systemv]     ... SystemV セマフォのテスト
+     |  |  |  |-[share_semaphore_win]         ... WIN32 セマフォのテスト
+     |  |  |  |-[signal_posix]                ... POSIX シグナルのテスト
+     |  |  |  |-[SingletonPattern]            ... ★自作シングルトンパターン処理　※もはやテスト用ではない（ひとまずの完成版）
+     |  |  |  |-[sync_asm_win]                ... WIN32 インラインアセンブラを使用した同期のテスト
+     |  |  |  |-[sync_atomic_c++11]           ... C++11 アトミック型を使用した同期のテスト
+     |  |  |  |-[sync_atomic_fast_c++11]      ... C++11 アトミックフラグ型を使用した同期のテスト
+     |  |  |  |-[sync_criticalsection_win]    ... WIN32 クリティカルセクションを使用した同期のテスト
+     |  |  |  |-[sync_interlocked_win]        ... WIN32 インターロック操作を使用した同期のテスト
+     |  |  |  |-[sync_mutex_c++11]            ... C++11 ミューテックスを使用した同期のテスト
+     |  |  |  |-[sync_mutex_posix]            ... POSIX ミューテックスを使用した同期のテスト
+     |  |  |  |-[sync_mutex_win]              ... WIN32 ミューテックスを使用した同期のテスト
+     |  |  |  |-[sync_named_mutex_win]        ... WIN32 名前付きミューテックスを使用した同期のテスト
+     |  |  |  |-[sync_nosync_win]             ... WIN32 通常変数にによる誤った同期のテスト
+     |  |  |  |-[sync_rwlock_c++11]           ... ★C++11 自作リードライトロック処理
+     |  |  |  |-[sync_rwlock_posix]           ... POSIX リードライトロックによる同期のテスト
+     |  |  |  |-[sync_spinlock_posix]         ... POSIX スピンロックを使用した同期のテスト
+     |  |  |  |-[sync_volatile_win]           ... WIN32 volatile型修飾子付き変数にによる誤った同期のテスト
+     |  |  |  |-[thread_c++11]                ... C++11 スレッド生成のテスト
+     |  |  |  |-[thread_errno]                ... WIN32 スレッドの作り方によるerrnoの値の違いを確認...するはずだったが、問題を検出できなかった
+     |  |  |  |-[thread_posix]                ... POSIX スレッド生成のテスト
+     |  |  |  |-[thread_win]                  ... WIN32 スレッド生成のテスト
+     |  |  |  |-[tls_c++11]                   ... WIN32(C++11) スレッドローカルストレージ（TLS）のテスト
+     |  |  |  `-[volatile]                    ... WIN32 volatile型修飾子によるコード生成の確認テスト
      |  |  |
      |  |  `-[UnitTest]          ... ユニットテスト用処理作成
      |  |

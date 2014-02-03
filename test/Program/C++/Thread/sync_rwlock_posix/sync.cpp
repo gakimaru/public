@@ -58,7 +58,7 @@ void* threadFuncW(void* param_p)
 		printf("(W)%s: [AFTER]  commonData=%d, tlsData=%d\n", name, s_commonData, s_tlsData);
 		fflush(stdout);
 		
-		//ライトロック取得
+		//ライトロック解放
 		pthread_rwlock_unlock(&s_lock);
 		
 		//若干ランダムでスリープ（0～499 msec）
@@ -103,7 +103,7 @@ void* threadFuncR(void* param_p)
 		printf("(R)%s: [AFTER]  commonData=%d, tlsData=%d\n", name, s_commonData, s_tlsData);
 		fflush(stdout);
 		
-		//リードロック取得
+		//リードロック解放
 		pthread_rwlock_unlock(&s_lock);
 		
 		//若干ランダムでスリープ（0～499 msec）

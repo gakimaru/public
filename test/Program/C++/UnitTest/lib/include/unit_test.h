@@ -424,12 +424,13 @@ namespace __UnitTest_module_##module_name##__ \
 #define UT_RUN_MODULE(module_name, attr) UnitTest::CCollection::runUnitTest(module_name, 0, attr)
 #define UT_RUN_GROUP(group_id, attr) UnitTest::CCollection::runUnitTest(nullptr, group_id, attr)
 #define UT_RUN_STANDARD(attr) UnitTest::CCollection::runUnitTestStandard(attr)
+#define UT_RETURN() {return UnitTest::CCollection::getLastMissedTotal();}
 #define UT_RETURN_WHEN_MISSED() {if(UnitTest::CCollection::getLastMissedTotal() > 0) return UnitTest::CCollection::getLastMissedTotal();}
 #define UT_EXIT_WHEN_MISSED() {if(UnitTest::CCollection::getLastMissedTotal() > 0) exit(UnitTest::CCollection::getLastMissedTotal());}
 #define UT_ABORT_WHEN_MISSED() {if(UnitTest::CCollection::getLastMissedTotal() > 0) abort();}
 #define UT_ASSERT_WHEN_MISSED() ASSERT(UnitTest::CCollection::getLastMissedTotal() == 0)
 #ifdef UT_AUTO
-#define UT_RUN_MAIN(result_var) UnitTest::CCollection::runUnitTestStandard(UnitTest::UT_ATTR_AUTO); result_var = UnitTest::CCollection::getLastMissedTotal(); UT_RETURN_WHEN_MISSED()
+#define UT_RUN_MAIN(result_var) UnitTest::CCollection::runUnitTestStandard(UnitTest::UT_ATTR_AUTO); result_var = UnitTest::CCollection::getLastMissedTotal(); UT_RETURN()
 #else//UT_AUTO
 #define UT_RUN_MAIN(result_var)
 #endif//UT_AUTO
@@ -484,6 +485,7 @@ namespace __UnitTest_module_##module_name##__ \
 #define UT_RUN_MODULE(module_name, attr)
 #define UT_RUN_GROUP(group_id, attr)
 #define UT_RUN_STANDARD(attr)
+#define UT_RETURN()
 #define UT_RETURN_WHEN_MISSED()
 #define UT_EXIT_WHEN_MISSED()
 #define UT_ABORT_WHEN_MISSED()

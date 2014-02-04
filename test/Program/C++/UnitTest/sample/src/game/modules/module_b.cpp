@@ -1,5 +1,3 @@
-#include "unit_test.h"
-
 class CModuleB
 {
 public:
@@ -25,6 +23,7 @@ public:
 };
 
 //ユニットテスト
+#include "unit_test.h"
 #include "game/unit_test_id.h"
 UT_BEGIN(CModuleB, UT_GROUP_USER_B, UnitTest::UT_ATTR_AUTO)//モジュール名とグループID、属性を指定 ※特定のモジュール名やグループIDに絞ったテストを実行可能。
                                                            //                                     ※mainから自動実行するには UT_ATTR_AUTO 属性を付与する必要がある。

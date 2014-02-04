@@ -3,41 +3,8 @@
 
 #include "game/game_main.h"
 
-//インターフェースクラス
-class ISample
-{
-public:
-	virtual const char* getMessage() const = 0;
-};
-//具象クラス①
-class CTest1 : public ISample
-{
-public:
-	virtual const char* getMessage() const { return "This is CTest1!"; }
-};
-//具象クラス②
-class CTest2 : public ISample
-{
-public:
-	virtual const char* getMessage() const { return "This is CTest2!!!"; }
-};
-//共通処理
-void testCommon(ISample& obj)
-{
-	printf("[%s]\n", obj.getMessage());
-}
-//テスト
-void testMain()
-{
-	CTest1 o1;
-	CTest2 o2;
-	testCommon(o1);
-	testCommon(o2);
-}
-
 int main(const int argc, const char* argv[])
 {
-testMain();
 	printf("- main() [BEGIN] ...\n");
 	
 	CGameMain* game_main = new CGameMain(argc, argv);

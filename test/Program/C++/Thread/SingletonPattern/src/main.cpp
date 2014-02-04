@@ -146,18 +146,274 @@ private:
 thread_local THREAD_ID CThreadID::m_thisThreadID = INVALID_THREAD_ID;//スレッドID(TLS)
 thread_local const char* CThreadID::m_thisThreadName = nullptr;//スレッド名(TLS)
 
+//--------------------------------------------------------------------------------
+//軽量スピンロック
+
 //----------------------------------------
+//軽量スピンロック
+//※手軽に使えるスピンロック
+//※一定回数のスリープごとにスリープ（コンテキストスイッチ）を行う
+//※容量は4バイト(std::atomic_flag一つ分のサイズ)
+//※プログラミング上の安全性は低いので気がるに使うべきではない
+//　　⇒ロック取得状態を確認せずにアンロックする
+#define SPIN_LOCK_USE_ATOMIC_FLAG//std::atomic_flag版（高速）
+//#define SPIN_LOCK_USE_ATOMIC_BOOL//std::atomic_bool版（軽量）
+class CSpinLock
+{
+public:
+	//定数
+	static const int DEFAULT_SPIN_COUNT = 1000;//スピンロックカウントのデフォルト値
+public:
+	//ロック取得
+	void lock(const int spin_count = DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = 0;
+#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+		while (m_lock.test_and_set())//std::atomic_flag版（高速）
+		{
+#else//SPIN_LOCK_USE_ATOMIC_FLAG
+		bool prev = false;
+		while (m_lock.compare_exchange_weak(prev, true))//std::atomic_bool版（軽量）
+		{
+			prev = false;
+#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+			if (spin_count == 0 || ++spin_count_now % spin_count == 0)
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+		}
+	}
+	//ロック解放
+	void unlock()
+	{
+#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+		m_lock.clear();//std::atomic_flag版（高速）
+#else//SPIN_LOCK_USE_ATOMIC_FLAG
+		m_lock.store(false);//std::atomic_bool版（軽量）
+#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+	}
+public:
+	//コンストラクタ
+	CSpinLock()
+	{
+	}
+	//デストラクタ
+	~CSpinLock()
+	{
+	}
+private:
+	//フィールド
+#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+	std::atomic_flag m_lock;//ロック用フラグ（高速）
+#else//SPIN_LOCK_USE_ATOMIC_FLAG
+	std::atomic_bool m_lock;//ロック用フラグ（軽量）
+#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+};
+
+//--------------------------------------------------------------------------------
+//固定メモリブロックアロケータクラス
+//※現状は可読性重視だが、実際にはテンプレートのインスタンス化による
+//　プログラムサイズの肥大を考慮し、非テンプレートの共通処理を
+//　切り出す必要がある
+
+//----------------------------------------
+//クラス宣言
+template<std::size_t N, std::size_t S>
+class CBlockAllocator;
+
+//----------------------------------------
+//固定メモリブロックアロケータクラス専用配置new/delete処理
+//※クラス内で使用するためのものなので、直接使用は禁止
+//※クラス内でdeleteすることで、デストラクタの呼び出しにも対応
+
+//配置new
+template<std::size_t N, std::size_t S>
+void* operator new(const std::size_t size, CBlockAllocator<N, S>& allocator){ return allocator.alloc(size); }
+
+//配置delete
+template<std::size_t N, std::size_t S>
+void operator delete(void* p, CBlockAllocator<N, S>& allocator){ allocator.free(p); }
+
+//----------------------------------------
+//固定メモリブロックアロケータクラス
+//※スレッドセーフ対応
+template<std::size_t N, std::size_t S>
+class CBlockAllocator
+{
+public:
+	//型宣言
+	typedef unsigned char byte;//バッファ用
+	typedef unsigned int b32;//フラグ用
+public:
+	//定数
+	static const std::size_t BLOCKS_NUM = N;//ブロック数
+	static const std::size_t BLOCK_SIZE = S;//メモリブロックサイズ
+	static const std::size_t FLAG_SIZE = ((N + 31) >> 5);//フラグサイズ（１サイズで32ビットのフラグ）
+	static const std::size_t FLAG_SURPLUS_BITS = N % 32;//余剰フラグ数（32の倍数からはみ出したフラグの数）
+private:
+	//メソッド
+	//メモリ確保状態リセット
+	void reset()
+	{
+		//ロック取得
+		m_lock.lock();
+
+		//ゼロクリア
+		memset(m_used, 0, sizeof(m_used));
+
+		//ブロック数の範囲外のフラグは最初から立てておく
+		if (FLAG_SURPLUS_BITS > 0)
+		{
+			b32 parmanent = 0xffffffff >> FLAG_SURPLUS_BITS;
+			parmanent <<= FLAG_SURPLUS_BITS;
+			m_used[FLAG_SIZE - 1] = parmanent;
+		}
+
+		//ロック解放
+		m_lock.unlock();
+	}
+	//メモリブロック確保
+	//※使用中フラグの空きを検索してフラグを更新し、
+	//　確保したインデックスを返す
+	int assign()
+	{
+		//ロック取得
+		m_lock.lock();
+
+		//確保済みインデックス準備
+		int index = -1;//初期状態は失敗状態
+
+		//空きフラグ検索
+		b32* used_p = m_used;
+		int bit_no = 0;
+		for (int arr_idx = 0; arr_idx < FLAG_SIZE; ++arr_idx, ++used_p)
+		{
+			//32bitごとの空き判定
+			b32 bits_now = *used_p;
+			if (bits_now != 0xffffffff)
+			{
+				//32bitのフラグのどこかに空きがあるので、
+				//最初に空いているフラグ（ビット）を検索
+				b32 bits = bits_now;
+				if ((bits & 0xffff) == 0xffff){ bit_no += 16; bits >>= 16; }//下位16ビット判定（空きがなければ16ビットシフト）
+				if ((bits & 0xff) == 0xff){ bit_no += 8;  bits >>= 8; }//下位8ビット判定（空きがなければ8ビットシフト）
+				if ((bits & 0xf) == 0xf){ bit_no += 4;  bits >>= 4; }//下位4ビット判定（空きがなければ4ビットシフト）
+				if ((bits & 0x3) == 0x3){ bit_no += 2;  bits >>= 2; }//下位2ビット判定（空きがなければ2ビットシフト）
+				if ((bits & 0x1) == 0x1){ ++bit_no; }//下位1ビット判定（空きがなければ上位1ビットで確定）
+				bits_now |= (1 << bit_no);//論理和用のビット情報に変換
+				*used_p = bits_now;//論理和
+				index = arr_idx * 32 + bit_no;//メモリブロックのインデックス算出
+
+				//確保成功
+				break;
+			}
+		}
+
+		//ロック解放
+		m_lock.unlock();
+
+		//終了
+		return index;
+	}
+	//メモリブロック解放
+	//※指定のインデックスの使用中フラグをリセット
+	void release(const int index)
+	{
+		//インデックスの範囲チェック
+		if (index < 0 || index >= BLOCKS_NUM)
+			return;
+
+		//ロック取得
+		m_lock.lock();
+
+		//フラグ解放
+		const int arr_idx = index >> 5;//使用中フラグの配列番号
+		const int bit_no = index & 31;//ビット番号
+		m_used[arr_idx] &= ~(1 << bit_no);//論理積
+
+		//ロック解放
+		m_lock.unlock();
+	}
+public:
+	//メモリ確保
+	void* alloc(const std::size_t size)
+	{
+		//【アサーション】要求サイズがブロックサイズを超える場合は即時確保失敗
+		ASSERT(size <= BLOCK_SIZE, "CBlockAllocator::alloc(%d) cannot allocate. Size must has been under %d.", size, BLOCK_SIZE);
+		if (size > BLOCK_SIZE)
+		{
+			return nullptr;
+		}
+		//空きブロックを確保して返す
+		const int index = assign();
+		//【アサーション】全ブロック使用中につき、確保失敗
+		ASSERT(index >= 0, "CBlockAllocator::alloc(%d) cannot allocate. Buffer is full. (num of blocks is %d)", size, BLOCKS_NUM);
+		//確保したメモリを返す
+		return index < 0 ? nullptr : &m_buff[index];
+	}
+	//メモリ解放
+	void free(void * p)
+	{
+		//nullptr時は即時解放失敗
+		ASSERT(p != nullptr, "CBlockAllocator::free() cannot free. Pointer is null.");
+		if (!p)
+			return;
+		//ポインタからインデックスを算出
+		const byte* top_p = reinterpret_cast<byte*>(m_buff);//バッファの先頭ポインタ
+		const byte* target_p = reinterpret_cast<byte*>(p);//指定ポインタ
+		const int diff = (target_p - top_p);//ポインタの引き算で差のバイト数算出
+		const int index = (target_p - top_p) / BLOCK_SIZE;//ブロックサイズで割ってインデックス算出
+		//【アサーション】メモリバッファの範囲外なら処理失敗（release関数内で失敗するのでそのまま実行）
+		ASSERT(index >= 0 && index < BLOCKS_NUM, "CBlockAllocator::free() cannot free. Pointer is different.");
+		//【アサーション】ポインタが各ブロックの先頭を指しているかチェック
+		//　　　　　　　　⇒多重継承とキャストしているとずれることがるのでこの問題は無視して解放してしまう
+		//ASSERT(diff % BLOCK_SIZE == 0, "CBlockAllocator::free() cannot free. Pointer is illegal.");
+		//算出したインデックスでメモリ解放
+		release(index);
+	}
+	//コンストラクタ呼び出し機能付きメモリ確保
+	//※C++11の可変長テンプレートパラメータを活用
+	template<class T, typename... Tx>
+	T* create(Tx... nx)
+	{
+		return new(*this) T(nx...);
+	}
+	//デストラクタ呼び出し機能付きメモリ解放
+	//※解放後、ポインタに nullptr をセットする
+	template<class T>
+	void remove(T*& p)
+	{
+		p->~T();//明示的なデストラクタ呼び出し（デストラクタ未定義のクラスでも問題なし）
+		operator delete(p, *this);//配置delete呼び出し
+		p = nullptr;//ポインタにはnullptrをセット
+	}
+public:
+	//コンストラクタ
+	CBlockAllocator()
+	{
+		//使用中フラグリセット
+		reset();
+	}
+	//デストラクタ
+	~CBlockAllocator()
+	{}
+private:
+	//フィールド
+	byte m_buff[BLOCKS_NUM][BLOCK_SIZE];//ブロックバッファ
+	b32 m_used[FLAG_SIZE];//使用中フラグ
+	CSpinLock m_lock;//ロック
+};
+
+//--------------------------------------------------------------------------------
 //リード・ライトロッククラス
 //※容量節約のために、POSIXスレッドライブラリ版のように、現在のスレッドのロック状態を保持しない
 //※必ずロッククラス CRWLock::LockR, CRWLock::LockR_AsNecessary, CRWLock::LockW を使用し、
 //　そこに現在のロック状態を保持する
 
+//----------------------------------------
 //リード・ライトロッククラス
 class CRWLock
 {
 public:
 	//定数
-	static const int DEFAULT_SPIN_COUNT = 1000;//スピンロックカウントのデフォルト値
 	enum E_WLOCK_PRIORITY//ライトロック優先度
 	{
 		WLOCK_PRIORITIZED,//ライトロック優先
@@ -184,9 +440,9 @@ public:
 
 		//明示的なリードロック
 		//※リードロック時が「必要に応じてリードロック」なら同じ動作になる
-		//※明示的なロック解除後用メソッド
+		//※明示的なロック解放後用メソッド
 		//※通常はコンストラクタでロックするので使用しない
-		void rlock(const int spin_count = DEFAULT_SPIN_COUNT)
+		void rlock(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
 		{
 			if (!m_isUnlocked)
 				return;
@@ -195,9 +451,9 @@ public:
 			m_isUnlocked = false;
 		}
 		//明示的なライトロック
-		//※明示的なロック解除後用メソッド
+		//※明示的なロック解放後用メソッド
 		//※通常はコンストラクタでロックするので使用しない
-		void wlock(const int spin_count = DEFAULT_SPIN_COUNT)
+		void wlock(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
 		{
 			if (!m_isUnlocked)
 				return;
@@ -239,7 +495,7 @@ public:
 		//コンストラクタ　※各種ロッククラスからのみ使用
 
 		//リードロック用コンストラクタ
-		inline Lock(const RLock*, CRWLock& lock, const int spin_count = DEFAULT_SPIN_COUNT) :
+		inline Lock(const RLock*, CRWLock& lock, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
 			m_lock(lock),
 			m_ignoreThreadId(INVALID_THREAD_ID),
 			m_isWriteLock(false),
@@ -249,7 +505,7 @@ public:
 			m_lock.rlock(spin_count, m_ignoreThreadId);
 		}
 		//必要に応じてリードロック用コンストラクタ
-		inline Lock(const RLockAsNecessary*, CRWLock& lock, const CThreadID& ignore_thread_id, const int spin_count = DEFAULT_SPIN_COUNT) :
+		inline Lock(const RLockAsNecessary*, CRWLock& lock, const CThreadID& ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
 			m_lock(lock),
 			m_ignoreThreadId(ignore_thread_id.getID()),
 			m_isWriteLock(false),
@@ -258,7 +514,7 @@ public:
 			//必要に応じてリードロック
 			m_lock.rlock(spin_count, m_ignoreThreadId);
 		}
-		inline Lock(const RLockAsNecessary*, CRWLock& lock, const THREAD_ID ignore_thread_id, const int spin_count = DEFAULT_SPIN_COUNT) :
+		inline Lock(const RLockAsNecessary*, CRWLock& lock, const THREAD_ID ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
 			m_lock(lock),
 			m_ignoreThreadId(ignore_thread_id),
 			m_isWriteLock(false),
@@ -268,7 +524,7 @@ public:
 			m_lock.rlock(spin_count, m_ignoreThreadId);
 		}
 		//ライトロック用コンストラクタ
-		inline Lock(const WLock*, CRWLock& lock, const int spin_count = DEFAULT_SPIN_COUNT) :
+		inline Lock(const WLock*, CRWLock& lock, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
 			m_lock(lock),
 			m_ignoreThreadId(INVALID_THREAD_ID),
 			m_isWriteLock(true),
@@ -310,7 +566,7 @@ public:
 		}
 	public:
 		//コンストラクタ
-		inline RLock(CRWLock& lock, const int spin_count = DEFAULT_SPIN_COUNT) :
+		inline RLock(CRWLock& lock, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
 			Lock(this, lock, spin_count)
 		{}
 		//デストラクタ
@@ -334,13 +590,13 @@ public:
 		{}
 	public:
 		//コンストラクタ
-		inline RLockAsNecessary(CRWLock& lock, const CThreadID& ignore_thread_id, const int spin_count = DEFAULT_SPIN_COUNT) :
+		inline RLockAsNecessary(CRWLock& lock, const CThreadID& ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
 			Lock(this, lock, ignore_thread_id, spin_count)
 		{}
-		inline RLockAsNecessary(CRWLock& lock, const THREAD_ID ignore_thread_id, const int spin_count = DEFAULT_SPIN_COUNT) :
+		inline RLockAsNecessary(CRWLock& lock, const THREAD_ID ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
 			Lock(this, lock, ignore_thread_id, spin_count)
 		{}
-		inline RLockAsNecessary(CRWLock& lock, const int spin_count = DEFAULT_SPIN_COUNT) :
+		inline RLockAsNecessary(CRWLock& lock, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
 			Lock(this, lock, CThreadID::getThisID(), spin_count)
 		{}
 		//デストラクタ
@@ -364,7 +620,7 @@ public:
 		{}
 	public:
 		//コンストラクタ
-		inline WLock(CRWLock& lock, const int spin_count = DEFAULT_SPIN_COUNT) :
+		inline WLock(CRWLock& lock, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
 			Lock(this, lock, spin_count)
 		{}
 		//デストラクタ
@@ -386,29 +642,29 @@ public:
 	//　アンロックしてしまうことがない。
 
 	//【ロックオブジェクトを返すロックメソッド】リードロック
-	RLock rLock(const int spin_count = DEFAULT_SPIN_COUNT)
+	RLock rLock(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
 	{
 		RLock lock(*this, spin_count);
 		return std::move(lock);
 	}
 	//【ロックオブジェクトを返すロックメソッド】必要に応じてリードロック
-	RLockAsNecessary rLockAsNecessary(const CThreadID& ignore_thread_id, const int spin_count = DEFAULT_SPIN_COUNT)
+	RLockAsNecessary rLockAsNecessary(const CThreadID& ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
 	{
 		RLockAsNecessary lock(*this, ignore_thread_id, spin_count);
 		return std::move(lock);
 	}
-	RLockAsNecessary rLockAsNecessary(const THREAD_ID ignore_thread_id, const int spin_count = DEFAULT_SPIN_COUNT)
+	RLockAsNecessary rLockAsNecessary(const THREAD_ID ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
 	{
 		RLockAsNecessary lock(*this, ignore_thread_id, spin_count);
 		return std::move(lock);
 	}
-	RLockAsNecessary rLockAsNecessary(const int spin_count = DEFAULT_SPIN_COUNT)
+	RLockAsNecessary rLockAsNecessary(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
 	{
 		RLockAsNecessary lock(*this, spin_count);
 		return std::move(lock);
 	}
 	//【ロックオブジェクトを返すロックメソッド】ライトロック
-	WLock wLock(const int spin_count = DEFAULT_SPIN_COUNT)
+	WLock wLock(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
 	{
 		WLock lock(*this, spin_count);
 		return std::move(lock);
@@ -417,7 +673,7 @@ public:
 private:
 	//メソッド　※ロッククラスからのみ使用
 
-	//リードロック
+	//リードロック取得
 	//※必要に応じてリードロックの機能を備える
 	void rlock(const int spin_count, const THREAD_ID ignore_thread_id)
 	{
@@ -448,13 +704,8 @@ private:
 		//リードロック待機ループ
 		while (1)
 		{
-			//内部変数更新ロックループ
-			int spin_count_now = 0;
-			while (m_lock.test_and_set())
-			{
-				if (spin_count == 0 || ++spin_count_now % spin_count == 0)
-					std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ
-			}
+			//内部変数更新ロック取得
+			m_lock.lock(spin_count);
 
 			//内部変数更新ロックを取得できたので、ライトロックの状態をチェック
 			if (m_writeLock.load() == false &&//ライトロック状態ではない
@@ -463,20 +714,20 @@ private:
 			{
 				//リードロックOK
 				m_readLock.fetch_add(1);//リードロックカウントアップ
-				m_lock.clear();//内部変数更新ロック解除
+				m_lock.unlock();//内部変数更新ロック解放
 				break;
 			}
 
-			//内部変数更新ロック解除
+			//内部変数更新ロック解放
 			//※リードロックが取得できるまで再び待機
-			m_lock.clear();
+			m_lock.unlock();//内部変数更新ロック解放
 		}
 
 		//リードロック予約カウントダウン
 		//※制御上は必要ないが、問題追跡時の参考用
 		m_readLockReserved.fetch_sub(1);
 	}
-	//ライトロック
+	//ライトロック取得
 	void wlock(const int spin_count)
 	{
 		//ライトロック予約カウントアップ
@@ -485,32 +736,27 @@ private:
 		//ライトロック待機ループ
 		while (1)
 		{
-			//内部変数更新ロックループ
-			int spin_count_now = 0;
-			while (m_lock.test_and_set())
-			{
-				if (spin_count == 0 || ++spin_count_now % spin_count == 0)
-					std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ
-			}
+			//内部変数更新ロック取得
+			m_lock.lock(spin_count);
 
 			//内部変数更新ロックを取得できたので、リードロックとライトロックの状態をチェック
 			if (m_readLock.load() == 0 && m_writeLock.load() == false)
 			{
 				//ライトロックOK
 				m_writeLock.store(true);//ライトロックON
-				m_lock.clear();//内部変数更新ロック解除
+				m_lock.unlock();//内部変数更新ロック解放
 				break;
 			}
 
-			//内部変数更新ロック解除
+			//内部変数更新ロック解放
 			//※ライトロックが取得できるまで再び待機
-			m_lock.clear();
+			m_lock.unlock();//内部変数更新ロック解放
 		}
 
 		//ライトロック予約カウントダウン
 		m_writeLockReserved.fetch_sub(1);
 	}
-	//リードアンロック
+	//リードロック解放
 	void runlock()
 	{
 		//全てライトロックにするモード用処理
@@ -523,7 +769,7 @@ private:
 		//リードロックカウントダウン
 		m_readLock.fetch_sub(1);
 	}
-	//ライトアンロック
+	//ライトロック解放
 	void wunlock()
 	{
 		//ライトロックOFF
@@ -546,7 +792,6 @@ public:
 		m_readLock(0),
 		m_writeLockReserved(0),
 		m_writeLock(false),
-		m_lock(),
 		m_wlockPrioritized(wlock_prioritized)
 	{}
 	CRWLock(const CThreadID& ignore_thread_id, const E_WLOCK_PRIORITY wlock_prioritized) :
@@ -574,7 +819,7 @@ private:
 	std::atomic<int> m_readLock;//リードロックカウンタ
 	std::atomic<int> m_writeLockReserved;//ライトロック予約カウンタ
 	std::atomic<bool> m_writeLock;//ライトロックフラグ
-	std::atomic_flag m_lock;//内部変数更新用ロックフラグ
+	CSpinLock m_lock;//内部変数更新用ロックフラグ
 	E_WLOCK_PRIORITY m_wlockPrioritized;//ライトロック優先度
 };
 
@@ -590,6 +835,9 @@ typedef CRWLock::WLock CRWLockW;
 
 //--------------------------------------------------------------------------------
 //シングルトンクラス
+//※現状は可読性重視だが、実際にはテンプレートのインスタンス化による
+//　プログラムサイズの肥大を考慮し、非テンプレートの共通処理を
+//　切り出す必要がある
 
 //----------------------------------------
 //クラス宣言
@@ -652,9 +900,9 @@ public:
 		IS_CREATED = true,//生成済み
 	};
 	//強制処理指定
-	enum E_IS_FORCE
+	enum E_IS_FORCED
 	{
-		IS_FORCE = true,//強制
+		IS_FORCED = true,//強制
 		IS_NORMAL = false,//通常
 	};
 	//ファイナライズ処理指定
@@ -735,12 +983,12 @@ public:
 		return "(unknown)";
 	}
 	//【定数文字列化】強制処理指定
-	static const char* IsForce_ToStr(const E_IS_FORCE is_force)
+	static const char* IsForced_ToStr(const E_IS_FORCED is_forced)
 	{
 		#define CASE_TO_STR(x) case x: return #x; break;
-		switch (is_force)
+		switch (is_forced)
 		{
-		CASE_TO_STR(IS_FORCE);
+		CASE_TO_STR(IS_FORCED);
 		CASE_TO_STR(IS_NORMAL);
 		}
 		#undef CASE_TO_STR
@@ -797,20 +1045,16 @@ public:
 	static const CSingletonConst::E_IS_THREAD_SAFE THIS_IS_THREAD_SAFE = T::THIS_IS_THREAD_SAFE;//スレッドセーフ宣言
 	static const CSingletonConst::E_IS_MANAGED_SINGLETON THIS_IS_MANAGED_SINGLETON = U::THIS_IS_MANAGED_SINGLETON;//管理シングルトン宣言
 	
-	//【静的アサーション】「自動生成属性：ATTR_AUTO_CREATE」は、「通常シングルトンクラス：CSingleton<T>」でのみ利用可
-	STATIC_ASSERT(THIS_SINGLETON_ATTR == CSingletonConst::ATTR_AUTO_CREATE && THIS_IS_MANAGED_SINGLETON == CSingletonConst::IS_NORMAL_SINGLETON ||
-	              THIS_SINGLETON_ATTR != CSingletonConst::ATTR_AUTO_CREATE,
-		"CManagedSingleton<T> is not supported ATTR_AUTO_CREATE in THIS_SINGLETON_ATTR.");
-	
-	//【静的アサーション】「自動生成／自動削除属性：ATTR_AUTO_CREATE_AND_DELETE」は、「通常シングルトンクラス：CSingleton<T>」でのみ利用可
-	STATIC_ASSERT(THIS_SINGLETON_ATTR == CSingletonConst::ATTR_AUTO_CREATE_AND_DELETE && THIS_IS_MANAGED_SINGLETON == CSingletonConst::IS_NORMAL_SINGLETON ||
-	              THIS_SINGLETON_ATTR != CSingletonConst::ATTR_AUTO_CREATE_AND_DELETE,
-		"CManagedSingleton<T> is not supported ATTR_AUTO_CREATE_AND_DELETE in THIS_SINGLETON_ATTR.");
-	
-	//【静的アサーション】「手動生成属性：ATTR_AUTO_CREATE」は、「管理シングルトンクラス：CManagedSingleton<T>」でのみ利用可
-	STATIC_ASSERT(THIS_SINGLETON_ATTR == CSingletonConst::ATTR_MANUAL_CREATE_AND_DELETE && THIS_IS_MANAGED_SINGLETON == CSingletonConst::IS_MANAGED_SINGLETON ||
-	              THIS_SINGLETON_ATTR != CSingletonConst::ATTR_MANUAL_CREATE_AND_DELETE,
+	//【静的アサーション】通常シングルトンでは、「手動生成属性：ATTR_MANUAL_CREATE_AND_DELETE」を使用するとアサーション違反
+	STATIC_ASSERT(THIS_IS_MANAGED_SINGLETON == CSingletonConst::IS_NORMAL_SINGLETON && THIS_SINGLETON_ATTR != CSingletonConst::ATTR_MANUAL_CREATE_AND_DELETE ||
+		          THIS_IS_MANAGED_SINGLETON != CSingletonConst::IS_NORMAL_SINGLETON,
 		"CSingleton<T> is not supported ATTR_MANUAL_CREATE_AND_DELETE in THIS_SINGLETON_ATTR.");
+
+	//【静的静的アサーション】管理シングルトンでは、「手動生成属性：ATTR_MANUAL_CREATE_AND_DELETE」以外を使用するとアサーション違反
+	STATIC_ASSERT(THIS_IS_MANAGED_SINGLETON == CSingletonConst::IS_MANAGED_SINGLETON && THIS_SINGLETON_ATTR == CSingletonConst::ATTR_MANUAL_CREATE_AND_DELETE ||
+		          THIS_IS_MANAGED_SINGLETON != CSingletonConst::IS_MANAGED_SINGLETON,
+		"CManagedSingleton<T> is only supported ATTR_MANUAL_CREATE_AND_DELETE in THIS_SINGLETON_ATTR.");
+	
 private:
 	//インスタンス生成・破棄用配置new/delete
 	//※new は内部で持つ static バッファのポインタを返すだけ
@@ -922,7 +1166,7 @@ private:
 		m_isCounted = true;
 		
 		//ロック取得
-		while (m_instanceLock.test_and_set()){}
+		m_instanceLock.lock();
 
 		//参照カウンタをカウントアップ
 		bool is_allow_create = false;//インスタンス生成許可フラグ
@@ -972,7 +1216,7 @@ private:
 		}
 
 		//ロック解放
-		m_instanceLock.clear();
+		m_instanceLock.unlock();
 
 		//インスタンス生成を行ったかどうかを返す
 		return is_created;
@@ -989,7 +1233,7 @@ private:
 		m_isCounted = false;
 
 		//ロック取得
-		while (m_instanceLock.test_and_set()){}
+		m_instanceLock.lock();
 
 		//参照カウンタをカウントダウン
 		bool is_allow_delete = false;//インスタンス破棄許可フラグ
@@ -1026,7 +1270,7 @@ private:
 		}
 
 		//ロック解放
-		m_instanceLock.clear();
+		m_instanceLock.unlock();
 
 		//インスタンス破棄を行ったかどうかを返す
 		return is_deleted;
@@ -1035,17 +1279,17 @@ private:
 	//※参照カウンタは更新しない
 	bool deleteThis()
 	{
-		//カウントアップ済み状態解除
+		//カウントアップ済み状態解放
 		m_isCounted = false;
 		
 		//ロック取得
-		while (m_instanceLock.test_and_set()){}
+		m_instanceLock.lock();
 
 		//インスタンス破棄（共通処理利用）
 		const bool is_deleted = deleteThisCore();
 
 		//ロック解放
-		m_instanceLock.clear();
+		m_instanceLock.unlock();
 
 		//インスタンス破棄を行ったかどうかを返す
 		return is_deleted;
@@ -1084,7 +1328,7 @@ private:
 		//【アサーション】通常シングルトンでは、「手動生成属性：ATTR_MANUAL_CREATE_AND_DELETE」を使用するとアサーション違反（処理続行可）
 		ASSERT(THIS_SINGLETON_ATTR != CSingletonConst::ATTR_MANUAL_CREATE_AND_DELETE,
 			"CSingleton<T> is not supported ATTR_MANUAL_CREATE_AND_DELETE in THIS_SINGLETON_ATTR.");
-		
+
 		//【アサーション】インスタンス生成済みの場合、スレッドセーフじゃないクラスに対して、生成時と異なるスレッドからアクセスするとアサーション違反（処理続行可）
 		CThreadID this_thread;
 		ASSERT(m_createdThreadId == INVALID_THREAD_ID ||
@@ -1125,7 +1369,7 @@ private:
 	//フィールド
 	bool m_isCounted;//カウントアップ済み
 	//static std::once_flag m_once;//CallOnceフラグ ※CallOnce廃止
-	static std::atomic_flag m_instanceLock;//生成・破棄処理ロックフラグ
+	static CSpinLock m_instanceLock;//生成・破棄処理ロックフラグ
 	static std::atomic<T*> m_this;//クラス T のインスタンス（ポインタ）
 	static char m_buff[sizeof(T)];//クラス T のインスタンス用の static 領域
 	static std::atomic<int> m_refCount;//参照カウンタ
@@ -1156,7 +1400,7 @@ private:
 //※このマクロを直接使用せず、MAKE_SINGLETON_INSTANCE か MAKE_MANAGED_SINGLETON_INSTANCE_ALL を使用する
 #define MAKE_SINGLETON_COMMON_INSTANCE(T, U) \
 	/*std::once_flag CSingletonCommon<T, U>::m_once;*//*CallOnceフラグ ※CallOnce廃止*/ \
-	std::atomic_flag CSingletonCommon<T, U>::m_instanceLock;/*生成・破棄処理ロックフラグ*/ \
+	CSpinLock CSingletonCommon<T, U>::m_instanceLock;/*生成・破棄処理ロックフラグ*/ \
 	std::atomic<T*> CSingletonCommon<T, U>::m_this(nullptr);/*クラス T のインスタンス（ポインタ）*/ \
 	char CSingletonCommon<T, U>::m_buff[sizeof(T)];/*クラス T のインスタンス用の static 領域*/ \
 	std::atomic<int> CSingletonCommon<T, U>::m_refCount(0);/*参照カウンタ*/ \
@@ -1181,7 +1425,7 @@ public:
 	{
 		CThreadID thread_id;
 		DEBUG_FPRINT(fp, "----------------------------------------\n");
-		while (m_instanceLock.test_and_set()){}//ロック取得
+		m_instanceLock.lock();//ロック取得
 		DEBUG_FPRINT(fp, "Debug Info: [%s] on \"%s\"(0x%08x)\n", getClassName(), thread_id.getName(), thread_id.getID());
 		DEBUG_FPRINT(fp, "  ClassAttribute       = %s\n", getAttr_Named());
 		DEBUG_FPRINT(fp, "  ClassIsThreadSafe    = %s\n", isThreadSafe_Named());
@@ -1191,7 +1435,7 @@ public:
 		DEBUG_FPRINT(fp, "  RefCountOnThisThread = %d\n", getRefCountOnThread());
 		DEBUG_FPRINT(fp, "  ThreadCount          = %d (max=%d)\n", getThreadCount(), getThreadCountMax());
 		DEBUG_FPRINT(fp, "  CreatedThread        = \"%s\"(0x%08x)\n", getCreatedThreadName(), getCreatedThreadID());
-		m_instanceLock.clear();//ロック解放
+		m_instanceLock.unlock();//ロック解放
 		DEBUG_FPRINT(fp, "----------------------------------------\n");
 		DEBUG_FFLUSH(fp);
 	}
@@ -1309,9 +1553,8 @@ private:
 			BREAK_POINT();
 		}
 		//使用中情報作成
-		//※配置 new により、内部の static 変数から領域を割り当て
-		//※T::SINGLETON_USING_LIST_MAX で指定された数まで同時に記録可能
-		m_thisUsingInfo = new USING_INFO(m_usingList, name, thread_id, thread_name, is_initializer);
+		//※THIS_SINGLETON_USING_LIST_MAX で指定された数まで同時に記録可能
+		m_thisUsingInfo = m_usingListBuff.create<USING_INFO>(m_usingList.load(), name, thread_id, thread_name, is_initializer);
 		if (m_thisUsingInfo)
 		{
 			//【参考】ロックフリーなスタックプッシュ（先頭ノード追加）アルゴリズム
@@ -1320,10 +1563,10 @@ private:
 			//※破棄処理側をロックフリーにできないので、このアルゴリズムを使用しない
 
 			//使用中情報リスト追加
-			while (m_usingListLock.test_and_set()){}//ロック取得
+			m_usingListLock.lock();//ロック取得
 			m_thisUsingInfo->m_next = m_usingList.load();
 			m_usingList.store(m_thisUsingInfo);//先頭ノードに挿入（連結リスト）
-			m_usingListLock.clear();//ロック解放
+			m_usingListLock.unlock();//ロック解放
 		}
 	}
 	//使用中処理リストから処理情報削除
@@ -1338,7 +1581,7 @@ private:
 			//※この要件には適合しないので、ロックを使用する
 
 			//使用中情報リスト削除
-			while (m_usingListLock.test_and_set()){}//ロック取得
+			m_usingListLock.lock();//ロック取得
 			USING_INFO* now = m_usingList.load();
 			if (now && now == m_thisUsingInfo)
 			{
@@ -1352,9 +1595,8 @@ private:
 				if (now)
 					now->m_next = m_thisUsingInfo->m_next;
 			}
-			delete m_thisUsingInfo;//削除　※配置delete
-			m_thisUsingInfo = nullptr;
-			m_usingListLock.clear();//ロック解放
+			m_usingListBuff.remove(m_thisUsingInfo);//削除
+			m_usingListLock.unlock();//ロック解放
 		}
 	}
 public:
@@ -1364,7 +1606,7 @@ public:
 		CThreadID thread_id;
 		DEBUG_FPRINT(fp, "----------------------------------------\n");
 		DEBUG_FPRINT(fp, "Using List: [%s] by \"%s\" on \"%s\"(0x%08x)\n", getClassName(), name, thread_id.getName(), thread_id.getID());
-		while (m_usingListLock.test_and_set()){}//ロック取得
+		m_usingListLock.lock();//ロック取得
 		USING_INFO* info = m_usingList;
 		while (info)
 		{
@@ -1377,7 +1619,7 @@ public:
 			info = info->m_next;
 		}
 		DEBUG_FPRINT(fp, "(num=%d, max=%d)\n", m_usingListNum, m_usingListNumMax);
-		m_usingListLock.clear();//ロック解放
+		m_usingListLock.unlock();//ロック解放
 		DEBUG_FPRINT(fp, "----------------------------------------\n");
 		DEBUG_FFLUSH(fp);
 	}
@@ -1386,7 +1628,7 @@ public:
 	{
 		CThreadID thread_id;
 		DEBUG_FPRINT(fp, "----------------------------------------\n");
-		while (m_instanceLock.test_and_set()){}//ロック取得
+		m_instanceLock.lock();//ロック取得
 		DEBUG_FPRINT(fp, "Debug Info: [%s] by \"%s\" on \"%s\"(0x%08x)\n", getClassName(), name, thread_id.getName(), thread_id.getID());
 		DEBUG_FPRINT(fp, "  ClassAttribute       = %s\n", getAttr_Named());
 		DEBUG_FPRINT(fp, "  ClassIsThreadSafe    = %s\n", isThreadSafe_Named());
@@ -1399,7 +1641,7 @@ public:
 		DEBUG_FPRINT(fp, "  InitializerName      = \"%s\"\n", getInitializerName());
 		DEBUG_FPRINT(fp, "  InitializerExists    = %d\n", getInitializerExists());
 		DEBUG_FPRINT(fp, "  DebugTrap            = \"%s\" on \"%s\"\n", getDebugTrapName(), getDebugTrapThreadName());
-		m_instanceLock.clear();//ロック解放
+		m_instanceLock.unlock();//ロック解放
 		DEBUG_FPRINT(fp, "----------------------------------------\n");
 		DEBUG_FFLUSH(fp);
 	}
@@ -1424,66 +1666,18 @@ private:
 		const THREAD_ID m_threadId;//処理スレッドのスレッドID
 		const char* m_threadName;//処理スレッドのスレッド名
 		bool m_isInitializer;//イニシャライザーフラグ
-		bool m_isUsed;//使用中フラグ（配置newで使用）
 		//コンストラクタ
 		USING_INFO(USING_INFO* next, const char* name, const THREAD_ID thread_id, const char* thread_name, const CSingletonConst::E_IS_INITIALIZER is_initializer) :
 			m_next(next),
 			m_name(name),
 			m_threadId(thread_id),
 			m_threadName(thread_name),
-			m_isInitializer(is_initializer == CSingletonConst::IS_INITIALIZER),
-			m_isUsed(true)
+			m_isInitializer(is_initializer == CSingletonConst::IS_INITIALIZER)
 		{
 		}
 		//デストラクタ
 		~USING_INFO()
 		{
-		}
-		//配置new
-		//※内部static変数に領域の配列を持ち、空いている領域を探して返す
-		//※この処理の外側でロック必須
-		void* operator new(const size_t size)
-		{
-			//【アサーション】空きがなかったらアサーション違反
-			//※これにより、想定外の同時アクセスを検出する
-			ASSERT(m_usingListNum < THIS_SINGLETON_USING_LIST_MAX, 
-				"CSingletonUsing<T>: using list is full.");
-			if (m_usingListNum >= THIS_SINGLETON_USING_LIST_MAX)
-			{
-				return nullptr;
-			}
-			//空いているノードを検索して返す
-			//※使用中フラグを立てる
-			void* p = nullptr;
-			char* p_tmp = &m_usingListBuff[0][0];
-			for (int index = 0; index < THIS_SINGLETON_USING_LIST_MAX; ++index)
-			{
-				USING_INFO* o = reinterpret_cast<USING_INFO*>(p_tmp);
-				if (!o->m_isUsed)
-				{
-					o->m_isUsed = true;//使用中フラグを立てる
-					p = static_cast<void*>(o);
-					break;
-				}
-				p_tmp += sizeof(m_usingListBuff[0]);
-			}
-			//【アサーション】使用数に空きがあるはずなのに空きノードがない⇒プログラムに間違いがある
-			ASSERT(p != nullptr,
-				"CManagedSingleton<T>::USING_INFO::operator-new maybe wrong program.");
-			int num = m_usingListNum.fetch_add(1);
-			++num;
-			if (m_usingListNumMax.load() < num)
-				m_usingListNumMax.store(num);
-			return p;
-		}
-		//配置delete
-		//※使用中フラグをOFF
-		//※この処理の外側でロック必須
-		void operator delete(void* p)
-		{
-			USING_INFO* o = reinterpret_cast<USING_INFO*>(p);
-			o->m_isUsed = false;
-			m_usingListNum.fetch_sub(1);
 		}
 	};
 private:
@@ -1497,8 +1691,8 @@ private:
 	static std::atomic<int> m_usingListNum;//使用中処理リストの使用数
 	static std::atomic<int> m_usingListNumMax;//使用中処理リストの使用数の最大到達値
 	static std::atomic<USING_INFO*> m_usingList;//使用中処理リスト
-	static std::atomic_flag m_usingListLock;//使用中処理リストのロック用フラグ
-	static char m_usingListBuff[THIS_SINGLETON_USING_LIST_MAX][sizeof(USING_INFO)];//使用中処理リストの領域
+	static CSpinLock m_usingListLock;//使用中処理リストのロック用フラグ
+	static CBlockAllocator<THIS_SINGLETON_USING_LIST_MAX, sizeof(USING_INFO)> m_usingListBuff;//使用中処理リストの領域
 };
 
 //----------------------------------------
@@ -1536,8 +1730,8 @@ private:
 	std::atomic<int> CManagedSingleton<T>::m_usingListNum(0);/*使用中処理リストの使用数*/ \
 	std::atomic<int> CManagedSingleton<T>::m_usingListNumMax(0);/*使用中処理リストの使用数の最大到達値*/ \
 	std::atomic< CManagedSingleton<T>::USING_INFO* > CManagedSingleton<T>::m_usingList(nullptr);/*使用中処理リスト*/ \
-	std::atomic_flag CManagedSingleton<T>::m_usingListLock;/*使用中処理リストのロック用フラグ*/ \
-	char CManagedSingleton<T>::m_usingListBuff[THIS_SINGLETON_USING_LIST_MAX][sizeof(CManagedSingleton<T>::USING_INFO)];/*使用中処理リストの領域*/
+	CSpinLock CManagedSingleton<T>::m_usingListLock;/*使用中処理リストのロック用フラグ*/ \
+	CBlockAllocator<CManagedSingleton<T>::THIS_SINGLETON_USING_LIST_MAX, sizeof(CManagedSingleton<T>::USING_INFO)> CManagedSingleton<T>::m_usingListBuff;/*使用中処理リストの領域*/
 
 //----------------------------------------
 //【シングルトン用ヘルパー】シングルトンプロキシーテンプレートクラス　※継承専用
@@ -1700,27 +1894,31 @@ public:
 		return is_created;
 	}
 	//破棄（手動破棄）
-	bool finalize(){ return releaseCore(CSingletonConst::IS_FINALIZE); }
+	bool finalize(CSingletonConst::E_IS_FORCED is_forced = CSingletonConst::IS_NORMAL){ return releaseCore(CSingletonConst::IS_FINALIZE, is_forced); }
 	//（明示的な）参照カウンタリリース　※破棄しない
-	bool release(){ return releaseCore(CSingletonConst::IS_RELEASE); }
+	bool release(){ return releaseCore(CSingletonConst::IS_RELEASE, CSingletonConst::IS_NORMAL); }
 private:
 	//参照カウンタリリース（共通処理）
-	bool releaseCore(CSingletonConst::E_IS_FINALIZE is_finalize)
+	bool releaseCore(CSingletonConst::E_IS_FINALIZE is_finalize, CSingletonConst::E_IS_FORCED is_forced)
 	{
 		//リリース済みなら即終了
-		//※強制破棄指定時はリリース済みでも実行する
+		//※ファイナライズ時はリリース済みでも実行する
 		if (!m_isAddRef && is_finalize != CSingletonConst::IS_FINALIZE)
 			return false;
 
 		//【アサーション】既に破棄済みならアサーション違反（処理続行可）
-		//※ファイナライズ時はアサーション違反としない
-		ASSERT(isCreated() == CSingletonConst::IS_CREATED || is_finalize == CSingletonConst::IS_FINALIZE,
+		//※強制実行時はアサーション違反としない
+		ASSERT(isCreated() == CSingletonConst::IS_CREATED ||
+			   is_forced == CSingletonConst::IS_FORCED,
 			"CSingletonInitializer<T> cannot delete. Singleton instance is already deleted.");
 
-		//【アサーション】手動破棄指定時に自分以外のイニシャライザーがいるならアサーション違反（処理続行可）
-		//※ファイナライズ時はアサーション違反としない
-		ASSERT(!is_finalize || getInitializerExists() <= 1 || is_finalize == CSingletonConst::IS_FINALIZE,
-			"CSingletonInitializer<T> will delete immediately, but another initializer exists.");
+		//【アサーション】ファイナライズ時にまだが参照が残っているならアサーション違反（処理続行可）
+		//※強制時刻時はアサーション違反としない
+		const int LAST_COUNT = getRefCount() - (m_isAddRef ? 1 : 0);
+		ASSERT(is_finalize == CSingletonConst::IS_FINALIZE && LAST_COUNT == 0 ||
+			   is_finalize != CSingletonConst::IS_FINALIZE ||
+			   is_forced == CSingletonConst::IS_FORCED,
+			"CSingletonInitializer<T> will finalize, yet still using singleton.");
 
 		//参照カウンタリリース
 		bool is_deleted = false;//削除済みフラグ
@@ -1745,7 +1943,7 @@ private:
 	}
 public:
 	//コンストラクタ
-	CSingletonInitializer(const char* name, const CSingletonConst::E_IS_FORCE is_force = CSingletonConst::IS_NORMAL) :
+	CSingletonInitializer(const char* name, const CSingletonConst::E_IS_FORCED is_forced = CSingletonConst::IS_NORMAL) :
 		CSingletonProxy(name),
 		m_isFirst(false)
 	{
@@ -1763,7 +1961,7 @@ public:
 
 		//【アサーション】他にもイニシャライザーがいるならアサーション違反（処理続行可）
 		//※強制破棄指定時はアサーション違反としない
-		ASSERT(m_isFirst == true || is_force == CSingletonConst::IS_FORCE,
+		ASSERT(m_isFirst == true || is_forced == CSingletonConst::IS_FORCED,
 			"CSingletonInitializer<T>: already exist!");
 	}
 	//デストラクタ
@@ -2169,7 +2367,7 @@ void threadFunc2A(const char* thread_name)
 	data->print("threadFunc2A:BEFORE", thread_id.getName());
 
 	//リードロック
-	//※関数終了時に自動的にロック解除
+	//※関数終了時に自動的にロック解放
 	CRWLockR lock(data);
 	//※管理シングルトンはリード・ライトロックを一つ保持している。
 	//　また、キャストオペレーターにより、そのままリード・ライトロックオブジェクトとして振る舞うことができる
@@ -2210,7 +2408,7 @@ void threadFunc2B(const char* thread_name)
 	data->print("threadFunc2B:BEFORE", thread_id.getName());
 
 	//ライトロック
-	//※関数終了時に自動的にロック解除
+	//※関数終了時に自動的にロック解放
 	CRWLockW lock(data);
 	//※管理シングルトンはリード・ライトロックを一つ保持している。
 	//　また、キャストオペレーターにより、そのままリード・ライトロックオブジェクトとして振る舞うことができる
@@ -2368,8 +2566,6 @@ void test2()
 	printf("----------------------------------------------------------------------\n");
 }
 
-//--------------------------------------------------------------------------------
-
 //----------------------------------------
 //テストメイン
 int main(const int argc, const char* argv[])
@@ -2386,7 +2582,8 @@ int main(const int argc, const char* argv[])
 	return EXIT_SUCCESS;
 }
 
-#else
+#endif
+#if 0
 //--------------------------------------------------------------------------------
 //旧テスト処理
 
@@ -2548,7 +2745,7 @@ int main(const int argc, const char* argv[])
 		CSingletonUsing<CResManager> ng_res("main_prior");
 		ng_res.printDebugInfo();
 		//CSingletonInitializer<CResManager> res_init("initializer");
-		CSingletonInitializer<CResManager> res_init("initializer", CSingletonConst::IS_FORCE);
+		CSingletonInitializer<CResManager> res_init("initializer", CSingletonConst::IS_FORCED);
 		res_init.createSingleton();
 		CSingletonUsing<CResManager> res("main");
 		subA();
@@ -2592,7 +2789,7 @@ int main(const int argc, const char* argv[])
 			printf("getInitializeNname()=\"%s\"\n", res_init.getInitializerName());
 		}
 		res_init.releaseSingleton();
-		res_init.deleteSingleton(CSingletonConst::IS_FORCE);
+		res_init.deleteSingleton(CSingletonConst::IS_FORCED);
 		res_init.printUsingList();
 		res_init.printDebugInfo();
 	}

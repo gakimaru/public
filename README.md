@@ -138,65 +138,65 @@
 
 ####[tools]####
      |
-     `-[git_erase_wincred_all]   ... ★TortoiseGit が wincred で記憶するユーザー認証情報を
-                                     　一括削除する為のごく簡単なプログラムのソース
+     `-[git_erase_wincred_all]        ... ★TortoiseGit が wincred で記憶するユーザー認証情報を
+                                          　一括削除する為のごく簡単なプログラムのソース
 
 ####[test]####
      |
-     |-[Program]
+     |-[Program]                      ... プログラムのテスト
      |  |
-     |  |-[C#]
+     |  |-[C#]                        ... C#のテスト
      |  |  |
-     |  |  `-[JSON]              ... ☆C#によるJSON解析およびC#スクリプトのランタイムコンパイル＆実行のテスト
+     |  |  `-[JSON]                   ... ☆C#によるJSON解析およびC#スクリプトのランタイムコンパイル＆実行のテスト
      |  |
-     |  |-[C++]
+     |  |-[C++]                       ... C++ のテスト
      |  |  |
-     |  |  |-[boost]
+     |  |  |-[boost]                  ... Boost C++ のテスト
      |  |  |  |
-     |  |  |  |-[install]        ... ☆boost のインストール手順の記録
+     |  |  |  |-[install]             ... ☆boost のインストール手順の記録
      |  |  |  |
-     |  |  |  `-[serializer]     ... boost::serialization をテスト
+     |  |  |  `-[serializer]          ... boost::serialization をテスト
      |  |  |
-     |  |  |-[CalcExpression]    ... 計算式の状況に応じた右値評価のテスト
+     |  |  |-[CalcExpression]         ... 計算式の状況に応じた右値評価のテスト
      |  |  |
-     |  |  |-[constexpr]         ... constexpr のテスト
+     |  |  |-[constexpr]              ... constexpr のテスト
      |  |  |
-     |  |  |-[DebugPrint]        ... ☆デバッグ用ロギング処理／boost::backtraceのテスト
-     |  |  |-[DebugPrintTest]    ... デバッグ用ロギング処理の試作
+     |  |  |-[DebugPrint]             ... ☆デバッグ用ロギング処理／boost::backtraceのテスト
+     |  |  |-[DebugPrintTest]         ... デバッグ用ロギング処理の試作
      |  |  |
-     |  |  |-[DesignPattern]     ... ☆デザインパターンの実装テスト
+     |  |  |-[DesignPattern]          ... ☆デザインパターンの実装テスト
      |  |  |
-     |  |  |-[FloatedFraction]   ... ☆浮動小数点小数のバイナリデータ構造確認
+     |  |  |-[FloatedFraction]        ... ☆浮動小数点小数のバイナリデータ構造確認
      |  |  |
-     |  |  |-[GDConv]            ... ゲームデータ構造定義データの構成テスト
+     |  |  |-[GDConv]                 ... ゲームデータ構造定義データの構成テスト
      |  |  |
-     |  |  |-[OpenGL]            ... OpenGLとGLSLのごく簡単なテスト（シェーダーのテストが目的）
+     |  |  |-[OpenGL]                 ... OpenGLとGLSLのごく簡単なテスト（シェーダーのテストが目的）
      |  |  |
-     |  |  |-[PrecompiledHeader] ... プリコンパイル済みヘッダーの確認
+     |  |  |-[PrecompiledHeader]      ... プリコンパイル済みヘッダーの確認
      |  |  |
-     |  |  |-[Random]            ... 乱数のテスト
+     |  |  |-[Random]                 ... 乱数のテスト
      |  |  |
-     |  |  |-[ResourceBuilder]   ... ★リソースビルダーのサンプル処理
+     |  |  |-[ResourceBuilderFactory] ... ★リソースビルダーファクトリーのサンプル処理
      |  |  |
-     |  |  |-[RTTI]              ... 実行時型情報（RTTI）の確認
+     |  |  |-[RTTI]                   ... 実行時型情報（RTTI）の確認
      |  |  |
-     |  |  |-[stack]             ... スタックメモリの使用状態と、各データセクションの扱いを確認
+     |  |  |-[stack]                  ... スタックメモリの使用状態と、各データセクションの扱いを確認
      |  |  |
-     |  |  |-[StaticCRC32]       ... ☆文字列のCRC32計算をテンプレートで行うテストプログラム
-     |  |  |                         　コンパイル時に完結する事前計算を目指したが...無理だった。
+     |  |  |-[StaticCRC32]            ... ☆文字列のCRC32計算をテンプレートで行うテストプログラム
+     |  |  |                              　コンパイル時に完結する事前計算を目指したが...無理だった。
      |  |  |
-     |  |  |-[template]
+     |  |  |-[template]               ... テンプレートのテスト
      |  |  |  |
-     |  |  |  |-[countOf]        ... ☆配列要素数取得のテンプレートとマクロ比較テスト
+     |  |  |  |-[countOf]             ... ☆配列要素数取得のテンプレートとマクロ比較テスト
      |  |  |  |
-     |  |  |  |-[CRTP01]         ... ☆CRTPテンプレートのテスト
+     |  |  |  |-[CRTP01]              ... ☆CRTPテンプレートのテスト
      |  |  |  |
-     |  |  |  |-[Max]            ... ☆Min/Maxテンプレート関数のテスト（アセンブラ展開の状態確認が目的）
-     |  |  |  |                      　※本当は constexpr との挙動の違いを比較したかった
+     |  |  |  |-[Max]                 ... ☆Min/Maxテンプレート関数のテスト（アセンブラ展開の状態確認が目的）
+     |  |  |  |                           　※本当は constexpr との挙動の違いを比較したかった
      |  |  |  |
-     |  |  |  `-[Proxy]          ... ☆テンプレートによる、Proxyパターンおよび自前仮想クラスの実装テスト
+     |  |  |  `-[Proxy]               ... ☆テンプレートによる、Proxyパターンおよび自前仮想クラスの実装テスト
      |  |  |
-     |  |  |-[Thread]
+     |  |  |-[Thread]                 ... マルチスレッドのテスト
      |  |  |  |
      |  |  |  |-[alarm_fork]                  ... Unix alarmとforkのテスト（雑）
      |  |  |  |-[alarm_thread]                ... Unix alarmとpthreadのテスト（雑）
@@ -242,32 +242,32 @@
      |  |  |  |-[tls_c++11]                   ... WIN32(C++11) スレッドローカルストレージ（TLS）のテスト
      |  |  |  `-[volatile]                    ... WIN32 volatile型修飾子によるコード生成の確認テスト
      |  |  |
-     |  |  `-[UnitTest]          ... ☆ユニットテスト用処理作成
+     |  |  `-[UnitTest]               ... ☆ユニットテスト用処理作成
      |  |
-     |  |-[F#]
+     |  |-[F#]                        ... F#のテスト
      |  |  |
-     |  |  `-[Test01]            ... F#を試しに使ってみた
+     |  |  `-[Test01]                 ... F#を試しに使ってみた
      |  |
-     |  |-[JScript]
+     |  |-[JScript]                   ... JScriptのテスト
      |  |  |
-     |  |  `-[JSON]              ... ☆JScriptによるJSON解析テスト（VBA, VBScript, PowerShellのサンプルも置いている）
+     |  |  `-[JSON]                   ... ☆JScriptによるJSON解析テスト（VBA, VBScript, PowerShellのサンプルも置いている）
      |  |
-     |  |-[Prolog]
+     |  |-[Prolog]                    ... Prologのテスト
      |  |  |
-     |  |  `-[Test01]            ... Prologを試しに使ってみた
+     |  |  `-[Test01]                 ... Prologを試しに使ってみた
      |  |
-     |  |-[Scons]                ... ☆Sconsによるスクリプトビルド環境のテスト
+     |  |-[Scons]                     ... ☆Sconsによるスクリプトビルド環境のテスト
      |  |
-     |  `-[Unity]                ... Unityを試用（起動した程度）
+     |  `-[Unity]                     ... Unityを試用（起動した程度）
      |
-     |-[Excel]
+     |-[Excel]                        ... Excelのテスト
      |  |
-     |  |-[VBAでJSONパーステスト]... VBAを使用し、JSONテキストをパースするテスト
+     |  |-[VBAでJSONパーステスト]     ... VBAを使用し、JSONテキストをパースするテスト
      |  |
-     |  `-[What-If分析テスト]    ... ExcelのWhat-If分析機能をテスト
+     |  `-[What-If分析テスト]         ... ExcelのWhat-If分析機能をテスト
      |
-     `-[ドキュメント]
+     `-[ドキュメント]                 ... ドキュメント作成のテスト
         |
-        `-[縦書きテスト]         ... InDesign と Word を使用し、縦書きの表示具合をテスト。
+        `-[縦書きテスト]              ... InDesign と Word を使用し、縦書きの表示具合をテスト。
 
 以上

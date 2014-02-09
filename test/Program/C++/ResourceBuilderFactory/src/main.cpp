@@ -6,7 +6,7 @@
 #include <atomic>
 
 //--------------------------------------------------------------------------------
-//【サンプル用ダミー】型宣言と共通関数
+//【サンプル用ダミー】共通型宣言と共通関数
 
 //CRC32型
 typedef unsigned int CRC32;
@@ -18,7 +18,7 @@ CRC32 CRC(const char* str)
 }
 
 //--------------------------------------------------------------------------------
-//【サンプル用ダミー】リソースマネージャクラス
+//【サンプル用ダミー】シングルトンクラス
 
 //シングルトンアクセスクラス（ダミー）
 template<class T>
@@ -36,6 +36,7 @@ private:
 	static T m_instance;//シングルトンインスタンス
 };
 
+//シングルトンstaticインスタンス生成用マクロ
 #define SINGLETON_INSTANCE(T) \
 	T CSingletonUsing<T>::m_instance;
 
@@ -353,7 +354,7 @@ private:
 		if (m_this)
 			return;
 
-		//インスタンス生成
+		//シングルトンインスタンス生成
 		m_this = new(m_this, m_buff, sizeof(m_buff))CResBuilderFactory<T>();
 		
 		//連結リストに連結
@@ -386,6 +387,7 @@ private:
 	CResBuilderFactory<T>* CResBuilderFactory<T>::m_this = nullptr; \
 	char CResBuilderFactory<T>::m_buff[sizeof(CResBuilderFactory<T>)];
 
+//----------------------------------------
 //リソースビルダーファクトリー処理用配置new
 void* operator new(std::size_t size, CAbstractResBuilderFactory*, char* buff, const std::size_t buff_size)
 {
@@ -393,7 +395,6 @@ void* operator new(std::size_t size, CAbstractResBuilderFactory*, char* buff, co
 		return nullptr;
 	return buff;
 }
-
 //リソースビルダーファクトリー処理用配置delete
 void operator delete(void* p, CAbstractResBuilderFactory*, char*, const std::size_t)
 {}
@@ -402,6 +403,7 @@ void operator delete(void* p, CAbstractResBuilderFactory*, char*, const std::siz
 //リソースビルダープロキシークラス
 //※リソースビルダーのインスタンスを構築するためのバッファを持ち、
 //　リソースビルダーとして振るまうクラス
+//　（ローカル変数のバッファでリソースビルダーのインスタンスを生成するために使用する）
 class CResBuiderProxy
 {
 public:
@@ -484,7 +486,7 @@ public:
 	}
 	//全要求をビルド（ダミー）
 	//※本来このようなメソッドではなく、一つ一つのビルド処理をジョブとして投入する
-	void createAll()//ダミー
+	void createAll()
 	{
 		for (CResBuildReqInfo& build_info : m_reqList)
 		{
@@ -494,7 +496,7 @@ public:
 	}
 	//全要求をコピーでビルド（ダミー）
 	//※本来このようなメソッドではなく、一つ一つのビルド処理をジョブとして投入する
-	void copyAll()//ダミー
+	void copyAll()
 	{
 		for (CResBuildReqInfo& build_info : m_reqList)
 		{
@@ -505,7 +507,7 @@ public:
 	}
 	//全リソースを破棄（ダミー）
 	//※本来このようなメソッドではなく、一つ一つの破棄処理をジョブとして投入する
-	void destroyAll()//ダミー
+	void destroyAll()
 	{
 		for (CResBuildReqInfo& build_info : m_reqList)
 		{
@@ -528,7 +530,7 @@ private:
 SINGLETON_INSTANCE(CResManager);
 
 //--------------------------------------------------------------------------------
-//【サンプル】リソースビルダークラス
+//【サンプル】タイトル固有のリソースビルダークラス
 
 //----------------------------------------
 //定数：リソース種別ID
@@ -560,16 +562,14 @@ enum E_MEM_ID
 //----------------------------------------
 //独自リソースビルダークラス：モデル用
 //※ビルド実行時に、ビルドスレッド処理がインスタンスを生成して
-//　build() メソッドを実行する。
-//※buiild() メソッドのパラメータ CResBuildReqInfo に、
+//　create() メソッドを実行する。
+//※create() メソッドのパラメータ CResBuildReqInfo に、
 //　読み込んだファイルのバッファや、構築先のメモリ情報などが格納されている
 //※デフォルトコンストラクタしか使えない
 //※フィールドは好きに追加して良いが、
 //　CResBuiderProxy::BUILDER_SIZE_MAX を超えるサイズは不可。
 //※リソースビルダーは実行の都度インスタンスを生成するが、
-//　ローカル変数として生成される。
-//　（CResBuiderProxy::BUILDER_SIZE_MAX のサイズのバッファが
-//　ローカル変数に作られ、そこにインスタンスが生成される）
+//　CResBuiderProxyによってローカル変数として生成される。
 class CModelResourceBuilder : public IResBuider
 {
 public:
@@ -767,7 +767,7 @@ int main(const int argc, const char* argv[])
 	printf("----- コピー実行 -----\n");
 	copyAll();
 
-	//リソースは黄
+	//リソース破棄
 	printf("----- リソース破棄 -----\n");
 	destroyAll();
 

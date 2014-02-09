@@ -527,10 +527,12 @@ public:
 	{}
 private:
 	//フィールド
+	//typedef short COUNTER_T;
+	typedef int COUNTER_T;
 	THREAD_ID m_ignoreThreadId;//「必要に応じてリードロック」用のスレッドID
-	std::atomic<int> m_readLockReserved;//リードロック予約カウンタ ※制御上は必要ないが、問題追跡時の参考用
-	std::atomic<int> m_readLock;//リードロックカウンタ
-	std::atomic<int> m_writeLockReserved;//ライトロック予約カウンタ
+	std::atomic<COUNTER_T> m_readLockReserved;//リードロック予約カウンタ ※制御上は必要ないが、問題追跡時の参考用
+	std::atomic<COUNTER_T> m_readLock;//リードロックカウンタ
+	std::atomic<COUNTER_T> m_writeLockReserved;//ライトロック予約カウンタ
 	std::atomic<bool> m_writeLock;//ライトロックフラグ
 	std::atomic_flag m_lock;//内部変数更新用ロックフラグ
 	E_WLOCK_PRIORITY m_wlockPrioritized;//ライトロック優先度
@@ -668,6 +670,8 @@ void threadFuncR(const char* name)
 //テスト
 int main(const int argc, const char* argv[])
 {
+	printf("sizeof(CRWLock)=%d\n", sizeof(CRWLock));
+
 	//スレッド作成
 	std::thread thread_obj1 = std::thread(threadFuncR, "太郎");
 	std::thread thread_obj2 = std::thread(threadFuncR, "次郎");

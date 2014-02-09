@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5CA9EEC3-A392-4155-9365-F6DDFA98A68D}</ProjectGuid>
+    <ProjectGuid>{9F4D7DBB-AD98-48A3-8388-C31B0750CFBC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ResourceBuilderBuilder</RootNamespace>
+    <RootNamespace>ResourceBuilderFactory</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

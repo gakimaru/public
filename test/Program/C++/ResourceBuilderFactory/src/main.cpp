@@ -106,265 +106,12 @@ enum E_BUILD_RESULT
 };
 
 //----------------------------------------
-//リソースビルダービルダー抽象クラス
-
-//クラス宣言
-class CResBuiderProxy;
-class IResBuider;
-
-//リソースビルダービルダー抽象クラス
-class CAbstractResBuilderBuilder
-{
-public:
-	//メソッド
-	//リソースビルダー構築
-	virtual IResBuider* createBuilder(const int builder_type_id, CResBuiderProxy& builder) = 0;
-	//リソースビルダー破棄
-	virtual bool deleteBuilder(const int builder_type_id, IResBuider* p, CResBuiderProxy& builder) = 0;
-protected:
-	//フィールド
-	CAbstractResBuilderBuilder* m_next;//次のリソースビルダービルダー
-};
-
-//----------------------------------------
-//リソースビルダーインターフェースクラス
-
-//クラス宣言
-class CResBuildReqInfo;
-
-//リソースビルダーインターフェースクラス
-class IResBuider
-{
-public:
-	//メソッド
-	//ハンドル作成
-	virtual HRES makeHandle(const CResBuildReqInfo& req_info) = 0;
-	//リソース構築
-	virtual E_BUILD_RESULT create(const CResBuildReqInfo& req_info) = 0;
-	//リソースコピー
-	virtual E_BUILD_RESULT copy(const CResBuildReqInfo& req_info, const void* src_res) = 0;
-	//リソース破棄
-	virtual E_BUILD_RESULT destroy(void* res) = 0;
-public:
-	//デストラクタ
-	virtual ~IResBuider()
-	{}
-};
-
-//----------------------------------------
-//リソースビルダープロキシークラス
-//※リソースビルダーのインスタンスを構築するためのバッファを持ち、
-//　リソースビルダーとして振るまうクラス
-
-//クラス宣言
-class CAbstractResBuilderBuilder;
-class CResBuildReqInfo;
-class IResBuider;
-
-//リソースビルダービルダー連結リスト
-namespace
-{
-	std::atomic<CAbstractResBuilderBuilder*> s_head = nullptr;
-}
-
-//リソースビルダープロキシークラス
-class CResBuiderProxy
-{
-	friend void* operator new(std::size_t size, CResBuiderProxy& proxy);
-	friend void operator delete(void* p, CResBuiderProxy& proxy);
-public:
-	//定数
-	static const size_t BUILDER_SIZE_MAX = 32;//リソースビルダーの最大サイズ（バイト）
-	                                          //※リソースビルダーはスタックのメモリを使用する
-	                                          //※フィールドを一つも持たないリソースビルダーのサイズは4バイト
-public:
-	//メソッド
-	//ハンドル発行
-	//HRES makeHandle(const CResBuildReqInfo& req_info)
-	//{
-	//	if (!m_builder)
-	//		return false;
-	//	return m_builder->makeHandle(req_info);
-	//}
-	//リソースビルド
-	E_BUILD_RESULT create(const CResBuildReqInfo& req_info)
-	{
-		if (!m_builder)
-			return BUILD_IMPOSSIBLE;
-		return m_builder->create(req_info);
-	}
-	//リソースコピービルド
-	E_BUILD_RESULT copy(const CResBuildReqInfo& req_info, const void* src_res)
-	{
-		if (!m_builder || !src_res)
-			return BUILD_IMPOSSIBLE;
-		return m_builder->copy(req_info, src_res);
-	}
-	//リソース破棄
-	E_BUILD_RESULT destroy(void* res)
-	{
-		if (!m_builder)
-			return BUILD_IMPOSSIBLE;
-		return m_builder->destroy(res);
-	}
-public:
-	//リソースビルダー構築
-	template<class T>
-	IResBuider* createBuilder()
-	{
-		//【静的アサーション】最大サイズを超えるリソースビルダーはコンパイルできない
-		static_assert(sizeof(T) <= BUILDER_SIZE_MAX, "ResourceBuilder class T is too big!");
-		//リソースビルダーのインスタンスを生成して返す
-		m_builder = new(*this) T();
-		return m_builder;
-	}
-	//リソースビルダー破棄
-	template<class T>
-	bool deleteBuilder(T* p)
-	{
-		if (!p)
-			return false;
-		//if (p != m_builder)//←このチェックは行わない
-		//	return false;    //　クラス T が多重継承をしていると、p == m_builder になるとは限らないので注意
-		p->~T();
-		operator delete(p, *this);
-		p = nullptr;
-		m_builder = nullptr;
-		return true;
-	}
-public:
-	//コンストラクタ
-	CResBuiderProxy(const int builder_type_id)
-	{
-		s_head.load() && s_head.load()->createBuilder(builder_type_id, *this);
-	}
-	//デストラクタ
-	~CResBuiderProxy()
-	{
-		deleteBuilder(m_builder);//保険処理
-	}
-private:
-	//フィールド
-	IResBuider* m_builder;//リソースビルダー
-	char m_builderBuff[BUILDER_SIZE_MAX];//リソースビルダー用バッファ
-};
-
-//オペレータ
-//リソースビルダー構築用配置new
-void* operator new(std::size_t size, CResBuiderProxy& proxy)
-{
-	return proxy.m_builderBuff;
-}
-//リソースビルダー構築用配置delete
-void operator delete(void* p, CResBuiderProxy& proxy)
-{
-}
-
-//----------------------------------------
-//リソースビルダービルダークラス
-//※リソースビルダーを構築するためのクラス。
-//　「ビルダーパターン」の実装。
-//※ゲーム中で使用されるリソースビルダービルダーは
-//　全てシングルトンとして保持し、連結リストでつながっている。
-//※リソースビルダーを生成する際は、連結リストをたどって
-//　タイプIDに該当するインスタンスを生成して返す。
-//　「チェインオブレスポンシビリティパターン」の応用。
-
-//クラス宣言
-template<class T>
-class CResBuildReq;
-class CResBuiderProxy;
-class IResBuider;
-class CAbstractResBuilderBuilder;
-
-//リソースビルダービルダーテンプレートクラス
-template<class T>
-class CResBuilderBuilder : CAbstractResBuilderBuilder
-{
-	friend class CResBuildReq<T>;
-public:
-	//定数
-	static const int RES_TYPE_ID = T::RES_TYPE_ID;//リソース種別ID
-	static const E_RES_ATTR RES_ATTR = T::RES_ATTR;//リソース属性
-	static const int BUILDER_TYPE_ID = T::BUILDER_TYPE_ID;//リソースビルダー種別ID
-	static const E_RES_BUILD_ATTR TO_BUILD = T::TO_BUILD;//構築にはビルド処理が必要か？
-	static const E_RES_BUILD_ATTR REQUIRED_FILE = T::REQUIRED_FILE;//構築にはファイルが必要か？
-public:
-	//メソッド
-	//リソースビルダー構築
-	//※オーバーライド
-	IResBuider* createBuilder(const int builder_type_id, CResBuiderProxy& proxy) override
-	{
-		if (builder_type_id != BUILDER_TYPE_ID)
-		{
-			if (!m_next)
-				return nullptr;
-			//リソースビルダー種別IDが異なる場合、次の連結リストにたくす
-			//※チェインオブレスポンシビリティパターン
-			return m_next->createBuilder(builder_type_id, proxy);
-		}
-		return proxy.createBuilder<T>();
-	}
-	//リソースビルダー破棄
-	//※オーバーライド
-	bool deleteBuilder(const int builder_type_id, IResBuider* p, CResBuiderProxy& proxy) override
-	{
-		if (builder_type_id != BUILDER_TYPE_ID)
-		{
-			if (!m_next)
-				return nullptr;
-			//リソースビルダー種別IDが異なる場合、次の連結リストにたくす
-			//※チェインオブレスポンシビリティパターン
-			return m_next->deleteBuilder(builder_type_id, p, proxy);
-		}
-		return proxy.deleteBuilder<T>(dynamic_cast<T*>(p));
-	}
-private:
-	//オペレータ
-	//自クラスインスタンス生成用配置new
-	void* operator new(const std::size_t size)
-	{
-		return m_buff;
-	}
-	//自クラスインスタンス破棄用配置delete（ダミー）
-	void operator delete(void* p)
-	{}
-private:
-	//メソッド
-	//自クラスのシングルトンインスタンス生成
-	static void createSingleton()
-	{
-		if (m_this)
-			return;
-
-		//インスタンス生成
-		m_this = new(CResBuilderBuilder<T>)();
-		
-		//連結リストに連結
-		//※スレッドセーフかつロックフリーな連結手法
-		m_this->m_next = s_head.load();
-		while (!s_head.compare_exchange_weak(m_this->m_next, m_this));
-	}
-private:
-	//フィールド
-	static CResBuilderBuilder<T>* m_this;//自クラスシングルトンインスタンスのポインタ
-	static char m_buff[];//自クラスシングルトンインスタンスのバッファ
-};
-
-//リソースビルダービルダーテンプレートクラスのstaticインスタンス生成用
-#define RESOURCE_BUILDER_BUILDER_INSTANCE(T) \
-	CResBuilderBuilder<T>* CResBuilderBuilder<T>::m_this = nullptr; \
-	char CResBuilderBuilder<T>::m_buff[sizeof(CResBuilderBuilder<T>)];
-
-//----------------------------------------
 //リソース構築要求情報クラス
 //※リソースファイルを指定して構築を要求するためのクラス
 //※構築先のメモリの指定も可能（通常はリソースビルダーによって規定される）
 //※本来はリソースファイルを伴わないメモリ上のデータや、
 //　リソースの依存関係、リソース優先度、構築リトライのタイムアウト、
 //　メモリカテゴリといった情報も扱うが、このサンプルではそこまで対応しない
-
-//リソース構築要求情報クラス
 class CResBuildReqInfo
 {
 public:
@@ -463,11 +210,6 @@ private:
 
 //----------------------------------------
 //リソース構築要求クラス
-
-//クラス宣言
-class CResBuildReqInfo;
-
-//リソース構築要求クラス
 template<class T>
 class CResBuildReq : public CResBuildReqInfo
 {
@@ -482,18 +224,243 @@ public:
 public:
 	//コンストラクタ
 	//※構築するリソースのパスを渡す
-	CResBuildReq(const char* path):
+	CResBuildReq(const char* path) :
 		CResBuildReqInfo(T::RES_TYPE_ID, T::BUILDER_TYPE_ID, path)
 	{
-		//リソースビルダービルダーシングルトン生成
-		CResBuilderBuilder<T>::createSingleton();
-		//リソースビルダービル
+		//リソース構築要求情報のデフォルト設定
 		T::setDefaultMemInfo(*this);
+
+		//リソースビルダーファクトリーシングルトン生成
+		CResBuilderFactory<T>::createSingleton();
 	}
 	//デストラクタ
 	~CResBuildReq()
 	{
 	}
+};
+
+//----------------------------------------
+//リソースビルダーインターフェースクラス
+class IResBuider
+{
+public:
+	//メソッド
+	//ハンドル作成
+	virtual HRES makeHandle(const CResBuildReqInfo& req_info) = 0;
+	//リソース構築
+	virtual E_BUILD_RESULT create(const CResBuildReqInfo& req_info) = 0;
+	//リソースコピー
+	virtual E_BUILD_RESULT copy(const CResBuildReqInfo& req_info, const void* src_res) = 0;
+	//リソース破棄
+	virtual E_BUILD_RESULT destroy(void* res) = 0;
+public:
+	//デストラクタ
+	virtual ~IResBuider()
+	{}
+};
+
+//----------------------------------------
+//リソースビルダーファクトリー抽象クラス
+class CAbstractResBuilderFactory
+{
+public:
+	//アクセッサ
+	virtual int getBuilderTypeID() const = 0;//リソースビルダー種別ID取得
+	CAbstractResBuilderFactory* getNext() const { return m_next; }//次のリソースビルダーファクトリー取得
+public:
+	//メソッド
+	//リソースビルダー構築
+	virtual IResBuider* createBuilder(const int builder_type_id, char* buff, const std::size_t buff_size) = 0;
+	//リソースビルダー破棄
+	virtual bool deleteBuilder(const int builder_type_id, IResBuider* p) = 0;
+	//リソースビルダーファクトリーの先頭ノードを取得
+	static CAbstractResBuilderFactory* getFactoryHead() { return m_head; }
+protected:
+	//フィールド
+	CAbstractResBuilderFactory* m_next;//次のリソースビルダーファクトリー
+	static std::atomic<CAbstractResBuilderFactory*> m_head;//リソースビルダーファクトリーの先頭ノード
+};
+
+//リソースビルダーファクトリー抽象クラス：static変数のインスタンス化
+std::atomic<CAbstractResBuilderFactory*> CAbstractResBuilderFactory::m_head = nullptr;//リソースビルダーファクトリーの先頭ノード
+
+//----------------------------------------
+//リソースビルダーファクトリークラス
+//※リソースビルダーを構築するためのクラス。
+//　「アブストラクトファクトリーパターン」の実装。
+//※ゲーム中で使用されるリソースビルダーファクトリーは
+//　全てシングルトンとして保持し、連結リストでつながっている。
+//※リソースビルダーを生成する際は、ファクトリーの連結リストをたどって
+//　タイプIDに該当するファクトリーでインスタンスを生成して返す。
+//　「チェインオブレスポンシビリティパターン」の応用。
+//オペレータ
+template<class T>
+class CResBuilderFactory : public CAbstractResBuilderFactory
+{
+	friend class CResBuildReq<T>;
+	friend void* operator new(std::size_t size, CAbstractResBuilderFactory&, char* buff, const std::size_t buff_size);
+	friend void operator delete(void* p, CAbstractResBuilderFactory&, char*, const std::size_t);
+public:
+	//定数
+	static const int RES_TYPE_ID = T::RES_TYPE_ID;//リソース種別ID
+	static const E_RES_ATTR RES_ATTR = T::RES_ATTR;//リソース属性
+	static const int BUILDER_TYPE_ID = T::BUILDER_TYPE_ID;//リソースビルダー種別ID
+	static const E_RES_BUILD_ATTR TO_BUILD = T::TO_BUILD;//構築にはビルド処理が必要か？
+	static const E_RES_BUILD_ATTR REQUIRED_FILE = T::REQUIRED_FILE;//構築にはファイルが必要か？
+public:
+	//アクセッサ
+	int getBuilderTypeID() const override { return BUILDER_TYPE_ID; }//リソースビルダー種別ID取得
+public:
+	//メソッド
+	//リソースビルダー構築
+	//※オーバーライド
+	IResBuider* createBuilder(const int builder_type_id, char* buff, const std::size_t buff_size) override
+	{
+		if (builder_type_id != BUILDER_TYPE_ID)
+		{
+			if (!m_next)
+				return nullptr;
+			//リソースビルダー種別IDが異なる場合、次の連結リストにたくす
+			//※チェインオブレスポンシビリティパターン
+			return m_next->createBuilder(builder_type_id, buff, buff_size);
+		}
+		return new(this, buff, buff_size) T();
+	}
+	//リソースビルダー破棄
+	//※オーバーライド
+	bool deleteBuilder(const int builder_type_id, IResBuider* p) override
+	{
+		if (builder_type_id != BUILDER_TYPE_ID)
+		{
+			if (!m_next)
+				return nullptr;
+			//リソースビルダー種別IDが異なる場合、次の連結リストにたくす
+			//※チェインオブレスポンシビリティパターン
+			return m_next->deleteBuilder(builder_type_id, p);
+		}
+		T* derived = dynamic_cast<T*>(p);
+		if (!derived)
+			return false;
+		derived->~T();
+		operator delete(derived, this, nullptr, 0);
+		return true;
+	}
+private:
+	//メソッド
+	//自クラスのシングルトンインスタンス生成
+	static void createSingleton()
+	{
+		if (m_this)
+			return;
+
+		//インスタンス生成
+		m_this = new(m_this, m_buff, sizeof(m_buff))CResBuilderFactory<T>();
+		
+		//連結リストに連結
+		//※スレッドセーフかつロックフリーな連結手法
+		m_this->m_next = m_head.load();
+		while (!m_head.compare_exchange_weak(m_this->m_next, m_this));
+		
+		//IDの重複チェック
+		{
+			CAbstractResBuilderFactory* _this = m_this;
+			CAbstractResBuilderFactory* node = m_head.load();
+			while (node)
+			{
+				if (node != m_this && m_this->getBuilderTypeID() == node->getBuilderTypeID())
+				{
+					fprintf(stderr, "BUILDER_TYPE_ID(%d) is alread exist!\n", m_this->BUILDER_TYPE_ID);
+				}
+				node = node->getNext();
+			}
+		}
+	}
+private:
+	//フィールド
+	static CResBuilderFactory<T>* m_this;//自クラスシングルトンインスタンスのポインタ
+	static char m_buff[];//自クラスシングルトンインスタンスのバッファ
+};
+
+//リソースビルダーファクトリーテンプレートクラスのstaticインスタンス生成用
+#define RESOURCE_BUILDER_FACTORY_INSTANCE(T) \
+	CResBuilderFactory<T>* CResBuilderFactory<T>::m_this = nullptr; \
+	char CResBuilderFactory<T>::m_buff[sizeof(CResBuilderFactory<T>)];
+
+//リソースビルダーファクトリー処理用配置new
+void* operator new(std::size_t size, CAbstractResBuilderFactory*, char* buff, const std::size_t buff_size)
+{
+	if (size > buff_size)
+		return nullptr;
+	return buff;
+}
+
+//リソースビルダーファクトリー処理用配置delete
+void operator delete(void* p, CAbstractResBuilderFactory*, char*, const std::size_t)
+{}
+
+//----------------------------------------
+//リソースビルダープロキシークラス
+//※リソースビルダーのインスタンスを構築するためのバッファを持ち、
+//　リソースビルダーとして振るまうクラス
+class CResBuiderProxy
+{
+public:
+	//定数
+	static const size_t BUILDER_SIZE_MAX = 32;//リソースビルダーの最大サイズ（バイト）
+	//※リソースビルダーはスタックのメモリを使用する
+	//※フィールドを一つも持たないリソースビルダーのサイズは4バイト
+public:
+	//メソッド
+	//ハンドル発行
+	//HRES makeHandle(const CResBuildReqInfo& req_info)
+	//{
+	//	if (!m_builder)
+	//		return false;
+	//	return m_builder->makeHandle(req_info);
+	//}
+	//リソースビルド
+	E_BUILD_RESULT create(const CResBuildReqInfo& req_info)
+	{
+		if (!m_builder)
+			return BUILD_IMPOSSIBLE;
+		return m_builder->create(req_info);
+	}
+	//リソースコピービルド
+	E_BUILD_RESULT copy(const CResBuildReqInfo& req_info, const void* src_res)
+	{
+		if (!m_builder || !src_res)
+			return BUILD_IMPOSSIBLE;
+		return m_builder->copy(req_info, src_res);
+	}
+	//リソース破棄
+	E_BUILD_RESULT destroy(void* res)
+	{
+		if (!m_builder)
+			return BUILD_IMPOSSIBLE;
+		return m_builder->destroy(res);
+	}
+public:
+	//コンストラクタ
+	CResBuiderProxy(const int builder_type_id) :
+		m_builderType(builder_type_id),
+		m_builder(nullptr)
+	{
+		CAbstractResBuilderFactory* factory = CAbstractResBuilderFactory::getFactoryHead();
+		if (factory)
+			m_builder = factory->createBuilder(m_builderType, m_builderBuff, BUILDER_SIZE_MAX);
+	}
+	//デストラクタ
+	~CResBuiderProxy()
+	{
+		CAbstractResBuilderFactory* factory = CAbstractResBuilderFactory::getFactoryHead();
+		if (factory)
+			factory->deleteBuilder(m_builderType, m_builder);
+	}
+private:
+	//フィールド
+	const int m_builderType;//ビルダー種別
+	IResBuider* m_builder;//リソースビルダー
+	char m_builderBuff[BUILDER_SIZE_MAX];//リソースビルダー用バッファ
 };
 
 //--------------------------------------------------------------------------------
@@ -662,8 +629,8 @@ public:
 	}
 };
 
-//リソースビルダービルダーシングルトンのstaticインスタンス化
-RESOURCE_BUILDER_BUILDER_INSTANCE(CModelResourceBuilder);
+//リソースビルダーファクトリーシングルトンのstaticインスタンス化
+RESOURCE_BUILDER_FACTORY_INSTANCE(CModelResourceBuilder);
 
 //----------------------------------------
 //独自リソースビルダークラス：テクスチャ用
@@ -725,8 +692,8 @@ public:
 	}
 };
 
-//リソースビルダービルダーシングルトンのstaticインスタンス化
-RESOURCE_BUILDER_BUILDER_INSTANCE(CTextureResourceBuilder);
+//リソースビルダーファクトリーシングルトンのstaticインスタンス化
+RESOURCE_BUILDER_FACTORY_INSTANCE(CTextureResourceBuilder);
 
 //--------------------------------------------------------------------------------
 //【サンプル】ビルド要求処理

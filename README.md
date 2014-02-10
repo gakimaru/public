@@ -120,13 +120,15 @@
         `- [Tools]
             |
             `-[git_erase_wincred_all] ... ★TortoiseGit が wincred で記憶する
-                                          　ユーザー認証情報を一括削除する為の
+                                          　ユーザー認証情報を一括削除するための
                                           　ごく簡単なツール
 
 ####[tools]####
      |
-     `-[git_erase_wincred_all]        ... ★TortoiseGit が wincred で記憶するユーザー認証情報を
-                                          　一括削除する為のごく簡単なプログラムのソース
+     `-[git_erase_wincred_all]        ... ★TortoiseGit が wincred で記憶する
+                                          　ユーザー認証情報を一括削除する為の
+                                          　ごく簡単なツーる
+                                          　そのソースコード
 
 ####[test]####
      |

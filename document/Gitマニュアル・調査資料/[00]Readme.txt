@@ -5,7 +5,7 @@
     [Gitマニュアル・調査資料]
      |
      |- [00]Readme.txt
-     |- [01]Subversionユーザーの為のGit活用の勧め.pptx
+     |- [01]SubversionユーザーのためのGit活用の勧め.pptx
      |- [02]TortoiseGitセットアップ手順.docx
      |- [03]TortoiseGitのhttp(s)通信およびパスワードの記憶と破棄について.docx
      |- [04]TortoiseGitのSSH通信およびパスフレーズの記憶と破棄について.docx

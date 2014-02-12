@@ -9,6 +9,9 @@
 　　　　　　Git に関する全ての認証情報をまとめて削除する。
 　　　　　　実行確認も何もない乱暴な使用の為、使用時は要注意。
 
+・ソースコードURL：https://github.com/gakimaru/public.git
+                     tools\git_erase_wincred_all\
+
 ・参考：git-credential-wincred.c
 　　　　https://github.com/git/git/blob/master/contrib/credential/wincred/git-credential-wincred.c
 

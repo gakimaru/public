@@ -1,10 +1,10 @@
 	.file	"constexpr.cpp"
-	.section	.text$_Z12crc32_helperPKcjj,"x"
+	.section	.text$_ZN9crc_test212process_charEji,"x"
 	.linkonce discard
-	.globl	__Z12crc32_helperPKcjj
-	.def	__Z12crc32_helperPKcjj;	.scl	2;	.type	32;	.endef
-__Z12crc32_helperPKcjj:
-LFB10:
+	.globl	__ZN9crc_test212process_charEji
+	.def	__ZN9crc_test212process_charEji;	.scl	2;	.type	32;	.endef
+__ZN9crc_test212process_charEji:
+LFB12:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -13,42 +13,85 @@ LFB10:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	cmpl	$0, 12(%ebp)
-	jne	L2
-	movl	16(%ebp), %eax
-	notl	%eax
-	jmp	L3
-L2:
-	movl	8(%ebp), %eax
-	movzbl	(%eax), %eax
-	movsbl	%al, %eax
-	xorl	16(%ebp), %eax
-	movzbl	%al, %eax
-	movl	__ZL10crc_32_tab(,%eax,4), %eax
-	movl	16(%ebp), %edx
-	shrl	$8, %edx
-	xorl	%edx, %eax
-	movl	%eax, %ecx
+	jle	L2
 	movl	12(%ebp), %eax
 	leal	-1(%eax), %edx
 	movl	8(%ebp), %eax
-	addl	$1, %eax
-	movl	%ecx, 8(%esp)
+	andl	$32768, %eax
+	testl	%eax, %eax
+	je	L3
+	movl	8(%ebp), %eax
+	addl	%eax, %eax
+	xorl	$69665, %eax
+	jmp	L4
+L3:
+	movl	8(%ebp), %eax
+	addl	%eax, %eax
+L4:
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-	call	__Z12crc32_helperPKcjj
-L3:
+	call	__ZN9crc_test212process_charEji
+	jmp	L5
+L2:
+	movl	8(%ebp), %eax
+L5:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE10:
-	.section	.text$_Zli6_crc32PKcj,"x"
+LFE12:
+	.section	.text$_ZN9crc_test214process_stringEjPKc,"x"
 	.linkonce discard
-	.globl	__Zli6_crc32PKcj
-	.def	__Zli6_crc32PKcj;	.scl	2;	.type	32;	.endef
-__Zli6_crc32PKcj:
-LFB11:
+	.globl	__ZN9crc_test214process_stringEjPKc
+	.def	__ZN9crc_test214process_stringEjPKc;	.scl	2;	.type	32;	.endef
+__ZN9crc_test214process_stringEjPKc:
+LFB13:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$20, %esp
+	.cfi_offset 3, -12
+	movl	12(%ebp), %eax
+	movzbl	(%eax), %eax
+	testb	%al, %al
+	je	L8
+	movl	12(%ebp), %eax
+	leal	1(%eax), %ebx
+	movl	12(%ebp), %eax
+	movzbl	(%eax), %eax
+	movsbl	%al, %eax
+	sall	$8, %eax
+	xorl	8(%ebp), %eax
+	movl	$8, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN9crc_test212process_charEji
+	movl	%ebx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN9crc_test214process_stringEjPKc
+	jmp	L9
+L8:
+	movl	8(%ebp), %eax
+L9:
+	addl	$20, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE13:
+	.section	.text$_ZN9crc_test28checksumEPKc,"x"
+	.linkonce discard
+	.globl	__ZN9crc_test28checksumEPKc
+	.def	__ZN9crc_test28checksumEPKc;	.scl	2;	.type	32;	.endef
+__ZN9crc_test28checksumEPKc:
+LFB14:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -56,31 +99,29 @@ LFB11:
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
-	movl	$-1, 8(%esp)
-	movl	12(%ebp), %eax
-	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__Z12crc32_helperPKcjj
+	movl	%eax, 4(%esp)
+	movl	$65535, (%esp)
+	call	__ZN9crc_test214process_stringEjPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE11:
+LFE14:
 	.def	___main;	.scl	2;	.type	32;	.endef
 	.section .rdata,"dr"
 LC0:
 	.ascii "{%d, %d, %d, %d, %d, %d, %d}\12\0"
 LC1:
-	.ascii "caracoles\0"
+	.ascii "TEST1:crc=0x%08x\12\0"
 LC2:
-	.ascii "crc=0x%08x\12\0"
+	.ascii "TEST2:crc=0x%08x\12\0"
 	.text
 	.globl	_main
 	.def	_main;	.scl	2;	.type	32;	.endef
 _main:
-LFB12:
+LFB15:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -88,15 +129,15 @@ LFB12:
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
 	andl	$-16, %esp
-	subl	$64, %esp
+	subl	$80, %esp
 	call	___main
-	movl	$2, 60(%esp)
-	movl	$5, 56(%esp)
-	movl	$9, 52(%esp)
-	movl	$14, 48(%esp)
-	movl	$14, 44(%esp)
-	movl	$6, 40(%esp)
-	movl	$15, 36(%esp)
+	movl	$2, 76(%esp)
+	movl	$5, 72(%esp)
+	movl	$9, 68(%esp)
+	movl	$14, 64(%esp)
+	movl	$14, 60(%esp)
+	movl	$6, 56(%esp)
+	movl	$15, 52(%esp)
 	movl	$15, 28(%esp)
 	movl	$6, 24(%esp)
 	movl	$14, 20(%esp)
@@ -106,12 +147,20 @@ LFB12:
 	movl	$2, 4(%esp)
 	movl	$LC0, (%esp)
 	call	_printf
-	movl	$9, 4(%esp)
+	movl	$174420991, 48(%esp)
+	movl	$639479525, 44(%esp)
+	movl	$174420991, 4(%esp)
 	movl	$LC1, (%esp)
-	call	__Zli6_crc32PKcj
-	movl	%eax, 32(%esp)
-	movl	32(%esp), %eax
-	movl	%eax, 4(%esp)
+	call	_printf
+	movl	$639479525, 4(%esp)
+	movl	$LC1, (%esp)
+	call	_printf
+	movl	$55121, 40(%esp)
+	movl	$10673, 36(%esp)
+	movl	$55121, 4(%esp)
+	movl	$LC2, (%esp)
+	call	_printf
+	movl	$10673, 4(%esp)
 	movl	$LC2, (%esp)
 	call	_printf
 	movl	$0, %eax
@@ -120,10 +169,13 @@ LFB12:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE12:
+LFE15:
 	.section .rdata,"dr"
+	.align 4
+__ZL10hash_test2:
+	.long	__ZN9crc_test28checksumEPKc
 	.align 32
-__ZL10crc_32_tab:
+__ZN9crc_test1L10crc_32_tabE:
 	.long	0
 	.long	1996959894
 	.long	-301047508

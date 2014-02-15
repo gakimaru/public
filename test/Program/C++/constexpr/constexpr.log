@@ -1,3 +1,5 @@
 {2, 5, 9, 14, 14, 6, 15}
-calc CRC!
-crc=0x0a6573ff
+TEST1:crc=0x0a6573ff
+TEST1:crc=0x261daee5
+TEST2:crc=0x0000d751
+TEST2:crc=0x000029b1

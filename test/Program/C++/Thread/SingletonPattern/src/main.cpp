@@ -194,6 +194,11 @@ public:
 	//コンストラクタ
 	CSpinLock()
 	{
+#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+		m_lock.clear();//ロック用フラグ（高速）
+#else//SPIN_LOCK_USE_ATOMIC_FLAG
+		m_lock.store(false);//ロック用フラグ（軽量）
+#endif//SPIN_LOCK_USE_ATOMIC_FLAG
 	}
 	//デストラクタ
 	~CSpinLock()
@@ -379,7 +384,7 @@ public:
 	//デストラクタ呼び出し機能付きメモリ解放
 	//※解放後、ポインタに nullptr をセットする
 	template<class T>
-	void remove(T*& p)
+	void destroy(T*& p)
 	{
 		p->~T();//明示的なデストラクタ呼び出し（デストラクタ未定義のクラスでも問題なし）
 		operator delete(p, *this);//配置delete呼び出し
@@ -409,9 +414,14 @@ private:
 //　そこに現在のロック状態を保持する
 
 //----------------------------------------
+//クラス宣言
+class CRWLockHelper;
+
+//----------------------------------------
 //リード・ライトロッククラス
 class CRWLock
 {
+	friend class CRWLockHelper;//手動でロック／アンロックを操作するためのヘルパークラス
 public:
 	//定数
 	enum E_WLOCK_PRIORITY//ライトロック優先度
@@ -832,6 +842,61 @@ typedef CRWLock::WLock CRWLockW;
 //using CRWLockR = CRWLock::RLock;
 //using CRWLockR_AsNecessary = CRWLock::RLockAsNecessary;
 //using CRWLockW = CRWLock::WLock;
+
+//----------------------------------------
+//リード・ライトロックヘルパークラス
+//※ロッククラスを用いずに、直接リード・ライトロックを操作するためのクラス
+//※濫用禁止
+class CRWLockHelper
+{
+public:
+	//メソッド
+
+	//リードロック取得
+	void rLock(const int spin_count)
+	{
+		m_lock.rlock(spin_count, INVALID_THREAD_ID);
+	}
+	//必要に応じてリードロック取得
+	void rLockAsNecessary(const CThreadID& ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.rlock(spin_count, ignore_thread_id.getID());
+	}
+	void rLockAsNecessary(const THREAD_ID ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.rlock(spin_count, ignore_thread_id);
+	}
+	void rLockAsNecessary(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.rlock(spin_count, CThreadID::getThisID());
+	}
+	//ライトロック取得
+	void wLock(const int spin_count)
+	{
+		m_lock.wlock(spin_count);
+	}
+	//リードロック解放
+	void rUnlock()
+	{
+		m_lock.runlock();
+	}
+	//ライトロック解放
+	void wUnlock()
+	{
+		m_lock.wunlock();
+	}
+public:
+	//コンストラクタ
+	CRWLockHelper(CRWLock& lock) :
+		m_lock(lock)
+	{}
+	//デストラクタ
+	~CRWLockHelper()
+	{}
+private:
+	//フィールド
+	CRWLock& m_lock;//リード・ライトオブジェクトの参照
+};
 
 //--------------------------------------------------------------------------------
 //シングルトンクラス
@@ -1595,7 +1660,7 @@ private:
 				if (now)
 					now->m_next = m_thisUsingInfo->m_next;
 			}
-			m_usingListBuff.remove(m_thisUsingInfo);//削除
+			m_usingListBuff.destroy(m_thisUsingInfo);//削除
 			m_usingListLock.unlock();//ロック解放
 		}
 	}

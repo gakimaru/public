@@ -377,7 +377,7 @@ public:
 	//デストラクタ呼び出し機能付きメモリ解放
 	//※解放後、ポインタに nullptr をセットする
 	template<class T>
-	void remove(T*& p)
+	void destroy(T*& p)
 	{
 		p->~T();//明示的なデストラクタ呼び出し（デストラクタ未定義のクラスでも問題なし）
 		operator delete(p, *this);//配置delete呼び出し
@@ -896,20 +896,19 @@ private:
 //名前付きデータ参照クラス
 
 #include <atomic>//アトミック型
-
-//【暫定】C++11のハッシュテーブルライブラリ
-//※できれば、ヒープを使用しない独自の実装に変えた方が安定する
-#include <unordered_map>
+#include <unordered_map>//【暫定】C++11のハッシュテーブルライブラリ
+                        //※できれば、ヒープを使用しない独自の実装に変えた方が安定する
 
 //----------------------------------------
 //名前付きデータ参照クラス
 //※テンプレートパラメータで記録可能な参照の最大数を指定
-template<std::size_t MAX>
+template<std::size_t MAX, int SPIN = CSpinLock::DEFAULT_SPIN_COUNT>
 class CNamedRefT
 {
 public:
 	//定数
 	static const int MAX_NODES = MAX;//記録可能な参照の最大数を指定
+	static const int SPIN_COUNT = SPIN;//スピンロックのピンカウント数
 public:
 	//型
 	typedef unsigned long long KeyPrim;//キー型（ハッシュテーブル用のプリミティブ型）
@@ -971,39 +970,43 @@ public:
 			m_main(main_key),
 			m_sub(CRC32(sub_key))
 		{}
+		Key(const char* name, const char* sub_key) :
+			m_main(CRC32(name)),
+			m_sub(CRC32(sub_key))
+		{}
 		//デストラクタ
 		~Key()
 		{}
 	};
 private:
 	//--------------------
-	//変数参照型：共通部
+	//データ参照型：共通部
 	struct RefNodeCore
 	{
 		//メソッド
 		virtual void* getRefByFunctor() const = 0;//関数オブジェクトを使用して変数の参照を取得
 		virtual void getValByFunctor(void* val) const = 0;//関数オブジェクトを使用して変数の値を取得
 		virtual void setValByFunctor(const void* val) = 0;//関数オブジェクトを使用して変数の値を更新
-		//変数の参照を取得
+		//データの参照を取得
 		template<typename T>
 		void* getRefCore() const
 		{
 			if (m_removed.load() == true)//【保険処理】削除済みチェック
 				return nullptr;
-			ASSERT(typeid(T) == m_type, "This type is not match.");
+			ASSERT(typeid(T) == m_type, "This type is not match.(this=%s, request=%s)", m_type.name(), typeid(T).name());
 			if (typeid(T) != m_type)
 				return nullptr;
 			if (m_ref.load() == nullptr)//２回目以降のアクセスを高速にするために、参照を記憶する
 				m_ref.store(getRefByFunctor());
 			return m_ref.load();
 		}
-		//変数の参照を取得
+		//データの参照を取得
 		template<typename T>
 		T* getRef(){ return static_cast<T*>(getRefCore<T>()); }
-		//変数の参照を取得
+		//データの参照を取得
 		template<typename T>
 		const T* getRef() const { return static_cast<T*>(getRefCore<T>()); }
-		//変数の値を取得
+		//データの値を取得
 		template<typename T>
 		T getVal() const
 		{
@@ -1023,7 +1026,7 @@ private:
 			void* p = getRefCore<T>();
 			return p == nullptr ? static_cast<T>(0) : *static_cast<T*>(p);
 		}
-		//変数の値を更新
+		//データの値を更新
 		template<typename T>
 		void setVal(const T val)
 		{
@@ -1043,12 +1046,11 @@ private:
 		}
 		//記憶している参照をリセット
 		//※メモリ再配置や参照先の削除があったら呼び出す必要あり
-		//※ロックフリー処理
 		void resetRef(){ m_ref.store(nullptr); }
 		//リードロック取得
-		void rLock(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) const { CRWLockHelper(m_lock).rLock(spin_count); }
+		void rLock() const { CRWLockHelper(m_lock).rLock(SPIN_COUNT); }
 		//ライトロック取得
-		void wLock(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) const { CRWLockHelper(m_lock).wLock(spin_count); }
+		void wLock() const { CRWLockHelper(m_lock).wLock(SPIN_COUNT); }
 		//リードロック解放
 		void rUnlock() const { CRWLockHelper(m_lock).rUnlock(); }
 		//ライトロック解放
@@ -1078,7 +1080,7 @@ private:
 		mutable CRWLock m_lock;//リード・ライトロックオブジェクト
 	};
 	//--------------------
-	//変数参照型：実装部：直接参照タイプ
+	//データ参照型：実装部：直接参照タイプ
 	//※直接参照タイプは、一度関数オブジェクトで変数の参照を取得したらそれを保持し、
 	//　関数オブジェクトの再実行を行わないため、２回目以降のアクセスが早い。
 	//※明示的に「参照をリセット」すると、次回また関数オブジェクトを実行する。
@@ -1107,7 +1109,7 @@ private:
 		{}
 	};
 	//--------------------
-	//変数参照型：実装部：アクセッサタイプ
+	//データ参照型：実装部：アクセッサタイプ
 	//※直接参照タイプの方が、参照を記憶できる分早い。
 	//※アクセッサタイプは、毎回必ずアクセッサを通す。
 	template<typename F>
@@ -1115,17 +1117,17 @@ private:
 	{
 		//型
 		typedef typename F::TYPE TYPE;//データ型
-		typedef typename F::getter GETTER_FUNCTOIR;//変数の値取得用関数オブジェクト型
-		typedef typename F::setter SETTER_FUNCTOIR;//変数の値更新用関数オブジェクト型
+		typedef typename F::getter GETTER_FUNCTOIR;//データの値取得用関数オブジェクト型
+		typedef typename F::setter SETTER_FUNCTOIR;//データの値更新用関数オブジェクト型
 		//【オーバーライド】【無効】関数オブジェクトを使用して変数の参照を取得
 		void* getRefByFunctor() const override{ return nullptr; }
-		//【オーバーライド】関数オブジェクトを使用して変数の値を取得
+		//【オーバーライド】関数オブジェクトを使用してデータの値を取得
 		void getValByFunctor(void* val) const override
 		{
 			GETTER_FUNCTOIR functor;
 			*static_cast<TYPE*>(val) = functor(m_key);
 		}
-		//【オーバーライド】関数オブジェクトを使用して変数の値を更新
+		//【オーバーライド】関数オブジェクトを使用してデータの値を更新
 		void setValByFunctor(const void* val) override
 		{
 			SETTER_FUNCTOIR functor;
@@ -1151,17 +1153,17 @@ public:
 private:
 	//--------------------
 	//メモリサイズ計算用のダミー関数オブジェクト
-	struct getRefFunctorDummy : BaseRefF<int>{ TYPE* operator()(const Key& key) const { return nullptr; } };//【ダミー】変数参照用関数オブジェクト：直接参照タイプ
-	struct accessorFunctorDummy : BaseRefF<int>{//【ダミー】変数参照用関数オブジェクト：アクセッサタイプ
+	struct getRefFunctorDummy : BaseRefF<int>{ TYPE* operator()(const Key& key) const { return nullptr; } };//【ダミー】データ参照用関数オブジェクト：直接参照タイプ
+	struct accessorFunctorDummy : BaseRefF<int>{//【ダミー】データ参照用関数オブジェクト：アクセッサタイプ
 		struct getter { TYPE operator()(const Key& key) const { return 0; } };
 		struct setter { void operator()(const Key& key, const TYPE val) const {} };
 	};
-	using DirectRefNodeDummy = DirectRefNode<getRefFunctorDummy>;//【ダミー】変数参照型：直接参照タイプ
-	using AccessorNodeDummy = AccessorNode<accessorFunctorDummy>;//【ダミー】変数参照型：アクセッサタイプ
+	using DirectRefNodeDummy = DirectRefNode<getRefFunctorDummy>;//【ダミー】データ参照型：直接参照タイプ
+	using AccessorNodeDummy = AccessorNode<accessorFunctorDummy>;//【ダミー】データ参照型：アクセッサタイプ
 public:
 	//定数
 	#define MAX_SIZE(x, y) ((x) > (y) ? (x) : (y))
-	static const std::size_t REF_NODE_SIZE_MAX = MAX_SIZE(sizeof(DirectRefNodeDummy), sizeof(AccessorNodeDummy));//変数参照型の最大サイズ
+	static const std::size_t REF_NODE_SIZE_MAX = MAX_SIZE(sizeof(DirectRefNodeDummy), sizeof(AccessorNodeDummy));//データ参照型の最大サイズ
 	#undef MAX_SIZE
 private:
 	//型
@@ -1188,33 +1190,33 @@ public:
 		bool isExist() const { return m_isExist; }//参照先が存在するか？
 	public:
 		//コンストラクタ
-		RefR(CNamedRefT<MAX>& map, const Key key, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			m_propRef(map.find(key, &m_isExist)),
+		RefR(CNamedRefT<MAX>& map, const Key key) :
+			m_namedRef(map.find(key, &m_isExist)),
 			m_ref(nullptr)
 		{
 			//変数の参照を取得
-			if (m_propRef)
+			if (m_namedRef)
 			{
-				m_ref = m_propRef->getRef<T>();
+				m_ref = m_namedRef->getRef<T>();
 				if (m_ref)
 				{
 					//変数の参照に成功したらリードロック取得
-					m_propRef->rLock(spin_count);
+					m_namedRef->rLock();
 				}
 			}
 		}
 		//デストラクタ
 		~RefR()
 		{
-			if (m_propRef && m_ref)
+			if (m_namedRef && m_ref)
 			{
 				//リードロック解放
-				m_propRef->rUnlock();
+				m_namedRef->rUnlock();
 			}
 		}
 	private:
 		//フィールド
-		const RefNodeCore* m_propRef;//変数参照型
+		const RefNodeCore* m_namedRef;//変数参照型
 		const T* m_ref;//変数参照
 		bool m_isExist;//参照先が存在するか？
 	};
@@ -1233,35 +1235,86 @@ public:
 		bool isExist() const { return m_isExist; }//参照先が存在するか？
 	public:
 		//コンストラクタ
-		RefW(CNamedRefT<MAX>& map, const Key key, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			m_propRef(map.find(key, &m_isExist)),
+		RefW(CNamedRefT<MAX>& map, const Key key) :
+			m_namedRef(map.find(key, &m_isExist)),
 			m_ref(nullptr)
 		{
 			//変数の参照を取得
-			if (m_propRef)
+			if (m_namedRef)
 			{
-				m_ref = m_propRef->getRef<T>();
+				m_ref = m_namedRef->getRef<T>();
 				if (m_ref)
 				{
 					//変数の参照に成功したらライトロック取得
-					m_propRef->wLock(spin_count);
+					m_namedRef->wLock();
 				}
 			}
 		}
 		//デストラクタ
 		~RefW()
 		{
-			if (m_propRef && m_ref)
+			if (m_namedRef && m_ref)
 			{
 				//ライトロック解放
-				m_propRef->wUnlock();
+				m_namedRef->wUnlock();
 			}
 		}
 	private:
 		//フィールド
-		RefNodeCore* m_propRef;//変数参照型
+		RefNodeCore* m_namedRef;//変数参照型
 		T* m_ref;//変数参照
 		bool m_isExist;//参照先が存在するか？
+	};
+private:
+	//--------------------
+	//全体ブロック：読み込みロック
+	class WholeBLockR
+	{
+	public:
+		//コンストラクタ
+		WholeBLockR(CRWLock& lock, const bool locked, const THREAD_ID locked_thread_id) :
+			m_lock(lock)
+		{
+			//ロック中状態
+			//※全体ブロック中、かつ、全体ブロックを行ったスレッドと同じスレッドならロックしない
+			m_locked = !(locked == true && CThreadID() == locked_thread_id);
+			if (m_locked)
+				CRWLockHelper(m_lock).rLock(SPIN_COUNT);
+		}
+		//デストラクタ
+		~WholeBLockR()
+		{
+			if (m_locked)
+				CRWLockHelper(m_lock).rUnlock();
+		}
+	private:
+		CRWLock& m_lock;//リード・ライトロック
+		bool m_locked;//ロック中
+	};
+	//--------------------
+	//全体ブロック：書き込みロック
+	class WholeBLockW
+	{
+	public:
+		//コンストラクタ
+		WholeBLockW(CRWLock& lock, const bool locked, const THREAD_ID locked_thread_id) :
+			m_lock(lock)
+		{
+			//ロック中状態
+			//※全体ブロック中、かつ、全体ブロックを行ったスレッドと同じスレッドならロックしない
+			m_locked = !(locked == true && CThreadID() == locked_thread_id);
+			if (m_locked)
+				CRWLockHelper(m_lock).wLock(SPIN_COUNT);
+		}
+		//デストラクタ
+		~WholeBLockW()
+		{
+			if (m_locked)
+				CRWLockHelper(m_lock).wUnlock();
+		}
+	private:
+		CRWLock& m_lock;//リード・ライトロック
+		bool m_locked;//ロック中
 	};
 	//クラス内クラス定義：ここまで
 	//--------------------
@@ -1269,11 +1322,20 @@ public:
 	//メソッド
 	//変数参照用関数オブジェクト登録：直接参照タイプ
 	template<typename F>
-	bool regist(const Key key, F functor)
+	bool regist(const Key key, F functor, bool* is_exist = nullptr)
 	{
+		//全体ライトロック取得（解放は自動）
+		WholeBLockW lock(m_wholeLock, m_wholeLocked.load(), m_wholeLockThreadID.load());
 		//ハッシュテーブル登録済みチェック
-		if (m_namedRefList.find(key) != m_namedRefList.end())
+		NamedRefTable::const_iterator node = m_namedRefList.find(key);
+		if (node != m_namedRefList.end())
+		{
+			if (is_exist)
+				*is_exist = true;
 			return false;
+		}
+		if (is_exist)
+			*is_exist = false;
 		//ノードのメモリ確保
 		DirectRefNode<F>* ref = m_allocator.create< DirectRefNode<F> >(key);
 		if (!ref)
@@ -1284,11 +1346,20 @@ public:
 	}
 	//変数参照用関数オブジェクト登録：アクセッサタイプ
 	template<typename F>
-	bool registAcc(const Key key, F functor_set)
+	bool registAcc(const Key key, F functor_set, bool* is_exist = nullptr)
 	{
+		//全体ライトロック取得（解放は自動）
+		WholeBLockW lock(m_wholeLock, m_wholeLocked.load(), m_wholeLockThreadID.load());
 		//ハッシュテーブル登録済みチェック
-		if (m_namedRefList.find(key) != m_namedRefList.end())
+		NamedRefTable::const_iterator node = m_namedRefList.find(key);
+		if (node != m_namedRefList.end())
+		{
+			if (is_exist)
+				*is_exist = true;
 			return false;
+		}
+		if (is_exist)
+			*is_exist = false;
 		//ノードのメモリ確保
 		AccessorNode<F>* ref = m_allocator.create< AccessorNode<F> >(key);
 		if (!ref)
@@ -1301,42 +1372,57 @@ public:
 	//※スレッドセーフではないのでタイミングに厳重注意
 	//※念のためロックを取得してはいるものの、他からのアクセスをブロックしている状況だと、
 	//　削除後に処理が走るので結局問題を起こす
-	bool unregist(const Key key, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool unregist(const Key key, bool* is_exist = nullptr)
 	{
+		//全体ライトロック取得（解放は自動）
+		WholeBLockW lock(m_wholeLock, m_wholeLocked.load(), m_wholeLockThreadID.load());
 		//変数参照情報取得
-		RefNodeCore* ref = find(key, is_exist);
-		if (!ref)
+		//ハッシュテーブル登録済みチェック
+		NamedRefTable::iterator node = m_namedRefList.find(key);
+		if (node == m_namedRefList.end())
+		{
+			if (is_exist)
+				*is_exist = false;
 			return false;
+		}
+		if (is_exist)
+			*is_exist = true;
 		//登録解除と削除
-		ref->wLock(spin_count);//ライトロック取得
+		RefNodeCore* ref = node->second;//ハッシュテーブルの情報を参照
+		if (ref)
+		{
+			//ref->wLock();//【不要】ライトロック取得
+			node->second = nullptr;//ハッシュテーブルから情報を破棄
+			//ref->wUnlock();//【不要】ライトロック解放
+			m_allocator.destroy(ref);//メモリ解放
+		}
 		m_namedRefList.erase(key);//ハッシュテーブルから登録解除
-		ref->wUnlock();//ライトロック解放
-		m_allocator.remove(ref);//メモリ解放
 		return true;
 	}
 	//全ての変数参照用関数オブジェクト登録解除
 	//※スレッドセーフではないのでタイミングに厳重注意
 	//※念のためロックを取得してはいるものの、他からのアクセスをブロックしている状況だと、
 	//　削除後に処理が走るので結局問題を起こす
-	void unregistAll(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	void unregistAll()
 	{
+		//全体ライトロック取得（解放は自動）
+		WholeBLockW lock(m_wholeLock, m_wholeLocked.load(), m_wholeLockThreadID.load());
 		//全ノード処理
 		for (auto node : m_namedRefList)
 		{
 			RefNodeCore* ref = node.second;//ハッシュテーブルの情報を参照
 			if (ref)
 			{
-				ref->wLock(spin_count);//ライトロック取得
+				//ref->wLock();//【不要】ライトロック取得
 				node.second = nullptr;//ハッシュテーブルから情報を破棄
-				ref->wUnlock();//ライトロック解放
-				m_allocator.remove(ref);//メモリ解放
+				//ref->wUnlock();//【不要】ライトロック解放
+				m_allocator.destroy(ref);//メモリ解放
 			}
 		}
 		m_namedRefList.clear();//ハッシュテーブルの全ノードをクリア
 	}
 	//変数の参照をクリア
-	//※ロックフリー処理
-	void resetRef(const Key key, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	void resetRef(const Key key, bool* is_exist = nullptr)
 	{
 		//変数参照情報取得
 		RefNodeCore* ref = find(key, is_exist);
@@ -1346,9 +1432,11 @@ public:
 		ref->resetRef();
 	}
 	//変数の参照を全てクリア
-	//※ロックフリー処理
-	void resetRefAll(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	void resetRefAll()
 	{
+		//全体リードロック取得（解放は自動）
+		WholeBLockR lock(m_wholeLock, m_wholeLocked.load(), m_wholeLockThreadID.load());
+		//全変数の参照をクリア
 		for (auto node : m_namedRefList)
 		{
 			RefNodeCore* ref = node.second;
@@ -1359,10 +1447,40 @@ public:
 			}
 		}
 	}
+	//全体アクセスブロック開始
+	bool beginBlock()
+	{
+		//ブロック中状態判定
+		if (m_wholeLocked.load() == true)
+			return false;
+		//全体ライトロック取得
+		CRWLockHelper(m_wholeLock).wLock(SPIN_COUNT);
+		m_wholeLocked.store(true);//全体ブロック中状態開始
+		m_wholeLockThreadID.store(CThreadID().getID());//現在のスレッドID記録
+		return true;
+	}
+	//全体アクセスブロック終了
+	//※内部で全変数参照のクリアを実行
+	//※ブロックを行ったスレッドしか解除できない
+	bool endBlock()
+	{
+		//ブロック中状態＆スレッド判定
+		if (m_wholeLocked.load() == false || CThreadID() != m_wholeLockThreadID.load())
+			return false;
+		//全参照をクリア
+		resetRefAll();
+		//全体ライトロック解法
+		CRWLockHelper(m_wholeLock).wUnlock();
+		m_wholeLocked.store(false);//全体ブロック中状態解除
+		m_wholeLockThreadID.store(INVALID_THREAD_ID);//現在のスレッドID記録クリア
+		return true;
+	}
 private:
 	//変数参照情報取得：共通部
 	inline const RefNodeCore* findCore(const Key key, bool* is_exist) const
 	{
+		//全体リードロック取得（解放は自動）
+		WholeBLockR lock(m_wholeLock, m_wholeLocked.load(), m_wholeLockThreadID.load());
 		//ハッシュテーブル検索
 		NamedRefTable::const_iterator node = m_namedRefList.find(key);
 		if (node == m_namedRefList.end())
@@ -1401,50 +1519,48 @@ public:
 	//----------
 	//値を取得：型指定用
 	//※is_exist で参照先の変数の存在を確認可能
-	//※リードロックのスピンカウント指定可
 	template<typename T>
-	T get(const Key key, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) const
+	T get(const Key key, bool* is_exist = nullptr) const
 	{
 		const RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return static_cast<T>(0);
-		ref->rLock(spin_count);
+		ref->rLock();
 		T val = ref->getVal<T>();
 		ref->rUnlock();
 		return val;
 	}
 	//bool型用
-	bool getBool(const Key key, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) const
+	bool getBool(const Key key, bool* is_exist = nullptr) const
 	{
-		return get<bool>(key, is_exist, spin_count);
+		return get<bool>(key, is_exist);
 	}
 	//int型用
-	int getInt(const Key key, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) const
+	int getInt(const Key key, bool* is_exist = nullptr) const
 	{
-		return get<int>(key, is_exist, spin_count);
+		return get<int>(key, is_exist);
 	}
 	//float型用
-	float getFloat(const Key key, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) const
+	float getFloat(const Key key, bool* is_exist = nullptr) const
 	{
-		return get<float>(key, is_exist, spin_count);
+		return get<float>(key, is_exist);
 	}
 	//const char*型用
-	const char* getStr(const Key key, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) const
+	const char* getStr(const Key key, bool* is_exist = nullptr) const
 	{
-		return get<const char*>(key, is_exist, spin_count);
+		return get<const char*>(key, is_exist);
 	}
 	//----------
 	//値を更新：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool set(const Key key, const T val, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool set(const Key key, const T val, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T now_val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = now_val;
@@ -1453,37 +1569,70 @@ public:
 		return true;
 	}
 	//bool型用
-	bool setBool(const Key key, const bool val, bool* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool setBool(const Key key, const bool val, bool* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return set<bool>(key, val, prev_val, is_exist, spin_count);
+		return set<bool>(key, val, prev_val, is_exist);
 	}
 	//int型用
-	bool setInt(const Key key, const int val, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool setInt(const Key key, const int val, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return set<int>(key, val, prev_val, is_exist, spin_count);
+		return set<int>(key, val, prev_val, is_exist);
 	}
 	//float型用
-	bool setFloat(const Key key, const float val, float* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool setFloat(const Key key, const float val, float* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return set<float>(key, val, prev_val, is_exist, spin_count);
+		return set<float>(key, val, prev_val, is_exist);
 	}
 	//const char*型用
-	bool setStr(const Key key, const char* str, const char** prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool setStr(const Key key, const char* str, const char** prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return set<const char*>(key, str, prev_val, is_exist, spin_count);
+		return set<const char*>(key, str, prev_val, is_exist);
+	}
+	//----------
+	//CAS（Compare And Swap）：型指定用
+	//※prev_val で変更前の値を確認可能
+	//※is_exist で参照先の変数の存在を確認可能
+	template<typename T>
+	bool cas(const Key key, const T compare_val, const T swap_val, T* prev_val = nullptr, bool* is_exist = nullptr)
+	{
+		RefNodeCore* ref = find(key, is_exist);
+		if (!ref)
+			return false;
+		ref->wLock();
+		T now_val = ref->getVal<T>();
+		if (prev_val)
+			*prev_val = now_val;
+		if (ref->getVal<T>() == compare_val)
+			ref->setVal<T>(swap_val);
+		ref->wUnlock();
+		return true;
+	}
+	//bool型用
+	bool casBool(const Key key, const bool compare_val, const bool swap_val, bool* prev_val = nullptr, bool* is_exist = nullptr)
+	{
+		return cas<bool>(key, compare_val, swap_val, prev_val, is_exist);
+	}
+	//int型用
+	bool casInt(const Key key, const int compare_val, const int swap_val, int* prev_val = nullptr, bool* is_exist = nullptr)
+	{
+		return cas<int>(key, compare_val, swap_val, prev_val, is_exist);
+	}
+	//float型用
+	bool casFloat(const Key key, const float compare_val, const float swap_val, float* prev_val = nullptr, bool* is_exist = nullptr)
+	{
+		return cas<float>(key, compare_val, swap_val, prev_val, is_exist);
 	}
 	//----------
 	//値をインクリメント：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool inc(const Key key, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool inc(const Key key, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1493,22 +1642,21 @@ public:
 		return true;
 	}
 	//int型用
-	bool incInt(const Key key, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool incInt(const Key key, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return inc<int>(key, prev_val, is_exist, spin_count);
+		return inc<int>(key, prev_val, is_exist);
 	}
 	//----------
 	//値をデクリメント：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool dec(const Key key, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool dec(const Key key, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1518,22 +1666,21 @@ public:
 		return true;
 	}
 	//int型用
-	bool decInt(const Key key, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool decInt(const Key key, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return dec<int>(key, prev_val, is_exist, spin_count);
+		return dec<int>(key, prev_val, is_exist);
 	}
 	//----------
 	//値を加算：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool add(const Key key, const T add_val, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool add(const Key key, const T add_val, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1543,27 +1690,26 @@ public:
 		return true;
 	}
 	//int型用
-	bool addInt(const Key key, const int add_val, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool addInt(const Key key, const int add_val, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return add<int>(key, add_val, prev_val, is_exist, spin_count);
+		return add<int>(key, add_val, prev_val, is_exist);
 	}
 	//float型用
-	bool addFloat(const Key key, const float add_val, float* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool addFloat(const Key key, const float add_val, float* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return add<float>(key, add_val, prev_val, is_exist, spin_count);
+		return add<float>(key, add_val, prev_val, is_exist);
 	}
 	//----------
 	//値を減算：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool sub(const Key key, const T sub_val, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool sub(const Key key, const T sub_val, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1573,27 +1719,26 @@ public:
 		return true;
 	}
 	//int型用
-	bool subInt(const Key key, const int sub_val, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool subInt(const Key key, const int sub_val, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return sub<int>(key, sub_val, prev_val, is_exist, spin_count);
+		return sub<int>(key, sub_val, prev_val, is_exist);
 	}
 	//float型用
-	bool subFloat(const Key key, const float sub_val, float* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool subFloat(const Key key, const float sub_val, float* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return sub<float>(key, sub_val, prev_val, is_exist, spin_count);
+		return sub<float>(key, sub_val, prev_val, is_exist);
 	}
 	//----------
 	//値を乗算：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool mul(const Key key, const T mul_val, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool mul(const Key key, const T mul_val, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1603,27 +1748,26 @@ public:
 		return true;
 	}
 	//int型用
-	bool mulInt(const Key key, const int mul_val, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool mulInt(const Key key, const int mul_val, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return mul<int>(key, mul_val, prev_val, is_exist, spin_count);
+		return mul<int>(key, mul_val, prev_val, is_exist);
 	}
 	//float型用
-	bool mulFloat(const Key key, const float mul_val, float* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool mulFloat(const Key key, const float mul_val, float* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return mul<float>(key, mul_val, prev_val, is_exist, spin_count);
+		return mul<float>(key, mul_val, prev_val, is_exist);
 	}
 	//----------
 	//値を除算：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool div(const Key key, const T div_val, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool div(const Key key, const T div_val, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1633,27 +1777,26 @@ public:
 		return true;
 	}
 	//int型用
-	bool divInt(const Key key, const int div_val, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool divInt(const Key key, const int div_val, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return div<int>(key, div_val, prev_val, is_exist, spin_count);
+		return div<int>(key, div_val, prev_val, is_exist);
 	}
 	//float型用
-	bool divFloat(const Key key, const float div_val, float* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool divFloat(const Key key, const float div_val, float* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return div<float>(key, div_val, prev_val, is_exist, spin_count);
+		return div<float>(key, div_val, prev_val, is_exist);
 	}
 	//----------
 	//値を剰余算：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool mod(const Key key, const T mod_val, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool mod(const Key key, const T mod_val, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1663,22 +1806,21 @@ public:
 		return true;
 	}
 	//int型用
-	bool modInt(const Key key, const int mod_val, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool modInt(const Key key, const int mod_val, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return mod<int>(key, mod_val, prev_val, is_exist, spin_count);
+		return mod<int>(key, mod_val, prev_val, is_exist);
 	}
 	//----------
 	//値を反転：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool reverse(const Key key, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool reverse(const Key key, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1687,12 +1829,12 @@ public:
 		return true;
 	}
 	//bool型用
-	bool reverse(const Key key, bool* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool reverse(const Key key, bool* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		bool val = ref->getVal<bool>();
 		if (prev_val)
 			*prev_val = val;
@@ -1701,27 +1843,26 @@ public:
 		return true;
 	}
 	//bool型用
-	bool reverseBool(const Key key, bool* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool reverseBool(const Key key, bool* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return reverse(key, prev_val, is_exist, spin_count);
+		return reverse(key, prev_val, is_exist);
 	}
 	//int型用
-	bool reverseInt(const Key key, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool reverseInt(const Key key, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return reverse<int>(key, prev_val, is_exist, spin_count);
+		return reverse<int>(key, prev_val, is_exist);
 	}
 	//----------
 	//値を論理積：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool and(const Key key, const T and_val, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool and(const Key key, const T and_val, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1731,22 +1872,21 @@ public:
 		return true;
 	}
 	//int型用
-	bool andInt(const Key key, const int and_val, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool andInt(const Key key, const int and_val, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return and<int>(key, and_val, prev_val, is_exist, spin_count);
+		return and<int>(key, and_val, prev_val, is_exist);
 	}
 	//----------
 	//値を論理和：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool or(const Key key, const T or_val, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool or(const Key key, const T or_val, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1756,22 +1896,21 @@ public:
 		return true;
 	}
 	//int型用
-	bool orInt(const Key key, const int or_val, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool orInt(const Key key, const int or_val, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return or<int>(key, or_val, prev_val, is_exist, spin_count);
+		return or<int>(key, or_val, prev_val, is_exist);
 	}
 	//----------
 	//値を排他的論理和：型指定用
 	//※prev_val で変更前の値を確認可能
 	//※is_exist で参照先の変数の存在を確認可能
-	//※ライトロックのスピンカウント指定可
 	template<typename T>
-	bool xor(const Key key, const T xor_val, T* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool xor(const Key key, const T xor_val, T* prev_val = nullptr, bool* is_exist = nullptr)
 	{
 		RefNodeCore* ref = find(key, is_exist);
 		if (!ref)
 			return false;
-		ref->wLock(spin_count);
+		ref->wLock();
 		T val = ref->getVal<T>();
 		if (prev_val)
 			*prev_val = val;
@@ -1781,9 +1920,9 @@ public:
 		return true;
 	}
 	//int型用
-	bool xorInt(const Key key, const int xor_val, int* prev_val = nullptr, bool* is_exist = nullptr, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	bool xorInt(const Key key, const int xor_val, int* prev_val = nullptr, bool* is_exist = nullptr)
 	{
-		return xor<int>(key, xor_val, prev_val, is_exist, spin_count);
+		return xor<int>(key, xor_val, prev_val, is_exist);
 	}
 	//----------
 	//参照先が存在するか？
@@ -1793,13 +1932,15 @@ public:
 		find(key, &is_exist);
 		return is_exist;
 	}
-
 public:
 	//コンストラクタ
 	CNamedRefT()
 	{
 		//ハッシュテーブルの要素数を最大数で予約
 		m_namedRefList.reserve(MAX_NODES);
+		//全体ブロック状態解除
+		m_wholeLocked.store(false);
+		m_wholeLockThreadID.store(INVALID_THREAD_ID);
 	}
 	//デストラクタ
 	~CNamedRefT()
@@ -1811,26 +1952,29 @@ private:
 	//フィールド
 	CBlockAllocator<MAX_NODES, REF_NODE_SIZE_MAX> m_allocator;//固定メモリブロックアロケータ（最大数以上の確保は不可）
 	NamedRefTable m_namedRefList;//【暫定】C++11標準ライブラリのハッシュテーブル
+	mutable CRWLock m_wholeLock;//全体ブロック用リード・ライトロック
+	mutable std::atomic<bool> m_wholeLocked;//全体ブロック中
+	mutable std::atomic<THREAD_ID> m_wholeLockThreadID;//全体ブロックスレッドID
 };
 
 //----------------------------------------
 //名前付きデータ参照クラスシングルトン
 //※テンプレートパラメータで記録可能な参照の最大数を指定
 //※インスタンス識別IDを指定することで、複数のシングルトンを作成可能
-template <std::size_t MAX, int ID = 0>
+template <std::size_t MAX, int ID = 0, int SPIN = CSpinLock::DEFAULT_SPIN_COUNT>
 class CNamedRefSingletonT
 {
 public:
 	//型
-	typedef CNamedRefT<MAX> NamedRef;//名前付きデータ参照クラス
+	typedef CNamedRefT<MAX, SPIN> NamedRef;//名前付きデータ参照クラス
 public:
 	//定数
 	static const int INSTANCE_ID = ID;//インスタンス識別ID
 public:
 	//オペレータ
 	operator NamedRef&() { return m_namedRef; }//キャストオペレータ
-	const NamedRef* operator->() const { return &m_prosMap; }//アロー演算子
-	NamedRef* operator->(){ return &m_namedRef; }//アロー演算子
+	const NamedRef* operator->() const { return &m_prosMap; }//アロー演算子（名前付きデータ参照クラスのプロキシー）
+	NamedRef* operator->(){ return &m_namedRef; }//アロー演算子（名前付きデータ参照クラスのプロキシー）
 private:
 	//フィールド
 	static NamedRef m_namedRef;//【static】名前付きデータ参照クラス本体
@@ -1850,7 +1994,7 @@ template <typename T>
 using RefF = CNamedRef::BaseRefF<T>;//データ参照用関数オブジェクトの基本型
 
 //--------------------
-//変数参照用関数オブジェクト作成マクロ：直接参照タイプ
+//データ参照用関数オブジェクト作成マクロ：直接参照タイプ
 #define NAMED_REF_FUNCTOR(name, code, type) \
 	struct name : RefF<type> \
 	{ \
@@ -1859,11 +2003,12 @@ using RefF = CNamedRef::BaseRefF<T>;//データ参照用関数オブジェクトの基本型
 			code; \
 		} \
 	};
-//変数参照用関数オブジェクト作成マクロ：直接参照タイプ：簡易版
+//データ参照用関数オブジェクト作成マクロ：直接参照タイプ：簡易版
 #define NAMED_REF_FUNCTOR_DIRECT(name, var, type) \
 	NAMED_REF_FUNCTOR(name, return &var, type)
+
 //--------------------
-//変数参照用関数オブジェクト作成マクロ：アクセッサタイプ
+//データ参照用関数オブジェクト作成マクロ：アクセッサタイプ
 #define NAMED_ACCESSOR_FUNCTOR(name, getter_code, setter_code, type) \
 	struct name : RefF<type> \
 	{ \
@@ -1882,7 +2027,7 @@ using RefF = CNamedRef::BaseRefF<T>;//データ参照用関数オブジェクトの基本型
 			} \
 		}; \
 	};
-//変数参照用関数オブジェクト作成マクロ：アクセッサタイプ：簡易版
+//データ参照用関数オブジェクト作成マクロ：アクセッサタイプ：簡易版
 #define NAMED_ACCESSOR_FUNCTOR_SIMPLE(name, obj, getter_method, setter_method, type) \
 	NAMED_ACCESSOR_FUNCTOR(name, return obj getter_method(), obj setter_method(val), type })
 
@@ -1894,8 +2039,8 @@ CNamedRef CNamedRefSingleton::m_namedRef;
 //名前付きデータ参照クラステスト
 
 //----------------------------------------
-//テスト用構造体：ダミーシーンオブジェクト
-struct CSceneObjDummy
+//テスト用構造体：キャラ情報
+struct CCharaInfo
 {
 	//public フィールド
 	const int id;//ID
@@ -1906,7 +2051,7 @@ struct CSceneObjDummy
 	int getData3() const { return data3; }//データ3：取得アクセッサ
 	void setData3(const int val) { data3 = val; }//データ3：更新アクセッサ
 	//コンストラクタ
-	CSceneObjDummy(const int id_, const char* name_, const int data1_, const float data2_, const int data3_):
+	CCharaInfo(const int id_, const char* name_, const int data1_, const float data2_, const int data3_):
 		id(id_),
 		name(name_),
 		data1(data1_),
@@ -1928,17 +2073,17 @@ namespace TEST
 	static const char* s_debugData3 = "DATA3";//【デバッグ用】データ3
 	static short s_debugData4 = 4;//【デバッグ用】データ4
 	static int s_debugData5 = 5;//【デバッグ用】データ5
-	//ダミーシーンオブジェクト
-	static CSceneObjDummy s_sceneObjDummy[] =
+	//キャラ情報
+	static CCharaInfo s_charaInfoList[] =
 	{
 		{ 10, "太郎", 11, 111.1f, 1111 },
 		{ 20, "次郎", 22, 222.2f, 2222 },
 		{ 30, "三郎", 33, 333.3f, 3333 }
 	};
-	//ダミーシーンオブジェクト検索関数
-	static CSceneObjDummy* searchSceneObj(const int id)
+	//キャラ情報検索関数
+	static CCharaInfo* searchCharaInfo(const int id)
 	{
-		for (auto& o : s_sceneObjDummy)
+		for (auto& o : s_charaInfoList)
 		{
 			if (o.id == id)
 				return &o;
@@ -1964,14 +2109,14 @@ void testRegistNamedRef()
 	//struct refDebugParam2 : RefF<float>{ TYPE* operator()(const RefK& key) const { return &TEST::s_debugData2; } };//【デバッグ用】データ2参照用
 	//struct refDebugParam3 : RefF<const char*>{ TYPE* operator()(const RefK& key) const { return &TEST::s_debugData3; } };//【デバッグ用】データ3参照用
 	//struct refDebugParam4 : RefF<short>{ TYPE* operator()(const RefK& key) const { return &TEST::s_debugData4; } };//【デバッグ用】データ4参照用
-	//struct refSceneObjDummy : RefF<CSceneObjDummy>{ TYPE *operator()(const RefK& key) const { return TEST::searchSceneObj(key.m_sub); } };//ダミーシーンオブジェクト参照用
+	//struct refCharaInfo : RefF<CCharaInfo>{ TYPE *operator()(const RefK& key) const { return TEST::searchCharaInfo(key.m_sub); } };//キャラ情報参照用
 	//※上記の構造体と同じことを「NAMED_REF_FUNCTOR」マクロで代用できる
 	NAMED_REF_FUNCTOR_DIRECT(refDebugCpuMeter, TEST::s_debugCpuMeter, bool);//【デバッグ用】CPU使用率表示状態参照用
 	NAMED_REF_FUNCTOR_DIRECT(refDebugParam1, TEST::s_debugData1, int);//【デバッグ用】データ1参照用
 	NAMED_REF_FUNCTOR_DIRECT(refDebugParam2, TEST::s_debugData2, float);//【デバッグ用】データ2参照用
 	NAMED_REF_FUNCTOR_DIRECT(refDebugParam3, TEST::s_debugData3, const char*);//【デバッグ用】データ3参照用
 	NAMED_REF_FUNCTOR_DIRECT(refDebugParam4, TEST::s_debugData4, short);//【デバッグ用】データ4参照用
-	NAMED_REF_FUNCTOR(refSceneObjDummy, return TEST::searchSceneObj(key.m_sub), CSceneObjDummy);//ダミーシーンオブジェクト参照用
+	NAMED_REF_FUNCTOR(refCharaInfo, return TEST::searchCharaInfo(key.m_sub), CCharaInfo);//キャラ情報参照用
 
 	//変数参照用関数オブジェクトを定義：アクセッサタイプ
 	//・条件①：構造体内に「typedef データ型 TYPE;」を定義するか、「RefF<データ型>」を継承する。
@@ -1985,9 +2130,9 @@ void testRegistNamedRef()
 	//※上記の構造体と同じことを「NAMED_ACCESSOR_FUNCTOR」マクロで代用できる
 	NAMED_ACCESSOR_FUNCTOR(refDebugParam5, return TEST::s_debugData5, TEST::s_debugData5 = val, int);//【デバッグ用】データ5アクセス用
 	//※共通関数を作成したりなど、複雑な処理が必要ならマクロは使えない
-	struct refSceneObjData3 : RefF<int>{//ダミーシーンオブジェクトのData3アクセス用
-		typedef CSceneObjDummy OBJ;
-		static OBJ* search(const RefK& key){ return TEST::searchSceneObj(key.m_sub); }
+	struct refCharaInfoData3 : RefF<int>{//キャラ情報のData3アクセス用
+		typedef CCharaInfo OBJ;
+		static OBJ* search(const RefK& key){ return TEST::searchCharaInfo(key.m_sub); }
 		struct getter{ TYPE operator()(const RefK& key) const { const OBJ* obj = search(key);  return obj ? obj->getData3() : 0; } };
 		struct setter{ void operator()(const RefK& key, const TYPE val) { OBJ* obj = search(key); obj->setData3(val); } };
 	};
@@ -1996,19 +2141,19 @@ void testRegistNamedRef()
 	CNamedRefSingleton named_ref;
 
 	//変数参照を登録：直接参照タイプ
-	named_ref->regist(RefK("DebugCpuMeter"), refDebugCpuMeter()); //【デバッグ用】CPU使用率表示状態
+	named_ref->regist(RefK("DebugCpuMeter"), refDebugCpuMeter());//【デバッグ用】CPU使用率表示状態
 	named_ref->regist(RefK("DebugParam1"), refDebugParam1());//【デバッグ用】データ1
 	named_ref->regist(RefK("DebugParam2"), refDebugParam2());//【デバッグ用】データ2
 	named_ref->regist(RefK("DebugParam3"), refDebugParam3());//【デバッグ用】データ3
 	named_ref->regist(RefK("DebugParam4"), refDebugParam4());//【デバッグ用】データ4
-	named_ref->regist(RefK("SceneObj", 10), refSceneObjDummy());//ダミーシーンオブジェクト：ID=10
-	named_ref->regist(RefK("SceneObj", 20), refSceneObjDummy());//ダミーシーンオブジェクト：ID=20
-	named_ref->regist(RefK("SceneObj", 30), refSceneObjDummy());//ダミーシーンオブジェクト：ID=30
+	named_ref->regist(RefK("CharaInfo", 10), refCharaInfo());//キャラ情報：ID=10
+	named_ref->regist(RefK("CharaInfo", 20), refCharaInfo());//キャラ情報：ID=20
+	named_ref->regist(RefK("CharaInfo", 30), refCharaInfo());//キャラ情報：ID=30
 	//変数参照を登録：アクセッサタイプ
 	named_ref->registAcc(RefK("DebugParam5"), refDebugParam5());//【デバッグ用】データ5
-	named_ref->registAcc(RefK("SceneObj::Data3", 10), refSceneObjData3());//ダミーシーンオブジェクト：Data3：ID=10
-	named_ref->registAcc(RefK("SceneObj::Data3", 20), refSceneObjData3());//ダミーシーンオブジェクト：Data3：ID=20
-	named_ref->registAcc(RefK("SceneObj::Data3", 30), refSceneObjData3());//ダミーシーンオブジェクト：Data3：ID=30
+	named_ref->registAcc(RefK("CharaInfo::Data3", 10), refCharaInfoData3());//キャラ情報：Data3：ID=10
+	named_ref->registAcc(RefK("CharaInfo::Data3", 20), refCharaInfoData3());//キャラ情報：Data3：ID=20
+	named_ref->registAcc(RefK("CharaInfo::Data3", 30), refCharaInfoData3());//キャラ情報：Data3：ID=30
 }
 
 //----------------------------------------
@@ -2024,10 +2169,10 @@ void testPrintNamedRef()
 	printf("DebugParam5=%d\n", named_ref->getInt(RefK("DebugParam5")));
 	for (int id : {10, 20, 30})
 	{
-		CRefR<CSceneObjDummy> obj(named_ref, RefK("SceneObj", id));
+		CRefR<CCharaInfo> obj(named_ref, RefK("CharaInfo", id));//処理ブロックを抜けるまでロックを取得（自動開放）
 		if (obj.isExist())
-			printf("SceneObj[id=%d]: {name\"%s\", data1=%d, data2=%.3f, data3=%d}\n",
-				obj->id, obj->name, obj->data1, obj->data2, named_ref->getInt(RefK("SceneObj::Data3", id)));
+			printf("CharaInfo[id=%d]: {name=\"%s\", data1=%d, data2=%.3f, data3=%d}\n",
+				obj->id, obj->name, obj->data1, obj->data2, named_ref->getInt(RefK("CharaInfo::Data3", id)));
 	}
 }
 
@@ -2036,21 +2181,21 @@ void testPrintNamedRef()
 void testUpdateNamedRef()
 {
 	CNamedRefSingleton named_ref;
-	named_ref->setBool(RefK("DebugCpuMeter"), true);
-	named_ref->setInt(RefK("DebugParam1"), 123);
-	named_ref->setFloat(RefK("DebugParam2"), 456.789f);
-	named_ref->setStr(RefK("DebugParam3"), "New String");
+	named_ref->set(RefK("DebugCpuMeter"), true);
+	named_ref->set(RefK("DebugParam1"), 123);
+	named_ref->set(RefK("DebugParam2"), 456.789f);
+	named_ref->set(RefK("DebugParam3"), "New String");
 	named_ref->set<short>(RefK("DebugParam4"), 12345);
-	named_ref->setInt(RefK("DebugParam5"), 67890);
+	named_ref->set(RefK("DebugParam5"), 67890);
 	{
 		int id = 20;
-		CRefW<CSceneObjDummy> obj(named_ref, RefK("SceneObj", id));
+		CRefW<CCharaInfo> obj(named_ref, RefK("CharaInfo", id));//処理ブロックを抜けるまでロックを取得（自動開放）
 		if (obj.isExist())
 		{
 			obj->data1 = 321;
 			obj->data2 = 987.654f;
 		}
-		named_ref->setInt(RefK("SceneObj::Data3", id), 987654);
+		named_ref->setInt(RefK("CharaInfo::Data3", id), 987654);
 	}
 }
 
@@ -2066,12 +2211,12 @@ void testCalcNamedRef1()
 	named_ref->reverseInt(RefK("DebugParam5"));
 	{
 		int id = 20;
-		named_ref->xorInt(RefK("SceneObj::Data3", id), 0xffff);
+		named_ref->xorInt(RefK("CharaInfo::Data3", id), 0xffff);
 	}
 }
 
 //----------------------------------------
-//テスト関数⑤：名前付きデータ参照を使ってデータを演算２
+//テスト関数⑤：名前付きデータ参照を使ってデータを演算２（演算１の前の状態に戻す逆計算）
 void testCalcNamedRef2()
 {
 	CNamedRefSingleton named_ref;
@@ -2082,12 +2227,12 @@ void testCalcNamedRef2()
 	named_ref->reverseInt(RefK("DebugParam5"));
 	{
 		int id = 20;
-		named_ref->xorInt(RefK("SceneObj::Data3", id), 0xffff);
+		named_ref->xorInt(RefK("CharaInfo::Data3", id), 0xffff);
 	}
 }
 
 //----------------------------------------
-//テスト関数⑥：名前付きデータ参照を使ってデータを演算３
+//テスト関数⑥：名前付きデータ参照を使ってデータを演算３（論理演算）
 void testCalcNamedRef3()
 {
 	CNamedRefSingleton named_ref;
@@ -2112,23 +2257,66 @@ void testResetRefAll()
 }
 
 //----------------------------------------
-//テスト関数⑧：一部の名前付きデータ参照を登録解除
+//テスト関数⑧：全体ブロック開始
+void testBeginBlock()
+{
+	CNamedRefSingleton named_ref;
+	named_ref->beginBlock();
+}
+
+//----------------------------------------
+//テスト関数⑨：全体ブロック終了
+void testEndBlock()
+{
+	CNamedRefSingleton named_ref;
+	named_ref->endBlock();
+}
+
+//----------------------------------------
+//テスト関数⑩：一部の名前付きデータ参照を登録解除
 void testUnregistNamedRef()
 {
 	CNamedRefSingleton named_ref;
 	named_ref->unregist(RefK("DebugParam1"));
 	named_ref->unregist(RefK("DebugParam3"));
 	named_ref->unregist(RefK("DebugParam5"));
-	named_ref->unregist(RefK("SceneObj", 20));
-	named_ref->unregist(RefK("SceneObj::Data3", 20));
+	named_ref->unregist(RefK("CharaInfo", 20));
+	named_ref->unregist(RefK("CharaInfo::Data3", 20));
 }
 
 //----------------------------------------
-//テスト関数⑨：全ての名前付きデータ参照を登録解除
+//テスト関数⑪：全ての名前付きデータ参照を登録解除
 void testUnregistRefAll()
 {
 	CNamedRefSingleton named_ref;
 	named_ref->unregistAll();
+}
+
+//----------------------------------------
+//マルチスレッドテスト①：大量同時更新テスト
+void readyTestThread1()//準備
+{
+	CNamedRefSingleton named_ref;
+	named_ref->setInt(RefK("DebugParam1"), 0);//テストのために0クリア
+}
+void testThread1(const int n)//処理
+{
+	CNamedRefSingleton named_ref;
+	for (int i = 0; i < 10000; ++ i)
+		named_ref->addInt(RefK("DebugParam1"), n);//10000回nずつ加算
+}
+
+//----------------------------------------
+//マルチスレッドテスト②:ブロック中のアクセステスト
+void testThread2()
+{
+	CNamedRefSingleton named_ref;
+	printf("----- THREAD:BEGIN -----\n");
+	int param1 = named_ref->getInt(RefK("DebugParam1"));//データ取得
+	printf("----- THREAD:SLEEP(param1=%d) -----\n", param1);
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));//スリープ（この間にメイン側でデータ参照の登録が解除される）
+	param1 = named_ref->getInt(RefK("DebugParam1"));//データ取得
+	printf("----- THREAD:END(param1=%d) -----\n", param1);
 }
 
 //----------------------------------------
@@ -2144,41 +2332,82 @@ int main(const int argc, const char* argv[])
 	//テスト②：名前付きデータ参照を使ってデータを表示
 	testPrintNamedRef();
 	
+	//テスト①：もう一度登録しても登録済みのキーは登録に失敗するだけ
+	testRegistNamedRef();
+
 	//テスト③：名前付きデータ参照を使ってデータを更新
 	printf("----- set value -----\n");
 	testUpdateNamedRef();
 	testPrintNamedRef();
 	
 	//テスト④：名前付きデータ参照を使ってデータを演算１
-	printf("----- reset-ref all -----\n");
-	testResetRefAll();
-	testPrintNamedRef();
-	
-	//テスト⑤：名前付きデータ参照を使ってデータを演算２
 	printf("----- calc value (1) -----\n");
 	testCalcNamedRef1();
 	testPrintNamedRef();
 	
-	//テスト⑥：名前付きデータ参照を使ってデータを演算３
+	//テスト⑤：名前付きデータ参照を使ってデータを演算２
 	printf("----- calc value (2) -----\n");
 	testCalcNamedRef2();
 	testPrintNamedRef();
 	
-	//テスト関数⑦：名前付きデータ参照が内部で保持する参照をリセット
+	//テスト⑥：名前付きデータ参照を使ってデータを演算３
 	printf("----- calc value (3) -----\n");
 	testCalcNamedRef3();
 	testPrintNamedRef();
 	
-	//テスト関数⑧：一部の名前付きデータ参照を登録解除
+	//テスト関数⑦：名前付きデータ参照が内部で保持する参照をリセット
+	printf("----- reset-ref all -----\n");
+	testResetRefAll();
+	testPrintNamedRef();
+
+	//スレッドテスト①
+	printf("----- thread test -----\n");
+	std::thread th1ready = std::thread(readyTestThread1);//準備（param1を0クリア）
+	th1ready.join();
+	std::thread th1[10];
+	int n = 1;
+	for (auto& th1tmp : th1)
+	{
+		th1tmp = std::thread(testThread1, n++);
+	}
+	for (auto& th1tmp : th1)
+	{
+		th1tmp.join();
+	}
+	testPrintNamedRef();
+
+	//テスト関数⑧：全体ブロック開始
+	printf("----- begin block -----\n");
+	testBeginBlock();
+	testPrintNamedRef();
+
+	//スレッドテスト②
+	std::thread th2 = std::thread(testThread2);
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));//スリープ（この間スレッド側の処理がブロックされる）
+
+	//テスト③（再）：名前付きデータ参照を使ってデータを更新
+	printf("----- set value : 2nd time -----\n");
+	testUpdateNamedRef();
+	testPrintNamedRef();
+	
+	//テスト関数⑨：全体ブロック終了
+	printf("----- end block -----\n");
+	testEndBlock();
+	testPrintNamedRef();
+
+	//テスト関数⑩：一部の名前付きデータ参照を登録解除
 	printf("----- unregist -----\n");
 	testUnregistNamedRef();
 	testPrintNamedRef();
 	
-	//テスト関数⑨：全ての名前付きデータ参照を登録解除
+	//テスト関数⑪：全ての名前付きデータ参照を登録解除
 	printf("----- unregist all -----\n");
 	testUnregistRefAll();
 	testPrintNamedRef();
-	
+
+	//スレッド終了待ち
+	th2.join();
+
 	return EXIT_SUCCESS;
 }
 

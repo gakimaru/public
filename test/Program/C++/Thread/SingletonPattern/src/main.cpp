@@ -384,7 +384,7 @@ public:
 	//デストラクタ呼び出し機能付きメモリ解放
 	//※解放後、ポインタに nullptr をセットする
 	template<class T>
-	void remove(T*& p)
+	void destroy(T*& p)
 	{
 		p->~T();//明示的なデストラクタ呼び出し（デストラクタ未定義のクラスでも問題なし）
 		operator delete(p, *this);//配置delete呼び出し
@@ -1660,7 +1660,7 @@ private:
 				if (now)
 					now->m_next = m_thisUsingInfo->m_next;
 			}
-			m_usingListBuff.remove(m_thisUsingInfo);//削除
+			m_usingListBuff.destroy(m_thisUsingInfo);//削除
 			m_usingListLock.unlock();//ロック解放
 		}
 	}

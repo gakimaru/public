@@ -142,6 +142,8 @@
      |  |  |  |
      |  |  |  `-[serializer]          ... boost::serialization をテスト
      |  |  |
+     |  |  |-[C++CLI_SmartPtr]        ... C++/CLIのgcnewのテスト
+     |  |  |
      |  |  |-[CalcExpression]         ... 計算式の状況に応じた右値評価のテスト
      |  |  |
      |  |  |-[constexpr]              ... constexpr のテスト

@@ -207,45 +207,41 @@ private:
 };
 
 //--------------------------------------------------------------------------------
-//固定メモリブロックアロケータクラス
-//※現状は可読性重視だが、実際にはテンプレートのインスタンス化による
-//　プログラムサイズの肥大を考慮し、非テンプレートの共通処理を
-//　切り出す必要がある
+//プールアロケータクラス
 
 //----------------------------------------
 //クラス宣言
-template<std::size_t N, std::size_t S>
-class CBlockAllocator;
+class CPoolAllocator;
+template<int N, std::size_t S>
+class CPoolAllocatorWithBuff;
 
 //----------------------------------------
-//固定メモリブロックアロケータクラス専用配置new/delete処理
+//プールアロケータクラス専用配置new/delete処理
 //※クラス内で使用するためのものなので、直接使用は禁止
 //※クラス内でdeleteすることで、デストラクタの呼び出しにも対応
-
 //配置new
-template<std::size_t N, std::size_t S>
-void* operator new(const std::size_t size, CBlockAllocator<N, S>& allocator){ return allocator.alloc(size); }
-
+void* operator new(const std::size_t size, CPoolAllocator& allocator);
 //配置delete
-template<std::size_t N, std::size_t S>
-void operator delete(void* p, CBlockAllocator<N, S>& allocator){ allocator.free(p); }
+void operator delete(void* p, CPoolAllocator& allocator);
 
 //----------------------------------------
-//固定メモリブロックアロケータクラス
+//プールアロケータクラス
 //※スレッドセーフ対応
-template<std::size_t N, std::size_t S>
-class CBlockAllocator
+class CPoolAllocator
 {
 public:
 	//型宣言
 	typedef unsigned char byte;//バッファ用
-	typedef unsigned int b32;//フラグ用
+	typedef int index_t;//インデックス用
 public:
 	//定数
-	static const std::size_t BLOCKS_NUM = N;//ブロック数
-	static const std::size_t BLOCK_SIZE = S;//メモリブロックサイズ
-	static const std::size_t FLAG_SIZE = ((N + 31) >> 5);//フラグサイズ（１サイズで32ビットのフラグ）
-	static const std::size_t FLAG_SURPLUS_BITS = N % 32;//余剰フラグ数（32の倍数からはみ出したフラグの数）
+	const std::size_t m_blockSize;//ブロックサイズ
+	const index_t m_poolBlocksNum;//プールブロック数
+	static const index_t INVALID_INDEX = INT_MAX;//ブロックインデックスの無効値
+public:
+	//アクセッサ
+	std::size_t getUsed() const { return m_used; }//使用中数取得
+	void* getBlock(const index_t index){ return m_pool + index * m_blockSize; }//ブロック取得
 private:
 	//メソッド
 	//メモリ確保状態リセット
@@ -254,16 +250,9 @@ private:
 		//ロック取得
 		m_lock.lock();
 
-		//ゼロクリア
-		memset(m_used, 0, sizeof(m_used));
-
-		//ブロック数の範囲外のフラグは最初から立てておく
-		if (FLAG_SURPLUS_BITS > 0)
-		{
-			b32 parmanent = 0xffffffff >> FLAG_SURPLUS_BITS;
-			parmanent <<= FLAG_SURPLUS_BITS;
-			m_used[FLAG_SIZE - 1] = parmanent;
-		}
+		m_used = 0;//使用中数
+		m_next = 0;//未使用先頭インデックス
+		m_recycle = INVALID_INDEX;//リサイクルインデックス
 
 		//ロック解放
 		m_lock.unlock();
@@ -276,32 +265,22 @@ private:
 		//ロック取得
 		m_lock.lock();
 
-		//確保済みインデックス準備
-		int index = -1;//初期状態は失敗状態
-
-		//空きフラグ検索
-		b32* used_p = m_used;
-		int bit_no = 0;
-		for (int arr_idx = 0; arr_idx < FLAG_SIZE; ++arr_idx, ++used_p)
+		//インデックス確保
+		index_t index = -1;
+		if (m_next < m_poolBlocksNum)
 		{
-			//32bitごとの空き判定
-			b32 bits_now = *used_p;
-			if (bits_now != 0xffffffff)
+			//未使用インデックスがある場合
+			index = m_next++;//未使用先頭インデックスカウントアップ
+			++m_used;//使用中数カウントアップ
+		}
+		else
+		{
+			if (m_recycle != INVALID_INDEX)
 			{
-				//32bitのフラグのどこかに空きがあるので、
-				//最初に空いているフラグ（ビット）を検索
-				b32 bits = bits_now;
-				if ((bits & 0xffff) == 0xffff){ bit_no += 16; bits >>= 16; }//下位16ビット判定（空きがなければ16ビットシフト）
-				if ((bits & 0xff) == 0xff){ bit_no += 8;  bits >>= 8; }//下位8ビット判定（空きがなければ8ビットシフト）
-				if ((bits & 0xf) == 0xf){ bit_no += 4;  bits >>= 4; }//下位4ビット判定（空きがなければ4ビットシフト）
-				if ((bits & 0x3) == 0x3){ bit_no += 2;  bits >>= 2; }//下位2ビット判定（空きがなければ2ビットシフト）
-				if ((bits & 0x1) == 0x1){ ++bit_no; }//下位1ビット判定（空きがなければ上位1ビットで確定）
-				bits_now |= (1 << bit_no);//論理和用のビット情報に変換
-				*used_p = bits_now;//論理和
-				index = arr_idx * 32 + bit_no;//メモリブロックのインデックス算出
-
-				//確保成功
-				break;
+				//リサイクル可能なインデックスがある場合
+				index = m_recycle;//リサイクルインデックス
+				m_recycle = *reinterpret_cast<unsigned int*>(getBlock(index));//リサイクルインデックス更新（空きノードの先頭に書き込まれている）
+				++m_used;//使用中数カウントアップ
 			}
 		}
 
@@ -313,19 +292,21 @@ private:
 	}
 	//メモリブロック解放
 	//※指定のインデックスの使用中フラグをリセット
-	void release(const int index)
+	void release(const index_t index)
 	{
 		//インデックスの範囲チェック
-		if (index < 0 || index >= BLOCKS_NUM)
+		if (index < 0 || index >= m_poolBlocksNum)
 			return;
 
 		//ロック取得
 		m_lock.lock();
 
-		//フラグ解放
-		const int arr_idx = index >> 5;//使用中フラグの配列番号
-		const int bit_no = index & 31;//ビット番号
-		m_used[arr_idx] &= ~(1 << bit_no);//論理積
+		//リサイクル
+		*reinterpret_cast<unsigned int*>(getBlock(index)) = m_recycle;//リサイクルインデックス書き込み（空きノードの先頭に強引に書き込む）
+		m_recycle = index;//リサイクルインデックス組み換え
+
+		//使用中数カウントダウン
+		--m_used;
 
 		//ロック解放
 		m_lock.unlock();
@@ -335,35 +316,35 @@ public:
 	void* alloc(const std::size_t size)
 	{
 		//【アサーション】要求サイズがブロックサイズを超える場合は即時確保失敗
-		ASSERT(size <= BLOCK_SIZE, "CBlockAllocator::alloc(%d) cannot allocate. Size must has been under %d.", size, BLOCK_SIZE);
-		if (size > BLOCK_SIZE)
+		ASSERT(size <= m_blockSize, "CPoolAllocator::alloc(%d) cannot allocate. Size must has been under %d.", size, m_blockSize);
+		if (size > m_blockSize)
 		{
 			return nullptr;
 		}
 		//空きブロックを確保して返す
-		const int index = assign();
+		const index_t index = assign();
 		//【アサーション】全ブロック使用中につき、確保失敗
-		ASSERT(index >= 0, "CBlockAllocator::alloc(%d) cannot allocate. Buffer is full. (num of blocks is %d)", size, BLOCKS_NUM);
+		ASSERT(index >= 0, "CPoolAllocator::alloc(%d) cannot allocate. Buffer is full. (num of blocks is %d)", size, m_poolBlocksNum);
 		//確保したメモリを返す
-		return index < 0 ? nullptr : &m_buff[index];
+		return index < 0 ? nullptr : getBlock(index);
 	}
 	//メモリ解放
 	void free(void * p)
 	{
 		//nullptr時は即時解放失敗
-		ASSERT(p != nullptr, "CBlockAllocator::free() cannot free. Pointer is null.");
+		ASSERT(p != nullptr, "CPoolAllocator::free() cannot free. Pointer is null.");
 		if (!p)
 			return;
 		//ポインタからインデックスを算出
-		const byte* top_p = reinterpret_cast<byte*>(m_buff);//バッファの先頭ポインタ
+		const byte* top_p = reinterpret_cast<byte*>(m_pool);//バッファの先頭ポインタ
 		const byte* target_p = reinterpret_cast<byte*>(p);//指定ポインタ
 		const int diff = (target_p - top_p);//ポインタの引き算で差のバイト数算出
-		const int index = (target_p - top_p) / BLOCK_SIZE;//ブロックサイズで割ってインデックス算出
+		const int index = (target_p - top_p) / m_blockSize;//ブロックサイズで割ってインデックス算出
 		//【アサーション】メモリバッファの範囲外なら処理失敗（release関数内で失敗するのでそのまま実行）
-		ASSERT(index >= 0 && index < BLOCKS_NUM, "CBlockAllocator::free() cannot free. Pointer is different.");
+		ASSERT(index >= 0 && index < m_poolBlocksNum, "CPoolAllocator::free() cannot free. Pointer is different.");
 		//【アサーション】ポインタが各ブロックの先頭を指しているかチェック
 		//　　　　　　　　⇒多重継承とキャストしているとずれることがるのでこの問題は無視して解放してしまう
-		//ASSERT(diff % BLOCK_SIZE == 0, "CBlockAllocator::free() cannot free. Pointer is illegal.");
+		//ASSERT(diff % m_blockSize == 0, "CPoolAllocator::free() cannot free. Pointer is illegal.");
 		//算出したインデックスでメモリ解放
 		release(index);
 	}
@@ -379,25 +360,64 @@ public:
 	template<class T>
 	void destroy(T*& p)
 	{
+		if (!p)
+			return;
 		p->~T();//明示的なデストラクタ呼び出し（デストラクタ未定義のクラスでも問題なし）
 		operator delete(p, *this);//配置delete呼び出し
 		p = nullptr;//ポインタにはnullptrをセット
 	}
 public:
 	//コンストラクタ
-	CBlockAllocator()
+	CPoolAllocator(void* pool_buff, const std::size_t block_size, const index_t pool_blocks_num) :
+		m_pool(reinterpret_cast<byte*>(pool_buff)),//プールバッファ
+		m_blockSize(block_size),//ブロックサイズ　※4倍数であること
+		m_poolBlocksNum(pool_blocks_num)//プールブロック数
 	{
+		//【アサーション】パラメータチェック
+		ASSERT((m_blockSize & 0x3) == 0, "CPoolAllocator::CPoolAllocator() block size is invalid.");
+
 		//使用中フラグリセット
 		reset();
 	}
 	//デストラクタ
-	~CBlockAllocator()
+	~CPoolAllocator()
 	{}
 private:
 	//フィールド
-	byte m_buff[BLOCKS_NUM][BLOCK_SIZE];//ブロックバッファ
-	b32 m_used[FLAG_SIZE];//使用中フラグ
+	byte* m_pool;//プールバッファ
+	index_t m_used;//使用中数
+	index_t m_next;//未使用先頭インデックス
+	index_t m_recycle;//リサイクルインデックス
 	CSpinLock m_lock;//ロック
+};
+
+//----------------------------------------
+//プールアロケータクラス専用配置new/delete処理
+//配置new
+void* operator new(const std::size_t size, CPoolAllocator& allocator){ return allocator.alloc(size); }
+//配置delete
+void operator delete(void* p, CPoolAllocator& allocator){ allocator.free(p); }
+
+//----------------------------------------
+//プールアロケータクラス（バッファ内包版）
+template<int N, std::size_t S>
+class CPoolAllocatorWithBuff : public CPoolAllocator
+{
+public:
+	//定数
+	static const std::size_t BLOCK_SIZE = (S + 3) & ~3;//ブロックサイズ
+	static const index_t POOL_BLOCKS_NUM = N;//プールブロック数
+public:
+	//コンストラクタ
+	CPoolAllocatorWithBuff() :
+		CPoolAllocator(&m_poolBuff, BLOCK_SIZE, POOL_BLOCKS_NUM)
+	{}
+	//デストラクタ
+	~CPoolAllocatorWithBuff()
+	{}
+private:
+	//フィールド
+	byte m_poolBuff[POOL_BLOCKS_NUM][BLOCK_SIZE];//プールバッファ
 };
 
 //--------------------------------------------------------------------------------
@@ -1950,7 +1970,7 @@ public:
 	}
 private:
 	//フィールド
-	CBlockAllocator<MAX_NODES, REF_NODE_SIZE_MAX> m_allocator;//固定メモリブロックアロケータ（最大数以上の確保は不可）
+	CPoolAllocatorWithBuff<MAX_NODES, REF_NODE_SIZE_MAX> m_allocator;//プールアロケータ（最大数以上の確保は不可）
 	NamedRefTable m_namedRefList;//【暫定】C++11標準ライブラリのハッシュテーブル
 	mutable CRWLock m_wholeLock;//全体ブロック用リード・ライトロック
 	mutable std::atomic<bool> m_wholeLocked;//全体ブロック中

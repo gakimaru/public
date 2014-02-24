@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <stdint.h>//uintptr_t,intptr_t用
+#include <limits.h>//INT_MAX用
 
 //C++11ライブラリ
 #include <thread>//スレッド
@@ -219,17 +221,15 @@ private:
 //----------------------------------------
 //クラス宣言
 class CPoolAllocator;
-template<int N, std::size_t S>
-class CPoolAllocatorWithBuff;
 
 //----------------------------------------
 //プールアロケータクラス専用配置new/delete処理
 //※クラス内で使用するためのものなので、直接使用は禁止
 //※クラス内でdeleteすることで、デストラクタの呼び出しにも対応
 //配置new
-void* operator new(const std::size_t size, CPoolAllocator& allocator);
+void* operator new(const std::size_t size, CPoolAllocator& allocator) throw();
 //配置delete
-void operator delete(void* p, CPoolAllocator& allocator);
+void operator delete(void* p, CPoolAllocator& allocator) throw();
 
 //----------------------------------------
 //プールアロケータクラス
@@ -247,8 +247,12 @@ public:
 	static const index_t INVALID_INDEX = INT_MAX;//ブロックインデックスの無効値
 public:
 	//アクセッサ
-	std::size_t getUsed() const { return m_used; }//使用中数取得
-	void* getBlock(const index_t index){ return m_pool + index * m_blockSize; }//ブロック取得
+	const byte* getBuff() const { return m_pool; }//バッファ取得
+	index_t getUsed() const { return m_used; }//使用中数取得
+	index_t getRemain() const { return m_poolBlocksNum - m_used; }//残数取得
+	const byte* getBlockConst(const index_t index) const { return m_pool + index * m_blockSize; }//ブロック取得
+private:
+	byte* getBlock(const index_t index){ return m_pool + index * m_blockSize; }//ブロック取得
 private:
 	//メソッド
 	//メモリ確保状態リセット
@@ -345,8 +349,8 @@ public:
 		//ポインタからインデックスを算出
 		const byte* top_p = reinterpret_cast<byte*>(m_pool);//バッファの先頭ポインタ
 		const byte* target_p = reinterpret_cast<byte*>(p);//指定ポインタ
-		const int diff = (target_p - top_p);//ポインタの引き算で差のバイト数算出
-		const int index = (target_p - top_p) / m_blockSize;//ブロックサイズで割ってインデックス算出
+		const intptr_t diff = (target_p - top_p);//ポインタの引き算で差のバイト数算出
+		const intptr_t index = diff / m_blockSize;//ブロックサイズで割ってインデックス算出
 		//【アサーション】メモリバッファの範囲外なら処理失敗（release関数内で失敗するのでそのまま実行）
 		ASSERT(index >= 0 && index < m_poolBlocksNum, "CPoolAllocator::free() cannot free. Pointer is different.");
 		//【アサーション】ポインタが各ブロックの先頭を指しているかチェック
@@ -401,13 +405,13 @@ private:
 //----------------------------------------
 //プールアロケータクラス専用配置new/delete処理
 //配置new
-void* operator new(const std::size_t size, CPoolAllocator& allocator){ return allocator.alloc(size); }
+void* operator new(const std::size_t size, CPoolAllocator& allocator) throw() { return allocator.alloc(size); }
 //配置delete
-void operator delete(void* p, CPoolAllocator& allocator){ allocator.free(p); }
+void operator delete(void* p, CPoolAllocator& allocator) throw() { allocator.free(p); }
 
 //----------------------------------------
-//プールアロケータクラス（バッファ内包版）
-template<int N, std::size_t S>
+//バッファ付きプールアロケータクラス：ブロックサイズとブロック数指定
+template<std::size_t S, int N>
 class CPoolAllocatorWithBuff : public CPoolAllocator
 {
 public:
@@ -425,6 +429,41 @@ public:
 private:
 	//フィールド
 	byte m_poolBuff[POOL_BLOCKS_NUM][BLOCK_SIZE];//プールバッファ
+};
+
+//----------------------------------------
+//バッファ付きプールアロケータクラス：データ型とブロック数指定
+template<typename T, int N>
+class CPoolAllocatorWithType : public CPoolAllocatorWithBuff<sizeof(T), N>
+{
+public:
+	//型
+	typedef T data_t;//データ型
+public:
+	//定数
+	static const std::size_t TYPE_SIZE = sizeof(data_t);//型のサイズ
+public:
+	//コンストラクタ呼び出し機能付きメモリ確保
+	//※C++11の可変長テンプレートパラメータを活用
+	template<typename... Tx>
+	data_t* createData(Tx... nx)
+	{
+		return CPoolAllocator::create<data_t>(nx...);
+	}
+	//デストラクタ呼び出し機能付きメモリ解放
+	//※解放後、ポインタに nullptr をセットする
+	void destroyData(data_t*& p)
+	{
+		CPoolAllocator::destroy(p);
+	}
+public:
+	//コンストラクタ
+	CPoolAllocatorWithType() :
+		CPoolAllocatorWithBuff<TYPE_SIZE, N>()
+	{}
+	//デストラクタ
+	~CPoolAllocatorWithType()
+	{}
 };
 
 //--------------------------------------------------------------------------------
@@ -1145,8 +1184,8 @@ private:
 	//※new は内部で持つ static バッファのポインタを返すだけ
 	//※delete は何もしない
 	//※コンストラクタ、デストラクタを実行して、オブジェクトの初期化・終了処理を実行することが目的
-	void* operator new(const size_t size){ return m_buff; }
-	void operator delete(void*){}
+	void* operator new(const size_t size) throw() { return m_buff; }
+	void operator delete(void*) throw() {}
 public:
 	//アクセッサ
 	const char* getClassName() const { return T::CLASS_NAME; }//クラス名取得
@@ -1639,7 +1678,7 @@ private:
 		}
 		//使用中情報作成
 		//※THIS_SINGLETON_USING_LIST_MAX で指定された数まで同時に記録可能
-		m_thisUsingInfo = m_usingListBuff.create<USING_INFO>(m_usingList.load(), name, thread_id, thread_name, is_initializer);
+		m_thisUsingInfo = m_usingListBuff.createData(m_usingList.load(), name, thread_id, thread_name, is_initializer);
 		if (m_thisUsingInfo)
 		{
 			//【参考】ロックフリーなスタックプッシュ（先頭ノード追加）アルゴリズム
@@ -1683,7 +1722,7 @@ private:
 				if (now)
 					now->m_next = m_thisUsingInfo->m_next;
 			}
-			m_usingListBuff.destroy(m_thisUsingInfo);//削除
+			m_usingListBuff.destroyData(m_thisUsingInfo);//削除
 			m_usingListNum.fetch_sub(1);//使用中処理リストの使用数カウントダウン
 			m_usingListLock.unlock();//ロック解放
 		}
@@ -1781,7 +1820,7 @@ private:
 	static std::atomic<int> m_usingListNumMax;//使用中処理リストの使用数の最大到達値
 	static std::atomic<USING_INFO*> m_usingList;//使用中処理リスト
 	static CSpinLock m_usingListLock;//使用中処理リストのロック用フラグ
-	static CPoolAllocatorWithBuff<THIS_SINGLETON_USING_LIST_MAX, sizeof(USING_INFO)> m_usingListBuff;//使用中処理リストの領域
+	static CPoolAllocatorWithType<USING_INFO, THIS_SINGLETON_USING_LIST_MAX> m_usingListBuff;//使用中処理リストの領域
 };
 
 //----------------------------------------
@@ -1820,7 +1859,7 @@ private:
 	std::atomic<int> CManagedSingleton<T>::m_usingListNumMax(0);/*使用中処理リストの使用数の最大到達値*/ \
 	std::atomic< CManagedSingleton<T>::USING_INFO* > CManagedSingleton<T>::m_usingList(nullptr);/*使用中処理リスト*/ \
 	CSpinLock CManagedSingleton<T>::m_usingListLock;/*使用中処理リストのロック用フラグ*/ \
-	CPoolAllocatorWithBuff<CManagedSingleton<T>::THIS_SINGLETON_USING_LIST_MAX, sizeof(CManagedSingleton<T>::USING_INFO)> CManagedSingleton<T>::m_usingListBuff;/*使用中処理リストの領域*/
+	CPoolAllocatorWithType<CManagedSingleton<T>::USING_INFO, CManagedSingleton<T>::THIS_SINGLETON_USING_LIST_MAX> CManagedSingleton<T>::m_usingListBuff;/*使用中処理リストの領域*/
 
 //----------------------------------------
 //【シングルトン用ヘルパー】シングルトンプロキシーテンプレートクラス　※継承専用

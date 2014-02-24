@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>//uintptr_t用
+#include <stdint.h>//uintptr_t,intptr_t用
 #include <limits.h>//INT_MAX用
 #include <new>//規定の配置new/配置delete用
 
@@ -16,14 +16,14 @@
 
 //規定の配置new/配置delete
 //※#include <new> で定義されている規定の配置new/配置delete
-//　  void* operator new(size_t, void* where);
-//　  void* operator new[](size_t, void* where);
-//　  void operator delete(void*, void*);
-//　  void operator delete[](void*, void*);
-//　  void* operator new(size_t size, const nothrow_t&);//例外をスローしない
-//　  void* operator new[](size_t size, const nothrow_t&);//例外をスローしない
-//　  void operator delete(void*, const nothrow_t&);//例外をスローしない
-//　  void operator delete[](void*, const nothrow_t&);//例外をスローしない
+//　  void* operator new(size_t, void* where) throw();
+//　  void* operator new[](size_t, void* where) throw();
+//　  void operator delete(void*, void*) throw();
+//　  void operator delete[](void*, void*) throw();
+//　  void* operator new(size_t size, const nothrow_t&) throw();//例外をスローしない
+//　  void* operator new[](size_t size, const nothrow_t&) throw();//例外をスローしない
+//　  void operator delete(void*, const nothrow_t&) throw();//例外をスローしない
+//　  void operator delete[](void*, const nothrow_t&) throw();//例外をスローしない
 
 #define USE_NEW_PTR_FOR_TEST0//new関数を使用しないときはコメントアウトする
 #ifdef USE_NEW_PTR_FOR_TEST0
@@ -109,7 +109,7 @@ void test0()
 //配置new/配置delete
 //※それぞれ第2引数に char* を取り、既定の関数をオーバーロードする
 //単体new
-void* operator new(const std::size_t size, char* where)
+void* operator new(const std::size_t size, char* where) throw()
 {
 	printf("placement new(size=%d, where=0x%p)\n", size, where);
 	return where;//渡されたバッファをそのまま返す
@@ -119,7 +119,7 @@ void* operator new(const std::size_t size, char* where)
 //　この時、戻り値のポインタは、関数を抜けた時、要素数情報の分がシフトしたポインタに変換される
 //　型のアラインメントによっては大きくシフトする可能性もある
 //　デストラクタを持たない型もしくはプリミティブ型ではこの情報は扱われない（なのでややこしい）
-void* operator new[](const std::size_t size, char* where)
+void* operator new[](const std::size_t size, char* where) throw()
 {
 	printf("placement new[](size=%d, where=0x%p)\n", size, where);
 	return where;//渡されたバッファをそのまま返す
@@ -127,7 +127,7 @@ void* operator new[](const std::size_t size, char* where)
 //単体delete
 //※配置newと対になる配置deleteは必須
 //　（コンストラクタで例外が発生すると自動的に呼び出されるため）
-void operator delete(void* p, char* where)
+void operator delete(void* p, char* where) throw()
 {
 	printf("placement delete(p=0x%p, where=0x%p)\n", p, where);
 	//なにもしない
@@ -136,7 +136,7 @@ void operator delete(void* p, char* where)
 //※デストラクタを持った型のポインタであっても、受け渡されたポインタがそのまま扱われるので注意
 //　（メモリ確保時の正確なポインタが分からない）
 //※クラス内delete関数を使用することでこの問題を解消できる
-void operator delete[](void* p, char* where)
+void operator delete[](void* p, char* where) throw()
 {
 	printf("placement delete[](p=0x%p, where=0x%p)\n", p, where);
 	//なにもしない
@@ -325,25 +325,25 @@ static char s_buffForTestClass2[64];
 //#define USE_GLOBAL_NEW_DELETE_TEST2//test2をグローバルnew/deleteで実行する場合はこのマクロを有効化
 #ifdef USE_GLOBAL_NEW_DELETE_TEST2
 //単体new
-void* operator new(const std::size_t size)
+void* operator new(const std::size_t size) throw()
 {
 	printf("new(size=%d)\n", size);
 	return s_buffForTestClass2;//インスタンス用バッファを返す
 }
 //配列new
-void* operator new[](const std::size_t size)
+void* operator new[](const std::size_t size) throw()
 {
 	printf("new[](size=%d)\n", size);
 	return s_buffForTestClass2;//インスタンス用バッファを返す
 }
 //単体delete
-void operator delete(void* p)
+void operator delete(void* p) throw()
 {
 	printf("delete(p=0x%p)\n", p);
 	//なにもしない
 }
 //配列delete
-void operator delete[](void* p)
+void operator delete[](void* p) throw()
 {
 	printf("delete[](p=0x%p)\n", p);
 	//なにもしない
@@ -366,13 +366,13 @@ public:
 	//※配置new/配置deleteも使用可（配置deleteの際は CTest2::operator delete(p, xxx) のようにクラス名を明示する必要あり）
 	//※静的operatorである必要があるが、staticを付けなくても暗黙的にstatic扱いになる
 	//単体new
-	static void* operator new(const std::size_t size)
+	static void* operator new(const std::size_t size) throw()
 	{
 		printf("CTest2::new(size=%d)\n", size);
 		return s_buffForTestClass2;//インスタンス用バッファを返す
 	}
 	//配列new
-	static void* operator new[](const std::size_t size)
+	static void* operator new[](const std::size_t size) throw()
 	{
 		printf("CTest2::new[](size=%d)\n", size);
 		return s_buffForTestClass2;//インスタンス用バッファを返す
@@ -382,13 +382,13 @@ public:
 	//※クラス内deleteには2種類のスタイルがある
 	//※これは標準的なスタイル
 	//単体delete
-	static void operator delete(void* p)
+	static void operator delete(void* p) throw()
 	{
 		printf("CTest2::delete(p=0x%p)\n", p);
 		//なにもしない
 	}
 	//配列delete
-	static void operator delete[](void* p)
+	static void operator delete[](void* p) throw()
 	{
 		printf("CTest2::delete[](p=0x%p)\n", p);
 		//なにもしない
@@ -398,13 +398,13 @@ public:
 	//※クラス内deleteでは、第2引数に size_t を取る形も標準スタイルの一つ（非配置delete）
 	//※2種類とも定義したら、operator delete(void*) の方が優先
 	//単体delete
-	static void operator delete(void* p, const std::size_t size)
+	static void operator delete(void* p, const std::size_t size) throw()
 	{
 		printf("CTest2::delete(p=0x%p, size=%d)\n", p, size);
 		//なにもしない
 	}
 	//配列delete
-	static void operator delete[](void* p, const std::size_t size)
+	static void operator delete[](void* p, const std::size_t size) throw()
 	{
 		printf("CTest2::delete[](p=0x%p, size=%d)\n", p, size);
 		//なにもしない
@@ -446,13 +446,13 @@ public:
 	//オペレータ
 #ifndef USE_GLOBAL_NEW_DELETE_TEST2
 	//クラス内new
-	static void* operator new(const std::size_t size)
+	static void* operator new(const std::size_t size) throw()
 	{
 		printf("CTest2ex::new(size=%d)\n", size);
 		return s_buffForTestClass2;//インスタンス用バッファを返す
 	}
 	//クラス内delete
-	static void operator delete(void* p)
+	static void operator delete(void* p) throw()
 	{
 		printf("CTest2ex::delete(p=0x%p)\n", p);
 		//なにもしない
@@ -481,13 +481,13 @@ public:
 	//オペレータ
 #ifndef USE_GLOBAL_NEW_DELETE_TEST2
 	//クラス内new
-	static void* operator new(const std::size_t size)
+	static void* operator new(const std::size_t size) throw()
 	{
 		printf("CDerivedTest2::new(size=%d)\n", size);
 		return s_buffForTestClass2;//インスタンス用バッファを返す
 	}
 	//クラス内delete
-	static void operator delete(void* p)
+	static void operator delete(void* p) throw()
 	{
 		printf("CDerivedTest2::delete(p=0x%p)\n", p);
 		//なにもしない
@@ -527,13 +527,13 @@ namespace test2_ns
 	char s_buff[32];
 
 	//ネームスペースに定義した new
-	void* operator new(const std::size_t size)
+	void* operator new(const std::size_t size) throw()
 	{
 		printf("test2_ns::new size=%d\n", size);
 		return s_buff;
 	}
 	//ネームスペースに定義した delete
-	void operator delete(void* p)
+	void operator delete(void* p) throw()
 	{
 		printf("test2_ns::delete p=0x%p\n", p);
 	}
@@ -649,8 +649,8 @@ public:
 	void setData(const int data){ m_data = data; }//データを更新
 private:
 	//オペレータ（private）
-	void* operator new(const std::size_t){ return m_singletonBuff; }//new演算子
-	void operator delete(void*){}//delete演算子
+	void* operator new(const std::size_t) throw() { return m_singletonBuff; }//new演算子
+	void operator delete(void*) throw() {}//delete演算子
 private:
 	//静的メソッド（private）
 	//シングルトンインスタンスの生成
@@ -686,12 +686,12 @@ private:
 	//フィールド
 	int m_data;//データ
 	static CTest3Singleton2* m_singleton;//シングルトンインスタンス参照
-	static char m_singletonBuff[];//シングルトンインスタンス用バッファ
+	static unsigned char m_singletonBuff[];//シングルトンインスタンス用バッファ
 };
 //--------------------
 //シングルトン静的変数のインスタンス化
 CTest3Singleton2* CTest3Singleton2::m_singleton = nullptr;
-char CTest3Singleton2::m_singletonBuff[sizeof(CTest3Singleton2)];//シングルトンインスタンス用バッファ
+unsigned char CTest3Singleton2::m_singletonBuff[sizeof(CTest3Singleton2)];//シングルトンインスタンス用バッファ
 
 //--------------------
 //テスト
@@ -720,7 +720,7 @@ class CSingleton
 {
 	//配置newテンプレートをフレンド化
 	template<class U>
-	friend void* operator new(const std::size_t size, CSingleton<U>& singleton);
+	friend void* operator new(const std::size_t size, CSingleton<U>& singleton) throw();
 public:
 	//オペレータ（シングルトン本体のプロキシー）
 	T* operator->(){ return m_singleton; }
@@ -734,19 +734,19 @@ public:
 private:
 	//フィールド
 	static T* m_singleton;//シングルトン本体参照
-	static char m_singletonBuff[];//シングルトン本体用バッファ
+	static unsigned char m_singletonBuff[];//シングルトン本体用バッファ
 };
 
 //--------------------
 //テンプレート配置new
 template<class T>
-void* operator new(const std::size_t size, CSingleton<T>& singleton)
+void* operator new(const std::size_t size, CSingleton<T>& singleton) throw()
 {
 	return singleton.m_singletonBuff;//汎用シングルトンテンプレートクラス内のバッファを返す
 }
 //テンプレート配置delete
 template<class T>
-void operator delete(void* p, CSingleton<T>& singleton)
+void operator delete(void* p, CSingleton<T>& singleton) throw()
 {
 	//なにもしない
 }
@@ -776,7 +776,7 @@ CSingleton<T>::CSingleton()
 template<class T>
 T* CSingleton<T>::m_singleton = nullptr;//シングルトン参照
 template<class T>
-char CSingleton<T>::m_singletonBuff[sizeof(T)];//シングルトン用バッファ
+unsigned char CSingleton<T>::m_singletonBuff[sizeof(T)];//シングルトン用バッファ
 
 //--------------------
 //テスト用クラス
@@ -863,11 +863,12 @@ class CStackAllocator
 {
 public:
 	//型
+	typedef unsigned char byte;//バッファ用
 	typedef std::size_t marker_t;//スタックマーカー型
 public:
 	//アクセッサ
-	const void* getBuff() const { return m_buffPtr; }//バッファ取得
-	const void* getNowPtr() const { return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(m_buffPtr)+m_used); }//現在のバッファ位置
+	const byte* getBuff() const { return m_buffPtr; }//バッファ取得
+	const byte* getNowPtr() const { return m_buffPtr + m_used; }//現在のバッファ位置
 	marker_t getMarker() const { return m_used; }//現在のマーカーを取得
 public:
 	//メソッド
@@ -908,8 +909,8 @@ public:
 	}
 public:
 	//コンストラクタ
-	CStackAllocator(char* buff_p, const std::size_t buff_size) :
-		m_buffPtr(buff_p),//バッファ先頭アドレス
+	CStackAllocator(void* buff_p, const std::size_t buff_size) :
+		m_buffPtr(reinterpret_cast<byte*>(buff_p)),//バッファ先頭アドレス
 		m_buffSize(buff_size),//バッファサイズ
 		m_used(0)//マーカー
 	{}
@@ -918,7 +919,7 @@ public:
 	{}
 private:
 	//フィールド
-	char* m_buffPtr;//バッファ先頭アドレス
+	byte* m_buffPtr;//バッファ先頭アドレス
 	const std::size_t m_buffSize;//バッファサイズ
 	marker_t m_used;//マーカー
 };
@@ -927,25 +928,25 @@ private:
 //配置new/配置delete
 //※メモリ使用状況を確認するためにマーカーを表示
 //配置new
-void* operator new(const std::size_t size, CStackAllocator& allocator, const std::size_t align = sizeof(int))
+void* operator new(const std::size_t size, CStackAllocator& allocator, const std::size_t align = sizeof(int)) throw()
 {
 	printf("placement new(size=%d, allocator.marker=%d, align=%d)\n", size, allocator.getMarker(), align);
 	return allocator.alloc(size, align);
 }
 //配列版
-void* operator new[](const std::size_t size, CStackAllocator& allocator, const std::size_t align = sizeof(int))
+void* operator new[](const std::size_t size, CStackAllocator& allocator, const std::size_t align = sizeof(int)) throw()
 {
 	printf("placement new[](size=%d, allocator.marker=%d, align=%d)\n", size, allocator.getMarker(), align);
 	return allocator.alloc(size, align);
 }
 //配置delete
-void operator delete(void* p, CStackAllocator& allocator, const std::size_t)
+void operator delete(void* p, CStackAllocator& allocator, const std::size_t) throw()
 {
 	printf("placement delete(p=0x%p, allocator.marker=%d)\n", p, allocator.getMarker());
 	//allocator.back(p) は実行しない
 }
 //配列版
-void operator delete[](void* p, CStackAllocator& allocator, const std::size_t)
+void operator delete[](void* p, CStackAllocator& allocator, const std::size_t) throw()
 {
 	printf("placement delete[](p=0x%p, allocator.marker=%d)\n", p, allocator.getMarker());
 	//allocator.back(p) は実行しない
@@ -980,22 +981,22 @@ void delete_ptr(T*& p, const std::size_t array_num, CStackAllocator& allocator)
 //バッファ付きスタックアロケータテンプレートクラス
 //※静的バッファを使用したければ、固定バッファシングルトン化する
 template<std::size_t SIZE>
-class CBufferedStackAllocator : public CStackAllocator
+class CStackAllocatorWithBuff : public CStackAllocator
 {
 public:
 	//定数
 	static const std::size_t BUFF_SIZE = SIZE;//バッファサイズ
 public:
 	//コンストラクタ
-	CBufferedStackAllocator() :
+	CStackAllocatorWithBuff() :
 		CStackAllocator(m_buff, BUFF_SIZE)
 	{}
 	//デストラクタ
-	~CBufferedStackAllocator()
+	~CStackAllocatorWithBuff()
 	{}
 private:
 	//フィールド
-	char m_buff[BUFF_SIZE];//バッファ
+	byte m_buff[BUFF_SIZE];//バッファ
 };
 
 //--------------------
@@ -1033,7 +1034,7 @@ private:
 void test4a()
 {
 	printf("---------- test4a:スタックアロケータ ----------\n");
-	CBufferedStackAllocator<64> stack;//スタックアロケータ生成
+	CStackAllocatorWithBuff<64> stack;//スタックアロケータ生成（64バイトのバッファを確保）
 	printf("buff=0x%p\n", stack.getBuff());
 	{
 		printf("-----\n");
@@ -1065,7 +1066,7 @@ void test4a()
 		printf("f2=0x%p\n", f2);
 		char* c2 = new(stack, 1) char;
 		printf("c2=0x%p\n", c2);
-		int* over = new(stack) int[10];
+		int* over = new(stack) int[10];//【NG】サイズオーバー
 		printf("over=0x%p\n", over);
 		delete_ptr(f2, stack);
 		delete_ptr(c2, stack);
@@ -1091,12 +1092,13 @@ public:
 	};
 public:
 	//型
+	typedef unsigned char byte;//バッファ用
 	typedef std::size_t marker_t;//マーカー型
 public:
 	//アクセッサ
-	const void* getBuff() const { return m_buffPtr; }//バッファ取得
-	const void* getNowPtrN() const { return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(m_buffPtr)+m_usedN); }//現在のバッファ位置（正順）
-	const void* getNowPtrR() const { return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(m_buffPtr)+m_usedR); }//現在のバッファ位置（逆順）
+	const byte* getBuff() const { return m_buffPtr; }//バッファ取得
+	const byte* getNowPtrN() const { return m_buffPtr + m_usedN; }//現在のバッファ位置（正順）
+	const byte* getNowPtrR() const { return m_buffPtr + m_usedR; }//現在のバッファ位置（逆順）
 	marker_t getMarkerN() const { return m_usedN; }//現在のマーカー（正順）を取得
 	marker_t getMarkerR() const { return m_usedR; }//現在のマーカー（逆順）を取得
 public:
@@ -1179,8 +1181,8 @@ public:
 	}
 public:
 	//コンストラクタ
-	CDualStackAllocator(char* buff_p, const std::size_t buff_size) :
-		m_buffPtr(buff_p),//バッファ先頭アドレス
+	CDualStackAllocator(void* buff_p, const std::size_t buff_size) :
+		m_buffPtr(reinterpret_cast<byte*>(buff_p)),//バッファ先頭アドレス
 		m_buffSize(buff_size),//バッファサイズ
 		m_usedN(0),//マーカー（正順）
 		m_usedR(buff_size)//マーカー（逆順）
@@ -1190,7 +1192,7 @@ public:
 	{}
 private:
 	//フィールド
-	char* m_buffPtr;//バッファ先頭アドレス
+	byte* m_buffPtr;//バッファ先頭アドレス
 	const std::size_t m_buffSize;//バッファサイズ
 	marker_t m_usedN;//マーカー（正順）
 	marker_t m_usedR;//マーカー（逆順）
@@ -1202,25 +1204,25 @@ static const CDualStackAllocator::E_ORDERED DSA_REVERSE = CDualStackAllocator::R
 //配置new/配置delete
 //※メモリ使用状況を確認するためにマーカーを表示
 //配置new
-void* operator new(const std::size_t size, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED ordered = CDualStackAllocator::NORMAL, const std::size_t align = sizeof(int))
+void* operator new(const std::size_t size, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED ordered = CDualStackAllocator::NORMAL, const std::size_t align = sizeof(int)) throw()
 {
 	printf("placement new(size=%d, dual_allocator.marker=%d,%d, ordered=%d, align=%d)\n", size, allocator.getMarkerN(), allocator.getMarkerR(), ordered, align);
 	return ordered == CDualStackAllocator::NORMAL ? allocator.allocN(size, align) : allocator.allocR(size, align);
 }
 //配列版
-void* operator new[](const std::size_t size, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED ordered = CDualStackAllocator::NORMAL, const std::size_t align = sizeof(int))
+void* operator new[](const std::size_t size, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED ordered = CDualStackAllocator::NORMAL, const std::size_t align = sizeof(int)) throw()
 {
 	printf("placement new(size=%d, dual_allocator.marker=%d,%d, ordered=%d, align=%d)\n", size, allocator.getMarkerN(), allocator.getMarkerR(), ordered, align);
 	return ordered == CDualStackAllocator::NORMAL ? allocator.allocN(size, align) : allocator.allocR(size, align);
 }
 //配置delete
-void operator delete(void* p, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED, const std::size_t)
+void operator delete(void* p, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED, const std::size_t) throw()
 {
 	printf("placement delete(p=0x%p, dual_allocator.marker=%d,%d)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
 	//allocator.backN(p) / allocator.backR(p) は実行しない
 }
 //配列版
-void operator delete[](void* p, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED, const std::size_t)
+void operator delete[](void* p, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED, const std::size_t) throw()
 {
 	printf("placement delete[](p=0x%p, dual_allocator.marker=%d,%d)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
 	//allocator.backN(p) / allocator.backR(p) は実行しない
@@ -1255,22 +1257,22 @@ void delete_ptr(T*& p, const std::size_t array_num, CDualStackAllocator& allocat
 //バッファ付き双方向スタックアロケータテンプレートクラス
 //※静的バッファを使用したければ、固定バッファシングルトン化する
 template<std::size_t SIZE>
-class CBufferedDualStackAllocator : public CDualStackAllocator
+class CDualStackAllocatorWithBuff : public CDualStackAllocator
 {
 public:
 	//定数
 	static const std::size_t BUFF_SIZE = SIZE;//バッファサイズ
 public:
 	//コンストラクタ
-	CBufferedDualStackAllocator() :
+	CDualStackAllocatorWithBuff() :
 		CDualStackAllocator(m_buff, BUFF_SIZE)
 	{}
 	//デストラクタ
-	~CBufferedDualStackAllocator()
+	~CDualStackAllocatorWithBuff()
 	{}
 private:
 	//フィールド
-	char m_buff[BUFF_SIZE];//バッファ
+	byte m_buff[BUFF_SIZE];//バッファ
 };
 
 //--------------------
@@ -1308,7 +1310,7 @@ private:
 void test4b()
 {
 	printf("---------- test4b:双方向スタックアロケータ ----------\n");
-	CBufferedDualStackAllocator<64> stack;//双方向スタックアロケータ生成
+	CDualStackAllocatorWithBuff<64> stack;//双方向スタックアロケータ生成（64バイトのバッファを確保）
 	printf("buff=0x%p\n", stack.getBuff());
 	{
 		printf("-----\n");
@@ -1343,9 +1345,9 @@ void test4b()
 		printf("f2=0x%p\n", f2);
 		char* c2 = new(stack, DSA_REVERSE, 1) char;
 		printf("c2=0x%p\n", c2);
-		int* over1 = new(stack, DSA_NORMAL) int[10];
+		int* over1 = new(stack, DSA_NORMAL) int[10];//【NG】サイズオーバー
 		printf("over1=0x%p\n", over1);
-		int* over2 = new(stack, DSA_REVERSE) int[10];
+		int* over2 = new(stack, DSA_REVERSE) int[10];//【NG】サイズオーバー
 		printf("over2=0x%p\n", over2);
 		delete_ptr(f2, stack);
 		delete_ptr(c2, stack);
@@ -1353,208 +1355,6 @@ void test4b()
 		delete_ptr(obj2_p, 3, stack);
 	}
 }
-
-#if 0
-//--------------------------------------------------------------------------------
-//基本マクロ
-
-//ブレークポイント
-#include <windows.h>//ブレークポイント用
-#define BREAK_POINT() DebugBreak()
-
-//デバッグプリント
-#define DEBUG_PRINT(msg, ...) printf(msg, __VA_ARGS__);
-#define DEBUG_FPRINT(fp, msg, ...) fprintf(fp, msg, __VA_ARGS__);
-#define DEBUG_FLUSH() fflush(stdout)
-#define DEBUG_FFLUSH(fp) fflush(fp)
-//#define DEBUG_PRINT(msg, ...)
-//#define DEBUG_FPRINT(fp, msg, ...)
-//#define DEBUG_FLUSH()
-//#define DEBUG_FFLUSH(fp) fflush(fp)
-
-//文字列化マクロ
-#define TO_STRING(s) #s
-#define TO_STRING_EX(s) TO_STRING(s)
-#define COLLECT_STRING(s) s
-
-//アサーション
-#define ASSERT(expr, msg, ...) \
-if (!(expr)) \
-	{ \
-	DEBUG_FPRINT(stderr, "Assertion failed! : " #expr "\n" \
-	"  " __FILE__ "(" TO_STRING_EX(__LINE__) ")\n" \
-	"  "  msg "\n", __VA_ARGS__); \
-	BREAK_POINT(); \
-	}
-//#define ASSERT(expr, msg, ...)//削除用
-//#include <assert.h>//assert用
-//#define ASSERT(expr, msg, ...) assert(expr)//VC++標準版
-
-//スレッドローカルストレージ修飾子
-//※C++11仕様偽装（VC++2013では未対応につき）
-//※中身はWindows仕様
-#define thread_local __declspec(thread)
-
-//----------------------------------------
-//スレッドIDクラス
-//※TLSを活用して高速化
-
-//スレッドID型
-//typedef std::thread::id THREAD_ID;//C++11/ ※この型では扱わず、ハッシュ値を使用する
-typedef std::size_t THREAD_ID;//C++11
-static const THREAD_ID INVALID_THREAD_ID = 0xffffffff;//無効なスレッドID
-
-//現在のスレッドID取得関数
-//inline THREAD_ID  GetThisThreadID(){ return std::this_thread::get_id(); } //C++11
-inline THREAD_ID GetThisThreadID(){ return std::this_thread::get_id().hash(); } //C++11
-
-//スレッドIDクラス
-class CThreadID
-{
-public:
-	//アクセッサ
-	const THREAD_ID getID() const { return m_threadId; }//スレッドIDを取得
-	const char* getName() const { return m_threadName; }//スレッド名を取得
-public:
-	//アクセッサ（static）
-	static THREAD_ID getThisID(){ return m_thisThreadID; }//現在のスレッドのスレッドIDを取得
-	static const char* getThisName(){ return m_thisThreadName; }//現在のスレッドのスレッド名を取得
-public:
-	//メソッド
-	bool isThisThread() const { return m_threadId == getThisID(); }//現在のスレッドと同じスレッドか判定
-private:
-	//メソッド(static)
-	static void setThisThread()//現在のスレッドのスレッドIDをセット
-	{
-		if (m_thisThreadID == INVALID_THREAD_ID)
-			m_thisThreadID = GetThisThreadID();
-	}
-	static void resetThisThread(const char* name)//現在のスレッドのスレッドIDをリセット
-	{
-		m_thisThreadID = GetThisThreadID();
-		m_thisThreadName = name;
-	}
-public:
-	//オペレータ（許可）
-	bool operator==(const CThreadID& o) const { return m_threadId == o.getID(); }//ID一致判定
-	bool operator!=(const CThreadID& o) const { return m_threadId != o.getID(); }//ID不一致判定
-	bool operator==(const THREAD_ID& id) const { return m_threadId == id; }//ID一致判定
-	bool operator!=(const THREAD_ID& id) const { return m_threadId != id; }//ID不一致判定
-	CThreadID& operator=(const CThreadID& o) //コピー演算子
-	{
-		m_threadId = o.m_threadId;
-		m_threadName = o.m_threadName;
-		return *this;
-	}
-private:
-	//オペレータ（禁止）
-	CThreadID& operator=(const THREAD_ID& id) { return *this; }//コピー演算子（禁止）
-public:
-	//コピーコンストラクタ（許可）
-	explicit CThreadID(const CThreadID& o) :
-		m_threadId(o.m_threadId),
-		m_threadName(o.m_threadName)
-	{
-	}
-private:
-	//コピーコンストラクタ（禁止）
-	explicit CThreadID(const THREAD_ID& id){}
-public:
-	//コンストラクタ
-	//※スレッド名を指定し、内部で現在のスレッドIDを取得して保持
-	//※TLSにも記録
-	CThreadID(const char* name)
-	{
-		resetThisThread(name);
-		m_threadId = m_thisThreadID;
-		m_threadName = m_thisThreadName;
-	}
-	//デフォルトコンストラクタ
-	//※既にTLSに記録済みのスレッドID（と名前）を取得
-	CThreadID()
-	{
-		setThisThread();
-		m_threadId = m_thisThreadID;
-		m_threadName = m_thisThreadName;
-	}
-private:
-	//フィールド
-	THREAD_ID m_threadId;//スレッドID（オブジェクトに保存する値）
-	const char* m_threadName;//スレッド名（オブジェクトに保存する値）
-	static thread_local THREAD_ID m_thisThreadID;//現在のスレッドのスレッドID(TLS)
-	static thread_local const char* m_thisThreadName;//現在のスレッド名(TLS)
-};
-//static変数のインスタンス化
-thread_local THREAD_ID CThreadID::m_thisThreadID = INVALID_THREAD_ID;//スレッドID(TLS)
-thread_local const char* CThreadID::m_thisThreadName = nullptr;//スレッド名(TLS)
-
-//--------------------------------------------------------------------------------
-//軽量スピンロック
-
-//----------------------------------------
-//軽量スピンロック
-//※手軽に使えるスピンロック
-//※一定回数のスリープごとにスリープ（コンテキストスイッチ）を行う
-//※容量は4バイト(std::atomic_flag一つ分のサイズ)
-//※プログラミング上の安全性は低いので気がるに使うべきではない
-//　　⇒ロック取得状態を確認せずにアンロックする
-#define SPIN_LOCK_USE_ATOMIC_FLAG//std::atomic_flag版（高速）
-//#define SPIN_LOCK_USE_ATOMIC_BOOL//std::atomic_bool版（軽量）
-class CSpinLock
-{
-public:
-	//定数
-	static const int DEFAULT_SPIN_COUNT = 1000;//スピンロックカウントのデフォルト値
-public:
-	//ロック取得
-	void lock(const int spin_count = DEFAULT_SPIN_COUNT)
-	{
-		int spin_count_now = 0;
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
-		while (m_lock.test_and_set())//std::atomic_flag版（高速）
-		{
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
-		bool prev = false;
-		while (m_lock.compare_exchange_weak(prev, true))//std::atomic_bool版（軽量）
-		{
-			prev = false;
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
-			if (spin_count == 0 || ++spin_count_now % spin_count == 0)
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
-		}
-	}
-	//ロック解放
-	void unlock()
-	{
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
-		m_lock.clear();//std::atomic_flag版（高速）
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
-		m_lock.store(false);//std::atomic_bool版（軽量）
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
-	}
-public:
-	//コンストラクタ
-	CSpinLock()
-	{
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
-		m_lock.clear();//ロック用フラグ（高速）
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
-		m_lock.store(false);//ロック用フラグ（軽量）
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
-	}
-	//デストラクタ
-	~CSpinLock()
-	{
-	}
-private:
-	//フィールド
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
-	std::atomic_flag m_lock;//ロック用フラグ（高速）
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
-	std::atomic_bool m_lock;//ロック用フラグ（軽量）
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
-};
-#endif
 
 //--------------------------------------------------------------------------------
 //プールアロケータ
@@ -1565,13 +1365,13 @@ class CPoolAllocator;
 
 //--------------------
 //配置new
-void* operator new(const std::size_t size, CPoolAllocator& allocator);
+void* operator new(const std::size_t size, CPoolAllocator& allocator) throw();
 //配置delete
-void operator delete(void* p, CPoolAllocator& allocator);
+void operator delete(void* p, CPoolAllocator& allocator) throw();
 
 //----------------------------------------
 //プールアロケータクラス
-//※スレッドセーフ対応
+//※非スレッドセーフ
 class CPoolAllocator
 {
 public:
@@ -1585,8 +1385,12 @@ public:
 	static const index_t INVALID_INDEX = INT_MAX;//ブロックインデックスの無効値
 public:
 	//アクセッサ
-	std::size_t getUsed() const { return m_used; }//使用中数取得
-	void* getBlock(const index_t index){ return m_pool + index * m_blockSize; }//ブロック取得
+	const byte* getBuff() const { return m_pool; }//バッファ取得
+	index_t getUsed() const { return m_used; }//使用中数取得
+	index_t getRemain() const { return m_poolBlocksNum - m_used; }//残数取得
+	const byte* getBlockConst(const index_t index) const { return m_pool + index * m_blockSize; }//ブロック取得
+private:
+	byte* getBlock(const index_t index){ return m_pool + index * m_blockSize; }//ブロック取得
 private:
 	//メソッド
 	//メモリ確保状態リセット
@@ -1683,8 +1487,8 @@ public:
 		//ポインタからインデックスを算出
 		const byte* top_p = reinterpret_cast<byte*>(m_pool);//バッファの先頭ポインタ
 		const byte* target_p = reinterpret_cast<byte*>(p);//指定ポインタ
-		const int diff = (target_p - top_p);//ポインタの引き算で差のバイト数算出
-		const int index = (target_p - top_p) / m_blockSize;//ブロックサイズで割ってインデックス算出
+		const intptr_t diff = (target_p - top_p);//ポインタの引き算で差のバイト数算出
+		const intptr_t index = diff / m_blockSize;//ブロックサイズで割ってインデックス算出
 		//【アサーション】メモリバッファの範囲外なら処理失敗（release関数内で失敗するのでそのまま実行）
 		//ASSERT(index >= 0 && index < m_poolBlocksNum, "CPoolAllocator::free() cannot free. Pointer is different.");
 		//【アサーション】ポインタが各ブロックの先頭を指しているかチェック
@@ -1738,21 +1542,21 @@ private:
 
 //--------------------
 //配置new
-void* operator new(const std::size_t size, CPoolAllocator& allocator)
+void* operator new(const std::size_t size, CPoolAllocator& allocator) throw()
 {
-	printf("placement new(size=%d, pool_allocator.used=%d,%d)\n", size, allocator.getUsed());
+	printf("placement new(size=%d, pool_allocator.used=%d/%d)\n", size, allocator.getUsed(), allocator.getRemain());
 	return allocator.alloc(size);
 }
 //配置delete
-void operator delete(void* p, CPoolAllocator& allocator)
+void operator delete(void* p, CPoolAllocator& allocator) throw()
 {
-	printf("placement delete(p=0x%p, pool_allocator.used=%d,%d)\n", p, allocator.getUsed());
+	printf("placement delete(p=0x%p, pool_allocator.used=%d/%d)\n", p, allocator.getUsed(), allocator.getRemain());
 	allocator.free(p);
 }
 
 //----------------------------------------
-//プールアロケータクラス（バッファ内包版）
-template<int N, std::size_t S>
+//バッファ付きプールアロケータクラス：ブロックサイズとブロック数指定
+template<std::size_t S, int N>
 class CPoolAllocatorWithBuff : public CPoolAllocator
 {
 public:
@@ -1772,17 +1576,134 @@ private:
 	byte m_poolBuff[POOL_BLOCKS_NUM][BLOCK_SIZE];//プールバッファ
 };
 
-//テスト
-void test6()
+//----------------------------------------
+//バッファ付きプールアロケータクラス：データ型とブロック数指定
+template<typename T, int N>
+class CPoolAllocatorWithType : public CPoolAllocatorWithBuff<sizeof(T), N>
 {
-	printf("---------- test4 ----------\n");
-	CPoolAllocatorWithBuff<10, 32> pool;
-	int* i1 = pool.create<int>();
-	pool.destroy(i1);
-	int* i2 = pool.create<int>();
-	float* f2 = pool.create<float>();
-	pool.destroy(f2);
-	pool.destroy(i2);
+public:
+	//型
+	typedef T data_t;//データ型
+public:
+	//定数
+	static const std::size_t TYPE_SIZE = sizeof(data_t);//型のサイズ
+public:
+	//コンストラクタ呼び出し機能付きメモリ確保
+	//※C++11の可変長テンプレートパラメータを活用
+	template<typename... Tx>
+	data_t* createData(Tx... nx)
+	{
+		return CPoolAllocator::create<data_t>(nx...);
+	}
+	//デストラクタ呼び出し機能付きメモリ解放
+	//※解放後、ポインタに nullptr をセットする
+	void destroyData(data_t*& p)
+	{
+		CPoolAllocator::destroy(p);
+	}
+public:
+	//コンストラクタ
+	CPoolAllocatorWithType() :
+		CPoolAllocatorWithBuff<TYPE_SIZE, N>()
+	{}
+	//デストラクタ
+	~CPoolAllocatorWithType()
+	{}
+};
+
+//--------------------
+//テスト用クラス
+//__declspec(align(8))//8バイトアラインメントでテストする場合はこの行を有効にする
+class CTest5
+{
+public:
+	//デフォルトコンストラクタ
+	CTest5() :
+		CTest5("(default)")//他のコンストラクタ呼び出し（C++11で追加された仕様）
+		//m_name("(default)")//C++11が使えない場合は普通に初期化
+	{
+		printf("CTest5::DefaultConstructor : name=\"%s\"\n", m_name);
+	}
+	//コンストラクタ
+	CTest5(const char* name) :
+		m_name(name)
+	{
+		printf("CTest5::Constructor : name=\"%s\"\n", m_name);
+	}
+	//デストラクタ
+	~CTest5()
+	{
+		printf("CTest5::Destructor : name=\"%s\"\n", m_name);
+	}
+private:
+	//フィールド
+	const char* m_name;//名前
+	int m_dummy;//ダミー
+};
+//大きいクラス
+class CTest5L
+{
+	char m_dummy[9];
+};
+
+//--------------------
+//テスト
+void test5()
+{
+	printf("---------- test5:プールアロケータ ----------\n");
+	CPoolAllocatorWithType<CTest5, 5> pool;//プールアロケータ生成（sizeof(CTest5) * 5のバッファを確保）
+	printf("buff=0x%p\n", pool.getBuff());
+	{
+		printf("-----\n");
+		//createData() メソッドでインスタンスを生成
+		//※任意のコンストラクタ引数も受け渡し可
+		CTest5* obj1_p = pool.createData("テスト5-1");//createData()は、プールアロケータに定義したデータ型でインスタンスを生成する
+		printf("obj1_p=0x%p\n", obj1_p);
+		CTest5* obj2_p = pool.createData("テスト5-2");
+		printf("obj2_p=0x%p\n", obj2_p);
+		CTest5* obj3_p = pool.createData("テスト5-3");
+		printf("obj3_p=0x%p\n", obj3_p);
+		CTest5* obj4_p = pool.createData("テスト5-4");
+		printf("obj4_p=0x%p\n", obj4_p);
+		CTest5* obj5_p = pool.createData("テスト5-5");
+		printf("obj5_p=0x%p\n", obj5_p);
+		CTest5* obj6_p = pool.createData("テスト5-6");//【NG】個数オーバー
+		printf("obj6_p=0x%p\n", obj6_p);
+		//destroy() メソッドでインスタンスを破棄
+		//※デストラクタ呼び出しに対応
+		pool.destroyData(obj1_p);
+		pool.destroyData(obj2_p);
+		pool.destroyData(obj3_p);
+		pool.destroyData(obj4_p);
+		pool.destroyData(obj5_p);
+		pool.destroyData(obj6_p);
+	}
+	{
+		printf("-----\n");
+		//sizeof(CTest5)以下のサイズの型なら何でも扱える
+		CTest5L* obj_l_p = pool.create<CTest5L>();//【NG】定義時のクラスよりサイズが大きいクラス
+		printf("obj_l_p=0x%p\n", obj_l_p);
+		char* c_p = pool.create<char>();
+		printf("c_p=0x%p\n", c_p);
+		short* s_p = pool.create<short>();
+		printf("s_p=0x%p\n", s_p);
+		int* i_p = pool.create<int>();
+		printf("i_p=0x%p\n", i_p);
+		float* f_p = pool.create<float>();
+		printf("f_p=0x%p\n", f_p);
+		double* d_p = pool.create<double>();
+		printf("d_p=0x%p\n", d_p);
+		long long* ll_p = pool.create<long long>();//【NG】個数オーバー
+		printf("ll_p=0x%p\n", ll_p);
+		//destroy() メソッドはデストラクタがない型でも問題なし
+		pool.destroy(obj_l_p);
+		pool.destroy(c_p);
+		pool.destroy(s_p);
+		pool.destroy(i_p);
+		pool.destroy(f_p);
+		pool.destroy(d_p);
+		pool.destroy(ll_p);
+	}
 }
 
 //--------------------------------------------------------------------------------
@@ -1795,7 +1716,7 @@ int main(const int argc, const char* argv[])
 	test3();
 	test4a();
 	test4b();
-	test6();
+	test5();
 	return EXIT_SUCCESS;
 }
 

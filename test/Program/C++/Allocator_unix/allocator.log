@@ -1,0 +1,209 @@
+CTest3Singleton1::Constructor : m_data=0
+---------- test0:固定バッファ配置new/配置delete ----------
+buff=0x0x28abfc
+placement new(size=4, where=0x0x28abfc)
+CTest0::Constructor : name="テスト0"
+obj_p=0x0x28abfc
+CTest0::Destructor : name="テスト0"
+obj_p=0x0x0
+---------- test1:固定バッファ配置new/配置delete（挙動確認）----------
+----------クラス
+buff=0x0x28abac
+placement new(size=8, where=0x0x28abac)
+CTest1::Constructor : name="テスト1"
+obj_p=0x0x28abac
+delete_ptr(p=0x0x28abac)
+CTest1::Destructor : name="テスト1"
+placement delete(p=0x0x28abac, where=0x0x28abac)
+----------クラスの配列
+buff=0x0x28abac
+placement new[](size=28, where=0x0x28abac)
+CTest1::Constructor : name="(default)"
+CTest1::DefaultConstructor : name="(default)"
+CTest1::Constructor : name="(default)"
+CTest1::DefaultConstructor : name="(default)"
+CTest1::Constructor : name="(default)"
+CTest1::DefaultConstructor : name="(default)"
+obj_p=0x0x28abb0
+*reinterpret_cast<int*>(buff)=3
+delete_ptr(p=0x0x28abb0, array_num=3)
+CTest1::Destructor : name="(default)"
+CTest1::Destructor : name="(default)"
+CTest1::Destructor : name="(default)"
+placement delete[](p=0x0x28abb0, where=0x0x28abb0)
+----------プリミティブ型
+buff=0x0x28abac
+placement new(size=1, where=0x0x28abac)
+data_p=0x0x28abac
+*data_p(0x0x28abac)=123
+delete_ptr(p=0x0x28abac)
+placement delete(p=0x0x28abac, where=0x0x28abac)
+----------プリミティブ型の配列
+buff=0x0x28abac
+placement new[](size=3, where=0x0x28abac)
+data_p=0x0x28abac
+*reinterpret_cast<int*>(buff)=123
+*data_p(0x0x28abac)[0]=123
+delete_ptr(p=0x0x28abac, array_num=3)
+placement delete[](p=0x0x28abac, where=0x0x28abac)
+----------多重継承クラス
+buff=0x0x28abac
+placement new(size=16, where=0x0x28abac)
+CTest1::Constructor : name="テスト1多重継承"
+CTest1ex::Constructor
+CDerivedTest1::Constructor : name="テスト1多重継承"
+obj_p=0x0x28abac, parent_p=0x0x28abac, parent_ex_p=0x0x28abb4
+delete_ptr(p=0x0x28abb4)
+CTest1ex::Destructor
+placement delete(p=0x0x28abb4, where=0x0x28abb4)
+---------- test2:クラス内new/delete ----------
+----------クラス
+s_buffForTestClass2=0x0x40a040
+CTest2::new(size=12)
+CTest2::Constructor : name="テスト2"
+obj_p=0x0x40a040
+CTest2::Destructor : name="テスト2"
+CTest2::delete(p=0x0x40a040, size=12)
+----------クラスの配列
+s_buffForTestClass2=0x0x40a040
+CTest2::new[](size=40)
+CTest2::Constructor : name="(default)"
+CTest2::DefaultConstructor : name="(default)"
+CTest2::Constructor : name="(default)"
+CTest2::DefaultConstructor : name="(default)"
+CTest2::Constructor : name="(default)"
+CTest2::DefaultConstructor : name="(default)"
+obj_p=0x0x40a044
+*reinterpret_cast<int*>(s_buffForTestClass2)=3
+CTest2::Destructor : name="(default)"
+CTest2::Destructor : name="(default)"
+CTest2::Destructor : name="(default)"
+CTest2::delete[](p=0x0x40a040, size=40)
+----------多重継承クラス
+s_buffForTestClass2=0x0x40a040
+CDerivedTest2::new(size=24)
+CTest2::Constructor : name="テスト2多重継承"
+CTest2ex::Constructor
+CDerivedTest2::Constructor : name="テスト2多重継承"
+obj_p=0x0x40a040, parent_p=0x0x40a040, parent_ex_p=0x0x40a04c
+CDerivedTest2::Destructor : name="テスト2多重継承"
+CTest2ex::Destructor
+CTest2::Destructor : name="テスト2多重継承"
+CDerivedTest2::delete(p=0x0x40a040)
+---------- test3:シングルトン ----------
+----------専用シングルトン：単純タイプ
+singleton_p->getData()=0
+singleton_p->getData()=123
+----------専用シングルトン：インスタンス操作タイプ
+CTest3Singleton2::Constructor : m_data=0
+singleton_p->getData()=0
+singleton_p->getData()=123
+CTest3Singleton2::Destructor : m_data=123
+CTest3Singleton2::Constructor : m_data=0
+singleton_p->getData()=0
+----------汎用シングルトン
+CTest3::Constructor : m_data=0
+singleton->getData()=0
+singleton->getData()=123
+CTest3::Destructor : m_data=123
+CTest3::Constructor : m_data=0
+singleton->getData()=0
+---------- test4a:スタックアロケータ ----------
+buff=0x0x28aba4
+-----
+placement new[](size=8, allocator.marker=0, align=4)
+i1=0x0x28aba4
+placement new[](size=13, allocator.marker=8, align=1)
+c1=0x0x28abac
+marker=21
+placement new[](size=16, allocator.marker=21, align=4)
+f1=0x0x28abbc
+placement new(size=8, allocator.marker=40, align=4)
+CTest4a::Constructor : name="テスト4a"
+obj1_p=0x0x28abcc
+delete_ptr(p=0x0x28abbc, array_num=4, allocator.marker=48)
+delete_ptr(p=0x0x28abac, array_num=15, allocator.marker=48)
+delete_ptr(p=0x0x28aba4, array_num=2, allocator.marker=48)
+delete_ptr(p=0x0x28abcc, allocator.marker=48)
+CTest4a::Destructor : name="テスト4a"
+-----
+marker=21
+placement new[](size=28, allocator.marker=21, align=4)
+CTest4a::Constructor : name="(default)"
+CTest4a::DefaultConstructor : name="(default)"
+CTest4a::Constructor : name="(default)"
+CTest4a::DefaultConstructor : name="(default)"
+CTest4a::Constructor : name="(default)"
+CTest4a::DefaultConstructor : name="(default)"
+obj2_p=0x0x28abc0
+placement new(size=4, allocator.marker=52, align=4)
+i2=0x0x28abd8
+placement new(size=4, allocator.marker=56, align=4)
+f2=0x0x28abdc
+placement new(size=1, allocator.marker=60, align=1)
+c2=0x0x28abe0
+placement new[](size=40, allocator.marker=61, align=4)
+stack overflow!(size=40+align=3, remain=3)
+over=0x0x0
+delete_ptr(p=0x0x28abdc, allocator.marker=61)
+delete_ptr(p=0x0x28abe0, allocator.marker=61)
+delete_ptr(p=0x0x28abd8, allocator.marker=61)
+delete_ptr(p=0x0x28abc0, array_num=3, allocator.marker=61)
+CTest4a::Destructor : name="(default)"
+CTest4a::Destructor : name="(default)"
+CTest4a::Destructor : name="(default)"
+---------- test4b:双方向スタックアロケータ ----------
+buff=0x0x28ab98
+-----
+placement new(size=8, dual_allocator.marker=0,64, ordered=0, align=4)
+i1=0x0x28ab98
+placement new(size=13, dual_allocator.marker=8,64, ordered=1, align=1)
+c1=0x0x28abcb
+marker=8,51
+placement new(size=16, dual_allocator.marker=8,51, ordered=0, align=4)
+f1=0x0x28aba0
+placement new(size=8, dual_allocator.marker=24,51, ordered=1, align=4)
+CTest4b::Constructor : name="テスト4b"
+obj1_p=0x0x28abc0
+delete_ptr(p=0x0x28aba0, array_num=4, allocator.marker=24,40)
+delete_ptr(p=0x0x28abcb, array_num=15, allocator.marker=24,40)
+delete_ptr(p=0x0x28ab98, array_num=2, allocator.marker=24,40)
+delete_ptr(p=0x0x28abc0, allocator.marker=24,40)
+CTest4b::Destructor : name="テスト4b"
+-----
+marker=8,51
+placement new(size=28, dual_allocator.marker=8,51, ordered=0, align=4)
+CTest4b::Constructor : name="(default)"
+CTest4b::DefaultConstructor : name="(default)"
+CTest4b::Constructor : name="(default)"
+CTest4b::DefaultConstructor : name="(default)"
+CTest4b::Constructor : name="(default)"
+CTest4b::DefaultConstructor : name="(default)"
+obj2_p=0x0x28aba4
+placement new(size=4, dual_allocator.marker=36,51, ordered=1, align=4)
+i2=0x0x28abc4
+placement new(size=4, dual_allocator.marker=36,44, ordered=0, align=4)
+f2=0x0x28abbc
+placement new(size=1, dual_allocator.marker=40,44, ordered=1, align=1)
+c2=0x0x28abc3
+placement new(size=40, dual_allocator.marker=40,43, ordered=0, align=4)
+normal-stack overflow!(size=40+align=0, remain=3)
+over1=0x0x0
+placement new(size=40, dual_allocator.marker=40,43, ordered=1, align=4)
+reversed-stack overflow!(size=40+align=3, remain=3)
+over2=0x0x0
+delete_ptr(p=0x0x28abbc, allocator.marker=40,43)
+delete_ptr(p=0x0x28abc3, allocator.marker=40,43)
+delete_ptr(p=0x0x28abc4, allocator.marker=40,43)
+delete_ptr(p=0x0x28aba4, array_num=3, allocator.marker=40,43)
+CTest4b::Destructor : name="(default)"
+CTest4b::Destructor : name="(default)"
+CTest4b::Destructor : name="(default)"
+---------- test4 ----------
+placement new(size=4, pool_allocator.used=0,1)
+placement delete(p=0x0x28aad4, pool_allocator.used=1,1)
+placement new(size=4, pool_allocator.used=0,1)
+placement new(size=4, pool_allocator.used=1,1)
+placement delete(p=0x0x28ab14, pool_allocator.used=2,1)
+placement delete(p=0x0x28aaf4, pool_allocator.used=1,1)
+CTest3Singleton1::Destructor : m_data=123

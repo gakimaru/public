@@ -6,12 +6,18 @@
 #define USE_EXTENDED_OPERATOR_DELETE_FOR_TEST2//test2で、クラス内deleteをsize引数付きのものにする時はこのマクロを有効にする
 #define USE_DESTRUCTOR_FOR_TEST2//test2で、デストラクタを使用する時はこのマクロを有効にする（アロケートサイズが増えることを確認できる）
 //#define USE_NAMESPACE_NEW_DELETE_FOR_TEST2//test2で、ネームスペースに定義したnew/deleteのテストを行う時はこのマクロを有効にする
-#define USE_CRC_CALC_TABLE//test8で、CRC計算の際に、事前計算済みのCRC計算テーブルを使用するならこのマクロを有効にする
+#define USE_NEW_MACRO//test7で、NEWマクロを使用する時はこのマクロを有効にする
+#define USE_ALLOC_INFO//test7で、new時にメモリ確保事情法を使用する時はこのマクロを有効にする
+#define USE_CRC_CALC_TABLE//test8で、CRC計算の際に、事前計算済みのCRC計算テーブルを使用する時はこのマクロを有効にする
 
 //GCC関連：GCC使用時はこれらのマクロを有効化する
 #define USE_MEMALIGN//【GCC用】test6以降で、memalignを使用する時はこのマクロを有効にする
 #define IS_NOT_FRIEND_NEW_OPERATOR_FOR_TEST7//【GCC用】test7以降で、オペレータnew/deleteをフレンド宣言しない時はこのマクロを有効にする
 #define TLS_IS_POSIX//【GCC用】TLSの宣言をPOSIXスタイルにする時はこのマクロを有効にする
+
+//MS固有仕様関連：Visual C++使用時はこのマクロを有効化する
+//#define USE_STRCPY_S//【MS固有仕様】strcpy_sを使用する時にこのマクロを有効にする
+//#define USE_FUNCSIG//【MS固有仕様】関数名に__FUNCSIG__を使用する時にこのマクロを有効にする
 
 //C++11関連：サンプルプログラムには、これら以外にもC++11の要素が膨れている
 //これらのマクロは、Visual C++環境やC++0x環境でコンパイルするために使用する
@@ -20,18 +26,18 @@
 #define ENABLE_CONSTEXPR//【C++11用】constexprを有効にする時はこのマクロを有効にする
 #define ENABLE_USER_DEFINED_LITERALS//【C++11用】ユーザー定義リテラルを有効にする時はこのマクロを有効にする
 
-//MS固有仕様関連
-//#define USE_STRCPY_S//【MS固有仕様】strcpy_sを使用する時にこのマクロを有効にする
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
+
+#include <cstddef>//std::size_t用
 #include <stdint.h>//uintptr_t,intptr_t用
 #include <limits.h>//INT_MAX用
+#include <assert.h>//assert用
 #include <new>//規定の配置new/配置delete用
+#include <typeinfo>//typeid用
 
 //スレッドローカルストレージ修飾子
-//※C++11仕様偽装（VC++2013では未対応につき）
+//※C++11仕様偽装
 #ifdef TLS_IS_POSIX
 #define thread_local __thread//POSIX仕様
 #else//TLS_IS_POSIX
@@ -48,6 +54,11 @@
 #ifndef ENABLE_CONSTEXPR
 #define constexpr
 #endif//ENABLE_CONSTEXPR
+
+//関数名取得マクロ
+#ifdef USE_FUNCSIG
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif//USE_FUNCSIG
 
 //--------------------------------------------------------------------------------
 //固定バッファ用配置newでコンストクタ呼び出し
@@ -680,7 +691,7 @@ public:
 	void setData(const int data){ m_data = data; }//データを更新
 private:
 	//オペレータ（private）
-	static void* operator new(const std::size_t) throw() { return m_singletonBuff; }//new演算子
+	static void* operator new(const std::size_t) throw(){ return m_singletonBuff; }//new演算子
 	static void operator delete(void*) throw() {}//delete演算子
 private:
 	//静的メソッド（private）
@@ -894,10 +905,17 @@ class IStackAllocator
 public:
 	//定数
 	static const std::size_t DEFAULT_ALIGN = sizeof(int);//デフォルトのアラインメント
+	//スタック順
+	enum E_ORDERED
+	{
+		DEFAULT = 0,//デフォルト
+		NORMAL = 1,//正順
+		REVERSE = -1,//逆順
+	};
 public:
 	//型
 	typedef unsigned char byte;//バッファ用
-	typedef std::size_t marker_t;//スタックマーカー型
+	typedef uintptr_t marker_t;//スタックマーカー型
 public:
 	//アクセッサ
 	virtual std::size_t getTotal() const = 0;//全体のメモリ量を取得
@@ -923,6 +941,10 @@ public:
 	//デストラクタ
 	virtual ~IStackAllocator(){}
 };
+//定数のエイリアス
+static const IStackAllocator::E_ORDERED DSA_DEFAULT = IStackAllocator::DEFAULT;//デフォルト
+static const IStackAllocator::E_ORDERED DSA_NORMAL = IStackAllocator::NORMAL;//正順
+static const IStackAllocator::E_ORDERED DSA_REVERSE = IStackAllocator::REVERSE;//逆順
 
 //--------------------
 //スタックアロケータクラス
@@ -930,10 +952,6 @@ public:
 //※インターフェースを実装するが、高速化のために virtualメソッドに頼らず操作可能
 class CStackAllocator : public IStackAllocator
 {
-public:
-	//型
-	typedef unsigned char byte;//バッファ用
-	typedef std::size_t marker_t;//スタックマーカー型
 public:
 	//アクセッサ
 	std::size_t getTotal() const override { return m_buffSize; }//全体のメモリ量を取得
@@ -949,9 +967,9 @@ public:
 	//メモリ確保（正順）
 	void* allocN(const std::size_t size, const std::size_t align = DEFAULT_ALIGN)
 	{
-		const uintptr_t now_ptr = reinterpret_cast<uintptr_t>(m_buffPtr) + m_used;//現在のポインタ位置算出
+		const uintptr_t now_ptr = reinterpret_cast<uintptr_t>(m_buffPtr)+m_used;//現在のポインタ位置算出
 		const uintptr_t align_diff = align > 0 ? now_ptr % align == 0 ? 0 : align - now_ptr % align : 0;//アラインメント計算
-		const std::size_t next_used = m_used + align_diff + size;//次のマーカー算出
+		const marker_t next_used = m_used + align_diff + size;//次のマーカー算出
 		if (next_used > m_buffSize)//メモリオーバーチェック（符号なしなので、範囲チェックは大判定のみでOK）
 		{
 			printf("stack overflow!(size=%d+align=%d, remain=%d)\n", size, align_diff, m_buffSize - m_used);
@@ -984,7 +1002,7 @@ public:
 	//※ポインタ指定版
 	void backN(const void* p)
 	{
-		const std::size_t marker = reinterpret_cast<uintptr_t>(p) - reinterpret_cast<uintptr_t>(m_buffPtr);
+		const marker_t marker = reinterpret_cast<uintptr_t>(p)-reinterpret_cast<uintptr_t>(m_buffPtr);
 		back(marker);
 	}
 	//メモリを以前のマーカーに戻す
@@ -1140,20 +1158,15 @@ private:
 class CDualStackAllocator : public IStackAllocator
 {
 public:
-	//定数
-	enum E_ORDERED
-	{
-		DEFAULT = 0,//デフォルト
-		NORMAL = 1,//正順
-		REVERSE = -1,//逆順
-	};
-public:
 	//アクセッサ
 	std::size_t getTotal() const override { return m_buffSize; }//全体のメモリ量を取得
 	std::size_t getUsed() const override { return m_usedN + m_buffSize - m_usedR; }//使用中のメモリ量を取得
 	std::size_t getRemain() const override { return m_usedR - m_usedN; }//残りのメモリ量を取得
 	E_ORDERED getDefaultOrdered() const { return m_defaultOrdered; }//デフォルトのスタック順を取得
-	void setDefaultOrdered(const E_ORDERED ordered){ m_defaultOrdered = ordered; }//デフォルトのスタック順を更新
+	void setDefaultOrdered(const E_ORDERED ordered)//デフォルトのスタック順を更新
+	{
+		m_defaultOrdered = ordered == REVERSE ? REVERSE : NORMAL;
+	}
 	const byte* getBuff() const { return m_buffPtr; }//バッファ取得を取得
 	const byte* getNowPtrN() const { return m_buffPtr + m_usedN; }//現在のバッファ位置（正順）を取得
 	const byte* getNowPtrR() const { return m_buffPtr + m_usedR; }//現在のバッファ位置（逆順）を取得
@@ -1170,9 +1183,9 @@ public:
 	//メモリ確保（正順）
 	void* allocN(const std::size_t size, const std::size_t align = DEFAULT_ALIGN)
 	{
-		const uintptr_t now_ptr = reinterpret_cast<uintptr_t>(m_buffPtr) + m_usedN;//現在のポインタ位置算出
+		const uintptr_t now_ptr = reinterpret_cast<uintptr_t>(m_buffPtr)+m_usedN;//現在のポインタ位置算出
 		const uintptr_t align_diff = align > 0 ? now_ptr % align == 0 ? 0 : align - now_ptr % align : 0;//アラインメント計算
-		const std::size_t next_used = m_usedN + align_diff + size;//次のマーカー算出
+		const marker_t next_used = m_usedN + align_diff + size;//次のマーカー算出
 		if (next_used > m_usedR)//メモリオーバーチェック（符号なしなので、範囲チェックは大判定のみでOK）
 		{
 			printf("normal-stack overflow!(size=%d+align=%d, remain=%d)\n", size, align_diff, m_usedR - m_usedN);
@@ -1185,10 +1198,10 @@ public:
 	//メモリ確保（逆順）
 	void* allocR(const std::size_t size, const std::size_t align = DEFAULT_ALIGN)
 	{
-		const uintptr_t now_ptr = reinterpret_cast<uintptr_t>(m_buffPtr) + m_usedR;//現在のポインタ位置算出
+		const uintptr_t now_ptr = reinterpret_cast<uintptr_t>(m_buffPtr)+m_usedR;//現在のポインタ位置算出
 		const uintptr_t alloc_ptr_tmp = now_ptr - size;//メモリ確保アドレス算出（暫定）
 		const uintptr_t align_diff = align > 0 ? alloc_ptr_tmp % align == 0 ? 0 : alloc_ptr_tmp % align : 0;//アラインメント計算
-		const std::size_t next_used = m_usedR - size - align_diff;//次のマーカー算出
+		const marker_t next_used = m_usedR - size - align_diff;//次のマーカー算出
 		if (next_used < m_usedN || next_used > m_buffSize)//メモリオーバーチェック（オーバーフローして値が大きくなる可能性もチェック）
 		{
 			printf("reversed-stack overflow!(size=%d+align=%d, remain=%d)\n", size, align_diff, m_usedR - m_usedN);
@@ -1225,10 +1238,11 @@ public:
 	//※ポインタ指定版
 	void backN(const void* p)
 	{
-		const std::size_t marker = reinterpret_cast<uintptr_t>(p) - reinterpret_cast<uintptr_t>(m_buffPtr);
+		const marker_t marker = reinterpret_cast<uintptr_t>(p)-reinterpret_cast<uintptr_t>(m_buffPtr);
 		backN(marker);
 	}
 	//メモリを以前のマーカーに戻す（逆順）
+	//※マーカー指定版
 	void backR(const marker_t marker_r)
 	{
 		if (marker_r < m_usedN || marker_r > m_buffSize)//メモリオーバーチェック
@@ -1239,7 +1253,7 @@ public:
 	//※ポインタ指定版
 	void backR(const void* p)
 	{
-		const std::size_t marker = reinterpret_cast<uintptr_t>(p) - reinterpret_cast<uintptr_t>(m_buffPtr);
+		const marker_t marker = reinterpret_cast<uintptr_t>(p)-reinterpret_cast<uintptr_t>(m_buffPtr);
 		backR(marker);
 	}
 	//メモリを以前のマーカーに戻す
@@ -1320,11 +1334,9 @@ public:
 		m_buffPtr(reinterpret_cast<byte*>(buff_p)),//バッファ先頭アドレス
 		m_buffSize(buff_size),//バッファサイズ
 		m_usedN(0),//マーカー（正順）
-		m_usedR(buff_size),//マーカー（逆順）
-		m_defaultOrdered(default_ordered)//デフォルトのスタック順
+		m_usedR(buff_size)//マーカー（逆順）
 	{
-		if (m_defaultOrdered != REVERSE)
-			m_defaultOrdered = NORMAL;//デフォルトのスタック順を補正
+		setDefaultOrdered(default_ordered);//デフォルトのスタック順を補正
 	}
 	//デストラクタ
 	~CDualStackAllocator() override
@@ -1337,56 +1349,52 @@ private:
 	marker_t m_usedR;//マーカー（逆順）
 	E_ORDERED m_defaultOrdered;//デフォルトのスタック順
 };
-//定数のエイリアス
-static const CDualStackAllocator::E_ORDERED DSA_DEFAULT = CDualStackAllocator::DEFAULT;//デフォルト
-static const CDualStackAllocator::E_ORDERED DSA_NORMAL = CDualStackAllocator::NORMAL;//正順
-static const CDualStackAllocator::E_ORDERED DSA_REVERSE = CDualStackAllocator::REVERSE;//逆順
 
 //--------------------
 //配置new/配置delete
 //※メモリ使用状況を確認するためにマーカーを表示
 //配置new
-void* operator new(const std::size_t size, CDualStackAllocator& allocator, const std::size_t align, const CDualStackAllocator::E_ORDERED ordered = CDualStackAllocator::DEFAULT) throw()
+void* operator new(const std::size_t size, CDualStackAllocator& allocator, const std::size_t align, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) throw()
 {
 	printf("placement new(size=%d, dual_allocator.marker=%d,%d, align=%d, ordered=%d)\n", size, allocator.getMarkerN(), allocator.getMarkerR(), align, ordered);
 	return allocator.alloc(ordered, size, align);
 }
-void* operator new(const std::size_t size, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED ordered = CDualStackAllocator::DEFAULT) throw()
+void* operator new(const std::size_t size, CDualStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) throw()
 {
 	const std::size_t align = IStackAllocator::DEFAULT_ALIGN;
 	printf("placement new(size=%d, dual_allocator.marker=%d,%d, (align=%d), ordered=%d)\n", size, allocator.getMarkerN(), allocator.getMarkerR(), align, ordered);
 	return allocator.alloc(ordered, size, align);
 }
 //配列版
-void* operator new[](const std::size_t size, CDualStackAllocator& allocator, const std::size_t align, const CDualStackAllocator::E_ORDERED ordered = CDualStackAllocator::DEFAULT) throw()
+void* operator new[](const std::size_t size, CDualStackAllocator& allocator, const std::size_t align, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) throw()
 {
 	printf("placement new(size=%d, dual_allocator.marker=%d,%d, align=%d, ordered=%d)\n", size, allocator.getMarkerN(), allocator.getMarkerR(), align, ordered);
 	return allocator.alloc(ordered, size, align);
 }
-void* operator new[](const std::size_t size, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED ordered = CDualStackAllocator::DEFAULT) throw()
+void* operator new[](const std::size_t size, CDualStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) throw()
 {
 	const std::size_t align = IStackAllocator::DEFAULT_ALIGN;
 	printf("placement new(size=%d, dual_allocator.marker=%d,%d, (align=%d), ordered=%d)\n", size, allocator.getMarkerN(), allocator.getMarkerR(), align, ordered);
 	return allocator.alloc(ordered, size, align);
 }
 //配置delete
-void operator delete(void* p, CDualStackAllocator& allocator, const std::size_t align, const CDualStackAllocator::E_ORDERED) throw()
+void operator delete(void* p, CDualStackAllocator& allocator, const std::size_t align, const IStackAllocator::E_ORDERED) throw()
 {
 	printf("placement delete(p=0x%p, dual_allocator.marker=%d,%d, align)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
 	//allocator.back(ordered, p) は実行しない
 }
-void operator delete(void* p, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED) throw()
+void operator delete(void* p, CDualStackAllocator& allocator, const IStackAllocator::E_ORDERED) throw()
 {
 	printf("placement delete(p=0x%p, dual_allocator.marker=%d,%d)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
 	//allocator.back(ordered, p) は実行しない
 }
 //配列版
-void operator delete[](void* p, CDualStackAllocator& allocator, const std::size_t align, const CDualStackAllocator::E_ORDERED ordered) throw()
+void operator delete[](void* p, CDualStackAllocator& allocator, const std::size_t align, const IStackAllocator::E_ORDERED ordered) throw()
 {
 	printf("placement delete[](p=0x%p, dual_allocator.marker=%d,%d, align)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
 	//allocator.back(ordered, p) は実行しない
 }
-void operator delete[](void* p, CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED ordered) throw()
+void operator delete[](void* p, CDualStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered) throw()
 {
 	const std::size_t align = IStackAllocator::DEFAULT_ALIGN;
 	printf("placement delete[](p=0x%p, dual_allocator.marker=%d,%d)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
@@ -1580,7 +1588,7 @@ void test4b()
 //--------------------------------------------------------------------------------
 //プールアロケータ
 
-#include <atomic>//アトミック型
+#include <atomic>//C++11アトミック型
 
 //--------------------
 //クラス宣言
@@ -1634,12 +1642,19 @@ private:
 	//　確保したインデックスを返す
 	int assign()
 	{
-		//使用中ブロック数判定はロックの範囲外で行う
+		//使用中ブロック数チェックは、高速化のために、一度ロックの範囲外で行う
 		if (m_used.load() >= m_poolBlocksNum)
 			return INVALID_INDEX;//空きなし
-		
+
 		//ロック取得
 		//m_lock.lock();
+
+		//使用中ブロック数を再チェック
+		//if (m_used.load() >= m_poolBlocksNum)
+		//{
+		//	m_lock.unlock();//ロック解放
+		//	return INVALID_INDEX;//空きなし
+		//}
 
 		//インデックス確保
 		index_t index = INVALID_INDEX;
@@ -1665,7 +1680,7 @@ private:
 
 		//最初に使用中ブロック数を判定しているので、この時点でインデックスが得られなければプログラムに問題があるはず
 		//ASSERT(index != INVALID_INDEX, "Probably, mistaken logic in this program.");
-		
+
 		//終了
 		return index;
 	}
@@ -1673,7 +1688,7 @@ private:
 	//※指定のインデックスの使用中フラグをリセット
 	void release(const index_t index)
 	{
-		//インデックスの範囲チェック
+		//インデックスの範囲チェック（ロックの範囲外で行う）
 		if (index < 0 || index >= m_poolBlocksNum)
 			return;
 
@@ -1715,10 +1730,8 @@ public:
 		if (!p)
 			return;
 		//ポインタからインデックスを算出
-		const byte* top_p = reinterpret_cast<byte*>(m_pool);//バッファの先頭ポインタ
-		const byte* target_p = reinterpret_cast<byte*>(p);//指定ポインタ
-		const intptr_t diff = (target_p - top_p);//ポインタの引き算で差のバイト数算出
-		const intptr_t index = diff / m_blockSize;//ブロックサイズで割ってインデックス算出
+		const intptr_t diff = reinterpret_cast<intptr_t>(p)-reinterpret_cast<intptr_t>(m_pool);//ポインタの差分
+		const index_t index = diff / m_blockSize;//ブロックサイズで割ってインデックス算出
 		//【アサーション】メモリバッファの範囲外なら処理失敗（release関数内で失敗するのでそのまま実行）
 		//ASSERT(index >= 0 && index < m_poolBlocksNum, "CPoolAllocator::free() cannot free. Pointer is different.");
 		//【アサーション】ポインタが各ブロックの先頭を指しているかチェック
@@ -1942,6 +1955,25 @@ void test5()
 //共通アロケータインターフェース
 
 //--------------------
+//メモリ確保時情報
+//※デバッグ情報
+struct ALLOC_INFO
+{
+	const char* m_fileName;//ファイル名
+	const char* m_funcName;//関数名
+	const char* m_callPointName;//コールポイント名
+	float m_time;//ゲーム時間
+	const char* m_typeName;//型名
+	ALLOC_INFO(const char* file_name, const char* func_name, const char* call_point_name, const float time, const char* type_name) :
+		m_fileName(file_name),
+		m_funcName(func_name),
+		m_callPointName(call_point_name),
+		m_time(time),
+		m_typeName(type_name)
+	{}
+};
+
+//--------------------
 //共通アロケータインターフェースクラス
 class IAllocator
 {
@@ -1955,7 +1987,7 @@ public:
 	virtual std::size_t getUsed() const = 0;//使用中メモリ量　※参考情報（正しくない可能性がある）
 	virtual std::size_t getRemain() const = 0;//残りメモリ量　※参考情報（正しくない可能性がある）
 	//メモリ確保
-	virtual void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN) = 0;
+	virtual void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN, const ALLOC_INFO* info = nullptr) = 0;
 	//メモリ解放
 	virtual void free(void* p) = 0;
 public:
@@ -1966,8 +1998,8 @@ public:
 //--------------------
 //標準アロケータアダプタークラス
 //※内部でmalloc, freeを使用
-#include <malloc.h>
-#include <stdlib.h>
+#include <malloc.h>//malloc用
+#include <stdlib.h>//memalign用
 class CStdAllocAdp : public IAllocator
 {
 public:
@@ -1984,12 +2016,12 @@ public:
 	//※main関数より前に何かしらのメモリ確保処理が実行された場合、
 	//　CPolyAllocatorが明示的にこのクラスを初期化する必要があるため、
 	//　new / delete 演算子とインスタンス用の静的バッファを実装する
-	static void* operator new(const std::size_t) throw() { return m_buff; }//new演算子
+	static void* operator new(const std::size_t) throw(){ return m_buff; }//new演算子
 	static void operator delete(void*) throw() {}//delete演算子
 public:
 	//メソッド
 	//メモリ確保
-	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN) override
+	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN, const ALLOC_INFO* info = nullptr) override
 	{
 		//return malloc(size);//通常malloc()
 #ifdef USE_MEMALIGN
@@ -2001,7 +2033,7 @@ public:
 	//メモリ解放
 	void free(void* p) override
 	{
-		if(!p)
+		if (!p)
 			return;
 #ifdef USE_MEMALIGN
 		::free(p);//通常free()
@@ -2042,7 +2074,7 @@ public:
 public:
 	//メソッド
 	//メモリ確保
-	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN) override
+	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN, const ALLOC_INFO* info = nullptr) override
 	{
 		if (m_isAllocated)
 			return nullptr;
@@ -2102,100 +2134,33 @@ private:
 };
 
 //--------------------
-//スタックアロケータアダプター
-class CStackAllocAdp : public IAllocator
-{
-public:
-	//アクセッサ
-	const char* getName() const override{ return "CStackAllocAdp"; }//アロケータ名取得
-	std::size_t getTotal() const override{ return m_allocator.getTotal(); }//全体メモリ量取得
-	std::size_t getUsed() const override{ return m_allocator.getUsed(); }//使用中メモリ量取得
-	std::size_t getRemain() const override { return m_allocator.getRemain(); }//残りメモリ量取得
-	CStackAllocator& getAllocator() const { return m_allocator; }//アロケータ取得
-public:
-	//メソッド
-	//メモリ確保
-	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN) override
-	{
-		return m_allocator.allocN(size, align);//非virtualメンバーを使う
-	}
-	//メモリ解放
-	void free(void* p) override
-	{
-		//なにもしない
-	}
-public:
-	//デフォルトコンストラクタ
-	CStackAllocAdp() = delete;
-	//コンストラクタ
-	CStackAllocAdp(CStackAllocator& stack) :
-		m_allocator(stack)//スタックアロケータ
-	{}
-	//デストラクタ
-	~CStackAllocAdp() override
-	{}
-private:
-	//フィールド
-	CStackAllocator& m_allocator;//スタックアロケータ
-};
-
-//--------------------
-//双方向スタックアロケータアダプタークラス
-class CDualStackAllocAdp : public IAllocator
-{
-public:
-	//アクセッサ
-	const char* getName() const override{ return "CDualStackAllocAdp"; }//アロケータ名取得
-	std::size_t getTotal() const override{ return m_allocator.getTotal(); }//全体メモリ量取得
-	std::size_t getUsed() const override{ return m_allocator.getUsed(); }//使用中メモリ量取得
-	std::size_t getRemain() const override { return m_allocator.getRemain(); }//残りメモリ量取得
-	CDualStackAllocator& getAllocator() const { return m_allocator; }//アロケータ取得
-	CDualStackAllocator::E_ORDERED getOrdered() const { m_ordered; }//スタック順取得
-	void setOrdered(const CDualStackAllocator::E_ORDERED ordered){ m_ordered = ordered; }//スタック順更新
-public:
-	//メソッド
-	//メモリ確保
-	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN) override
-	{
-		return m_allocator.alloc(m_ordered, size, align);//非virtualメンバーを使う
-	}
-	//メモリ解放
-	void free(void* p) override
-	{
-		//なにもしない
-	}
-public:
-	//デフォルトコンストラクタ
-	CDualStackAllocAdp() = delete;
-	//コンストラクタ
-	CDualStackAllocAdp(CDualStackAllocator& stack, CDualStackAllocator::E_ORDERED ordered = CDualStackAllocator::DEFAULT) :
-		m_allocator(stack),//双方向スタックアロケータ
-		m_ordered(ordered)//スタック順
-	{}
-	//デストラクタ
-	~CDualStackAllocAdp() override
-	{}
-private:
-	//フィールド
-	CDualStackAllocator& m_allocator;//双方向スタックアロケータ
-	CDualStackAllocator::E_ORDERED m_ordered;//スタック順
-};
-
-//--------------------
 //スタックアロケータインターフェースアダプタークラス
 class CIStackAllocAdp : public IAllocator
 {
+public:
+	//定数
+	//自動巻き戻し
+	enum E_AUTO_REWIND
+	{
+		NOREWIND = 0,//巻き戻しなし
+		AUTO_REWIND = 1,//指定のスタック順に巻き戻し
+		BOTH_AUTO_REWIND = 2,//両方向に巻き戻し（双方向スタックアロケータのみ）
+	};
 public:
 	//アクセッサ
 	const char* getName() const override{ return "CIStackAllocAdp"; }//アロケータ名取得
 	std::size_t getTotal() const override{ return m_allocator.getTotal(); }//全体メモリ量取得
 	std::size_t getUsed() const override{ return m_allocator.getUsed(); }//使用中メモリ量取得
 	std::size_t getRemain() const override { return m_allocator.getRemain(); }//残りメモリ量取得
-	IStackAllocator& getAllocator() const { return m_allocator; }//アロケータ取得
+	IStackAllocator& getAllocator(){ return m_allocator; }//アロケータ取得
+	const IStackAllocator& getAllocator() const { return m_allocator; }//アロケータ取得
+	E_AUTO_REWIND getAutoRewind() const { m_autoRewind; }//自動巻き戻し指定取得
+	void setAutoRewind(const E_AUTO_REWIND auto_rewind){ m_autoRewind = auto_rewind; }//自動巻き戻し指定更新
+	IStackAllocator::marker_t getRewindMarker() const { return m_rewindMarker; }//巻き戻しマーカー取得
 public:
 	//メソッド
 	//メモリ確保
-	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN) override
+	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN, const ALLOC_INFO* info = nullptr) override
 	{
 		return m_allocator.alloc(size, align);//virtualメンバーを使う
 	}
@@ -2208,15 +2173,137 @@ public:
 	//デフォルトコンストラクタ
 	CIStackAllocAdp() = delete;
 	//コンストラクタ
-	CIStackAllocAdp(IStackAllocator& stack) :
-		m_allocator(stack)//スタックアロケータ
-	{}
+	CIStackAllocAdp(IStackAllocator& stack, const E_AUTO_REWIND auto_rewind = NOREWIND) :
+		m_allocator(stack),//スタックアロケータ
+		m_autoRewind(auto_rewind)//自動巻き戻し指定
+	{
+		//自動巻き戻し位置記憶
+		m_rewindMarker = m_allocator.getMarker();
+	}
 	//デストラクタ
 	~CIStackAllocAdp() override
-	{}
-private:
+	{
+		//自動巻き戻し
+		if (m_autoRewind == AUTO_REWIND)
+		{
+			m_allocator.back(m_rewindMarker);
+		}
+	}
+protected:
 	//フィールド
 	IStackAllocator& m_allocator;//スタックアロケータ
+	E_AUTO_REWIND m_autoRewind;//自動巻き戻し指定
+	IStackAllocator::marker_t m_rewindMarker;//巻き戻しマーカー
+};
+
+//--------------------
+//スタックアロケータアダプター
+class CStackAllocAdp : public CIStackAllocAdp
+{
+public:
+	//アクセッサ
+	const char* getName() const override{ return "CStackAllocAdp"; }//アロケータ名取得
+	CStackAllocator& getAllocator(){ return *static_cast<CStackAllocator*>(&m_allocator); }//アロケータ取得
+	const CStackAllocator& getAllocator() const { return *static_cast<CStackAllocator*>(&m_allocator); }//アロケータ取得
+public:
+	//メソッド
+	//メモリ確保
+	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN, const ALLOC_INFO* info = nullptr) override
+	{
+		CStackAllocator& allocator = getAllocator();
+		return allocator.allocN(size, align);//非virtualメンバーを使う
+	}
+	//メモリ解放
+	void free(void* p) override
+	{
+		//なにもしない
+	}
+public:
+	//デフォルトコンストラクタ
+	CStackAllocAdp() = delete;
+	//コンストラクタ
+	CStackAllocAdp(CStackAllocator& stack, const E_AUTO_REWIND auto_rewind = NOREWIND) :
+		CIStackAllocAdp(stack, auto_rewind)//スタックアロケータ
+	{}
+	//デストラクタ
+	~CStackAllocAdp() override
+	{}
+};
+
+//--------------------
+//双方向スタックアロケータアダプタークラス
+class CDualStackAllocAdp : public CIStackAllocAdp
+{
+public:
+	//アクセッサ
+	const char* getName() const override{ return "CDualStackAllocAdp"; }//アロケータ名取得
+	CDualStackAllocator& getAllocator(){ return *static_cast<CDualStackAllocator*>(&m_allocator); }//アロケータ取得
+	const CDualStackAllocator& getAllocator() const { return *static_cast<CDualStackAllocator*>(&m_allocator); }//アロケータ取得
+	IStackAllocator::E_ORDERED getOrdered() const { m_ordered; }//スタック順取得
+	void setOrdered(const IStackAllocator::E_ORDERED ordered){ m_ordered = ordered; }//スタック順更新
+	IStackAllocator::marker_t getRewindMarkerN() const { return m_rewindMarkerN; }//巻き戻しマーカー（正順）取得
+	IStackAllocator::marker_t getRewindMarkerR() const { return m_rewindMarkerR; }//巻き戻しマーカー（逆順）取得
+public:
+	//メソッド
+	//メモリ確保
+	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN, const ALLOC_INFO* info = nullptr) override
+	{
+		CDualStackAllocator& allocator = getAllocator();
+		return allocator.alloc(m_ordered, size, align);//非virtualメンバーを使う
+	}
+	//メモリ解放
+	void free(void* p) override
+	{
+		//なにもしない
+	}
+public:
+	//デフォルトコンストラクタ
+	CDualStackAllocAdp() = delete;
+	//コンストラクタ
+	CDualStackAllocAdp(CDualStackAllocator& stack, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT, const E_AUTO_REWIND auto_rewind = NOREWIND) :
+		CIStackAllocAdp(stack, auto_rewind),//双方向スタックアロケータ
+		m_ordered(ordered)//スタック順
+	{
+		//自動巻き戻し位置記憶
+		CDualStackAllocator& allocator = getAllocator();
+		m_rewindMarkerN = allocator.getMarkerN();
+		m_rewindMarkerR = allocator.getMarkerR();
+	}
+	//デストラクタ
+	~CDualStackAllocAdp() override
+	{
+		//自動巻き戻し
+		if (m_autoRewind == BOTH_AUTO_REWIND)
+		{
+			CDualStackAllocator& allocator = getAllocator();
+			allocator.backN(m_rewindMarkerN);
+			allocator.backR(m_rewindMarkerR);
+		}
+		else if (m_autoRewind == AUTO_REWIND)
+		{
+			CDualStackAllocator& allocator = getAllocator();
+			if (m_ordered == IStackAllocator::NORMAL)
+				allocator.backN(m_rewindMarkerN);
+			else if (m_ordered == IStackAllocator::REVERSE)
+				allocator.backR(m_rewindMarkerR);
+			else//if (m_ordered == IStackAllocator::DEFAULT)
+			{
+				//	allocator.backD(m_rewindMarker);
+				if (allocator.getDefaultOrdered() == IStackAllocator::NORMAL)
+					allocator.backN(m_rewindMarkerN);
+				else if (allocator.getDefaultOrdered() == IStackAllocator::REVERSE)
+					allocator.backR(m_rewindMarkerR);
+				//	else if (allocator.getDefaultOrdered() == IStackAllocator::DEFAULT)
+				//		allocator.backD(m_rewindMarker);
+			}
+		}
+		m_autoRewind = NOREWIND;
+	}
+private:
+	//フィールド
+	IStackAllocator::E_ORDERED m_ordered;//スタック順
+	IStackAllocator::marker_t m_rewindMarkerN;//巻き戻しマーカー（正順）
+	IStackAllocator::marker_t m_rewindMarkerR;//巻き戻しマーカー（逆順）
 };
 
 //--------------------
@@ -2233,7 +2320,7 @@ public:
 public:
 	//メソッド
 	//メモリ確保
-	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN) override
+	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN, const ALLOC_INFO* info = nullptr) override
 	{
 		return m_allocator.alloc(size);
 	}
@@ -2330,13 +2417,60 @@ public:
 		printf("CTest6::Constructor : name=\"%s\"\n", m_name);
 	}
 	//デストラクタ
-	~CTest6()
+	virtual ~CTest6()
 	{
 		printf("CTest6::Destructor : name=\"%s\"\n", m_name);
 	}
-private:
+protected:
 	//フィールド
 	const char* m_name;//名前
+	int m_dummy;//ダミー
+};
+//--------------------
+//テスト用クラス（多重継承テスト用）
+class CTest6ex
+{
+public:
+	//コンストラクタ
+	CTest6ex()
+	{
+		printf("CTest6ex::Constructor\n");
+	}
+	//デストラクタ
+	virtual ~CTest6ex()
+	{
+		printf("CTest6ex::Destructor\n");
+	}
+protected:
+	//フィールド
+	int m_dummy;//ダミー
+};
+//--------------------
+//テスト用クラス（多重継承）
+class CDerivedTest6 : public CTest6, public CTest6ex
+{
+public:
+	//デフォルトコンストラクタ
+	CDerivedTest6() :
+		CTest6(),
+		CTest6ex()
+	{
+		printf("CDerivedTest6::DefaultConstructor : name=\"%s\"\n", m_name);
+	}
+	//コンストラクタ
+	CDerivedTest6(const char* name) :
+		CTest6(name),
+		CTest6ex()
+	{
+		printf("CDerivedTest6::Constructor : name=\"%s\"\n", m_name);
+	}
+	//デストラクタ
+	~CDerivedTest6() override
+	{
+		printf("CDerivedTest6::Destructor : name=\"%s\"\n", m_name);
+	}
+private:
+	//フィールド
 	int m_dummy;//ダミー
 };
 
@@ -2354,6 +2488,12 @@ void test6_sub2(IAllocator& allocator)
 	printf("obj_p=0x%p\n", obj_p);
 	delete_ptr(obj_p, 3, allocator);
 }
+void test6_sub3(const char* name, IAllocator& allocator)
+{
+	CTest6ex* obj_p = new(allocator)CDerivedTest6(name);
+	printf("obj_p=0x%p\n", obj_p);
+	delete_ptr(obj_p, allocator);
+}
 //--------------------
 //テスト
 void test6()
@@ -2362,49 +2502,68 @@ void test6()
 	{
 		printf("----------CStdAllocAdp\n");
 		CStdAllocAdp allocator_adp;
-		test6_sub1("テスト6-1", allocator_adp);
+		test6_sub1("テスト6-1a", allocator_adp);
 		//test6_sub2(allocator_adp);
+		//test6_sub3("テスト6-1b", allocator_adp);
 	}
 	{
 		printf("----------CMonoAllocAdp\n");
-		CMonoAllocAdpWithBuff<64> allocator_adp;
-		test6_sub1("テスト6-2", allocator_adp);
+		CMonoAllocAdpWithBuff<128> allocator_adp;
+		test6_sub1("テスト6-2a", allocator_adp);
 		test6_sub2(allocator_adp);
+		test6_sub3("テスト6-2b", allocator_adp);
 	}
 	{
 		printf("----------CStackAllocAdp\n");
-		CStackAllocatorWithBuff<64> allocator;
+		CStackAllocatorWithBuff<128> allocator;
 		CStackAllocAdp allocator_adp(allocator);
-		test6_sub1("テスト6-3", allocator_adp);
-		test6_sub2(allocator_adp);
+		test6_sub1("テスト6-3a", allocator_adp);
+		{
+			CStackAllocAdp allocator_adp(allocator, CIStackAllocAdp::AUTO_REWIND);
+			test6_sub2(allocator_adp);
+		}
+		test6_sub3("テスト6-3b", allocator_adp);
 	}
 	{
 		printf("----------CDualStackAllocAdp\n");
-		CDualStackAllocatorWithBuff<64> allocator;
-		CDualStackAllocAdp allocator_adp(allocator);
-		test6_sub1("テスト6-4", allocator_adp);
-		test6_sub2(allocator_adp);
+		CDualStackAllocatorWithBuff<128> allocator;
+		CDualStackAllocAdp allocator_adp(allocator, DSA_REVERSE);
+		test6_sub1("テスト6-4a", allocator_adp);
+		{
+			CDualStackAllocAdp allocator_adp(allocator, DSA_REVERSE, CIStackAllocAdp::AUTO_REWIND);
+			test6_sub2(allocator_adp);
+		}
+		test6_sub3("テスト6-4b", allocator_adp);
 	}
 	{
 		printf("----------CIStackAllocAdp on CStackAllocAdp\n");
-		CStackAllocatorWithBuff<64> allocator;
+		CStackAllocatorWithBuff<128> allocator;
 		CIStackAllocAdp allocator_adp(allocator);
-		test6_sub1("テスト6-5", allocator_adp);
-		test6_sub2(allocator_adp);
+		test6_sub1("テスト6-5a", allocator_adp);
+		{
+			CIStackAllocAdp allocator_adp(allocator, CIStackAllocAdp::AUTO_REWIND);
+			test6_sub2(allocator_adp);
+		}
+		test6_sub3("テスト6-5b", allocator_adp);
 	}
 	{
 		printf("----------CIStackAllocAdp on CDualStackAllocAdp\n");
-		CDualStackAllocatorWithBuff<64> allocator;
+		CDualStackAllocatorWithBuff<128> allocator;
 		CIStackAllocAdp allocator_adp(allocator);
-		test6_sub1("テスト6-6", allocator_adp);
-		test6_sub2(allocator_adp);
+		test6_sub1("テスト6-6a", allocator_adp);
+		{
+			CIStackAllocAdp allocator_adp(allocator, CIStackAllocAdp::AUTO_REWIND);
+			test6_sub2(allocator_adp);
+		}
+		test6_sub3("テスト6-6b", allocator_adp);
 	}
 	{
 		printf("----------CPoolAllocAdp\n");
-		CPoolAllocatorWithBuff<8, 5> allocator;
+		CPoolAllocatorWithBuff<24, 5> allocator;
 		CPoolAllocAdp allocator_adp(allocator);
-		test6_sub1("テスト6-7", allocator_adp);
+		test6_sub1("テスト6-7a", allocator_adp);
 		test6_sub2(allocator_adp);
+		test6_sub3("テスト6-7b", allocator_adp);
 	}
 }
 
@@ -2448,6 +2607,23 @@ public:
 		m_allocator = &new_allocator;//アロケータ変更
 		return prev_allocator;//変更前のアロケータを返す
 	}
+	//メモリ確保情報取得
+	static const ALLOC_INFO* getAllocInfo()
+	{
+		return m_allocInfo;
+	}
+	//メモリ確保情報取得と同時に情報を破棄
+	static const ALLOC_INFO* getAllocInfoWithReset()
+	{
+		const ALLOC_INFO* info = m_allocInfo;
+		m_allocInfo = nullptr;
+		return info;
+	}
+	//メモリ確保情報をセット
+	static void setAllocInfo(const ALLOC_INFO* info)
+	{
+		m_allocInfo = info;
+	}
 #ifdef IS_NOT_FRIEND_NEW_OPERATOR_FOR_TEST7
 public:
 #else//IS_NOT_FRIEND_NEW_OPERATOR_FOR_TEST7
@@ -2466,10 +2642,89 @@ public:
 protected:
 	//フィールド
 	static thread_local IAllocator* m_allocator;//現在のアロケータ
+	static thread_local const ALLOC_INFO* m_allocInfo;//現在のメモリ確保情報
 	//TLSを利用し、アロケータの変更が他のスレッドに影響しないようにする
 };
 //グローバル多態性アロケータの静的変数インスタンス化
-thread_local IAllocator* CPolyAllocator::m_allocator = nullptr;
+thread_local IAllocator* CPolyAllocator::m_allocator = nullptr;//現在のアロケータ
+thread_local const ALLOC_INFO* CPolyAllocator::m_allocInfo = nullptr;//現在のメモリ確保情報
+
+//ダミー関数
+const char* getCurrentCallPointNameDummy(){ return "(unknown call-point)"; }//コールポイント名取得
+float getGameTimeDummy(){ return 0.f; }//ゲーム時間取得
+//メモリ確保情報付きNEW
+template<class T, typename... Tx>
+T* newWithInfo(const char* file_name, const char* func_name, Tx ...nx)
+{
+	const char* call_point_name = getCurrentCallPointNameDummy();
+	const float game_time = getGameTimeDummy();
+	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T).name());
+	CPolyAllocator::setAllocInfo(&info);
+	return new T(nx...);
+}
+template<class T, std::size_t array_size>
+T* newArrayWithInfo(const char* file_name, const char* func_name)
+{
+	const char* call_point_name = getCurrentCallPointNameDummy();
+	const float game_time = getGameTimeDummy();
+	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T[array_size]).name());
+	CPolyAllocator::setAllocInfo(&info);
+	return new T[array_size];
+}
+//関数名作成マクロ
+#include <string.h>
+//【constexpr版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
+#ifdef ENABLE_CONSTEXPR
+constexpr const char* getConstFileNameRecursive(const char* str, const std::size_t len)
+{
+	return len == 0 ?
+	str :
+		*(str + len - 1) == '\\' || *(str + len - 1) == '/' ?
+		str + len :
+		getConstFileNameRecursive(str, len - 1);
+}
+constexpr const char* getConstFileName(const char* str)
+{
+	return getConstFileNameRecursive(str, strlen(str));
+}
+#else//ENABLE_CONSTEXPR
+//【通常版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
+const char* getFileName(const char* str)
+{
+	std::size_t len = strlen(str);
+	const char* p = str + len;
+	for (; len > 0; --len, --p)
+	{
+		const char c = *(p - 1);
+		if (c == '\\' || c == '/')
+			return p;
+	}
+	return str;
+}
+#endif//ENABLE_CONSTEXPR
+#define TO_STRING(s) #s
+#define TO_STRING_EX(s) TO_STRING(s)
+#ifdef ENABLE_CONSTEXPR
+#define GET_CONCATENATED_FILE_NAME() getConstFileName(__FILE__ "(" TO_STRING_EX(__LINE__) ") [" __TIMESTAMP__ "]")
+#else//ENABLE_CONSTEXPR
+#define GET_CONCATENATED_FILE_NAME() __FILE__ "(" TO_STRING_EX(__LINE__) ")  [" __TIMESTAMP__ "]"
+#endif//ENABLE_CONSTEXPR
+#define GET_FUNC_NAME() __PRETTY_FUNCTION__
+//#define GET_FUNC_NAME() __FUNCTION__
+//newマクロ
+#ifdef USE_ALLOC_INFO
+//※メモリ確保時情報付き
+#define NEW(T, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), __VA_ARGS__)
+#define NEWARR(T, array_size) newArrayWithInfo<T, array_size>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME())
+#define DELETE delete
+#define DELETEARR delete[]
+#else//USE_ALLOC_INFO
+//※メモリ確保時情報なし
+#define NEW(T, ...) new T(__VA_ARGS__)
+#define NEWARR(T, array_size) new T[array_size]
+#define DELETE delete
+#define DELETEARR delete[]
+#endif//USE_ALLOC_INFO
 
 //クラス宣言
 template<class I>
@@ -2529,7 +2784,7 @@ class CTempPolyAllocator<CStdAllocAdp> : public CTempPolyAllocatorBase
 {
 public:
 	//デフォルトコンストラクタ
-	CTempPolyAllocator():
+	CTempPolyAllocator() :
 		m_adapter(),//標準アロケータアダプタ初期化
 		CTempPolyAllocatorBase(m_adapter)
 	{}
@@ -2561,6 +2816,28 @@ public:
 };
 //一時グローバル多態性アロケータクラス：単一バッファアロケータ用
 using CTempPolyMonoAllocator = CTempPolyAllocator<CMonoAllocAdp>;
+//一時グローバル多態性アロケータテンプレートクラス：スタックアロケータインターフェース用に特殊化
+template<>
+class CTempPolyAllocator<IStackAllocator> : public CTempPolyAllocatorBase
+{
+public:
+	//デフォルトコンストラクタ
+	CTempPolyAllocator() = delete;
+	//コンストラクタ
+	CTempPolyAllocator(IStackAllocator& allocator, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind = CIStackAllocAdp::NOREWIND) :
+		m_adapter(allocator, auto_rewind),//スタックアロケータインターフェースアダプタ初期化
+		CTempPolyAllocatorBase(m_adapter)
+	{}
+public:
+	//デストラクタ
+	~CTempPolyAllocator()
+	{}
+private:
+	//フィールド
+	CIStackAllocAdp m_adapter;//スタックアロケータインターフェースアダプタ
+};
+//一時グローバル多態性アロケータクラス：スタックアロケータインターフェース用
+using CTempPolyIStackAllocator = CTempPolyAllocator<IStackAllocator>;
 //一時グローバル多態性アロケータテンプレートクラス：スタックアロケータ用に特殊化
 template<>
 class CTempPolyAllocator<CStackAllocator> : public CTempPolyAllocatorBase
@@ -2569,8 +2846,8 @@ public:
 	//デフォルトコンストラクタ
 	CTempPolyAllocator() = delete;
 	//コンストラクタ
-	CTempPolyAllocator(CStackAllocator& allocator) :
-		m_adapter(allocator),//スタックアロケータアダプタ初期化
+	CTempPolyAllocator(CStackAllocator& allocator, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind = CIStackAllocAdp::NOREWIND) :
+		m_adapter(allocator, auto_rewind),//スタックアロケータアダプタ初期化
 		CTempPolyAllocatorBase(m_adapter)
 	{}
 public:
@@ -2591,8 +2868,8 @@ public:
 	//デフォルトコンストラクタ
 	CTempPolyAllocator() = delete;
 	//コンストラクタ
-	CTempPolyAllocator(CDualStackAllocator& allocator, const CDualStackAllocator::E_ORDERED ordered = CDualStackAllocator::DEFAULT) :
-		m_adapter(allocator, ordered),//双方向スタックアロケータアダプタ初期化
+	CTempPolyAllocator(CDualStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind = CIStackAllocAdp::NOREWIND) :
+		m_adapter(allocator, ordered, auto_rewind),//双方向スタックアロケータアダプタ初期化
 		CTempPolyAllocatorBase(m_adapter)
 	{}
 public:
@@ -2605,28 +2882,6 @@ private:
 };
 //一時グローバル多態性アロケータクラス：双方向スタックアロケータ用
 using CTempPolyDualStackAllocator = CTempPolyAllocator<CDualStackAllocator>;
-//一時グローバル多態性アロケータテンプレートクラス：スタックアロケータインターフェース用に特殊化
-template<>
-class CTempPolyAllocator<IStackAllocator> : public CTempPolyAllocatorBase
-{
-public:
-	//デフォルトコンストラクタ
-	CTempPolyAllocator() = delete;
-	//コンストラクタ
-	CTempPolyAllocator(IStackAllocator& allocator) :
-		m_adapter(allocator),//スタックアロケータインターフェースアダプタ初期化
-		CTempPolyAllocatorBase(m_adapter)
-	{}
-public:
-	//デストラクタ
-	~CTempPolyAllocator()
-	{}
-private:
-	//フィールド
-	CIStackAllocAdp m_adapter;//スタックアロケータインターフェースアダプタ
-};
-//一時グローバル多態性アロケータクラス：スタックアロケータインターフェース用
-using CTempPolyIStackAllocator = CTempPolyAllocator<IStackAllocator>;
 //一時グローバル多態性アロケータテンプレートクラス：プールアロケータ用に特殊化
 template<>
 class CTempPolyAllocator<CPoolAllocator> : public CTempPolyAllocatorBase
@@ -2656,8 +2911,15 @@ using CTempPolyPoolAllocator = CTempPolyAllocator<CPoolAllocator>;
 void* operator new(const std::size_t size) throw()
 {
 	CPolyAllocator allocator;
-	printf("new(size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(),  allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
-	void* p =allocator->alloc(size);
+	printf("new(size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
+	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();
+	if (info)
+#ifdef ENABLE_CONSTEXPR
+		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\"\n", info->m_fileName, info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName);
+#else//ENABLE_CONSTEXPR
+		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\"\n", getFileName(info->m_fileName), info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName);
+#endif//ENABLE_CONSTEXPR
+	void* p = allocator->alloc(size);
 	printf("  p=0x%p\n", p);
 	return p;
 }
@@ -2666,6 +2928,13 @@ void* operator new[](const std::size_t size) throw()
 {
 	CPolyAllocator allocator;
 	printf("new[](size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
+	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();
+	if (info)
+#ifdef ENABLE_CONSTEXPR
+		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\"\n", info->m_fileName, info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName);
+#else//ENABLE_CONSTEXPR
+		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\"\n", getFileName(info->m_fileName), info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName);
+#endif//ENABLE_CONSTEXPR
 	void* p = allocator->alloc(size);
 	printf("  p=0x%p\n", p);
 	return p;
@@ -2706,13 +2975,60 @@ public:
 		printf("CTest7::Constructor : name=\"%s\"\n", m_name);
 	}
 	//デストラクタ
-	~CTest7()
+	virtual ~CTest7()
 	{
 		printf("CTest7::Destructor : name=\"%s\"\n", m_name);
 	}
-private:
+protected:
 	//フィールド
 	const char* m_name;//名前
+	int m_dummy;//ダミー
+};
+//--------------------
+//テスト用クラス（多重継承テスト用）
+class CTest7ex
+{
+public:
+	//コンストラクタ
+	CTest7ex()
+	{
+		printf("CTest7ex::Constructor\n");
+	}
+	//デストラクタ
+	virtual ~CTest7ex()
+	{
+		printf("CTest7ex::Destructor\n");
+	}
+protected:
+	//フィールド
+	int m_dummy;//ダミー
+};
+//--------------------
+//テスト用クラス（多重継承）
+class CDerivedTest7 : public CTest7, public CTest7ex
+{
+public:
+	//デフォルトコンストラクタ
+	CDerivedTest7() :
+		CTest7(),
+		CTest7ex()
+	{
+		printf("CDerivedTest7::DefaultConstructor : name=\"%s\"\n", m_name);
+	}
+	//コンストラクタ
+	CDerivedTest7(const char* name) :
+		CTest7(name),
+		CTest7ex()
+	{
+		printf("CDerivedTest7::Constructor : name=\"%s\"\n", m_name);
+	}
+	//デストラクタ
+	~CDerivedTest7() override
+	{
+		printf("CDerivedTest7::Destructor : name=\"%s\"\n", m_name);
+	}
+private:
+	//フィールド
 	int m_dummy;//ダミー
 };
 
@@ -2720,15 +3036,39 @@ private:
 //テスト（共通関数）
 void test7_sub1(const char* name)
 {
+#ifdef USE_NEW_MACRO
+	CTest7* obj_p = NEW(CTest7, name);
+	printf("obj_p=0x%p\n", obj_p);
+	DELETE obj_p;
+#else//USE_NEW_MACRO
 	CTest7* obj_p = new CTest7(name);
 	printf("obj_p=0x%p\n", obj_p);
 	delete obj_p;
+#endif//USE_NEW_MACRO
 }
 void test7_sub2()
 {
+#ifdef USE_NEW_MACRO
+	CTest7* obj_p = NEWARR(CTest7, 3);
+	printf("obj_p=0x%p\n", obj_p);
+	DELETEARR obj_p;
+#else//USE_NEW_MACRO
 	CTest7* obj_p = new CTest7[3];
 	printf("obj_p=0x%p\n", obj_p);
 	delete[] obj_p;
+#endif//USE_NEW_MACRO
+}
+void test7_sub3(const char* name)
+{
+#ifdef USE_NEW_MACRO
+	CTest7ex* obj_p = NEW(CDerivedTest7, name);
+	printf("obj_p=0x%p\n", obj_p);
+	DELETE obj_p;
+#else//USE_NEW_MACRO
+	CTest7ex* obj_p = new CDerivedTest7(name);
+	printf("obj_p=0x%p\n", obj_p);
+	delete obj_p;
+#endif//USE_NEW_MACRO
 }
 //--------------------
 //テスト
@@ -2738,55 +3078,77 @@ void test7()
 	{
 		printf("----------CStdAllocAdp\n");
 		CTempPolyStdAllocator poly_allocator;
-		test7_sub1("テスト7-1");
+		test7_sub1("テスト7-1a");
 		test7_sub2();
+		test7_sub3("テスト7-1b");
 	}
 	{
 		printf("----------CMonoAllocAdp\n");
-		CMonoAllocAdpWithBuff<64> allocator_adp;
+		CMonoAllocAdpWithBuff<128> allocator_adp;
 		CTempPolyMonoAllocator allocator(allocator_adp);
-		test7_sub1("テスト7-2");
+		test7_sub1("テスト7-2a");
 		test7_sub2();
+		test7_sub3("テスト7-2b");
 	}
 	{
 		printf("----------CStackAllocAdp\n");
-		CStackAllocatorWithBuff<64> allocator;
+		CStackAllocatorWithBuff<128> allocator;
 		CTempPolyStackAllocator poly_allocator(allocator);
-		test7_sub1("テスト7-3");
-		test7_sub2();
+		test7_sub1("テスト7-3a");
+		{
+			CTempPolyStackAllocator poly_allocator(allocator, CIStackAllocAdp::AUTO_REWIND);
+			test7_sub2();
+		}
+		test7_sub3("テスト7-3b");
 	}
 	{
 		printf("----------CDualStackAllocAdp\n");
-		CDualStackAllocatorWithBuff<64> allocator;
-		CTempPolyDualStackAllocator poly_allocator(allocator);
-		test7_sub1("テスト7-4");
-		test7_sub2();
+		CDualStackAllocatorWithBuff<128> allocator;
+		CTempPolyDualStackAllocator poly_allocator(allocator, DSA_REVERSE);
+		test7_sub1("テスト7-4a");
+		{
+			CTempPolyDualStackAllocator poly_allocator(allocator, DSA_REVERSE, CIStackAllocAdp::AUTO_REWIND);
+			test7_sub2();
+		}
+		test7_sub3("テスト7-4b");
 	}
 	{
 		printf("----------CIStackAllocAdp on CStackAllocAdp\n");
-		CStackAllocatorWithBuff<64> allocator;
+		CStackAllocatorWithBuff<128> allocator;
 		CTempPolyIStackAllocator poly_allocator(allocator);
-		test7_sub1("テスト7-5");
-		test7_sub2();
+		test7_sub1("テスト7-5a");
+		{
+			CTempPolyIStackAllocator poly_allocator(allocator, CIStackAllocAdp::AUTO_REWIND);
+			test7_sub2();
+		}
+		test7_sub3("テスト7-5b");
 	}
 	{
 		printf("----------CIStackAllocAdp on CDualStackAllocAdp\n");
-		CDualStackAllocatorWithBuff<64> allocator;
+		CDualStackAllocatorWithBuff<128> allocator;
 		CTempPolyIStackAllocator poly_allocator(allocator);
-		test7_sub1("テスト7-6");
-		test7_sub2();
+		test7_sub1("テスト7-6a");
+		{
+			CTempPolyIStackAllocator poly_allocator(allocator, CIStackAllocAdp::AUTO_REWIND);
+			test7_sub2();
+		}
+		test7_sub3("テスト7-6b");
 	}
 	{
 		printf("----------CPoolAllocAdp\n");
-		CPoolAllocatorWithBuff<8, 5> allocator;
+		CPoolAllocatorWithBuff<24, 5> allocator;
 		CTempPolyPoolAllocator poly_allocator(allocator);
-		test7_sub1("テスト7-7");
+		test7_sub1("テスト7-7a");
 		test7_sub2();
+		test7_sub3("テスト7-7b");
 	}
 }
 
 //--------------------------------------------------------------------------------
 //標準ライブラリを便利に活用
+
+#include <string.h>//strcpy用
+#include <string>//std::string用
 
 //--------------------
 //CRC算出関数
@@ -2794,7 +3156,7 @@ typedef unsigned int crc32_t;//CRC32型
 namespace crc_inner_calc//直接使用しない処理を隠ぺいするためのネームスペース
 {
 #ifndef USE_CRC_CALC_TABLE
-	//CRC生成多項式計算
+	//CRC生成多項式計算（再帰処理）
 	constexpr crc32_t calcPoly(crc32_t poly, const int n)
 	{
 		return n == 0 ? poly : calcPoly(poly & 1 ? 0xedb88320u ^ (poly >> 1) : (poly >> 1), n - 1);
@@ -2861,7 +3223,7 @@ constexpr crc32_t calcCRC32(const char* str)
 {
 	return ~crc_inner_calc::calcStr(~0u, str);
 }
-//データ長を指定してからCRC算出
+//データ長を指定してCRC算出
 constexpr crc32_t calcCRC32(const char* str, const int len)
 {
 	return ~crc_inner_calc::calcData(~0u, str, len);
@@ -2874,40 +3236,80 @@ constexpr crc32_t operator "" _crc32(const char* str, std::size_t len)
 }
 #endif//ENABLE_USER_DEFINED_LITERALS
 
-void sub()
-{
-	{
-		const crc32_t crc1 = calcCRC32("1234567890");//コンパイル時に計算
-#ifdef ENABLE_CONSTEXPR
-		static_assert(crc1 == 0x261daee5, "invalid crc1");//OK：コンパイル時に評価
-#endif//ENABLE_CONSTEXPR
-		printf("constexpr によるコンパイル時のCRC計算結果=0x%08x\n", crc1);
-	}
-	{
-		const crc32_t crc2 = calcCRC32("1234567890");//ランタイム時に計算//constが付いていないため
-		assert(crc2 == 0x261daee5);//OK：コンパイル時に評価
-		printf("constexpr によるランタイム時のCRC計算結果=0x%08x\n", crc2);
-	}
-#ifdef ENABLE_USER_DEFINED_LITERALS
-	{
-		const crc32_t crc3 = "1234567890"_crc32;//コンパイル時に計算
-		static_assert(crc3 == 0x261daee5, "invalid crc2");//OK：コンパイル時に評価
-		printf("ユーザー定義リテラルによるコンパイル時のCRC計算結果=0x%08x\n", crc3);
-	}
-#endif//ENABLE_USER_DEFINED_LITERALS
-}
-
-#include <unordered_map>//ハッシュテーブル用
-
-
 //--------------------
 //標準ライブラリを利用した固定バッファハッシュテーブルクラス
-
+#include <unordered_map>//C++11ハッシュテーブル
+class CTest8
+{
+public:
+	//型
+	//データ型
+	struct DATA
+	{
+		char m_name[20];//名前
+		int m_age;//年齢
+		DATA(const char* name, const int age)
+		{
+#ifdef USE_STRCPY_S
+			strcpy_s(m_name, sizeof(m_name), name);
+#else//USE_STRCPY_S
+			strcpy(m_name, name);
+#endif//USE_STRCPY_S
+			m_age = age;
+		}
+	};
+public:
+	//メソッド
+	//データ追加
+	void addData(const DATA& data)
+	{
+		printf("CTest8::addData()\n");
+		CTempPolyStackAllocator poly_allocator(m_stack);
+		m_table->insert(std::make_pair(calcCRC32(data.m_name), data));
+	}
+	//データ参照
+	const DATA* find(const crc32_t name_crc) const
+	{
+		printf("CTest8::find()\n");
+		//CTempPolyStackAllocator poly_allocator(m_stack);//不要
+		const auto& obj = m_table->find(name_crc);
+		if (obj == m_table->cend())
+			return nullptr;
+		return &obj->second;
+	}
+	const DATA* find(const char* name) const
+	{
+		return find(calcCRC32(name));
+	}
+public:
+	//コンストラクタ
+	CTest8()
+	{
+		printf("CTest8::Consructor()\n");
+		CTempPolyStackAllocator poly_allocator(m_stack);
+		printf("new unordered_map\n");
+		m_table = new std::unordered_map<crc32_t, DATA>();
+		printf("unordered_map::reserve\n");
+		m_table->reserve(10);
+		printf("--\n");
+	}
+	//デストラクタ
+	~CTest8()
+	{
+		printf("CTest8::Destructor()\n");
+		CTempPolyStackAllocator poly_allocator(m_stack);
+		printf("delete unordered_map\n");
+		delete m_table;
+		printf("--\n");
+	}
+private:
+	//フィールド
+	std::unordered_map<crc32_t, DATA>* m_table;//データテーブル
+	CStackAllocatorWithBuff<1024> m_stack;//スタックアロケータ
+};
 
 //--------------------
 //テスト
-#include <string.h>
-#include <string>
 void test8()
 {
 	printf("---------- test8:標準ライブラリを便利に利用 ----------\n");
@@ -2923,11 +3325,11 @@ void test8()
 			std::string str4 = "std::stringが";
 			std::string str5 = "やっぱり便利!!";
 			std::string str = str1 + str2 + str3 + str4 + str5;
-		#ifdef USE_STRCPY_S
+#ifdef USE_STRCPY_S
 			strcpy_s(str_buff, sizeof(str_buff), str.c_str());
-		#else//USE_STRCPY_S
+#else//USE_STRCPY_S
 			strcpy(str_buff, str.c_str());
-		#endif//USE_STRCPY_S
+#endif//USE_STRCPY_S
 		}
 		printf("str_buff=\"%s\"\n", str_buff);
 	}
@@ -2941,42 +3343,987 @@ void test8()
 			std::string str4 = "std::stringが";
 			std::string str5 = "やっぱり便利!!";
 			std::string str = str1 + str2 + str3 + str4 + str5;
-		#ifdef USE_STRCPY_S
+#ifdef USE_STRCPY_S
 			strcpy_s(str_buff, sizeof(str_buff), str.c_str());
-		#else//USE_STRCPY_S
+#else//USE_STRCPY_S
 			strcpy(str_buff, str.c_str());
-		#endif//USE_STRCPY_S
+#endif//USE_STRCPY_S
 		}
 		printf("str_buff=\"%s\"\n", str_buff);
 	}
 	{
-		printf("----------CStackAllocAdp\n");
 		CStackAllocatorWithBuff<8192> allocator;
 		CTempPolyStackAllocator poly_allocator(allocator);
 		{
-			std::unordered_map<uintptr_t, int> hash_table;
-			hash_table.reserve(100);
-			printf("already reserved\n");
-			hash_table.insert(std::make_pair(reinterpret_cast<uintptr_t>("太郎"), 123));
-			hash_table.insert(std::make_pair(reinterpret_cast<uintptr_t>("次郎"), 456));
-			hash_table.insert(std::make_pair(reinterpret_cast<uintptr_t>("三郎"), 789));
-			printf("already inserted\n");
-			printf("individual data print\n");
-			printf("\"%s\"=%d\n", "太郎", hash_table.find(reinterpret_cast<uintptr_t>("太郎"))->second);
-			printf("\"%s\"=%d\n", "次郎", hash_table.find(reinterpret_cast<uintptr_t>("次郎"))->second);
-			printf("\"%s\"=%d\n", "三郎", hash_table.find(reinterpret_cast<uintptr_t>("三郎"))->second);
-			printf("each data print\n");
-			for (auto& o : hash_table)
-			{
-				printf("\"%s\"=%d\n", reinterpret_cast<char*>(o.first), o.second);
-			}
-			for (auto o = hash_table.cbegin(); o != hash_table.cend(); ++o)
-			{
-				printf("\"%s\"=%d\n", reinterpret_cast<char*>(o->first), o->second);
-			}
+			printf("----------CTest8\n");
+			CTest8::DATA data1("太郎", 40);
+			CTest8::DATA data2("次郎", 30);
+			CTest8::DATA data3("三郎", 20);
+			printf("new CTest8\n");
+			CTest8* table = new CTest8();
+			table->addData(data1);
+			table->addData(data2);
+			table->addData(data3);
+			const CTest8::DATA* ref1 = table->find("太郎");
+			const CTest8::DATA* ref2 = table->find("次郎");
+			const CTest8::DATA* ref3 = table->find("三郎");
+			if (ref1) printf("ref1: name=\"%s\", age=%d\n", ref1->m_name, ref1->m_age);
+			if (ref2) printf("ref2: name=\"%s\", age=%d\n", ref2->m_name, ref2->m_age);
+			if (ref3) printf("ref3: name=\"%s\", age=%d\n", ref3->m_name, ref3->m_age);
+			printf("delete CTest8\n");
+			delete table;
+			printf("----------CTest8:End\n");
 		}
 	}
-sub();
+}
+
+//--------------------------------------------------------------------------------
+//マルチスレッドで便利なスタックアロケータ
+
+#include <thread>//C++11スレッド
+#include <atomic>//C++11アトミック型
+
+//----------------------------------------
+//スレッドIDクラス
+//※IDをハッシュ化した場合、TLSを活用して高速化
+
+//スレッドID型
+#define THREAD_ID_IS_HASH//スレッドIDをハッシュ型で扱う場合はこのマクロを有効化する（ハッシュの方が高速）
+#ifdef THREAD_ID_IS_HASH
+typedef std::size_t THREAD_ID;//(ハッシュ)
+static const THREAD_ID INVALID_THREAD_ID = std::hash<std::thread::id>()(std::thread::id());//無効なスレッドID(ハッシュ)
+static const THREAD_ID INITIAL_THREAD_ID = static_cast<THREAD_ID>(~0);//初期スレッドID(ハッシュ)
+#else//THREAD_ID_IS_HASH
+typedef std::thread::id THREAD_ID;
+static const THREAD_ID INVALID_THREAD_ID = std::thread::id();//無効なスレッドID
+#endif//THREAD_ID_IS_HASH
+
+//現在のスレッドID取得関数
+#ifdef THREAD_ID_IS_HASH
+inline THREAD_ID GetThisThreadID(){ return std::hash<std::thread::id>()(std::this_thread::get_id()); }//(ハッシュ)
+#else//THREAD_ID_IS_HASH
+inline THREAD_ID GetThisThreadID(){ return std::this_thread::get_id(); }
+#endif//THREAD_ID_IS_HASH
+
+//スレッドIDクラス
+class CThreadID
+{
+public:
+	//アクセッサ
+	const THREAD_ID getID() const { return m_threadId; }//スレッドIDを取得
+	const char* getName() const { return m_threadName; }//スレッド名を取得
+public:
+	//アクセッサ（static）
+#ifdef THREAD_ID_IS_HASH
+	static THREAD_ID getThisID(){ return m_thisThreadID; }//現在のスレッドのスレッドIDを取得(ハッシュ)
+#else//THREAD_ID_IS_HASH
+	static THREAD_ID getThisID(){ return GetThisThreadID(); }//現在のスレッドのスレッドIDを取得
+#endif//THREAD_ID_IS_HASH
+	static const char* getThisName(){ return m_thisThreadName; }//現在のスレッドのスレッド名を取得
+public:
+	//メソッド
+	bool isThisThread() const { return m_threadId == getThisID(); }//現在のスレッドと同じスレッドか判定
+private:
+	//メソッド(static)
+	static void setThisThread()//現在のスレッドのスレッドIDをセット
+	{
+#ifdef THREAD_ID_IS_HASH
+		if (m_thisThreadID == INITIAL_THREAD_ID)
+			m_thisThreadID = GetThisThreadID();
+#endif//THREAD_ID_IS_HASH
+	}
+	static void resetThisThread(const char* name)//現在のスレッドのスレッドIDをリセット
+	{
+#ifdef THREAD_ID_IS_HASH
+		m_thisThreadID = GetThisThreadID();
+#endif//THREAD_ID_IS_HASH
+		m_thisThreadName = name;
+	}
+public:
+	//オペレータ（許可）
+	bool operator==(const CThreadID& o) const { return m_threadId == o.getID(); }//ID一致判定
+	bool operator!=(const CThreadID& o) const { return m_threadId != o.getID(); }//ID不一致判定
+	bool operator==(const THREAD_ID& id) const { return m_threadId == id; }//ID一致判定
+	bool operator!=(const THREAD_ID& id) const { return m_threadId != id; }//ID不一致判定
+	CThreadID& operator=(const CThreadID& o)//コピー演算子
+	{
+		m_threadId = o.m_threadId;
+		m_threadName = o.m_threadName;
+		return *this;
+	}
+private:
+	//オペレータ（禁止）
+	CThreadID& operator=(const THREAD_ID& id) { return *this; }//コピー演算子（禁止）
+public:
+	//コピーコンストラクタ（許可）
+	explicit CThreadID(const CThreadID& o) :
+		m_threadId(o.m_threadId),
+		m_threadName(o.m_threadName)
+	{
+	}
+private:
+	//コピーコンストラクタ（禁止）
+	explicit CThreadID(const THREAD_ID& id){}
+public:
+	//コンストラクタ
+	//※スレッド名を指定し、内部で現在のスレッドIDを取得して保持
+	//※TLSにも記録
+	CThreadID(const char* name)
+	{
+		resetThisThread(name);
+		m_threadId = getThisID();
+		m_threadName = getThisName();
+	}
+	//デフォルトコンストラクタ
+	//※既にTLSに記録済みのスレッドID（と名前）を取得
+	CThreadID()
+	{
+		setThisThread();
+		m_threadId = getThisID();
+		m_threadName = getThisName();
+	}
+private:
+	//フィールド
+	THREAD_ID m_threadId;//スレッドID（オブジェクトに保存する値）
+	const char* m_threadName;//スレッド名（オブジェクトに保存する値）
+#ifdef THREAD_ID_IS_HASH
+	static thread_local THREAD_ID m_thisThreadID;//現在のスレッドのスレッドID(TLS)
+#endif//THREAD_ID_IS_HASH
+	static thread_local const char* m_thisThreadName;//現在のスレッド名(TLS)
+};
+//static変数のインスタンス化
+#ifdef THREAD_ID_IS_HASH
+thread_local THREAD_ID CThreadID::m_thisThreadID = INITIAL_THREAD_ID;//スレッドID(TLS)
+#endif//THREAD_ID_IS_HASH
+thread_local const char* CThreadID::m_thisThreadName = nullptr;//スレッド名(TLS)
+
+//--------------------------------------------------------------------------------
+//軽量スピンロック
+
+//----------------------------------------
+//軽量スピンロック
+//※手軽に使えるスピンロック
+//※一定回数のスリープごとにスリープ（コンテキストスイッチ）を行う
+//※容量は4バイト(std::atomic_flag一つ分のサイズ)
+//※プログラミング上の安全性は低いので気がるに使うべきではない
+//　　⇒ロック取得状態を確認せずにアンロックする
+#define SPIN_LOCK_USE_ATOMIC_FLAG//std::atomic_flag版（高速）
+//#define SPIN_LOCK_USE_ATOMIC_BOOL//std::atomic_bool版（軽量）
+class CSpinLock
+{
+public:
+	//定数
+	static const int DEFAULT_SPIN_COUNT = 1000;//スピンロックカウントのデフォルト値
+public:
+	//ロック取得
+	void lock(const int spin_count = DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = 0;
+#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+		while (m_lock.test_and_set())//std::atomic_flag版（高速）
+		{
+#else//SPIN_LOCK_USE_ATOMIC_FLAG
+		bool prev = false;
+		while (m_lock.compare_exchange_weak(prev, true))//std::atomic_bool版（軽量）
+		{
+			prev = false;
+#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+			if (spin_count == 0 || ++spin_count_now % spin_count == 0)
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+		}
+	}
+	//ロック解放
+	void unlock()
+	{
+#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+		m_lock.clear();//std::atomic_flag版（高速）
+#else//SPIN_LOCK_USE_ATOMIC_FLAG
+		m_lock.store(false);//std::atomic_bool版（軽量）
+#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+	}
+public:
+	//コンストラクタ
+	CSpinLock()
+	{
+#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+		m_lock.clear();//ロック用フラグ（高速）
+#else//SPIN_LOCK_USE_ATOMIC_FLAG
+		m_lock.store(false);//ロック用フラグ（軽量）
+#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+	}
+	//デストラクタ
+	~CSpinLock()
+	{
+	}
+private:
+	//フィールド
+#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+	std::atomic_flag m_lock;//ロック用フラグ（高速）
+#else//SPIN_LOCK_USE_ATOMIC_FLAG
+	std::atomic_bool m_lock;//ロック用フラグ（軽量）
+#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+};
+
+//--------------------
+//スマートスタックアロケータクラス
+//※非スレッドセーフ（処理速度優先）
+//※インターフェースを実装するが、高速化のために virtualメソッドに頼らず操作可能
+class CSmartStackAllocator : public IStackAllocator
+{
+public:
+	//型
+	typedef int counter_t;//カウンター型
+public:
+	//アクセッサ
+	std::size_t getTotal() const override { return m_buffSize; }//全体のメモリ量を取得
+	std::size_t getUsed() const override { return m_usedN.load() + m_buffSize - m_usedR.load(); }//使用中のメモリ量を取得
+	std::size_t getRemain() const override { return m_usedR.load() - m_usedN.load(); }//残りのメモリ量を取得
+	E_ORDERED getDefaultOrdered() const { return m_defaultOrdered.load(); }//デフォルトのスタック順を取得
+	void setDefaultOrdered(const E_ORDERED ordered)//デフォルトのスタック順を更新
+	{
+		//m_lock.lock();//ロック取得（不要⇒代わりにアトミック型を使用）
+		m_defaultOrdered.store(ordered == REVERSE ? REVERSE : NORMAL);
+		//m_lock.unlock();//ロック解放（不要）
+	}
+	const byte* getBuff() const { return m_buffPtr; }//バッファ取得を取得
+	const byte* getNowPtrN() const { return m_buffPtr + m_usedN.load(); }//現在のバッファ位置（正順）を取得
+	const byte* getNowPtrR() const { return m_buffPtr + m_usedR.load(); }//現在のバッファ位置（逆順）を取得
+	const byte* getNowPtrD() const { return getNowPtr(m_defaultOrdered.load()); }//現在のバッファ位置を取得
+	const byte* getNowPtr(const E_ORDERED ordered) const { return ordered == DEFAULT ? getNowPtrD() : ordered == REVERSE ? getNowPtrR() : getNowPtrN(); }//現在のバッファ位置を取得
+	const byte* getNowPtr() const override { return getNowPtrD(); }//現在のバッファ位置を取得
+	marker_t getMarkerN() const { return m_usedN.load(); }//現在のマーカー（正順）を取得
+	marker_t getMarkerR() const { return m_usedR.load(); }//現在のマーカー（逆順）を取得
+	marker_t getMarkerD() const { return getMarker(m_defaultOrdered.load()); }//現在のマーカーを取得
+	marker_t getMarker(const E_ORDERED ordered) const { return ordered == DEFAULT ? getMarkerD() : ordered == REVERSE ? getMarkerR() : getMarkerN(); }//現在のマーカーを取得
+	marker_t getMarker() const override { return getMarkerD(); }//現在のマーカーを取得
+	marker_t getBeginN() const { return m_beginN.load(); }//開始マーカー（正順）を取得
+	marker_t getBeginR() const { return m_beginR.load(); }//開始マーカー（逆順）を取得
+	marker_t getBeginD() const { return getBegin(m_defaultOrdered.load()); }//開始マーカーを取得
+	marker_t getBegin(const E_ORDERED ordered) const { return ordered == DEFAULT ? getBeginD() : ordered == REVERSE ? getBeginR() : getBeginN(); }//開始マーカーを取得
+	marker_t getBegin() const { return getBeginD(); }//開始マーカーを取得
+	marker_t getCounterN() const { return m_counterN.load(); }//メモリ確保カウンター（正順）を取得
+	marker_t getCounterR() const { return m_counterR.load(); }//メモリ確保カウンター（逆順）を取得
+	marker_t getCounterD() const { return getCounter(m_defaultOrdered.load()); }//メモリ確保カウンターを取得
+	marker_t getCounter(const E_ORDERED ordered) const { return ordered == DEFAULT ? getCounterD() : ordered == REVERSE ? getCounterR() : getCounterN(); }//メモリ確保カウンターを取得
+	marker_t getCounter() const { return getCounterD(); }//メモリ確保カウンターを取得
+public:
+	//メソッド
+	//メモリ確保（正順）
+	void* allocN(const std::size_t size, const std::size_t align = DEFAULT_ALIGN)
+	{
+		//高速化のために、一度ロックの範囲外で単純空き領域判定
+		if (m_usedN.load() + size > m_usedR.load())
+			return nullptr;
+		m_lock.lock();//ロック取得
+		m_counterN.fetch_add(1);
+		const uintptr_t now_ptr = reinterpret_cast<uintptr_t>(m_buffPtr)+m_usedN.load();//現在のポインタ位置算出
+		const uintptr_t align_diff = align > 0 ? now_ptr % align == 0 ? 0 : align - now_ptr % align : 0;//アラインメント計算
+		const marker_t next_used = m_usedN.load() + align_diff + size;//次のマーカー算出
+		if (next_used > m_usedR.load())//メモリオーバーチェック（符号なしなので、範囲チェックは大判定のみでOK）
+		{
+			printf("normal-stack overflow!(size=%d+align=%d, remain=%d)\n", size, align_diff, m_usedR.load() - m_usedN.load());
+			m_lock.unlock();//ロック解放
+			return nullptr;
+		}
+		const uintptr_t alloc_ptr = now_ptr + align_diff;//メモリ確保アドレス算出
+		m_usedN.store(next_used);//マーカー更新
+		m_lock.unlock();//ロック解放
+		return reinterpret_cast<void*>(alloc_ptr);
+	}
+	//メモリ確保（逆順）
+	void* allocR(const std::size_t size, const std::size_t align = DEFAULT_ALIGN)
+	{
+		//高速化のために、一度ロックの範囲外で単純空き領域判定
+		if (m_usedN.load() > m_usedR.load() - size)
+			return nullptr;
+		m_lock.lock();//ロック取得
+		m_counterR.fetch_add(1);
+		const uintptr_t now_ptr = reinterpret_cast<uintptr_t>(m_buffPtr)+m_usedR.load();//現在のポインタ位置算出
+		const uintptr_t alloc_ptr_tmp = now_ptr - size;//メモリ確保アドレス算出（暫定）
+		const uintptr_t align_diff = align > 0 ? alloc_ptr_tmp % align == 0 ? 0 : alloc_ptr_tmp % align : 0;//アラインメント計算
+		const marker_t next_used = m_usedR.load() - size - align_diff;//次のマーカー算出
+		if (next_used < m_usedN.load() || next_used > m_buffSize)//メモリオーバーチェック（オーバーフローして値が大きくなる可能性もチェック）
+		{
+			printf("reversed-stack overflow!(size=%d+align=%d, remain=%d)\n", size, align_diff, m_usedR.load() - m_usedN.load());
+			m_lock.unlock();//ロック解放
+			return nullptr;
+		}
+		const uintptr_t alloc_ptr = now_ptr - size - align_diff;//メモリ確保アドレス算出
+		m_usedR.store(next_used);//マーカー更新
+		m_lock.unlock();//ロック解放
+		return reinterpret_cast<void*>(alloc_ptr);
+	}
+	//メモリ確保
+	void* allocD(const std::size_t size, const std::size_t align = DEFAULT_ALIGN)
+	{
+		return alloc(m_defaultOrdered.load(), size, align);
+	}
+	//メモリ確保
+	void* alloc(const E_ORDERED ordered, const std::size_t size, const std::size_t align = DEFAULT_ALIGN)
+	{
+		return ordered == DEFAULT ? allocD(size, align) : ordered == REVERSE ? allocR(size, align) : allocN(size, align);
+	}
+	//メモリ確保
+	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN) override
+	{
+		return allocD(size, align);
+	}
+private:
+	//メモリ破棄（正順）
+	void freeN(void* p)
+	{
+		//ポインタの範囲チェック
+		//※高速化のために、一度ロックの範囲外でチェック
+		//　（常にfreeN関数とfreeDが一組で呼び出されるため）
+		if (m_counterN.load() <= 0)
+			return;
+		const marker_t now_n = reinterpret_cast<uintptr_t>(p)-reinterpret_cast<uintptr_t>(m_buffPtr);
+		if (now_n < m_beginN.load() || now_n > m_usedN.load())
+			return;
+		//ポインタが正順スタックとして適正のため、処理開始
+		m_lock.lock();//ロック取得
+		if (m_counterN.load() <= 0 || now_n < m_beginN.load() || now_n > m_usedN.load())//範囲の再チェック
+		{
+			m_lock.unlock();//ロック解放
+			return;
+		}
+		m_counterN.fetch_sub(1);
+		if (m_counterN.load() == 0)
+			m_usedN.store(m_beginN.load());
+		m_lock.unlock();//ロック解放
+	}
+	//メモリ破棄（逆順）
+	void freeR(void* p)
+	{
+		//ポインタの範囲チェック
+		//※高速化のために、一度ロックの範囲外でチェック
+		//　（常にfreeN関数とfreeDが一組で呼び出されるため）
+		if (m_counterR.load() <= 0)
+			return;
+		const marker_t now_r = reinterpret_cast<uintptr_t>(p)-reinterpret_cast<uintptr_t>(m_buffPtr);
+		if (now_r > m_beginR.load() || now_r < m_usedR.load())
+			return;
+		//ポインタが逆順スタックとして適正のため、処理開始
+		m_lock.lock();//ロック取得
+		if (m_counterR.load() <= 0 || now_r > m_beginR.load() || now_r < m_usedR.load())//範囲の再チェック
+		{
+			m_lock.unlock();//ロック解放
+			return;
+		}
+		m_counterR.fetch_sub(1);
+		if (m_counterR.load() == 0)
+			m_usedR.store(m_beginR.load());
+		m_lock.unlock();//ロック解放
+	}
+public:
+	//メモリ破棄
+	void free(void* p)
+	{
+		freeN(p);
+		freeR(p);
+	}
+	//マーカー位置を記憶してメモリ確保のカウントを開始（正順）
+	//※メモリ確保カウンターをリセット
+	void beginN()
+	{
+		m_lock.lock();//ロック取得
+		m_beginN.store(m_usedN.load());
+		m_counterN.store(0);
+		m_lock.unlock();//ロック解放
+	}
+	//マーカー位置を記憶してメモリ確保のカウントを開始（逆順）
+	//※メモリ確保カウンターをリセット
+	void beginR()
+	{
+		m_lock.lock();//ロック取得
+		m_beginR.store(m_usedR.load());
+		m_counterR.store(0);
+		m_lock.unlock();//ロック解放
+	}
+	//マーカー位置を記憶してメモリ確保のカウントを開始 
+	//※メモリ確保カウンターをリセット
+	void beginD()
+	{
+		begin(m_defaultOrdered.load());
+	}
+	//マーカー位置を記憶してメモリ確保のカウントを開始 
+	//※メモリ確保カウンターをリセット
+	void begin(const E_ORDERED ordered)
+	{
+		ordered == DEFAULT ? beginD() : ordered == REVERSE ? beginR() : beginN();
+	}
+	//マーカー位置を記憶してメモリ確保のカウントを開始 
+	//※メモリ確保カウンターをリセット
+	void begin()
+	{
+		beginD();
+	}
+	//【このクラスでは非推奨メソッド】
+	//メモリを以前のマーカーに戻す（正順）
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※マーカー指定版
+	void backN(const marker_t marker_n)
+	{
+		m_lock.lock();//ロック取得
+		if (marker_n > m_usedR.load())//符号なしなので、範囲チェックは大判定のみでOK
+		{
+			m_lock.unlock();//ロック解放
+			return;
+		}
+		m_usedN.store(marker_n);
+		m_beginN.store(marker_n);
+		m_counterN.store(0);
+		m_lock.unlock();//ロック解放
+	}
+	//【このクラスでは非推奨メソッド】
+	//メモリを以前のマーカーに戻す（正順）
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※ポインタ指定版
+	void backN(const void* p)
+	{
+		const marker_t marker = reinterpret_cast<uintptr_t>(p)-reinterpret_cast<uintptr_t>(m_buffPtr);
+		backN(marker);
+	}
+	//【このクラスでは非推奨メソッド】
+	//メモリを以前のマーカーに戻す（逆順）
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※マーカー指定版
+	void backR(const marker_t marker_r)
+	{
+		m_lock.lock();//ロック取得
+		if (marker_r < m_usedN.load() || marker_r > m_buffSize)//メモリオーバーチェック
+		{
+			return;
+			m_lock.unlock();//ロック解放
+		}
+		m_usedR.store(marker_r);
+		m_beginR.store(marker_r);
+		m_counterR.store(0);
+		m_lock.unlock();//ロック解放
+	}
+	//【このクラスでは非推奨メソッド】
+	//メモリを以前のマーカーに戻す（逆順）
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※ポインタ指定版
+	void backR(const void* p)
+	{
+		const marker_t marker = reinterpret_cast<uintptr_t>(p)-reinterpret_cast<uintptr_t>(m_buffPtr);
+		backR(marker);
+	}
+	//【このクラスでは非推奨メソッド】
+	//メモリを以前のマーカーに戻す
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※マーカー指定版
+	void backD(const marker_t marker)
+	{
+		back(m_defaultOrdered.load(), marker);
+	}
+	//【このクラスでは非推奨メソッド】
+	//メモリを以前のマーカーに戻す
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※ポインタ指定版
+	void backD(const void* p)
+	{
+		back(m_defaultOrdered.load(), p);
+	}
+	//【このクラスでは非推奨メソッド】
+	//メモリを以前のマーカーに戻す
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※マーカー指定版
+	void back(const E_ORDERED ordered, const marker_t marker)
+	{
+		ordered == DEFAULT ? backD(marker) : ordered == REVERSE ? backR(marker) : backN(marker);
+	}
+	//【このクラスでは非推奨メソッド】
+	//メモリを以前のマーカーに戻す
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※ポインタ指定版
+	void back(const E_ORDERED ordered, const void* p)
+	{
+		ordered == DEFAULT ? backD(p) : ordered == REVERSE ? backR(p) : backN(p);
+	}
+	//【このクラスでは非推奨メソッド】
+	//メモリを以前のマーカーに戻す
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※マーカー指定版
+	void back(const marker_t marker) override
+	{
+		backD(marker);
+	}
+	//【このクラスでは非推奨メソッド】
+	//メモリを以前のマーカーに戻す
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※ポインタ指定版
+	void back(const void* p) override
+	{
+		backD(p);
+	}
+	//メモリ破棄（正順）
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	void clearN()
+	{
+		m_lock.lock();//ロック取得
+		m_usedN.store(0);
+		m_beginN.store(0);
+		m_counterN.store(0);
+		m_lock.unlock();//ロック解放
+	}
+	//メモリ破棄（逆順）
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	void clearR()
+	{
+		m_lock.lock();//ロック取得
+		m_usedR.store(m_buffSize);
+		m_beginR.store(0);
+		m_counterR.store(0);
+		m_lock.unlock();//ロック解放
+	}
+	//メモリ破棄
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	void clearD()
+	{
+		clear(m_defaultOrdered.load());
+	}
+	//メモリ破棄（両方）
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	void clearNR()
+	{
+		clearN();
+		clearR();
+	}
+	//メモリ破棄
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	void clear(const E_ORDERED ordered)
+	{
+		ordered == DEFAULT ? clearD() : ordered == REVERSE ? clearR() : clearN();
+	}
+	//メモリ破棄
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	void clear() override
+	{
+		clearD();
+	}
+	//メモリ破棄（全て）
+	//※開始マーカーとメモリ確保カウンターもリセットする
+	void clearAll() override
+	{
+		clearNR();
+	}
+public:
+	//コンストラクタ
+	CSmartStackAllocator(void* buff_p, const std::size_t buff_size, const E_ORDERED default_ordered = NORMAL) :
+		m_buffPtr(reinterpret_cast<byte*>(buff_p)),//バッファ先頭アドレス
+		m_buffSize(buff_size)//バッファサイズ
+	{
+		m_usedN.store(0);//マーカー（正順）
+		m_usedR.store(buff_size);//マーカー（逆順）
+		m_beginN.store(0);//開始マーカー（正順）※カウントを開始した位置（自動開放でこの位置に戻す）
+		m_beginR.store(buff_size);//開始マーカー（逆順）※カウントを開始した位置（自動開放でこの位置に戻す）
+		m_counterN.store(0);//メモリ確保カウンター（正順）
+		m_counterR.store(0);//メモリ確保カウンター（逆順）
+		setDefaultOrdered(default_ordered);//デフォルトのスタック順
+	}
+	//デストラクタ
+	~CSmartStackAllocator() override
+	{}
+private:
+	//フィールド
+	byte* m_buffPtr;//バッファ先頭アドレス
+	const std::size_t m_buffSize;//バッファサイズ
+	std::atomic<marker_t> m_usedN;//マーカー（正順）
+	std::atomic<marker_t> m_usedR;//マーカー（逆順）
+	std::atomic<marker_t> m_beginN;//開始マーカー（正順）※カウントを開始した位置（自動開放でこの位置に戻す）
+	std::atomic<marker_t> m_beginR;//開始マーカー（逆順）※カウントを開始した位置（自動開放でこの位置に戻す）
+	std::atomic<counter_t> m_counterN;//メモリ確保カウンター（正順）
+	std::atomic<counter_t> m_counterR;//メモリ確保カウンター（逆順）
+	std::atomic<E_ORDERED> m_defaultOrdered;//デフォルトのスタック順
+	CSpinLock m_lock;//ロック
+};
+
+#if 0//使わない
+//--------------------
+//配置new/配置delete
+//※メモリ使用状況を確認するためにマーカーを表示
+//配置new
+void* operator new(const std::size_t size, CSmartStackAllocator& allocator, const std::size_t align, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) throw()
+{
+	printf("placement new(size=%d, smart_allocator.marker=%d,%d, align=%d, ordered=%d)\n", size, allocator.getMarkerN(), allocator.getMarkerR(), align, ordered);
+	return allocator.alloc(ordered, size, align);
+}
+void* operator new(const std::size_t size, CSmartStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) throw()
+{
+	const std::size_t align = IStackAllocator::DEFAULT_ALIGN;
+	printf("placement new(size=%d, smart_allocator.marker=%d,%d, (align=%d), ordered=%d)\n", size, allocator.getMarkerN(), allocator.getMarkerR(), align, ordered);
+	return allocator.alloc(ordered, size, align);
+}
+//配列版
+void* operator new[](const std::size_t size, CSmartStackAllocator& allocator, const std::size_t align, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) throw()
+{
+	printf("placement new(size=%d, smart_allocator.marker=%d,%d, align=%d, ordered=%d)\n", size, allocator.getMarkerN(), allocator.getMarkerR(), align, ordered);
+	return allocator.alloc(ordered, size, align);
+}
+void* operator new[](const std::size_t size, CSmartStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) throw()
+{
+	const std::size_t align = IStackAllocator::DEFAULT_ALIGN;
+	printf("placement new(size=%d, smart_allocator.marker=%d,%d, (align=%d), ordered=%d)\n", size, allocator.getMarkerN(), allocator.getMarkerR(), align, ordered);
+	return allocator.alloc(ordered, size, align);
+}
+//配置delete
+void operator delete(void* p, CSmartStackAllocator& allocator, const std::size_t align, const IStackAllocator::E_ORDERED) throw()
+{
+	printf("placement delete(p=0x%p, smart_allocator.marker=%d,%d, align)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
+	allocator.free(p);
+}
+void operator delete(void* p, CSmartStackAllocator& allocator, const IStackAllocator::E_ORDERED) throw()
+{
+	printf("placement delete(p=0x%p, smart_allocator.marker=%d,%d)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
+	allocator.free(p);
+}
+//配列版
+void operator delete[](void* p, CSmartStackAllocator& allocator, const std::size_t align, const IStackAllocator::E_ORDERED ordered) throw()
+{
+	printf("placement delete[](p=0x%p, smart_allocator.marker=%d,%d, align)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
+	allocator.free(p);
+}
+void operator delete[](void* p, CSmartStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered) throw()
+{
+	const std::size_t align = IStackAllocator::DEFAULT_ALIGN;
+	printf("placement delete[](p=0x%p, smart_allocator.marker=%d,%d)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
+	allocator.free(p);
+}
+//デストラクタ呼び出し付きdelete
+template<class T>
+void delete_ptr(T*& p, CSmartStackAllocator& allocator)
+{
+	printf("delete_ptr(p=0x%p, smart_allocator.marker=%d,%d)\n", p, allocator.getMarkerN(), allocator.getMarkerR());
+	if (!p)
+		return;
+	p->~T();//デストラクタ呼び出し
+	operator delete(p, allocator, IStackAllocator::DEFAULT);
+	p = nullptr;//安全のためにポインタを初期化
+}
+//配列版
+template<class T>
+void delete_ptr(T*& p, const std::size_t array_num, CSmartStackAllocator& allocator)
+{
+	printf("delete_ptr(p=0x%p, array_num=%d, smart_allocator.marker=%d,%d)\n", p, array_num, allocator.getMarkerN(), allocator.getMarkerR());
+	if (!p)
+		return;
+	for (std::size_t i = 0; i < array_num; ++i)
+		p->~T();//デストラクタ呼び出し
+	operator delete[](p, allocator, IStackAllocator::DEFAULT);
+	p = nullptr;//安全のためにポインタを初期化
+}
+#endif
+
+//--------------------
+//バッファ付きスマートスタックアロケータテンプレートクラス
+//※静的バッファを使用したければ、固定バッファシングルトン化する
+template<std::size_t SIZE>
+class CSmartStackAllocatorWithBuff : public CSmartStackAllocator
+{
+public:
+	//定数
+	static const std::size_t BUFF_SIZE = SIZE;//バッファサイズ
+public:
+	//コンストラクタ
+	CSmartStackAllocatorWithBuff(const E_ORDERED default_ordered = NORMAL) :
+		CSmartStackAllocator(m_buff, BUFF_SIZE, default_ordered)
+	{}
+	//デストラクタ
+	~CSmartStackAllocatorWithBuff() override
+	{}
+private:
+	//フィールド
+	byte m_buff[BUFF_SIZE];//バッファ
+};
+
+//--------------------
+//スマートスタックアロケータアダプタークラス
+class CSmartStackAllocAdp : public CIStackAllocAdp
+{
+public:
+	//アクセッサ
+	const char* getName() const override{ return "CSmartStackAllocAdp"; }//アロケータ名取得
+	CSmartStackAllocator& getAllocator(){ return *static_cast<CSmartStackAllocator*>(&m_allocator); }//アロケータ取得
+	const CSmartStackAllocator& getAllocator() const { return *static_cast<CSmartStackAllocator*>(&m_allocator); }//アロケータ取得
+	IStackAllocator::E_ORDERED getOrdered() const { m_ordered; }//スタック順取得
+	void setOrdered(const IStackAllocator::E_ORDERED ordered){ m_ordered = ordered; }//スタック順更新
+public:
+	//メソッド
+	//メモリ確保
+	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN, const ALLOC_INFO* info = nullptr) override
+	{
+		CSmartStackAllocator& allocator = getAllocator();
+		return allocator.alloc(m_ordered, size, align);//非virtualメンバーを使う
+	}
+	//メモリ解放
+	void free(void* p) override
+	{
+		CSmartStackAllocator& allocator = getAllocator();
+		return allocator.free(p);
+	}
+public:
+	//デフォルトコンストラクタ
+	CSmartStackAllocAdp() = delete;
+	//コンストラクタ
+	//※自動巻き戻しには対応しない
+	CSmartStackAllocAdp(CSmartStackAllocator& stack, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) :
+		CIStackAllocAdp(stack, NOREWIND),//双方向スタックアロケータ
+		m_ordered(ordered)//スタック順
+	{}
+	//デストラクタ
+	~CSmartStackAllocAdp() override
+	{}
+private:
+	//フィールド
+	IStackAllocator::E_ORDERED m_ordered;//スタック順
+};
+
+//--------------------
+//一時グローバル多態性アロケータテンプレートクラス：スマートスタックアロケータ用に特殊化
+template<>
+class CTempPolyAllocator<CSmartStackAllocator> : public CTempPolyAllocatorBase
+{
+public:
+	//デフォルトコンストラクタ
+	CTempPolyAllocator() = delete;
+	//コンストラクタ
+	//※自動巻き戻しには対応しない
+	CTempPolyAllocator(CSmartStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) :
+		m_adapter(allocator, ordered),//スマートスタックアロケータアダプタ初期化
+		CTempPolyAllocatorBase(m_adapter)
+	{}
+public:
+	//デストラクタ
+	~CTempPolyAllocator()
+	{}
+private:
+	//フィールド
+	CSmartStackAllocAdp m_adapter;//スマートスタックアロケータアダプタ
+};
+//一時グローバル多態性アロケータクラス：スマートスタックアロケータ用
+using CTempPolySmartStackAllocator = CTempPolyAllocator<CSmartStackAllocator>;
+
+//--------------------
+//テスト用クラス
+//__declspec(align(8))//8バイトアラインメントでテストする場合はこの行を有効にする
+class CTest9
+{
+public:
+	//デフォルトコンストラクタ
+	CTest9() :
+		CTest9("(default)")//他のコンストラクタ呼び出し（C++11で追加された仕様）
+		//m_name("(default)")//C++11が使えない場合は普通に初期化
+	{
+		printf("CTest9::DefaultConstructor : name=\"%s\"\n", m_name);
+	}
+	//コンストラクタ
+	CTest9(const char* name) :
+		m_name(name)
+	{
+		printf("CTest9::Constructor : name=\"%s\"\n", m_name);
+	}
+	//デストラクタ
+	virtual ~CTest9()
+	{
+		printf("CTest9::Destructor : name=\"%s\"\n", m_name);
+	}
+protected:
+	//フィールド
+	const char* m_name;//名前
+	int m_dummy;//ダミー
+};
+
+//--------------------
+//スレッドテスト
+#include <thread>//C++11スレッド
+#include <chrono>//C++11時間
+//スマートスタックアロケータ
+static CSmartStackAllocatorWithBuff<1024> s_stackForThread;
+void test9thread_n(const char* name)
+{
+	CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_NORMAL);//多態性アロケータをスマートスタック（正順）に設定
+	CTest9* obj_p = new CTest9(name);
+	std::this_thread::sleep_for(std::chrono::seconds(1));//1秒スリープ
+	delete obj_p;
+}
+void test9thread_r(const char* name)
+{
+	CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_REVERSE);//多態性アロケータをスマートスタック（逆順）に設定
+	CTest9* obj_p = new CTest9(name);
+	std::this_thread::sleep_for(std::chrono::seconds(1));//1秒スリープ
+	delete obj_p;
+}
+//--------------------
+//テスト
+void test9()
+{
+	printf("---------- test9:マルチスレッドに便利なスマートスタックアロケータ ----------\n");
+	{
+		printf("----------基本動作チェック\n");
+		CSmartStackAllocatorWithBuff<128> allocator;
+		CTempPolySmartStackAllocator poly_allocator(allocator);
+		CTest9* obj1_p = new CTest9("テスト9-1");
+		printf("obj1_p=0x%p\n", obj1_p);
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		printf("beginN()\n");
+		allocator.beginN();
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		allocator.setDefaultOrdered(DSA_REVERSE);
+		CTest9* obj2_p = new CTest9("テスト9-2");
+		printf("obj2_p=0x%p\n", obj2_p);
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		printf("beginR()\n");
+		allocator.beginR();
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		allocator.setDefaultOrdered(DSA_NORMAL);
+		CTest9* obj3_p = new CTest9("テスト9-3");
+		printf("obj3_p=0x%p\n", obj3_p);
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		allocator.setDefaultOrdered(DSA_REVERSE);
+		CTest9* obj4_p = new CTest9("テスト9-4");
+		printf("obj4_p=0x%p\n", obj4_p);
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		delete obj1_p;
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		delete obj2_p;
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		delete obj3_p;
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		delete obj4_p;
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		allocator.setDefaultOrdered(DSA_NORMAL);
+		CTest9* obj5_p = new CTest9("テスト9-5");
+		printf("obj5_p=0x%p\n", obj5_p);
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		allocator.setDefaultOrdered(DSA_REVERSE);
+		CTest9* obj6_p = new CTest9("テスト9-6");
+		printf("obj6_p=0x%p\n", obj6_p);
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		delete obj5_p;
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		delete obj6_p;
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		printf("clearN()\n");
+		allocator.clearN();
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+		printf("clearR()\n");
+		allocator.clearR();
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
+	}
+	{
+		printf("----------スレッド使用チェック\n");
+		//【想定】スレッド開始前に、同じバッファを他の用途に少し使う
+		//　　　　（これは常駐するデータで破棄しないものとする）
+		int* parmanent_data1 = nullptr;
+		char* parmanent_data2 = nullptr;
+		float* parmanent_data3 = nullptr;
+		{
+			CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_NORMAL);//多態性アロケータをスマートスタック（正順）に設定
+			parmanent_data1 = new int[2];
+			parmanent_data2 = new char[3];
+			parmanent_data3 = new float[4];
+		}
+		unsigned int* parmanent_data4 = nullptr;
+		unsigned char* parmanent_data5 = nullptr;
+		double* parmanent_data6 = nullptr;
+		{
+			CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_REVERSE);//多態性アロケータをスマートスタック（逆順）に設定
+			parmanent_data4 = new unsigned int[5];
+			parmanent_data5 = new unsigned char[6];
+			parmanent_data6 = new double[7];
+		}
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+
+		//カウント開始（自動リセット位置を更新）
+		//ここまでの情報を保護し、以降使用するメモリは、全て解放された時点で
+		//マーカーを自動的に戻す
+		printf("beginN()\n");
+		s_stackForThread.beginN();//正順メモリ確保のカウントを開始
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+		printf("beginR()\n");
+		s_stackForThread.beginR();//逆順メモリ確保のカウントを開始
+		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+
+		//スレッド開始①
+		{
+			std::thread th1 = std::thread(test9thread_n, "スレッドテスト9-1(N)");
+			std::thread th2 = std::thread(test9thread_n, "スレッドテスト9-2(N)");
+			std::thread th3 = std::thread(test9thread_r, "スレッドテスト9-3(R)");
+			std::thread th4 = std::thread(test9thread_r, "スレッドテスト9-4(R)");
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));//500msecスリープ
+			printf("sleep(500msec)\n");
+			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+			th1.join();
+			th2.join();
+			th3.join();
+			th4.join();
+			printf("join\n");
+			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+		}
+
+		//スレッド開始②
+		{
+			std::thread th5 = std::thread(test9thread_n, "スレッドテスト9-5(N)");
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));//200msecスリープ
+			printf("sleep(200msec)\n");
+			std::thread th6 = std::thread(test9thread_n, "スレッドテスト9-6(N)");
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));//200msecスリープ
+			printf("sleep(200msec)\n");
+			std::thread th7 = std::thread(test9thread_r, "スレッドテスト9-7(R)");
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));//200msecスリープ
+			printf("sleep(200msec)\n");
+			std::thread th8 = std::thread(test9thread_r, "スレッドテスト9-8(R)");
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));//200msecスリープ
+			printf("sleep(200msec)\n");
+			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+			{
+				//途中で多態性アロケータはTLSでアロケータをスレッドごとに分けて使っているので、
+				//他のスレッドが動作中に異なるアロケータを使っても問題なし
+				CSmartStackAllocatorWithBuff<128> allocator;
+				CTempPolySmartStackAllocator poly_allocator(allocator);
+				CTest9* obj_p = new CTest9("スレッドテスト(割り込み)");
+				delete obj_p;
+				printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+			}
+			std::thread th9 = std::thread(test9thread_n, "スレッドテスト9-9(N)");
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));//200msecスリープ
+			printf("sleep(200msec)\n");
+			std::thread th10 = std::thread(test9thread_n, "スレッドテスト9-10(N)");
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));//200msecスリープ
+			printf("sleep(200msec)\n");
+			std::thread th11 = std::thread(test9thread_r, "スレッドテスト9-11(R)");
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));//200msecスリープ
+			printf("sleep(200msec)\n");
+			std::thread th12 = std::thread(test9thread_r, "スレッドテスト9-12(R)");
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));//200msecスリープ
+			printf("sleep(200msec)\n");
+			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+			th5.join();
+			th6.join();
+			th7.join();
+			th8.join();
+			th9.join();
+			th10.join();
+			th11.join();
+			th12.join();
+			printf("join\n");
+			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+		}
+
+		{
+			//カウント開始前に確保したメモリを破棄しても何の影響もない
+			CTempPolySmartStackAllocator poly_allocator(s_stackForThread);
+			delete parmanent_data1;
+			delete parmanent_data2;
+			delete parmanent_data3;
+			delete parmanent_data4;
+			delete parmanent_data5;
+			delete parmanent_data6;
+			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+		}
+	}
 }
 
 //--------------------------------------------------------------------------------
@@ -2994,6 +4341,7 @@ int main(const int argc, const char* argv[])
 	test6();
 	test7();
 	test8();
+	test9();
 	printf("---------- main:end ----------\n");
 	return EXIT_SUCCESS;
 }

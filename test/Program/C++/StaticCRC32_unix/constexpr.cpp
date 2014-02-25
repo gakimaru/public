@@ -14,7 +14,7 @@
 
 //C++11互換用マクロ
 #ifndef ENABLE_CONSTEXPR
-#define constexpr
+#define constexpr const
 #endif//ENABLE_CONSTEXPR
 
 #ifdef CONST_ALL

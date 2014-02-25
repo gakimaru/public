@@ -242,14 +242,14 @@ public:
 	typedef int index_t;//インデックス用
 public:
 	//定数
-	const std::size_t m_blockSize;//ブロックサイズ
-	const index_t m_poolBlocksNum;//プールブロック数
 	static const index_t INVALID_INDEX = INT_MAX;//ブロックインデックスの無効値
 public:
 	//アクセッサ
 	const byte* getBuff() const { return m_pool; }//バッファ取得
-	index_t getUsed() const { return m_used; }//使用中数取得
-	index_t getRemain() const { return m_poolBlocksNum - m_used; }//残数取得
+	std::size_t getBlockSize() const { return m_blockSize; }//ブロックサイズ
+	index_t getBlocksNum() const { return m_poolBlocksNum; }//プールブロック数
+	index_t getUsed() const { return m_used.load(); }//使用中数取得
+	index_t getRemain() const { return m_poolBlocksNum - m_used.load(); }//残数取得
 	const byte* getBlockConst(const index_t index) const { return m_pool + index * m_blockSize; }//ブロック取得
 private:
 	byte* getBlock(const index_t index){ return m_pool + index * m_blockSize; }//ブロック取得
@@ -261,7 +261,7 @@ private:
 		//ロック取得
 		m_lock.lock();
 
-		m_used = 0;//使用中数
+		m_used.store(0);//使用中数
 		m_next = 0;//未使用先頭インデックス
 		m_recycle = INVALID_INDEX;//リサイクルインデックス
 
@@ -273,16 +273,20 @@ private:
 	//　確保したインデックスを返す
 	int assign()
 	{
+		//使用中ブロック数判定はロックの範囲外で行う
+		if (m_used.load() >= m_poolBlocksNum)
+			return INVALID_INDEX;//空きなし
+	
 		//ロック取得
 		m_lock.lock();
 
 		//インデックス確保
-		index_t index = -1;
+		index_t index = INVALID_INDEX;
 		if (m_next < m_poolBlocksNum)
 		{
 			//未使用インデックスがある場合
 			index = m_next++;//未使用先頭インデックスカウントアップ
-			++m_used;//使用中数カウントアップ
+			m_used.fetch_add(1);//使用中数カウントアップ
 		}
 		else
 		{
@@ -291,12 +295,15 @@ private:
 				//リサイクル可能なインデックスがある場合
 				index = m_recycle;//リサイクルインデックス
 				m_recycle = *reinterpret_cast<unsigned int*>(getBlock(index));//リサイクルインデックス更新（空きノードの先頭に書き込まれている）
-				++m_used;//使用中数カウントアップ
+				m_used.fetch_add(1);//使用中数カウントアップ
 			}
 		}
 
 		//ロック解放
 		m_lock.unlock();
+
+		//最初に使用中ブロック数を判定しているので、この時点でインデックスが得られなければプログラムに問題があるはず
+		ASSERT(index != INVALID_INDEX, "Probably, mistaken logic in this program.");
 
 		//終了
 		return index;
@@ -317,7 +324,7 @@ private:
 		m_recycle = index;//リサイクルインデックス組み換え
 
 		//使用中数カウントダウン
-		--m_used;
+		m_used.fetch_sub(1);
 
 		//ロック解放
 		m_lock.unlock();
@@ -337,7 +344,7 @@ public:
 		//【アサーション】全ブロック使用中につき、確保失敗
 		ASSERT(index >= 0, "CPoolAllocator::alloc(%d) cannot allocate. Buffer is full. (num of blocks is %d)", size, m_poolBlocksNum);
 		//確保したメモリを返す
-		return index < 0 ? nullptr : getBlock(index);
+		return index == INVALID_INDEX ? nullptr : getBlock(index);
 	}
 	//メモリ解放
 	void free(void * p)
@@ -396,7 +403,9 @@ public:
 private:
 	//フィールド
 	byte* m_pool;//プールバッファ
-	index_t m_used;//使用中数
+	const std::size_t m_blockSize;//ブロックサイズ
+	const index_t m_poolBlocksNum;//プールブロック数
+	std::atomic<index_t> m_used;//使用中数
 	index_t m_next;//未使用先頭インデックス
 	index_t m_recycle;//リサイクルインデックス
 	CSpinLock m_lock;//ロック

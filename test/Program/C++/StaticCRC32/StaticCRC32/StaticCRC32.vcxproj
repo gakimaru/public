@@ -21,6 +21,7 @@
     <ClInclude Include="src\test\test_size.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\constexpr\constexpr.cpp" />
     <ClCompile Include="src\crc\crc32.cpp" />
     <ClCompile Include="src\crc\crc32_table.cpp" />
     <ClCompile Include="src\main\main.cpp" />

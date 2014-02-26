@@ -40,11 +40,11 @@ L3:
 	ret
 	.cfi_endproc
 LFE7:
-	.section	.text$_Z9calcCRC32PKc,"x"
+	.section	.text$_Z14calcConstCRC32PKc,"x"
 	.linkonce discard
-	.globl	__Z9calcCRC32PKc
-	.def	__Z9calcCRC32PKc;	.scl	2;	.type	32;	.endef
-__Z9calcCRC32PKc:
+	.globl	__Z14calcConstCRC32PKc
+	.def	__Z14calcConstCRC32PKc;	.scl	2;	.type	32;	.endef
+__Z14calcConstCRC32PKc:
 LFB9:
 	.cfi_startproc
 	pushl	%ebp
@@ -64,6 +64,88 @@ LFB9:
 	ret
 	.cfi_endproc
 LFE9:
+	.text
+	.globl	__Z9calcCRC32PKc
+	.def	__Z9calcCRC32PKc;	.scl	2;	.type	32;	.endef
+__Z9calcCRC32PKc:
+LFB12:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$16, %esp
+	movl	$-1, -4(%ebp)
+	movl	8(%ebp), %eax
+	movl	%eax, -8(%ebp)
+	jmp	L8
+L9:
+	movl	-8(%ebp), %eax
+	movzbl	(%eax), %eax
+	movsbl	%al, %eax
+	xorl	-4(%ebp), %eax
+	movzbl	%al, %eax
+	movl	__ZN14crc_inner_calcL11s_calcTableE(,%eax,4), %eax
+	movl	-4(%ebp), %edx
+	shrl	$8, %edx
+	xorl	%edx, %eax
+	movl	%eax, -4(%ebp)
+	addl	$1, -8(%ebp)
+L8:
+	movl	-8(%ebp), %eax
+	movzbl	(%eax), %eax
+	testb	%al, %al
+	jne	L9
+	movl	-4(%ebp), %eax
+	notl	%eax
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE12:
+	.globl	__Z9calcCRC32PKcj
+	.def	__Z9calcCRC32PKcj;	.scl	2;	.type	32;	.endef
+__Z9calcCRC32PKcj:
+LFB13:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$16, %esp
+	movl	$-1, -4(%ebp)
+	movl	8(%ebp), %eax
+	movl	%eax, -8(%ebp)
+	movl	$0, -12(%ebp)
+	jmp	L12
+L13:
+	movl	-8(%ebp), %eax
+	movzbl	(%eax), %eax
+	movsbl	%al, %eax
+	xorl	-4(%ebp), %eax
+	movzbl	%al, %eax
+	movl	__ZN14crc_inner_calcL11s_calcTableE(,%eax,4), %eax
+	movl	-4(%ebp), %edx
+	shrl	$8, %edx
+	xorl	%edx, %eax
+	movl	%eax, -4(%ebp)
+	addl	$1, -12(%ebp)
+	addl	$1, -8(%ebp)
+L12:
+	movl	-12(%ebp), %eax
+	cmpl	12(%ebp), %eax
+	jb	L13
+	movl	-4(%ebp), %eax
+	notl	%eax
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE13:
 	.section .rdata,"dr"
 	.align 4
 LC0:
@@ -77,14 +159,19 @@ LC3:
 	.align 4
 LC4:
 	.ascii "constexpr \343\201\253\343\202\210\343\202\213\343\203\251\343\203\263\343\202\277\343\202\244\343\203\240\346\231\202\343\201\256CRC\350\250\210\347\256\227\347\265\220\346\236\234=0x%08x\12\0"
-	.align 4
 LC5:
+	.ascii "crc3 == 0x261daee5\0"
+	.align 4
+LC6:
+	.ascii "\351\200\232\345\270\270\351\226\242\346\225\260\343\201\253\343\202\210\343\202\213\343\203\251\343\203\263\343\202\277\343\202\244\343\203\240\346\231\202\343\201\256CRC\350\250\210\347\256\227\347\265\220\346\236\234=0x%08x\12\0"
+	.align 4
+LC7:
 	.ascii "\343\203\246\343\203\274\343\202\266\343\203\274\345\256\232\347\276\251\343\203\252\343\203\206\343\203\251\343\203\253\343\201\253\343\202\210\343\202\213\343\202\263\343\203\263\343\203\221\343\202\244\343\203\253\346\231\202\343\201\256CRC\350\250\210\347\256\227\347\265\220\346\236\234=0x%08x\12\0"
 	.text
 	.globl	__Z14test_constexprv
 	.def	__Z14test_constexprv;	.scl	2;	.type	32;	.endef
 __Z14test_constexprv:
-LFB12:
+LFB14:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -97,35 +184,50 @@ LFB12:
 	movl	$LC0, (%esp)
 	call	_printf
 	movl	$LC1, (%esp)
-	call	__Z9calcCRC32PKc
+	call	__Z14calcConstCRC32PKc
 	movl	%eax, -16(%ebp)
 	cmpl	$639479525, -16(%ebp)
-	je	L8
+	je	L16
 	movl	$LC2, 12(%esp)
 	movl	$__ZZ14test_constexprvE19__PRETTY_FUNCTION__, 8(%esp)
-	movl	$161, 4(%esp)
+	movl	$216, 4(%esp)
 	movl	$LC3, (%esp)
 	call	___assert_func
-L8:
+L16:
 	movl	-16(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	$LC4, (%esp)
 	call	_printf
-	movl	$639479525, -20(%ebp)
+	movl	$LC1, (%esp)
+	call	__Z9calcCRC32PKc
+	movl	%eax, -20(%ebp)
+	cmpl	$639479525, -20(%ebp)
+	je	L17
+	movl	$LC5, 12(%esp)
+	movl	$__ZZ14test_constexprvE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$245, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L17:
+	movl	-20(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	$LC6, (%esp)
+	call	_printf
+	movl	$639479525, -24(%ebp)
 	movl	$639479525, 4(%esp)
-	movl	$LC5, (%esp)
+	movl	$LC7, (%esp)
 	call	_printf
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE12:
+LFE14:
 	.def	___main;	.scl	2;	.type	32;	.endef
 	.globl	_main
 	.def	_main;	.scl	2;	.type	32;	.endef
 _main:
-LFB13:
+LFB15:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -141,7 +243,7 @@ LFB13:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE13:
+LFE15:
 	.section .rdata,"dr"
 	.align 32
 __ZN14crc_inner_calcL11s_calcTableE:

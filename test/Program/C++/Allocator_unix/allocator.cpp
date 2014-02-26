@@ -2687,7 +2687,7 @@ struct ALLOC_INFO
 };
 
 #ifndef USE_GLOBAL_NEW_DELETE_FOR_TEST2
-const char* getFileName(const char* str);//関数参照：ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
+extern const char* getFileName(const char* str);//関数参照：ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
 //--------------------
 //グローバル多態アロケータ
 //※標準new / delete 演算子の置き換え
@@ -2749,9 +2749,11 @@ void operator delete[](void* p) throw()
 
 //--------------------
 //メモリ確保時情報の作成
+//--------------------
 //ダミー関数
 const char* getCurrentCallPointNameDummy(){ return "(unknown call-point)"; }//コールポイント名取得
 float getGameTimeDummy(){ return 0.f; }//ゲーム時間取得
+//--------------------
 //関数名作成マクロ
 #include <string.h>
 //【constexpr版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
@@ -2795,6 +2797,7 @@ T* newWithInfo(const char* file_name, const char* func_name, const std::size_t a
 	CPolyAllocator::setAllocInfo(&info);
 	return new T(nx...);
 }
+//配列版
 template<class T, std::size_t array_size>
 T* newArrayWithInfo(const char* file_name, const char* func_name, const std::size_t align)
 {
@@ -2804,6 +2807,8 @@ T* newArrayWithInfo(const char* file_name, const char* func_name, const std::siz
 	CPolyAllocator::setAllocInfo(&info);
 	return new T[array_size];
 }
+//--------------------
+//newマクロ補助マクロ
 #define TO_STRING(s) #s
 #define TO_STRING_EX(s) TO_STRING(s)
 #ifdef ENABLE_CONSTEXPR
@@ -2813,7 +2818,6 @@ T* newArrayWithInfo(const char* file_name, const char* func_name, const std::siz
 #endif//ENABLE_CONSTEXPR
 #define GET_FUNC_NAME() __PRETTY_FUNCTION__
 //#define GET_FUNC_NAME() __FUNCTION__
-
 //--------------------
 //newマクロ
 #ifdef USE_ALLOC_INFO

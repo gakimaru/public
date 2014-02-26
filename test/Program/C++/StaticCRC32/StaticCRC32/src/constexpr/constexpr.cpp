@@ -1,40 +1,45 @@
 //C++11用の constexpr / ユーザー定義リテラルを使ったコンパイル時CRC計算テスト
 
-//#define ENABLE_CONSTEXPR//constexprを有効にする時はこのマクロを有効にする
-//#define ENABLE_USER_DEFINED_LITERALS//ユーザー定義リテラルを有効にする時はこのマクロを有効にする
-#define USE_CRC_CALC_TABLE//CRC計算の際に、事前計算済みのCRC計算テーブルを使用するならこのマクロを有効にする
-//#define CONST_ALL//全てをconstにして全てをコンパイル時計算する時はこのマクロを有効にする
-#define ENABLE_MORE_TEST//追加テスト処理を有効にする時はこのマクロを有効にする
+//テスト処理用コンパイラスイッチ
 //#define ENABLE_MAIN//メイン関数を有効にする時はこのマクロを有効にする
+#define ENABLE_MORE_TEST//追加テスト処理を有効にする時はこのマクロを有効にする
+//#define CONST_ALL//全てをconstにして全てをコンパイル時計算する時はこのマクロを有効にする
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <cstddef>//std::size_t用
-#include <assert.h>//assert用
+
+//--------------------------------------------------------------------------------
+//CRC算出
+
+//#define ENABLE_CONSTEXPR//constexprを有効にする時はこのマクロを有効にする
+//#define ENABLE_USER_DEFINED_LITERALS//ユーザー定義リテラルを有効にする時はこのマクロを有効にする
+#define USE_CRC_CALC_TABLE//CRC計算の際に、事前計算済みのCRC計算テーブルを使用するならこのマクロを有効にする
 
 //C++11互換用マクロ
 #ifndef ENABLE_CONSTEXPR
 #define constexpr const
 #endif//ENABLE_CONSTEXPR
 
-#ifdef CONST_ALL
-#define NOCONST const
-#else//CONST_ALL
-#define NOCONST
-#endif//CONST_ALL
+#include <cstddef>//std::size_t用
+#include <assert.h>//assert用
+
+//--------------------
+//型
+typedef unsigned int crc32_t;//CRC32型
 
 //--------------------
 //CRC算出関数
-typedef unsigned int crc32_t;//CRC32型
 namespace crc_inner_calc//直接使用しない処理を隠ぺいするためのネームスペース
 {
 #ifndef USE_CRC_CALC_TABLE
+	//--------------------
 	//CRC生成多項式計算（再帰処理）
 	constexpr crc32_t calcPoly(crc32_t poly, const int n)
 	{
 		return n == 0 ? poly : calcPoly(poly & 1 ? 0xedb88320u ^ (poly >> 1) : (poly >> 1), n - 1);
 	}
 #else//USE_CRC_CALC_TABLE
+	//--------------------
 	//CRC生成多項式計算計算済みテーブル
 	constexpr crc32_t s_calcTable[] =
 	{
@@ -72,44 +77,94 @@ namespace crc_inner_calc//直接使用しない処理を隠ぺいするためのネームスペース
 		0xb3667a2eu, 0xc4614ab8u, 0x5d681b02u, 0x2a6f2b94u, 0xb40bbe37u, 0xc30c8ea1u, 0x5a05df1bu, 0x2d02ef8du
 	};
 #endif//USE_CRC_CALC_TABLE
+	//--------------------
 	//文字列からCRC算出用（再帰処理）
 	constexpr crc32_t calcStr(const crc32_t crc, const char* str)
 	{
-#ifndef USE_CRC_CALC_TABLE
+	#ifndef USE_CRC_CALC_TABLE
 		return *str == '\0' ? crc : calcStr(calcPoly(static_cast<crc32_t>((crc ^ *str) & 0xffu), 8) ^ (crc >> 8), str + 1);//CRC生成多項式計算計算を合成
-#else//USE_CRC_CALC_TABLE
+	#else//USE_CRC_CALC_TABLE
 		return *str == '\0' ? crc : calcStr(s_calcTable[(crc ^ *str) & 0xffu] ^ (crc >> 8), str + 1);//CRC生成多項式計算計算済みテーブルの値を合成
-#endif//USE_CRC_CALC_TABLE
+	#endif//USE_CRC_CALC_TABLE
 	}
+	//--------------------
 	//データ長を指定してCRC算出用（再帰処理）
-	constexpr crc32_t calcData(const crc32_t crc, const char* data, const int len)
+	constexpr crc32_t calcData(const crc32_t crc, const char* data, const std::size_t len)
 	{
-#ifndef USE_CRC_CALC_TABLE
+	#ifndef USE_CRC_CALC_TABLE
 		return len == 0 ? crc : calcData(calcPoly(static_cast<crc32_t>((crc ^ *data) & 0xffu), 8) ^ (crc >> 8), data + 1, len - 1);//CRC生成多項式計算計算を合成
-#else//USE_CRC_CALC_TABLE
+	#else//USE_CRC_CALC_TABLE
 		return len == 0 ? crc : calcData(s_calcTable[(crc ^ *data) & 0xffu] ^ (crc >> 8), data + 1, len - 1);//CRC生成多項式計算計算済みテーブルの値を合成
-#endif//USE_CRC_CALC_TABLE
+	#endif//USE_CRC_CALC_TABLE
 	}
 }
-//文字列からCRC算出用
-constexpr crc32_t calcCRC32(const char* str)
+//--------------------
+//【constexpr版】文字列からCRC算出
+constexpr crc32_t calcConstCRC32(const char* str)
 {
 	return ~crc_inner_calc::calcStr(~0u, str);
 }
-//データ長を指定してCRC算出
-constexpr crc32_t calcCRC32(const char* str, const int len)
+//--------------------
+//【constexpr版】データ長を指定してCRC算出
+constexpr crc32_t calcConstCRC32(const char* data, const std::size_t len)
 {
-	return ~crc_inner_calc::calcData(~0u, str, len);
+	return ~crc_inner_calc::calcData(~0u, data, len);
 }
 #ifdef ENABLE_USER_DEFINED_LITERALS
-//ユーザー定義リテラル
+//--------------------
+//【ユーザー定義リテラル版】データ長を指定してCRC算出
 constexpr crc32_t operator "" _crc32(const char* str, std::size_t len)
 {
-	return calcCRC32(str, len);
+	return calcConstCRC32(str, len);
 }
 #endif//ENABLE_USER_DEFINED_LITERALS
+//--------------------
+//【通常関数版】文字列からCRC算出
+crc32_t calcCRC32(const char* str)
+{
+	crc32_t crc = ~0u;
+	const char* p = str;
+	while (*p)
+	{
+	#ifndef USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::calcPoly(static_cast<crc32_t>((crc ^ *p) & 0xffu), 8) ^ (crc >> 8);//CRC生成多項式計算計算を合成
+	#else//USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::s_calcTable[(crc ^ *p) & 0xffu] ^ (crc >> 8);//CRC生成多項式計算計算済みテーブルの値を合成
+	#endif//USE_CRC_CALC_TABLE
+		++p;
+	}
+	return ~crc;
+}
+//--------------------
+//【通常関数版】データ長を指定してCRC算出
+crc32_t calcCRC32(const char* data, const std::size_t len)
+{
+	crc32_t crc = ~0u;
+	const char* p = data;
+	for (std::size_t pos = 0; pos < len; ++pos, ++p)
+	{
+	#ifndef USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::calcPoly(static_cast<crc32_t>((crc ^ *p) & 0xffu), 8) ^ (crc >> 8);//CRC生成多項式計算計算を合成
+	#else//USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::s_calcTable[(crc ^ *p) & 0xffu] ^ (crc >> 8);//CRC生成多項式計算計算済みテーブルの値を合成
+	#endif//USE_CRC_CALC_TABLE
+	}
+	return ~crc;
+}
+
+//--------------------------------------------------------------------------------
+//テスト
+
+//constテスト用マクロ
+#ifdef CONST_ALL
+#define NOCONST const
+#else//CONST_ALL
+#define NOCONST
+#endif//CONST_ALL
 
 #ifdef ENABLE_MORE_TEST
+//--------------------
+//テスト用データ定義
 static const char* TEXT1 = "1";
 static const char* TEXT2 = "12";
 static const char* TEXT3 = "123";
@@ -122,26 +177,27 @@ static const char* TEXT9 = "123456789";
 static const char* TEXT10 = "1234567890";
 #endif//ENABLE_MORE_TEST
 
+//--------------------
 //constexpr / ユーザー定義リテラルによるCRC計算のテスト
 void test_constexpr()
 {
 	{
-		const crc32_t crc1 = calcCRC32("1234567890");//コンパイル時に計算（文字列リテラルも消滅）
+		const crc32_t crc1 = calcConstCRC32("1234567890");//コンパイル時に計算（文字列リテラルも消滅）
 #ifdef ENABLE_CONSTEXPR
 		static_assert(crc1 == 0x261daee5, "invalid crc1");//OK：コンパイル時に評価
 #endif//ENABLE_CONSTEXPR
 		printf("constexpr によるコンパイル時のCRC計算結果=0x%08x\n", crc1);
-#ifdef ENABLE_MORE_TEST
-		const crc32_t TEXT1_CRC = calcCRC32(TEXT1);
-		const crc32_t TEXT2_CRC = calcCRC32(TEXT2);
-		const crc32_t TEXT3_CRC = calcCRC32(TEXT3);
-		const crc32_t TEXT4_CRC = calcCRC32(TEXT4);
-		const crc32_t TEXT5_CRC = calcCRC32(TEXT5);
-		const crc32_t TEXT6_CRC = calcCRC32(TEXT6);
-		const crc32_t TEXT7_CRC = calcCRC32(TEXT7);
-		const crc32_t TEXT8_CRC = calcCRC32(TEXT8);
-		const crc32_t TEXT9_CRC = calcCRC32(TEXT9);
-		const crc32_t TEXT10_CRC = calcCRC32(TEXT10);
+	#ifdef ENABLE_MORE_TEST
+		const crc32_t TEXT1_CRC = calcConstCRC32(TEXT1);
+		const crc32_t TEXT2_CRC = calcConstCRC32(TEXT2);
+		const crc32_t TEXT3_CRC = calcConstCRC32(TEXT3);
+		const crc32_t TEXT4_CRC = calcConstCRC32(TEXT4);
+		const crc32_t TEXT5_CRC = calcConstCRC32(TEXT5);
+		const crc32_t TEXT6_CRC = calcConstCRC32(TEXT6);
+		const crc32_t TEXT7_CRC = calcConstCRC32(TEXT7);
+		const crc32_t TEXT8_CRC = calcConstCRC32(TEXT8);
+		const crc32_t TEXT9_CRC = calcConstCRC32(TEXT9);
+		const crc32_t TEXT10_CRC = calcConstCRC32(TEXT10);
 		printf("\n");
 		printf("<Test: Static CRC32 by constexpr>\n");
 		printf(" CRC32:TEXT1:\"%s\" = 0x%08x(%u)\n", TEXT1, TEXT1_CRC, TEXT1_CRC);
@@ -157,40 +213,69 @@ void test_constexpr()
 #endif//ENABLE_MORE_TEST
 	}
 	{
-	NOCONST crc32_t crc2 = calcCRC32("1234567890");//ランタイム時に計算//【残念】constが付いていないとコンパイル時に計算してくれない
-	assert(crc2 == 0x261daee5);//OK：ランタイム時に評価
-	printf("constexpr によるランタイム時のCRC計算結果=0x%08x\n", crc2);
-#ifdef ENABLE_MORE_TEST
-	NOCONST crc32_t TEXT1_CRC = calcCRC32(TEXT1);
-	NOCONST crc32_t TEXT2_CRC = calcCRC32(TEXT2);
-	NOCONST crc32_t TEXT3_CRC = calcCRC32(TEXT3);
-	NOCONST crc32_t TEXT4_CRC = calcCRC32(TEXT4);
-	NOCONST crc32_t TEXT5_CRC = calcCRC32(TEXT5);
-	NOCONST crc32_t TEXT6_CRC = calcCRC32(TEXT6);
-	NOCONST crc32_t TEXT7_CRC = calcCRC32(TEXT7);
-	NOCONST crc32_t TEXT8_CRC = calcCRC32(TEXT8);
-	NOCONST crc32_t TEXT9_CRC = calcCRC32(TEXT9);
-	NOCONST crc32_t TEXT10_CRC = calcCRC32(TEXT10);
-	printf("\n");
-	printf("<Test: Dynamic CRC32 by constexpr>\n");
-	printf(" CRC32:TEXT1:\"%s\" = 0x%08x(%u)\n", TEXT1, TEXT1_CRC, TEXT1_CRC);
-	printf(" CRC32:TEXT2:\"%s\" = 0x%08x(%u)\n", TEXT2, TEXT2_CRC, TEXT2_CRC);
-	printf(" CRC32:TEXT3:\"%s\" = 0x%08x(%u)\n", TEXT3, TEXT3_CRC, TEXT3_CRC);
-	printf(" CRC32:TEXT4:\"%s\" = 0x%08x(%u)\n", TEXT4, TEXT4_CRC, TEXT4_CRC);
-	printf(" CRC32:TEXT5:\"%s\" = 0x%08x(%u)\n", TEXT5, TEXT5_CRC, TEXT5_CRC);
-	printf(" CRC32:TEXT6:\"%s\" = 0x%08x(%u)\n", TEXT6, TEXT6_CRC, TEXT6_CRC);
-	printf(" CRC32:TEXT7:\"%s\" = 0x%08x(%u)\n", TEXT7, TEXT7_CRC, TEXT7_CRC);
-	printf(" CRC32:TEXT8:\"%s\" = 0x%08x(%u)\n", TEXT8, TEXT8_CRC, TEXT8_CRC);
-	printf(" CRC32:TEXT9:\"%s\" = 0x%08x(%u)\n", TEXT9, TEXT9_CRC, TEXT9_CRC);
-	printf(" CRC32:TEXT10:\"%s\" = 0x%08x(%u)\n", TEXT10, TEXT10_CRC, TEXT10_CRC);
-#endif//ENABLE_MORE_TEST
-}
+		NOCONST crc32_t crc2 = calcConstCRC32("1234567890");//constexprでランタイム時に計算//【残念】constが付いていないとコンパイル時に計算してくれない
+		assert(crc2 == 0x261daee5);//OK：ランタイム時に評価
+		printf("constexpr によるランタイム時のCRC計算結果=0x%08x\n", crc2);
+	#ifdef ENABLE_MORE_TEST
+		NOCONST crc32_t TEXT1_CRC = calcConstCRC32(TEXT1);
+		NOCONST crc32_t TEXT2_CRC = calcConstCRC32(TEXT2);
+		NOCONST crc32_t TEXT3_CRC = calcConstCRC32(TEXT3);
+		NOCONST crc32_t TEXT4_CRC = calcConstCRC32(TEXT4);
+		NOCONST crc32_t TEXT5_CRC = calcConstCRC32(TEXT5);
+		NOCONST crc32_t TEXT6_CRC = calcConstCRC32(TEXT6);
+		NOCONST crc32_t TEXT7_CRC = calcConstCRC32(TEXT7);
+		NOCONST crc32_t TEXT8_CRC = calcConstCRC32(TEXT8);
+		NOCONST crc32_t TEXT9_CRC = calcConstCRC32(TEXT9);
+		NOCONST crc32_t TEXT10_CRC = calcConstCRC32(TEXT10);
+		printf("\n");
+		printf("<Test: Dynamic CRC32 by constexpr>\n");
+		printf(" CRC32:TEXT1:\"%s\" = 0x%08x(%u)\n", TEXT1, TEXT1_CRC, TEXT1_CRC);
+		printf(" CRC32:TEXT2:\"%s\" = 0x%08x(%u)\n", TEXT2, TEXT2_CRC, TEXT2_CRC);
+		printf(" CRC32:TEXT3:\"%s\" = 0x%08x(%u)\n", TEXT3, TEXT3_CRC, TEXT3_CRC);
+		printf(" CRC32:TEXT4:\"%s\" = 0x%08x(%u)\n", TEXT4, TEXT4_CRC, TEXT4_CRC);
+		printf(" CRC32:TEXT5:\"%s\" = 0x%08x(%u)\n", TEXT5, TEXT5_CRC, TEXT5_CRC);
+		printf(" CRC32:TEXT6:\"%s\" = 0x%08x(%u)\n", TEXT6, TEXT6_CRC, TEXT6_CRC);
+		printf(" CRC32:TEXT7:\"%s\" = 0x%08x(%u)\n", TEXT7, TEXT7_CRC, TEXT7_CRC);
+		printf(" CRC32:TEXT8:\"%s\" = 0x%08x(%u)\n", TEXT8, TEXT8_CRC, TEXT8_CRC);
+		printf(" CRC32:TEXT9:\"%s\" = 0x%08x(%u)\n", TEXT9, TEXT9_CRC, TEXT9_CRC);
+		printf(" CRC32:TEXT10:\"%s\" = 0x%08x(%u)\n", TEXT10, TEXT10_CRC, TEXT10_CRC);
+	#endif//ENABLE_MORE_TEST
+	}
+	{
+		crc32_t crc3 = calcCRC32("1234567890");//通常関数でランタイム時に計算
+		assert(crc3 == 0x261daee5);//OK：ランタイム時に評価
+		printf("通常関数によるランタイム時のCRC計算結果=0x%08x\n", crc3);
+	#ifdef ENABLE_MORE_TEST
+		NOCONST crc32_t TEXT1_CRC = calcCRC32(TEXT1);
+		NOCONST crc32_t TEXT2_CRC = calcCRC32(TEXT2);
+		NOCONST crc32_t TEXT3_CRC = calcCRC32(TEXT3);
+		NOCONST crc32_t TEXT4_CRC = calcCRC32(TEXT4);
+		NOCONST crc32_t TEXT5_CRC = calcCRC32(TEXT5);
+		NOCONST crc32_t TEXT6_CRC = calcCRC32(TEXT6);
+		NOCONST crc32_t TEXT7_CRC = calcCRC32(TEXT7);
+		NOCONST crc32_t TEXT8_CRC = calcCRC32(TEXT8);
+		NOCONST crc32_t TEXT9_CRC = calcCRC32(TEXT9);
+		NOCONST crc32_t TEXT10_CRC = calcCRC32(TEXT10);
+		printf("\n");
+		printf("<Test: Dynamic CRC32 by constexpr>\n");
+		printf(" CRC32:TEXT1:\"%s\" = 0x%08x(%u)\n", TEXT1, TEXT1_CRC, TEXT1_CRC);
+		printf(" CRC32:TEXT2:\"%s\" = 0x%08x(%u)\n", TEXT2, TEXT2_CRC, TEXT2_CRC);
+		printf(" CRC32:TEXT3:\"%s\" = 0x%08x(%u)\n", TEXT3, TEXT3_CRC, TEXT3_CRC);
+		printf(" CRC32:TEXT4:\"%s\" = 0x%08x(%u)\n", TEXT4, TEXT4_CRC, TEXT4_CRC);
+		printf(" CRC32:TEXT5:\"%s\" = 0x%08x(%u)\n", TEXT5, TEXT5_CRC, TEXT5_CRC);
+		printf(" CRC32:TEXT6:\"%s\" = 0x%08x(%u)\n", TEXT6, TEXT6_CRC, TEXT6_CRC);
+		printf(" CRC32:TEXT7:\"%s\" = 0x%08x(%u)\n", TEXT7, TEXT7_CRC, TEXT7_CRC);
+		printf(" CRC32:TEXT8:\"%s\" = 0x%08x(%u)\n", TEXT8, TEXT8_CRC, TEXT8_CRC);
+		printf(" CRC32:TEXT9:\"%s\" = 0x%08x(%u)\n", TEXT9, TEXT9_CRC, TEXT9_CRC);
+		printf(" CRC32:TEXT10:\"%s\" = 0x%08x(%u)\n", TEXT10, TEXT10_CRC, TEXT10_CRC);
+	#endif//ENABLE_MORE_TEST
+	}
 #ifdef ENABLE_USER_DEFINED_LITERALS
 	{
-		const crc32_t crc3 = "1234567890"_crc32;//コンパイル時に計算（文字列リテラルも消滅）
-		static_assert(crc3 == 0x261daee5, "invalid crc2");//OK：コンパイル時に評価
-		printf("ユーザー定義リテラルによるコンパイル時のCRC計算結果=0x%08x\n", crc3);
-#ifdef ENABLE_MORE_TEST
+		const crc32_t crc4 = "1234567890"_crc32;//コンパイル時に計算（文字列リテラルも消滅）
+		static_assert(crc4 == 0x261daee5, "invalid crc4");//OK：コンパイル時に評価
+		printf("ユーザー定義リテラルによるコンパイル時のCRC計算結果=0x%08x\n", crc4);
+	#ifdef ENABLE_MORE_TEST
 		const crc32_t TEXT1_CRC = "1"_crc32;
 		const crc32_t TEXT2_CRC = "12"_crc32;
 		const crc32_t TEXT3_CRC = "123"_crc32;
@@ -213,7 +298,7 @@ void test_constexpr()
 		printf(" CRC32:TEXT8:\"%s\" = 0x%08x(%u)\n", TEXT8, TEXT8_CRC, TEXT8_CRC);
 		printf(" CRC32:TEXT9:\"%s\" = 0x%08x(%u)\n", TEXT9, TEXT9_CRC, TEXT9_CRC);
 		printf(" CRC32:TEXT10:\"%s\" = 0x%08x(%u)\n", TEXT10, TEXT10_CRC, TEXT10_CRC);
-#endif//ENABLE_MORE_TEST
+	#endif//ENABLE_MORE_TEST
 	}
 #endif//ENABLE_USER_DEFINED_LITERALS
 }

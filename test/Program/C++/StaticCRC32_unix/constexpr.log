@@ -1,3 +1,4 @@
 constexpr によるコンパイル時のCRC計算結果=0x261daee5
 constexpr によるランタイム時のCRC計算結果=0x261daee5
+通常関数によるランタイム時のCRC計算結果=0x261daee5
 ユーザー定義リテラルによるコンパイル時のCRC計算結果=0x261daee5

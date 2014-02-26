@@ -991,6 +991,21 @@ private:
 };
 
 //--------------------------------------------------------------------------------
+//CRC算出
+
+//--------------------
+//型
+typedef unsigned int crc32_t;//CRC32型
+
+//--------------------
+//【通常関数版】文字列からCRC算出
+crc32_t calcCRC32(const char* str)
+{
+	//ダミー処理
+	return reinterpret_cast<crc32_t>(str);
+}
+
+//--------------------------------------------------------------------------------
 //名前付きデータ参照クラス
 
 #include <atomic>//アトミック型
@@ -1009,7 +1024,9 @@ public:
 	static const int SPIN_COUNT = SPIN;//スピンロックのピンカウント数
 public:
 	//型
-	typedef unsigned long long KeyPrim;//キー型（ハッシュテーブル用のプリミティブ型）
+	typedef unsigned long long u64;//64ビット型
+	typedef unsigned long u32;//32ビット型
+	typedef u64 KeyPrim;//キー型（ハッシュテーブル用のプリミティブ型）
 	//キー型
 	struct Key
 	{
@@ -1018,8 +1035,8 @@ public:
 			KeyPrim m_prim;//プリミティブ型キー
 			struct
 			{
-				unsigned int m_main;//主キー
-				unsigned int m_sub;//副キー
+				u32 m_main;//主キー
+				u32 m_sub;//副キー
 			};
 		};
 		//キャストオペレータ
@@ -1033,13 +1050,6 @@ public:
 		bool operator<=(const Key& key) const { return m_prim <= key.m_prim; }
 		//代入オペレータ
 		Key& operator=(const Key& key) const { return m_prim = key.m_prim; }
-		//メソッド
-		//CRC値算出関数
-		unsigned int CRC32(const char* name)
-		{
-			//ダミー処理
-			return reinterpret_cast<unsigned long>(name);
-		}
 		//コンストラクタ
 		//※explicit宣言しない ⇒ Key型を引数に取る関数に文字列を渡してもOK
 		Key(const Key& key) :
@@ -1057,20 +1067,20 @@ public:
 			m_sub(0)
 		{}
 		Key(const char* name, const unsigned int sub_key):
-			m_main(CRC32(name)),
+			m_main(calcCRC32(name)),
 			m_sub(sub_key)
 		{}
 		Key(const char* name) :
-			m_main(CRC32(name)),
+			m_main(calcCRC32(name)),
 			m_sub(0)
 		{}
 		Key(const unsigned int main_key, const char* sub_key) :
 			m_main(main_key),
-			m_sub(CRC32(sub_key))
+			m_sub(calcCRC32(sub_key))
 		{}
 		Key(const char* name, const char* sub_key) :
-			m_main(CRC32(name)),
-			m_sub(CRC32(sub_key))
+			m_main(calcCRC32(name)),
+			m_sub(calcCRC32(sub_key))
 		{}
 		//デストラクタ
 		~Key()

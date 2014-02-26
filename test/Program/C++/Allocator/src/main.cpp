@@ -1,4 +1,4 @@
-//ƒRƒ“ƒpƒCƒ‹ƒXƒCƒbƒ`
+//ƒeƒXƒgˆ——pƒRƒ“ƒpƒCƒ‹ƒXƒCƒbƒ`
 #define USE_NEW_PTR_FOR_TEST0//test0‚ÅAnew_ptrŠÖ”‚ğg—p‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
 #define USE_DELETE_PTR_FOR_TEST0//test0‚ÅAdelete_ptrŠÖ”‚ğg—p‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
 #define USE_DESTRUCTOR_FOR_TEST1//test1‚ÅAƒfƒXƒgƒ‰ƒNƒ^‚ğg—p‚·‚é‚Æ‚«‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚éiƒAƒƒP[ƒgƒTƒCƒY‚ª‘‚¦‚é‚±‚Æ‚ğŠm”F‚Å‚«‚éj
@@ -7,8 +7,10 @@
 #define USE_DESTRUCTOR_FOR_TEST2//test2‚ÅAƒfƒXƒgƒ‰ƒNƒ^‚ğg—p‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚éiƒAƒƒP[ƒgƒTƒCƒY‚ª‘‚¦‚é‚±‚Æ‚ğŠm”F‚Å‚«‚éj
 //#define USE_NAMESPACE_NEW_DELETE_FOR_TEST2//test2‚ÅAƒl[ƒ€ƒXƒy[ƒX‚É’è‹`‚µ‚½new/delete‚ÌƒeƒXƒg‚ğs‚¤‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
 #define USE_NEW_MACRO//test7‚ÅANEWƒ}ƒNƒ‚ğg—p‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
-#define USE_ALLOC_INFO//test7‚ÅAnew‚Éƒƒ‚ƒŠŠm•Û–î•ñ‚ğg—p‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
-#define USE_CRC_CALC_TABLE//test8‚ÅACRCŒvZ‚ÌÛ‚ÉA–‘OŒvZÏ‚İ‚ÌCRCŒvZƒe[ƒuƒ‹‚ğg—p‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
+#define USE_ALLOC_INFO//test7‚ÅAnew‚Éƒƒ‚ƒŠŠm•Ûî•ñ‚ğg—p‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
+
+//CRCZoˆ——pƒRƒ“ƒpƒCƒ‰ƒXƒCƒbƒ`
+//#define USE_CRC_CALC_TABLE//CRCŒvZ‚ÌÛ‚ÉA–‘OŒvZÏ‚İ‚ÌCRCŒvZƒe[ƒuƒ‹‚ğg—p‚·‚é‚È‚ç‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
 
 //GCCŠÖ˜AFGCCg—p‚Í‚±‚ê‚ç‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
 //#define USE_MEMALIGN//yGCC—pztest6ˆÈ~‚ÅAmemalign‚ğg—p‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
@@ -19,7 +21,7 @@
 #define USE_STRCPY_S//yMSŒÅ—Ld—lzstrcpy_s‚ğg—p‚·‚é‚É‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
 #define USE_FUNCSIG//yMSŒÅ—Ld—lzŠÖ”–¼‚É__FUNCSIG__‚ğg—p‚·‚é‚É‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
 
-//C++11ŠÖ˜AFƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€‚É‚ÍA‚±‚ê‚çˆÈŠO‚É‚àC++11‚Ì—v‘f‚ª–c‚ê‚Ä‚¢‚é
+//C++11ŠÖ˜AFˆê•”‚Ì‹““®‚ğİ’è
 //‚±‚ê‚ç‚Ìƒ}ƒNƒ‚ÍAVisual C++ŠÂ‹«‚âC++0xŠÂ‹«‚ÅƒRƒ“ƒpƒCƒ‹‚·‚é‚½‚ß‚Ég—p‚·‚é
 #define ENABLE_NULLPTR//yC++11—pznullptr‚ğ—LŒø‚É‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
 #define ENABLE_OVERRIDE//yC++11—pzoverride‚ğ—LŒø‚É‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
@@ -1955,7 +1957,7 @@ void test5()
 //‹¤’ÊƒAƒƒP[ƒ^ƒCƒ“ƒ^[ƒtƒF[ƒX
 
 //--------------------
-//ƒƒ‚ƒŠŠm•Ûî•ñ
+//ƒƒ‚ƒŠŠm•Ûî•ñ
 //¦ƒfƒoƒbƒOî•ñiQÆ‚Ì‚İj
 struct ALLOC_INFO;
 
@@ -2665,7 +2667,7 @@ thread_local IAllocator* CPolyAllocator::m_allocator = nullptr;//Œ»İ‚ÌƒAƒƒP[ƒ
 thread_local const ALLOC_INFO* CPolyAllocator::m_allocInfo = nullptr;//Œ»İ‚Ìƒƒ‚ƒŠŠm•Ûî•ñ
 
 //--------------------
-//ƒƒ‚ƒŠŠm•Ûî•ñ
+//ƒƒ‚ƒŠŠm•Ûî•ñ
 //¦ƒfƒoƒbƒOî•ñiQÆ‚Ì‚İj
 struct ALLOC_INFO
 {
@@ -2686,7 +2688,49 @@ struct ALLOC_INFO
 	{}
 };
 
+//--------------------
+//ƒfƒoƒbƒOî•ñûW—pŠÖ”
+const char* getCurrentCallPointNameDummy(){ return "(unknown call-point)"; }//ƒR[ƒ‹ƒ|ƒCƒ“ƒg–¼æ“¾
+float getGameTimeDummy(){ return 0.f; }//ƒQ[ƒ€ŠÔæ“¾
+
+//--------------------
+//‹¤’ÊŠÖ”
+#include <string.h>
+#ifdef ENABLE_CONSTEXPR
+//yconstexpr”Åzƒtƒ@ƒCƒ‹–¼æ“¾ŠÖ”iƒfƒBƒŒƒNƒgƒŠ•”‚ğœ‚¢‚½•¶š—ñ‚ğ•Ô‚·j
+//¦Ä‹Aˆ—•”i’¼Úg—p‚µ‚È‚¢j
+constexpr const char* getConstFileNameRecursive(const char* str, const std::size_t len)
+{
+	return len == 0 ?
+	str :
+		*(str + len - 1) == '\\' || *(str + len - 1) == '/' ?
+			str + len :
+			getConstFileNameRecursive(str, len - 1);
+}
+//yconstexpr”Åzƒtƒ@ƒCƒ‹–¼æ“¾ŠÖ”iƒfƒBƒŒƒNƒgƒŠ•”‚ğœ‚¢‚½•¶š—ñ‚ğ•Ô‚·j
+constexpr const char* getConstFileName(const char* str)
+{
+	return getConstFileNameRecursive(str, strlen(str));
+}
+#else//ENABLE_CONSTEXPR
+//y’Êí”Åzƒtƒ@ƒCƒ‹–¼æ“¾ŠÖ”iƒfƒBƒŒƒNƒgƒŠ•”‚ğœ‚¢‚½•¶š—ñ‚ğ•Ô‚·j
+const char* getFileName(const char* str)
+{
+	std::size_t len = strlen(str);
+	const char* p = str + len;
+	for (; len > 0; --len, --p)
+	{
+		const char c = *(p - 1);
+		if (c == '\\' || c == '/')
+			return p;
+	}
+	return str;
+}
+#endif//ENABLE_CONSTEXPR
+
 #ifndef USE_GLOBAL_NEW_DELETE_FOR_TEST2
+//--------------------
+//‹¤’ÊŠÖ”QÆ
 const char* getFileName(const char* str);//ŠÖ”QÆFƒtƒ@ƒCƒ‹–¼æ“¾ŠÖ”iƒfƒBƒŒƒNƒgƒŠ•”‚ğœ‚¢‚½•¶š—ñ‚ğ•Ô‚·j
 //--------------------
 //ƒOƒ[ƒoƒ‹‘½‘ÔƒAƒƒP[ƒ^
@@ -2697,7 +2741,7 @@ void* operator new(const std::size_t size) throw()
 	CPolyAllocator allocator;
 	printf("new(size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
 	std::size_t align = ALLOC_INFO::DEFAULT_ALIGN;
-	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();
+	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();//ƒƒ‚ƒŠŠm•Ûî•ñæ“¾
 	if (info)
 	{
 		align = info->m_align;
@@ -2717,7 +2761,7 @@ void* operator new[](const std::size_t size) throw()
 	CPolyAllocator allocator;
 	printf("new[](size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
 	std::size_t align = ALLOC_INFO::DEFAULT_ALIGN;
-	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();
+	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();//ƒƒ‚ƒŠŠm•Ûî•ñæ“¾
 	if (info)
 	{
 		align = info->m_align;
@@ -2748,89 +2792,66 @@ void operator delete[](void* p) throw()
 #endif//USE_GLOBAL_NEW_DELETE_FOR_TEST2
 
 //--------------------
-//ƒƒ‚ƒŠŠm•Ûî•ñ‚Ìì¬
-//ƒ_ƒ~[ŠÖ”
-const char* getCurrentCallPointNameDummy(){ return "(unknown call-point)"; }//ƒR[ƒ‹ƒ|ƒCƒ“ƒg–¼æ“¾
-float getGameTimeDummy(){ return 0.f; }//ƒQ[ƒ€ŠÔæ“¾
-//ŠÖ”–¼ì¬ƒ}ƒNƒ
-#include <string.h>
-//yconstexpr”Åzƒtƒ@ƒCƒ‹–¼æ“¾ŠÖ”iƒfƒBƒŒƒNƒgƒŠ•”‚ğœ‚¢‚½•¶š—ñ‚ğ•Ô‚·j
-#ifdef ENABLE_CONSTEXPR
-constexpr const char* getConstFileNameRecursive(const char* str, const std::size_t len)
-{
-	return len == 0 ?
-	str :
-		*(str + len - 1) == '\\' || *(str + len - 1) == '/' ?
-			str + len :
-			getConstFileNameRecursive(str, len - 1);
-}
-constexpr const char* getConstFileName(const char* str)
-{
-	return getConstFileNameRecursive(str, strlen(str));
-}
-#else//ENABLE_CONSTEXPR
-//y’Êí”Åzƒtƒ@ƒCƒ‹–¼æ“¾ŠÖ”iƒfƒBƒŒƒNƒgƒŠ•”‚ğœ‚¢‚½•¶š—ñ‚ğ•Ô‚·j
-const char* getFileName(const char* str)
-{
-	std::size_t len = strlen(str);
-	const char* p = str + len;
-	for (; len > 0; --len, --p)
-	{
-		const char c = *(p - 1);
-		if (c == '\\' || c == '/')
-			return p;
-	}
-	return str;
-}
-#endif//ENABLE_CONSTEXPR
+//ƒfƒoƒbƒOî•ñûW—pŠÖ”QÆ
+const char* getCurrentCallPointNameDummy();//ƒR[ƒ‹ƒ|ƒCƒ“ƒg–¼æ“¾
+float getGameTimeDummy();//ƒQ[ƒ€ŠÔæ“¾
 
 //--------------------
 //ƒƒ‚ƒŠŠm•Ûî•ñ•t‚«NEWˆ—
 template<class T, typename... Tx>
 T* newWithInfo(const char* file_name, const char* func_name, const std::size_t align, Tx ...nx)
 {
-	const char* call_point_name = getCurrentCallPointNameDummy();
-	const float game_time = getGameTimeDummy();
-	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T).name(), align);
-	CPolyAllocator::setAllocInfo(&info);
-	return new T(nx...);
+	const char* call_point_name = getCurrentCallPointNameDummy();//ƒR[ƒ‹ƒ|ƒCƒ“ƒg–¼æ“¾
+	const float game_time = getGameTimeDummy();//ƒQ[ƒ€ŠÔæ“¾
+	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T).name(), align);//ƒƒ‚ƒŠŠm•Ûî•ñ¶¬
+	CPolyAllocator::setAllocInfo(&info);//ƒƒ‚ƒŠŠm•Ûî•ñó‚¯“n‚µ ¦ƒ[ƒJƒ‹•Ï”‚Ìƒ|ƒCƒ“ƒ^‚ğó‚¯“n‚·‚±‚Æ‚É‚È‚é‚ªAŒã‘±‚Ìˆ—‚Å‚Ì‚İQÆ‚·‚é‚±‚Æ‚ÆATLS‚Å•ÛŒì‚³‚ê‚é‚½‚ß–â‘è‚È‚µ
+	return new T(nx...);//ƒƒ‚ƒŠŠm•Û
 }
+//”z—ñ”Å
+//¦y–â‘è“_z”z—ñnew‚ÉƒAƒ‰ƒCƒ“ƒƒ“ƒg‚ªw’è‚³‚ê‚½ê‡A³‚µ‚¢ƒ|ƒCƒ“ƒ^‚ªŒvZ‚µ‚«‚ê‚È‚¢‚½‚ßAƒAƒ‰ƒCƒ“ƒƒ“ƒgw’è‚É‘Î‰‚µ‚È‚¢
 template<class T, std::size_t array_size>
-T* newArrayWithInfo(const char* file_name, const char* func_name, const std::size_t align)
+T* newArrayWithInfo(const char* file_name, const char* func_name)
 {
-	const char* call_point_name = getCurrentCallPointNameDummy();
-	const float game_time = getGameTimeDummy();
-	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T[array_size]).name(), align);
-	CPolyAllocator::setAllocInfo(&info);
-	return new T[array_size];
+	const char* call_point_name = getCurrentCallPointNameDummy();//ƒR[ƒ‹ƒ|ƒCƒ“ƒg–¼æ“¾
+	const float game_time = getGameTimeDummy();//ƒQ[ƒ€ŠÔæ“¾
+	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T[array_size]).name());//ƒƒ‚ƒŠŠm•Ûî•ñ¶¬
+	CPolyAllocator::setAllocInfo(&info);//ƒƒ‚ƒŠŠm•Ûî•ñó‚¯“n‚µ ¦ƒ[ƒJƒ‹•Ï”‚Ìƒ|ƒCƒ“ƒ^‚ğó‚¯“n‚·‚±‚Æ‚É‚È‚é‚ªAŒã‘±‚Ìˆ—‚Å‚Ì‚İQÆ‚·‚é‚±‚Æ‚ÆATLS‚Å•ÛŒì‚³‚ê‚é‚½‚ß–â‘è‚È‚µ
+	return new T[array_size];//ƒƒ‚ƒŠŠm•Û
 }
-#define TO_STRING(s) #s
-#define TO_STRING_EX(s) TO_STRING(s)
-#ifdef ENABLE_CONSTEXPR
-#define GET_CONCATENATED_FILE_NAME() getConstFileName(__FILE__ "(" TO_STRING_EX(__LINE__) ") [" __TIMESTAMP__ "]")
-#else//ENABLE_CONSTEXPR
-#define GET_CONCATENATED_FILE_NAME() __FILE__ "(" TO_STRING_EX(__LINE__) ")  [" __TIMESTAMP__ "]"
-#endif//ENABLE_CONSTEXPR
-#define GET_FUNC_NAME() __PRETTY_FUNCTION__
-//#define GET_FUNC_NAME() __FUNCTION__
 
 //--------------------
-//newƒ}ƒNƒ
+//NEWƒ}ƒNƒ•â•ƒ}ƒNƒ
+#define TO_STRING(s) #s//__LINE__‚ğ•¶š—ñ‰»‚·‚é‚½‚ß‚Ì“ñdƒ}ƒNƒ
+#define TO_STRING_EX(s) TO_STRING(s)//__LINE__‚ğ•¶š—ñ‰»‚·‚é‚½‚ß‚Ìƒ}ƒNƒ
+#ifdef ENABLE_CONSTEXPR
+#define GET_CONCATENATED_FILE_NAME() getConstFileName(__FILE__ "(" TO_STRING_EX(__LINE__) ") [" __TIMESTAMP__ "]")//ƒtƒ@ƒCƒ‹–¼‡¬•æ“¾ƒ}ƒNƒ
+#else//ENABLE_CONSTEXPR
+#define GET_CONCATENATED_FILE_NAME() __FILE__ "(" TO_STRING_EX(__LINE__) ")  [" __TIMESTAMP__ "]"//ƒtƒ@ƒCƒ‹–¼‡¬•æ“¾ƒ}ƒNƒ
+#endif//ENABLE_CONSTEXPR
+#define GET_FUNC_NAME() __PRETTY_FUNCTION__//ŠÖ”–¼æ“¾ƒ}ƒNƒ
+//#define GET_FUNC_NAME() __FUNCTION__
+
 #ifdef USE_ALLOC_INFO
-//¦ƒƒ‚ƒŠŠm•Ûî•ñ•t‚«
-#define NEW(T, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), ALLOC_INFO::DEFAULT_ALIGN, __VA_ARGS__)
-#define NEWALIGN(T, align, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), align, __VA_ARGS__)
-#define NEWARR(T, array_size) newArrayWithInfo<T, array_size>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), ALLOC_INFO::DEFAULT_ALIGN)
-#define NEWALIGNARR(T, align, array_size) newArrayWithInfo<T, array_size>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), align)
-#define DELETE delete
-#define DELETEARR delete[]
+//--------------------
+//NEWƒ}ƒNƒ
+//¦ƒƒ‚ƒŠŠm•Ûî•ñ•t‚«
+#define NEW(T, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), ALLOC_INFO::DEFAULT_ALIGN, __VA_ARGS__)//NEW
+#define NEWALIGN(T, align, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), align, __VA_ARGS__)//ƒAƒ‰ƒCƒ“ƒƒ“ƒgw’è•t‚«NEW
+#define NEWARR(T, array_size) newArrayWithInfo<T, array_size>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME())//”z—ñNEW
+//#define NEWALIGNARR(T, align, array_size)//ƒAƒ‰ƒCƒƒ“ƒgw’è•t‚«”z—ñNEW‚Í³Šm‚ÉŒvZ‚Å‚«‚È‚¢‚Ì‚Å‘Î‰‚µ‚È‚¢
 #else//USE_ALLOC_INFO
-//¦ƒƒ‚ƒŠŠm•Ûî•ñ‚È‚µ
-#define NEW(T, ...) new T(__VA_ARGS__)
-#define NEWARR(T, array_size) new T[array_size]
-#define DELETE delete
-#define DELETEARR delete[]
+//--------------------
+//NEWƒ}ƒNƒ
+//¦ƒƒ‚ƒŠŠm•Ûî•ñ‚È‚µ
+#define NEW(T, ...) new T(__VA_ARGS__)//NEW
+#define NEWALIGN(T, align, ...) new T(__VA_ARGS__)//ƒAƒ‰ƒCƒ“ƒƒ“ƒgw’è•t‚«NEWiŒİŠ·—pj¦ÀÛ‚É‚ÍƒAƒ‰ƒCƒ“ƒƒ“ƒg‚Í‹@”\‚µ‚È‚¢
+#define NEWARR(T, array_size) new T[array_size]//”z—ñNEW
+//#define NEWALIGNARR(T, align, array_size)//ƒAƒ‰ƒCƒƒ“ƒgw’è•t‚«”z—ñNEW‚Í³Šm‚ÉŒvZ‚Å‚«‚È‚¢‚Ì‚Å‘Î‰‚µ‚È‚¢
 #endif//USE_ALLOC_INFO
+//--------------------
+//DELETEƒ}ƒNƒ
+#define DELETE delete//DELETE
+#define DELETEARR delete[]//”z—ñDELETE
 
 //--------------------
 //ˆê‘½‘ÔƒAƒƒP[ƒ^
@@ -3110,7 +3131,7 @@ void test7_sub2()
 void test7_sub3(const char* name)
 {
 #ifdef USE_NEW_MACRO
-	CTest7ex* obj_p = NEW(CDerivedTest7, name);//ƒAƒbƒvƒLƒƒƒXƒg
+	CTest7ex* obj_p = NEWALIGN(CDerivedTest7, 16, name);//ƒAƒbƒvƒLƒƒƒXƒg
 	printf("obj_p=0x%p\n", obj_p);
 	DELETE obj_p;
 #else//USE_NEW_MACRO
@@ -3207,23 +3228,31 @@ void test7()
 //--------------------------------------------------------------------------------
 //•W€ƒ‰ƒCƒuƒ‰ƒŠ‚ğ•Ö—˜‚ÉŠˆ—p
 
-#include <string.h>//strcpy—p
-#include <string>//std::string—p
+//--------------------
+//CRCZo
+
+#include <cstddef>//std::size_t—p
+#include <assert.h>//assert—p
+
+//--------------------
+//Œ^
+typedef unsigned int crc32_t;//CRC32Œ^
 
 //--------------------
 //CRCZoŠÖ”
-typedef unsigned int crc32_t;//CRC32Œ^
 namespace crc_inner_calc//’¼Úg—p‚µ‚È‚¢ˆ—‚ğ‰B‚Ø‚¢‚·‚é‚½‚ß‚Ìƒl[ƒ€ƒXƒy[ƒX
 {
 #ifndef USE_CRC_CALC_TABLE
+	//--------------------
 	//CRC¶¬‘½€®ŒvZiÄ‹Aˆ—j
 	constexpr crc32_t calcPoly(crc32_t poly, const int n)
 	{
 		return n == 0 ? poly : calcPoly(poly & 1 ? 0xedb88320u ^ (poly >> 1) : (poly >> 1), n - 1);
 	}
 #else//USE_CRC_CALC_TABLE
+	//--------------------
 	//CRC¶¬‘½€®ŒvZŒvZÏ‚İƒe[ƒuƒ‹
-	static constexpr crc32_t s_calcTable[] =
+	constexpr crc32_t s_calcTable[] =
 	{
 		0x00000000u, 0x77073096u, 0xee0e612cu, 0x990951bau, 0x076dc419u, 0x706af48fu, 0xe963a535u, 0x9e6495a3u,
 		0x0edb8832u, 0x79dcb8a4u, 0xe0d5e91eu, 0x97d2d988u, 0x09b64c2bu, 0x7eb17cbdu, 0xe7b82d07u, 0x90bf1d91u,
@@ -3259,6 +3288,7 @@ namespace crc_inner_calc//’¼Úg—p‚µ‚È‚¢ˆ—‚ğ‰B‚Ø‚¢‚·‚é‚½‚ß‚Ìƒl[ƒ€ƒXƒy[ƒX
 		0xb3667a2eu, 0xc4614ab8u, 0x5d681b02u, 0x2a6f2b94u, 0xb40bbe37u, 0xc30c8ea1u, 0x5a05df1bu, 0x2d02ef8du
 	};
 #endif//USE_CRC_CALC_TABLE
+	//--------------------
 	//•¶š—ñ‚©‚çCRCZo—piÄ‹Aˆ—j
 	constexpr crc32_t calcStr(const crc32_t crc, const char* str)
 	{
@@ -3268,8 +3298,9 @@ namespace crc_inner_calc//’¼Úg—p‚µ‚È‚¢ˆ—‚ğ‰B‚Ø‚¢‚·‚é‚½‚ß‚Ìƒl[ƒ€ƒXƒy[ƒX
 		return *str == '\0' ? crc : calcStr(s_calcTable[(crc ^ *str) & 0xffu] ^ (crc >> 8), str + 1);//CRC¶¬‘½€®ŒvZŒvZÏ‚İƒe[ƒuƒ‹‚Ì’l‚ğ‡¬
 	#endif//USE_CRC_CALC_TABLE
 	}
-	//ƒf[ƒ^’·‚ğw’è‚µ‚Ä‚©‚çCRCZo—piÄ‹Aˆ—j
-	constexpr crc32_t calcData(const crc32_t crc, const char* data, const int len)
+	//--------------------
+	//ƒf[ƒ^’·‚ğw’è‚µ‚ÄCRCZo—piÄ‹Aˆ—j
+	constexpr crc32_t calcData(const crc32_t crc, const char* data, const std::size_t len)
 	{
 	#ifndef USE_CRC_CALC_TABLE
 		return len == 0 ? crc : calcData(calcPoly(static_cast<crc32_t>((crc ^ *data) & 0xffu), 8) ^ (crc >> 8), data + 1, len - 1);//CRC¶¬‘½€®ŒvZŒvZ‚ğ‡¬
@@ -3278,26 +3309,63 @@ namespace crc_inner_calc//’¼Úg—p‚µ‚È‚¢ˆ—‚ğ‰B‚Ø‚¢‚·‚é‚½‚ß‚Ìƒl[ƒ€ƒXƒy[ƒX
 	#endif//USE_CRC_CALC_TABLE
 	}
 }
-//•¶š—ñ‚©‚çCRCZo—p
-constexpr crc32_t calcCRC32(const char* str)
+//--------------------
+//yconstexpr”Åz•¶š—ñ‚©‚çCRCZo
+constexpr crc32_t calcConstCRC32(const char* str)
 {
 	return ~crc_inner_calc::calcStr(~0u, str);
 }
-//ƒf[ƒ^’·‚ğw’è‚µ‚ÄCRCZo
-constexpr crc32_t calcCRC32(const char* str, const int len)
+//--------------------
+//yconstexpr”Åzƒf[ƒ^’·‚ğw’è‚µ‚ÄCRCZo
+constexpr crc32_t calcConstCRC32(const char* data, const std::size_t len)
 {
-	return ~crc_inner_calc::calcData(~0u, str, len);
+	return ~crc_inner_calc::calcData(~0u, data, len);
 }
 #ifdef ENABLE_USER_DEFINED_LITERALS
-//ƒ†[ƒU[’è‹`ƒŠƒeƒ‰ƒ‹
+//--------------------
+//yƒ†[ƒU[’è‹`ƒŠƒeƒ‰ƒ‹”Åzƒf[ƒ^’·‚ğw’è‚µ‚ÄCRCZo
 constexpr crc32_t operator "" _crc32(const char* str, std::size_t len)
 {
-	return calcCRC32(str, len);
+	return calcConstCRC32(str, len);
 }
 #endif//ENABLE_USER_DEFINED_LITERALS
+//--------------------
+//y’ÊíŠÖ””Åz•¶š—ñ‚©‚çCRCZo
+crc32_t calcCRC32(const char* str)
+{
+	crc32_t crc = ~0u;
+	const char* p = str;
+	while (*p)
+	{
+	#ifndef USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::calcPoly(static_cast<crc32_t>((crc ^ *p) & 0xffu), 8) ^ (crc >> 8);//CRC¶¬‘½€®ŒvZŒvZ‚ğ‡¬
+	#else//USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::s_calcTable[(crc ^ *p) & 0xffu] ^ (crc >> 8);//CRC¶¬‘½€®ŒvZŒvZÏ‚İƒe[ƒuƒ‹‚Ì’l‚ğ‡¬
+	#endif//USE_CRC_CALC_TABLE
+		++p;
+	}
+	return ~crc;
+}
+//--------------------
+//y’ÊíŠÖ””Åzƒf[ƒ^’·‚ğw’è‚µ‚ÄCRCZo
+crc32_t calcCRC32(const char* data, const std::size_t len)
+{
+	crc32_t crc = ~0u;
+	const char* p = data;
+	for (std::size_t pos = 0; pos < len; ++pos, ++p)
+	{
+	#ifndef USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::calcPoly(static_cast<crc32_t>((crc ^ *p) & 0xffu), 8) ^ (crc >> 8);//CRC¶¬‘½€®ŒvZŒvZ‚ğ‡¬
+	#else//USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::s_calcTable[(crc ^ *p) & 0xffu] ^ (crc >> 8);//CRC¶¬‘½€®ŒvZŒvZÏ‚İƒe[ƒuƒ‹‚Ì’l‚ğ‡¬
+	#endif//USE_CRC_CALC_TABLE
+	}
+	return ~crc;
+}
 
 //--------------------
 //•W€ƒ‰ƒCƒuƒ‰ƒŠ‚ğ—˜—p‚µ‚½ŒÅ’èƒoƒbƒtƒ@ƒnƒbƒVƒ…ƒe[ƒuƒ‹ƒNƒ‰ƒX
+#include <string.h>//strcpy—p
 #include <unordered_map>//C++11ƒnƒbƒVƒ…ƒe[ƒuƒ‹
 class CTest8
 {
@@ -3308,6 +3376,7 @@ public:
 	{
 		char m_name[20];//–¼‘O
 		int m_age;//”N—î
+		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		DATA(const char* name, const int age)
 		{
 		#ifdef USE_STRCPY_S
@@ -3324,18 +3393,18 @@ public:
 	void addData(const DATA& data)
 	{
 		printf("CTest8::addData()\n");
-		CTempPolyStackAllocator poly_allocator(m_stack);
-		m_table->insert(std::make_pair(calcCRC32(data.m_name), data));
+		CTempPolyStackAllocator poly_allocator(m_stack);//‘½‘ÔƒAƒƒP[ƒ^‚ğƒNƒ‰ƒX“àƒXƒ^ƒbƒN‚É•ÏX
+		m_table->emplace(calcCRC32(data.m_name), data);//ƒRƒ“ƒeƒi“à‚É—v‘f‚ğ\’z
+		//m_table->insert(std::make_pair(calcCRC32(data.m_name), data));//insert‚ğg—p‚·‚éê‡
 	}
 	//ƒf[ƒ^QÆ
 	const DATA* find(const crc32_t name_crc) const
 	{
 		printf("CTest8::find()\n");
-		//CTempPolyStackAllocator poly_allocator(m_stack);//•s—v
-		const auto& obj = m_table->find(name_crc);
-		if (obj == m_table->cend())
+		const auto& obj = m_table->find(name_crc);//ƒL[iCRCj‚Åƒe[ƒuƒ‹ŒŸõ
+		if (obj == m_table->cend())//Œ©‚Â‚©‚ç‚È‚©‚Á‚½‚©H
 			return nullptr;
-		return &obj->second;
+		return &obj->second;//ƒf[ƒ^•”‚ğ•Ô‚·
 	}
 	const DATA* find(const char* name) const
 	{
@@ -3346,93 +3415,142 @@ public:
 	CTest8()
 	{
 		printf("CTest8::Consructor()\n");
-		CTempPolyStackAllocator poly_allocator(m_stack);
+		CTempPolyStackAllocator poly_allocator(m_stack);//‘½‘ÔƒAƒƒP[ƒ^‚ğƒNƒ‰ƒX“àƒXƒ^ƒbƒN‚É•ÏX
 		printf("new unordered_map\n");
-		m_table = new std::unordered_map<crc32_t, DATA>();
+		m_table = new std::unordered_map<crc32_t, DATA>();//ƒnƒbƒVƒ…ƒe[ƒuƒ‹¶¬
 		printf("unordered_map::reserve\n");
-		m_table->reserve(10);
+		m_table->reserve(10);//‚ ‚ç‚©‚¶‚ßƒe[ƒuƒ‹”‚ğ—\–ñi­‚µ‚Å‚àƒƒ‚ƒŠŒø—¦‚ğ‚æ‚­‚·‚é‚½‚ßj
 		printf("--\n");
 	}
 	//ƒfƒXƒgƒ‰ƒNƒ^
 	~CTest8()
 	{
 		printf("CTest8::Destructor()\n");
-		CTempPolyStackAllocator poly_allocator(m_stack);
+		CTempPolyStackAllocator poly_allocator(m_stack);//‘½‘ÔƒAƒƒP[ƒ^‚ğƒNƒ‰ƒX“àƒXƒ^ƒbƒN‚É•ÏX
 		printf("delete unordered_map\n");
-		delete m_table;
+		delete m_table;//ƒnƒbƒVƒ…ƒe[ƒuƒ‹‚ğ”jŠü
 		printf("--\n");
 	}
 private:
 	//ƒtƒB[ƒ‹ƒh
-	std::unordered_map<crc32_t, DATA>* m_table;//ƒf[ƒ^ƒe[ƒuƒ‹
-	CStackAllocatorWithBuff<1024> m_stack;//ƒXƒ^ƒbƒNƒAƒƒP[ƒ^
+	std::unordered_map<crc32_t, DATA>* m_table;//ƒnƒbƒVƒ…ƒe[ƒuƒ‹
+	CStackAllocatorWithBuff<1024> m_stack;//ƒNƒ‰ƒX“àƒXƒ^ƒbƒN
 };
 
 //--------------------
+//í’“ƒf[ƒ^i‘z’èj
+CStackAllocatorWithBuff<1024> s_parmaDataBuff;//í’“ƒf[ƒ^—pƒoƒbƒtƒ@
+static char* s_message1 = nullptr;//í’“ƒƒbƒZ[ƒW1
+static char* s_message2 = nullptr;//í’“ƒƒbƒZ[ƒW2
+
+//--------------------
+//ƒ[ƒNƒoƒbƒtƒ@
+CStackAllocatorWithBuff<4096> s_tempStack;//ˆêƒXƒ^ƒbƒNƒAƒƒP[ƒ^
+
+//--------------------
 //ƒeƒXƒg
-void test8()
+#include <string.h>//strcpy—p
+#include <string>//std::string—p
+void test8a()
 {
-	printf("---------- test8:•W€ƒ‰ƒCƒuƒ‰ƒŠ‚ğ•Ö—˜‚É—˜—p ----------\n");
+	printf("---------- test8a:•W€ƒ‰ƒCƒuƒ‰ƒŠ‚ğ•Ö—˜‚É—˜—p ----------\n");
+	//ˆêƒXƒ^ƒbƒNƒAƒƒP[ƒ^g—p
 	{
-		printf("----------CStackAllocAdp\n");
-		char str_buff[128];
-		CStackAllocatorWithBuff<1024> allocator;
-		CTempPolyStackAllocator poly_allocator(allocator);
+		printf("----------ˆêƒXƒ^ƒbƒNƒAƒƒP[ƒ^‚Å•¶š—ñ‘€ì\n");
+		CTempPolyStackAllocator poly_allocator(s_tempStack, CIStackAllocAdp::AUTO_REWIND);
 		{
 			std::string str1 = "•¶š—ñ‚Æ";
 			std::string str2 = "•¶š—ñ‚ğ";
 			std::string str3 = "Œ‹‡‚·‚é‚æ‚¤‚Èˆ—‚Å‚ÍA";
 			std::string str4 = "std::string‚ª";
-			std::string str5 = "‚â‚Á‚Ï‚è•Ö—˜!!";
+			std::string str5 = "‚â‚Á‚Ï‚è•Ö—˜!";
 			std::string str = str1 + str2 + str3 + str4 + str5;
+			str += "\n" "‚µ‚©‚µA‘f’¼‚Éstrcat()‚ğg‚Á‚½•û‚ª‚‘¬";
+			str += "\n" "std::string ‚ÍAfind(), replace(), substr() ‚È‚Ç‚ğg‚¢‚½‚¢‚É•Ö—˜";
+			str += "\n" "‚Ü‚½AuŒø—¦‰»‚Ì‚½‚ß‚Éˆêƒoƒbƒtƒ@‚ÅƒTƒCƒY‚ğŒ©Ï‚à‚Á‚ÄƒRƒs[v‚Ì‚æ‚¤‚Èˆ—‚É‚à\nŒø‰Ê“I";
+			str = "yˆêƒXƒ^ƒbƒNƒAƒƒP[ƒ^”Åz\n" + str;
+			printf("strpcy()\n");
+			const std::size_t size = str.length() + 1;
+			s_message1 = static_cast<char*>(s_parmaDataBuff.allocN(size, 1));
 		#ifdef USE_STRCPY_S
-			strcpy_s(str_buff, sizeof(str_buff), str.c_str());
+			strcpy_s(s_message1, size, str.c_str());
 		#else//USE_STRCPY_S
-			strcpy(str_buff, str.c_str());
+			strcpy(s_message1, str.c_str());
 		#endif//USE_STRCPY_S
 		}
-		printf("str_buff=\"%s\"\n", str_buff);
 	}
+	//•W€ƒAƒƒP[ƒ^imalloc / freejg—p
 	{
-		printf("----------CStdAllocAdp\n");
-		char str_buff[128];
+		printf("----------•W€ƒAƒƒP[ƒ^‚Å•¶š—ñ‘€ì\n");
 		{
 			std::string str1 = "•¶š—ñ‚Æ";
 			std::string str2 = "•¶š—ñ‚ğ";
 			std::string str3 = "Œ‹‡‚·‚é‚æ‚¤‚Èˆ—‚Å‚ÍA";
 			std::string str4 = "std::string‚ª";
-			std::string str5 = "‚â‚Á‚Ï‚è•Ö—˜!!";
+			std::string str5 = "‚â‚Á‚Ï‚è•Ö—˜!";
 			std::string str = str1 + str2 + str3 + str4 + str5;
+			str += "\n" "‚µ‚©‚µA‘f’¼‚Éstrcat()‚ğg‚Á‚½•û‚ª‚‘¬";
+			str += "\n" "std::string ‚ÍAfind(), replace(), substr() ‚È‚Ç‚ğg‚¢‚½‚¢‚É•Ö—˜";
+			str += "\n" "‚Ü‚½AuŒø—¦‰»‚Ì‚½‚ß‚Éˆêƒoƒbƒtƒ@‚ÅƒTƒCƒY‚ğŒ©Ï‚à‚Á‚ÄƒRƒs[v‚Ì‚æ‚¤‚Èˆ—‚É‚à\nŒø‰Ê“I";
+			str = "y•W€ƒAƒƒP[ƒ^”Åz\n" + str;
+			printf("strpcy()\n");
+			const std::size_t size = str.length() + 1;
+			s_message2 = static_cast<char*>(s_parmaDataBuff.allocN(size, 1));
 		#ifdef USE_STRCPY_S
-			strcpy_s(str_buff, sizeof(str_buff), str.c_str());
+			strcpy_s(s_message2, size, str.c_str());
 		#else//USE_STRCPY_S
-			strcpy(str_buff, str.c_str());
+			strcpy(s_message2, str.c_str());
 		#endif//USE_STRCPY_S
 		}
-		printf("str_buff=\"%s\"\n", str_buff);
 	}
 	{
-		CStackAllocatorWithBuff<8192> allocator;
-		CTempPolyStackAllocator poly_allocator(allocator);
+		printf("----------•¶š—ñ‘€ì‚ÌŒ‹‰Ê•\¦\n");
+		printf("s_message1=\"%s\"\n", s_message1);
+		printf("-----\n");
+		printf("s_message2=\"%s\"\n", s_message2);
+		printf("-----\n");
+		printf("s_parmaDataBuff=%d/%d/%d\n", s_parmaDataBuff.getTotal(), s_parmaDataBuff.getUsed(), s_parmaDataBuff.getRemain());
+		printf("s_tempStack=%d/%d/%d\n", s_tempStack.getTotal(), s_tempStack.getUsed(), s_tempStack.getRemain());
+	}
+}
+
+//--------------------
+//ƒeƒXƒg
+void test8b()
+{
+	printf("---------- test8b:•W€ƒ‰ƒCƒuƒ‰ƒŠ‚ğ•Ö—˜‚É—˜—p ----------\n");
+	//•W€ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒNƒ‰ƒX‚ğ“à•ï‚µ‚½ƒNƒ‰ƒX‚ÌƒeƒXƒg
+	{
+		printf("----------•W€ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒNƒ‰ƒX‚ğ“à•ï‚µ‚½ƒNƒ‰ƒX‚ğ‘€ì\n");
+		CTempPolyStackAllocator poly_allocator(s_tempStack, CIStackAllocAdp::AUTO_REWIND);//ˆêƒXƒ^ƒbƒNƒAƒƒP[ƒ^
 		{
-			printf("----------CTest8\n");
+			//ƒe[ƒuƒ‹“o˜^—p‚Ìƒf[ƒ^‚ğ€”õ
 			CTest8::DATA data1("‘¾˜Y", 40);
 			CTest8::DATA data2("Ÿ˜Y", 30);
 			CTest8::DATA data3("O˜Y", 20);
+			
+			//ƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬iˆêƒXƒ^ƒbƒNƒAƒƒP[ƒ^‚Éì¬j
 			printf("new CTest8\n");
 			CTest8* table = new CTest8();
+			
+			//ƒe[ƒuƒ‹‚Éƒf[ƒ^‚ğ“o˜^
 			table->addData(data1);
 			table->addData(data2);
 			table->addData(data3);
+
+			//ƒe[ƒuƒ‹‚©‚çƒf[ƒ^‚ğQÆ
 			const CTest8::DATA* ref1 = table->find("‘¾˜Y");
 			const CTest8::DATA* ref2 = table->find("Ÿ˜Y");
 			const CTest8::DATA* ref3 = table->find("O˜Y");
+			const CTest8::DATA* ref4 = table->find("l˜N");
 			if (ref1) printf("ref1: name=\"%s\", age=%d\n", ref1->m_name, ref1->m_age);
 			if (ref2) printf("ref2: name=\"%s\", age=%d\n", ref2->m_name, ref2->m_age);
 			if (ref3) printf("ref3: name=\"%s\", age=%d\n", ref3->m_name, ref3->m_age);
+			if (ref4) printf("ref4: name=\"%s\", age=%d\n", ref4->m_name, ref4->m_age);
+
+			//ƒCƒ“ƒXƒ^ƒ“ƒX”jŠü
 			printf("delete CTest8\n");
 			delete table;
-			printf("----------CTest8:End\n");
 		}
 	}
 }
@@ -4394,7 +4512,8 @@ int main(const int argc, const char* argv[])
 	test5();
 	test6();
 	test7();
-	test8();
+	test8a();
+	test8b();
 	test9();
 	printf("---------- main:end ----------\n");
 	return EXIT_SUCCESS;

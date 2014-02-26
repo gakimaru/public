@@ -266,203 +266,203 @@ CTest6::Destructor : name="テスト6-1a"
 placement delete(p=0x0x800202c0, i_allocator="CStdAllocAdp":0/0/0)
 ----------CMonoAllocAdp
 placement new(size=12, i_allocator="CMonoAllocAdp":128/0/128)
-  p=0x0x28aae1
+  p=0x0x28a974
 CTest6::Constructor : name="テスト6-2a"
-obj_p=0x0x28aae1
-delete_ptr(p=0x0x28aae1, i_allocator="CMonoAllocAdp":128/128/0)
+obj_p=0x0x28a974
+delete_ptr(p=0x0x28a974, i_allocator="CMonoAllocAdp":128/128/0)
 CTest6::Destructor : name="テスト6-2a"
-placement delete(p=0x0x28aae1, i_allocator="CMonoAllocAdp":128/128/0)
+placement delete(p=0x0x28a974, i_allocator="CMonoAllocAdp":128/128/0)
 placement new[](size=40, i_allocator="CMonoAllocAdp":128/0/128)
-  p=0x0x28aae1
+  p=0x0x28a974
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
-obj_p=0x0x28aae5
-delete_ptr(p=0x0x28aae5, array_num=3, i_allocator="CMonoAllocAdp":128/128/0)
+obj_p=0x0x28a978
+delete_ptr(p=0x0x28a978, array_num=3, i_allocator="CMonoAllocAdp":128/128/0)
 CTest6::Destructor : name="(default)"
 CTest6::Destructor : name="(default)"
 CTest6::Destructor : name="(default)"
-placement delete[](p=0x0x28aae5, i_allocator="CMonoAllocAdp":128/128/0)
+placement delete[](p=0x0x28a978, i_allocator="CMonoAllocAdp":128/128/0)
 placement new(size=24, i_allocator="CMonoAllocAdp":128/0/128)
-  p=0x0x28aae1
+  p=0x0x28a974
 CTest6::Constructor : name="テスト6-2b"
 CTest6ex::Constructor
 CDerivedTest6::Constructor : name="テスト6-2b"
-obj_p=0x0x28aaed
-delete_ptr(p=0x0x28aaed, i_allocator="CMonoAllocAdp":128/128/0)
+obj_p=0x0x28a980
+delete_ptr(p=0x0x28a980, i_allocator="CMonoAllocAdp":128/128/0)
 CDerivedTest6::Destructor : name="テスト6-2b"
 CTest6ex::Destructor
 CTest6::Destructor : name="テスト6-2b"
-placement delete(p=0x0x28aaed, i_allocator="CMonoAllocAdp":128/128/0)
+placement delete(p=0x0x28a980, i_allocator="CMonoAllocAdp":128/128/0)
 ----------CStackAllocAdp
 placement new(size=12, i_allocator="CStackAllocAdp":128/0/128)
-  p=0x0x28aae4
+  p=0x0x28a974
 CTest6::Constructor : name="テスト6-3a"
-obj_p=0x0x28aae4
-delete_ptr(p=0x0x28aae4, i_allocator="CStackAllocAdp":128/12/116)
+obj_p=0x0x28a974
+delete_ptr(p=0x0x28a974, i_allocator="CStackAllocAdp":128/12/116)
 CTest6::Destructor : name="テスト6-3a"
-placement delete(p=0x0x28aae4, i_allocator="CStackAllocAdp":128/12/116)
+placement delete(p=0x0x28a974, i_allocator="CStackAllocAdp":128/12/116)
 placement new[](size=40, i_allocator="CStackAllocAdp":128/12/116)
-  p=0x0x28aaf0
+  p=0x0x28a980
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
-obj_p=0x0x28aaf4
-delete_ptr(p=0x0x28aaf4, array_num=3, i_allocator="CStackAllocAdp":128/52/76)
+obj_p=0x0x28a984
+delete_ptr(p=0x0x28a984, array_num=3, i_allocator="CStackAllocAdp":128/52/76)
 CTest6::Destructor : name="(default)"
 CTest6::Destructor : name="(default)"
 CTest6::Destructor : name="(default)"
-placement delete[](p=0x0x28aaf4, i_allocator="CStackAllocAdp":128/52/76)
+placement delete[](p=0x0x28a984, i_allocator="CStackAllocAdp":128/52/76)
 placement new(size=24, i_allocator="CStackAllocAdp":128/12/116)
-  p=0x0x28aaf0
+  p=0x0x28a980
 CTest6::Constructor : name="テスト6-3b"
 CTest6ex::Constructor
 CDerivedTest6::Constructor : name="テスト6-3b"
-obj_p=0x0x28aafc
-delete_ptr(p=0x0x28aafc, i_allocator="CStackAllocAdp":128/36/92)
+obj_p=0x0x28a98c
+delete_ptr(p=0x0x28a98c, i_allocator="CStackAllocAdp":128/36/92)
 CDerivedTest6::Destructor : name="テスト6-3b"
 CTest6ex::Destructor
 CTest6::Destructor : name="テスト6-3b"
-placement delete(p=0x0x28aafc, i_allocator="CStackAllocAdp":128/36/92)
+placement delete(p=0x0x28a98c, i_allocator="CStackAllocAdp":128/36/92)
 ----------CDualStackAllocAdp
 placement new(size=12, i_allocator="CDualStackAllocAdp":128/0/128)
-  p=0x0x28ab60
+  p=0x0x28a9f0
 CTest6::Constructor : name="テスト6-4a"
-obj_p=0x0x28ab60
-delete_ptr(p=0x0x28ab60, i_allocator="CDualStackAllocAdp":128/12/116)
+obj_p=0x0x28a9f0
+delete_ptr(p=0x0x28a9f0, i_allocator="CDualStackAllocAdp":128/12/116)
 CTest6::Destructor : name="テスト6-4a"
-placement delete(p=0x0x28ab60, i_allocator="CDualStackAllocAdp":128/12/116)
+placement delete(p=0x0x28a9f0, i_allocator="CDualStackAllocAdp":128/12/116)
 placement new[](size=40, i_allocator="CDualStackAllocAdp":128/12/116)
-  p=0x0x28ab38
+  p=0x0x28a9c8
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
-obj_p=0x0x28ab3c
-delete_ptr(p=0x0x28ab3c, array_num=3, i_allocator="CDualStackAllocAdp":128/52/76)
+obj_p=0x0x28a9cc
+delete_ptr(p=0x0x28a9cc, array_num=3, i_allocator="CDualStackAllocAdp":128/52/76)
 CTest6::Destructor : name="(default)"
 CTest6::Destructor : name="(default)"
 CTest6::Destructor : name="(default)"
-placement delete[](p=0x0x28ab3c, i_allocator="CDualStackAllocAdp":128/52/76)
+placement delete[](p=0x0x28a9cc, i_allocator="CDualStackAllocAdp":128/52/76)
 placement new(size=24, i_allocator="CDualStackAllocAdp":128/12/116)
-  p=0x0x28ab48
+  p=0x0x28a9d8
 CTest6::Constructor : name="テスト6-4b"
 CTest6ex::Constructor
 CDerivedTest6::Constructor : name="テスト6-4b"
-obj_p=0x0x28ab54
-delete_ptr(p=0x0x28ab54, i_allocator="CDualStackAllocAdp":128/36/92)
+obj_p=0x0x28a9e4
+delete_ptr(p=0x0x28a9e4, i_allocator="CDualStackAllocAdp":128/36/92)
 CDerivedTest6::Destructor : name="テスト6-4b"
 CTest6ex::Destructor
 CTest6::Destructor : name="テスト6-4b"
-placement delete(p=0x0x28ab54, i_allocator="CDualStackAllocAdp":128/36/92)
+placement delete(p=0x0x28a9e4, i_allocator="CDualStackAllocAdp":128/36/92)
 ----------CIStackAllocAdp on CStackAllocAdp
 placement new(size=12, i_allocator="CIStackAllocAdp":128/0/128)
-  p=0x0x28aae4
+  p=0x0x28a974
 CTest6::Constructor : name="テスト6-5a"
-obj_p=0x0x28aae4
-delete_ptr(p=0x0x28aae4, i_allocator="CIStackAllocAdp":128/12/116)
+obj_p=0x0x28a974
+delete_ptr(p=0x0x28a974, i_allocator="CIStackAllocAdp":128/12/116)
 CTest6::Destructor : name="テスト6-5a"
-placement delete(p=0x0x28aae4, i_allocator="CIStackAllocAdp":128/12/116)
+placement delete(p=0x0x28a974, i_allocator="CIStackAllocAdp":128/12/116)
 placement new[](size=40, i_allocator="CIStackAllocAdp":128/12/116)
-  p=0x0x28aaf0
+  p=0x0x28a980
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
-obj_p=0x0x28aaf4
-delete_ptr(p=0x0x28aaf4, array_num=3, i_allocator="CIStackAllocAdp":128/52/76)
+obj_p=0x0x28a984
+delete_ptr(p=0x0x28a984, array_num=3, i_allocator="CIStackAllocAdp":128/52/76)
 CTest6::Destructor : name="(default)"
 CTest6::Destructor : name="(default)"
 CTest6::Destructor : name="(default)"
-placement delete[](p=0x0x28aaf4, i_allocator="CIStackAllocAdp":128/52/76)
+placement delete[](p=0x0x28a984, i_allocator="CIStackAllocAdp":128/52/76)
 placement new(size=24, i_allocator="CIStackAllocAdp":128/12/116)
-  p=0x0x28aaf0
+  p=0x0x28a980
 CTest6::Constructor : name="テスト6-5b"
 CTest6ex::Constructor
 CDerivedTest6::Constructor : name="テスト6-5b"
-obj_p=0x0x28aafc
-delete_ptr(p=0x0x28aafc, i_allocator="CIStackAllocAdp":128/36/92)
+obj_p=0x0x28a98c
+delete_ptr(p=0x0x28a98c, i_allocator="CIStackAllocAdp":128/36/92)
 CDerivedTest6::Destructor : name="テスト6-5b"
 CTest6ex::Destructor
 CTest6::Destructor : name="テスト6-5b"
-placement delete(p=0x0x28aafc, i_allocator="CIStackAllocAdp":128/36/92)
+placement delete(p=0x0x28a98c, i_allocator="CIStackAllocAdp":128/36/92)
 ----------CIStackAllocAdp on CDualStackAllocAdp
 placement new(size=12, i_allocator="CIStackAllocAdp":128/0/128)
-  p=0x0x28aaec
+  p=0x0x28a97c
 CTest6::Constructor : name="テスト6-6a"
-obj_p=0x0x28aaec
-delete_ptr(p=0x0x28aaec, i_allocator="CIStackAllocAdp":128/12/116)
+obj_p=0x0x28a97c
+delete_ptr(p=0x0x28a97c, i_allocator="CIStackAllocAdp":128/12/116)
 CTest6::Destructor : name="テスト6-6a"
-placement delete(p=0x0x28aaec, i_allocator="CIStackAllocAdp":128/12/116)
+placement delete(p=0x0x28a97c, i_allocator="CIStackAllocAdp":128/12/116)
 placement new[](size=40, i_allocator="CIStackAllocAdp":128/12/116)
-  p=0x0x28aaf8
+  p=0x0x28a988
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
 CTest6::Constructor : name="(default)"
 CTest6::DefaultConstructor : name="(default)"
-obj_p=0x0x28aafc
-delete_ptr(p=0x0x28aafc, array_num=3, i_allocator="CIStackAllocAdp":128/52/76)
+obj_p=0x0x28a98c
+delete_ptr(p=0x0x28a98c, array_num=3, i_allocator="CIStackAllocAdp":128/52/76)
 CTest6::Destructor : name="(default)"
 CTest6::Destructor : name="(default)"
 CTest6::Destructor : name="(default)"
-placement delete[](p=0x0x28aafc, i_allocator="CIStackAllocAdp":128/52/76)
+placement delete[](p=0x0x28a98c, i_allocator="CIStackAllocAdp":128/52/76)
 placement new(size=24, i_allocator="CIStackAllocAdp":128/12/116)
-  p=0x0x28aaf8
+  p=0x0x28a988
 CTest6::Constructor : name="テスト6-6b"
 CTest6ex::Constructor
 CDerivedTest6::Constructor : name="テスト6-6b"
-obj_p=0x0x28ab04
-delete_ptr(p=0x0x28ab04, i_allocator="CIStackAllocAdp":128/36/92)
+obj_p=0x0x28a994
+delete_ptr(p=0x0x28a994, i_allocator="CIStackAllocAdp":128/36/92)
 CDerivedTest6::Destructor : name="テスト6-6b"
 CTest6ex::Destructor
 CTest6::Destructor : name="テスト6-6b"
-placement delete(p=0x0x28ab04, i_allocator="CIStackAllocAdp":128/36/92)
+placement delete(p=0x0x28a994, i_allocator="CIStackAllocAdp":128/36/92)
 ----------CPoolAllocAdp
 placement new(size=12, i_allocator="CPoolAllocAdp":120/0/120)
-  p=0x0x28aaec
+  p=0x0x28a97c
 CTest6::Constructor : name="テスト6-7a"
-obj_p=0x0x28aaec
-delete_ptr(p=0x0x28aaec, i_allocator="CPoolAllocAdp":120/24/96)
+obj_p=0x0x28a97c
+delete_ptr(p=0x0x28a97c, i_allocator="CPoolAllocAdp":120/24/96)
 CTest6::Destructor : name="テスト6-7a"
-placement delete(p=0x0x28aaec, i_allocator="CPoolAllocAdp":120/24/96)
+placement delete(p=0x0x28a97c, i_allocator="CPoolAllocAdp":120/24/96)
 placement new[](size=40, i_allocator="CPoolAllocAdp":120/0/120)
   p=0x0x0
 obj_p=0x0x0
 delete_ptr(p=0x0x0, array_num=3, i_allocator="CPoolAllocAdp":120/0/120)
 placement new(size=24, i_allocator="CPoolAllocAdp":120/0/120)
-  p=0x0x28ab04
+  p=0x0x28a994
 CTest6::Constructor : name="テスト6-7b"
 CTest6ex::Constructor
 CDerivedTest6::Constructor : name="テスト6-7b"
-obj_p=0x0x28ab10
-delete_ptr(p=0x0x28ab10, i_allocator="CPoolAllocAdp":120/24/96)
+obj_p=0x0x28a9a0
+delete_ptr(p=0x0x28a9a0, i_allocator="CPoolAllocAdp":120/24/96)
 CDerivedTest6::Destructor : name="テスト6-7b"
 CTest6ex::Destructor
 CTest6::Destructor : name="テスト6-7b"
-placement delete(p=0x0x28ab10, i_allocator="CPoolAllocAdp":120/24/96)
+placement delete(p=0x0x28a9a0, i_allocator="CPoolAllocAdp":120/24/96)
 ---------- test7:グローバルnew/delete + 共通アロケータインターフェース ----------
 ----------CStdAllocAdp
 new(size=12, poly_allocator="CStdAllocAdp":0/0/0)
-  fileName="allocator.cpp(3040) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7"
+  fileName="allocator.cpp(3087) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7", align=4
   p=0x0x80020498
 CTest7::Constructor : name="テスト7-1a"
 obj_p=0x0x80020498
 CTest7::Destructor : name="テスト7-1a"
 delete(p=0x0x80020498, poly_allocator="CStdAllocAdp":0/0/0)
 new[](size=40, poly_allocator="CStdAllocAdp":0/0/0)
-  fileName="allocator.cpp(3052) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7"
+  fileName="allocator.cpp(3100) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7", align=4
   p=0x0x80020498
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
@@ -476,7 +476,7 @@ CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
 delete[](p=0x0x80020498, poly_allocator="CStdAllocAdp":0/0/0)
 new(size=24, poly_allocator="CStdAllocAdp":0/0/0)
-  fileName="allocator.cpp(3064) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7"
+  fileName="allocator.cpp(3113) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7", align=4
   p=0x0x80020498
 CTest7::Constructor : name="テスト7-1b"
 CTest7ex::Constructor
@@ -488,192 +488,192 @@ CTest7::Destructor : name="テスト7-1b"
 delete(p=0x0x80020498, poly_allocator="CStdAllocAdp":0/0/0)
 ----------CMonoAllocAdp
 new(size=12, poly_allocator="CMonoAllocAdp":128/0/128)
-  fileName="allocator.cpp(3040) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7"
-  p=0x0x28aaf5
+  fileName="allocator.cpp(3087) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7", align=4
+  p=0x0x28a948
 CTest7::Constructor : name="テスト7-2a"
-obj_p=0x0x28aaf5
+obj_p=0x0x28a948
 CTest7::Destructor : name="テスト7-2a"
-delete(p=0x0x28aaf5, poly_allocator="CMonoAllocAdp":128/128/0)
+delete(p=0x0x28a948, poly_allocator="CMonoAllocAdp":128/128/0)
 new[](size=40, poly_allocator="CMonoAllocAdp":128/0/128)
-  fileName="allocator.cpp(3052) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7"
-  p=0x0x28aaf5
+  fileName="allocator.cpp(3100) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7", align=4
+  p=0x0x28a948
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
-obj_p=0x0x28aaf9
+obj_p=0x0x28a94c
 CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
-delete[](p=0x0x28aaf5, poly_allocator="CMonoAllocAdp":128/128/0)
+delete[](p=0x0x28a948, poly_allocator="CMonoAllocAdp":128/128/0)
 new(size=24, poly_allocator="CMonoAllocAdp":128/0/128)
-  fileName="allocator.cpp(3064) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7"
-  p=0x0x28aaf5
+  fileName="allocator.cpp(3113) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7", align=4
+  p=0x0x28a948
 CTest7::Constructor : name="テスト7-2b"
 CTest7ex::Constructor
 CDerivedTest7::Constructor : name="テスト7-2b"
-obj_p=0x0x28ab01
+obj_p=0x0x28a954
 CDerivedTest7::Destructor : name="テスト7-2b"
 CTest7ex::Destructor
 CTest7::Destructor : name="テスト7-2b"
-delete(p=0x0x28aaf5, poly_allocator="CMonoAllocAdp":128/128/0)
+delete(p=0x0x28a948, poly_allocator="CMonoAllocAdp":128/128/0)
 ----------CStackAllocAdp
 new(size=12, poly_allocator="CStackAllocAdp":128/0/128)
-  fileName="allocator.cpp(3040) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7"
-  p=0x0x28aaf8
+  fileName="allocator.cpp(3087) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7", align=4
+  p=0x0x28a948
 CTest7::Constructor : name="テスト7-3a"
-obj_p=0x0x28aaf8
+obj_p=0x0x28a948
 CTest7::Destructor : name="テスト7-3a"
-delete(p=0x0x28aaf8, poly_allocator="CStackAllocAdp":128/12/116)
+delete(p=0x0x28a948, poly_allocator="CStackAllocAdp":128/12/116)
 new[](size=40, poly_allocator="CStackAllocAdp":128/12/116)
-  fileName="allocator.cpp(3052) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7"
-  p=0x0x28ab04
+  fileName="allocator.cpp(3100) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7", align=4
+  p=0x0x28a954
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
-obj_p=0x0x28ab08
+obj_p=0x0x28a958
 CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
-delete[](p=0x0x28ab04, poly_allocator="CStackAllocAdp":128/52/76)
+delete[](p=0x0x28a954, poly_allocator="CStackAllocAdp":128/52/76)
 new(size=24, poly_allocator="CStackAllocAdp":128/12/116)
-  fileName="allocator.cpp(3064) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7"
-  p=0x0x28ab04
+  fileName="allocator.cpp(3113) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7", align=4
+  p=0x0x28a954
 CTest7::Constructor : name="テスト7-3b"
 CTest7ex::Constructor
 CDerivedTest7::Constructor : name="テスト7-3b"
-obj_p=0x0x28ab10
+obj_p=0x0x28a960
 CDerivedTest7::Destructor : name="テスト7-3b"
 CTest7ex::Destructor
 CTest7::Destructor : name="テスト7-3b"
-delete(p=0x0x28ab04, poly_allocator="CStackAllocAdp":128/36/92)
+delete(p=0x0x28a954, poly_allocator="CStackAllocAdp":128/36/92)
 ----------CDualStackAllocAdp
 new(size=12, poly_allocator="CDualStackAllocAdp":128/0/128)
-  fileName="allocator.cpp(3040) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7"
-  p=0x0x28ab74
+  fileName="allocator.cpp(3087) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7", align=4
+  p=0x0x28a9c4
 CTest7::Constructor : name="テスト7-4a"
-obj_p=0x0x28ab74
+obj_p=0x0x28a9c4
 CTest7::Destructor : name="テスト7-4a"
-delete(p=0x0x28ab74, poly_allocator="CDualStackAllocAdp":128/12/116)
+delete(p=0x0x28a9c4, poly_allocator="CDualStackAllocAdp":128/12/116)
 new[](size=40, poly_allocator="CDualStackAllocAdp":128/12/116)
-  fileName="allocator.cpp(3052) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7"
-  p=0x0x28ab4c
+  fileName="allocator.cpp(3100) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7", align=4
+  p=0x0x28a99c
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
-obj_p=0x0x28ab50
+obj_p=0x0x28a9a0
 CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
-delete[](p=0x0x28ab4c, poly_allocator="CDualStackAllocAdp":128/52/76)
+delete[](p=0x0x28a99c, poly_allocator="CDualStackAllocAdp":128/52/76)
 new(size=24, poly_allocator="CDualStackAllocAdp":128/12/116)
-  fileName="allocator.cpp(3064) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7"
-  p=0x0x28ab5c
+  fileName="allocator.cpp(3113) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7", align=4
+  p=0x0x28a9ac
 CTest7::Constructor : name="テスト7-4b"
 CTest7ex::Constructor
 CDerivedTest7::Constructor : name="テスト7-4b"
-obj_p=0x0x28ab68
+obj_p=0x0x28a9b8
 CDerivedTest7::Destructor : name="テスト7-4b"
 CTest7ex::Destructor
 CTest7::Destructor : name="テスト7-4b"
-delete(p=0x0x28ab5c, poly_allocator="CDualStackAllocAdp":128/36/92)
+delete(p=0x0x28a9ac, poly_allocator="CDualStackAllocAdp":128/36/92)
 ----------CIStackAllocAdp on CStackAllocAdp
 new(size=12, poly_allocator="CIStackAllocAdp":128/0/128)
-  fileName="allocator.cpp(3040) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7"
-  p=0x0x28aaf8
+  fileName="allocator.cpp(3087) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7", align=4
+  p=0x0x28a948
 CTest7::Constructor : name="テスト7-5a"
-obj_p=0x0x28aaf8
+obj_p=0x0x28a948
 CTest7::Destructor : name="テスト7-5a"
-delete(p=0x0x28aaf8, poly_allocator="CIStackAllocAdp":128/12/116)
+delete(p=0x0x28a948, poly_allocator="CIStackAllocAdp":128/12/116)
 new[](size=40, poly_allocator="CIStackAllocAdp":128/12/116)
-  fileName="allocator.cpp(3052) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7"
-  p=0x0x28ab04
+  fileName="allocator.cpp(3100) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7", align=4
+  p=0x0x28a954
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
-obj_p=0x0x28ab08
+obj_p=0x0x28a958
 CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
-delete[](p=0x0x28ab04, poly_allocator="CIStackAllocAdp":128/52/76)
+delete[](p=0x0x28a954, poly_allocator="CIStackAllocAdp":128/52/76)
 new(size=24, poly_allocator="CIStackAllocAdp":128/12/116)
-  fileName="allocator.cpp(3064) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7"
-  p=0x0x28ab04
+  fileName="allocator.cpp(3113) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7", align=4
+  p=0x0x28a954
 CTest7::Constructor : name="テスト7-5b"
 CTest7ex::Constructor
 CDerivedTest7::Constructor : name="テスト7-5b"
-obj_p=0x0x28ab10
+obj_p=0x0x28a960
 CDerivedTest7::Destructor : name="テスト7-5b"
 CTest7ex::Destructor
 CTest7::Destructor : name="テスト7-5b"
-delete(p=0x0x28ab04, poly_allocator="CIStackAllocAdp":128/36/92)
+delete(p=0x0x28a954, poly_allocator="CIStackAllocAdp":128/36/92)
 ----------CIStackAllocAdp on CDualStackAllocAdp
 new(size=12, poly_allocator="CIStackAllocAdp":128/0/128)
-  fileName="allocator.cpp(3040) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7"
-  p=0x0x28ab00
+  fileName="allocator.cpp(3087) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7", align=4
+  p=0x0x28a950
 CTest7::Constructor : name="テスト7-6a"
-obj_p=0x0x28ab00
+obj_p=0x0x28a950
 CTest7::Destructor : name="テスト7-6a"
-delete(p=0x0x28ab00, poly_allocator="CIStackAllocAdp":128/12/116)
+delete(p=0x0x28a950, poly_allocator="CIStackAllocAdp":128/12/116)
 new[](size=40, poly_allocator="CIStackAllocAdp":128/12/116)
-  fileName="allocator.cpp(3052) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7"
-  p=0x0x28ab0c
+  fileName="allocator.cpp(3100) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7", align=4
+  p=0x0x28a95c
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
 CTest7::Constructor : name="(default)"
 CTest7::DefaultConstructor : name="(default)"
-obj_p=0x0x28ab10
+obj_p=0x0x28a960
 CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
 CTest7::Destructor : name="(default)"
-delete[](p=0x0x28ab0c, poly_allocator="CIStackAllocAdp":128/52/76)
+delete[](p=0x0x28a95c, poly_allocator="CIStackAllocAdp":128/52/76)
 new(size=24, poly_allocator="CIStackAllocAdp":128/12/116)
-  fileName="allocator.cpp(3064) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7"
-  p=0x0x28ab0c
+  fileName="allocator.cpp(3113) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7", align=4
+  p=0x0x28a95c
 CTest7::Constructor : name="テスト7-6b"
 CTest7ex::Constructor
 CDerivedTest7::Constructor : name="テスト7-6b"
-obj_p=0x0x28ab18
+obj_p=0x0x28a968
 CDerivedTest7::Destructor : name="テスト7-6b"
 CTest7ex::Destructor
 CTest7::Destructor : name="テスト7-6b"
-delete(p=0x0x28ab0c, poly_allocator="CIStackAllocAdp":128/36/92)
+delete(p=0x0x28a95c, poly_allocator="CIStackAllocAdp":128/36/92)
 ----------CPoolAllocAdp
 new(size=12, poly_allocator="CPoolAllocAdp":120/0/120)
-  fileName="allocator.cpp(3040) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7"
-  p=0x0x28ab00
+  fileName="allocator.cpp(3087) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub1(const char*)", callPointName="(unknown call-point)", time=0.000, typename="6CTest7", align=4
+  p=0x0x28a950
 CTest7::Constructor : name="テスト7-7a"
-obj_p=0x0x28ab00
+obj_p=0x0x28a950
 CTest7::Destructor : name="テスト7-7a"
-delete(p=0x0x28ab00, poly_allocator="CPoolAllocAdp":120/24/96)
+delete(p=0x0x28a950, poly_allocator="CPoolAllocAdp":120/24/96)
 new[](size=40, poly_allocator="CPoolAllocAdp":120/0/120)
-  fileName="allocator.cpp(3052) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7"
+  fileName="allocator.cpp(3100) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub2()", callPointName="(unknown call-point)", time=0.000, typename="A3_6CTest7", align=4
   p=0x0x0
 obj_p=0x0x0
 new(size=24, poly_allocator="CPoolAllocAdp":120/0/120)
-  fileName="allocator.cpp(3064) [Wed Feb 26 06:17:10 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7"
-  p=0x0x28ab18
+  fileName="allocator.cpp(3113) [Wed Feb 26 17:31:29 2014]", funcName="void test7_sub3(const char*)", callPointName="(unknown call-point)", time=0.000, typename="13CDerivedTest7", align=4
+  p=0x0x28a968
 CTest7::Constructor : name="テスト7-7b"
 CTest7ex::Constructor
 CDerivedTest7::Constructor : name="テスト7-7b"
-obj_p=0x0x28ab24
+obj_p=0x0x28a974
 CDerivedTest7::Destructor : name="テスト7-7b"
 CTest7ex::Destructor
 CTest7::Destructor : name="テスト7-7b"
-delete(p=0x0x28ab18, poly_allocator="CPoolAllocAdp":120/24/96)
+delete(p=0x0x28a968, poly_allocator="CPoolAllocAdp":120/24/96)
 ---------- test8:標準ライブラリを便利に利用 ----------
 ----------CStackAllocAdp
 new(size=25, poly_allocator="CStackAllocAdp":1024/0/1024)
@@ -844,18 +844,18 @@ marker=(31,939), begin=(31,939), counter=(0,0)
 new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
   p=0x0x80020498
 new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
-  p=0x0x80020550
+  p=0x0x800205f0
 new(size=12, poly_allocator="CSmartStackAllocAdp":1024/116/908)
   p=0x0x4210e8
 CTest9::Constructor : name="スレッドテスト9-1(N)"
 new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
-  p=0x0x800206b8
+  p=0x0x80020758
 new(size=12, poly_allocator="CSmartStackAllocAdp":1024/128/896)
   p=0x0x4210f4
 CTest9::Constructor : name="スレッドテスト9-2(N)"
 new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
-new(size=12, poly_allocator="CSmartStackAllocAdp":1024/140/884)
   p=0x0x800208c0
+new(size=12, poly_allocator="CSmartStackAllocAdp":1024/140/884)
   p=0x0x421468
 CTest9::Constructor : name="スレッドテスト9-3(R)"
 new(size=12, poly_allocator="CSmartStackAllocAdp":1024/152/872)
@@ -863,18 +863,18 @@ new(size=12, poly_allocator="CSmartStackAllocAdp":1024/152/872)
 CTest9::Constructor : name="スレッドテスト9-4(R)"
 sleep(500msec)
 marker=(55,915), begin=(31,939), counter=(2,2)
-CTest9::Destructor : name="スレッドテスト9-2(N)"
-delete(p=0x0x4210f4, poly_allocator="CSmartStackAllocAdp":1024/164/860)
+CTest9::Destructor : name="スレッドテスト9-3(R)"
 CTest9::Destructor : name="スレッドテスト9-1(N)"
-delete(p=0x0x80020550, poly_allocator="CStdAllocAdp":0/0/0)
+CTest9::Destructor : name="スレッドテスト9-2(N)"
+delete(p=0x0x421468, poly_allocator="CSmartStackAllocAdp":1024/164/860)
 delete(p=0x0x4210e8, poly_allocator="CSmartStackAllocAdp":1024/164/860)
+delete(p=0x0x4210f4, poly_allocator="CSmartStackAllocAdp":1024/164/860)
+delete(p=0x0x80020758, poly_allocator="CStdAllocAdp":0/0/0)
 delete(p=0x0x80020498, poly_allocator="CStdAllocAdp":0/0/0)
+delete(p=0x0x800205f0, poly_allocator="CStdAllocAdp":0/0/0)
 CTest9::Destructor : name="スレッドテスト9-4(R)"
 delete(p=0x0x42145c, poly_allocator="CSmartStackAllocAdp":1024/140/884)
 delete(p=0x0x800208c0, poly_allocator="CStdAllocAdp":0/0/0)
-CTest9::Destructor : name="スレッドテスト9-3(R)"
-delete(p=0x0x421468, poly_allocator="CSmartStackAllocAdp":1024/140/884)
-delete(p=0x0x800206b8, poly_allocator="CStdAllocAdp":0/0/0)
 join
 marker=(31,939), begin=(31,939), counter=(0,0)
 new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
@@ -913,50 +913,50 @@ new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
 new(size=12, poly_allocator="CSmartStackAllocAdp":1024/164/860)
   p=0x0x421100
 CTest9::Constructor : name="スレッドテスト9-9(N)"
-sleep(200msec)
-new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
-  p=0x0x80020ba0
 CTest9::Destructor : name="スレッドテスト9-5(N)"
 delete(p=0x0x4210e8, poly_allocator="CSmartStackAllocAdp":1024/176/848)
 delete(p=0x0x80020498, poly_allocator="CStdAllocAdp":0/0/0)
+sleep(200msec)
+new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
+  p=0x0x80020498
 new(size=12, poly_allocator="CSmartStackAllocAdp":1024/176/848)
   p=0x0x42110c
 CTest9::Constructor : name="スレッドテスト9-10(N)"
 CTest9::Destructor : name="スレッドテスト9-6(N)"
-sleep(200msec)
 delete(p=0x0x4210f4, poly_allocator="CSmartStackAllocAdp":1024/188/836)
-new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
 delete(p=0x0x80020600, poly_allocator="CStdAllocAdp":0/0/0)
-  p=0x0x80020498
-new(size=12, poly_allocator="CSmartStackAllocAdp":1024/188/836)
-  p=0x0x421450
-CTest9::Constructor : name="スレッドテスト9-11(R)"
 sleep(200msec)
 new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
   p=0x0x80020600
+new(size=12, poly_allocator="CSmartStackAllocAdp":1024/188/836)
+  p=0x0x421450
+CTest9::Constructor : name="スレッドテスト9-11(R)"
 CTest9::Destructor : name="スレッドテスト9-7(R)"
 delete(p=0x0x421468, poly_allocator="CSmartStackAllocAdp":1024/200/824)
 delete(p=0x0x80020768, poly_allocator="CStdAllocAdp":0/0/0)
+sleep(200msec)
+new(size=36, poly_allocator="CStdAllocAdp":0/0/0)
+  p=0x0x80020768
 new(size=12, poly_allocator="CSmartStackAllocAdp":1024/200/824)
   p=0x0x421444
 CTest9::Constructor : name="スレッドテスト9-12(R)"
-sleep(200msec)
 CTest9::Destructor : name="スレッドテスト9-8(R)"
-marker=(79,891), begin=(31,939), counter=(2,3)
 delete(p=0x0x42145c, poly_allocator="CSmartStackAllocAdp":1024/212/812)
 delete(p=0x0x800208d0, poly_allocator="CStdAllocAdp":0/0/0)
+sleep(200msec)
+marker=(79,891), begin=(31,939), counter=(2,2)
 CTest9::Destructor : name="スレッドテスト9-9(N)"
 delete(p=0x0x421100, poly_allocator="CSmartStackAllocAdp":1024/212/812)
 delete(p=0x0x80020a38, poly_allocator="CStdAllocAdp":0/0/0)
 CTest9::Destructor : name="スレッドテスト9-10(N)"
 delete(p=0x0x42110c, poly_allocator="CSmartStackAllocAdp":1024/212/812)
-delete(p=0x0x80020ba0, poly_allocator="CStdAllocAdp":0/0/0)
+delete(p=0x0x80020498, poly_allocator="CStdAllocAdp":0/0/0)
 CTest9::Destructor : name="スレッドテスト9-11(R)"
 delete(p=0x0x421450, poly_allocator="CSmartStackAllocAdp":1024/164/860)
-delete(p=0x0x80020498, poly_allocator="CStdAllocAdp":0/0/0)
+delete(p=0x0x80020600, poly_allocator="CStdAllocAdp":0/0/0)
 CTest9::Destructor : name="スレッドテスト9-12(R)"
 delete(p=0x0x421444, poly_allocator="CSmartStackAllocAdp":1024/164/860)
-delete(p=0x0x80020600, poly_allocator="CStdAllocAdp":0/0/0)
+delete(p=0x0x80020768, poly_allocator="CStdAllocAdp":0/0/0)
 join
 marker=(31,939), begin=(31,939), counter=(0,0)
 delete(p=0x0x4210cc, poly_allocator="CSmartStackAllocAdp":1024/116/908)

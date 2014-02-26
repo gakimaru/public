@@ -7,12 +7,12 @@
 #define USE_DESTRUCTOR_FOR_TEST2//test2で、デストラクタを使用する時はこのマクロを有効にする（アロケートサイズが増えることを確認できる）
 //#define USE_NAMESPACE_NEW_DELETE_FOR_TEST2//test2で、ネームスペースに定義したnew/deleteのテストを行う時はこのマクロを有効にする
 #define USE_NEW_MACRO//test7で、NEWマクロを使用する時はこのマクロを有効にする
-#define USE_ALLOC_INFO//test7で、new時にメモリ確保事情法を使用する時はこのマクロを有効にする
+#define USE_ALLOC_INFO//test7で、new時にメモリ確保事情報を使用する時はこのマクロを有効にする
 #define USE_CRC_CALC_TABLE//test8で、CRC計算の際に、事前計算済みのCRC計算テーブルを使用する時はこのマクロを有効にする
 
 //GCC関連：GCC使用時はこれらのマクロを有効化する
 #define USE_MEMALIGN//【GCC用】test6以降で、memalignを使用する時はこのマクロを有効にする
-#define IS_NOT_FRIEND_NEW_OPERATOR_FOR_TEST7//【GCC用】test7以降で、オペレータnew/deleteをフレンド宣言しない時はこのマクロを有効にする
+#define IS_NOT_FRIEND_WITH_NEW_OPERATOR//【GCC用】test7以降で、オペレータnew/deleteをフレンド宣言しない時はこのマクロを有効にする
 #define TLS_IS_POSIX//【GCC用】TLSの宣言をPOSIXスタイルにする時はこのマクロを有効にする
 
 //MS固有仕様関連：Visual C++使用時はこのマクロを有効化する
@@ -1956,22 +1956,8 @@ void test5()
 
 //--------------------
 //メモリ確保時情報
-//※デバッグ情報
-struct ALLOC_INFO
-{
-	const char* m_fileName;//ファイル名
-	const char* m_funcName;//関数名
-	const char* m_callPointName;//コールポイント名
-	float m_time;//ゲーム時間
-	const char* m_typeName;//型名
-	ALLOC_INFO(const char* file_name, const char* func_name, const char* call_point_name, const float time, const char* type_name) :
-		m_fileName(file_name),
-		m_funcName(func_name),
-		m_callPointName(call_point_name),
-		m_time(time),
-		m_typeName(type_name)
-	{}
-};
+//※デバッグ情報（参照のみ）
+struct ALLOC_INFO;
 
 //--------------------
 //共通アロケータインターフェースクラス
@@ -1983,9 +1969,9 @@ public:
 public:
 	//メソッド
 	virtual const char* getName() const = 0;//アロケータ名取得
-	virtual std::size_t getTotal() const = 0;//全体メモリ量　※参考情報（正しくない可能性がある）
-	virtual std::size_t getUsed() const = 0;//使用中メモリ量　※参考情報（正しくない可能性がある）
-	virtual std::size_t getRemain() const = 0;//残りメモリ量　※参考情報（正しくない可能性がある）
+	virtual std::size_t getTotal() const = 0;//全体メモリ量　※参考情報（正しい値とは限らない）
+	virtual std::size_t getUsed() const = 0;//使用中メモリ量　※参考情報（正しい値とは限らない）
+	virtual std::size_t getRemain() const = 0;//残りメモリ量　※参考情報（正しい値とは限らない）
 	//メモリ確保
 	virtual void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN, const ALLOC_INFO* info = nullptr) = 0;
 	//メモリ解放
@@ -1998,18 +1984,19 @@ public:
 //--------------------
 //標準アロケータアダプタークラス
 //※内部でmalloc, freeを使用
-#include <malloc.h>//malloc用
+#include <malloc.h>//malloc,_aligned_malloc用
 #include <stdlib.h>//memalign用
 class CStdAllocAdp : public IAllocator
 {
 public:
 	//型
+	typedef CStdAllocAdp ALLOCATOR_TYPE;//アロケータ型（便宜上自身を定義）
 	typedef unsigned char byte;//バッファ用
 public:
 	//アクセッサ
-	const char* getName() const override{ return "CStdAllocAdp"; }//アロケータ名取得
-	std::size_t getTotal() const override{ return 0; }//全体メモリ量取得　※集計不可
-	std::size_t getUsed() const override{ return 0; }//使用中メモリ量取得　※集計不可
+	const char* getName() const override { return "CStdAllocAdp"; }//アロケータ名取得
+	std::size_t getTotal() const override { return 0; }//全体メモリ量取得　※集計不可
+	std::size_t getUsed() const override { return 0; }//使用中メモリ量取得　※集計不可
 	std::size_t getRemain() const override { return 0; }//残りメモリ量取得　※集計不可
 public:
 	//オペレータ
@@ -2024,25 +2011,25 @@ public:
 	void* alloc(const std::size_t size, const std::size_t align = DEFAULT_ALIGN, const ALLOC_INFO* info = nullptr) override
 	{
 		//return malloc(size);//通常malloc()
-#ifdef USE_MEMALIGN
-		return memalign(align, size);//アラインメント指定版malloc
-#else//USE_MEMALIGN
+	#ifdef USE_MEMALIGN
+		return memalign(align, size);//GCC用：アラインメント指定版malloc
+	#else//USE_MEMALIGN
 		return _aligned_malloc(size, align);//MS仕様：アラインメント指定版malloc
-#endif//USE_MEMALIGN
+	#endif//USE_MEMALIGN
 	}
 	//メモリ解放
 	void free(void* p) override
 	{
 		if (!p)
 			return;
-#ifdef USE_MEMALIGN
-		::free(p);//通常free()
-#else//USE_MEMALIGN
+	#ifdef USE_MEMALIGN
+		::free(p);//通常free() ※memalignで確保したメモリもfreeで解放
+	#else//USE_MEMALIGN
 		_aligned_free(p);//MS仕様：アラインメント指定版free
-#endif//USE_MEMALIGN
+	#endif//USE_MEMALIGN
 	}
 public:
-	//コンストラクタ
+	//デフォルトコンストラクタ
 	CStdAllocAdp()
 	{}
 	//デストラクタ
@@ -2057,16 +2044,19 @@ CStdAllocAdp::byte CStdAllocAdp::m_buff[sizeof(CStdAllocAdp)];
 
 //--------------------
 //単一バッファアロケータアダプタークラス
+//※単なるバッファに1回だけアロケートするためのクラス
+//※所定のバッファにインスタンスを生成したい場合に用いる
 class CMonoAllocAdp : public IAllocator
 {
 public:
 	//型
-	typedef unsigned char* byte;
+	//typedef CMonoAllocAdp ALLOCATOR_TYPE;//アロケータ型（アロケータなし）
+	typedef unsigned char* byte;//バッファ用
 public:
 	//アクセッサ
-	const char* getName() const override{ return "CMonoAllocAdp"; }//アロケータ名取得
-	std::size_t getTotal() const override{ return m_buffSize; }//全体メモリ量取得
-	std::size_t getUsed() const override{ return m_isAllocated ? m_buffSize : 0; }//使用中メモリ量取得
+	const char* getName() const override { return "CMonoAllocAdp"; }//アロケータ名取得
+	std::size_t getTotal() const override { return m_buffSize; }//全体メモリ量取得
+	std::size_t getUsed() const override { return m_isAllocated ? m_buffSize : 0; }//使用中メモリ量取得
 	std::size_t getRemain() const override { return m_isAllocated ? 0 : m_buffSize; }//残りメモリ量取得
 	const byte* getBuff() const { return m_buffPtr; }//バッファ取得
 	std::size_t getBuffSize() const { return m_buffSize; }//バッファサイズ取得
@@ -2092,7 +2082,7 @@ public:
 	}
 public:
 	//デフォルトコンストラクタ
-	CMonoAllocAdp() = delete;
+	CMonoAllocAdp() = delete;//コンストラクタ引数必須
 	//コンストラクタ
 	CMonoAllocAdp(void* buff_p, const std::size_t buff_size) :
 		m_buffPtr(reinterpret_cast<byte*>(buff_p)),//バッファアドレス
@@ -2115,9 +2105,6 @@ template<std::size_t SIZE>
 class CMonoAllocAdpWithBuff : public CMonoAllocAdp
 {
 public:
-	//型
-	typedef unsigned char byte;//バッファ用
-public:
 	//定数
 	static const std::size_t BUFF_SIZE = SIZE;//バッファサイズ
 public:
@@ -2135,8 +2122,12 @@ private:
 
 //--------------------
 //スタックアロケータインターフェースアダプタークラス
+//※スタックアロケータ／双方向スタックアロケータ両用のアダプター
 class CIStackAllocAdp : public IAllocator
 {
+public:
+	//型
+	typedef IStackAllocator ALLOCATOR_TYPE;//アロケータ型
 public:
 	//定数
 	//自動巻き戻し
@@ -2148,9 +2139,9 @@ public:
 	};
 public:
 	//アクセッサ
-	const char* getName() const override{ return "CIStackAllocAdp"; }//アロケータ名取得
-	std::size_t getTotal() const override{ return m_allocator.getTotal(); }//全体メモリ量取得
-	std::size_t getUsed() const override{ return m_allocator.getUsed(); }//使用中メモリ量取得
+	const char* getName() const override { return "CIStackAllocAdp"; }//アロケータ名取得
+	std::size_t getTotal() const override { return m_allocator.getTotal(); }//全体メモリ量取得
+	std::size_t getUsed() const override { return m_allocator.getUsed(); }//使用中メモリ量取得
 	std::size_t getRemain() const override { return m_allocator.getRemain(); }//残りメモリ量取得
 	IStackAllocator& getAllocator(){ return m_allocator; }//アロケータ取得
 	const IStackAllocator& getAllocator() const { return m_allocator; }//アロケータ取得
@@ -2171,10 +2162,10 @@ public:
 	}
 public:
 	//デフォルトコンストラクタ
-	CIStackAllocAdp() = delete;
+	CIStackAllocAdp() = delete;//コンストラクタ引数必須
 	//コンストラクタ
-	CIStackAllocAdp(IStackAllocator& stack, const E_AUTO_REWIND auto_rewind = NOREWIND) :
-		m_allocator(stack),//スタックアロケータ
+	CIStackAllocAdp(IStackAllocator& allocator, const E_AUTO_REWIND auto_rewind = NOREWIND) :
+		m_allocator(allocator),//スタックアロケータ
 		m_autoRewind(auto_rewind)//自動巻き戻し指定
 	{
 		//自動巻き戻し位置記憶
@@ -2198,11 +2189,15 @@ protected:
 
 //--------------------
 //スタックアロケータアダプター
+//※スタックアロケータ用のアダプター
 class CStackAllocAdp : public CIStackAllocAdp
 {
 public:
+	//型
+	typedef CStackAllocator ALLOCATOR_TYPE;//アロケータ型
+public:
 	//アクセッサ
-	const char* getName() const override{ return "CStackAllocAdp"; }//アロケータ名取得
+	const char* getName() const override { return "CStackAllocAdp"; }//アロケータ名取得
 	CStackAllocator& getAllocator(){ return *static_cast<CStackAllocator*>(&m_allocator); }//アロケータ取得
 	const CStackAllocator& getAllocator() const { return *static_cast<CStackAllocator*>(&m_allocator); }//アロケータ取得
 public:
@@ -2220,10 +2215,10 @@ public:
 	}
 public:
 	//デフォルトコンストラクタ
-	CStackAllocAdp() = delete;
+	CStackAllocAdp() = delete;//コンストラクタ引数必須
 	//コンストラクタ
-	CStackAllocAdp(CStackAllocator& stack, const E_AUTO_REWIND auto_rewind = NOREWIND) :
-		CIStackAllocAdp(stack, auto_rewind)//スタックアロケータ
+	CStackAllocAdp(CStackAllocator& allocator, const E_AUTO_REWIND auto_rewind = NOREWIND) :
+		CIStackAllocAdp(allocator, auto_rewind)//スタックアロケータ
 	{}
 	//デストラクタ
 	~CStackAllocAdp() override
@@ -2235,13 +2230,16 @@ public:
 class CDualStackAllocAdp : public CIStackAllocAdp
 {
 public:
+	//型
+	typedef CDualStackAllocator ALLOCATOR_TYPE;//アロケータ型
+public:
 	//アクセッサ
-	const char* getName() const override{ return "CDualStackAllocAdp"; }//アロケータ名取得
+	const char* getName() const override { return "CDualStackAllocAdp"; }//アロケータ名取得
 	CDualStackAllocator& getAllocator(){ return *static_cast<CDualStackAllocator*>(&m_allocator); }//アロケータ取得
 	const CDualStackAllocator& getAllocator() const { return *static_cast<CDualStackAllocator*>(&m_allocator); }//アロケータ取得
 	IStackAllocator::E_ORDERED getOrdered() const { m_ordered; }//スタック順取得
 	void setOrdered(const IStackAllocator::E_ORDERED ordered){ m_ordered = ordered; }//スタック順更新
-	IStackAllocator::marker_t getRewindMarkerN() const { return m_rewindMarkerN; }//巻き戻しマーカー（正順）取得
+	IStackAllocator::marker_t getRewindMarkerN() const { return m_rewindMarker; }//巻き戻しマーカー（正順）取得
 	IStackAllocator::marker_t getRewindMarkerR() const { return m_rewindMarkerR; }//巻き戻しマーカー（逆順）取得
 public:
 	//メソッド
@@ -2258,16 +2256,15 @@ public:
 	}
 public:
 	//デフォルトコンストラクタ
-	CDualStackAllocAdp() = delete;
+	CDualStackAllocAdp() = delete;//コンストラクタ引数必須
 	//コンストラクタ
-	CDualStackAllocAdp(CDualStackAllocator& stack, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT, const E_AUTO_REWIND auto_rewind = NOREWIND) :
-		CIStackAllocAdp(stack, auto_rewind),//双方向スタックアロケータ
+	CDualStackAllocAdp(CDualStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT, const E_AUTO_REWIND auto_rewind = NOREWIND) :
+		CIStackAllocAdp(allocator, auto_rewind),//双方向スタックアロケータ
 		m_ordered(ordered)//スタック順
 	{
 		//自動巻き戻し位置記憶
-		CDualStackAllocator& allocator = getAllocator();
-		m_rewindMarkerN = allocator.getMarkerN();
-		m_rewindMarkerR = allocator.getMarkerR();
+		m_rewindMarker = allocator.getMarkerN();//正順
+		m_rewindMarkerR = allocator.getMarkerR();//逆順
 	}
 	//デストラクタ
 	~CDualStackAllocAdp() override
@@ -2275,34 +2272,34 @@ public:
 		//自動巻き戻し
 		if (m_autoRewind == BOTH_AUTO_REWIND)
 		{
+			//両方向の巻き戻し
 			CDualStackAllocator& allocator = getAllocator();
-			allocator.backN(m_rewindMarkerN);
-			allocator.backR(m_rewindMarkerR);
+			allocator.backN(m_rewindMarker);//正順
+			allocator.backR(m_rewindMarkerR);//逆順
 		}
 		else if (m_autoRewind == AUTO_REWIND)
 		{
+			//単方向の巻き戻し
 			CDualStackAllocator& allocator = getAllocator();
-			if (m_ordered == IStackAllocator::NORMAL)
-				allocator.backN(m_rewindMarkerN);
-			else if (m_ordered == IStackAllocator::REVERSE)
+			if (m_ordered == IStackAllocator::NORMAL)//正順スタックのみ
+				allocator.backN(m_rewindMarker);
+			else if (m_ordered == IStackAllocator::REVERSE)//逆順スタックのみ
 				allocator.backR(m_rewindMarkerR);
-			else//if (m_ordered == IStackAllocator::DEFAULT)
+			else//if (m_ordered == IStackAllocator::DEFAULT)//アロケータのデフォルトスタック順に従う
 			{
-				//	allocator.backD(m_rewindMarker);
-				if (allocator.getDefaultOrdered() == IStackAllocator::NORMAL)
-					allocator.backN(m_rewindMarkerN);
-				else if (allocator.getDefaultOrdered() == IStackAllocator::REVERSE)
+			//	allocator.backD(m_rewindMarker);//このメソッドは使わない
+				if (allocator.getDefaultOrdered() == IStackAllocator::REVERSE)//逆順スタックのみ
 					allocator.backR(m_rewindMarkerR);
-				//	else if (allocator.getDefaultOrdered() == IStackAllocator::DEFAULT)
-				//		allocator.backD(m_rewindMarker);
+				else//if (allocator.getDefaultOrdered() == IStackAllocator::NORMAL)//正順スタックのみ
+					allocator.backN(m_rewindMarker);
 			}
 		}
-		m_autoRewind = NOREWIND;
+		m_autoRewind = NOREWIND;//親クラスのデストラクタ処理で問題が起こらないように設定を無効化する
 	}
 private:
 	//フィールド
 	IStackAllocator::E_ORDERED m_ordered;//スタック順
-	IStackAllocator::marker_t m_rewindMarkerN;//巻き戻しマーカー（正順）
+	//IStackAllocator::marker_t m_rewindMarker;//巻き戻しマーカー（正順）※親クラスの変数を使用
 	IStackAllocator::marker_t m_rewindMarkerR;//巻き戻しマーカー（逆順）
 };
 
@@ -2311,10 +2308,13 @@ private:
 class CPoolAllocAdp : public IAllocator
 {
 public:
+	//型
+	typedef CPoolAllocator ALLOCATOR_TYPE;//アロケータ型
+public:
 	//アクセッサ
-	const char* getName() const override{ return "CPoolAllocAdp"; }//アロケータ名取得
-	std::size_t getTotal() const override{ return m_allocator.getBlocksNum() * m_allocator.getBlockSize(); }//全体メモリ量取得
-	std::size_t getUsed() const override{ return m_allocator.getUsed() * m_allocator.getBlockSize(); }//使用中メモリ量取得
+	const char* getName() const override { return "CPoolAllocAdp"; }//アロケータ名取得
+	std::size_t getTotal() const override { return m_allocator.getBlocksNum() * m_allocator.getBlockSize(); }//全体メモリ量取得
+	std::size_t getUsed() const override { return m_allocator.getUsed() * m_allocator.getBlockSize(); }//使用中メモリ量取得
 	std::size_t getRemain() const override { return m_allocator.getRemain() * m_allocator.getBlockSize(); }//残りメモリ量取得
 	CPoolAllocator& getAllocator() const { return m_allocator; }//アロケータ取得
 public:
@@ -2331,17 +2331,17 @@ public:
 	}
 public:
 	//デフォルトコンストラクタ
-	CPoolAllocAdp() = delete;
+	CPoolAllocAdp() = delete;//コンストラクタ引数必須
 	//コンストラクタ
-	CPoolAllocAdp(CPoolAllocator& stack) :
-		m_allocator(stack)//双方向スタックアロケータ
+	CPoolAllocAdp(CPoolAllocator& allocator) :
+		m_allocator(allocator)//プールアロケータ
 	{}
 	//デストラクタ
 	~CPoolAllocAdp() override
 	{}
 private:
 	//フィールド
-	CPoolAllocator& m_allocator;//双方向スタックアロケータ
+	CPoolAllocator& m_allocator;//プールアロケータ
 };
 
 //--------------------
@@ -2476,21 +2476,25 @@ private:
 
 //--------------------
 //テスト（共通関数）
+//※実際のアロケータを切り替えて共通処理を実行するテスト
+//クラス単体のテスト
 void test6_sub1(const char* name, IAllocator& allocator)
 {
 	CTest6* obj_p = new(allocator)CTest6(name);
 	printf("obj_p=0x%p\n", obj_p);
 	delete_ptr(obj_p, allocator);
 }
+//クラスの配列のテスト
 void test6_sub2(IAllocator& allocator)
 {
 	CTest6* obj_p = new(allocator)CTest6[3];
 	printf("obj_p=0x%p\n", obj_p);
 	delete_ptr(obj_p, 3, allocator);
 }
+//多重継承クラスのテスト
 void test6_sub3(const char* name, IAllocator& allocator)
 {
-	CTest6ex* obj_p = new(allocator)CDerivedTest6(name);
+	CTest6ex* obj_p = new(allocator)CDerivedTest6(name);//アップキャスト
 	printf("obj_p=0x%p\n", obj_p);
 	delete_ptr(obj_p, allocator);
 }
@@ -2499,13 +2503,15 @@ void test6_sub3(const char* name, IAllocator& allocator)
 void test6()
 {
 	printf("---------- test6:共通アロケータインターフェース ----------\n");
+	//標準アロケータ（malloc / free）使用
 	{
 		printf("----------CStdAllocAdp\n");
 		CStdAllocAdp allocator_adp;
 		test6_sub1("テスト6-1a", allocator_adp);
-		//test6_sub2(allocator_adp);
-		//test6_sub3("テスト6-1b", allocator_adp);
+		//test6_sub2(allocator_adp);//クラスの配列でずれたポインタをそのままfreeするのでハングする
+		//test6_sub3("テスト6-1b", allocator_adp);//多重継承でずれたポインタをそのままfreeするのでハングする
 	}
+	//単一バッファアロケータ使用
 	{
 		printf("----------CMonoAllocAdp\n");
 		CMonoAllocAdpWithBuff<128> allocator_adp;
@@ -2513,50 +2519,59 @@ void test6()
 		test6_sub2(allocator_adp);
 		test6_sub3("テスト6-2b", allocator_adp);
 	}
+	//スタックアロケータ使用
 	{
 		printf("----------CStackAllocAdp\n");
 		CStackAllocatorWithBuff<128> allocator;
 		CStackAllocAdp allocator_adp(allocator);
 		test6_sub1("テスト6-3a", allocator_adp);
 		{
-			CStackAllocAdp allocator_adp(allocator, CIStackAllocAdp::AUTO_REWIND);
-			test6_sub2(allocator_adp);
+			//自動巻き戻しのテスト
+			CStackAllocAdp allocator_adp_tmp(allocator, CIStackAllocAdp::AUTO_REWIND);
+			test6_sub2(allocator_adp_tmp);
 		}
 		test6_sub3("テスト6-3b", allocator_adp);
 	}
+	//双方向スタックアロケータ使用
 	{
 		printf("----------CDualStackAllocAdp\n");
 		CDualStackAllocatorWithBuff<128> allocator;
 		CDualStackAllocAdp allocator_adp(allocator, DSA_REVERSE);
 		test6_sub1("テスト6-4a", allocator_adp);
 		{
-			CDualStackAllocAdp allocator_adp(allocator, DSA_REVERSE, CIStackAllocAdp::AUTO_REWIND);
-			test6_sub2(allocator_adp);
+			//自動巻き戻しのテスト
+			CDualStackAllocAdp allocator_adp_tmp(allocator, DSA_REVERSE, CIStackAllocAdp::AUTO_REWIND);
+			test6_sub2(allocator_adp_tmp);
 		}
 		test6_sub3("テスト6-4b", allocator_adp);
 	}
+	//スタックアロケータをスタックアロケータインターフェースとして使用
 	{
 		printf("----------CIStackAllocAdp on CStackAllocAdp\n");
 		CStackAllocatorWithBuff<128> allocator;
 		CIStackAllocAdp allocator_adp(allocator);
 		test6_sub1("テスト6-5a", allocator_adp);
 		{
-			CIStackAllocAdp allocator_adp(allocator, CIStackAllocAdp::AUTO_REWIND);
-			test6_sub2(allocator_adp);
+			//自動巻き戻しのテスト
+			CIStackAllocAdp allocator_adp_tmp(allocator, CIStackAllocAdp::AUTO_REWIND);
+			test6_sub2(allocator_adp_tmp);
 		}
 		test6_sub3("テスト6-5b", allocator_adp);
 	}
+	//双方向スタックアロケータをスタックアロケータインターフェースとして使用
 	{
 		printf("----------CIStackAllocAdp on CDualStackAllocAdp\n");
 		CDualStackAllocatorWithBuff<128> allocator;
 		CIStackAllocAdp allocator_adp(allocator);
 		test6_sub1("テスト6-6a", allocator_adp);
 		{
-			CIStackAllocAdp allocator_adp(allocator, CIStackAllocAdp::AUTO_REWIND);
-			test6_sub2(allocator_adp);
+			//自動巻き戻しのテスト
+			CIStackAllocAdp allocator_adp_tmp(allocator, CIStackAllocAdp::AUTO_REWIND);
+			test6_sub2(allocator_adp_tmp);
 		}
 		test6_sub3("テスト6-6b", allocator_adp);
 	}
+	//プールアロケータ使用
 	{
 		printf("----------CPoolAllocAdp\n");
 		CPoolAllocatorWithBuff<24, 5> allocator;
@@ -2571,26 +2586,25 @@ void test6()
 //グローバルnew/delete + 共通アロケータインターフェース
 
 //--------------------
-//プロトタイプ宣言
-class CTempPolyAllocatorBase;
+//クラス宣言
+class CTempPolyAllocatorBase;//一時多態アロケータ基底クラス
 
 //--------------------
-//グローバル多態性アロケータ
+//多態アロケータ
 class CPolyAllocator
 {
-#ifndef IS_NOT_FRIEND_NEW_OPERATOR_FOR_TEST7
+#ifndef IS_NOT_FRIEND_WITH_NEW_OPERATOR
 	//標準 new / deleete 演算子をフレンド化
 	//※この CPolyAllocator クラスを直接インスタンス化するのは new / delete 演算子のみ
 	friend void* operator new(const std::size_t size) throw();
 	friend void* operator new[](const std::size_t size) throw();
 	friend void operator delete(void* p) throw();
 	friend void operator delete[](void* p) throw();
-#endif//IS_NOT_FRIEND_NEW_OPERATOR_FOR_TEST7
-	friend class CTempPolyAllocatorBase;
+#endif//IS_NOT_FRIEND_WITH_NEW_OPERATOR
+	friend class CTempPolyAllocatorBase;//一時多態アロケータ基底クラス
 public:
 	//オペレータ
 	IAllocator* operator->(){ return m_allocator; }//アロー演算子（プロキシー）
-	const IAllocator* operator->() const { return m_allocator; }//アロー演算子（プロキシー）
 public:
 	//アクセッサ
 	//アロケータ取得
@@ -2600,7 +2614,7 @@ public:
 	}
 	//アロケータ変更
 	//※戻りとして変更前のアロケータを返す
-	//※なるべく直接使用禁止⇒CTempPolyAllocatorクラスを使い、コンストラクタで自動的に元に戻す
+	//※なるべく直接使用禁止⇒CTempPoly***Allocatorクラスを使い、コンストラクタで自動的に元に戻す
 	static IAllocator* setAllocator(IAllocator& new_allocator)
 	{
 		IAllocator* prev_allocator = m_allocator;//変更前のアロケータ取得
@@ -2624,16 +2638,16 @@ public:
 	{
 		m_allocInfo = info;
 	}
-#ifdef IS_NOT_FRIEND_NEW_OPERATOR_FOR_TEST7
+#ifdef IS_NOT_FRIEND_WITH_NEW_OPERATOR
 public:
-#else//IS_NOT_FRIEND_NEW_OPERATOR_FOR_TEST7
-private://フレンド以外はインスタンス生成不可
-#endif//IS_NOT_FRIEND_NEW_OPERATOR_FOR_TEST7
+#else//IS_NOT_FRIEND_WITH_NEW_OPERATOR
+private://直接インスタンス生成不可（フレンド専用）
+#endif//IS_NOT_FRIEND_WITH_NEW_OPERATOR
 	//デフォルトコンストラクタ
 	CPolyAllocator()
 	{
-		if (!m_allocator)
-			m_allocator = new CStdAllocAdp();//標準アロケータを明示的に初期化
+		if (!m_allocator)//まだ何のアロケータも保持していない場合標準アロケータを自動的に保持する
+			m_allocator = new CStdAllocAdp();//標準アロケータを明示的に初期化（クラス内newを使用）
 	}
 public:
 	//デストラクタ
@@ -2645,32 +2659,99 @@ protected:
 	static thread_local const ALLOC_INFO* m_allocInfo;//現在のメモリ確保情報
 	//TLSを利用し、アロケータの変更が他のスレッドに影響しないようにする
 };
-//グローバル多態性アロケータの静的変数インスタンス化
+//--------------------
+//多態アロケータの静的変数インスタンス化
 thread_local IAllocator* CPolyAllocator::m_allocator = nullptr;//現在のアロケータ
 thread_local const ALLOC_INFO* CPolyAllocator::m_allocInfo = nullptr;//現在のメモリ確保情報
 
+//--------------------
+//メモリ確保時情報
+//※デバッグ情報（参照のみ）
+struct ALLOC_INFO
+{
+	static const std::size_t DEFAULT_ALIGN = sizeof(int);//デフォルトのアラインメントサイズ
+	const char* m_fileName;//ファイル名
+	const char* m_funcName;//関数名
+	const char* m_callPointName;//コールポイント名
+	float m_time;//ゲーム時間
+	const char* m_typeName;//型名
+	std::size_t m_align;//アラインメントサイズ
+	ALLOC_INFO(const char* file_name, const char* func_name, const char* call_point_name, const float time, const char* type_name, const std::size_t align = DEFAULT_ALIGN) :
+		m_fileName(file_name),
+		m_funcName(func_name),
+		m_callPointName(call_point_name),
+		m_time(time),
+		m_typeName(type_name),
+		m_align(align)
+	{}
+};
+
+#ifndef USE_GLOBAL_NEW_DELETE_FOR_TEST2
+const char* getFileName(const char* str);//関数参照：ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
+//--------------------
+//グローバル多態アロケータ
+//※標準new / delete 演算子の置き換え
+//new
+void* operator new(const std::size_t size) throw()
+{
+	CPolyAllocator allocator;
+	printf("new(size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
+	std::size_t align = ALLOC_INFO::DEFAULT_ALIGN;
+	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();
+	if (info)
+	{
+		align = info->m_align;
+	#ifdef ENABLE_CONSTEXPR
+		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\", align=%d\n", info->m_fileName, info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName, info->m_align);
+	#else//ENABLE_CONSTEXPR
+		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\", align=%d\n", getFileName(info->m_fileName), info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName, info->m_align);
+	#endif//ENABLE_CONSTEXPR
+	}
+	void* p = allocator->alloc(size, align);
+	printf("  p=0x%p\n", p);
+	return p;
+}
+//配列版
+void* operator new[](const std::size_t size) throw()
+{
+	CPolyAllocator allocator;
+	printf("new[](size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
+	std::size_t align = ALLOC_INFO::DEFAULT_ALIGN;
+	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();
+	if (info)
+	{
+		align = info->m_align;
+	#ifdef ENABLE_CONSTEXPR
+		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\", align=%d\n", info->m_fileName, info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName, info->m_align);
+	#else//ENABLE_CONSTEXPR
+		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\", align=%d\n", getFileName(info->m_fileName), info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName, info->m_align);
+	#endif//ENABLE_CONSTEXPR
+	}
+	void* p = allocator->alloc(size, align);
+	printf("  p=0x%p\n", p);
+	return p;
+}
+//delete
+void operator delete(void* p) throw()
+{
+	CPolyAllocator allocator;
+	printf("delete(p=0x%p, poly_allocator=\"%s\":%d/%d/%d)\n", p, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
+	allocator->free(p);
+}
+//配列版
+void operator delete[](void* p) throw()
+{
+	CPolyAllocator allocator;
+	printf("delete[](p=0x%p, poly_allocator=\"%s\":%d/%d/%d)\n", p, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
+	allocator->free(p);
+}
+#endif//USE_GLOBAL_NEW_DELETE_FOR_TEST2
+
+//--------------------
+//メモリ確保時情報の作成
 //ダミー関数
 const char* getCurrentCallPointNameDummy(){ return "(unknown call-point)"; }//コールポイント名取得
 float getGameTimeDummy(){ return 0.f; }//ゲーム時間取得
-//メモリ確保情報付きNEW
-template<class T, typename... Tx>
-T* newWithInfo(const char* file_name, const char* func_name, Tx ...nx)
-{
-	const char* call_point_name = getCurrentCallPointNameDummy();
-	const float game_time = getGameTimeDummy();
-	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T).name());
-	CPolyAllocator::setAllocInfo(&info);
-	return new T(nx...);
-}
-template<class T, std::size_t array_size>
-T* newArrayWithInfo(const char* file_name, const char* func_name)
-{
-	const char* call_point_name = getCurrentCallPointNameDummy();
-	const float game_time = getGameTimeDummy();
-	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T[array_size]).name());
-	CPolyAllocator::setAllocInfo(&info);
-	return new T[array_size];
-}
 //関数名作成マクロ
 #include <string.h>
 //【constexpr版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
@@ -2680,8 +2761,8 @@ constexpr const char* getConstFileNameRecursive(const char* str, const std::size
 	return len == 0 ?
 	str :
 		*(str + len - 1) == '\\' || *(str + len - 1) == '/' ?
-		str + len :
-		getConstFileNameRecursive(str, len - 1);
+			str + len :
+			getConstFileNameRecursive(str, len - 1);
 }
 constexpr const char* getConstFileName(const char* str)
 {
@@ -2702,6 +2783,27 @@ const char* getFileName(const char* str)
 	return str;
 }
 #endif//ENABLE_CONSTEXPR
+
+//--------------------
+//メモリ確保情報付きNEW処理
+template<class T, typename... Tx>
+T* newWithInfo(const char* file_name, const char* func_name, const std::size_t align, Tx ...nx)
+{
+	const char* call_point_name = getCurrentCallPointNameDummy();
+	const float game_time = getGameTimeDummy();
+	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T).name(), align);
+	CPolyAllocator::setAllocInfo(&info);
+	return new T(nx...);
+}
+template<class T, std::size_t array_size>
+T* newArrayWithInfo(const char* file_name, const char* func_name, const std::size_t align)
+{
+	const char* call_point_name = getCurrentCallPointNameDummy();
+	const float game_time = getGameTimeDummy();
+	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T[array_size]).name(), align);
+	CPolyAllocator::setAllocInfo(&info);
+	return new T[array_size];
+}
 #define TO_STRING(s) #s
 #define TO_STRING_EX(s) TO_STRING(s)
 #ifdef ENABLE_CONSTEXPR
@@ -2711,11 +2813,15 @@ const char* getFileName(const char* str)
 #endif//ENABLE_CONSTEXPR
 #define GET_FUNC_NAME() __PRETTY_FUNCTION__
 //#define GET_FUNC_NAME() __FUNCTION__
+
+//--------------------
 //newマクロ
 #ifdef USE_ALLOC_INFO
 //※メモリ確保時情報付き
-#define NEW(T, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), __VA_ARGS__)
-#define NEWARR(T, array_size) newArrayWithInfo<T, array_size>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME())
+#define NEW(T, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), ALLOC_INFO::DEFAULT_ALIGN, __VA_ARGS__)
+#define NEWALIGN(T, align, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), align, __VA_ARGS__)
+#define NEWARR(T, array_size) newArrayWithInfo<T, array_size>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), ALLOC_INFO::DEFAULT_ALIGN)
+#define NEWALIGNARR(T, align, array_size) newArrayWithInfo<T, array_size>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), align)
 #define DELETE delete
 #define DELETEARR delete[]
 #else//USE_ALLOC_INFO
@@ -2726,22 +2832,19 @@ const char* getFileName(const char* str)
 #define DELETEARR delete[]
 #endif//USE_ALLOC_INFO
 
-//クラス宣言
-template<class I>
-class CTempPolyAllocator;
-
 //--------------------
-//一時グローバル多態性アロケータ
-//※グローバル多態性アロケータの「現在のアロケータ」を一時的に変更するためのクラス
+//一時多態アロケータ
+//※多態アロケータの「現在のアロケータ」を一時的に変更するためのクラス
 //※処理ブロックを抜ける時に、デストラクタで自動的に元の状態に戻す
 
-//一時グローバル多態性アロケータ基底クラス
+//--------------------
+//一時多態アロケータ基底クラス
 //※継承専用クラス
 class CTempPolyAllocatorBase : public CPolyAllocator
 {
-protected:
+protected://直接インスタンス生成不可（継承専用）
 	//デフォルトコンストラクタ
-	CTempPolyAllocatorBase() = delete;
+	CTempPolyAllocatorBase() = delete;//コンストラクタ引数必須
 	//コンストラクタ
 	CTempPolyAllocatorBase(IAllocator& allocator) :
 		CPolyAllocator()
@@ -2762,198 +2865,139 @@ private:
 	//フィールド
 	IAllocator* m_prevAllocator;//変更前のアロケータ
 };
-//一時グローバル多態性アロケータテンプレートクラス
-template<class I>
-class CTempPolyAllocator : public CTempPolyAllocatorBase
+//--------------------
+//一時多態アロケータテンプレートクラス：アダプター保持タイプ
+template<class ADAPTER>
+class CTempPolyAllocatorWithAdp : public CTempPolyAllocatorBase
 {
 public:
-	//デフォルトコンストラクタ
-	CTempPolyAllocator() = delete;
-	//コンストラクタ
-	CTempPolyAllocator(I& adapter) :
-		CTempPolyAllocator(adapter)
-	{}
-public:
-	//デストラクタ
-	~CTempPolyAllocator()
-	{}
-};
-//一時グローバル多態性アロケータテンプレートクラス：標準アロケータ用に特殊化
-template<>
-class CTempPolyAllocator<CStdAllocAdp> : public CTempPolyAllocatorBase
-{
+	//型
+	typedef ADAPTER ADAPTER_TYPE;//アダプター型
+	typedef typename ADAPTER::ALLOCATOR_TYPE ALLOCATOR_TYPE;//アロケータ型
 public:
 	//デフォルトコンストラクタ
-	CTempPolyAllocator() :
-		m_adapter(),//標準アロケータアダプタ初期化
+	CTempPolyAllocatorWithAdp() :
+		m_adapter(),
 		CTempPolyAllocatorBase(m_adapter)
 	{}
-public:
-	//デストラクタ
-	~CTempPolyAllocator()
+	//コンストラクタ
+	CTempPolyAllocatorWithAdp(ALLOCATOR_TYPE& allocator) :
+		m_adapter(allocator),
+		CTempPolyAllocatorBase(m_adapter)
 	{}
-private:
+	//デストラクタ
+	~CTempPolyAllocatorWithAdp()
+	{}
+protected:
 	//フィールド
-	CStdAllocAdp m_adapter;//標準アロケータアダプタ
+	ADAPTER_TYPE m_adapter;//アロケータアダプター
 };
-//一時グローバル多態性アロケータクラス：標準アロケータ用
-using CTempPolyStdAllocator = CTempPolyAllocator<CStdAllocAdp>;
-//一時グローバル多態性アロケータテンプレートクラス：単一バッファアロケータ用に特殊化
-template<>
-class CTempPolyAllocator<CMonoAllocAdp> : public CTempPolyAllocatorBase
+//--------------------
+//一時多態アロケータテンプレートクラス：アダプター直接利用タイプ
+//※アダプターを保持せず外部から受け渡したものをそのまま利用する
+template<class ADAPTER>
+class CTempPolyAllocatorDirect : public CTempPolyAllocatorBase
 {
 public:
+	//型
+	typedef ADAPTER ADAPTER_TYPE;//アダプター型
+public:
 	//デフォルトコンストラクタ
-	CTempPolyAllocator() = delete;
+	CTempPolyAllocatorDirect() = delete;//コンストラクタ引数必須
 	//コンストラクタ
-	CTempPolyAllocator(CMonoAllocAdp& adapter) :
+	CTempPolyAllocatorDirect(ADAPTER_TYPE& adapter) :
 		CTempPolyAllocatorBase(adapter)
 	{}
-public:
 	//デストラクタ
-	~CTempPolyAllocator()
+	~CTempPolyAllocatorDirect()
 	{}
 };
-//一時グローバル多態性アロケータクラス：単一バッファアロケータ用
-using CTempPolyMonoAllocator = CTempPolyAllocator<CMonoAllocAdp>;
-//一時グローバル多態性アロケータテンプレートクラス：スタックアロケータインターフェース用に特殊化
-template<>
-class CTempPolyAllocator<IStackAllocator> : public CTempPolyAllocatorBase
-{
-public:
-	//デフォルトコンストラクタ
-	CTempPolyAllocator() = delete;
-	//コンストラクタ
-	CTempPolyAllocator(IStackAllocator& allocator, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind = CIStackAllocAdp::NOREWIND) :
-		m_adapter(allocator, auto_rewind),//スタックアロケータインターフェースアダプタ初期化
-		CTempPolyAllocatorBase(m_adapter)
-	{}
-public:
-	//デストラクタ
-	~CTempPolyAllocator()
-	{}
-private:
-	//フィールド
-	CIStackAllocAdp m_adapter;//スタックアロケータインターフェースアダプタ
-};
-//一時グローバル多態性アロケータクラス：スタックアロケータインターフェース用
-using CTempPolyIStackAllocator = CTempPolyAllocator<IStackAllocator>;
-//一時グローバル多態性アロケータテンプレートクラス：スタックアロケータ用に特殊化
-template<>
-class CTempPolyAllocator<CStackAllocator> : public CTempPolyAllocatorBase
-{
-public:
-	//デフォルトコンストラクタ
-	CTempPolyAllocator() = delete;
-	//コンストラクタ
-	CTempPolyAllocator(CStackAllocator& allocator, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind = CIStackAllocAdp::NOREWIND) :
-		m_adapter(allocator, auto_rewind),//スタックアロケータアダプタ初期化
-		CTempPolyAllocatorBase(m_adapter)
-	{}
-public:
-	//デストラクタ
-	~CTempPolyAllocator()
-	{}
-private:
-	//フィールド
-	CStackAllocAdp m_adapter;//スタックアロケータアダプタ
-};
-//一時グローバル多態性アロケータクラス：スタックアロケータ用
-using CTempPolyStackAllocator = CTempPolyAllocator<CStackAllocator>;
-//一時グローバル多態性アロケータテンプレートクラス：双方向スタックアロケータ用に特殊化
-template<>
-class CTempPolyAllocator<CDualStackAllocator> : public CTempPolyAllocatorBase
-{
-public:
-	//デフォルトコンストラクタ
-	CTempPolyAllocator() = delete;
-	//コンストラクタ
-	CTempPolyAllocator(CDualStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind = CIStackAllocAdp::NOREWIND) :
-		m_adapter(allocator, ordered, auto_rewind),//双方向スタックアロケータアダプタ初期化
-		CTempPolyAllocatorBase(m_adapter)
-	{}
-public:
-	//デストラクタ
-	~CTempPolyAllocator()
-	{}
-private:
-	//フィールド
-	CDualStackAllocAdp m_adapter;//双方向スタックアロケータアダプタ
-};
-//一時グローバル多態性アロケータクラス：双方向スタックアロケータ用
-using CTempPolyDualStackAllocator = CTempPolyAllocator<CDualStackAllocator>;
-//一時グローバル多態性アロケータテンプレートクラス：プールアロケータ用に特殊化
-template<>
-class CTempPolyAllocator<CPoolAllocator> : public CTempPolyAllocatorBase
-{
-public:
-	//デフォルトコンストラクタ
-	CTempPolyAllocator() = delete;
-	//コンストラクタ
-	CTempPolyAllocator(CPoolAllocator& allocator) :
-		m_adapter(allocator),//プールアロケータアダプタ初期化
-		CTempPolyAllocatorBase(m_adapter)
-	{}
-public:
-	//デストラクタ
-	~CTempPolyAllocator()
-	{}
-private:
-	//フィールド
-	CPoolAllocAdp m_adapter;//プールアロケータアダプタ
-};
-//一時グローバル多態性アロケータクラス：プールアロケータ用
-using CTempPolyPoolAllocator = CTempPolyAllocator<CPoolAllocator>;
-
-#ifndef USE_GLOBAL_NEW_DELETE_FOR_TEST2
 //--------------------
-//配置new
-void* operator new(const std::size_t size) throw()
+//一時多態アロケータテンプレートクラス：スタックアロケータアダプター保持タイプ
+template<class ADAPTER>
+class CTempPolyAllocatorWithStackAdp : public CTempPolyAllocatorBase
 {
-	CPolyAllocator allocator;
-	printf("new(size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
-	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();
-	if (info)
-#ifdef ENABLE_CONSTEXPR
-		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\"\n", info->m_fileName, info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName);
-#else//ENABLE_CONSTEXPR
-		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\"\n", getFileName(info->m_fileName), info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName);
-#endif//ENABLE_CONSTEXPR
-	void* p = allocator->alloc(size);
-	printf("  p=0x%p\n", p);
-	return p;
-}
-//配列版
-void* operator new[](const std::size_t size) throw()
+public:
+	//型
+	typedef ADAPTER ADAPTER_TYPE;//アダプター型
+	typedef typename ADAPTER::ALLOCATOR_TYPE ALLOCATOR_TYPE;//アロケータ型
+public:
+	//デフォルトコンストラクタ
+	CTempPolyAllocatorWithStackAdp() = delete;//コンストラクタ引数必須
+	//コンストラクタ
+	CTempPolyAllocatorWithStackAdp(ALLOCATOR_TYPE& allocator, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind) :
+		m_adapter(allocator, auto_rewind),
+		CTempPolyAllocatorBase(m_adapter)
+	{}
+	CTempPolyAllocatorWithStackAdp(ALLOCATOR_TYPE& allocator, const IStackAllocator::E_ORDERED ordered, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind) :
+		m_adapter(allocator, ordered, auto_rewind),
+		CTempPolyAllocatorBase(m_adapter)
+	{}
+	CTempPolyAllocatorWithStackAdp(ALLOCATOR_TYPE& allocator, const IStackAllocator::E_ORDERED ordered) :
+		m_adapter(allocator, ordered),
+		CTempPolyAllocatorBase(m_adapter)
+	{}
+	//デストラクタ
+	~CTempPolyAllocatorWithStackAdp()
+	{}
+protected:
+	//フィールド
+	ADAPTER_TYPE m_adapter;//アロケータアダプター
+};
+//--------------------
+//一時多態アロケータクラス：標準アロケータ用
+using CTempPolyStdAllocator = CTempPolyAllocatorWithAdp<CStdAllocAdp>;//C++11形式
+//--------------------
+//一時多態アロケータクラス：単一バッファアロケータ用
+using CTempPolyMonoAllocator = CTempPolyAllocatorDirect<CMonoAllocAdp>;//C++11形式
+//--------------------
+//一時多態アロケータクラス：スタックアロケータインターフェース用
+class CTempPolyIStackAllocator : public CTempPolyAllocatorWithStackAdp<CIStackAllocAdp>
 {
-	CPolyAllocator allocator;
-	printf("new[](size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
-	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();
-	if (info)
-#ifdef ENABLE_CONSTEXPR
-		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\"\n", info->m_fileName, info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName);
-#else//ENABLE_CONSTEXPR
-		printf("  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\"\n", getFileName(info->m_fileName), info->m_funcName, info->m_callPointName, info->m_time, info->m_typeName);
-#endif//ENABLE_CONSTEXPR
-	void* p = allocator->alloc(size);
-	printf("  p=0x%p\n", p);
-	return p;
-}
-//配置delete
-void operator delete(void* p) throw()
+public:
+	//デフォルトコンストラクタ
+	CTempPolyIStackAllocator() = delete;//コンストラクタ引数必須
+	//コンストラクタ
+	CTempPolyIStackAllocator(IStackAllocator& allocator, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind = CIStackAllocAdp::NOREWIND) :
+		CTempPolyAllocatorWithStackAdp<CIStackAllocAdp>(allocator, auto_rewind)
+	{}
+	//デストラクタ
+	~CTempPolyIStackAllocator()
+	{}
+};
+//--------------------
+//一時多態アロケータクラス：スタックアロケータ用
+class CTempPolyStackAllocator : public CTempPolyAllocatorWithStackAdp<CStackAllocAdp>
 {
-	CPolyAllocator allocator;
-	printf("delete(p=0x%p, poly_allocator=\"%s\":%d/%d/%d)\n", p, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
-	allocator->free(p);
-}
-//配列版
-void operator delete[](void* p) throw()
+public:
+	//デフォルトコンストラクタ
+	CTempPolyStackAllocator() = delete;//コンストラクタ引数必須
+	//コンストラクタ
+	CTempPolyStackAllocator(CStackAllocator& allocator, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind = CIStackAllocAdp::NOREWIND) :
+		CTempPolyAllocatorWithStackAdp<CStackAllocAdp>(allocator, auto_rewind)
+	{}
+	//デストラクタ
+	~CTempPolyStackAllocator()
+	{}
+};
+//--------------------
+//一時多態アロケータクラス：双方向スタックアロケータ用
+class CTempPolyDualStackAllocator : public CTempPolyAllocatorWithStackAdp<CDualStackAllocAdp>
 {
-	CPolyAllocator allocator;
-	printf("delete[](p=0x%p, poly_allocator=\"%s\":%d/%d/%d)\n", p, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
-	allocator->free(p);
-}
-#endif//USE_GLOBAL_NEW_DELETE_FOR_TEST2
+public:
+	//デフォルトコンストラクタ
+	CTempPolyDualStackAllocator() = delete;//コンストラクタ引数必須
+	//コンストラクタ
+	CTempPolyDualStackAllocator(CDualStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT, const CIStackAllocAdp::E_AUTO_REWIND auto_rewind = CIStackAllocAdp::NOREWIND) :
+		CTempPolyAllocatorWithStackAdp<CDualStackAllocAdp>(allocator, ordered, auto_rewind)
+	{}
+	//デストラクタ
+	~CTempPolyDualStackAllocator()
+	{}
+};
+//--------------------
+//一時多態アロケータクラス：プールアロケータ用
+using CTempPolyPoolAllocator = CTempPolyAllocatorWithAdp<CPoolAllocAdp>;//C++11形式
 
 //--------------------
 //テスト用クラス
@@ -3034,6 +3078,9 @@ private:
 
 //--------------------
 //テスト（共通関数）
+//※先の共通アロケータインターフェースのテストと異なり、アダプターを受け取らず、そのまま new / deleteする
+//※呼び出し元で、new / delete の実装を切り替えている
+//クラス単体のテスト
 void test7_sub1(const char* name)
 {
 #ifdef USE_NEW_MACRO
@@ -3041,11 +3088,12 @@ void test7_sub1(const char* name)
 	printf("obj_p=0x%p\n", obj_p);
 	DELETE obj_p;
 #else//USE_NEW_MACRO
-	CTest7* obj_p = new CTest7(name);
+	CTest7* obj_p = new CTest7(name);//配置newではなく、普通のnew演算子
 	printf("obj_p=0x%p\n", obj_p);
-	delete obj_p;
+	delete obj_p;//配置deleteではなく、普通のdelete演算子
 #endif//USE_NEW_MACRO
 }
+//クラスの配列のテスト
 void test7_sub2()
 {
 #ifdef USE_NEW_MACRO
@@ -3053,21 +3101,22 @@ void test7_sub2()
 	printf("obj_p=0x%p\n", obj_p);
 	DELETEARR obj_p;
 #else//USE_NEW_MACRO
-	CTest7* obj_p = new CTest7[3];
+	CTest7* obj_p = new CTest7[3];//配置newではなく、普通のnew[]演算子
 	printf("obj_p=0x%p\n", obj_p);
-	delete[] obj_p;
+	delete[] obj_p;//配置deleteではなく、普通のdelete[]演算子
 #endif//USE_NEW_MACRO
 }
+//多重継承クラスのテスト
 void test7_sub3(const char* name)
 {
 #ifdef USE_NEW_MACRO
-	CTest7ex* obj_p = NEW(CDerivedTest7, name);
+	CTest7ex* obj_p = NEW(CDerivedTest7, name);//アップキャスト
 	printf("obj_p=0x%p\n", obj_p);
 	DELETE obj_p;
 #else//USE_NEW_MACRO
-	CTest7ex* obj_p = new CDerivedTest7(name);
+	CTest7ex* obj_p = new CDerivedTest7(name);//配置newではなく、普通のnew演算子
 	printf("obj_p=0x%p\n", obj_p);
-	delete obj_p;
+	delete obj_p;//配置deleteではなく、普通のdelete演算子
 #endif//USE_NEW_MACRO
 }
 //--------------------
@@ -3075,65 +3124,76 @@ void test7_sub3(const char* name)
 void test7()
 {
 	printf("---------- test7:グローバルnew/delete + 共通アロケータインターフェース ----------\n");
+	//標準アロケータ（malloc / free）使用
 	{
 		printf("----------CStdAllocAdp\n");
 		CTempPolyStdAllocator poly_allocator;
 		test7_sub1("テスト7-1a");
-		test7_sub2();
-		test7_sub3("テスト7-1b");
+		test7_sub2();//クラスの配列でずれたポインタは、delet[]演算子によって正しく処理されるため、問題が起こらない
+		test7_sub3("テスト7-1b");//多重継承でずれたポインタは、delet演算子によって正しく処理されるため、問題が起こらない
 	}
+	//単一バッファアロケータ使用
 	{
 		printf("----------CMonoAllocAdp\n");
 		CMonoAllocAdpWithBuff<128> allocator_adp;
-		CTempPolyMonoAllocator allocator(allocator_adp);
+		CTempPolyMonoAllocator poly_allocator(allocator_adp);
 		test7_sub1("テスト7-2a");
 		test7_sub2();
 		test7_sub3("テスト7-2b");
 	}
+	//スタックアロケータ使用
 	{
 		printf("----------CStackAllocAdp\n");
 		CStackAllocatorWithBuff<128> allocator;
 		CTempPolyStackAllocator poly_allocator(allocator);
 		test7_sub1("テスト7-3a");
 		{
-			CTempPolyStackAllocator poly_allocator(allocator, CIStackAllocAdp::AUTO_REWIND);
+			//自動巻き戻しのテスト
+			CTempPolyStackAllocator poly_allocator_tmp(allocator, CIStackAllocAdp::AUTO_REWIND);
 			test7_sub2();
 		}
 		test7_sub3("テスト7-3b");
 	}
+	//双方向スタックアロケータ使用
 	{
 		printf("----------CDualStackAllocAdp\n");
 		CDualStackAllocatorWithBuff<128> allocator;
 		CTempPolyDualStackAllocator poly_allocator(allocator, DSA_REVERSE);
 		test7_sub1("テスト7-4a");
 		{
-			CTempPolyDualStackAllocator poly_allocator(allocator, DSA_REVERSE, CIStackAllocAdp::AUTO_REWIND);
+			//自動巻き戻しのテスト
+			CTempPolyDualStackAllocator poly_allocator_tmp(allocator, DSA_REVERSE, CIStackAllocAdp::AUTO_REWIND);
 			test7_sub2();
 		}
 		test7_sub3("テスト7-4b");
 	}
+	//スタックアロケータをスタックアロケータインターフェースとして使用
 	{
 		printf("----------CIStackAllocAdp on CStackAllocAdp\n");
 		CStackAllocatorWithBuff<128> allocator;
 		CTempPolyIStackAllocator poly_allocator(allocator);
 		test7_sub1("テスト7-5a");
 		{
-			CTempPolyIStackAllocator poly_allocator(allocator, CIStackAllocAdp::AUTO_REWIND);
+			//自動巻き戻しのテスト
+			CTempPolyIStackAllocator poly_allocator_tmp(allocator, CIStackAllocAdp::AUTO_REWIND);
 			test7_sub2();
 		}
 		test7_sub3("テスト7-5b");
 	}
+	//双方向スタックアロケータをスタックアロケータインターフェースとして使用
 	{
 		printf("----------CIStackAllocAdp on CDualStackAllocAdp\n");
 		CDualStackAllocatorWithBuff<128> allocator;
 		CTempPolyIStackAllocator poly_allocator(allocator);
 		test7_sub1("テスト7-6a");
 		{
-			CTempPolyIStackAllocator poly_allocator(allocator, CIStackAllocAdp::AUTO_REWIND);
+			//自動巻き戻しのテスト
+			CTempPolyIStackAllocator poly_allocator_tmp(allocator, CIStackAllocAdp::AUTO_REWIND);
 			test7_sub2();
 		}
 		test7_sub3("テスト7-6b");
 	}
+	//プールアロケータ使用
 	{
 		printf("----------CPoolAllocAdp\n");
 		CPoolAllocatorWithBuff<24, 5> allocator;
@@ -3202,20 +3262,20 @@ namespace crc_inner_calc//直接使用しない処理を隠ぺいするための
 	//文字列からCRC算出用（再帰処理）
 	constexpr crc32_t calcStr(const crc32_t crc, const char* str)
 	{
-#ifndef USE_CRC_CALC_TABLE
+	#ifndef USE_CRC_CALC_TABLE
 		return *str == '\0' ? crc : calcStr(calcPoly(static_cast<crc32_t>((crc ^ *str) & 0xffu), 8) ^ (crc >> 8), str + 1);//CRC生成多項式計算計算を合成
-#else//USE_CRC_CALC_TABLE
+	#else//USE_CRC_CALC_TABLE
 		return *str == '\0' ? crc : calcStr(s_calcTable[(crc ^ *str) & 0xffu] ^ (crc >> 8), str + 1);//CRC生成多項式計算計算済みテーブルの値を合成
-#endif//USE_CRC_CALC_TABLE
+	#endif//USE_CRC_CALC_TABLE
 	}
 	//データ長を指定してからCRC算出用（再帰処理）
 	constexpr crc32_t calcData(const crc32_t crc, const char* data, const int len)
 	{
-#ifndef USE_CRC_CALC_TABLE
+	#ifndef USE_CRC_CALC_TABLE
 		return len == 0 ? crc : calcData(calcPoly(static_cast<crc32_t>((crc ^ *data) & 0xffu), 8) ^ (crc >> 8), data + 1, len - 1);//CRC生成多項式計算計算を合成
-#else//USE_CRC_CALC_TABLE
+	#else//USE_CRC_CALC_TABLE
 		return len == 0 ? crc : calcData(s_calcTable[(crc ^ *data) & 0xffu] ^ (crc >> 8), data + 1, len - 1);//CRC生成多項式計算計算済みテーブルの値を合成
-#endif//USE_CRC_CALC_TABLE
+	#endif//USE_CRC_CALC_TABLE
 	}
 }
 //文字列からCRC算出用
@@ -3250,11 +3310,11 @@ public:
 		int m_age;//年齢
 		DATA(const char* name, const int age)
 		{
-#ifdef USE_STRCPY_S
+		#ifdef USE_STRCPY_S
 			strcpy_s(m_name, sizeof(m_name), name);
-#else//USE_STRCPY_S
+		#else//USE_STRCPY_S
 			strcpy(m_name, name);
-#endif//USE_STRCPY_S
+		#endif//USE_STRCPY_S
 			m_age = age;
 		}
 	};
@@ -3325,11 +3385,11 @@ void test8()
 			std::string str4 = "std::stringが";
 			std::string str5 = "やっぱり便利!!";
 			std::string str = str1 + str2 + str3 + str4 + str5;
-#ifdef USE_STRCPY_S
+		#ifdef USE_STRCPY_S
 			strcpy_s(str_buff, sizeof(str_buff), str.c_str());
-#else//USE_STRCPY_S
+		#else//USE_STRCPY_S
 			strcpy(str_buff, str.c_str());
-#endif//USE_STRCPY_S
+		#endif//USE_STRCPY_S
 		}
 		printf("str_buff=\"%s\"\n", str_buff);
 	}
@@ -3343,11 +3403,11 @@ void test8()
 			std::string str4 = "std::stringが";
 			std::string str5 = "やっぱり便利!!";
 			std::string str = str1 + str2 + str3 + str4 + str5;
-#ifdef USE_STRCPY_S
+		#ifdef USE_STRCPY_S
 			strcpy_s(str_buff, sizeof(str_buff), str.c_str());
-#else//USE_STRCPY_S
+		#else//USE_STRCPY_S
 			strcpy(str_buff, str.c_str());
-#endif//USE_STRCPY_S
+		#endif//USE_STRCPY_S
 		}
 		printf("str_buff=\"%s\"\n", str_buff);
 	}
@@ -3427,16 +3487,16 @@ private:
 	//メソッド(static)
 	static void setThisThread()//現在のスレッドのスレッドIDをセット
 	{
-#ifdef THREAD_ID_IS_HASH
+	#ifdef THREAD_ID_IS_HASH
 		if (m_thisThreadID == INITIAL_THREAD_ID)
 			m_thisThreadID = GetThisThreadID();
-#endif//THREAD_ID_IS_HASH
+	#endif//THREAD_ID_IS_HASH
 	}
 	static void resetThisThread(const char* name)//現在のスレッドのスレッドIDをリセット
 	{
-#ifdef THREAD_ID_IS_HASH
+	#ifdef THREAD_ID_IS_HASH
 		m_thisThreadID = GetThisThreadID();
-#endif//THREAD_ID_IS_HASH
+	#endif//THREAD_ID_IS_HASH
 		m_thisThreadName = name;
 	}
 public:
@@ -3519,15 +3579,15 @@ public:
 	void lock(const int spin_count = DEFAULT_SPIN_COUNT)
 	{
 		int spin_count_now = 0;
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+	#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
 		while (m_lock.test_and_set())//std::atomic_flag版（高速）
 		{
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
+	#else//SPIN_LOCK_USE_ATOMIC_FLAG
 		bool prev = false;
 		while (m_lock.compare_exchange_weak(prev, true))//std::atomic_bool版（軽量）
 		{
 			prev = false;
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+	#endif//SPIN_LOCK_USE_ATOMIC_FLAG
 			if (spin_count == 0 || ++spin_count_now % spin_count == 0)
 				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
 		}
@@ -3535,21 +3595,21 @@ public:
 	//ロック解放
 	void unlock()
 	{
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+	#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
 		m_lock.clear();//std::atomic_flag版（高速）
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
+	#else//SPIN_LOCK_USE_ATOMIC_FLAG
 		m_lock.store(false);//std::atomic_bool版（軽量）
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+	#endif//SPIN_LOCK_USE_ATOMIC_FLAG
 	}
 public:
 	//コンストラクタ
 	CSpinLock()
 	{
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+	#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
 		m_lock.clear();//ロック用フラグ（高速）
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
+	#else//SPIN_LOCK_USE_ATOMIC_FLAG
 		m_lock.store(false);//ロック用フラグ（軽量）
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+	#endif//SPIN_LOCK_USE_ATOMIC_FLAG
 	}
 	//デストラクタ
 	~CSpinLock()
@@ -4043,6 +4103,9 @@ private:
 class CSmartStackAllocAdp : public CIStackAllocAdp
 {
 public:
+	//型
+	typedef CSmartStackAllocator ALLOCATOR_TYPE;//アロケータ型
+public:
 	//アクセッサ
 	const char* getName() const override{ return "CSmartStackAllocAdp"; }//アロケータ名取得
 	CSmartStackAllocator& getAllocator(){ return *static_cast<CSmartStackAllocator*>(&m_allocator); }//アロケータ取得
@@ -4081,29 +4144,20 @@ private:
 };
 
 //--------------------
-//一時グローバル多態性アロケータテンプレートクラス：スマートスタックアロケータ用に特殊化
-template<>
-class CTempPolyAllocator<CSmartStackAllocator> : public CTempPolyAllocatorBase
+//一時多態アロケータクラス：スマートスタックアロケータ用
+class CTempPolySmartStackAllocator : public CTempPolyAllocatorWithStackAdp<CSmartStackAllocAdp>
 {
 public:
 	//デフォルトコンストラクタ
-	CTempPolyAllocator() = delete;
+	CTempPolySmartStackAllocator() = delete;//コンストラクタ引数必須
 	//コンストラクタ
-	//※自動巻き戻しには対応しない
-	CTempPolyAllocator(CSmartStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) :
-		m_adapter(allocator, ordered),//スマートスタックアロケータアダプタ初期化
-		CTempPolyAllocatorBase(m_adapter)
+	CTempPolySmartStackAllocator(CSmartStackAllocator& allocator, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) :
+		CTempPolyAllocatorWithStackAdp<CSmartStackAllocAdp>(allocator, ordered)
 	{}
-public:
 	//デストラクタ
-	~CTempPolyAllocator()
+	~CTempPolySmartStackAllocator()
 	{}
-private:
-	//フィールド
-	CSmartStackAllocAdp m_adapter;//スマートスタックアロケータアダプタ
 };
-//一時グローバル多態性アロケータクラス：スマートスタックアロケータ用
-using CTempPolySmartStackAllocator = CTempPolyAllocator<CSmartStackAllocator>;
 
 //--------------------
 //テスト用クラス
@@ -4143,14 +4197,14 @@ protected:
 static CSmartStackAllocatorWithBuff<1024> s_stackForThread;
 void test9thread_n(const char* name)
 {
-	CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_NORMAL);//多態性アロケータをスマートスタック（正順）に設定
+	CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_NORMAL);//多態アロケータをスマートスタック（正順）に設定
 	CTest9* obj_p = new CTest9(name);
 	std::this_thread::sleep_for(std::chrono::seconds(1));//1秒スリープ
 	delete obj_p;
 }
 void test9thread_r(const char* name)
 {
-	CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_REVERSE);//多態性アロケータをスマートスタック（逆順）に設定
+	CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_REVERSE);//多態アロケータをスマートスタック（逆順）に設定
 	CTest9* obj_p = new CTest9(name);
 	std::this_thread::sleep_for(std::chrono::seconds(1));//1秒スリープ
 	delete obj_p;
@@ -4220,7 +4274,7 @@ void test9()
 		char* parmanent_data2 = nullptr;
 		float* parmanent_data3 = nullptr;
 		{
-			CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_NORMAL);//多態性アロケータをスマートスタック（正順）に設定
+			CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_NORMAL);//多態アロケータをスマートスタック（正順）に設定
 			parmanent_data1 = new int[2];
 			parmanent_data2 = new char[3];
 			parmanent_data3 = new float[4];
@@ -4229,7 +4283,7 @@ void test9()
 		unsigned char* parmanent_data5 = nullptr;
 		double* parmanent_data6 = nullptr;
 		{
-			CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_REVERSE);//多態性アロケータをスマートスタック（逆順）に設定
+			CTempPolySmartStackAllocator poly_allocator(s_stackForThread, DSA_REVERSE);//多態アロケータをスマートスタック（逆順）に設定
 			parmanent_data4 = new unsigned int[5];
 			parmanent_data5 = new unsigned char[6];
 			parmanent_data6 = new double[7];
@@ -4279,7 +4333,7 @@ void test9()
 			printf("sleep(200msec)\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
 			{
-				//途中で多態性アロケータはTLSでアロケータをスレッドごとに分けて使っているので、
+				//途中で多態アロケータはTLSでアロケータをスレッドごとに分けて使っているので、
 				//他のスレッドが動作中に異なるアロケータを使っても問題なし
 				CSmartStackAllocatorWithBuff<128> allocator;
 				CTempPolySmartStackAllocator poly_allocator(allocator);

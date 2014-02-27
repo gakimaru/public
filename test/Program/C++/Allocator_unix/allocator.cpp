@@ -1,4 +1,4 @@
-//コンパイルスイッチ
+//テスト処理用コンパイルスイッチ
 #define USE_NEW_PTR_FOR_TEST0//test0で、new_ptr関数を使用する時はこのマクロを有効にする
 #define USE_DELETE_PTR_FOR_TEST0//test0で、delete_ptr関数を使用する時はこのマクロを有効にする
 #define USE_DESTRUCTOR_FOR_TEST1//test1で、デストラクタを使用するときはこのマクロを有効にする（アロケートサイズが増えることを確認できる）
@@ -7,8 +7,10 @@
 #define USE_DESTRUCTOR_FOR_TEST2//test2で、デストラクタを使用する時はこのマクロを有効にする（アロケートサイズが増えることを確認できる）
 //#define USE_NAMESPACE_NEW_DELETE_FOR_TEST2//test2で、ネームスペースに定義したnew/deleteのテストを行う時はこのマクロを有効にする
 #define USE_NEW_MACRO//test7で、NEWマクロを使用する時はこのマクロを有効にする
-#define USE_ALLOC_INFO//test7で、new時にメモリ確保事情報を使用する時はこのマクロを有効にする
-#define USE_CRC_CALC_TABLE//test8で、CRC計算の際に、事前計算済みのCRC計算テーブルを使用する時はこのマクロを有効にする
+#define USE_ALLOC_INFO//test7で、new時にメモリ確保情報を使用する時はこのマクロを有効にする
+
+//CRC算出処理用コンパイラスイッチ
+//#define USE_CRC_CALC_TABLE//CRC計算の際に、事前計算済みのCRC計算テーブルを使用するならこのマクロを有効にする
 
 //GCC関連：GCC使用時はこれらのマクロを有効化する
 #define USE_MEMALIGN//【GCC用】test6以降で、memalignを使用する時はこのマクロを有効にする
@@ -19,7 +21,7 @@
 //#define USE_STRCPY_S//【MS固有仕様】strcpy_sを使用する時にこのマクロを有効にする
 //#define USE_FUNCSIG//【MS固有仕様】関数名に__FUNCSIG__を使用する時にこのマクロを有効にする
 
-//C++11関連：サンプルプログラムには、これら以外にもC++11の要素が膨れている
+//C++11関連：一部の挙動を設定
 //これらのマクロは、Visual C++環境やC++0x環境でコンパイルするために使用する
 #define ENABLE_NULLPTR//【C++11用】nullptrを有効にする時はこのマクロを有効にする
 #define ENABLE_OVERRIDE//【C++11用】overrideを有効にする時はこのマクロを有効にする
@@ -1955,7 +1957,7 @@ void test5()
 //共通アロケータインターフェース
 
 //--------------------
-//メモリ確保時情報
+//メモリ確保情報
 //※デバッグ情報（参照のみ）
 struct ALLOC_INFO;
 
@@ -2237,7 +2239,7 @@ public:
 	const char* getName() const override { return "CDualStackAllocAdp"; }//アロケータ名取得
 	CDualStackAllocator& getAllocator(){ return *static_cast<CDualStackAllocator*>(&m_allocator); }//アロケータ取得
 	const CDualStackAllocator& getAllocator() const { return *static_cast<CDualStackAllocator*>(&m_allocator); }//アロケータ取得
-	IStackAllocator::E_ORDERED getOrdered() const { m_ordered; }//スタック順取得
+	IStackAllocator::E_ORDERED getOrdered() const { return m_ordered; }//スタック順取得
 	void setOrdered(const IStackAllocator::E_ORDERED ordered){ m_ordered = ordered; }//スタック順更新
 	IStackAllocator::marker_t getRewindMarkerN() const { return m_rewindMarker; }//巻き戻しマーカー（正順）取得
 	IStackAllocator::marker_t getRewindMarkerR() const { return m_rewindMarkerR; }//巻き戻しマーカー（逆順）取得
@@ -2665,7 +2667,7 @@ thread_local IAllocator* CPolyAllocator::m_allocator = nullptr;//現在のアロ
 thread_local const ALLOC_INFO* CPolyAllocator::m_allocInfo = nullptr;//現在のメモリ確保情報
 
 //--------------------
-//メモリ確保時情報
+//メモリ確保情報
 //※デバッグ情報（参照のみ）
 struct ALLOC_INFO
 {
@@ -2686,8 +2688,50 @@ struct ALLOC_INFO
 	{}
 };
 
+//--------------------
+//デバッグ情報収集用関数
+const char* getCurrentCallPointNameDummy(){ return "(unknown call-point)"; }//コールポイント名取得
+float getGameTimeDummy(){ return 0.f; }//ゲーム時間取得
+
+//--------------------
+//共通関数
+#include <string.h>
+#ifdef ENABLE_CONSTEXPR
+//【constexpr版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
+//※再帰処理部（直接使用しない）
+constexpr const char* getConstFileNameRecursive(const char* str, const std::size_t len)
+{
+	return len == 0 ?
+	str :
+		*(str + len - 1) == '\\' || *(str + len - 1) == '/' ?
+			str + len :
+			getConstFileNameRecursive(str, len - 1);
+}
+//【constexpr版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
+constexpr const char* getConstFileName(const char* str)
+{
+	return getConstFileNameRecursive(str, strlen(str));
+}
+#else//ENABLE_CONSTEXPR
+//【通常版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
+const char* getFileName(const char* str)
+{
+	std::size_t len = strlen(str);
+	const char* p = str + len;
+	for (; len > 0; --len, --p)
+	{
+		const char c = *(p - 1);
+		if (c == '\\' || c == '/')
+			return p;
+	}
+	return str;
+}
+#endif//ENABLE_CONSTEXPR
+
 #ifndef USE_GLOBAL_NEW_DELETE_FOR_TEST2
-extern const char* getFileName(const char* str);//関数参照：ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
+//--------------------
+//共通関数参照
+const char* getFileName(const char* str);//関数参照：ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
 //--------------------
 //グローバル多態アロケータ
 //※標準new / delete 演算子の置き換え
@@ -2697,7 +2741,7 @@ void* operator new(const std::size_t size) throw()
 	CPolyAllocator allocator;
 	printf("new(size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
 	std::size_t align = ALLOC_INFO::DEFAULT_ALIGN;
-	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();
+	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();//メモリ確保情報取得
 	if (info)
 	{
 		align = info->m_align;
@@ -2717,7 +2761,7 @@ void* operator new[](const std::size_t size) throw()
 	CPolyAllocator allocator;
 	printf("new[](size=%d, poly_allocator=\"%s\":%d/%d/%d)\n", size, allocator->getName(), allocator->getTotal(), allocator->getUsed(), allocator->getRemain());
 	std::size_t align = ALLOC_INFO::DEFAULT_ALIGN;
-	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();
+	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();//メモリ確保情報取得
 	if (info)
 	{
 		align = info->m_align;
@@ -2748,93 +2792,66 @@ void operator delete[](void* p) throw()
 #endif//USE_GLOBAL_NEW_DELETE_FOR_TEST2
 
 //--------------------
-//メモリ確保時情報の作成
-//--------------------
-//ダミー関数
-const char* getCurrentCallPointNameDummy(){ return "(unknown call-point)"; }//コールポイント名取得
-float getGameTimeDummy(){ return 0.f; }//ゲーム時間取得
-//--------------------
-//関数名作成マクロ
-#include <string.h>
-//【constexpr版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
-#ifdef ENABLE_CONSTEXPR
-constexpr const char* getConstFileNameRecursive(const char* str, const std::size_t len)
-{
-	return len == 0 ?
-	str :
-		*(str + len - 1) == '\\' || *(str + len - 1) == '/' ?
-			str + len :
-			getConstFileNameRecursive(str, len - 1);
-}
-constexpr const char* getConstFileName(const char* str)
-{
-	return getConstFileNameRecursive(str, strlen(str));
-}
-#else//ENABLE_CONSTEXPR
-//【通常版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
-const char* getFileName(const char* str)
-{
-	std::size_t len = strlen(str);
-	const char* p = str + len;
-	for (; len > 0; --len, --p)
-	{
-		const char c = *(p - 1);
-		if (c == '\\' || c == '/')
-			return p;
-	}
-	return str;
-}
-#endif//ENABLE_CONSTEXPR
+//デバッグ情報収集用関数参照
+const char* getCurrentCallPointNameDummy();//コールポイント名取得
+float getGameTimeDummy();//ゲーム時間取得
 
 //--------------------
 //メモリ確保情報付きNEW処理
 template<class T, typename... Tx>
 T* newWithInfo(const char* file_name, const char* func_name, const std::size_t align, Tx ...nx)
 {
-	const char* call_point_name = getCurrentCallPointNameDummy();
-	const float game_time = getGameTimeDummy();
-	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T).name(), align);
-	CPolyAllocator::setAllocInfo(&info);
-	return new T(nx...);
+	const char* call_point_name = getCurrentCallPointNameDummy();//コールポイント名取得
+	const float game_time = getGameTimeDummy();//ゲーム時間取得
+	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T).name(), align);//メモリ確保情報生成
+	CPolyAllocator::setAllocInfo(&info);//メモリ確保情報受け渡し ※ローカル変数のポインタを受け渡すことになるが、後続の処理でのみ参照することと、TLSで保護されるため問題なし
+	return new T(nx...);//メモリ確保
 }
 //配列版
+//※【問題点】配列newにアラインメントが指定された場合、正しいポインタが計算しきれないため、アラインメント指定に対応しない
 template<class T, std::size_t array_size>
-T* newArrayWithInfo(const char* file_name, const char* func_name, const std::size_t align)
+T* newArrayWithInfo(const char* file_name, const char* func_name)
 {
-	const char* call_point_name = getCurrentCallPointNameDummy();
-	const float game_time = getGameTimeDummy();
-	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T[array_size]).name(), align);
-	CPolyAllocator::setAllocInfo(&info);
-	return new T[array_size];
+	const char* call_point_name = getCurrentCallPointNameDummy();//コールポイント名取得
+	const float game_time = getGameTimeDummy();//ゲーム時間取得
+	const ALLOC_INFO info(file_name, func_name, call_point_name, game_time, typeid(T[array_size]).name());//メモリ確保情報生成
+	CPolyAllocator::setAllocInfo(&info);//メモリ確保情報受け渡し ※ローカル変数のポインタを受け渡すことになるが、後続の処理でのみ参照することと、TLSで保護されるため問題なし
+	return new T[array_size];//メモリ確保
 }
+
 //--------------------
-//newマクロ補助マクロ
-#define TO_STRING(s) #s
-#define TO_STRING_EX(s) TO_STRING(s)
+//NEWマクロ補助マクロ
+#define TO_STRING(s) #s//__LINE__を文字列化するための二重マクロ
+#define TO_STRING_EX(s) TO_STRING(s)//__LINE__を文字列化するためのマクロ
 #ifdef ENABLE_CONSTEXPR
-#define GET_CONCATENATED_FILE_NAME() getConstFileName(__FILE__ "(" TO_STRING_EX(__LINE__) ") [" __TIMESTAMP__ "]")
+#define GET_CONCATENATED_FILE_NAME() getConstFileName(__FILE__ "(" TO_STRING_EX(__LINE__) ") [" __TIMESTAMP__ "]")//ファイル名合成＆取得マクロ
 #else//ENABLE_CONSTEXPR
-#define GET_CONCATENATED_FILE_NAME() __FILE__ "(" TO_STRING_EX(__LINE__) ")  [" __TIMESTAMP__ "]"
+#define GET_CONCATENATED_FILE_NAME() __FILE__ "(" TO_STRING_EX(__LINE__) ")  [" __TIMESTAMP__ "]"//ファイル名合成＆取得マクロ
 #endif//ENABLE_CONSTEXPR
-#define GET_FUNC_NAME() __PRETTY_FUNCTION__
+#define GET_FUNC_NAME() __PRETTY_FUNCTION__//関数名取得マクロ
 //#define GET_FUNC_NAME() __FUNCTION__
-//--------------------
-//newマクロ
+
 #ifdef USE_ALLOC_INFO
-//※メモリ確保時情報付き
-#define NEW(T, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), ALLOC_INFO::DEFAULT_ALIGN, __VA_ARGS__)
-#define NEWALIGN(T, align, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), align, __VA_ARGS__)
-#define NEWARR(T, array_size) newArrayWithInfo<T, array_size>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), ALLOC_INFO::DEFAULT_ALIGN)
-#define NEWALIGNARR(T, align, array_size) newArrayWithInfo<T, array_size>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), align)
-#define DELETE delete
-#define DELETEARR delete[]
+//--------------------
+//NEWマクロ
+//※メモリ確保情報付き
+#define NEW(T, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), ALLOC_INFO::DEFAULT_ALIGN, __VA_ARGS__)//NEW
+#define NEWALIGN(T, align, ...) newWithInfo<T>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME(), align, __VA_ARGS__)//アラインメント指定付きNEW
+#define NEWARR(T, array_size) newArrayWithInfo<T, array_size>(GET_CONCATENATED_FILE_NAME(), GET_FUNC_NAME())//配列NEW
+//#define NEWALIGNARR(T, align, array_size)//アライメント指定付き配列NEWは正確に計算できないので対応しない
 #else//USE_ALLOC_INFO
-//※メモリ確保時情報なし
-#define NEW(T, ...) new T(__VA_ARGS__)
-#define NEWARR(T, array_size) new T[array_size]
-#define DELETE delete
-#define DELETEARR delete[]
+//--------------------
+//NEWマクロ
+//※メモリ確保情報なし
+#define NEW(T, ...) new T(__VA_ARGS__)//NEW
+#define NEWALIGN(T, align, ...) new T(__VA_ARGS__)//アラインメント指定付きNEW（互換用）※実際にはアラインメントは機能しない
+#define NEWARR(T, array_size) new T[array_size]//配列NEW
+//#define NEWALIGNARR(T, align, array_size)//アライメント指定付き配列NEWは正確に計算できないので対応しない
 #endif//USE_ALLOC_INFO
+//--------------------
+//DELETEマクロ
+#define DELETE delete//DELETE
+#define DELETEARR delete[]//配列DELETE
 
 //--------------------
 //一時多態アロケータ
@@ -3114,7 +3131,7 @@ void test7_sub2()
 void test7_sub3(const char* name)
 {
 #ifdef USE_NEW_MACRO
-	CTest7ex* obj_p = NEW(CDerivedTest7, name);//アップキャスト
+	CTest7ex* obj_p = NEWALIGN(CDerivedTest7, 16, name);//アップキャスト
 	printf("obj_p=0x%p\n", obj_p);
 	DELETE obj_p;
 #else//USE_NEW_MACRO
@@ -3211,23 +3228,31 @@ void test7()
 //--------------------------------------------------------------------------------
 //標準ライブラリを便利に活用
 
-#include <string.h>//strcpy用
-#include <string>//std::string用
+//--------------------
+//CRC算出
+
+#include <cstddef>//std::size_t用
+#include <assert.h>//assert用
+
+//--------------------
+//型
+typedef unsigned int crc32_t;//CRC32型
 
 //--------------------
 //CRC算出関数
-typedef unsigned int crc32_t;//CRC32型
 namespace crc_inner_calc//直接使用しない処理を隠ぺいするためのネームスペース
 {
 #ifndef USE_CRC_CALC_TABLE
+	//--------------------
 	//CRC生成多項式計算（再帰処理）
 	constexpr crc32_t calcPoly(crc32_t poly, const int n)
 	{
 		return n == 0 ? poly : calcPoly(poly & 1 ? 0xedb88320u ^ (poly >> 1) : (poly >> 1), n - 1);
 	}
 #else//USE_CRC_CALC_TABLE
+	//--------------------
 	//CRC生成多項式計算計算済みテーブル
-	static constexpr crc32_t s_calcTable[] =
+	constexpr crc32_t s_calcTable[] =
 	{
 		0x00000000u, 0x77073096u, 0xee0e612cu, 0x990951bau, 0x076dc419u, 0x706af48fu, 0xe963a535u, 0x9e6495a3u,
 		0x0edb8832u, 0x79dcb8a4u, 0xe0d5e91eu, 0x97d2d988u, 0x09b64c2bu, 0x7eb17cbdu, 0xe7b82d07u, 0x90bf1d91u,
@@ -3263,6 +3288,7 @@ namespace crc_inner_calc//直接使用しない処理を隠ぺいするための
 		0xb3667a2eu, 0xc4614ab8u, 0x5d681b02u, 0x2a6f2b94u, 0xb40bbe37u, 0xc30c8ea1u, 0x5a05df1bu, 0x2d02ef8du
 	};
 #endif//USE_CRC_CALC_TABLE
+	//--------------------
 	//文字列からCRC算出用（再帰処理）
 	constexpr crc32_t calcStr(const crc32_t crc, const char* str)
 	{
@@ -3272,8 +3298,9 @@ namespace crc_inner_calc//直接使用しない処理を隠ぺいするための
 		return *str == '\0' ? crc : calcStr(s_calcTable[(crc ^ *str) & 0xffu] ^ (crc >> 8), str + 1);//CRC生成多項式計算計算済みテーブルの値を合成
 	#endif//USE_CRC_CALC_TABLE
 	}
-	//データ長を指定してからCRC算出用（再帰処理）
-	constexpr crc32_t calcData(const crc32_t crc, const char* data, const int len)
+	//--------------------
+	//データ長を指定してCRC算出用（再帰処理）
+	constexpr crc32_t calcData(const crc32_t crc, const char* data, const std::size_t len)
 	{
 	#ifndef USE_CRC_CALC_TABLE
 		return len == 0 ? crc : calcData(calcPoly(static_cast<crc32_t>((crc ^ *data) & 0xffu), 8) ^ (crc >> 8), data + 1, len - 1);//CRC生成多項式計算計算を合成
@@ -3282,26 +3309,63 @@ namespace crc_inner_calc//直接使用しない処理を隠ぺいするための
 	#endif//USE_CRC_CALC_TABLE
 	}
 }
-//文字列からCRC算出用
-constexpr crc32_t calcCRC32(const char* str)
+//--------------------
+//【constexpr版】文字列からCRC算出
+constexpr crc32_t calcConstCRC32(const char* str)
 {
 	return ~crc_inner_calc::calcStr(~0u, str);
 }
-//データ長を指定してCRC算出
-constexpr crc32_t calcCRC32(const char* str, const int len)
+//--------------------
+//【constexpr版】データ長を指定してCRC算出
+constexpr crc32_t calcConstCRC32(const char* data, const std::size_t len)
 {
-	return ~crc_inner_calc::calcData(~0u, str, len);
+	return ~crc_inner_calc::calcData(~0u, data, len);
 }
 #ifdef ENABLE_USER_DEFINED_LITERALS
-//ユーザー定義リテラル
+//--------------------
+//【ユーザー定義リテラル版】データ長を指定してCRC算出
 constexpr crc32_t operator "" _crc32(const char* str, std::size_t len)
 {
-	return calcCRC32(str, len);
+	return calcConstCRC32(str, len);
 }
 #endif//ENABLE_USER_DEFINED_LITERALS
+//--------------------
+//【通常関数版】文字列からCRC算出
+crc32_t calcCRC32(const char* str)
+{
+	crc32_t crc = ~0u;
+	const char* p = str;
+	while (*p)
+	{
+	#ifndef USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::calcPoly(static_cast<crc32_t>((crc ^ *p) & 0xffu), 8) ^ (crc >> 8);//CRC生成多項式計算計算を合成
+	#else//USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::s_calcTable[(crc ^ *p) & 0xffu] ^ (crc >> 8);//CRC生成多項式計算計算済みテーブルの値を合成
+	#endif//USE_CRC_CALC_TABLE
+		++p;
+	}
+	return ~crc;
+}
+//--------------------
+//【通常関数版】データ長を指定してCRC算出
+crc32_t calcCRC32(const char* data, const std::size_t len)
+{
+	crc32_t crc = ~0u;
+	const char* p = data;
+	for (std::size_t pos = 0; pos < len; ++pos, ++p)
+	{
+	#ifndef USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::calcPoly(static_cast<crc32_t>((crc ^ *p) & 0xffu), 8) ^ (crc >> 8);//CRC生成多項式計算計算を合成
+	#else//USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::s_calcTable[(crc ^ *p) & 0xffu] ^ (crc >> 8);//CRC生成多項式計算計算済みテーブルの値を合成
+	#endif//USE_CRC_CALC_TABLE
+	}
+	return ~crc;
+}
 
 //--------------------
 //標準ライブラリを利用した固定バッファハッシュテーブルクラス
+#include <string.h>//strcpy用
 #include <unordered_map>//C++11ハッシュテーブル
 class CTest8
 {
@@ -3312,6 +3376,7 @@ public:
 	{
 		char m_name[20];//名前
 		int m_age;//年齢
+		//コンストラクタ
 		DATA(const char* name, const int age)
 		{
 		#ifdef USE_STRCPY_S
@@ -3328,18 +3393,18 @@ public:
 	void addData(const DATA& data)
 	{
 		printf("CTest8::addData()\n");
-		CTempPolyStackAllocator poly_allocator(m_stack);
-		m_table->insert(std::make_pair(calcCRC32(data.m_name), data));
+		CTempPolyStackAllocator poly_allocator(m_stack);//多態アロケータをクラス内スタックに変更
+		m_table->emplace(calcCRC32(data.m_name), data);//コンテナ内に要素を構築
+		//m_table->insert(std::make_pair(calcCRC32(data.m_name), data));//insertを使用する場合
 	}
 	//データ参照
 	const DATA* find(const crc32_t name_crc) const
 	{
 		printf("CTest8::find()\n");
-		//CTempPolyStackAllocator poly_allocator(m_stack);//不要
-		const auto& obj = m_table->find(name_crc);
-		if (obj == m_table->cend())
+		const auto& obj = m_table->find(name_crc);//キー（CRC）でテーブル検索
+		if (obj == m_table->cend())//見つからなかったか？
 			return nullptr;
-		return &obj->second;
+		return &obj->second;//データ部を返す
 	}
 	const DATA* find(const char* name) const
 	{
@@ -3350,93 +3415,142 @@ public:
 	CTest8()
 	{
 		printf("CTest8::Consructor()\n");
-		CTempPolyStackAllocator poly_allocator(m_stack);
+		CTempPolyStackAllocator poly_allocator(m_stack);//多態アロケータをクラス内スタックに変更
 		printf("new unordered_map\n");
-		m_table = new std::unordered_map<crc32_t, DATA>();
+		m_table = new std::unordered_map<crc32_t, DATA>();//ハッシュテーブル生成
 		printf("unordered_map::reserve\n");
-		m_table->reserve(10);
+		m_table->reserve(10);//あらかじめテーブル数を予約（少しでもメモリ効率をよくするため）
 		printf("--\n");
 	}
 	//デストラクタ
 	~CTest8()
 	{
 		printf("CTest8::Destructor()\n");
-		CTempPolyStackAllocator poly_allocator(m_stack);
+		CTempPolyStackAllocator poly_allocator(m_stack);//多態アロケータをクラス内スタックに変更
 		printf("delete unordered_map\n");
-		delete m_table;
+		delete m_table;//ハッシュテーブルを破棄
 		printf("--\n");
 	}
 private:
 	//フィールド
-	std::unordered_map<crc32_t, DATA>* m_table;//データテーブル
-	CStackAllocatorWithBuff<1024> m_stack;//スタックアロケータ
+	std::unordered_map<crc32_t, DATA>* m_table;//ハッシュテーブル
+	CStackAllocatorWithBuff<1024> m_stack;//クラス内スタック
 };
 
 //--------------------
+//常駐データ（想定）
+CStackAllocatorWithBuff<1024> s_parmaDataBuff;//常駐データ用バッファ
+static char* s_message1 = nullptr;//常駐メッセージ1
+static char* s_message2 = nullptr;//常駐メッセージ2
+
+//--------------------
+//ワークバッファ
+CStackAllocatorWithBuff<4096> s_tempStack;//一時スタックアロケータ
+
+//--------------------
 //テスト
-void test8()
+#include <string.h>//strcpy用
+#include <string>//std::string用
+void test8a()
 {
-	printf("---------- test8:標準ライブラリを便利に利用 ----------\n");
+	printf("---------- test8a:標準ライブラリを便利に利用 ----------\n");
+	//一時スタックアロケータ使用
 	{
-		printf("----------CStackAllocAdp\n");
-		char str_buff[128];
-		CStackAllocatorWithBuff<1024> allocator;
-		CTempPolyStackAllocator poly_allocator(allocator);
+		printf("----------一時スタックアロケータで文字列操作\n");
+		CTempPolyStackAllocator poly_allocator(s_tempStack, CIStackAllocAdp::AUTO_REWIND);
 		{
 			std::string str1 = "文字列と";
 			std::string str2 = "文字列を";
 			std::string str3 = "結合するような処理では、";
 			std::string str4 = "std::stringが";
-			std::string str5 = "やっぱり便利!!";
+			std::string str5 = "やっぱり便利!";
 			std::string str = str1 + str2 + str3 + str4 + str5;
+			str += "\n" "しかし、素直にstrcat()を使った方が高速";
+			str += "\n" "std::string は、find(), replace(), substr() などを使いたい時に便利";
+			str += "\n" "また、「効率化のために一時バッファでサイズを見積もってコピー」のような処理にも\n効果的";
+			str = "【一時スタックアロケータ版】\n" + str;
+			printf("strpcy()\n");
+			const std::size_t size = str.length() + 1;
+			s_message1 = static_cast<char*>(s_parmaDataBuff.allocN(size, 1));
 		#ifdef USE_STRCPY_S
-			strcpy_s(str_buff, sizeof(str_buff), str.c_str());
+			strcpy_s(s_message1, size, str.c_str());
 		#else//USE_STRCPY_S
-			strcpy(str_buff, str.c_str());
+			strcpy(s_message1, str.c_str());
 		#endif//USE_STRCPY_S
 		}
-		printf("str_buff=\"%s\"\n", str_buff);
 	}
+	//標準アロケータ（malloc / free）使用
 	{
-		printf("----------CStdAllocAdp\n");
-		char str_buff[128];
+		printf("----------標準アロケータで文字列操作\n");
 		{
 			std::string str1 = "文字列と";
 			std::string str2 = "文字列を";
 			std::string str3 = "結合するような処理では、";
 			std::string str4 = "std::stringが";
-			std::string str5 = "やっぱり便利!!";
+			std::string str5 = "やっぱり便利!";
 			std::string str = str1 + str2 + str3 + str4 + str5;
+			str += "\n" "しかし、素直にstrcat()を使った方が高速";
+			str += "\n" "std::string は、find(), replace(), substr() などを使いたい時に便利";
+			str += "\n" "また、「効率化のために一時バッファでサイズを見積もってコピー」のような処理にも\n効果的";
+			str = "【標準アロケータ版】\n" + str;
+			printf("strpcy()\n");
+			const std::size_t size = str.length() + 1;
+			s_message2 = static_cast<char*>(s_parmaDataBuff.allocN(size, 1));
 		#ifdef USE_STRCPY_S
-			strcpy_s(str_buff, sizeof(str_buff), str.c_str());
+			strcpy_s(s_message2, size, str.c_str());
 		#else//USE_STRCPY_S
-			strcpy(str_buff, str.c_str());
+			strcpy(s_message2, str.c_str());
 		#endif//USE_STRCPY_S
 		}
-		printf("str_buff=\"%s\"\n", str_buff);
 	}
 	{
-		CStackAllocatorWithBuff<8192> allocator;
-		CTempPolyStackAllocator poly_allocator(allocator);
+		printf("----------文字列操作の結果表示\n");
+		printf("s_message1=\"%s\"\n", s_message1);
+		printf("-----\n");
+		printf("s_message2=\"%s\"\n", s_message2);
+		printf("-----\n");
+		printf("s_parmaDataBuff=%d/%d/%d\n", s_parmaDataBuff.getTotal(), s_parmaDataBuff.getUsed(), s_parmaDataBuff.getRemain());
+		printf("s_tempStack=%d/%d/%d\n", s_tempStack.getTotal(), s_tempStack.getUsed(), s_tempStack.getRemain());
+	}
+}
+
+//--------------------
+//テスト
+void test8b()
+{
+	printf("---------- test8b:標準ライブラリを便利に利用 ----------\n");
+	//標準ライブラリのクラスを内包したクラスのテスト
+	{
+		printf("----------標準ライブラリのクラスを内包したクラスを操作\n");
+		CTempPolyStackAllocator poly_allocator(s_tempStack, CIStackAllocAdp::AUTO_REWIND);//一時スタックアロケータ
 		{
-			printf("----------CTest8\n");
+			//テーブル登録用のデータを準備
 			CTest8::DATA data1("太郎", 40);
 			CTest8::DATA data2("次郎", 30);
 			CTest8::DATA data3("三郎", 20);
+			
+			//クラスのインスタンスを生成（一時スタックアロケータに作成）
 			printf("new CTest8\n");
 			CTest8* table = new CTest8();
+			
+			//テーブルにデータを登録
 			table->addData(data1);
 			table->addData(data2);
 			table->addData(data3);
+
+			//テーブルからデータを参照
 			const CTest8::DATA* ref1 = table->find("太郎");
 			const CTest8::DATA* ref2 = table->find("次郎");
 			const CTest8::DATA* ref3 = table->find("三郎");
+			const CTest8::DATA* ref4 = table->find("四朗");
 			if (ref1) printf("ref1: name=\"%s\", age=%d\n", ref1->m_name, ref1->m_age);
 			if (ref2) printf("ref2: name=\"%s\", age=%d\n", ref2->m_name, ref2->m_age);
 			if (ref3) printf("ref3: name=\"%s\", age=%d\n", ref3->m_name, ref3->m_age);
+			if (ref4) printf("ref4: name=\"%s\", age=%d\n", ref4->m_name, ref4->m_age);
+
+			//インスタンス破棄
 			printf("delete CTest8\n");
 			delete table;
-			printf("----------CTest8:End\n");
 		}
 	}
 }
@@ -3636,7 +3750,7 @@ class CSmartStackAllocator : public IStackAllocator
 {
 public:
 	//型
-	typedef int counter_t;//カウンター型
+	typedef int counter_t;//カウンタ型
 public:
 	//アクセッサ
 	std::size_t getTotal() const override { return m_buffSize; }//全体のメモリ量を取得
@@ -3665,11 +3779,11 @@ public:
 	marker_t getBeginD() const { return getBegin(m_defaultOrdered.load()); }//開始マーカーを取得
 	marker_t getBegin(const E_ORDERED ordered) const { return ordered == DEFAULT ? getBeginD() : ordered == REVERSE ? getBeginR() : getBeginN(); }//開始マーカーを取得
 	marker_t getBegin() const { return getBeginD(); }//開始マーカーを取得
-	marker_t getCounterN() const { return m_counterN.load(); }//メモリ確保カウンター（正順）を取得
-	marker_t getCounterR() const { return m_counterR.load(); }//メモリ確保カウンター（逆順）を取得
-	marker_t getCounterD() const { return getCounter(m_defaultOrdered.load()); }//メモリ確保カウンターを取得
-	marker_t getCounter(const E_ORDERED ordered) const { return ordered == DEFAULT ? getCounterD() : ordered == REVERSE ? getCounterR() : getCounterN(); }//メモリ確保カウンターを取得
-	marker_t getCounter() const { return getCounterD(); }//メモリ確保カウンターを取得
+	marker_t getCounterN() const { return m_counterN.load(); }//メモリ確保カウンタ（正順）を取得
+	marker_t getCounterR() const { return m_counterR.load(); }//メモリ確保カウンタ（逆順）を取得
+	marker_t getCounterD() const { return getCounter(m_defaultOrdered.load()); }//メモリ確保カウンタを取得
+	marker_t getCounter(const E_ORDERED ordered) const { return ordered == DEFAULT ? getCounterD() : ordered == REVERSE ? getCounterR() : getCounterN(); }//メモリ確保カウンタを取得
+	marker_t getCounter() const { return getCounterD(); }//メモリ確保カウンタを取得
 public:
 	//メソッド
 	//メモリ確保（正順）
@@ -3765,11 +3879,11 @@ private:
 		if (m_counterR.load() <= 0)
 			return;
 		const marker_t now_r = reinterpret_cast<uintptr_t>(p)-reinterpret_cast<uintptr_t>(m_buffPtr);
-		if (now_r > m_beginR.load() || now_r < m_usedR.load())
+		if (now_r >= m_beginR.load() || now_r < m_usedR.load())
 			return;
 		//ポインタが逆順スタックとして適正のため、処理開始
 		m_lock.lock();//ロック取得
-		if (m_counterR.load() <= 0 || now_r > m_beginR.load() || now_r < m_usedR.load())//範囲の再チェック
+		if (m_counterR.load() <= 0 || now_r >= m_beginR.load() || now_r < m_usedR.load())//範囲の再チェック
 		{
 			m_lock.unlock();//ロック解放
 			return;
@@ -3783,11 +3897,12 @@ public:
 	//メモリ破棄
 	void free(void* p)
 	{
-		freeN(p);
-		freeR(p);
+		//ポインタをチェックして処理するので正順と逆順の両方の処理をまとめて実行する
+		freeN(p);//正順
+		freeR(p);//逆順
 	}
 	//マーカー位置を記憶してメモリ確保のカウントを開始（正順）
-	//※メモリ確保カウンターをリセット
+	//※メモリ確保カウンタをリセット
 	void beginN()
 	{
 		m_lock.lock();//ロック取得
@@ -3796,7 +3911,7 @@ public:
 		m_lock.unlock();//ロック解放
 	}
 	//マーカー位置を記憶してメモリ確保のカウントを開始（逆順）
-	//※メモリ確保カウンターをリセット
+	//※メモリ確保カウンタをリセット
 	void beginR()
 	{
 		m_lock.lock();//ロック取得
@@ -3805,26 +3920,26 @@ public:
 		m_lock.unlock();//ロック解放
 	}
 	//マーカー位置を記憶してメモリ確保のカウントを開始 
-	//※メモリ確保カウンターをリセット
+	//※メモリ確保カウンタをリセット
 	void beginD()
 	{
 		begin(m_defaultOrdered.load());
 	}
 	//マーカー位置を記憶してメモリ確保のカウントを開始 
-	//※メモリ確保カウンターをリセット
+	//※メモリ確保カウンタをリセット
 	void begin(const E_ORDERED ordered)
 	{
 		ordered == DEFAULT ? beginD() : ordered == REVERSE ? beginR() : beginN();
 	}
 	//マーカー位置を記憶してメモリ確保のカウントを開始 
-	//※メモリ確保カウンターをリセット
+	//※メモリ確保カウンタをリセット
 	void begin()
 	{
 		beginD();
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す（正順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※マーカー指定版
 	void backN(const marker_t marker_n)
 	{
@@ -3841,7 +3956,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す（正順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※ポインタ指定版
 	void backN(const void* p)
 	{
@@ -3850,7 +3965,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す（逆順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※マーカー指定版
 	void backR(const marker_t marker_r)
 	{
@@ -3867,7 +3982,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す（逆順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※ポインタ指定版
 	void backR(const void* p)
 	{
@@ -3876,7 +3991,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※マーカー指定版
 	void backD(const marker_t marker)
 	{
@@ -3884,7 +3999,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※ポインタ指定版
 	void backD(const void* p)
 	{
@@ -3892,7 +4007,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※マーカー指定版
 	void back(const E_ORDERED ordered, const marker_t marker)
 	{
@@ -3900,7 +4015,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※ポインタ指定版
 	void back(const E_ORDERED ordered, const void* p)
 	{
@@ -3908,7 +4023,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※マーカー指定版
 	void back(const marker_t marker) override
 	{
@@ -3916,14 +4031,14 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※ポインタ指定版
 	void back(const void* p) override
 	{
 		backD(p);
 	}
 	//メモリ破棄（正順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clearN()
 	{
 		m_lock.lock();//ロック取得
@@ -3933,7 +4048,7 @@ public:
 		m_lock.unlock();//ロック解放
 	}
 	//メモリ破棄（逆順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clearR()
 	{
 		m_lock.lock();//ロック取得
@@ -3943,32 +4058,32 @@ public:
 		m_lock.unlock();//ロック解放
 	}
 	//メモリ破棄
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clearD()
 	{
 		clear(m_defaultOrdered.load());
 	}
 	//メモリ破棄（両方）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clearNR()
 	{
 		clearN();
 		clearR();
 	}
 	//メモリ破棄
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clear(const E_ORDERED ordered)
 	{
 		ordered == DEFAULT ? clearD() : ordered == REVERSE ? clearR() : clearN();
 	}
 	//メモリ破棄
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clear() override
 	{
 		clearD();
 	}
 	//メモリ破棄（全て）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clearAll() override
 	{
 		clearNR();
@@ -3983,8 +4098,8 @@ public:
 		m_usedR.store(buff_size);//マーカー（逆順）
 		m_beginN.store(0);//開始マーカー（正順）※カウントを開始した位置（自動開放でこの位置に戻す）
 		m_beginR.store(buff_size);//開始マーカー（逆順）※カウントを開始した位置（自動開放でこの位置に戻す）
-		m_counterN.store(0);//メモリ確保カウンター（正順）
-		m_counterR.store(0);//メモリ確保カウンター（逆順）
+		m_counterN.store(0);//メモリ確保カウンタ（正順）
+		m_counterR.store(0);//メモリ確保カウンタ（逆順）
 		setDefaultOrdered(default_ordered);//デフォルトのスタック順
 	}
 	//デストラクタ
@@ -3998,8 +4113,8 @@ private:
 	std::atomic<marker_t> m_usedR;//マーカー（逆順）
 	std::atomic<marker_t> m_beginN;//開始マーカー（正順）※カウントを開始した位置（自動開放でこの位置に戻す）
 	std::atomic<marker_t> m_beginR;//開始マーカー（逆順）※カウントを開始した位置（自動開放でこの位置に戻す）
-	std::atomic<counter_t> m_counterN;//メモリ確保カウンター（正順）
-	std::atomic<counter_t> m_counterR;//メモリ確保カウンター（逆順）
+	std::atomic<counter_t> m_counterN;//メモリ確保カウンタ（正順）
+	std::atomic<counter_t> m_counterR;//メモリ確保カウンタ（逆順）
 	std::atomic<E_ORDERED> m_defaultOrdered;//デフォルトのスタック順
 	CSpinLock m_lock;//ロック
 };
@@ -4114,7 +4229,7 @@ public:
 	const char* getName() const override{ return "CSmartStackAllocAdp"; }//アロケータ名取得
 	CSmartStackAllocator& getAllocator(){ return *static_cast<CSmartStackAllocator*>(&m_allocator); }//アロケータ取得
 	const CSmartStackAllocator& getAllocator() const { return *static_cast<CSmartStackAllocator*>(&m_allocator); }//アロケータ取得
-	IStackAllocator::E_ORDERED getOrdered() const { m_ordered; }//スタック順取得
+	IStackAllocator::E_ORDERED getOrdered() const { return m_ordered; }//スタック順取得
 	void setOrdered(const IStackAllocator::E_ORDERED ordered){ m_ordered = ordered; }//スタック順更新
 public:
 	//メソッド
@@ -4132,11 +4247,11 @@ public:
 	}
 public:
 	//デフォルトコンストラクタ
-	CSmartStackAllocAdp() = delete;
+	CSmartStackAllocAdp() = delete;//コンストラクタ引数必須
 	//コンストラクタ
 	//※自動巻き戻しには対応しない
 	CSmartStackAllocAdp(CSmartStackAllocator& stack, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) :
-		CIStackAllocAdp(stack, NOREWIND),//双方向スタックアロケータ
+		CIStackAllocAdp(stack, NOREWIND),//スマートスタックアロケータ
 		m_ordered(ordered)//スタック順
 	{}
 	//デストラクタ
@@ -4271,7 +4386,7 @@ void test9()
 		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
 	}
 	{
-		printf("----------スレッド使用チェック\n");
+		printf("----------スレッドテスト\n");
 		//【想定】スレッド開始前に、同じバッファを他の用途に少し使う
 		//　　　　（これは常駐するデータで破棄しないものとする）
 		int* parmanent_data1 = nullptr;
@@ -4313,11 +4428,12 @@ void test9()
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));//500msecスリープ
 			printf("sleep(500msec)\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+			//スレッド終了待ち
 			th1.join();
 			th2.join();
 			th3.join();
 			th4.join();
-			printf("join\n");
+			printf("joined\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
 		}
 
@@ -4337,12 +4453,24 @@ void test9()
 			printf("sleep(200msec)\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
 			{
-				//途中で多態アロケータはTLSでアロケータをスレッドごとに分けて使っているので、
+				//多態アロケータはTLSでアロケータをスレッドごとに分けて使っているので、
 				//他のスレッドが動作中に異なるアロケータを使っても問題なし
 				CSmartStackAllocatorWithBuff<128> allocator;
 				CTempPolySmartStackAllocator poly_allocator(allocator);
 				CTest9* obj_p = new CTest9("スレッドテスト(割り込み)");
 				delete obj_p;
+				printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+			}
+			{
+				//カウント開始前に確保したメモリを途中で破棄してもカウンタには影響しない
+				//※カウント開始位置以前の位置にあるメモリは、カウンタに影響しない
+				CTempPolySmartStackAllocator poly_allocator(s_stackForThread);
+				delete[] parmanent_data1;
+				delete[] parmanent_data2;
+				delete[] parmanent_data3;
+				delete[] parmanent_data4;
+				delete[] parmanent_data5;
+				delete[] parmanent_data6;
 				printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
 			}
 			std::thread th9 = std::thread(test9thread_n, "スレッドテスト9-9(N)");
@@ -4358,6 +4486,7 @@ void test9()
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));//200msecスリープ
 			printf("sleep(200msec)\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+			//スレッド終了待ち
 			th5.join();
 			th6.join();
 			th7.join();
@@ -4366,19 +4495,7 @@ void test9()
 			th10.join();
 			th11.join();
 			th12.join();
-			printf("join\n");
-			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
-		}
-
-		{
-			//カウント開始前に確保したメモリを破棄しても何の影響もない
-			CTempPolySmartStackAllocator poly_allocator(s_stackForThread);
-			delete parmanent_data1;
-			delete parmanent_data2;
-			delete parmanent_data3;
-			delete parmanent_data4;
-			delete parmanent_data5;
-			delete parmanent_data6;
+			printf("joined\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
 		}
 	}
@@ -4398,7 +4515,8 @@ int main(const int argc, const char* argv[])
 	test5();
 	test6();
 	test7();
-	test8();
+	test8a();
+	test8b();
 	test9();
 	printf("---------- main:end ----------\n");
 	return EXIT_SUCCESS;

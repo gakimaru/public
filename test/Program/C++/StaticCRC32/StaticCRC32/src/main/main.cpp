@@ -16,6 +16,10 @@ int main(const int argc, const char* argv[])
 	//サイズ取得処理テスト
 	Test_Size();
 
+	//constexpr/ユーザー定義リテラルのテスト
+	extern void test_constexpr();
+	test_constexpr();
+
 	//終了
 	return EXIT_SUCCESS;
 }

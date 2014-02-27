@@ -37,6 +37,9 @@
     <Filter Include="ヘッダー ファイル\test">
       <UniqueIdentifier>{764eedb8-0714-4d89-9304-94c9f9d7a731}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\constexpr">
+      <UniqueIdentifier>{18c7b298-533d-42b5-b820-4d5201735908}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common\size.h">
@@ -85,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="src\test\test_def_crc_a.cpp">
       <Filter>ソース ファイル\test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\constexpr\constexpr.cpp">
+      <Filter>ソース ファイル\constexpr</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

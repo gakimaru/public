@@ -17,22 +17,35 @@
 //基本マクロ
 
 //スレッドローカルストレージ修飾子
-//※C++11仕様偽装（VC++2013では未対応につき）
-//※中身はWindows仕様
-#define thread_local __declspec(thread)
+//※C++11仕様偽装
+//#define TLS_IS_POSIX//TLSの宣言をPOSIX仕様にする時はこのマクロを有効にする
+#ifdef TLS_IS_POSIX
+#define thread_local __thread//POSIX仕様
+#else//TLS_IS_POSIX
+#define thread_local __declspec(thread)//Windows仕様
+#endif//TLS_IS_POSIX
 
 //----------------------------------------
 //スレッドIDクラス
-//※TLSを活用して高速化
+//※IDをハッシュ化した場合、TLSを活用して高速化
 
 //スレッドID型
-//typedef std::thread::id THREAD_ID;//C++11/ ※この型では扱わず、ハッシュ値を使用する
-typedef std::size_t THREAD_ID;//C++11
-static const THREAD_ID INVALID_THREAD_ID = 0xffffffff;//無効なスレッドID
+#define THREAD_ID_IS_HASH//スレッドIDをハッシュ型で扱う場合はこのマクロを有効化する（ハッシュの方が高速）
+#ifdef THREAD_ID_IS_HASH
+typedef std::size_t THREAD_ID;//(ハッシュ)
+static const THREAD_ID INVALID_THREAD_ID = std::hash<std::thread::id>()(std::thread::id());//無効なスレッドID(ハッシュ)
+static const THREAD_ID INITIAL_THREAD_ID = static_cast<THREAD_ID>(~0);//初期スレッドID(ハッシュ)
+#else//THREAD_ID_IS_HASH
+typedef std::thread::id THREAD_ID;
+static const THREAD_ID INVALID_THREAD_ID = std::thread::id();//無効なスレッドID
+#endif//THREAD_ID_IS_HASH
 
 //現在のスレッドID取得関数
-//inline THREAD_ID  GetThisThreadID(){ return std::this_thread::get_id(); } //C++11
-inline THREAD_ID GetThisThreadID(){ return std::this_thread::get_id().hash(); } //C++11
+#ifdef THREAD_ID_IS_HASH
+inline THREAD_ID GetThisThreadID(){ return std::hash<std::thread::id>()(std::this_thread::get_id()); }//(ハッシュ)
+#else//THREAD_ID_IS_HASH
+inline THREAD_ID GetThisThreadID(){ return std::this_thread::get_id(); }
+#endif//THREAD_ID_IS_HASH
 
 //スレッドIDクラス
 class CThreadID
@@ -43,7 +56,11 @@ public:
 	const char* getName() const { return m_threadName; }//スレッド名を取得
 public:
 	//アクセッサ（static）
-	static THREAD_ID getThisID(){ return m_thisThreadID; }//現在のスレッドのスレッドIDを取得
+#ifdef THREAD_ID_IS_HASH
+	static THREAD_ID getThisID(){ return m_thisThreadID; }//現在のスレッドのスレッドIDを取得(ハッシュ)
+#else//THREAD_ID_IS_HASH
+	static THREAD_ID getThisID(){ return GetThisThreadID(); }//現在のスレッドのスレッドIDを取得
+#endif//THREAD_ID_IS_HASH
 	static const char* getThisName(){ return m_thisThreadName; }//現在のスレッドのスレッド名を取得
 public:
 	//メソッド
@@ -52,12 +69,16 @@ private:
 	//メソッド(static)
 	static void setThisThread()//現在のスレッドのスレッドIDをセット
 	{
-		if (m_thisThreadID == INVALID_THREAD_ID)
+	#ifdef THREAD_ID_IS_HASH
+		if (m_thisThreadID == INITIAL_THREAD_ID)
 			m_thisThreadID = GetThisThreadID();
+	#endif//THREAD_ID_IS_HASH
 	}
 	static void resetThisThread(const char* name)//現在のスレッドのスレッドIDをリセット
 	{
+	#ifdef THREAD_ID_IS_HASH
 		m_thisThreadID = GetThisThreadID();
+	#endif//THREAD_ID_IS_HASH
 		m_thisThreadName = name;
 	}
 public:
@@ -66,7 +87,7 @@ public:
 	bool operator!=(const CThreadID& o) const { return m_threadId != o.getID(); }//ID不一致判定
 	bool operator==(const THREAD_ID& id) const { return m_threadId == id; }//ID一致判定
 	bool operator!=(const THREAD_ID& id) const { return m_threadId != id; }//ID不一致判定
-	CThreadID& operator=(const CThreadID& o) //コピー演算子
+	CThreadID& operator=(const CThreadID& o)//コピー演算子
 	{
 		m_threadId = o.m_threadId;
 		m_threadName = o.m_threadName;
@@ -92,26 +113,30 @@ public:
 	CThreadID(const char* name)
 	{
 		resetThisThread(name);
-		m_threadId = m_thisThreadID;
-		m_threadName = m_thisThreadName;
+		m_threadId = getThisID();
+		m_threadName = getThisName();
 	}
 	//デフォルトコンストラクタ
 	//※既にTLSに記録済みのスレッドID（と名前）を取得
 	CThreadID()
 	{
 		setThisThread();
-		m_threadId = m_thisThreadID;
-		m_threadName = m_thisThreadName;
+		m_threadId = getThisID();
+		m_threadName = getThisName();
 	}
 private:
 	//フィールド
 	THREAD_ID m_threadId;//スレッドID（オブジェクトに保存する値）
 	const char* m_threadName;//スレッド名（オブジェクトに保存する値）
+#ifdef THREAD_ID_IS_HASH
 	static thread_local THREAD_ID m_thisThreadID;//現在のスレッドのスレッドID(TLS)
+#endif//THREAD_ID_IS_HASH
 	static thread_local const char* m_thisThreadName;//現在のスレッド名(TLS)
 };
 //static変数のインスタンス化
-thread_local THREAD_ID CThreadID::m_thisThreadID = INVALID_THREAD_ID;//スレッドID(TLS)
+#ifdef THREAD_ID_IS_HASH
+thread_local THREAD_ID CThreadID::m_thisThreadID = INITIAL_THREAD_ID;//スレッドID(TLS)
+#endif//THREAD_ID_IS_HASH
 thread_local const char* CThreadID::m_thisThreadName = nullptr;//スレッド名(TLS)
 
 //--------------------------------------------------------------------------------

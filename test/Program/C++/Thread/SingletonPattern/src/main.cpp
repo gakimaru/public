@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <stdint.h>//uintptr_t,intptr_t用
+#include <limits.h>//INT_MAX用
 
 //C++11ライブラリ
 #include <thread>//スレッド
@@ -49,22 +51,35 @@
 //#define STATIC_ASSERT(expr, msg)//削除用
 
 //スレッドローカルストレージ修飾子
-//※C++11仕様偽装（VC++2013では未対応につき）
-//※中身はWindows仕様
-#define thread_local __declspec(thread)
+//※C++11仕様偽装
+//#define TLS_IS_POSIX//TLSの宣言をPOSIX仕様にする時はこのマクロを有効にする
+#ifdef TLS_IS_POSIX
+#define thread_local __thread//POSIX仕様
+#else//TLS_IS_POSIX
+#define thread_local __declspec(thread)//Windows仕様
+#endif//TLS_IS_POSIX
 
 //----------------------------------------
 //スレッドIDクラス
-//※TLSを活用して高速化
+//※IDをハッシュ化した場合、TLSを活用して高速化
 
 //スレッドID型
-//typedef std::thread::id THREAD_ID;//C++11/ ※この型では扱わず、ハッシュ値を使用する
-typedef std::size_t THREAD_ID;//C++11
-static const THREAD_ID INVALID_THREAD_ID = 0xffffffff;//無効なスレッドID
+#define THREAD_ID_IS_HASH//スレッドIDをハッシュ型で扱う場合はこのマクロを有効化する（ハッシュの方が高速）
+#ifdef THREAD_ID_IS_HASH
+typedef std::size_t THREAD_ID;//(ハッシュ)
+static const THREAD_ID INVALID_THREAD_ID = std::hash<std::thread::id>()(std::thread::id());//無効なスレッドID(ハッシュ)
+static const THREAD_ID INITIAL_THREAD_ID = static_cast<THREAD_ID>(~0);//初期スレッドID(ハッシュ)
+#else//THREAD_ID_IS_HASH
+typedef std::thread::id THREAD_ID;
+static const THREAD_ID INVALID_THREAD_ID = std::thread::id();//無効なスレッドID
+#endif//THREAD_ID_IS_HASH
 
 //現在のスレッドID取得関数
-//inline THREAD_ID  GetThisThreadID(){ return std::this_thread::get_id(); } //C++11
-inline THREAD_ID GetThisThreadID(){ return std::this_thread::get_id().hash(); } //C++11
+#ifdef THREAD_ID_IS_HASH
+inline THREAD_ID GetThisThreadID(){ return std::hash<std::thread::id>()(std::this_thread::get_id()); }//(ハッシュ)
+#else//THREAD_ID_IS_HASH
+inline THREAD_ID GetThisThreadID(){ return std::this_thread::get_id(); }
+#endif//THREAD_ID_IS_HASH
 
 //スレッドIDクラス
 class CThreadID
@@ -75,7 +90,11 @@ public:
 	const char* getName() const { return m_threadName; }//スレッド名を取得
 public:
 	//アクセッサ（static）
-	static THREAD_ID getThisID(){ return m_thisThreadID; }//現在のスレッドのスレッドIDを取得
+#ifdef THREAD_ID_IS_HASH
+	static THREAD_ID getThisID(){ return m_thisThreadID; }//現在のスレッドのスレッドIDを取得(ハッシュ)
+#else//THREAD_ID_IS_HASH
+	static THREAD_ID getThisID(){ return GetThisThreadID(); }//現在のスレッドのスレッドIDを取得
+#endif//THREAD_ID_IS_HASH
 	static const char* getThisName(){ return m_thisThreadName; }//現在のスレッドのスレッド名を取得
 public:
 	//メソッド
@@ -84,12 +103,16 @@ private:
 	//メソッド(static)
 	static void setThisThread()//現在のスレッドのスレッドIDをセット
 	{
-		if (m_thisThreadID == INVALID_THREAD_ID)
+	#ifdef THREAD_ID_IS_HASH
+		if (m_thisThreadID == INITIAL_THREAD_ID)
 			m_thisThreadID = GetThisThreadID();
+	#endif//THREAD_ID_IS_HASH
 	}
 	static void resetThisThread(const char* name)//現在のスレッドのスレッドIDをリセット
 	{
+	#ifdef THREAD_ID_IS_HASH
 		m_thisThreadID = GetThisThreadID();
+	#endif//THREAD_ID_IS_HASH
 		m_thisThreadName = name;
 	}
 public:
@@ -98,7 +121,7 @@ public:
 	bool operator!=(const CThreadID& o) const { return m_threadId != o.getID(); }//ID不一致判定
 	bool operator==(const THREAD_ID& id) const { return m_threadId == id; }//ID一致判定
 	bool operator!=(const THREAD_ID& id) const { return m_threadId != id; }//ID不一致判定
-	CThreadID& operator=(const CThreadID& o) //コピー演算子
+	CThreadID& operator=(const CThreadID& o)//コピー演算子
 	{
 		m_threadId = o.m_threadId;
 		m_threadName = o.m_threadName;
@@ -124,26 +147,30 @@ public:
 	CThreadID(const char* name)
 	{
 		resetThisThread(name);
-		m_threadId = m_thisThreadID;
-		m_threadName = m_thisThreadName;
+		m_threadId = getThisID();
+		m_threadName = getThisName();
 	}
 	//デフォルトコンストラクタ
 	//※既にTLSに記録済みのスレッドID（と名前）を取得
 	CThreadID()
 	{
 		setThisThread();
-		m_threadId = m_thisThreadID;
-		m_threadName = m_thisThreadName;
+		m_threadId = getThisID();
+		m_threadName = getThisName();
 	}
 private:
 	//フィールド
 	THREAD_ID m_threadId;//スレッドID（オブジェクトに保存する値）
 	const char* m_threadName;//スレッド名（オブジェクトに保存する値）
+#ifdef THREAD_ID_IS_HASH
 	static thread_local THREAD_ID m_thisThreadID;//現在のスレッドのスレッドID(TLS)
+#endif//THREAD_ID_IS_HASH
 	static thread_local const char* m_thisThreadName;//現在のスレッド名(TLS)
 };
 //static変数のインスタンス化
-thread_local THREAD_ID CThreadID::m_thisThreadID = INVALID_THREAD_ID;//スレッドID(TLS)
+#ifdef THREAD_ID_IS_HASH
+thread_local THREAD_ID CThreadID::m_thisThreadID = INITIAL_THREAD_ID;//スレッドID(TLS)
+#endif//THREAD_ID_IS_HASH
 thread_local const char* CThreadID::m_thisThreadName = nullptr;//スレッド名(TLS)
 
 //--------------------------------------------------------------------------------
@@ -214,45 +241,43 @@ private:
 };
 
 //--------------------------------------------------------------------------------
-//固定メモリブロックアロケータクラス
-//※現状は可読性重視だが、実際にはテンプレートのインスタンス化による
-//　プログラムサイズの肥大を考慮し、非テンプレートの共通処理を
-//　切り出す必要がある
+//プールアロケータクラス
 
 //----------------------------------------
 //クラス宣言
-template<std::size_t N, std::size_t S>
-class CBlockAllocator;
+class CPoolAllocator;
 
 //----------------------------------------
-//固定メモリブロックアロケータクラス専用配置new/delete処理
+//プールアロケータクラス専用配置new/delete処理
 //※クラス内で使用するためのものなので、直接使用は禁止
 //※クラス内でdeleteすることで、デストラクタの呼び出しにも対応
-
 //配置new
-template<std::size_t N, std::size_t S>
-void* operator new(const std::size_t size, CBlockAllocator<N, S>& allocator){ return allocator.alloc(size); }
-
+void* operator new(const std::size_t size, CPoolAllocator& allocator) throw();
 //配置delete
-template<std::size_t N, std::size_t S>
-void operator delete(void* p, CBlockAllocator<N, S>& allocator){ allocator.free(p); }
+void operator delete(void* p, CPoolAllocator& allocator) throw();
 
 //----------------------------------------
-//固定メモリブロックアロケータクラス
+//プールアロケータクラス
 //※スレッドセーフ対応
-template<std::size_t N, std::size_t S>
-class CBlockAllocator
+class CPoolAllocator
 {
 public:
 	//型宣言
 	typedef unsigned char byte;//バッファ用
-	typedef unsigned int b32;//フラグ用
+	typedef int index_t;//インデックス用
 public:
 	//定数
-	static const std::size_t BLOCKS_NUM = N;//ブロック数
-	static const std::size_t BLOCK_SIZE = S;//メモリブロックサイズ
-	static const std::size_t FLAG_SIZE = ((N + 31) >> 5);//フラグサイズ（１サイズで32ビットのフラグ）
-	static const std::size_t FLAG_SURPLUS_BITS = N % 32;//余剰フラグ数（32の倍数からはみ出したフラグの数）
+	static const index_t INVALID_INDEX = INT_MAX;//ブロックインデックスの無効値
+public:
+	//アクセッサ
+	const byte* getBuff() const { return m_pool; }//バッファ取得
+	std::size_t getBlockSize() const { return m_blockSize; }//ブロックサイズ
+	index_t getBlocksNum() const { return m_poolBlocksNum; }//プールブロック数
+	index_t getUsed() const { return m_used.load(); }//使用中数取得
+	index_t getRemain() const { return m_poolBlocksNum - m_used.load(); }//残数取得
+	const byte* getBlockConst(const index_t index) const { return m_pool + index * m_blockSize; }//ブロック取得
+private:
+	byte* getBlock(const index_t index){ return m_pool + index * m_blockSize; }//ブロック取得
 private:
 	//メソッド
 	//メモリ確保状態リセット
@@ -261,16 +286,9 @@ private:
 		//ロック取得
 		m_lock.lock();
 
-		//ゼロクリア
-		memset(m_used, 0, sizeof(m_used));
-
-		//ブロック数の範囲外のフラグは最初から立てておく
-		if (FLAG_SURPLUS_BITS > 0)
-		{
-			b32 parmanent = 0xffffffff >> FLAG_SURPLUS_BITS;
-			parmanent <<= FLAG_SURPLUS_BITS;
-			m_used[FLAG_SIZE - 1] = parmanent;
-		}
+		m_used.store(0);//使用中数
+		m_next = 0;//未使用先頭インデックス
+		m_recycle = INVALID_INDEX;//リサイクルインデックス
 
 		//ロック解放
 		m_lock.unlock();
@@ -280,59 +298,65 @@ private:
 	//　確保したインデックスを返す
 	int assign()
 	{
+		//使用中ブロック数チェックは、高速化のために、一度ロックの範囲外で行う
+		if (m_used.load() >= m_poolBlocksNum)
+			return INVALID_INDEX;//空きなし
+
 		//ロック取得
 		m_lock.lock();
 
-		//確保済みインデックス準備
-		int index = -1;//初期状態は失敗状態
-
-		//空きフラグ検索
-		b32* used_p = m_used;
-		int bit_no = 0;
-		for (int arr_idx = 0; arr_idx < FLAG_SIZE; ++arr_idx, ++used_p)
+		//使用中ブロック数を再チェック
+		if (m_used.load() >= m_poolBlocksNum)
 		{
-			//32bitごとの空き判定
-			b32 bits_now = *used_p;
-			if (bits_now != 0xffffffff)
-			{
-				//32bitのフラグのどこかに空きがあるので、
-				//最初に空いているフラグ（ビット）を検索
-				b32 bits = bits_now;
-				if ((bits & 0xffff) == 0xffff){ bit_no += 16; bits >>= 16; }//下位16ビット判定（空きがなければ16ビットシフト）
-				if ((bits & 0xff) == 0xff){ bit_no += 8;  bits >>= 8; }//下位8ビット判定（空きがなければ8ビットシフト）
-				if ((bits & 0xf) == 0xf){ bit_no += 4;  bits >>= 4; }//下位4ビット判定（空きがなければ4ビットシフト）
-				if ((bits & 0x3) == 0x3){ bit_no += 2;  bits >>= 2; }//下位2ビット判定（空きがなければ2ビットシフト）
-				if ((bits & 0x1) == 0x1){ ++bit_no; }//下位1ビット判定（空きがなければ上位1ビットで確定）
-				bits_now |= (1 << bit_no);//論理和用のビット情報に変換
-				*used_p = bits_now;//論理和
-				index = arr_idx * 32 + bit_no;//メモリブロックのインデックス算出
+			m_lock.unlock();//ロック解放
+			return INVALID_INDEX;//空きなし
+		}
 
-				//確保成功
-				break;
+		//インデックス確保
+		index_t index = INVALID_INDEX;
+		if (m_next < m_poolBlocksNum)
+		{
+			//未使用インデックスがある場合
+			index = m_next++;//未使用先頭インデックスカウントアップ
+			m_used.fetch_add(1);//使用中数カウントアップ
+		}
+		else
+		{
+			if (m_recycle != INVALID_INDEX)
+			{
+				//リサイクル可能なインデックスがある場合
+				index = m_recycle;//リサイクルインデックス
+				m_recycle = *reinterpret_cast<unsigned int*>(getBlock(index));//リサイクルインデックス更新（空きノードの先頭に書き込まれている）
+				m_used.fetch_add(1);//使用中数カウントアップ
 			}
 		}
 
 		//ロック解放
 		m_lock.unlock();
 
+		//最初に使用中ブロック数を判定しているので、この時点でインデックスが得られなければプログラムに問題があるはず
+		ASSERT(index != INVALID_INDEX, "Probably, mistaken logic in this program.");
+
 		//終了
 		return index;
 	}
 	//メモリブロック解放
 	//※指定のインデックスの使用中フラグをリセット
-	void release(const int index)
+	void release(const index_t index)
 	{
-		//インデックスの範囲チェック
-		if (index < 0 || index >= BLOCKS_NUM)
+		//インデックスの範囲チェック（ロックの範囲外で行う）
+		if (index < 0 || index >= m_poolBlocksNum)
 			return;
 
 		//ロック取得
 		m_lock.lock();
 
-		//フラグ解放
-		const int arr_idx = index >> 5;//使用中フラグの配列番号
-		const int bit_no = index & 31;//ビット番号
-		m_used[arr_idx] &= ~(1 << bit_no);//論理積
+		//リサイクル
+		*reinterpret_cast<unsigned int*>(getBlock(index)) = m_recycle;//リサイクルインデックス書き込み（空きノードの先頭に強引に書き込む）
+		m_recycle = index;//リサイクルインデックス組み換え
+
+		//使用中数カウントダウン
+		m_used.fetch_sub(1);
 
 		//ロック解放
 		m_lock.unlock();
@@ -342,35 +366,33 @@ public:
 	void* alloc(const std::size_t size)
 	{
 		//【アサーション】要求サイズがブロックサイズを超える場合は即時確保失敗
-		ASSERT(size <= BLOCK_SIZE, "CBlockAllocator::alloc(%d) cannot allocate. Size must has been under %d.", size, BLOCK_SIZE);
-		if (size > BLOCK_SIZE)
+		ASSERT(size <= m_blockSize, "CPoolAllocator::alloc(%d) cannot allocate. Size must has been under %d.", size, m_blockSize);
+		if (size > m_blockSize)
 		{
 			return nullptr;
 		}
 		//空きブロックを確保して返す
-		const int index = assign();
+		const index_t index = assign();
 		//【アサーション】全ブロック使用中につき、確保失敗
-		ASSERT(index >= 0, "CBlockAllocator::alloc(%d) cannot allocate. Buffer is full. (num of blocks is %d)", size, BLOCKS_NUM);
+		ASSERT(index >= 0, "CPoolAllocator::alloc(%d) cannot allocate. Buffer is full. (num of blocks is %d)", size, m_poolBlocksNum);
 		//確保したメモリを返す
-		return index < 0 ? nullptr : &m_buff[index];
+		return index == INVALID_INDEX ? nullptr : getBlock(index);
 	}
 	//メモリ解放
 	void free(void * p)
 	{
 		//nullptr時は即時解放失敗
-		ASSERT(p != nullptr, "CBlockAllocator::free() cannot free. Pointer is null.");
+		ASSERT(p != nullptr, "CPoolAllocator::free() cannot free. Pointer is null.");
 		if (!p)
 			return;
 		//ポインタからインデックスを算出
-		const byte* top_p = reinterpret_cast<byte*>(m_buff);//バッファの先頭ポインタ
-		const byte* target_p = reinterpret_cast<byte*>(p);//指定ポインタ
-		const int diff = (target_p - top_p);//ポインタの引き算で差のバイト数算出
-		const int index = (target_p - top_p) / BLOCK_SIZE;//ブロックサイズで割ってインデックス算出
+		const intptr_t diff = reinterpret_cast<intptr_t>(p)-reinterpret_cast<intptr_t>(m_pool);//ポインタの差分
+		const index_t index = diff / m_blockSize;//ブロックサイズで割ってインデックス算出
 		//【アサーション】メモリバッファの範囲外なら処理失敗（release関数内で失敗するのでそのまま実行）
-		ASSERT(index >= 0 && index < BLOCKS_NUM, "CBlockAllocator::free() cannot free. Pointer is different.");
+		ASSERT(index >= 0 && index < m_poolBlocksNum, "CPoolAllocator::free() cannot free. Pointer is different.");
 		//【アサーション】ポインタが各ブロックの先頭を指しているかチェック
 		//　　　　　　　　⇒多重継承とキャストしているとずれることがるのでこの問題は無視して解放してしまう
-		//ASSERT(diff % BLOCK_SIZE == 0, "CBlockAllocator::free() cannot free. Pointer is illegal.");
+		//ASSERT(diff % m_blockSize == 0, "CPoolAllocator::free() cannot free. Pointer is illegal.");
 		//算出したインデックスでメモリ解放
 		release(index);
 	}
@@ -386,25 +408,101 @@ public:
 	template<class T>
 	void destroy(T*& p)
 	{
+		if (!p)
+			return;
 		p->~T();//明示的なデストラクタ呼び出し（デストラクタ未定義のクラスでも問題なし）
 		operator delete(p, *this);//配置delete呼び出し
 		p = nullptr;//ポインタにはnullptrをセット
 	}
 public:
 	//コンストラクタ
-	CBlockAllocator()
+	CPoolAllocator(void* pool_buff, const std::size_t block_size, const index_t pool_blocks_num):
+		m_pool(reinterpret_cast<byte*>(pool_buff)),//プールバッファ
+		m_blockSize(block_size),//ブロックサイズ　※4倍数であること
+		m_poolBlocksNum(pool_blocks_num)//プールブロック数
 	{
+		//【アサーション】パラメータチェック
+		ASSERT((m_blockSize & 0x3) == 0, "CPoolAllocator::CPoolAllocator() block size is invalid.");
+
 		//使用中フラグリセット
 		reset();
 	}
 	//デストラクタ
-	~CBlockAllocator()
+	~CPoolAllocator()
 	{}
 private:
 	//フィールド
-	byte m_buff[BLOCKS_NUM][BLOCK_SIZE];//ブロックバッファ
-	b32 m_used[FLAG_SIZE];//使用中フラグ
+	byte* m_pool;//プールバッファ
+	const std::size_t m_blockSize;//ブロックサイズ
+	const index_t m_poolBlocksNum;//プールブロック数
+	std::atomic<index_t> m_used;//使用中数
+	index_t m_next;//未使用先頭インデックス
+	index_t m_recycle;//リサイクルインデックス
 	CSpinLock m_lock;//ロック
+};
+
+//----------------------------------------
+//プールアロケータクラス専用配置new/delete処理
+//配置new
+void* operator new(const std::size_t size, CPoolAllocator& allocator) throw() { return allocator.alloc(size); }
+//配置delete
+void operator delete(void* p, CPoolAllocator& allocator) throw() { allocator.free(p); }
+
+//----------------------------------------
+//バッファ付きプールアロケータクラス：ブロックサイズとブロック数指定
+template<std::size_t S, int N>
+class CPoolAllocatorWithBuff : public CPoolAllocator
+{
+public:
+	//定数
+	static const std::size_t BLOCK_SIZE = (S + 3) & ~3;//ブロックサイズ
+	static const index_t POOL_BLOCKS_NUM = N;//プールブロック数
+public:
+	//コンストラクタ
+	CPoolAllocatorWithBuff() :
+		CPoolAllocator(&m_poolBuff, BLOCK_SIZE, POOL_BLOCKS_NUM)
+	{}
+	//デストラクタ
+	~CPoolAllocatorWithBuff()
+	{}
+private:
+	//フィールド
+	byte m_poolBuff[POOL_BLOCKS_NUM][BLOCK_SIZE];//プールバッファ
+};
+
+//----------------------------------------
+//バッファ付きプールアロケータクラス：データ型とブロック数指定
+template<typename T, int N>
+class CPoolAllocatorWithType : public CPoolAllocatorWithBuff<sizeof(T), N>
+{
+public:
+	//型
+	typedef T data_t;//データ型
+public:
+	//定数
+	static const std::size_t TYPE_SIZE = sizeof(data_t);//型のサイズ
+public:
+	//コンストラクタ呼び出し機能付きメモリ確保
+	//※C++11の可変長テンプレートパラメータを活用
+	template<typename... Tx>
+	data_t* createData(Tx... nx)
+	{
+		return CPoolAllocator::create<data_t>(nx...);
+	}
+	//デストラクタ呼び出し機能付きメモリ解放
+	//※解放後、ポインタに nullptr をセットする
+	void destroyData(data_t*& p)
+	{
+		CPoolAllocator::destroy(p);
+	}
+public:
+	//コンストラクタ
+	CPoolAllocatorWithType() :
+		CPoolAllocatorWithBuff<TYPE_SIZE, N>()
+	{}
+	//デストラクタ
+	~CPoolAllocatorWithType()
+	{}
 };
 
 //--------------------------------------------------------------------------------
@@ -1125,8 +1223,8 @@ private:
 	//※new は内部で持つ static バッファのポインタを返すだけ
 	//※delete は何もしない
 	//※コンストラクタ、デストラクタを実行して、オブジェクトの初期化・終了処理を実行することが目的
-	void* operator new(const size_t size){ return m_buff; }
-	void operator delete(void*){}
+	void* operator new(const size_t size) throw() { return m_buff; }
+	void operator delete(void*) throw() {}
 public:
 	//アクセッサ
 	const char* getClassName() const { return T::CLASS_NAME; }//クラス名取得
@@ -1619,7 +1717,7 @@ private:
 		}
 		//使用中情報作成
 		//※THIS_SINGLETON_USING_LIST_MAX で指定された数まで同時に記録可能
-		m_thisUsingInfo = m_usingListBuff.create<USING_INFO>(m_usingList.load(), name, thread_id, thread_name, is_initializer);
+		m_thisUsingInfo = m_usingListBuff.createData(m_usingList.load(), name, thread_id, thread_name, is_initializer);
 		if (m_thisUsingInfo)
 		{
 			//【参考】ロックフリーなスタックプッシュ（先頭ノード追加）アルゴリズム
@@ -1631,6 +1729,9 @@ private:
 			m_usingListLock.lock();//ロック取得
 			m_thisUsingInfo->m_next = m_usingList.load();
 			m_usingList.store(m_thisUsingInfo);//先頭ノードに挿入（連結リスト）
+			m_usingListNum.fetch_add(1);//使用中処理リストの使用数カウントアップ
+			if (m_usingListNumMax.load() < m_usingListNum.load())
+				m_usingListNumMax.store(m_usingListNum.load());//使用中処理リストの使用数の最大到達値更新
 			m_usingListLock.unlock();//ロック解放
 		}
 	}
@@ -1660,7 +1761,8 @@ private:
 				if (now)
 					now->m_next = m_thisUsingInfo->m_next;
 			}
-			m_usingListBuff.destroy(m_thisUsingInfo);//削除
+			m_usingListBuff.destroyData(m_thisUsingInfo);//削除
+			m_usingListNum.fetch_sub(1);//使用中処理リストの使用数カウントダウン
 			m_usingListLock.unlock();//ロック解放
 		}
 	}
@@ -1683,7 +1785,7 @@ public:
 			);
 			info = info->m_next;
 		}
-		DEBUG_FPRINT(fp, "(num=%d, max=%d)\n", m_usingListNum, m_usingListNumMax);
+		DEBUG_FPRINT(fp, "(num=%d, max=%d)\n", m_usingListNum.load(), m_usingListNumMax.load());
 		m_usingListLock.unlock();//ロック解放
 		DEBUG_FPRINT(fp, "----------------------------------------\n");
 		DEBUG_FFLUSH(fp);
@@ -1757,7 +1859,7 @@ private:
 	static std::atomic<int> m_usingListNumMax;//使用中処理リストの使用数の最大到達値
 	static std::atomic<USING_INFO*> m_usingList;//使用中処理リスト
 	static CSpinLock m_usingListLock;//使用中処理リストのロック用フラグ
-	static CBlockAllocator<THIS_SINGLETON_USING_LIST_MAX, sizeof(USING_INFO)> m_usingListBuff;//使用中処理リストの領域
+	static CPoolAllocatorWithType<USING_INFO, THIS_SINGLETON_USING_LIST_MAX> m_usingListBuff;//使用中処理リストの領域
 };
 
 //----------------------------------------
@@ -1796,7 +1898,7 @@ private:
 	std::atomic<int> CManagedSingleton<T>::m_usingListNumMax(0);/*使用中処理リストの使用数の最大到達値*/ \
 	std::atomic< CManagedSingleton<T>::USING_INFO* > CManagedSingleton<T>::m_usingList(nullptr);/*使用中処理リスト*/ \
 	CSpinLock CManagedSingleton<T>::m_usingListLock;/*使用中処理リストのロック用フラグ*/ \
-	CBlockAllocator<CManagedSingleton<T>::THIS_SINGLETON_USING_LIST_MAX, sizeof(CManagedSingleton<T>::USING_INFO)> CManagedSingleton<T>::m_usingListBuff;/*使用中処理リストの領域*/
+	CPoolAllocatorWithType<CManagedSingleton<T>::USING_INFO, CManagedSingleton<T>::THIS_SINGLETON_USING_LIST_MAX> CManagedSingleton<T>::m_usingListBuff;/*使用中処理リストの領域*/
 
 //----------------------------------------
 //【シングルトン用ヘルパー】シングルトンプロキシーテンプレートクラス　※継承専用

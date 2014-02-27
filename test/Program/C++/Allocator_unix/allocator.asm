@@ -2372,12 +2372,12 @@ LLSDACSE130:
 	.globl	__ZThn12_N13CDerivedTest2D1Ev
 	.def	__ZThn12_N13CDerivedTest2D1Ev;	.scl	2;	.type	32;	.endef
 __ZThn12_N13CDerivedTest2D1Ev:
-LFB3871:
+LFB3879:
 	.cfi_startproc
 	subl	$12, 4(%esp)
 	jmp	__ZN13CDerivedTest2D1Ev
 	.cfi_endproc
-LFE3871:
+LFE3879:
 	.section	.text$_ZN13CDerivedTest2D0Ev,"x"
 	.linkonce discard
 	.align 2
@@ -2409,12 +2409,12 @@ LFE131:
 	.globl	__ZThn12_N13CDerivedTest2D0Ev
 	.def	__ZThn12_N13CDerivedTest2D0Ev;	.scl	2;	.type	32;	.endef
 __ZThn12_N13CDerivedTest2D0Ev:
-LFB3872:
+LFB3880:
 	.cfi_startproc
 	subl	$12, 4(%esp)
 	jmp	__ZN13CDerivedTest2D0Ev
 	.cfi_endproc
-LFE3872:
+LFE3880:
 	.section .rdata,"dr"
 	.align 4
 LC44:
@@ -11874,12 +11874,12 @@ LLSDACSE794:
 	.globl	__ZThn12_N13CDerivedTest6D1Ev
 	.def	__ZThn12_N13CDerivedTest6D1Ev;	.scl	2;	.type	32;	.endef
 __ZThn12_N13CDerivedTest6D1Ev:
-LFB3873:
+LFB3881:
 	.cfi_startproc
 	subl	$12, 4(%esp)
 	jmp	__ZN13CDerivedTest6D1Ev
 	.cfi_endproc
-LFE3873:
+LFE3881:
 	.section	.text$_ZN13CDerivedTest6D0Ev,"x"
 	.linkonce discard
 	.align 2
@@ -11911,12 +11911,12 @@ LFE795:
 	.globl	__ZThn12_N13CDerivedTest6D0Ev
 	.def	__ZThn12_N13CDerivedTest6D0Ev;	.scl	2;	.type	32;	.endef
 __ZThn12_N13CDerivedTest6D0Ev:
-LFB3874:
+LFB3882:
 	.cfi_startproc
 	subl	$12, 4(%esp)
 	jmp	__ZN13CDerivedTest6D0Ev
 	.cfi_endproc
-LFE3874:
+LFE3882:
 	.text
 	.globl	__Z10test6_sub1PKcR10IAllocator
 	.def	__Z10test6_sub1PKcR10IAllocator;	.scl	2;	.type	32;	.endef
@@ -13158,20 +13158,139 @@ LFB814:
 	.cfi_endproc
 LFE814:
 	.section .rdata,"dr"
-	.align 4
 LC163:
+	.ascii "(unknown call-point)\0"
+	.text
+	.globl	__Z28getCurrentCallPointNameDummyv
+	.def	__Z28getCurrentCallPointNameDummyv;	.scl	2;	.type	32;	.endef
+__Z28getCurrentCallPointNameDummyv:
+LFB815:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	movl	$LC163, %eax
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE815:
+	.globl	__Z16getGameTimeDummyv
+	.def	__Z16getGameTimeDummyv;	.scl	2;	.type	32;	.endef
+__Z16getGameTimeDummyv:
+LFB816:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$4, %esp
+	movl	LC164, %eax
+	movl	%eax, -4(%ebp)
+	flds	-4(%ebp)
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE816:
+	.section	.text$_Z25getConstFileNameRecursivePKcj,"x"
+	.linkonce discard
+	.globl	__Z25getConstFileNameRecursivePKcj
+	.def	__Z25getConstFileNameRecursivePKcj;	.scl	2;	.type	32;	.endef
+__Z25getConstFileNameRecursivePKcj:
+LFB817:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	cmpl	$0, 12(%ebp)
+	je	L887
+	movl	12(%ebp), %eax
+	leal	-1(%eax), %edx
+	movl	8(%ebp), %eax
+	addl	%edx, %eax
+	movzbl	(%eax), %eax
+	cmpb	$92, %al
+	je	L888
+	movl	12(%ebp), %eax
+	leal	-1(%eax), %edx
+	movl	8(%ebp), %eax
+	addl	%edx, %eax
+	movzbl	(%eax), %eax
+	cmpb	$47, %al
+	jne	L889
+L888:
+	movl	12(%ebp), %eax
+	movl	8(%ebp), %edx
+	addl	%edx, %eax
+	jmp	L890
+L889:
+	movl	12(%ebp), %eax
+	subl	$1, %eax
+	movl	%eax, 4(%esp)
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__Z25getConstFileNameRecursivePKcj
+L890:
+	jmp	L891
+L887:
+	movl	8(%ebp), %eax
+L891:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE817:
+	.section	.text$_Z16getConstFileNamePKc,"x"
+	.linkonce discard
+	.globl	__Z16getConstFileNamePKc
+	.def	__Z16getConstFileNamePKc;	.scl	2;	.type	32;	.endef
+__Z16getConstFileNamePKc:
+LFB818:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	_strlen
+	movl	%eax, 4(%esp)
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__Z25getConstFileNameRecursivePKcj
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE818:
+	.section .rdata,"dr"
+	.align 4
+LC166:
 	.ascii "new(size=%d, poly_allocator=\"%s\":%d/%d/%d)\12\0"
 	.align 4
-LC164:
+LC167:
 	.ascii "  fileName=\"%s\", funcName=\"%s\", callPointName=\"%s\", time=%.3f, typename=\"%s\", align=%d\12\0"
 	.text
 	.globl	__Znwj
 	.def	__Znwj;	.scl	2;	.type	32;	.endef
 __Znwj:
-LFB815:
+LFB819:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA815
+	.cfi_lsda 0,LLSDA819
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -13228,13 +13347,13 @@ LEHB183:
 	movl	%eax, 8(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, 4(%esp)
-	movl	$LC163, (%esp)
+	movl	$LC166, (%esp)
 	call	_printf
 	movl	$4, -28(%ebp)
 	call	__ZN14CPolyAllocator21getAllocInfoWithResetEv
 	movl	%eax, -32(%ebp)
 	cmpl	$0, -32(%ebp)
-	je	L883
+	je	L896
 	movl	-32(%ebp), %eax
 	movl	20(%eax), %eax
 	movl	%eax, -28(%ebp)
@@ -13256,9 +13375,9 @@ LEHB183:
 	movl	%ecx, 12(%esp)
 	movl	%edx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC164, (%esp)
+	movl	$LC167, (%esp)
 	call	_printf
-L883:
+L896:
 	leal	-37(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN14CPolyAllocatorptEv
@@ -13283,8 +13402,8 @@ LEHE183:
 	movl	%eax, (%esp)
 	call	__ZN14CPolyAllocatorD1Ev
 	movl	%ebx, %eax
-	jmp	L887
-L886:
+	jmp	L900
+L899:
 	movl	%eax, %ebx
 	leal	-37(%ebp), %eax
 	movl	%eax, (%esp)
@@ -13294,7 +13413,7 @@ L886:
 LEHB184:
 	call	__Unwind_Resume
 LEHE184:
-L887:
+L900:
 	addl	$60, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -13307,36 +13426,36 @@ L887:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE815:
+LFE819:
 	.section	.gcc_except_table,"w"
-LLSDA815:
+LLSDA819:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE815-LLSDACSB815
-LLSDACSB815:
-	.uleb128 LEHB183-LFB815
+	.uleb128 LLSDACSE819-LLSDACSB819
+LLSDACSB819:
+	.uleb128 LEHB183-LFB819
 	.uleb128 LEHE183-LEHB183
-	.uleb128 L886-LFB815
+	.uleb128 L899-LFB819
 	.uleb128 0
-	.uleb128 LEHB184-LFB815
+	.uleb128 LEHB184-LFB819
 	.uleb128 LEHE184-LEHB184
 	.uleb128 0
 	.uleb128 0
-LLSDACSE815:
+LLSDACSE819:
 	.text
 	.section .rdata,"dr"
 	.align 4
-LC166:
+LC168:
 	.ascii "new[](size=%d, poly_allocator=\"%s\":%d/%d/%d)\12\0"
 	.text
 	.globl	__Znaj
 	.def	__Znaj;	.scl	2;	.type	32;	.endef
 __Znaj:
-LFB816:
+LFB820:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA816
+	.cfi_lsda 0,LLSDA820
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -13393,13 +13512,13 @@ LEHB185:
 	movl	%eax, 8(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, 4(%esp)
-	movl	$LC166, (%esp)
+	movl	$LC168, (%esp)
 	call	_printf
 	movl	$4, -28(%ebp)
 	call	__ZN14CPolyAllocator21getAllocInfoWithResetEv
 	movl	%eax, -32(%ebp)
 	cmpl	$0, -32(%ebp)
-	je	L889
+	je	L902
 	movl	-32(%ebp), %eax
 	movl	20(%eax), %eax
 	movl	%eax, -28(%ebp)
@@ -13421,9 +13540,9 @@ LEHB185:
 	movl	%ecx, 12(%esp)
 	movl	%edx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC164, (%esp)
+	movl	$LC167, (%esp)
 	call	_printf
-L889:
+L902:
 	leal	-37(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN14CPolyAllocatorptEv
@@ -13448,8 +13567,8 @@ LEHE185:
 	movl	%eax, (%esp)
 	call	__ZN14CPolyAllocatorD1Ev
 	movl	%ebx, %eax
-	jmp	L893
-L892:
+	jmp	L906
+L905:
 	movl	%eax, %ebx
 	leal	-37(%ebp), %eax
 	movl	%eax, (%esp)
@@ -13459,7 +13578,7 @@ L892:
 LEHB186:
 	call	__Unwind_Resume
 LEHE186:
-L893:
+L906:
 	addl	$60, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -13468,355 +13587,236 @@ L893:
 	popl	%edi
 	.cfi_restore 7
 	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE816:
-	.section	.gcc_except_table,"w"
-LLSDA816:
-	.byte	0xff
-	.byte	0xff
-	.byte	0x1
-	.uleb128 LLSDACSE816-LLSDACSB816
-LLSDACSB816:
-	.uleb128 LEHB185-LFB816
-	.uleb128 LEHE185-LEHB185
-	.uleb128 L892-LFB816
-	.uleb128 0
-	.uleb128 LEHB186-LFB816
-	.uleb128 LEHE186-LEHB186
-	.uleb128 0
-	.uleb128 0
-LLSDACSE816:
-	.text
-	.section .rdata,"dr"
-	.align 4
-LC167:
-	.ascii "delete(p=0x%p, poly_allocator=\"%s\":%d/%d/%d)\12\0"
-	.text
-	.globl	__ZdlPv
-	.def	__ZdlPv;	.scl	2;	.type	32;	.endef
-__ZdlPv:
-LFB817:
-	.cfi_startproc
-	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA817
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%edi
-	pushl	%esi
-	pushl	%ebx
-	subl	$60, %esp
-	.cfi_offset 7, -12
-	.cfi_offset 6, -16
-	.cfi_offset 3, -20
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorC1Ev
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorptEv
-	movl	(%eax), %edx
-	addl	$12, %edx
-	movl	(%edx), %edx
-	movl	%eax, (%esp)
-	call	*%edx
-	movl	%eax, %edi
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorptEv
-	movl	(%eax), %edx
-	addl	$8, %edx
-	movl	(%edx), %edx
-	movl	%eax, (%esp)
-	call	*%edx
-	movl	%eax, %esi
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorptEv
-	movl	(%eax), %edx
-	addl	$4, %edx
-	movl	(%edx), %edx
-	movl	%eax, (%esp)
-	call	*%edx
-	movl	%eax, %ebx
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorptEv
-	movl	(%eax), %edx
-	movl	(%edx), %edx
-	movl	%eax, (%esp)
-	call	*%edx
-	movl	%edi, 20(%esp)
-	movl	%esi, 16(%esp)
-	movl	%ebx, 12(%esp)
-	movl	%eax, 8(%esp)
-	movl	8(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	$LC167, (%esp)
-	call	_printf
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorptEv
-	movl	(%eax), %edx
-	addl	$20, %edx
-	movl	(%edx), %edx
-	movl	8(%ebp), %ecx
-	movl	%ecx, 4(%esp)
-	movl	%eax, (%esp)
-	call	*%edx
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorD1Ev
-	addl	$60, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%esi
-	.cfi_restore 6
-	popl	%edi
-	.cfi_restore 7
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE817:
-	.section	.gcc_except_table,"w"
-LLSDA817:
-	.byte	0xff
-	.byte	0xff
-	.byte	0x1
-	.uleb128 LLSDACSE817-LLSDACSB817
-LLSDACSB817:
-LLSDACSE817:
-	.text
-	.section .rdata,"dr"
-	.align 4
-LC168:
-	.ascii "delete[](p=0x%p, poly_allocator=\"%s\":%d/%d/%d)\12\0"
-	.text
-	.globl	__ZdaPv
-	.def	__ZdaPv;	.scl	2;	.type	32;	.endef
-__ZdaPv:
-LFB818:
-	.cfi_startproc
-	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA818
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%edi
-	pushl	%esi
-	pushl	%ebx
-	subl	$60, %esp
-	.cfi_offset 7, -12
-	.cfi_offset 6, -16
-	.cfi_offset 3, -20
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorC1Ev
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorptEv
-	movl	(%eax), %edx
-	addl	$12, %edx
-	movl	(%edx), %edx
-	movl	%eax, (%esp)
-	call	*%edx
-	movl	%eax, %edi
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorptEv
-	movl	(%eax), %edx
-	addl	$8, %edx
-	movl	(%edx), %edx
-	movl	%eax, (%esp)
-	call	*%edx
-	movl	%eax, %esi
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorptEv
-	movl	(%eax), %edx
-	addl	$4, %edx
-	movl	(%edx), %edx
-	movl	%eax, (%esp)
-	call	*%edx
-	movl	%eax, %ebx
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorptEv
-	movl	(%eax), %edx
-	movl	(%edx), %edx
-	movl	%eax, (%esp)
-	call	*%edx
-	movl	%edi, 20(%esp)
-	movl	%esi, 16(%esp)
-	movl	%ebx, 12(%esp)
-	movl	%eax, 8(%esp)
-	movl	8(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	$LC168, (%esp)
-	call	_printf
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorptEv
-	movl	(%eax), %edx
-	addl	$20, %edx
-	movl	(%edx), %edx
-	movl	8(%ebp), %ecx
-	movl	%ecx, 4(%esp)
-	movl	%eax, (%esp)
-	call	*%edx
-	leal	-25(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN14CPolyAllocatorD1Ev
-	addl	$60, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%esi
-	.cfi_restore 6
-	popl	%edi
-	.cfi_restore 7
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE818:
-	.section	.gcc_except_table,"w"
-LLSDA818:
-	.byte	0xff
-	.byte	0xff
-	.byte	0x1
-	.uleb128 LLSDACSE818-LLSDACSB818
-LLSDACSB818:
-LLSDACSE818:
-	.text
-	.section .rdata,"dr"
-LC169:
-	.ascii "(unknown call-point)\0"
-	.text
-	.globl	__Z28getCurrentCallPointNameDummyv
-	.def	__Z28getCurrentCallPointNameDummyv;	.scl	2;	.type	32;	.endef
-__Z28getCurrentCallPointNameDummyv:
-LFB819:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	movl	$LC169, %eax
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE819:
-	.globl	__Z16getGameTimeDummyv
-	.def	__Z16getGameTimeDummyv;	.scl	2;	.type	32;	.endef
-__Z16getGameTimeDummyv:
-LFB820:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$4, %esp
-	movl	LC170, %eax
-	movl	%eax, -4(%ebp)
-	flds	-4(%ebp)
-	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
 LFE820:
-	.section	.text$_Z25getConstFileNameRecursivePKcj,"x"
-	.linkonce discard
-	.globl	__Z25getConstFileNameRecursivePKcj
-	.def	__Z25getConstFileNameRecursivePKcj;	.scl	2;	.type	32;	.endef
-__Z25getConstFileNameRecursivePKcj:
+	.section	.gcc_except_table,"w"
+LLSDA820:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE820-LLSDACSB820
+LLSDACSB820:
+	.uleb128 LEHB185-LFB820
+	.uleb128 LEHE185-LEHB185
+	.uleb128 L905-LFB820
+	.uleb128 0
+	.uleb128 LEHB186-LFB820
+	.uleb128 LEHE186-LEHB186
+	.uleb128 0
+	.uleb128 0
+LLSDACSE820:
+	.text
+	.section .rdata,"dr"
+	.align 4
+LC169:
+	.ascii "delete(p=0x%p, poly_allocator=\"%s\":%d/%d/%d)\12\0"
+	.text
+	.globl	__ZdlPv
+	.def	__ZdlPv;	.scl	2;	.type	32;	.endef
+__ZdlPv:
 LFB821:
 	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA821
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	cmpl	$0, 12(%ebp)
-	je	L901
-	movl	12(%ebp), %eax
-	leal	-1(%eax), %edx
-	movl	8(%ebp), %eax
-	addl	%edx, %eax
-	movzbl	(%eax), %eax
-	cmpb	$92, %al
-	je	L902
-	movl	12(%ebp), %eax
-	leal	-1(%eax), %edx
-	movl	8(%ebp), %eax
-	addl	%edx, %eax
-	movzbl	(%eax), %eax
-	cmpb	$47, %al
-	jne	L903
-L902:
-	movl	12(%ebp), %eax
-	movl	8(%ebp), %edx
-	addl	%edx, %eax
-	jmp	L904
-L903:
-	movl	12(%ebp), %eax
-	subl	$1, %eax
-	movl	%eax, 4(%esp)
-	movl	8(%ebp), %eax
+	pushl	%edi
+	pushl	%esi
+	pushl	%ebx
+	subl	$60, %esp
+	.cfi_offset 7, -12
+	.cfi_offset 6, -16
+	.cfi_offset 3, -20
+	leal	-25(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__Z25getConstFileNameRecursivePKcj
-L904:
-	jmp	L905
-L901:
+	call	__ZN14CPolyAllocatorC1Ev
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorptEv
+	movl	(%eax), %edx
+	addl	$12, %edx
+	movl	(%edx), %edx
+	movl	%eax, (%esp)
+	call	*%edx
+	movl	%eax, %edi
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorptEv
+	movl	(%eax), %edx
+	addl	$8, %edx
+	movl	(%edx), %edx
+	movl	%eax, (%esp)
+	call	*%edx
+	movl	%eax, %esi
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorptEv
+	movl	(%eax), %edx
+	addl	$4, %edx
+	movl	(%edx), %edx
+	movl	%eax, (%esp)
+	call	*%edx
+	movl	%eax, %ebx
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorptEv
+	movl	(%eax), %edx
+	movl	(%edx), %edx
+	movl	%eax, (%esp)
+	call	*%edx
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	%eax, 8(%esp)
 	movl	8(%ebp), %eax
-L905:
-	leave
+	movl	%eax, 4(%esp)
+	movl	$LC169, (%esp)
+	call	_printf
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorptEv
+	movl	(%eax), %edx
+	addl	$20, %edx
+	movl	(%edx), %edx
+	movl	8(%ebp), %ecx
+	movl	%ecx, 4(%esp)
+	movl	%eax, (%esp)
+	call	*%edx
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorD1Ev
+	addl	$60, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
+	popl	%edi
+	.cfi_restore 7
+	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
 LFE821:
-	.section	.text$_Z16getConstFileNamePKc,"x"
-	.linkonce discard
-	.globl	__Z16getConstFileNamePKc
-	.def	__Z16getConstFileNamePKc;	.scl	2;	.type	32;	.endef
-__Z16getConstFileNamePKc:
+	.section	.gcc_except_table,"w"
+LLSDA821:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE821-LLSDACSB821
+LLSDACSB821:
+LLSDACSE821:
+	.text
+	.section .rdata,"dr"
+	.align 4
+LC170:
+	.ascii "delete[](p=0x%p, poly_allocator=\"%s\":%d/%d/%d)\12\0"
+	.text
+	.globl	__ZdaPv
+	.def	__ZdaPv;	.scl	2;	.type	32;	.endef
+__ZdaPv:
 LFB822:
 	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA822
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	8(%ebp), %eax
+	pushl	%edi
+	pushl	%esi
+	pushl	%ebx
+	subl	$60, %esp
+	.cfi_offset 7, -12
+	.cfi_offset 6, -16
+	.cfi_offset 3, -20
+	leal	-25(%ebp), %eax
 	movl	%eax, (%esp)
-	call	_strlen
+	call	__ZN14CPolyAllocatorC1Ev
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorptEv
+	movl	(%eax), %edx
+	addl	$12, %edx
+	movl	(%edx), %edx
+	movl	%eax, (%esp)
+	call	*%edx
+	movl	%eax, %edi
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorptEv
+	movl	(%eax), %edx
+	addl	$8, %edx
+	movl	(%edx), %edx
+	movl	%eax, (%esp)
+	call	*%edx
+	movl	%eax, %esi
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorptEv
+	movl	(%eax), %edx
+	addl	$4, %edx
+	movl	(%edx), %edx
+	movl	%eax, (%esp)
+	call	*%edx
+	movl	%eax, %ebx
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorptEv
+	movl	(%eax), %edx
+	movl	(%edx), %edx
+	movl	%eax, (%esp)
+	call	*%edx
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	%eax, 8(%esp)
+	movl	8(%ebp), %eax
 	movl	%eax, 4(%esp)
-	movl	8(%ebp), %eax
+	movl	$LC170, (%esp)
+	call	_printf
+	leal	-25(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__Z25getConstFileNameRecursivePKcj
-	leave
+	call	__ZN14CPolyAllocatorptEv
+	movl	(%eax), %edx
+	addl	$20, %edx
+	movl	(%edx), %edx
+	movl	8(%ebp), %ecx
+	movl	%ecx, 4(%esp)
+	movl	%eax, (%esp)
+	call	*%edx
+	leal	-25(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN14CPolyAllocatorD1Ev
+	addl	$60, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
+	popl	%edi
+	.cfi_restore 7
+	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
 LFE822:
+	.section	.gcc_except_table,"w"
+LLSDA822:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE822-LLSDACSB822
+LLSDACSB822:
+LLSDACSE822:
+	.text
 	.section	.text$_ZN22CTempPolyAllocatorBaseC2ER10IAllocator,"x"
 	.linkonce discard
 	.align 2
@@ -14608,12 +14608,12 @@ LLSDACSE883:
 	.globl	__ZThn12_N13CDerivedTest7D1Ev
 	.def	__ZThn12_N13CDerivedTest7D1Ev;	.scl	2;	.type	32;	.endef
 __ZThn12_N13CDerivedTest7D1Ev:
-LFB3875:
+LFB3883:
 	.cfi_startproc
 	subl	$12, 4(%esp)
 	jmp	__ZN13CDerivedTest7D1Ev
 	.cfi_endproc
-LFE3875:
+LFE3883:
 	.section	.text$_ZN13CDerivedTest7D0Ev,"x"
 	.linkonce discard
 	.align 2
@@ -14645,16 +14645,16 @@ LFE884:
 	.globl	__ZThn12_N13CDerivedTest7D0Ev
 	.def	__ZThn12_N13CDerivedTest7D0Ev;	.scl	2;	.type	32;	.endef
 __ZThn12_N13CDerivedTest7D0Ev:
-LFB3876:
+LFB3884:
 	.cfi_startproc
 	subl	$12, 4(%esp)
 	jmp	__ZN13CDerivedTest7D0Ev
 	.cfi_endproc
-LFE3876:
+LFE3884:
 	.section .rdata,"dr"
 	.align 4
 LC178:
-	.ascii "allocator.cpp(3087) [Wed Feb 26 17:31:29 2014]\0"
+	.ascii "allocator.cpp(3108) [Thu Feb 27 09:11:51 2014]\0"
 	.text
 	.globl	__Z10test7_sub1PKc
 	.def	__Z10test7_sub1PKc;	.scl	2;	.type	32;	.endef
@@ -14699,7 +14699,7 @@ LFE885:
 	.section .rdata,"dr"
 	.align 4
 LC179:
-	.ascii "allocator.cpp(3100) [Wed Feb 26 17:31:29 2014]\0"
+	.ascii "allocator.cpp(3121) [Thu Feb 27 09:11:51 2014]\0"
 	.text
 	.globl	__Z10test7_sub2v
 	.def	__Z10test7_sub2v;	.scl	2;	.type	32;	.endef
@@ -14716,10 +14716,9 @@ LFB886:
 	.cfi_offset 3, -12
 	movl	$LC179, (%esp)
 	call	__Z16getConstFileNamePKc
-	movl	$4, 8(%esp)
 	movl	$__ZZ10test7_sub2vE19__PRETTY_FUNCTION__, 4(%esp)
 	movl	%eax, (%esp)
-	call	__Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_j
+	call	__Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_
 	movl	%eax, -12(%ebp)
 	movl	-12(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -14764,7 +14763,7 @@ LFE886:
 	.section .rdata,"dr"
 	.align 4
 LC180:
-	.ascii "allocator.cpp(3113) [Wed Feb 26 17:31:29 2014]\0"
+	.ascii "allocator.cpp(3134) [Thu Feb 27 09:11:51 2014]\0"
 	.text
 	.globl	__Z10test7_sub3PKc
 	.def	__Z10test7_sub3PKc;	.scl	2;	.type	32;	.endef
@@ -14781,7 +14780,7 @@ LFB887:
 	call	__Z16getConstFileNamePKc
 	movl	8(%ebp), %edx
 	movl	%edx, 12(%esp)
-	movl	$4, 8(%esp)
+	movl	$16, 8(%esp)
 	movl	$__ZZ10test7_sub3PKcE19__PRETTY_FUNCTION__, 4(%esp)
 	movl	%eax, (%esp)
 	call	__Z11newWithInfoI13CDerivedTest7IPKcEEPT_S2_S2_jDpT0_
@@ -15431,13 +15430,172 @@ LLSDACSB888:
 	.uleb128 0
 LLSDACSE888:
 	.text
+	.section	.text$_ZN14crc_inner_calc8calcPolyEji,"x"
+	.linkonce discard
+	.globl	__ZN14crc_inner_calc8calcPolyEji
+	.def	__ZN14crc_inner_calc8calcPolyEji;	.scl	2;	.type	32;	.endef
+__ZN14crc_inner_calc8calcPolyEji:
+LFB889:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	cmpl	$0, 12(%ebp)
+	je	L1021
+	movl	12(%ebp), %eax
+	leal	-1(%eax), %edx
+	movl	8(%ebp), %eax
+	andl	$1, %eax
+	testl	%eax, %eax
+	je	L1022
+	movl	8(%ebp), %eax
+	shrl	%eax
+	xorl	$-306674912, %eax
+	jmp	L1023
+L1022:
+	movl	8(%ebp), %eax
+	shrl	%eax
+L1023:
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN14crc_inner_calc8calcPolyEji
+	jmp	L1024
+L1021:
+	movl	8(%ebp), %eax
+L1024:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE889:
+	.text
+	.globl	__Z9calcCRC32PKc
+	.def	__Z9calcCRC32PKc;	.scl	2;	.type	32;	.endef
+__Z9calcCRC32PKc:
+LFB895:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	$-1, -12(%ebp)
+	movl	8(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	jmp	L1027
+L1028:
+	movl	-16(%ebp), %eax
+	movzbl	(%eax), %eax
+	movsbl	%al, %eax
+	xorl	-12(%ebp), %eax
+	movzbl	%al, %eax
+	movl	$8, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN14crc_inner_calc8calcPolyEji
+	movl	-12(%ebp), %edx
+	shrl	$8, %edx
+	xorl	%edx, %eax
+	movl	%eax, -12(%ebp)
+	addl	$1, -16(%ebp)
+L1027:
+	movl	-16(%ebp), %eax
+	movzbl	(%eax), %eax
+	testb	%al, %al
+	jne	L1028
+	movl	-12(%ebp), %eax
+	notl	%eax
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE895:
+	.globl	__Z9calcCRC32PKcj
+	.def	__Z9calcCRC32PKcj;	.scl	2;	.type	32;	.endef
+__Z9calcCRC32PKcj:
+LFB896:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	$-1, -12(%ebp)
+	movl	8(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	$0, -20(%ebp)
+	jmp	L1031
+L1032:
+	movl	-16(%ebp), %eax
+	movzbl	(%eax), %eax
+	movsbl	%al, %eax
+	xorl	-12(%ebp), %eax
+	movzbl	%al, %eax
+	movl	$8, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN14crc_inner_calc8calcPolyEji
+	movl	-12(%ebp), %edx
+	shrl	$8, %edx
+	xorl	%edx, %eax
+	movl	%eax, -12(%ebp)
+	addl	$1, -20(%ebp)
+	addl	$1, -16(%ebp)
+L1031:
+	movl	-20(%ebp), %eax
+	cmpl	12(%ebp), %eax
+	jb	L1032
+	movl	-12(%ebp), %eax
+	notl	%eax
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE896:
 	.section .rdata,"dr"
 __ZStL19piecewise_construct:
 	.space 1
+	.section	.text$_ZNSt11char_traitsIcE6lengthEPKc,"x"
+	.linkonce discard
+	.globl	__ZNSt11char_traitsIcE6lengthEPKc
+	.def	__ZNSt11char_traitsIcE6lengthEPKc;	.scl	2;	.type	32;	.endef
+__ZNSt11char_traitsIcE6lengthEPKc:
+LFB1167:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%edi
+	.cfi_offset 7, -12
+	movl	8(%ebp), %eax
+	movl	$-1, %ecx
+	movl	%eax, %edx
+	movl	$0, %eax
+	movl	%edx, %edi
+	repnz scasb
+	movl	%ecx, %eax
+	notl	%eax
+	subl	$1, %eax
+	popl	%edi
+	.cfi_restore 7
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE1167:
 	.text
 	.def	__ZL18__gthread_active_pv;	.scl	3;	.type	32;	.endef
 __ZL18__gthread_active_pv:
-LFB1300:
+LFB1328:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15450,10 +15608,10 @@ LFB1300:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1300:
+LFE1328:
 	.def	__ZL15__gthread_equalP11__pthread_tS0_;	.scl	3;	.type	32;	.endef
 __ZL15__gthread_equalP11__pthread_tS0_:
-LFB1304:
+LFB1332:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15471,10 +15629,10 @@ LFB1304:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1304:
+LFE1332:
 	.def	__ZN9__gnu_cxxL18__exchange_and_addEPVii;	.scl	3;	.type	32;	.endef
 __ZN9__gnu_cxxL18__exchange_and_addEPVii:
-LFB1327:
+LFB1355:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15490,10 +15648,10 @@ LFB1327:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1327:
+LFE1355:
 	.def	__ZN9__gnu_cxxL25__exchange_and_add_singleEPii;	.scl	3;	.type	32;	.endef
 __ZN9__gnu_cxxL25__exchange_and_add_singleEPii:
-LFB1329:
+LFB1357:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15516,10 +15674,10 @@ LFB1329:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1329:
+LFE1357:
 	.def	__ZN9__gnu_cxxL27__exchange_and_add_dispatchEPii;	.scl	3;	.type	32;	.endef
 __ZN9__gnu_cxxL27__exchange_and_add_dispatchEPii:
-LFB1331:
+LFB1359:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15531,33 +15689,33 @@ LFB1331:
 	testl	%eax, %eax
 	setne	%al
 	testb	%al, %al
-	je	L1029
+	je	L1045
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN9__gnu_cxxL18__exchange_and_addEPVii
-	jmp	L1030
-L1029:
+	jmp	L1046
+L1045:
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN9__gnu_cxxL25__exchange_and_add_singleEPii
-L1030:
+L1046:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1331:
+LFE1359:
 	.section	.text$_ZNKSt4hashIjEclEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt4hashIjEclEj
 	.def	__ZNKSt4hashIjEclEj;	.scl	2;	.type	32;	.endef
 __ZNKSt4hashIjEclEj:
-LFB1515:
+LFB1536:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15570,13 +15728,13 @@ LFB1515:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1515:
+LFE1536:
 	.section	.text$_ZNSt10_Hash_impl4hashEPKvjj,"x"
 	.linkonce discard
 	.globl	__ZNSt10_Hash_impl4hashEPKvjj
 	.def	__ZNSt10_Hash_impl4hashEPKvjj;	.scl	2;	.type	32;	.endef
 __ZNSt10_Hash_impl4hashEPKvjj:
-LFB1518:
+LFB1539:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15596,72 +15754,7 @@ LFB1518:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1518:
-	.section	.text$_ZN14crc_inner_calc7calcStrEjPKc,"x"
-	.linkonce discard
-	.globl	__ZN14crc_inner_calc7calcStrEjPKc
-	.def	__ZN14crc_inner_calc7calcStrEjPKc;	.scl	2;	.type	32;	.endef
-__ZN14crc_inner_calc7calcStrEjPKc:
-LFB1582:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movzbl	(%eax), %eax
-	testb	%al, %al
-	je	L1036
-	movl	12(%ebp), %eax
-	leal	1(%eax), %edx
-	movl	12(%ebp), %eax
-	movzbl	(%eax), %eax
-	movsbl	%al, %eax
-	xorl	8(%ebp), %eax
-	movzbl	%al, %eax
-	movl	__ZN14crc_inner_calcL11s_calcTableE(,%eax,4), %eax
-	movl	8(%ebp), %ecx
-	shrl	$8, %ecx
-	xorl	%ecx, %eax
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZN14crc_inner_calc7calcStrEjPKc
-	jmp	L1037
-L1036:
-	movl	8(%ebp), %eax
-L1037:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE1582:
-	.section	.text$_Z9calcCRC32PKc,"x"
-	.linkonce discard
-	.globl	__Z9calcCRC32PKc
-	.def	__Z9calcCRC32PKc;	.scl	2;	.type	32;	.endef
-__Z9calcCRC32PKc:
-LFB1584:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	8(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	$-1, (%esp)
-	call	__ZN14crc_inner_calc7calcStrEjPKc
-	notl	%eax
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE1584:
+LFE1539:
 	.section .rdata,"dr"
 __ZStL13allocator_arg:
 	.space 1
@@ -15673,7 +15766,7 @@ __ZStL6ignore:
 	.globl	__ZNSt8__detail15_Hash_node_baseC2Ev
 	.def	__ZNSt8__detail15_Hash_node_baseC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail15_Hash_node_baseC2Ev:
-LFB1796:
+LFB1799:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15687,14 +15780,14 @@ LFB1796:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1796:
+LFE1799:
 	.section	.text$_ZNSt8__detail15_Hash_node_baseC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail15_Hash_node_baseC1Ev
 	.def	__ZNSt8__detail15_Hash_node_baseC1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail15_Hash_node_baseC1Ev:
-LFB1797:
+LFB1800:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15708,14 +15801,14 @@ LFB1797:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1797:
+LFE1800:
 	.section	.text$_ZNKSt8__detail18_Mod_range_hashingclEjj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail18_Mod_range_hashingclEjj
 	.def	__ZNKSt8__detail18_Mod_range_hashingclEjj;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail18_Mod_range_hashingclEjj:
-LFB1822:
+LFB1825:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15731,14 +15824,14 @@ LFB1822:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1822:
+LFE1825:
 	.section	.text$_ZNSt8__detail20_Prime_rehash_policyC1Ef,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail20_Prime_rehash_policyC1Ef
 	.def	__ZNSt8__detail20_Prime_rehash_policyC1Ef;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail20_Prime_rehash_policyC1Ef:
-LFB1825:
+LFB1828:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15755,14 +15848,14 @@ LFB1825:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1825:
+LFE1828:
 	.section	.text$_ZNKSt8__detail20_Prime_rehash_policy15max_load_factorEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail20_Prime_rehash_policy15max_load_factorEv
 	.def	__ZNKSt8__detail20_Prime_rehash_policy15max_load_factorEv;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail20_Prime_rehash_policy15max_load_factorEv:
-LFB1826:
+LFB1829:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15779,14 +15872,14 @@ LFB1826:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1826:
+LFE1829:
 	.section	.text$_ZNKSt8__detail20_Prime_rehash_policy19_M_bkt_for_elementsEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail20_Prime_rehash_policy19_M_bkt_for_elementsEj
 	.def	__ZNKSt8__detail20_Prime_rehash_policy19_M_bkt_for_elementsEj;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail20_Prime_rehash_policy19_M_bkt_for_elementsEj:
-LFB1827:
+LFB1830:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15820,14 +15913,14 @@ LFB1827:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1827:
+LFE1830:
 	.section	.text$_ZNKSt8__detail20_Prime_rehash_policy8_M_stateEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail20_Prime_rehash_policy8_M_stateEv
 	.def	__ZNKSt8__detail20_Prime_rehash_policy8_M_stateEv;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail20_Prime_rehash_policy8_M_stateEv:
-LFB1828:
+LFB1831:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15841,14 +15934,14 @@ LFB1828:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1828:
+LFE1831:
 	.section	.text$_ZNSt8__detail20_Prime_rehash_policy8_M_resetEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail20_Prime_rehash_policy8_M_resetEj
 	.def	__ZNSt8__detail20_Prime_rehash_policy8_M_resetEj;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail20_Prime_rehash_policy8_M_resetEj:
-LFB1829:
+LFB1832:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15863,14 +15956,14 @@ LFB1829:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE1829:
+LFE1832:
 	.section	.text$_ZN6CTest84DATAC1EPKci,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6CTest84DATAC1EPKci
 	.def	__ZN6CTest84DATAC1EPKci;	.scl	2;	.type	32;	.endef
 __ZN6CTest84DATAC1EPKci:
-LFB2112:
+LFB2115:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -15891,184 +15984,7 @@ LFB2112:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2112:
-	.section	.text$_ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE,"x"
-	.linkonce discard
-	.globl	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
-	.def	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE;	.scl	2;	.type	32;	.endef
-__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE:
-LFB2115:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	movl	8(%ebp), %eax
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
 LFE2115:
-	.section	.text$_ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE,"x"
-	.linkonce discard
-	.globl	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE
-	.def	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE;	.scl	2;	.type	32;	.endef
-__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE:
-LFB2116:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	movl	8(%ebp), %eax
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE2116:
-	.section	.text$_ZNSt4pairIjN6CTest84DATAEEC1IjvEEOT_RKS1_,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZNSt4pairIjN6CTest84DATAEEC1IjvEEOT_RKS1_
-	.def	__ZNSt4pairIjN6CTest84DATAEEC1IjvEEOT_RKS1_;	.scl	2;	.type	32;	.endef
-__ZNSt4pairIjN6CTest84DATAEEC1IjvEEOT_RKS1_:
-LFB2119:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$4, %esp
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
-	movl	(%eax), %edx
-	movl	8(%ebp), %eax
-	movl	%edx, (%eax)
-	movl	8(%ebp), %eax
-	movl	16(%ebp), %edx
-	movl	(%edx), %ecx
-	movl	%ecx, 4(%eax)
-	movl	4(%edx), %ecx
-	movl	%ecx, 8(%eax)
-	movl	8(%edx), %ecx
-	movl	%ecx, 12(%eax)
-	movl	12(%edx), %ecx
-	movl	%ecx, 16(%eax)
-	movl	16(%edx), %ecx
-	movl	%ecx, 20(%eax)
-	movl	20(%edx), %edx
-	movl	%edx, 24(%eax)
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE2119:
-	.section	.text$_ZSt9make_pairIjRKN6CTest84DATAEESt4pairINSt17__decay_and_stripIT_E6__typeENS5_IT0_E6__typeEEOS6_OS9_,"x"
-	.linkonce discard
-	.globl	__ZSt9make_pairIjRKN6CTest84DATAEESt4pairINSt17__decay_and_stripIT_E6__typeENS5_IT0_E6__typeEEOS6_OS9_
-	.def	__ZSt9make_pairIjRKN6CTest84DATAEESt4pairINSt17__decay_and_stripIT_E6__typeENS5_IT0_E6__typeEEOS6_OS9_;	.scl	2;	.type	32;	.endef
-__ZSt9make_pairIjRKN6CTest84DATAEESt4pairINSt17__decay_and_stripIT_E6__typeENS5_IT0_E6__typeEEOS6_OS9_:
-LFB2114:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%ebx
-	subl	$12, %esp
-	.cfi_offset 3, -12
-	movl	16(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE
-	movl	%eax, %ebx
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
-	movl	%ebx, 8(%esp)
-	movl	%eax, 4(%esp)
-	movl	8(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSt4pairIjN6CTest84DATAEEC1IjvEEOT_RKS1_
-	movl	8(%ebp), %eax
-	addl	$12, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret	$4
-	.cfi_endproc
-LFE2114:
-	.section	.text$_ZSt7forwardIN6CTest84DATAEEOT_RNSt16remove_referenceIS2_E4typeE,"x"
-	.linkonce discard
-	.globl	__ZSt7forwardIN6CTest84DATAEEOT_RNSt16remove_referenceIS2_E4typeE
-	.def	__ZSt7forwardIN6CTest84DATAEEOT_RNSt16remove_referenceIS2_E4typeE;	.scl	2;	.type	32;	.endef
-__ZSt7forwardIN6CTest84DATAEEOT_RNSt16remove_referenceIS2_E4typeE:
-LFB2121:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	movl	8(%ebp), %eax
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE2121:
-	.section	.text$_ZNSt4pairIKjN6CTest84DATAEEC1IjS2_vEEOS_IT_T0_E,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZNSt4pairIKjN6CTest84DATAEEC1IjS2_vEEOS_IT_T0_E
-	.def	__ZNSt4pairIKjN6CTest84DATAEEC1IjS2_vEEOS_IT_T0_E;	.scl	2;	.type	32;	.endef
-__ZNSt4pairIKjN6CTest84DATAEEC1IjS2_vEEOS_IT_T0_E:
-LFB2123:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$4, %esp
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
-	movl	(%eax), %edx
-	movl	8(%ebp), %eax
-	movl	%edx, (%eax)
-	movl	12(%ebp), %eax
-	addl	$4, %eax
-	movl	%eax, (%esp)
-	call	__ZSt7forwardIN6CTest84DATAEEOT_RNSt16remove_referenceIS2_E4typeE
-	movl	8(%ebp), %edx
-	movl	(%eax), %ecx
-	movl	%ecx, 4(%edx)
-	movl	4(%eax), %ecx
-	movl	%ecx, 8(%edx)
-	movl	8(%eax), %ecx
-	movl	%ecx, 12(%edx)
-	movl	12(%eax), %ecx
-	movl	%ecx, 16(%edx)
-	movl	16(%eax), %ecx
-	movl	%ecx, 20(%edx)
-	movl	20(%eax), %eax
-	movl	%eax, 24(%edx)
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE2123:
 	.section .rdata,"dr"
 LC196:
 	.ascii "CTest8::addData()\0"
@@ -16078,17 +15994,17 @@ LC196:
 	.globl	__ZN6CTest87addDataERKNS_4DATAE
 	.def	__ZN6CTest87addDataERKNS_4DATAE;	.scl	2;	.type	32;	.endef
 __ZN6CTest87addDataERKNS_4DATAE:
-LFB2113:
+LFB2116:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA2113
+	.cfi_lsda 0,LLSDA2116
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
 	pushl	%ebx
-	subl	$84, %esp
+	subl	$52, %esp
 	.cfi_offset 3, -12
 	movl	$LC196, (%esp)
 LEHB226:
@@ -16097,7 +16013,7 @@ LEHB226:
 	addl	$4, %eax
 	movl	$0, 8(%esp)
 	movl	%eax, 4(%esp)
-	leal	-60(%ebp), %eax
+	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN23CTempPolyStackAllocatorC1ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE
 LEHE226:
@@ -16107,23 +16023,17 @@ LEHB227:
 	call	__Z9calcCRC32PKc
 LEHE227:
 	movl	%eax, -12(%ebp)
-	leal	-40(%ebp), %eax
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	leal	-12(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZSt9make_pairIjRKN6CTest84DATAEESt4pairINSt17__decay_and_stripIT_E6__typeENS5_IT0_E6__typeEEOS6_OS9_
-	subl	$4, %esp
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	leal	-40(%ebp), %edx
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
 LEHB228:
-	call	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE6insertIS6_IjS1_EvEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEOT_
+	call	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7emplaceIIjRKS1_EEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEDpOT_
 LEHE228:
-	leal	-60(%ebp), %eax
+	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN23CTempPolyStackAllocatorD1Ev
 	jmp	L1071
@@ -16133,7 +16043,7 @@ L1070:
 L1069:
 	movl	%eax, %ebx
 L1066:
-	leal	-60(%ebp), %eax
+	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN23CTempPolyStackAllocatorD1Ev
 	movl	%ebx, %eax
@@ -16145,38 +16055,39 @@ LEHB229:
 	call	__Unwind_Resume
 LEHE229:
 L1071:
-	movl	-4(%ebp), %ebx
-	leave
-	.cfi_restore 5
+	addl	$52, %esp
+	popl	%ebx
 	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2113:
+LFE2116:
 	.section	.gcc_except_table,"w"
-LLSDA2113:
+LLSDA2116:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE2113-LLSDACSB2113
-LLSDACSB2113:
-	.uleb128 LEHB226-LFB2113
+	.uleb128 LLSDACSE2116-LLSDACSB2116
+LLSDACSB2116:
+	.uleb128 LEHB226-LFB2116
 	.uleb128 LEHE226-LEHB226
-	.uleb128 L1068-LFB2113
+	.uleb128 L1068-LFB2116
 	.uleb128 0
-	.uleb128 LEHB227-LFB2113
+	.uleb128 LEHB227-LFB2116
 	.uleb128 LEHE227-LEHB227
-	.uleb128 L1069-LFB2113
+	.uleb128 L1069-LFB2116
 	.uleb128 0
-	.uleb128 LEHB228-LFB2113
+	.uleb128 LEHB228-LFB2116
 	.uleb128 LEHE228-LEHB228
-	.uleb128 L1070-LFB2113
+	.uleb128 L1070-LFB2116
 	.uleb128 0
-	.uleb128 LEHB229-LFB2113
+	.uleb128 LEHB229-LFB2116
 	.uleb128 LEHE229-LEHB229
 	.uleb128 0
 	.uleb128 0
-LLSDACSE2113:
+LLSDACSE2116:
 	.section	.text$_ZN6CTest87addDataERKNS_4DATAE,"x"
 	.linkonce discard
 	.section .rdata,"dr"
@@ -16188,7 +16099,7 @@ LC197:
 	.globl	__ZNK6CTest84findEj
 	.def	__ZNK6CTest84findEj;	.scl	2;	.type	32;	.endef
 __ZNK6CTest84findEj:
-LFB2124:
+LFB2117:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -16232,14 +16143,14 @@ L1074:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2124:
+LFE2117:
 	.section	.text$_ZNK6CTest84findEPKc,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK6CTest84findEPKc
 	.def	__ZNK6CTest84findEPKc;	.scl	2;	.type	32;	.endef
 __ZNK6CTest84findEPKc:
-LFB2125:
+LFB2118:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -16259,7 +16170,7 @@ LFB2125:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2125:
+LFE2118:
 	.section .rdata,"dr"
 LC198:
 	.ascii "CTest8::Consructor()\0"
@@ -16275,10 +16186,10 @@ LC201:
 	.globl	__ZN6CTest8C1Ev
 	.def	__ZN6CTest8C1Ev;	.scl	2;	.type	32;	.endef
 __ZN6CTest8C1Ev:
-LFB2128:
+LFB2121:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA2128
+	.cfi_lsda 0,LLSDA2121
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -16400,35 +16311,35 @@ L1086:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2128:
+LFE2121:
 	.section	.gcc_except_table,"w"
-LLSDA2128:
+LLSDA2121:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE2128-LLSDACSB2128
-LLSDACSB2128:
-	.uleb128 LEHB230-LFB2128
+	.uleb128 LLSDACSE2121-LLSDACSB2121
+LLSDACSB2121:
+	.uleb128 LEHB230-LFB2121
 	.uleb128 LEHE230-LEHB230
-	.uleb128 L1083-LFB2128
+	.uleb128 L1083-LFB2121
 	.uleb128 0
-	.uleb128 LEHB231-LFB2128
+	.uleb128 LEHB231-LFB2121
 	.uleb128 LEHE231-LEHB231
-	.uleb128 L1084-LFB2128
+	.uleb128 L1084-LFB2121
 	.uleb128 0
-	.uleb128 LEHB232-LFB2128
+	.uleb128 LEHB232-LFB2121
 	.uleb128 LEHE232-LEHB232
-	.uleb128 L1085-LFB2128
+	.uleb128 L1085-LFB2121
 	.uleb128 0
-	.uleb128 LEHB233-LFB2128
+	.uleb128 LEHB233-LFB2121
 	.uleb128 LEHE233-LEHB233
-	.uleb128 L1084-LFB2128
+	.uleb128 L1084-LFB2121
 	.uleb128 0
-	.uleb128 LEHB234-LFB2128
+	.uleb128 LEHB234-LFB2121
 	.uleb128 LEHE234-LEHB234
 	.uleb128 0
 	.uleb128 0
-LLSDACSE2128:
+LLSDACSE2121:
 	.section	.text$_ZN6CTest8C1Ev,"x"
 	.linkonce discard
 	.section	.text$_ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEED1Ev,"x"
@@ -16437,7 +16348,7 @@ LLSDACSE2128:
 	.globl	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEED1Ev
 	.def	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEED1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEED1Ev:
-LFB2132:
+LFB2125:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -16453,7 +16364,7 @@ LFB2132:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2132:
+LFE2125:
 	.section .rdata,"dr"
 LC202:
 	.ascii "CTest8::Destructor()\0"
@@ -16465,10 +16376,10 @@ LC203:
 	.globl	__ZN6CTest8D1Ev
 	.def	__ZN6CTest8D1Ev;	.scl	2;	.type	32;	.endef
 __ZN6CTest8D1Ev:
-LFB2134:
+LFB2127:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA2134
+	.cfi_lsda 0,LLSDA2127
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -16514,62 +16425,85 @@ L1090:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2134:
+LFE2127:
 	.section	.gcc_except_table,"w"
-LLSDA2134:
+LLSDA2127:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE2134-LLSDACSB2134
-LLSDACSB2134:
-LLSDACSE2134:
+	.uleb128 LLSDACSE2127-LLSDACSB2127
+LLSDACSB2127:
+LLSDACSE2127:
 	.section	.text$_ZN6CTest8D1Ev,"x"
 	.linkonce discard
+	.globl	_s_parmaDataBuff
+	.bss
+	.align 32
+_s_parmaDataBuff:
+	.space 1040
+.lcomm __ZL10s_message1,4,4
+.lcomm __ZL10s_message2,4,4
+	.globl	_s_tempStack
+	.align 32
+_s_tempStack:
+	.space 4112
 	.section .rdata,"dr"
 	.align 4
 LC204:
-	.ascii "---------- test8:\346\250\231\346\272\226\343\203\251\343\202\244\343\203\226\343\203\251\343\203\252\343\202\222\344\276\277\345\210\251\343\201\253\345\210\251\347\224\250 ----------\0"
+	.ascii "---------- test8a:\346\250\231\346\272\226\343\203\251\343\202\244\343\203\226\343\203\251\343\203\252\343\202\222\344\276\277\345\210\251\343\201\253\345\210\251\347\224\250 ----------\0"
+	.align 4
 LC205:
-	.ascii "\346\226\207\345\255\227\345\210\227\343\201\250\0"
+	.ascii "----------\344\270\200\346\231\202\343\202\271\343\202\277\343\203\203\343\202\257\343\202\242\343\203\255\343\202\261\343\203\274\343\202\277\343\201\247\346\226\207\345\255\227\345\210\227\346\223\215\344\275\234\0"
 LC206:
+	.ascii "\346\226\207\345\255\227\345\210\227\343\201\250\0"
+LC207:
 	.ascii "\346\226\207\345\255\227\345\210\227\343\202\222\0"
 	.align 4
-LC207:
-	.ascii "\347\265\220\345\220\210\343\201\231\343\202\213\343\202\210\343\201\206\343\201\252\345\207\246\347\220\206\343\201\247\343\201\257\343\200\201\0"
 LC208:
-	.ascii "std::string\343\201\214\0"
+	.ascii "\347\265\220\345\220\210\343\201\231\343\202\213\343\202\210\343\201\206\343\201\252\345\207\246\347\220\206\343\201\247\343\201\257\343\200\201\0"
 LC209:
-	.ascii "\343\202\204\343\201\243\343\201\261\343\202\212\344\276\277\345\210\251!!\0"
+	.ascii "std::string\343\201\214\0"
 LC210:
-	.ascii "str_buff=\"%s\"\12\0"
+	.ascii "\343\202\204\343\201\243\343\201\261\343\202\212\344\276\277\345\210\251!\0"
+	.align 4
 LC211:
-	.ascii "----------CTest8\0"
+	.ascii "\12\343\201\227\343\201\213\343\201\227\343\200\201\347\264\240\347\233\264\343\201\253strcat()\343\202\222\344\275\277\343\201\243\343\201\237\346\226\271\343\201\214\351\253\230\351\200\237\0"
+	.align 4
 LC212:
-	.ascii "\345\244\252\351\203\216\0"
+	.ascii "\12std::string \343\201\257\343\200\201find(), replace(), substr() \343\201\252\343\201\251\343\202\222\344\275\277\343\201\204\343\201\237\343\201\204\346\231\202\343\201\253\344\276\277\345\210\251\0"
+	.align 4
 LC213:
-	.ascii "\346\254\241\351\203\216\0"
+	.ascii "\12\343\201\276\343\201\237\343\200\201\343\200\214\345\212\271\347\216\207\345\214\226\343\201\256\343\201\237\343\202\201\343\201\253\344\270\200\346\231\202\343\203\220\343\203\203\343\203\225\343\202\241\343\201\247\343\202\265\343\202\244\343\202\272\343\202\222\350\246\213\347\251\215\343\202\202\343\201\243\343\201\246\343\202\263\343\203\224\343\203\274\343\200\215\343\201\256\343\202\210\343\201\206\343\201\252\345\207\246\347\220\206\343\201\253\343\202\202\12\345\212\271\346\236\234\347\232\204\0"
+	.align 4
 LC214:
-	.ascii "\344\270\211\351\203\216\0"
+	.ascii "\343\200\220\344\270\200\346\231\202\343\202\271\343\202\277\343\203\203\343\202\257\343\202\242\343\203\255\343\202\261\343\203\274\343\202\277\347\211\210\343\200\221\12\0"
 LC215:
-	.ascii "new CTest8\0"
+	.ascii "strpcy()\0"
+	.align 4
 LC216:
-	.ascii "ref1: name=\"%s\", age=%d\12\0"
+	.ascii "----------\346\250\231\346\272\226\343\202\242\343\203\255\343\202\261\343\203\274\343\202\277\343\201\247\346\226\207\345\255\227\345\210\227\346\223\215\344\275\234\0"
+	.align 4
 LC217:
-	.ascii "ref2: name=\"%s\", age=%d\12\0"
+	.ascii "\343\200\220\346\250\231\346\272\226\343\202\242\343\203\255\343\202\261\343\203\274\343\202\277\347\211\210\343\200\221\12\0"
+	.align 4
 LC218:
-	.ascii "ref3: name=\"%s\", age=%d\12\0"
+	.ascii "----------\346\226\207\345\255\227\345\210\227\346\223\215\344\275\234\343\201\256\347\265\220\346\236\234\350\241\250\347\244\272\0"
 LC219:
-	.ascii "delete CTest8\0"
+	.ascii "s_message1=\"%s\"\12\0"
 LC220:
-	.ascii "----------CTest8:End\0"
+	.ascii "s_message2=\"%s\"\12\0"
+LC221:
+	.ascii "s_parmaDataBuff=%d/%d/%d\12\0"
+LC222:
+	.ascii "s_tempStack=%d/%d/%d\12\0"
 	.text
-	.globl	__Z5test8v
-	.def	__Z5test8v;	.scl	2;	.type	32;	.endef
-__Z5test8v:
-LFB2135:
+	.globl	__Z6test8av
+	.def	__Z6test8av;	.scl	2;	.type	32;	.endef
+__Z6test8av:
+LFB2128:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA2135
+	.cfi_lsda 0,LLSDA2128
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -16577,97 +16511,89 @@ LFB2135:
 	.cfi_def_cfa_register 5
 	pushl	%esi
 	pushl	%ebx
-	movl	$8576, %eax
-	call	___chkstk_ms
-	subl	%eax, %esp
+	subl	$144, %esp
 	.cfi_offset 6, -12
 	.cfi_offset 3, -16
 	movl	$LC204, (%esp)
 LEHB235:
 	call	_puts
 LEHE235:
-	movl	$LC148, (%esp)
+	movl	$LC205, (%esp)
 LEHB236:
 	call	_puts
-LEHE236:
-	leal	-8432(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN23CStackAllocatorWithBuffILj1024EEC1Ev
-	movl	$0, 8(%esp)
-	leal	-8432(%ebp), %eax
-	movl	%eax, 4(%esp)
+	movl	$1, 8(%esp)
+	movl	$_s_tempStack, 4(%esp)
 	leal	-84(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB237:
 	call	__ZN23CTempPolyStackAllocatorC1ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE
-LEHE237:
+LEHE236:
 	leal	-61(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcEC1Ev
 	leal	-61(%ebp), %eax
 	movl	%eax, 8(%esp)
-	movl	$LC205, 4(%esp)
+	movl	$LC206, 4(%esp)
 	leal	-88(%ebp), %eax
+	movl	%eax, (%esp)
+LEHB237:
+	call	__ZNSsC1EPKcRKSaIcE
+LEHE237:
+	leal	-61(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSaIcED1Ev
+	leal	-60(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSaIcEC1Ev
+	leal	-60(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC207, 4(%esp)
+	leal	-92(%ebp), %eax
 	movl	%eax, (%esp)
 LEHB238:
 	call	__ZNSsC1EPKcRKSaIcE
 LEHE238:
-	leal	-61(%ebp), %eax
+	leal	-60(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	leal	-60(%ebp), %eax
+	leal	-59(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcEC1Ev
-	leal	-60(%ebp), %eax
+	leal	-59(%ebp), %eax
 	movl	%eax, 8(%esp)
-	movl	$LC206, 4(%esp)
-	leal	-92(%ebp), %eax
+	movl	$LC208, 4(%esp)
+	leal	-96(%ebp), %eax
 	movl	%eax, (%esp)
 LEHB239:
 	call	__ZNSsC1EPKcRKSaIcE
 LEHE239:
-	leal	-60(%ebp), %eax
+	leal	-59(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	leal	-59(%ebp), %eax
+	leal	-58(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcEC1Ev
-	leal	-59(%ebp), %eax
+	leal	-58(%ebp), %eax
 	movl	%eax, 8(%esp)
-	movl	$LC207, 4(%esp)
-	leal	-96(%ebp), %eax
+	movl	$LC209, 4(%esp)
+	leal	-100(%ebp), %eax
 	movl	%eax, (%esp)
 LEHB240:
 	call	__ZNSsC1EPKcRKSaIcE
 LEHE240:
-	leal	-59(%ebp), %eax
+	leal	-58(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	leal	-58(%ebp), %eax
+	leal	-57(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcEC1Ev
-	leal	-58(%ebp), %eax
+	leal	-57(%ebp), %eax
 	movl	%eax, 8(%esp)
-	movl	$LC208, 4(%esp)
-	leal	-100(%ebp), %eax
+	movl	$LC210, 4(%esp)
+	leal	-104(%ebp), %eax
 	movl	%eax, (%esp)
 LEHB241:
 	call	__ZNSsC1EPKcRKSaIcE
 LEHE241:
-	leal	-58(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSaIcED1Ev
-	leal	-57(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSaIcEC1Ev
-	leal	-57(%ebp), %eax
-	movl	%eax, 8(%esp)
-	movl	$LC209, 4(%esp)
-	leal	-104(%ebp), %eax
-	movl	%eax, (%esp)
-LEHB242:
-	call	__ZNSsC1EPKcRKSaIcE
-LEHE242:
 	leal	-57(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
@@ -16677,9 +16603,9 @@ LEHE242:
 	leal	-88(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-LEHB243:
+LEHB242:
 	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_S8_
-LEHE243:
+LEHE242:
 	subl	$4, %esp
 	leal	-52(%ebp), %eax
 	leal	-96(%ebp), %edx
@@ -16687,9 +16613,9 @@ LEHE243:
 	leal	-48(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-LEHB244:
+LEHB243:
 	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_
-LEHE244:
+LEHE243:
 	subl	$4, %esp
 	leal	-56(%ebp), %eax
 	leal	-100(%ebp), %edx
@@ -16697,9 +16623,9 @@ LEHE244:
 	leal	-52(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-LEHB245:
+LEHB244:
 	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_
-LEHE245:
+LEHE244:
 	subl	$4, %esp
 	leal	-108(%ebp), %eax
 	leal	-104(%ebp), %edx
@@ -16707,9 +16633,9 @@ LEHE245:
 	leal	-56(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-LEHB246:
+LEHB245:
 	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_
-LEHE246:
+LEHE245:
 	subl	$4, %esp
 	leal	-56(%ebp), %eax
 	movl	%eax, (%esp)
@@ -16720,12 +16646,58 @@ LEHE246:
 	leal	-48(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
+	movl	$LC211, 4(%esp)
+	leal	-108(%ebp), %eax
+	movl	%eax, (%esp)
+LEHB246:
+	call	__ZNSspLEPKc
+	movl	$LC212, 4(%esp)
+	leal	-108(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSspLEPKc
+	movl	$LC213, 4(%esp)
+	leal	-108(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSspLEPKc
+	leal	-44(%ebp), %eax
+	leal	-108(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	$LC214, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_
+LEHE246:
+	subl	$4, %esp
+	leal	-44(%ebp), %eax
+	movl	%eax, 4(%esp)
+	leal	-108(%ebp), %eax
+	movl	%eax, (%esp)
+LEHB247:
+	call	__ZNSsaSEOSs
+LEHE247:
+	leal	-44(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSsD1Ev
+	movl	$LC215, (%esp)
+LEHB248:
+	call	_puts
+	leal	-108(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNKSs6lengthEv
+	addl	$1, %eax
+	movl	%eax, -12(%ebp)
+	movl	$1, 8(%esp)
+	movl	-12(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	$_s_parmaDataBuff, (%esp)
+	call	__ZN15CStackAllocator6allocNEjj
+LEHE248:
+	movl	%eax, __ZL10s_message1
 	leal	-108(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNKSs5c_strEv
+	movl	__ZL10s_message1, %edx
 	movl	%eax, 4(%esp)
-	leal	-8560(%ebp), %eax
-	movl	%eax, (%esp)
+	movl	%edx, (%esp)
 	call	_strcpy
 	leal	-108(%ebp), %eax
 	movl	%eax, (%esp)
@@ -16745,147 +16717,184 @@ LEHE246:
 	leal	-88(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-	leal	-8560(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	$LC210, (%esp)
-LEHB247:
-	call	_printf
-LEHE247:
 	leal	-84(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN23CTempPolyStackAllocatorD1Ev
-	leal	-8432(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN23CStackAllocatorWithBuffILj1024EED1Ev
-	movl	$LC143, (%esp)
-LEHB248:
-	call	_puts
-LEHE248:
-	leal	-41(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSaIcEC1Ev
-	leal	-41(%ebp), %eax
-	movl	%eax, 8(%esp)
-	movl	$LC205, 4(%esp)
-	leal	-112(%ebp), %eax
-	movl	%eax, (%esp)
+	movl	$LC216, (%esp)
 LEHB249:
-	call	__ZNSsC1EPKcRKSaIcE
+	call	_puts
 LEHE249:
-	leal	-41(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSaIcED1Ev
-	leal	-40(%ebp), %eax
+	leal	-37(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcEC1Ev
-	leal	-40(%ebp), %eax
+	leal	-37(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	$LC206, 4(%esp)
-	leal	-116(%ebp), %eax
+	leal	-112(%ebp), %eax
 	movl	%eax, (%esp)
 LEHB250:
 	call	__ZNSsC1EPKcRKSaIcE
 LEHE250:
-	leal	-40(%ebp), %eax
+	leal	-37(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	leal	-39(%ebp), %eax
+	leal	-36(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcEC1Ev
-	leal	-39(%ebp), %eax
+	leal	-36(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	$LC207, 4(%esp)
-	leal	-120(%ebp), %eax
+	leal	-116(%ebp), %eax
 	movl	%eax, (%esp)
 LEHB251:
 	call	__ZNSsC1EPKcRKSaIcE
 LEHE251:
-	leal	-39(%ebp), %eax
+	leal	-36(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	leal	-38(%ebp), %eax
+	leal	-35(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcEC1Ev
-	leal	-38(%ebp), %eax
+	leal	-35(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	$LC208, 4(%esp)
-	leal	-124(%ebp), %eax
+	leal	-120(%ebp), %eax
 	movl	%eax, (%esp)
 LEHB252:
 	call	__ZNSsC1EPKcRKSaIcE
 LEHE252:
-	leal	-38(%ebp), %eax
+	leal	-35(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	leal	-37(%ebp), %eax
+	leal	-34(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcEC1Ev
-	leal	-37(%ebp), %eax
+	leal	-34(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	$LC209, 4(%esp)
-	leal	-128(%ebp), %eax
+	leal	-124(%ebp), %eax
 	movl	%eax, (%esp)
 LEHB253:
 	call	__ZNSsC1EPKcRKSaIcE
 LEHE253:
-	leal	-37(%ebp), %eax
+	leal	-34(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	leal	-28(%ebp), %eax
+	leal	-33(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSaIcEC1Ev
+	leal	-33(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC210, 4(%esp)
+	leal	-128(%ebp), %eax
+	movl	%eax, (%esp)
+LEHB254:
+	call	__ZNSsC1EPKcRKSaIcE
+LEHE254:
+	leal	-33(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSaIcED1Ev
+	leal	-24(%ebp), %eax
 	leal	-116(%ebp), %edx
 	movl	%edx, 8(%esp)
 	leal	-112(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-LEHB254:
-	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_S8_
-LEHE254:
-	subl	$4, %esp
-	leal	-32(%ebp), %eax
-	leal	-120(%ebp), %edx
-	movl	%edx, 8(%esp)
-	leal	-28(%ebp), %edx
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
 LEHB255:
-	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_
+	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_S8_
 LEHE255:
 	subl	$4, %esp
-	leal	-36(%ebp), %eax
-	leal	-124(%ebp), %edx
+	leal	-28(%ebp), %eax
+	leal	-120(%ebp), %edx
 	movl	%edx, 8(%esp)
-	leal	-32(%ebp), %edx
+	leal	-24(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
 LEHB256:
 	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_
 LEHE256:
 	subl	$4, %esp
-	leal	-132(%ebp), %eax
-	leal	-128(%ebp), %edx
+	leal	-32(%ebp), %eax
+	leal	-124(%ebp), %edx
 	movl	%edx, 8(%esp)
-	leal	-36(%ebp), %edx
+	leal	-28(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
 LEHB257:
 	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_
 LEHE257:
 	subl	$4, %esp
-	leal	-36(%ebp), %eax
+	leal	-132(%ebp), %eax
+	leal	-128(%ebp), %edx
+	movl	%edx, 8(%esp)
+	leal	-32(%ebp), %edx
+	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZNSsD1Ev
+LEHB258:
+	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_
+LEHE258:
+	subl	$4, %esp
 	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
 	leal	-28(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
+	leal	-24(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSsD1Ev
+	movl	$LC211, 4(%esp)
+	leal	-132(%ebp), %eax
+	movl	%eax, (%esp)
+LEHB259:
+	call	__ZNSspLEPKc
+	movl	$LC212, 4(%esp)
+	leal	-132(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSspLEPKc
+	movl	$LC213, 4(%esp)
+	leal	-132(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSspLEPKc
+	leal	-20(%ebp), %eax
+	leal	-132(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	$LC217, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_
+LEHE259:
+	subl	$4, %esp
+	leal	-20(%ebp), %eax
+	movl	%eax, 4(%esp)
+	leal	-132(%ebp), %eax
+	movl	%eax, (%esp)
+LEHB260:
+	call	__ZNSsaSEOSs
+LEHE260:
+	leal	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSsD1Ev
+	movl	$LC215, (%esp)
+LEHB261:
+	call	_puts
+	leal	-132(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNKSs6lengthEv
+	addl	$1, %eax
+	movl	%eax, -16(%ebp)
+	movl	$1, 8(%esp)
+	movl	-16(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	$_s_parmaDataBuff, (%esp)
+	call	__ZN15CStackAllocator6allocNEjj
+LEHE261:
+	movl	%eax, __ZL10s_message2
 	leal	-132(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNKSs5c_strEv
+	movl	__ZL10s_message2, %edx
 	movl	%eax, 4(%esp)
-	leal	-8432(%ebp), %eax
-	movl	%eax, (%esp)
+	movl	%edx, (%esp)
 	call	_strcpy
 	leal	-132(%ebp), %eax
 	movl	%eax, (%esp)
@@ -16905,340 +16914,254 @@ LEHE257:
 	leal	-112(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-	leal	-8432(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	$LC210, (%esp)
-LEHB258:
-	call	_printf
-LEHE258:
-	leal	-8432(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN23CStackAllocatorWithBuffILj8192EEC1Ev
-	movl	$0, 8(%esp)
-	leal	-8432(%ebp), %eax
-	movl	%eax, 4(%esp)
-	leal	-152(%ebp), %eax
-	movl	%eax, (%esp)
-LEHB259:
-	call	__ZN23CTempPolyStackAllocatorC1ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE
-LEHE259:
-	movl	$LC211, (%esp)
-LEHB260:
-	call	_puts
-	movl	$40, 8(%esp)
-	movl	$LC212, 4(%esp)
-	leal	-176(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN6CTest84DATAC1EPKci
-	movl	$30, 8(%esp)
-	movl	$LC213, 4(%esp)
-	leal	-200(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN6CTest84DATAC1EPKci
-	movl	$20, 8(%esp)
-	movl	$LC214, 4(%esp)
-	leal	-224(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN6CTest84DATAC1EPKci
-	movl	$LC215, (%esp)
-	call	_puts
-LEHE260:
-	movl	$1044, (%esp)
-	call	__Znwj
-	movl	%eax, %ebx
-	testl	%ebx, %ebx
-	je	L1093
-	movl	%ebx, (%esp)
-LEHB261:
-	call	__ZN6CTest8C1Ev
-LEHE261:
-	movl	%ebx, %eax
-	jmp	L1094
-L1093:
-	movl	%ebx, %eax
-L1094:
-	movl	%eax, -12(%ebp)
-	leal	-176(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	-12(%ebp), %eax
-	movl	%eax, (%esp)
-LEHB262:
-	call	__ZN6CTest87addDataERKNS_4DATAE
-	leal	-200(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	-12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN6CTest87addDataERKNS_4DATAE
-	leal	-224(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	-12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN6CTest87addDataERKNS_4DATAE
-	movl	$LC212, 4(%esp)
-	movl	-12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK6CTest84findEPKc
-	movl	%eax, -16(%ebp)
-	movl	$LC213, 4(%esp)
-	movl	-12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK6CTest84findEPKc
-	movl	%eax, -20(%ebp)
-	movl	$LC214, 4(%esp)
-	movl	-12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK6CTest84findEPKc
-	movl	%eax, -24(%ebp)
-	cmpl	$0, -16(%ebp)
-	je	L1095
-	movl	-16(%ebp), %eax
-	movl	20(%eax), %edx
-	movl	-16(%ebp), %eax
-	movl	%edx, 8(%esp)
-	movl	%eax, 4(%esp)
-	movl	$LC216, (%esp)
-	call	_printf
-L1095:
-	cmpl	$0, -20(%ebp)
-	je	L1096
-	movl	-20(%ebp), %eax
-	movl	20(%eax), %edx
-	movl	-20(%ebp), %eax
-	movl	%edx, 8(%esp)
-	movl	%eax, 4(%esp)
-	movl	$LC217, (%esp)
-	call	_printf
-L1096:
-	cmpl	$0, -24(%ebp)
-	je	L1097
-	movl	-24(%ebp), %eax
-	movl	20(%eax), %edx
-	movl	-24(%ebp), %eax
-	movl	%edx, 8(%esp)
-	movl	%eax, 4(%esp)
 	movl	$LC218, (%esp)
-	call	_printf
-L1097:
+LEHB262:
+	call	_puts
+	movl	__ZL10s_message1, %eax
+	movl	%eax, 4(%esp)
 	movl	$LC219, (%esp)
+	call	_printf
+	movl	$LC81, (%esp)
 	call	_puts
-	movl	-12(%ebp), %ebx
-	testl	%ebx, %ebx
-	je	L1098
-	movl	%ebx, (%esp)
-	call	__ZN6CTest8D1Ev
-	movl	%ebx, (%esp)
-	call	__ZdlPv
-L1098:
+	movl	__ZL10s_message2, %eax
+	movl	%eax, 4(%esp)
 	movl	$LC220, (%esp)
+	call	_printf
+	movl	$LC81, (%esp)
 	call	_puts
-LEHE262:
-	leal	-152(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN23CTempPolyStackAllocatorD1Ev
-	leal	-8432(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN23CStackAllocatorWithBuffILj8192EED1Ev
-	jmp	L1159
-L1136:
+	movl	_s_parmaDataBuff, %eax
+	addl	$8, %eax
+	movl	(%eax), %eax
+	movl	$_s_parmaDataBuff, (%esp)
+	call	*%eax
+	movl	%eax, %esi
+	movl	_s_parmaDataBuff, %eax
+	addl	$4, %eax
+	movl	(%eax), %eax
+	movl	$_s_parmaDataBuff, (%esp)
+	call	*%eax
+	movl	%eax, %ebx
+	movl	_s_parmaDataBuff, %eax
+	movl	(%eax), %eax
+	movl	$_s_parmaDataBuff, (%esp)
+	call	*%eax
+	movl	%esi, 12(%esp)
+	movl	%ebx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC221, (%esp)
+	call	_printf
+	movl	_s_tempStack, %eax
+	addl	$8, %eax
+	movl	(%eax), %eax
+	movl	$_s_tempStack, (%esp)
+	call	*%eax
+	movl	%eax, %esi
+	movl	_s_tempStack, %eax
+	addl	$4, %eax
+	movl	(%eax), %eax
+	movl	$_s_tempStack, (%esp)
+	call	*%eax
+	movl	%eax, %ebx
+	movl	_s_tempStack, %eax
+	movl	(%eax), %eax
+	movl	$_s_tempStack, (%esp)
+	call	*%eax
+	movl	%esi, 12(%esp)
+	movl	%ebx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC222, (%esp)
+	call	_printf
+	jmp	L1149
+L1127:
 	movl	%eax, %ebx
 	leal	-61(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
 	movl	%ebx, %eax
-	jmp	L1100
-L1137:
+	jmp	L1094
+L1128:
 	movl	%eax, %ebx
 	leal	-60(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	jmp	L1102
-L1138:
+	jmp	L1096
+L1129:
 	movl	%eax, %ebx
 	leal	-59(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	jmp	L1104
-L1139:
+	jmp	L1098
+L1130:
 	movl	%eax, %ebx
 	leal	-58(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	jmp	L1106
-L1140:
+	jmp	L1100
+L1131:
 	movl	%eax, %ebx
 	leal	-57(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	jmp	L1108
-L1144:
+	jmp	L1102
+L1135:
 	movl	%eax, %ebx
 	leal	-56(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-	jmp	L1110
-L1143:
+	jmp	L1104
+L1134:
 	movl	%eax, %ebx
-L1110:
+L1104:
 	leal	-52(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-	jmp	L1111
-L1142:
+	jmp	L1105
+L1133:
 	movl	%eax, %ebx
-L1111:
+L1105:
 	leal	-48(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-	jmp	L1112
-L1141:
+	jmp	L1106
+L1137:
 	movl	%eax, %ebx
-L1112:
+	leal	-44(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSsD1Ev
+	jmp	L1108
+L1136:
+	movl	%eax, %ebx
+L1108:
+	leal	-108(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSsD1Ev
+	jmp	L1106
+L1132:
+	movl	%eax, %ebx
+L1106:
 	leal	-104(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-L1108:
+L1102:
 	leal	-100(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-L1106:
+L1100:
 	leal	-96(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-L1104:
+L1098:
 	leal	-92(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-L1102:
+L1096:
 	leal	-88(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
 	movl	%ebx, %eax
-L1100:
+L1094:
 	movl	%eax, %ebx
-	jmp	L1113
-L1145:
-	movl	%eax, %ebx
-L1113:
 	leal	-84(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN23CTempPolyStackAllocatorD1Ev
-	jmp	L1114
-L1135:
-	movl	%eax, %ebx
-L1114:
-	leal	-8432(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN23CStackAllocatorWithBuffILj1024EED1Ev
 	movl	%ebx, %eax
-	jmp	L1115
-L1134:
-L1115:
+	jmp	L1109
+L1126:
+L1109:
 	movl	%eax, (%esp)
-LEHB263:
 	call	__Unwind_Resume
-L1147:
-	movl	%eax, %ebx
-	leal	-41(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSaIcED1Ev
-	movl	%ebx, %eax
-	jmp	L1130
-L1148:
-	movl	%eax, %ebx
-	leal	-40(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSaIcED1Ev
-	jmp	L1119
-L1149:
-	movl	%eax, %ebx
-	leal	-39(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSaIcED1Ev
-	jmp	L1121
-L1150:
-	movl	%eax, %ebx
-	leal	-38(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSaIcED1Ev
-	jmp	L1123
-L1151:
+L1138:
 	movl	%eax, %ebx
 	leal	-37(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIcED1Ev
-	jmp	L1125
-L1155:
+	movl	%ebx, %eax
+	jmp	L1111
+L1139:
 	movl	%eax, %ebx
 	leal	-36(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZNSsD1Ev
-	jmp	L1127
-L1154:
+	call	__ZNSaIcED1Ev
+	jmp	L1113
+L1140:
 	movl	%eax, %ebx
-L1127:
+	leal	-35(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSaIcED1Ev
+	jmp	L1115
+L1141:
+	movl	%eax, %ebx
+	leal	-34(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSaIcED1Ev
+	jmp	L1117
+L1142:
+	movl	%eax, %ebx
+	leal	-33(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSaIcED1Ev
+	jmp	L1119
+L1146:
+	movl	%eax, %ebx
 	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-	jmp	L1128
-L1153:
+	jmp	L1121
+L1145:
 	movl	%eax, %ebx
-L1128:
+L1121:
 	leal	-28(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-	jmp	L1129
-L1152:
+	jmp	L1122
+L1144:
 	movl	%eax, %ebx
-L1129:
+L1122:
+	leal	-24(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSsD1Ev
+	jmp	L1123
+L1148:
+	movl	%eax, %ebx
+	leal	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSsD1Ev
+	jmp	L1125
+L1147:
+	movl	%eax, %ebx
+L1125:
+	leal	-132(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSsD1Ev
+	jmp	L1123
+L1143:
+	movl	%eax, %ebx
+L1123:
 	leal	-128(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-L1125:
+L1119:
 	leal	-124(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-L1123:
+L1117:
 	leal	-120(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-L1121:
+L1115:
 	leal	-116(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
-L1119:
+L1113:
 	leal	-112(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
 	movl	%ebx, %eax
-	jmp	L1130
-L1146:
-L1130:
+L1111:
 	movl	%eax, (%esp)
 	call	__Unwind_Resume
-L1158:
-	movl	%eax, %esi
-	movl	%ebx, (%esp)
-	call	__ZdlPv
-	movl	%esi, %eax
-	jmp	L1132
-L1157:
-L1132:
-	movl	%eax, %ebx
-	leal	-152(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN23CTempPolyStackAllocatorD1Ev
-	jmp	L1133
-L1156:
-	movl	%eax, %ebx
-L1133:
-	leal	-8432(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN23CStackAllocatorWithBuffILj8192EED1Ev
-	movl	%ebx, %eax
-	movl	%eax, (%esp)
-	call	__Unwind_Resume
-LEHE263:
-L1159:
+LEHE262:
+L1149:
 	leal	-8(%ebp), %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -17249,131 +17172,375 @@ L1159:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2135:
+LFE2128:
 	.section	.gcc_except_table,"w"
-LLSDA2135:
+LLSDA2128:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE2135-LLSDACSB2135
-LLSDACSB2135:
-	.uleb128 LEHB235-LFB2135
+	.uleb128 LLSDACSE2128-LLSDACSB2128
+LLSDACSB2128:
+	.uleb128 LEHB235-LFB2128
 	.uleb128 LEHE235-LEHB235
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB236-LFB2135
+	.uleb128 LEHB236-LFB2128
 	.uleb128 LEHE236-LEHB236
-	.uleb128 L1134-LFB2135
+	.uleb128 L1126-LFB2128
 	.uleb128 0
-	.uleb128 LEHB237-LFB2135
+	.uleb128 LEHB237-LFB2128
 	.uleb128 LEHE237-LEHB237
-	.uleb128 L1135-LFB2135
+	.uleb128 L1127-LFB2128
 	.uleb128 0
-	.uleb128 LEHB238-LFB2135
+	.uleb128 LEHB238-LFB2128
 	.uleb128 LEHE238-LEHB238
-	.uleb128 L1136-LFB2135
+	.uleb128 L1128-LFB2128
 	.uleb128 0
-	.uleb128 LEHB239-LFB2135
+	.uleb128 LEHB239-LFB2128
 	.uleb128 LEHE239-LEHB239
-	.uleb128 L1137-LFB2135
+	.uleb128 L1129-LFB2128
 	.uleb128 0
-	.uleb128 LEHB240-LFB2135
+	.uleb128 LEHB240-LFB2128
 	.uleb128 LEHE240-LEHB240
-	.uleb128 L1138-LFB2135
+	.uleb128 L1130-LFB2128
 	.uleb128 0
-	.uleb128 LEHB241-LFB2135
+	.uleb128 LEHB241-LFB2128
 	.uleb128 LEHE241-LEHB241
-	.uleb128 L1139-LFB2135
+	.uleb128 L1131-LFB2128
 	.uleb128 0
-	.uleb128 LEHB242-LFB2135
+	.uleb128 LEHB242-LFB2128
 	.uleb128 LEHE242-LEHB242
-	.uleb128 L1140-LFB2135
+	.uleb128 L1132-LFB2128
 	.uleb128 0
-	.uleb128 LEHB243-LFB2135
+	.uleb128 LEHB243-LFB2128
 	.uleb128 LEHE243-LEHB243
-	.uleb128 L1141-LFB2135
+	.uleb128 L1133-LFB2128
 	.uleb128 0
-	.uleb128 LEHB244-LFB2135
+	.uleb128 LEHB244-LFB2128
 	.uleb128 LEHE244-LEHB244
-	.uleb128 L1142-LFB2135
+	.uleb128 L1134-LFB2128
 	.uleb128 0
-	.uleb128 LEHB245-LFB2135
+	.uleb128 LEHB245-LFB2128
 	.uleb128 LEHE245-LEHB245
-	.uleb128 L1143-LFB2135
+	.uleb128 L1135-LFB2128
 	.uleb128 0
-	.uleb128 LEHB246-LFB2135
+	.uleb128 LEHB246-LFB2128
 	.uleb128 LEHE246-LEHB246
-	.uleb128 L1144-LFB2135
+	.uleb128 L1136-LFB2128
 	.uleb128 0
-	.uleb128 LEHB247-LFB2135
+	.uleb128 LEHB247-LFB2128
 	.uleb128 LEHE247-LEHB247
-	.uleb128 L1145-LFB2135
+	.uleb128 L1137-LFB2128
 	.uleb128 0
-	.uleb128 LEHB248-LFB2135
+	.uleb128 LEHB248-LFB2128
 	.uleb128 LEHE248-LEHB248
-	.uleb128 L1146-LFB2135
+	.uleb128 L1136-LFB2128
 	.uleb128 0
-	.uleb128 LEHB249-LFB2135
+	.uleb128 LEHB249-LFB2128
 	.uleb128 LEHE249-LEHB249
-	.uleb128 L1147-LFB2135
 	.uleb128 0
-	.uleb128 LEHB250-LFB2135
+	.uleb128 0
+	.uleb128 LEHB250-LFB2128
 	.uleb128 LEHE250-LEHB250
-	.uleb128 L1148-LFB2135
+	.uleb128 L1138-LFB2128
 	.uleb128 0
-	.uleb128 LEHB251-LFB2135
+	.uleb128 LEHB251-LFB2128
 	.uleb128 LEHE251-LEHB251
-	.uleb128 L1149-LFB2135
+	.uleb128 L1139-LFB2128
 	.uleb128 0
-	.uleb128 LEHB252-LFB2135
+	.uleb128 LEHB252-LFB2128
 	.uleb128 LEHE252-LEHB252
-	.uleb128 L1150-LFB2135
+	.uleb128 L1140-LFB2128
 	.uleb128 0
-	.uleb128 LEHB253-LFB2135
+	.uleb128 LEHB253-LFB2128
 	.uleb128 LEHE253-LEHB253
-	.uleb128 L1151-LFB2135
+	.uleb128 L1141-LFB2128
 	.uleb128 0
-	.uleb128 LEHB254-LFB2135
+	.uleb128 LEHB254-LFB2128
 	.uleb128 LEHE254-LEHB254
-	.uleb128 L1152-LFB2135
+	.uleb128 L1142-LFB2128
 	.uleb128 0
-	.uleb128 LEHB255-LFB2135
+	.uleb128 LEHB255-LFB2128
 	.uleb128 LEHE255-LEHB255
-	.uleb128 L1153-LFB2135
+	.uleb128 L1143-LFB2128
 	.uleb128 0
-	.uleb128 LEHB256-LFB2135
+	.uleb128 LEHB256-LFB2128
 	.uleb128 LEHE256-LEHB256
-	.uleb128 L1154-LFB2135
+	.uleb128 L1144-LFB2128
 	.uleb128 0
-	.uleb128 LEHB257-LFB2135
+	.uleb128 LEHB257-LFB2128
 	.uleb128 LEHE257-LEHB257
-	.uleb128 L1155-LFB2135
+	.uleb128 L1145-LFB2128
 	.uleb128 0
-	.uleb128 LEHB258-LFB2135
+	.uleb128 LEHB258-LFB2128
 	.uleb128 LEHE258-LEHB258
-	.uleb128 L1146-LFB2135
+	.uleb128 L1146-LFB2128
 	.uleb128 0
-	.uleb128 LEHB259-LFB2135
+	.uleb128 LEHB259-LFB2128
 	.uleb128 LEHE259-LEHB259
-	.uleb128 L1156-LFB2135
+	.uleb128 L1147-LFB2128
 	.uleb128 0
-	.uleb128 LEHB260-LFB2135
+	.uleb128 LEHB260-LFB2128
 	.uleb128 LEHE260-LEHB260
-	.uleb128 L1157-LFB2135
+	.uleb128 L1148-LFB2128
 	.uleb128 0
-	.uleb128 LEHB261-LFB2135
+	.uleb128 LEHB261-LFB2128
 	.uleb128 LEHE261-LEHB261
-	.uleb128 L1158-LFB2135
+	.uleb128 L1147-LFB2128
 	.uleb128 0
-	.uleb128 LEHB262-LFB2135
+	.uleb128 LEHB262-LFB2128
 	.uleb128 LEHE262-LEHB262
-	.uleb128 L1157-LFB2135
 	.uleb128 0
-	.uleb128 LEHB263-LFB2135
+	.uleb128 0
+LLSDACSE2128:
+	.text
+	.section .rdata,"dr"
+	.align 4
+LC223:
+	.ascii "---------- test8b:\346\250\231\346\272\226\343\203\251\343\202\244\343\203\226\343\203\251\343\203\252\343\202\222\344\276\277\345\210\251\343\201\253\345\210\251\347\224\250 ----------\0"
+	.align 4
+LC224:
+	.ascii "----------\346\250\231\346\272\226\343\203\251\343\202\244\343\203\226\343\203\251\343\203\252\343\201\256\343\202\257\343\203\251\343\202\271\343\202\222\345\206\205\345\214\205\343\201\227\343\201\237\343\202\257\343\203\251\343\202\271\343\202\222\346\223\215\344\275\234\0"
+LC225:
+	.ascii "\345\244\252\351\203\216\0"
+LC226:
+	.ascii "\346\254\241\351\203\216\0"
+LC227:
+	.ascii "\344\270\211\351\203\216\0"
+LC228:
+	.ascii "new CTest8\0"
+LC229:
+	.ascii "\345\233\233\346\234\227\0"
+LC230:
+	.ascii "ref1: name=\"%s\", age=%d\12\0"
+LC231:
+	.ascii "ref2: name=\"%s\", age=%d\12\0"
+LC232:
+	.ascii "ref3: name=\"%s\", age=%d\12\0"
+LC233:
+	.ascii "ref4: name=\"%s\", age=%d\12\0"
+LC234:
+	.ascii "delete CTest8\0"
+	.text
+	.globl	__Z6test8bv
+	.def	__Z6test8bv;	.scl	2;	.type	32;	.endef
+__Z6test8bv:
+LFB2129:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA2129
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%esi
+	pushl	%ebx
+	addl	$-128, %esp
+	.cfi_offset 6, -12
+	.cfi_offset 3, -16
+	movl	$LC223, (%esp)
+LEHB263:
+	call	_puts
+LEHE263:
+	movl	$LC224, (%esp)
+LEHB264:
+	call	_puts
+	movl	$1, 8(%esp)
+	movl	$_s_tempStack, 4(%esp)
+	leal	-48(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN23CTempPolyStackAllocatorC1ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE
+LEHE264:
+	movl	$40, 8(%esp)
+	movl	$LC225, 4(%esp)
+	leal	-72(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6CTest84DATAC1EPKci
+	movl	$30, 8(%esp)
+	movl	$LC226, 4(%esp)
+	leal	-96(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6CTest84DATAC1EPKci
+	movl	$20, 8(%esp)
+	movl	$LC227, 4(%esp)
+	leal	-120(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6CTest84DATAC1EPKci
+	movl	$LC228, (%esp)
+LEHB265:
+	call	_puts
+LEHE265:
+	movl	$1044, (%esp)
+	call	__Znwj
+	movl	%eax, %ebx
+	testl	%ebx, %ebx
+	je	L1151
+	movl	%ebx, (%esp)
+LEHB266:
+	call	__ZN6CTest8C1Ev
+LEHE266:
+	movl	%ebx, %eax
+	jmp	L1152
+L1151:
+	movl	%ebx, %eax
+L1152:
+	movl	%eax, -12(%ebp)
+	leal	-72(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+LEHB267:
+	call	__ZN6CTest87addDataERKNS_4DATAE
+	leal	-96(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6CTest87addDataERKNS_4DATAE
+	leal	-120(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6CTest87addDataERKNS_4DATAE
+	movl	$LC225, 4(%esp)
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6CTest84findEPKc
+	movl	%eax, -16(%ebp)
+	movl	$LC226, 4(%esp)
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6CTest84findEPKc
+	movl	%eax, -20(%ebp)
+	movl	$LC227, 4(%esp)
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6CTest84findEPKc
+	movl	%eax, -24(%ebp)
+	movl	$LC229, 4(%esp)
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6CTest84findEPKc
+	movl	%eax, -28(%ebp)
+	cmpl	$0, -16(%ebp)
+	je	L1153
+	movl	-16(%ebp), %eax
+	movl	20(%eax), %edx
+	movl	-16(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC230, (%esp)
+	call	_printf
+L1153:
+	cmpl	$0, -20(%ebp)
+	je	L1154
+	movl	-20(%ebp), %eax
+	movl	20(%eax), %edx
+	movl	-20(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC231, (%esp)
+	call	_printf
+L1154:
+	cmpl	$0, -24(%ebp)
+	je	L1155
+	movl	-24(%ebp), %eax
+	movl	20(%eax), %edx
+	movl	-24(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC232, (%esp)
+	call	_printf
+L1155:
+	cmpl	$0, -28(%ebp)
+	je	L1156
+	movl	-28(%ebp), %eax
+	movl	20(%eax), %edx
+	movl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC233, (%esp)
+	call	_printf
+L1156:
+	movl	$LC234, (%esp)
+	call	_puts
+LEHE267:
+	movl	-12(%ebp), %ebx
+	testl	%ebx, %ebx
+	je	L1157
+	movl	%ebx, (%esp)
+	call	__ZN6CTest8D1Ev
+	movl	%ebx, (%esp)
+	call	__ZdlPv
+L1157:
+	leal	-48(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN23CTempPolyStackAllocatorD1Ev
+	jmp	L1164
+L1163:
+	movl	%eax, %esi
+	movl	%ebx, (%esp)
+	call	__ZdlPv
+	movl	%esi, %eax
+	jmp	L1159
+L1162:
+L1159:
+	movl	%eax, %ebx
+	leal	-48(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN23CTempPolyStackAllocatorD1Ev
+	movl	%ebx, %eax
+	jmp	L1160
+L1161:
+L1160:
+	movl	%eax, (%esp)
+LEHB268:
+	call	__Unwind_Resume
+LEHE268:
+L1164:
+	subl	$-128, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE2129:
+	.section	.gcc_except_table,"w"
+LLSDA2129:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE2129-LLSDACSB2129
+LLSDACSB2129:
+	.uleb128 LEHB263-LFB2129
 	.uleb128 LEHE263-LEHB263
 	.uleb128 0
 	.uleb128 0
-LLSDACSE2135:
+	.uleb128 LEHB264-LFB2129
+	.uleb128 LEHE264-LEHB264
+	.uleb128 L1161-LFB2129
+	.uleb128 0
+	.uleb128 LEHB265-LFB2129
+	.uleb128 LEHE265-LEHB265
+	.uleb128 L1162-LFB2129
+	.uleb128 0
+	.uleb128 LEHB266-LFB2129
+	.uleb128 LEHE266-LEHB266
+	.uleb128 L1163-LFB2129
+	.uleb128 0
+	.uleb128 LEHB267-LFB2129
+	.uleb128 LEHE267-LEHB267
+	.uleb128 L1162-LFB2129
+	.uleb128 0
+	.uleb128 LEHB268-LFB2129
+	.uleb128 LEHE268-LEHB268
+	.uleb128 0
+	.uleb128 0
+LLSDACSE2129:
 	.text
 	.section	.text$_ZNSt6chrono8durationIxSt5ratioILx1ELx1000000000EEEC1IxvEERKT_,"x"
 	.linkonce discard
@@ -17381,7 +17548,7 @@ LLSDACSE2135:
 	.globl	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000000000EEEC1IxvEERKT_
 	.def	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000000000EEEC1IxvEERKT_;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono8durationIxSt5ratioILx1ELx1000000000EEEC1IxvEERKT_:
-LFB2370:
+LFB2364:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17399,14 +17566,14 @@ LFB2370:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2370:
+LFE2364:
 	.section	.text$_ZNSt6chrono8durationIxSt5ratioILx1ELx1EEEC1IxvEERKT_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6chrono8durationIxSt5ratioILx1ELx1EEEC1IxvEERKT_
 	.def	__ZNSt6chrono8durationIxSt5ratioILx1ELx1EEEC1IxvEERKT_;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono8durationIxSt5ratioILx1ELx1EEEC1IxvEERKT_:
-LFB2381:
+LFB2375:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17424,14 +17591,14 @@ LFB2381:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2381:
+LFE2375:
 	.section	.text$_ZNKSt6chrono8durationIxSt5ratioILx1ELx1EEE5countEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt6chrono8durationIxSt5ratioILx1ELx1EEE5countEv
 	.def	__ZNKSt6chrono8durationIxSt5ratioILx1ELx1EEE5countEv;	.scl	2;	.type	32;	.endef
 __ZNKSt6chrono8durationIxSt5ratioILx1ELx1EEE5countEv:
-LFB2382:
+LFB2376:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17446,13 +17613,13 @@ LFB2382:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2382:
+LFE2376:
 	.section	.text$_ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000000000EEEES2_ILx1000000000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1EEEES4_RKNS1_IT_T0_EE,"x"
 	.linkonce discard
 	.globl	__ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000000000EEEES2_ILx1000000000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1EEEES4_RKNS1_IT_T0_EE
 	.def	__ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000000000EEEES2_ILx1000000000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1EEEES4_RKNS1_IT_T0_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000000000EEEES2_ILx1000000000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1EEEES4_RKNS1_IT_T0_EE:
-LFB2393:
+LFB2387:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17489,13 +17656,13 @@ LFB2393:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2393:
+LFE2387:
 	.section	.text$_ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000000000EEEExS2_ILx1ELx1EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE,"x"
 	.linkonce discard
 	.globl	__ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000000000EEEExS2_ILx1ELx1EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE
 	.def	__ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000000000EEEExS2_ILx1ELx1EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000000000EEEExS2_ILx1ELx1EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE:
-LFB2392:
+LFB2386:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17511,14 +17678,14 @@ LFB2392:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2392:
+LFE2386:
 	.section	.text$_ZNSt6thread2idC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6thread2idC1Ev
 	.def	__ZNSt6thread2idC1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6thread2idC1Ev:
-LFB2982:
+LFB2976:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17532,16 +17699,16 @@ LFB2982:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2982:
+LFE2976:
 	.section	.text$_ZSteqNSt6thread2idES0_,"x"
 	.linkonce discard
 	.globl	__ZSteqNSt6thread2idES0_
 	.def	__ZSteqNSt6thread2idES0_;	.scl	2;	.type	32;	.endef
 __ZSteqNSt6thread2idES0_:
-LFB2986:
+LFB2980:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA2986
+	.cfi_lsda 0,LLSDA2980
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -17560,15 +17727,15 @@ LFB2986:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2986:
+LFE2980:
 	.section	.gcc_except_table,"w"
-LLSDA2986:
+LLSDA2980:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE2986-LLSDACSB2986
-LLSDACSB2986:
-LLSDACSE2986:
+	.uleb128 LLSDACSE2980-LLSDACSB2980
+LLSDACSB2980:
+LLSDACSE2980:
 	.section	.text$_ZSteqNSt6thread2idES0_,"x"
 	.linkonce discard
 	.section	.text$_ZNSt6threadD1Ev,"x"
@@ -17577,7 +17744,7 @@ LLSDACSE2986:
 	.globl	__ZNSt6threadD1Ev
 	.def	__ZNSt6threadD1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6threadD1Ev:
-LFB2996:
+LFB2990:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17589,22 +17756,22 @@ LFB2996:
 	movl	%eax, (%esp)
 	call	__ZNKSt6thread8joinableEv
 	testb	%al, %al
-	je	L1171
+	je	L1176
 	call	__ZSt9terminatev
-L1171:
+L1176:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2996:
+LFE2990:
 	.section	.text$_ZNKSt6thread8joinableEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt6thread8joinableEv
 	.def	__ZNKSt6thread8joinableEv;	.scl	2;	.type	32;	.endef
 __ZNKSt6thread8joinableEv:
-LFB2999:
+LFB2993:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17627,14 +17794,14 @@ LFB2999:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE2999:
+LFE2993:
 	.section	.text$_ZNSt12__shared_ptrINSt6thread10_Impl_baseELN9__gnu_cxx12_Lock_policyE2EED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt12__shared_ptrINSt6thread10_Impl_baseELN9__gnu_cxx12_Lock_policyE2EED2Ev
 	.def	__ZNSt12__shared_ptrINSt6thread10_Impl_baseELN9__gnu_cxx12_Lock_policyE2EED2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt12__shared_ptrINSt6thread10_Impl_baseELN9__gnu_cxx12_Lock_policyE2EED2Ev:
-LFB3006:
+LFB3000:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17651,14 +17818,14 @@ LFB3006:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3006:
+LFE3000:
 	.section	.text$_ZNSt10shared_ptrINSt6thread10_Impl_baseEED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10shared_ptrINSt6thread10_Impl_baseEED1Ev
 	.def	__ZNSt10shared_ptrINSt6thread10_Impl_baseEED1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt10shared_ptrINSt6thread10_Impl_baseEED1Ev:
-LFB3009:
+LFB3003:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17674,14 +17841,14 @@ LFB3009:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3009:
+LFE3003:
 	.section	.text$_ZNSt6thread10_Impl_baseD2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6thread10_Impl_baseD2Ev
 	.def	__ZNSt6thread10_Impl_baseD2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6thread10_Impl_baseD2Ev:
-LFB3010:
+LFB3004:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17697,24 +17864,24 @@ LFB3010:
 	call	__ZNSt10shared_ptrINSt6thread10_Impl_baseEED1Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1179
+	je	L1184
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1179:
+L1184:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3010:
+LFE3004:
 	.section	.text$_ZNSt6thread10_Impl_baseD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6thread10_Impl_baseD1Ev
 	.def	__ZNSt6thread10_Impl_baseD1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6thread10_Impl_baseD1Ev:
-LFB3011:
+LFB3005:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17730,24 +17897,24 @@ LFB3011:
 	call	__ZNSt10shared_ptrINSt6thread10_Impl_baseEED1Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1182
+	je	L1187
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1182:
+L1187:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3011:
+LFE3005:
 	.section	.text$_ZNSt6thread10_Impl_baseD0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6thread10_Impl_baseD0Ev
 	.def	__ZNSt6thread10_Impl_baseD0Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6thread10_Impl_baseD0Ev:
-LFB3012:
+LFB3006:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17766,17 +17933,17 @@ LFB3012:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3012:
+LFE3006:
 	.section	.text$_ZNKSt4hashINSt6thread2idEEclERKS1_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt4hashINSt6thread2idEEclERKS1_
 	.def	__ZNKSt4hashINSt6thread2idEEclERKS1_;	.scl	2;	.type	32;	.endef
 __ZNKSt4hashINSt6thread2idEEclERKS1_:
-LFB3018:
+LFB3012:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3018
+	.cfi_lsda 0,LLSDA3012
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -17791,15 +17958,15 @@ LFB3018:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3018:
+LFE3012:
 	.section	.gcc_except_table,"w"
-LLSDA3018:
+LLSDA3012:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3018-LLSDACSB3018
-LLSDACSB3018:
-LLSDACSE3018:
+	.uleb128 LLSDACSE3012-LLSDACSB3012
+LLSDACSB3012:
+LLSDACSE3012:
 	.section	.text$_ZNKSt4hashINSt6thread2idEEclERKS1_,"x"
 	.linkonce discard
 .lcomm __ZL17INVALID_THREAD_ID,4,4
@@ -17809,7 +17976,7 @@ LLSDACSE3018:
 	.globl	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	.def	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_:
-LFB3053:
+LFB3047:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17827,17 +17994,17 @@ LFB3053:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3053:
+LFE3047:
 	.section	.text$_ZN9CSpinLock4lockEi,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9CSpinLock4lockEi
 	.def	__ZN9CSpinLock4lockEi;	.scl	2;	.type	32;	.endef
 __ZN9CSpinLock4lockEi:
-LFB3050:
+LFB3044:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3050
+	.cfi_lsda 0,LLSDA3044
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -17845,25 +18012,25 @@ LFB3050:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	$0, -12(%ebp)
-	jmp	L1191
-L1195:
+	jmp	L1196
+L1200:
 	cmpl	$0, 12(%ebp)
-	je	L1192
+	je	L1197
 	addl	$1, -12(%ebp)
 	movl	-12(%ebp), %eax
 	cltd
 	idivl	12(%ebp)
 	movl	%edx, %eax
 	testl	%eax, %eax
-	jne	L1193
-L1192:
+	jne	L1198
+L1197:
 	movl	$1, %eax
-	jmp	L1194
-L1193:
+	jmp	L1199
+L1198:
 	movl	$0, %eax
-L1194:
+L1199:
 	testb	%al, %al
-	je	L1191
+	je	L1196
 	movl	$0, -16(%ebp)
 	leal	-16(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -17872,45 +18039,45 @@ L1194:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	leal	-24(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB264:
+LEHB269:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE264:
-L1191:
+LEHE269:
+L1196:
 	movl	8(%ebp), %eax
 	movl	$5, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZNSt11atomic_flag12test_and_setESt12memory_order
 	testb	%al, %al
-	jne	L1195
-	jmp	L1198
-L1197:
+	jne	L1200
+	jmp	L1203
+L1202:
 	movl	%eax, (%esp)
-LEHB265:
+LEHB270:
 	call	__Unwind_Resume
-LEHE265:
-L1198:
+LEHE270:
+L1203:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3050:
+LFE3044:
 	.section	.gcc_except_table,"w"
-LLSDA3050:
+LLSDA3044:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3050-LLSDACSB3050
-LLSDACSB3050:
-	.uleb128 LEHB264-LFB3050
-	.uleb128 LEHE264-LEHB264
-	.uleb128 L1197-LFB3050
+	.uleb128 LLSDACSE3044-LLSDACSB3044
+LLSDACSB3044:
+	.uleb128 LEHB269-LFB3044
+	.uleb128 LEHE269-LEHB269
+	.uleb128 L1202-LFB3044
 	.uleb128 0
-	.uleb128 LEHB265-LFB3050
-	.uleb128 LEHE265-LEHB265
+	.uleb128 LEHB270-LFB3044
+	.uleb128 LEHE270-LEHB270
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3050:
+LLSDACSE3044:
 	.section	.text$_ZN9CSpinLock4lockEi,"x"
 	.linkonce discard
 	.section	.text$_ZN9CSpinLock6unlockEv,"x"
@@ -17919,7 +18086,7 @@ LLSDACSE3050:
 	.globl	__ZN9CSpinLock6unlockEv
 	.def	__ZN9CSpinLock6unlockEv;	.scl	2;	.type	32;	.endef
 __ZN9CSpinLock6unlockEv:
-LFB3054:
+LFB3048:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17936,14 +18103,14 @@ LFB3054:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3054:
+LFE3048:
 	.section	.text$_ZNSt18__atomic_flag_baseC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt18__atomic_flag_baseC2Ev
 	.def	__ZNSt18__atomic_flag_baseC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt18__atomic_flag_baseC2Ev:
-LFB3058:
+LFB3052:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17955,14 +18122,14 @@ LFB3058:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3058:
+LFE3052:
 	.section	.text$_ZNSt11atomic_flagC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt11atomic_flagC1Ev
 	.def	__ZNSt11atomic_flagC1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt11atomic_flagC1Ev:
-LFB3061:
+LFB3055:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -17978,14 +18145,14 @@ LFB3061:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3061:
+LFE3055:
 	.section	.text$_ZN9CSpinLockC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9CSpinLockC1Ev
 	.def	__ZN9CSpinLockC1Ev;	.scl	2;	.type	32;	.endef
 __ZN9CSpinLockC1Ev:
-LFB3063:
+LFB3057:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18005,14 +18172,14 @@ LFB3063:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3063:
+LFE3057:
 	.section	.text$_ZN9CSpinLockD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9CSpinLockD1Ev
 	.def	__ZN9CSpinLockD1Ev;	.scl	2;	.type	32;	.endef
 __ZN9CSpinLockD1Ev:
-LFB3066:
+LFB3060:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18024,14 +18191,14 @@ LFB3066:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3066:
+LFE3060:
 	.section	.text$_ZNK20CSmartStackAllocator8getTotalEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator8getTotalEv
 	.def	__ZNK20CSmartStackAllocator8getTotalEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator8getTotalEv:
-LFB3067:
+LFB3061:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18045,14 +18212,14 @@ LFB3067:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3067:
+LFE3061:
 	.section	.text$_ZNK20CSmartStackAllocator7getUsedEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator7getUsedEv
 	.def	__ZNK20CSmartStackAllocator7getUsedEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator7getUsedEv:
-LFB3068:
+LFB3062:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18085,14 +18252,14 @@ LFB3068:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3068:
+LFE3062:
 	.section	.text$_ZNK20CSmartStackAllocator9getRemainEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator9getRemainEv
 	.def	__ZNK20CSmartStackAllocator9getRemainEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator9getRemainEv:
-LFB3069:
+LFB3063:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18123,14 +18290,14 @@ LFB3069:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3069:
+LFE3063:
 	.section	.text$_ZN20CSmartStackAllocator17setDefaultOrderedEN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator17setDefaultOrderedEN15IStackAllocator9E_ORDEREDE
 	.def	__ZN20CSmartStackAllocator17setDefaultOrderedEN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator17setDefaultOrderedEN15IStackAllocator9E_ORDEREDE:
-LFB3071:
+LFB3065:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18139,12 +18306,12 @@ LFB3071:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	cmpl	$-1, 12(%ebp)
-	jne	L1212
+	jne	L1217
 	movl	$-1, %eax
-	jmp	L1213
-L1212:
+	jmp	L1218
+L1217:
 	movl	$1, %eax
-L1213:
+L1218:
 	movl	8(%ebp), %edx
 	addl	$36, %edx
 	movl	$5, 8(%esp)
@@ -18156,14 +18323,14 @@ L1213:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3071:
+LFE3065:
 	.section	.text$_ZNK20CSmartStackAllocator10getNowPtrNEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator10getNowPtrNEv
 	.def	__ZNK20CSmartStackAllocator10getNowPtrNEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator10getNowPtrNEv:
-LFB3073:
+LFB3067:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18189,14 +18356,14 @@ LFB3073:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3073:
+LFE3067:
 	.section	.text$_ZNK20CSmartStackAllocator10getNowPtrREv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator10getNowPtrREv
 	.def	__ZNK20CSmartStackAllocator10getNowPtrREv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator10getNowPtrREv:
-LFB3074:
+LFB3068:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18222,14 +18389,14 @@ LFB3074:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3074:
+LFE3068:
 	.section	.text$_ZNK20CSmartStackAllocator10getNowPtrDEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator10getNowPtrDEv
 	.def	__ZNK20CSmartStackAllocator10getNowPtrDEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator10getNowPtrDEv:
-LFB3075:
+LFB3069:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18251,14 +18418,14 @@ LFB3075:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3075:
+LFE3069:
 	.section	.text$_ZNK20CSmartStackAllocator9getNowPtrEN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator9getNowPtrEN15IStackAllocator9E_ORDEREDE
 	.def	__ZNK20CSmartStackAllocator9getNowPtrEN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator9getNowPtrEN15IStackAllocator9E_ORDEREDE:
-LFB3076:
+LFB3070:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18267,36 +18434,36 @@ LFB3076:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	cmpl	$0, 12(%ebp)
-	jne	L1221
+	jne	L1226
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK20CSmartStackAllocator10getNowPtrDEv
-	jmp	L1222
-L1221:
+	jmp	L1227
+L1226:
 	cmpl	$-1, 12(%ebp)
-	jne	L1223
+	jne	L1228
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK20CSmartStackAllocator10getNowPtrREv
-	jmp	L1222
-L1223:
+	jmp	L1227
+L1228:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK20CSmartStackAllocator10getNowPtrNEv
-L1222:
+L1227:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3076:
+LFE3070:
 	.section	.text$_ZNK20CSmartStackAllocator9getNowPtrEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator9getNowPtrEv
 	.def	__ZNK20CSmartStackAllocator9getNowPtrEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator9getNowPtrEv:
-LFB3077:
+LFB3071:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18312,14 +18479,14 @@ LFB3077:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3077:
+LFE3071:
 	.section	.text$_ZNK20CSmartStackAllocator10getMarkerNEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator10getMarkerNEv
 	.def	__ZNK20CSmartStackAllocator10getMarkerNEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator10getMarkerNEv:
-LFB3078:
+LFB3072:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18337,14 +18504,14 @@ LFB3078:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3078:
+LFE3072:
 	.section	.text$_ZNK20CSmartStackAllocator10getMarkerREv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator10getMarkerREv
 	.def	__ZNK20CSmartStackAllocator10getMarkerREv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator10getMarkerREv:
-LFB3079:
+LFB3073:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18362,14 +18529,14 @@ LFB3079:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3079:
+LFE3073:
 	.section	.text$_ZNK20CSmartStackAllocator10getMarkerDEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator10getMarkerDEv
 	.def	__ZNK20CSmartStackAllocator10getMarkerDEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator10getMarkerDEv:
-LFB3080:
+LFB3074:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18391,14 +18558,14 @@ LFB3080:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3080:
+LFE3074:
 	.section	.text$_ZNK20CSmartStackAllocator9getMarkerEN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator9getMarkerEN15IStackAllocator9E_ORDEREDE
 	.def	__ZNK20CSmartStackAllocator9getMarkerEN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator9getMarkerEN15IStackAllocator9E_ORDEREDE:
-LFB3081:
+LFB3075:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18407,36 +18574,36 @@ LFB3081:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	cmpl	$0, 12(%ebp)
-	jne	L1235
+	jne	L1240
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK20CSmartStackAllocator10getMarkerDEv
-	jmp	L1236
-L1235:
+	jmp	L1241
+L1240:
 	cmpl	$-1, 12(%ebp)
-	jne	L1237
+	jne	L1242
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK20CSmartStackAllocator10getMarkerREv
-	jmp	L1236
-L1237:
+	jmp	L1241
+L1242:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK20CSmartStackAllocator10getMarkerNEv
-L1236:
+L1241:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3081:
+LFE3075:
 	.section	.text$_ZNK20CSmartStackAllocator9getMarkerEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator9getMarkerEv
 	.def	__ZNK20CSmartStackAllocator9getMarkerEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator9getMarkerEv:
-LFB3082:
+LFB3076:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18452,14 +18619,14 @@ LFB3082:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3082:
+LFE3076:
 	.section	.text$_ZNK20CSmartStackAllocator9getBeginNEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator9getBeginNEv
 	.def	__ZNK20CSmartStackAllocator9getBeginNEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator9getBeginNEv:
-LFB3083:
+LFB3077:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18477,14 +18644,14 @@ LFB3083:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3083:
+LFE3077:
 	.section	.text$_ZNK20CSmartStackAllocator9getBeginREv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator9getBeginREv
 	.def	__ZNK20CSmartStackAllocator9getBeginREv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator9getBeginREv:
-LFB3084:
+LFB3078:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18502,14 +18669,14 @@ LFB3084:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3084:
+LFE3078:
 	.section	.text$_ZNK20CSmartStackAllocator11getCounterNEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator11getCounterNEv
 	.def	__ZNK20CSmartStackAllocator11getCounterNEv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator11getCounterNEv:
-LFB3088:
+LFB3082:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18527,14 +18694,14 @@ LFB3088:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3088:
+LFE3082:
 	.section	.text$_ZNK20CSmartStackAllocator11getCounterREv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK20CSmartStackAllocator11getCounterREv
 	.def	__ZNK20CSmartStackAllocator11getCounterREv;	.scl	2;	.type	32;	.endef
 __ZNK20CSmartStackAllocator11getCounterREv:
-LFB3089:
+LFB3083:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18552,14 +18719,14 @@ LFB3089:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3089:
+LFE3083:
 	.section	.text$_ZN20CSmartStackAllocator6allocNEjj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator6allocNEjj
 	.def	__ZN20CSmartStackAllocator6allocNEjj;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator6allocNEjj:
-LFB3093:
+LFB3087:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18584,10 +18751,10 @@ LFB3093:
 	cmpl	%eax, %ebx
 	seta	%al
 	testb	%al, %al
-	je	L1251
+	je	L1256
 	movl	$0, %eax
-	jmp	L1252
-L1251:
+	jmp	L1257
+L1256:
 	movl	8(%ebp), %eax
 	addl	$40, %eax
 	movl	$1000, 4(%esp)
@@ -18610,13 +18777,13 @@ L1251:
 	addl	%ebx, %eax
 	movl	%eax, -12(%ebp)
 	cmpl	$0, 16(%ebp)
-	je	L1253
+	je	L1258
 	movl	-12(%ebp), %eax
 	movl	$0, %edx
 	divl	16(%ebp)
 	movl	%edx, %eax
 	testl	%eax, %eax
-	je	L1254
+	je	L1259
 	movl	-12(%ebp), %eax
 	movl	$0, %edx
 	divl	16(%ebp)
@@ -18624,13 +18791,13 @@ L1251:
 	movl	16(%ebp), %edx
 	subl	%eax, %edx
 	movl	%edx, %eax
-	jmp	L1256
-L1254:
+	jmp	L1261
+L1259:
 	movl	$0, %eax
-	jmp	L1256
-L1253:
+	jmp	L1261
+L1258:
 	movl	$0, %eax
-L1256:
+L1261:
 	movl	%eax, -16(%ebp)
 	movl	8(%ebp), %eax
 	addl	$12, %eax
@@ -18650,7 +18817,7 @@ L1256:
 	cmpl	-20(%ebp), %eax
 	setb	%al
 	testb	%al, %al
-	je	L1257
+	je	L1262
 	movl	8(%ebp), %eax
 	addl	$16, %eax
 	movl	$5, 4(%esp)
@@ -18676,8 +18843,8 @@ L1256:
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
 	movl	$0, %eax
-	jmp	L1252
-L1257:
+	jmp	L1257
+L1262:
 	movl	-16(%ebp), %eax
 	movl	-12(%ebp), %edx
 	addl	%edx, %eax
@@ -18694,7 +18861,7 @@ L1257:
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
 	movl	-24(%ebp), %eax
-L1252:
+L1257:
 	addl	$36, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -18703,14 +18870,14 @@ L1252:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3093:
+LFE3087:
 	.section	.text$_ZN20CSmartStackAllocator6allocREjj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator6allocREjj
 	.def	__ZN20CSmartStackAllocator6allocREjj;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator6allocREjj:
-LFB3094:
+LFB3088:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18735,10 +18902,10 @@ LFB3094:
 	cmpl	%eax, %ebx
 	seta	%al
 	testb	%al, %al
-	je	L1259
+	je	L1264
 	movl	$0, %eax
-	jmp	L1260
-L1259:
+	jmp	L1265
+L1264:
 	movl	8(%ebp), %eax
 	addl	$40, %eax
 	movl	$1000, 4(%esp)
@@ -18766,15 +18933,15 @@ L1259:
 	movl	%edx, %eax
 	movl	%eax, -16(%ebp)
 	cmpl	$0, 16(%ebp)
-	je	L1261
+	je	L1266
 	movl	-16(%ebp), %eax
 	movl	$0, %edx
 	divl	16(%ebp)
 	movl	%edx, %eax
-	jmp	L1262
-L1261:
+	jmp	L1267
+L1266:
 	movl	$0, %eax
-L1262:
+L1267:
 	movl	%eax, -20(%ebp)
 	movl	8(%ebp), %eax
 	addl	$16, %eax
@@ -18790,19 +18957,19 @@ L1262:
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	cmpl	-24(%ebp), %eax
-	ja	L1263
+	ja	L1268
 	movl	8(%ebp), %eax
 	movl	8(%eax), %eax
 	cmpl	-24(%ebp), %eax
-	jae	L1264
-L1263:
+	jae	L1269
+L1268:
 	movl	$1, %eax
-	jmp	L1265
-L1264:
+	jmp	L1270
+L1269:
 	movl	$0, %eax
-L1265:
+L1270:
 	testb	%al, %al
-	je	L1266
+	je	L1271
 	movl	8(%ebp), %eax
 	addl	$16, %eax
 	movl	$5, 4(%esp)
@@ -18828,8 +18995,8 @@ L1265:
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
 	movl	$0, %eax
-	jmp	L1260
-L1266:
+	jmp	L1265
+L1271:
 	movl	12(%ebp), %eax
 	movl	-12(%ebp), %edx
 	subl	%eax, %edx
@@ -18848,7 +19015,7 @@ L1266:
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
 	movl	-28(%ebp), %eax
-L1260:
+L1265:
 	addl	$52, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -18857,14 +19024,14 @@ L1260:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3094:
+LFE3088:
 	.section	.text$_ZN20CSmartStackAllocator6allocDEjj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator6allocDEjj
 	.def	__ZN20CSmartStackAllocator6allocDEjj;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator6allocDEjj:
-LFB3095:
+LFB3089:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18890,14 +19057,14 @@ LFB3095:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3095:
+LFE3089:
 	.section	.text$_ZN20CSmartStackAllocator5allocEN15IStackAllocator9E_ORDEREDEjj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5allocEN15IStackAllocator9E_ORDEREDEjj
 	.def	__ZN20CSmartStackAllocator5allocEN15IStackAllocator9E_ORDEREDEjj;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5allocEN15IStackAllocator9E_ORDEREDEjj:
-LFB3096:
+LFB3090:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18906,7 +19073,7 @@ LFB3096:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	cmpl	$0, 12(%ebp)
-	jne	L1270
+	jne	L1275
 	movl	20(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	16(%ebp), %eax
@@ -18914,10 +19081,10 @@ LFB3096:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator6allocDEjj
-	jmp	L1271
-L1270:
+	jmp	L1276
+L1275:
 	cmpl	$-1, 12(%ebp)
-	jne	L1272
+	jne	L1277
 	movl	20(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	16(%ebp), %eax
@@ -18925,8 +19092,8 @@ L1270:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator6allocREjj
-	jmp	L1271
-L1272:
+	jmp	L1276
+L1277:
 	movl	20(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	16(%ebp), %eax
@@ -18934,20 +19101,20 @@ L1272:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator6allocNEjj
-L1271:
+L1276:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3096:
+LFE3090:
 	.section	.text$_ZN20CSmartStackAllocator5allocEjj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5allocEjj
 	.def	__ZN20CSmartStackAllocator5allocEjj;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5allocEjj:
-LFB3097:
+LFB3091:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18967,14 +19134,14 @@ LFB3097:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3097:
+LFE3091:
 	.section	.text$_ZN20CSmartStackAllocator5freeNEPv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5freeNEPv
 	.def	__ZN20CSmartStackAllocator5freeNEPv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5freeNEPv:
-LFB3098:
+LFB3092:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -18990,9 +19157,9 @@ LFB3098:
 	testl	%eax, %eax
 	setle	%al
 	testb	%al, %al
-	je	L1278
-	jmp	L1277
-L1278:
+	je	L1283
+	jmp	L1282
+L1283:
 	movl	12(%ebp), %edx
 	movl	8(%ebp), %eax
 	movl	4(%eax), %eax
@@ -19005,24 +19172,24 @@ L1278:
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	cmpl	-12(%ebp), %eax
-	ja	L1280
+	ja	L1285
 	movl	8(%ebp), %eax
 	addl	$12, %eax
 	movl	$5, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	cmpl	-12(%ebp), %eax
-	jae	L1281
-L1280:
+	jae	L1286
+L1285:
 	movl	$1, %eax
-	jmp	L1282
-L1281:
+	jmp	L1287
+L1286:
 	movl	$0, %eax
-L1282:
+L1287:
 	testb	%al, %al
-	je	L1283
-	jmp	L1277
-L1283:
+	je	L1288
+	jmp	L1282
+L1288:
 	movl	8(%ebp), %eax
 	addl	$40, %eax
 	movl	$1000, 4(%esp)
@@ -19034,35 +19201,35 @@ L1283:
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIiE4loadESt12memory_order
 	testl	%eax, %eax
-	jle	L1284
+	jle	L1289
 	movl	8(%ebp), %eax
 	addl	$20, %eax
 	movl	$5, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	cmpl	-12(%ebp), %eax
-	ja	L1284
+	ja	L1289
 	movl	8(%ebp), %eax
 	addl	$12, %eax
 	movl	$5, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	cmpl	-12(%ebp), %eax
-	jae	L1285
-L1284:
+	jae	L1290
+L1289:
 	movl	$1, %eax
-	jmp	L1286
-L1285:
+	jmp	L1291
+L1290:
 	movl	$0, %eax
-L1286:
+L1291:
 	testb	%al, %al
-	je	L1287
+	je	L1292
 	movl	8(%ebp), %eax
 	addl	$40, %eax
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
-	jmp	L1277
-L1287:
+	jmp	L1282
+L1292:
 	movl	8(%ebp), %eax
 	addl	$28, %eax
 	movl	$5, 8(%esp)
@@ -19077,7 +19244,7 @@ L1287:
 	testl	%eax, %eax
 	sete	%al
 	testb	%al, %al
-	je	L1288
+	je	L1293
 	movl	8(%ebp), %eax
 	addl	$20, %eax
 	movl	$5, 4(%esp)
@@ -19089,25 +19256,25 @@ L1287:
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
 	call	__ZNSt13__atomic_baseIjE5storeEjSt12memory_order
-L1288:
+L1293:
 	movl	8(%ebp), %eax
 	addl	$40, %eax
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
-L1277:
+L1282:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3098:
+LFE3092:
 	.section	.text$_ZN20CSmartStackAllocator5freeREPv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5freeREPv
 	.def	__ZN20CSmartStackAllocator5freeREPv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5freeREPv:
-LFB3099:
+LFB3093:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19123,9 +19290,9 @@ LFB3099:
 	testl	%eax, %eax
 	setle	%al
 	testb	%al, %al
-	je	L1290
-	jmp	L1289
-L1290:
+	je	L1295
+	jmp	L1294
+L1295:
 	movl	12(%ebp), %edx
 	movl	8(%ebp), %eax
 	movl	4(%eax), %eax
@@ -19138,24 +19305,24 @@ L1290:
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	cmpl	-12(%ebp), %eax
-	jb	L1292
+	jbe	L1297
 	movl	8(%ebp), %eax
 	addl	$16, %eax
 	movl	$5, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	cmpl	-12(%ebp), %eax
-	jbe	L1293
-L1292:
+	jbe	L1298
+L1297:
 	movl	$1, %eax
-	jmp	L1294
-L1293:
+	jmp	L1299
+L1298:
 	movl	$0, %eax
-L1294:
+L1299:
 	testb	%al, %al
-	je	L1295
-	jmp	L1289
-L1295:
+	je	L1300
+	jmp	L1294
+L1300:
 	movl	8(%ebp), %eax
 	addl	$40, %eax
 	movl	$1000, 4(%esp)
@@ -19167,35 +19334,35 @@ L1295:
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIiE4loadESt12memory_order
 	testl	%eax, %eax
-	jle	L1296
+	jle	L1301
 	movl	8(%ebp), %eax
 	addl	$24, %eax
 	movl	$5, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	cmpl	-12(%ebp), %eax
-	jb	L1296
+	jbe	L1301
 	movl	8(%ebp), %eax
 	addl	$16, %eax
 	movl	$5, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	cmpl	-12(%ebp), %eax
-	jbe	L1297
-L1296:
+	jbe	L1302
+L1301:
 	movl	$1, %eax
-	jmp	L1298
-L1297:
+	jmp	L1303
+L1302:
 	movl	$0, %eax
-L1298:
+L1303:
 	testb	%al, %al
-	je	L1299
+	je	L1304
 	movl	8(%ebp), %eax
 	addl	$40, %eax
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
-	jmp	L1289
-L1299:
+	jmp	L1294
+L1304:
 	movl	8(%ebp), %eax
 	addl	$32, %eax
 	movl	$5, 8(%esp)
@@ -19210,7 +19377,7 @@ L1299:
 	testl	%eax, %eax
 	sete	%al
 	testb	%al, %al
-	je	L1300
+	je	L1305
 	movl	8(%ebp), %eax
 	addl	$24, %eax
 	movl	$5, 4(%esp)
@@ -19222,25 +19389,25 @@ L1299:
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
 	call	__ZNSt13__atomic_baseIjE5storeEjSt12memory_order
-L1300:
+L1305:
 	movl	8(%ebp), %eax
 	addl	$40, %eax
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
-L1289:
+L1294:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3099:
+LFE3093:
 	.section	.text$_ZN20CSmartStackAllocator4freeEPv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator4freeEPv
 	.def	__ZN20CSmartStackAllocator4freeEPv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator4freeEPv:
-LFB3100:
+LFB3094:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19263,14 +19430,14 @@ LFB3100:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3100:
+LFE3094:
 	.section	.text$_ZN20CSmartStackAllocator6beginNEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator6beginNEv
 	.def	__ZN20CSmartStackAllocator6beginNEv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator6beginNEv:
-LFB3101:
+LFB3095:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19309,14 +19476,14 @@ LFB3101:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3101:
+LFE3095:
 	.section	.text$_ZN20CSmartStackAllocator6beginREv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator6beginREv
 	.def	__ZN20CSmartStackAllocator6beginREv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator6beginREv:
-LFB3102:
+LFB3096:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19355,14 +19522,14 @@ LFB3102:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3102:
+LFE3096:
 	.section	.text$_ZN20CSmartStackAllocator5backNEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5backNEj
 	.def	__ZN20CSmartStackAllocator5backNEj;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5backNEj:
-LFB3106:
+LFB3100:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19383,13 +19550,13 @@ LFB3106:
 	cmpl	12(%ebp), %eax
 	setb	%al
 	testb	%al, %al
-	je	L1305
+	je	L1310
 	movl	8(%ebp), %eax
 	addl	$40, %eax
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
-	jmp	L1304
-L1305:
+	jmp	L1309
+L1310:
 	movl	8(%ebp), %eax
 	leal	12(%eax), %edx
 	movl	$5, 8(%esp)
@@ -19414,20 +19581,20 @@ L1305:
 	addl	$40, %eax
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
-L1304:
+L1309:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3106:
+LFE3100:
 	.section	.text$_ZN20CSmartStackAllocator5backNEPKv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5backNEPKv
 	.def	__ZN20CSmartStackAllocator5backNEPKv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5backNEPKv:
-LFB3107:
+LFB3101:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19451,14 +19618,14 @@ LFB3107:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3107:
+LFE3101:
 	.section	.text$_ZN20CSmartStackAllocator5backREj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5backREj
 	.def	__ZN20CSmartStackAllocator5backREj;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5backREj:
-LFB3108:
+LFB3102:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19477,21 +19644,21 @@ LFB3108:
 	movl	%eax, (%esp)
 	call	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	cmpl	12(%ebp), %eax
-	ja	L1309
+	ja	L1314
 	movl	8(%ebp), %eax
 	movl	8(%eax), %eax
 	cmpl	12(%ebp), %eax
-	jae	L1310
-L1309:
+	jae	L1315
+L1314:
 	movl	$1, %eax
-	jmp	L1311
-L1310:
+	jmp	L1316
+L1315:
 	movl	$0, %eax
-L1311:
+L1316:
 	testb	%al, %al
-	je	L1312
-	jmp	L1308
-L1312:
+	je	L1317
+	jmp	L1313
+L1317:
 	movl	8(%ebp), %eax
 	leal	16(%eax), %edx
 	movl	$5, 8(%esp)
@@ -19516,20 +19683,20 @@ L1312:
 	addl	$40, %eax
 	movl	%eax, (%esp)
 	call	__ZN9CSpinLock6unlockEv
-L1308:
+L1313:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3108:
+LFE3102:
 	.section	.text$_ZN20CSmartStackAllocator5backREPKv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5backREPKv
 	.def	__ZN20CSmartStackAllocator5backREPKv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5backREPKv:
-LFB3109:
+LFB3103:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19553,14 +19720,14 @@ LFB3109:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3109:
+LFE3103:
 	.section	.text$_ZN20CSmartStackAllocator5backDEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5backDEj
 	.def	__ZN20CSmartStackAllocator5backDEj;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5backDEj:
-LFB3110:
+LFB3104:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19584,14 +19751,14 @@ LFB3110:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3110:
+LFE3104:
 	.section	.text$_ZN20CSmartStackAllocator5backDEPKv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5backDEPKv
 	.def	__ZN20CSmartStackAllocator5backDEPKv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5backDEPKv:
-LFB3111:
+LFB3105:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19615,14 +19782,14 @@ LFB3111:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3111:
+LFE3105:
 	.section	.text$_ZN20CSmartStackAllocator4backEN15IStackAllocator9E_ORDEREDEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator4backEN15IStackAllocator9E_ORDEREDEj
 	.def	__ZN20CSmartStackAllocator4backEN15IStackAllocator9E_ORDEREDEj;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator4backEN15IStackAllocator9E_ORDEREDEj:
-LFB3112:
+LFB3106:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19631,42 +19798,42 @@ LFB3112:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	cmpl	$0, 12(%ebp)
-	jne	L1318
+	jne	L1323
 	movl	16(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator5backDEj
-	jmp	L1317
-L1318:
+	jmp	L1322
+L1323:
 	cmpl	$-1, 12(%ebp)
-	jne	L1320
+	jne	L1325
 	movl	16(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator5backREj
-	jmp	L1317
-L1320:
+	jmp	L1322
+L1325:
 	movl	16(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator5backNEj
-L1317:
+L1322:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3112:
+LFE3106:
 	.section	.text$_ZN20CSmartStackAllocator4backEN15IStackAllocator9E_ORDEREDEPKv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator4backEN15IStackAllocator9E_ORDEREDEPKv
 	.def	__ZN20CSmartStackAllocator4backEN15IStackAllocator9E_ORDEREDEPKv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator4backEN15IStackAllocator9E_ORDEREDEPKv:
-LFB3113:
+LFB3107:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19675,42 +19842,42 @@ LFB3113:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	cmpl	$0, 12(%ebp)
-	jne	L1322
+	jne	L1327
 	movl	16(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator5backDEPKv
-	jmp	L1321
-L1322:
+	jmp	L1326
+L1327:
 	cmpl	$-1, 12(%ebp)
-	jne	L1324
+	jne	L1329
 	movl	16(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator5backREPKv
-	jmp	L1321
-L1324:
+	jmp	L1326
+L1329:
 	movl	16(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator5backNEPKv
-L1321:
+L1326:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3113:
+LFE3107:
 	.section	.text$_ZN20CSmartStackAllocator4backEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator4backEj
 	.def	__ZN20CSmartStackAllocator4backEj;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator4backEj:
-LFB3114:
+LFB3108:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19728,14 +19895,14 @@ LFB3114:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3114:
+LFE3108:
 	.section	.text$_ZN20CSmartStackAllocator4backEPKv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator4backEPKv
 	.def	__ZN20CSmartStackAllocator4backEPKv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator4backEPKv:
-LFB3115:
+LFB3109:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19753,14 +19920,14 @@ LFB3115:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3115:
+LFE3109:
 	.section	.text$_ZN20CSmartStackAllocator6clearNEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator6clearNEv
 	.def	__ZN20CSmartStackAllocator6clearNEv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator6clearNEv:
-LFB3116:
+LFB3110:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19800,14 +19967,14 @@ LFB3116:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3116:
+LFE3110:
 	.section	.text$_ZN20CSmartStackAllocator6clearREv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator6clearREv
 	.def	__ZN20CSmartStackAllocator6clearREv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator6clearREv:
-LFB3117:
+LFB3111:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19849,14 +20016,14 @@ LFB3117:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3117:
+LFE3111:
 	.section	.text$_ZN20CSmartStackAllocator6clearDEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator6clearDEv
 	.def	__ZN20CSmartStackAllocator6clearDEv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator6clearDEv:
-LFB3118:
+LFB3112:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19878,14 +20045,14 @@ LFB3118:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3118:
+LFE3112:
 	.section	.text$_ZN20CSmartStackAllocator7clearNREv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator7clearNREv
 	.def	__ZN20CSmartStackAllocator7clearNREv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator7clearNREv:
-LFB3119:
+LFB3113:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19904,14 +20071,14 @@ LFB3119:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3119:
+LFE3113:
 	.section	.text$_ZN20CSmartStackAllocator5clearEN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5clearEN15IStackAllocator9E_ORDEREDE
 	.def	__ZN20CSmartStackAllocator5clearEN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5clearEN15IStackAllocator9E_ORDEREDE:
-LFB3120:
+LFB3114:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19920,36 +20087,36 @@ LFB3120:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	cmpl	$0, 12(%ebp)
-	jne	L1332
+	jne	L1337
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator6clearDEv
-	jmp	L1331
-L1332:
+	jmp	L1336
+L1337:
 	cmpl	$-1, 12(%ebp)
-	jne	L1334
+	jne	L1339
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator6clearREv
-	jmp	L1331
-L1334:
+	jmp	L1336
+L1339:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN20CSmartStackAllocator6clearNEv
-L1331:
+L1336:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3120:
+LFE3114:
 	.section	.text$_ZN20CSmartStackAllocator5clearEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator5clearEv
 	.def	__ZN20CSmartStackAllocator5clearEv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator5clearEv:
-LFB3121:
+LFB3115:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19965,14 +20132,14 @@ LFB3121:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3121:
+LFE3115:
 	.section	.text$_ZN20CSmartStackAllocator8clearAllEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocator8clearAllEv
 	.def	__ZN20CSmartStackAllocator8clearAllEv;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocator8clearAllEv:
-LFB3122:
+LFB3116:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -19988,14 +20155,14 @@ LFB3122:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3122:
+LFE3116:
 	.section	.text$_ZNSt13__atomic_baseIjEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt13__atomic_baseIjEC2Ev
 	.def	__ZNSt13__atomic_baseIjEC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt13__atomic_baseIjEC2Ev:
-LFB3126:
+LFB3120:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20007,14 +20174,14 @@ LFB3126:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3126:
+LFE3120:
 	.section	.text$_ZNSt6atomicIjEC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6atomicIjEC1Ev
 	.def	__ZNSt6atomicIjEC1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6atomicIjEC1Ev:
-LFB3129:
+LFB3123:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20030,14 +20197,14 @@ LFB3129:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3129:
+LFE3123:
 	.section	.text$_ZNSt6atomicIN15IStackAllocator9E_ORDEREDEEC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6atomicIN15IStackAllocator9E_ORDEREDEEC1Ev
 	.def	__ZNSt6atomicIN15IStackAllocator9E_ORDEREDEEC1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6atomicIN15IStackAllocator9E_ORDEREDEEC1Ev:
-LFB3132:
+LFB3126:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20049,14 +20216,14 @@ LFB3132:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3132:
+LFE3126:
 	.section	.text$_ZN20CSmartStackAllocatorC2EPvjN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocatorC2EPvjN15IStackAllocator9E_ORDEREDE
 	.def	__ZN20CSmartStackAllocatorC2EPvjN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocatorC2EPvjN15IStackAllocator9E_ORDEREDE:
-LFB3133:
+LFB3127:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20155,14 +20322,14 @@ LFB3133:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3133:
+LFE3127:
 	.section	.text$_ZN20CSmartStackAllocatorD2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocatorD2Ev
 	.def	__ZN20CSmartStackAllocatorD2Ev;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocatorD2Ev:
-LFB3136:
+LFB3130:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20181,24 +20348,24 @@ LFB3136:
 	call	__ZN15IStackAllocatorD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1341
+	je	L1346
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1341:
+L1346:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3136:
+LFE3130:
 	.section	.text$_ZN20CSmartStackAllocatorD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocatorD1Ev
 	.def	__ZN20CSmartStackAllocatorD1Ev;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocatorD1Ev:
-LFB3137:
+LFB3131:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20217,24 +20384,24 @@ LFB3137:
 	call	__ZN15IStackAllocatorD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1344
+	je	L1349
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1344:
+L1349:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3137:
+LFE3131:
 	.section	.text$_ZN20CSmartStackAllocatorD0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN20CSmartStackAllocatorD0Ev
 	.def	__ZN20CSmartStackAllocatorD0Ev;	.scl	2;	.type	32;	.endef
 __ZN20CSmartStackAllocatorD0Ev:
-LFB3138:
+LFB3132:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20253,9 +20420,9 @@ LFB3138:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3138:
+LFE3132:
 	.section .rdata,"dr"
-LC221:
+LC235:
 	.ascii "CSmartStackAllocAdp\0"
 	.section	.text$_ZNK19CSmartStackAllocAdp7getNameEv,"x"
 	.linkonce discard
@@ -20263,27 +20430,27 @@ LC221:
 	.globl	__ZNK19CSmartStackAllocAdp7getNameEv
 	.def	__ZNK19CSmartStackAllocAdp7getNameEv;	.scl	2;	.type	32;	.endef
 __ZNK19CSmartStackAllocAdp7getNameEv:
-LFB3141:
+LFB3135:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
-	movl	$LC221, %eax
+	movl	$LC235, %eax
 	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3141:
+LFE3135:
 	.section	.text$_ZN19CSmartStackAllocAdp12getAllocatorEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN19CSmartStackAllocAdp12getAllocatorEv
 	.def	__ZN19CSmartStackAllocAdp12getAllocatorEv;	.scl	2;	.type	32;	.endef
 __ZN19CSmartStackAllocAdp12getAllocatorEv:
-LFB3142:
+LFB3136:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20297,14 +20464,14 @@ LFB3142:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3142:
+LFE3136:
 	.section	.text$_ZN19CSmartStackAllocAdp5allocEjjPK10ALLOC_INFO,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN19CSmartStackAllocAdp5allocEjjPK10ALLOC_INFO
 	.def	__ZN19CSmartStackAllocAdp5allocEjjPK10ALLOC_INFO;	.scl	2;	.type	32;	.endef
 __ZN19CSmartStackAllocAdp5allocEjjPK10ALLOC_INFO:
-LFB3146:
+LFB3140:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20331,14 +20498,14 @@ LFB3146:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3146:
+LFE3140:
 	.section	.text$_ZN19CSmartStackAllocAdp4freeEPv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN19CSmartStackAllocAdp4freeEPv
 	.def	__ZN19CSmartStackAllocAdp4freeEPv;	.scl	2;	.type	32;	.endef
 __ZN19CSmartStackAllocAdp4freeEPv:
-LFB3147:
+LFB3141:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20360,14 +20527,14 @@ LFB3147:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3147:
+LFE3141:
 	.section	.text$_ZN19CSmartStackAllocAdpC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN19CSmartStackAllocAdpC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
 	.def	__ZN19CSmartStackAllocAdpC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZN19CSmartStackAllocAdpC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE:
-LFB3150:
+LFB3144:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20391,14 +20558,14 @@ LFB3150:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3150:
+LFE3144:
 	.section	.text$_ZN19CSmartStackAllocAdpD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN19CSmartStackAllocAdpD1Ev
 	.def	__ZN19CSmartStackAllocAdpD1Ev;	.scl	2;	.type	32;	.endef
 __ZN19CSmartStackAllocAdpD1Ev:
-LFB3153:
+LFB3147:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20413,24 +20580,24 @@ LFB3153:
 	call	__ZN15CIStackAllocAdpD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1358
+	je	L1363
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1358:
+L1363:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3153:
+LFE3147:
 	.section	.text$_ZN19CSmartStackAllocAdpD0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN19CSmartStackAllocAdpD0Ev
 	.def	__ZN19CSmartStackAllocAdpD0Ev;	.scl	2;	.type	32;	.endef
 __ZN19CSmartStackAllocAdpD0Ev:
-LFB3154:
+LFB3148:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20449,14 +20616,14 @@ LFB3154:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3154:
+LFE3148:
 	.section	.text$_ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
 	.def	__ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE:
-LFB3157:
+LFB3151:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20476,14 +20643,14 @@ LFB3157:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3157:
+LFE3151:
 	.section	.text$_ZN28CTempPolySmartStackAllocatorD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN28CTempPolySmartStackAllocatorD1Ev
 	.def	__ZN28CTempPolySmartStackAllocatorD1Ev;	.scl	2;	.type	32;	.endef
 __ZN28CTempPolySmartStackAllocatorD1Ev:
-LFB3160:
+LFB3154:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20499,10 +20666,10 @@ LFB3160:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3160:
+LFE3154:
 	.section .rdata,"dr"
 	.align 4
-LC222:
+LC236:
 	.ascii "CTest9::Constructor : name=\"%s\"\12\0"
 	.section	.text$_ZN6CTest9C1EPKc,"x"
 	.linkonce discard
@@ -20510,7 +20677,7 @@ LC222:
 	.globl	__ZN6CTest9C1EPKc
 	.def	__ZN6CTest9C1EPKc;	.scl	2;	.type	32;	.endef
 __ZN6CTest9C1EPKc:
-LFB3166:
+LFB3160:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20526,17 +20693,17 @@ LFB3166:
 	movl	8(%ebp), %eax
 	movl	4(%eax), %eax
 	movl	%eax, 4(%esp)
-	movl	$LC222, (%esp)
+	movl	$LC236, (%esp)
 	call	_printf
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3166:
+LFE3160:
 	.section .rdata,"dr"
 	.align 4
-LC223:
+LC237:
 	.ascii "CTest9::Destructor : name=\"%s\"\12\0"
 	.section	.text$_ZN6CTest9D1Ev,"x"
 	.linkonce discard
@@ -20544,10 +20711,10 @@ LC223:
 	.globl	__ZN6CTest9D1Ev
 	.def	__ZN6CTest9D1Ev;	.scl	2;	.type	32;	.endef
 __ZN6CTest9D1Ev:
-LFB3169:
+LFB3163:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3169
+	.cfi_lsda 0,LLSDA3163
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -20559,29 +20726,29 @@ LFB3169:
 	movl	8(%ebp), %eax
 	movl	4(%eax), %eax
 	movl	%eax, 4(%esp)
-	movl	$LC223, (%esp)
+	movl	$LC237, (%esp)
 	call	_printf
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1367
+	je	L1372
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1367:
+L1372:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3169:
+LFE3163:
 	.section	.gcc_except_table,"w"
-LLSDA3169:
+LLSDA3163:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3169-LLSDACSB3169
-LLSDACSB3169:
-LLSDACSE3169:
+	.uleb128 LLSDACSE3163-LLSDACSB3163
+LLSDACSB3163:
+LLSDACSE3163:
 	.section	.text$_ZN6CTest9D1Ev,"x"
 	.linkonce discard
 	.section	.text$_ZN6CTest9D0Ev,"x"
@@ -20590,7 +20757,7 @@ LLSDACSE3169:
 	.globl	__ZN6CTest9D0Ev
 	.def	__ZN6CTest9D0Ev;	.scl	2;	.type	32;	.endef
 __ZN6CTest9D0Ev:
-LFB3170:
+LFB3164:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20609,7 +20776,7 @@ LFB3170:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3170:
+LFE3164:
 .lcomm __ZL16s_stackForThread,1068,32
 	.section	.text$_ZNSt6chrono8durationIxSt5ratioILx1ELx1EEEC1IivEERKT_,"x"
 	.linkonce discard
@@ -20617,7 +20784,7 @@ LFE3170:
 	.globl	__ZNSt6chrono8durationIxSt5ratioILx1ELx1EEEC1IivEERKT_
 	.def	__ZNSt6chrono8durationIxSt5ratioILx1ELx1EEEC1IivEERKT_;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono8durationIxSt5ratioILx1ELx1EEEC1IivEERKT_:
-LFB3174:
+LFB3168:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -20635,15 +20802,15 @@ LFB3174:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3174:
+LFE3168:
 	.text
 	.globl	__Z13test9thread_nPKc
 	.def	__Z13test9thread_nPKc;	.scl	2;	.type	32;	.endef
 __Z13test9thread_nPKc:
-LFB3171:
+LFB3165:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3171
+	.cfi_lsda 0,LLSDA3165
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -20658,25 +20825,25 @@ LFB3171:
 	movl	$__ZL16s_stackForThread, 4(%esp)
 	leal	-48(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB266:
+LEHB271:
 	call	__ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
-LEHE266:
+LEHE271:
 	movl	$12, (%esp)
 	call	__Znwj
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1374
+	je	L1379
 	movl	8(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB267:
+LEHB272:
 	call	__ZN6CTest9C1EPKc
-LEHE267:
+LEHE272:
 	movl	%ebx, %eax
-	jmp	L1375
-L1374:
+	jmp	L1380
+L1379:
 	movl	%ebx, %eax
-L1375:
+L1380:
 	movl	%eax, -12(%ebp)
 	movl	$1, -16(%ebp)
 	leal	-16(%ebp), %eax
@@ -20686,11 +20853,11 @@ L1375:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1EEEC1IivEERKT_
 	leal	-24(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB268:
+LEHB273:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE268:
+LEHE273:
 	cmpl	$0, -12(%ebp)
-	je	L1376
+	je	L1381
 	movl	-12(%ebp), %eax
 	movl	(%eax), %eax
 	addl	$4, %eax
@@ -20698,32 +20865,32 @@ LEHE268:
 	movl	-12(%ebp), %edx
 	movl	%edx, (%esp)
 	call	*%eax
-L1376:
+L1381:
 	leal	-48(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN28CTempPolySmartStackAllocatorD1Ev
-	jmp	L1384
-L1382:
+	jmp	L1389
+L1387:
 	movl	%eax, %esi
 	movl	%ebx, (%esp)
 	call	__ZdlPv
 	movl	%esi, %ebx
-	jmp	L1378
-L1383:
+	jmp	L1383
+L1388:
 	movl	%eax, %ebx
-L1378:
+L1383:
 	leal	-48(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN28CTempPolySmartStackAllocatorD1Ev
 	movl	%ebx, %eax
-	jmp	L1380
-L1381:
-L1380:
+	jmp	L1385
+L1386:
+L1385:
 	movl	%eax, (%esp)
-LEHB269:
+LEHB274:
 	call	__Unwind_Resume
-LEHE269:
-L1384:
+LEHE274:
+L1389:
 	addl	$64, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -20734,39 +20901,39 @@ L1384:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3171:
+LFE3165:
 	.section	.gcc_except_table,"w"
-LLSDA3171:
+LLSDA3165:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3171-LLSDACSB3171
-LLSDACSB3171:
-	.uleb128 LEHB266-LFB3171
-	.uleb128 LEHE266-LEHB266
-	.uleb128 L1381-LFB3171
+	.uleb128 LLSDACSE3165-LLSDACSB3165
+LLSDACSB3165:
+	.uleb128 LEHB271-LFB3165
+	.uleb128 LEHE271-LEHB271
+	.uleb128 L1386-LFB3165
 	.uleb128 0
-	.uleb128 LEHB267-LFB3171
-	.uleb128 LEHE267-LEHB267
-	.uleb128 L1382-LFB3171
+	.uleb128 LEHB272-LFB3165
+	.uleb128 LEHE272-LEHB272
+	.uleb128 L1387-LFB3165
 	.uleb128 0
-	.uleb128 LEHB268-LFB3171
-	.uleb128 LEHE268-LEHB268
-	.uleb128 L1383-LFB3171
+	.uleb128 LEHB273-LFB3165
+	.uleb128 LEHE273-LEHB273
+	.uleb128 L1388-LFB3165
 	.uleb128 0
-	.uleb128 LEHB269-LFB3171
-	.uleb128 LEHE269-LEHB269
+	.uleb128 LEHB274-LFB3165
+	.uleb128 LEHE274-LEHB274
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3171:
+LLSDACSE3165:
 	.text
 	.globl	__Z13test9thread_rPKc
 	.def	__Z13test9thread_rPKc;	.scl	2;	.type	32;	.endef
 __Z13test9thread_rPKc:
-LFB3175:
+LFB3169:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3175
+	.cfi_lsda 0,LLSDA3169
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -20781,25 +20948,25 @@ LFB3175:
 	movl	$__ZL16s_stackForThread, 4(%esp)
 	leal	-48(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB270:
+LEHB275:
 	call	__ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
-LEHE270:
+LEHE275:
 	movl	$12, (%esp)
 	call	__Znwj
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1386
+	je	L1391
 	movl	8(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB271:
+LEHB276:
 	call	__ZN6CTest9C1EPKc
-LEHE271:
+LEHE276:
 	movl	%ebx, %eax
-	jmp	L1387
-L1386:
+	jmp	L1392
+L1391:
 	movl	%ebx, %eax
-L1387:
+L1392:
 	movl	%eax, -12(%ebp)
 	movl	$1, -16(%ebp)
 	leal	-16(%ebp), %eax
@@ -20809,11 +20976,11 @@ L1387:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1EEEC1IivEERKT_
 	leal	-24(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB272:
+LEHB277:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE272:
+LEHE277:
 	cmpl	$0, -12(%ebp)
-	je	L1388
+	je	L1393
 	movl	-12(%ebp), %eax
 	movl	(%eax), %eax
 	addl	$4, %eax
@@ -20821,32 +20988,32 @@ LEHE272:
 	movl	-12(%ebp), %edx
 	movl	%edx, (%esp)
 	call	*%eax
-L1388:
+L1393:
 	leal	-48(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN28CTempPolySmartStackAllocatorD1Ev
-	jmp	L1396
-L1394:
+	jmp	L1401
+L1399:
 	movl	%eax, %esi
 	movl	%ebx, (%esp)
 	call	__ZdlPv
 	movl	%esi, %ebx
-	jmp	L1390
-L1395:
+	jmp	L1395
+L1400:
 	movl	%eax, %ebx
-L1390:
+L1395:
 	leal	-48(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN28CTempPolySmartStackAllocatorD1Ev
 	movl	%ebx, %eax
-	jmp	L1392
-L1393:
-L1392:
+	jmp	L1397
+L1398:
+L1397:
 	movl	%eax, (%esp)
-LEHB273:
+LEHB278:
 	call	__Unwind_Resume
-LEHE273:
-L1396:
+LEHE278:
+L1401:
 	addl	$64, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -20857,124 +21024,124 @@ L1396:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3175:
+LFE3169:
 	.section	.gcc_except_table,"w"
-LLSDA3175:
+LLSDA3169:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3175-LLSDACSB3175
-LLSDACSB3175:
-	.uleb128 LEHB270-LFB3175
-	.uleb128 LEHE270-LEHB270
-	.uleb128 L1393-LFB3175
+	.uleb128 LLSDACSE3169-LLSDACSB3169
+LLSDACSB3169:
+	.uleb128 LEHB275-LFB3169
+	.uleb128 LEHE275-LEHB275
+	.uleb128 L1398-LFB3169
 	.uleb128 0
-	.uleb128 LEHB271-LFB3175
-	.uleb128 LEHE271-LEHB271
-	.uleb128 L1394-LFB3175
+	.uleb128 LEHB276-LFB3169
+	.uleb128 LEHE276-LEHB276
+	.uleb128 L1399-LFB3169
 	.uleb128 0
-	.uleb128 LEHB272-LFB3175
-	.uleb128 LEHE272-LEHB272
-	.uleb128 L1395-LFB3175
+	.uleb128 LEHB277-LFB3169
+	.uleb128 LEHE277-LEHB277
+	.uleb128 L1400-LFB3169
 	.uleb128 0
-	.uleb128 LEHB273-LFB3175
-	.uleb128 LEHE273-LEHB273
+	.uleb128 LEHB278-LFB3169
+	.uleb128 LEHE278-LEHB278
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3175:
+LLSDACSE3169:
 	.text
 	.section .rdata,"dr"
 	.align 4
-LC224:
+LC238:
 	.ascii "---------- test9:\343\203\236\343\203\253\343\203\201\343\202\271\343\203\254\343\203\203\343\203\211\343\201\253\344\276\277\345\210\251\343\201\252\343\202\271\343\203\236\343\203\274\343\203\210\343\202\271\343\202\277\343\203\203\343\202\257\343\202\242\343\203\255\343\202\261\343\203\274\343\202\277 ----------\0"
 	.align 4
-LC225:
+LC239:
 	.ascii "----------\345\237\272\346\234\254\345\213\225\344\275\234\343\203\201\343\202\247\343\203\203\343\202\257\0"
-LC226:
+LC240:
 	.ascii "\343\203\206\343\202\271\343\203\210"
 	.ascii "9-1\0"
 	.align 4
-LC227:
+LC241:
 	.ascii "marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\12\0"
-LC228:
+LC242:
 	.ascii "beginN()\0"
-LC229:
+LC243:
 	.ascii "\343\203\206\343\202\271\343\203\210"
 	.ascii "9-2\0"
-LC230:
+LC244:
 	.ascii "beginR()\0"
-LC231:
+LC245:
 	.ascii "\343\203\206\343\202\271\343\203\210"
 	.ascii "9-3\0"
-LC232:
+LC246:
 	.ascii "\343\203\206\343\202\271\343\203\210"
 	.ascii "9-4\0"
-LC233:
+LC247:
 	.ascii "\343\203\206\343\202\271\343\203\210"
 	.ascii "9-5\0"
-LC234:
+LC248:
 	.ascii "\343\203\206\343\202\271\343\203\210"
 	.ascii "9-6\0"
-LC235:
+LC249:
 	.ascii "clearN()\0"
-LC236:
+LC250:
 	.ascii "clearR()\0"
 	.align 4
-LC237:
-	.ascii "----------\343\202\271\343\203\254\343\203\203\343\203\211\344\275\277\347\224\250\343\203\201\343\202\247\343\203\203\343\202\257\0"
-LC238:
+LC251:
+	.ascii "----------\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210\0"
+LC252:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-1(N)\0"
-LC239:
+LC253:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-2(N)\0"
-LC240:
+LC254:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-3(R)\0"
-LC241:
+LC255:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-4(R)\0"
-LC242:
+LC256:
 	.ascii "sleep(500msec)\0"
-LC243:
-	.ascii "join\0"
-LC244:
+LC257:
+	.ascii "joined\0"
+LC258:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-5(N)\0"
-LC245:
+LC259:
 	.ascii "sleep(200msec)\0"
-LC246:
+LC260:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-6(N)\0"
-LC247:
+LC261:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-7(R)\0"
-LC248:
+LC262:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-8(R)\0"
 	.align 4
-LC249:
+LC263:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210(\345\211\262\343\202\212\350\276\274\343\201\277)\0"
-LC250:
+LC264:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-9(N)\0"
-LC251:
+LC265:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-10(N)\0"
-LC252:
+LC266:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-11(R)\0"
-LC253:
+LC267:
 	.ascii "\343\202\271\343\203\254\343\203\203\343\203\211\343\203\206\343\202\271\343\203\210"
 	.ascii "9-12(R)\0"
 	.text
 	.globl	__Z5test9v
 	.def	__Z5test9v;	.scl	2;	.type	32;	.endef
 __Z5test9v:
-LFB3176:
+LFB3170:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3176
+	.cfi_lsda 0,LLSDA3170
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -20987,14 +21154,14 @@ LFB3176:
 	.cfi_offset 7, -12
 	.cfi_offset 6, -16
 	.cfi_offset 3, -20
-	movl	$LC224, (%esp)
-LEHB274:
+	movl	$LC238, (%esp)
+LEHB279:
 	call	_puts
-LEHE274:
-	movl	$LC225, (%esp)
-LEHB275:
+LEHE279:
+	movl	$LC239, (%esp)
+LEHB280:
 	call	_puts
-LEHE275:
+LEHE280:
 	movl	$1, 4(%esp)
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21004,29 +21171,29 @@ LEHE275:
 	movl	%eax, 4(%esp)
 	leal	-240(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB276:
+LEHB281:
 	call	__ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
-LEHE276:
+LEHE281:
 	movl	$12, (%esp)
 	call	__Znwj
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1398
-	movl	$LC226, 4(%esp)
+	je	L1403
+	movl	$LC240, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB277:
+LEHB282:
 	call	__ZN6CTest9C1EPKc
-LEHE277:
+LEHE282:
 	movl	%ebx, %eax
-	jmp	L1399
-L1398:
+	jmp	L1404
+L1403:
 	movl	%ebx, %eax
-L1399:
+L1404:
 	movl	%eax, -28(%ebp)
 	movl	-28(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	$LC87, (%esp)
-LEHB278:
+LEHB283:
 	call	_printf
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21059,9 +21226,9 @@ LEHB278:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-	movl	$LC228, (%esp)
+	movl	$LC242, (%esp)
 	call	_puts
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21097,9 +21264,9 @@ LEHB278:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-LEHE278:
+LEHE283:
 	movl	$-1, 4(%esp)
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21108,22 +21275,22 @@ LEHE278:
 	call	__Znwj
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1400
-	movl	$LC229, 4(%esp)
+	je	L1405
+	movl	$LC243, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB279:
+LEHB284:
 	call	__ZN6CTest9C1EPKc
-LEHE279:
+LEHE284:
 	movl	%ebx, %eax
-	jmp	L1401
-L1400:
+	jmp	L1406
+L1405:
 	movl	%ebx, %eax
-L1401:
+L1406:
 	movl	%eax, -32(%ebp)
 	movl	-32(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	$LC89, (%esp)
-LEHB280:
+LEHB285:
 	call	_printf
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21156,9 +21323,9 @@ LEHB280:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-	movl	$LC230, (%esp)
+	movl	$LC244, (%esp)
 	call	_puts
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21194,9 +21361,9 @@ LEHB280:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-LEHE280:
+LEHE285:
 	movl	$1, 4(%esp)
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21205,22 +21372,22 @@ LEHE280:
 	call	__Znwj
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1402
-	movl	$LC231, 4(%esp)
+	je	L1407
+	movl	$LC245, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB281:
+LEHB286:
 	call	__ZN6CTest9C1EPKc
-LEHE281:
+LEHE286:
 	movl	%ebx, %eax
-	jmp	L1403
-L1402:
+	jmp	L1408
+L1407:
 	movl	%ebx, %eax
-L1403:
+L1408:
 	movl	%eax, -36(%ebp)
 	movl	-36(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	$LC110, (%esp)
-LEHB282:
+LEHB287:
 	call	_printf
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21253,9 +21420,9 @@ LEHB282:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-LEHE282:
+LEHE287:
 	movl	$-1, 4(%esp)
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21264,22 +21431,22 @@ LEHE282:
 	call	__Znwj
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1404
-	movl	$LC232, 4(%esp)
+	je	L1409
+	movl	$LC246, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB283:
+LEHB288:
 	call	__ZN6CTest9C1EPKc
-LEHE283:
+LEHE288:
 	movl	%ebx, %eax
-	jmp	L1405
-L1404:
+	jmp	L1410
+L1409:
 	movl	%ebx, %eax
-L1405:
+L1410:
 	movl	%eax, -40(%ebp)
 	movl	-40(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	$LC112, (%esp)
-LEHB284:
+LEHB289:
 	call	_printf
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21312,10 +21479,10 @@ LEHB284:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
 	cmpl	$0, -28(%ebp)
-	je	L1406
+	je	L1411
 	movl	-28(%ebp), %eax
 	movl	(%eax), %eax
 	addl	$4, %eax
@@ -21323,7 +21490,7 @@ LEHB284:
 	movl	-28(%ebp), %edx
 	movl	%edx, (%esp)
 	call	*%eax
-L1406:
+L1411:
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK20CSmartStackAllocator11getCounterREv
@@ -21355,10 +21522,10 @@ L1406:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
 	cmpl	$0, -32(%ebp)
-	je	L1407
+	je	L1412
 	movl	-32(%ebp), %eax
 	movl	(%eax), %eax
 	addl	$4, %eax
@@ -21366,7 +21533,7 @@ L1406:
 	movl	-32(%ebp), %edx
 	movl	%edx, (%esp)
 	call	*%eax
-L1407:
+L1412:
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK20CSmartStackAllocator11getCounterREv
@@ -21398,10 +21565,10 @@ L1407:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
 	cmpl	$0, -36(%ebp)
-	je	L1408
+	je	L1413
 	movl	-36(%ebp), %eax
 	movl	(%eax), %eax
 	addl	$4, %eax
@@ -21409,7 +21576,7 @@ L1407:
 	movl	-36(%ebp), %edx
 	movl	%edx, (%esp)
 	call	*%eax
-L1408:
+L1413:
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK20CSmartStackAllocator11getCounterREv
@@ -21441,176 +21608,15 @@ L1408:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
 	cmpl	$0, -40(%ebp)
-	je	L1409
+	je	L1414
 	movl	-40(%ebp), %eax
 	movl	(%eax), %eax
 	addl	$4, %eax
 	movl	(%eax), %eax
 	movl	-40(%ebp), %edx
-	movl	%edx, (%esp)
-	call	*%eax
-L1409:
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator11getCounterREv
-	movl	%eax, -572(%ebp)
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator11getCounterNEv
-	movl	%eax, -576(%ebp)
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator9getBeginREv
-	movl	%eax, %edi
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator9getBeginNEv
-	movl	%eax, %esi
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator10getMarkerREv
-	movl	%eax, %ebx
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator10getMarkerNEv
-	movl	-572(%ebp), %ecx
-	movl	%ecx, 24(%esp)
-	movl	-576(%ebp), %edx
-	movl	%edx, 20(%esp)
-	movl	%edi, 16(%esp)
-	movl	%esi, 12(%esp)
-	movl	%ebx, 8(%esp)
-	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
-	call	_printf
-LEHE284:
-	movl	$1, 4(%esp)
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN20CSmartStackAllocator17setDefaultOrderedEN15IStackAllocator9E_ORDEREDE
-	movl	$12, (%esp)
-	call	__Znwj
-	movl	%eax, %ebx
-	testl	%ebx, %ebx
-	je	L1410
-	movl	$LC233, 4(%esp)
-	movl	%ebx, (%esp)
-LEHB285:
-	call	__ZN6CTest9C1EPKc
-LEHE285:
-	movl	%ebx, %eax
-	jmp	L1411
-L1410:
-	movl	%ebx, %eax
-L1411:
-	movl	%eax, -44(%ebp)
-	movl	-44(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	$LC114, (%esp)
-LEHB286:
-	call	_printf
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator11getCounterREv
-	movl	%eax, -572(%ebp)
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator11getCounterNEv
-	movl	%eax, -576(%ebp)
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator9getBeginREv
-	movl	%eax, %edi
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator9getBeginNEv
-	movl	%eax, %esi
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator10getMarkerREv
-	movl	%eax, %ebx
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator10getMarkerNEv
-	movl	-572(%ebp), %ecx
-	movl	%ecx, 24(%esp)
-	movl	-576(%ebp), %edx
-	movl	%edx, 20(%esp)
-	movl	%edi, 16(%esp)
-	movl	%esi, 12(%esp)
-	movl	%ebx, 8(%esp)
-	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
-	call	_printf
-LEHE286:
-	movl	$-1, 4(%esp)
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN20CSmartStackAllocator17setDefaultOrderedEN15IStackAllocator9E_ORDEREDE
-	movl	$12, (%esp)
-	call	__Znwj
-	movl	%eax, %ebx
-	testl	%ebx, %ebx
-	je	L1412
-	movl	$LC234, 4(%esp)
-	movl	%ebx, (%esp)
-LEHB287:
-	call	__ZN6CTest9C1EPKc
-LEHE287:
-	movl	%ebx, %eax
-	jmp	L1413
-L1412:
-	movl	%ebx, %eax
-L1413:
-	movl	%eax, -48(%ebp)
-	movl	-48(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	$LC116, (%esp)
-LEHB288:
-	call	_printf
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator11getCounterREv
-	movl	%eax, -572(%ebp)
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator11getCounterNEv
-	movl	%eax, -576(%ebp)
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator9getBeginREv
-	movl	%eax, %edi
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator9getBeginNEv
-	movl	%eax, %esi
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator10getMarkerREv
-	movl	%eax, %ebx
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK20CSmartStackAllocator10getMarkerNEv
-	movl	-572(%ebp), %ecx
-	movl	%ecx, 24(%esp)
-	movl	-576(%ebp), %edx
-	movl	%edx, 20(%esp)
-	movl	%edi, 16(%esp)
-	movl	%esi, 12(%esp)
-	movl	%ebx, 8(%esp)
-	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
-	call	_printf
-	cmpl	$0, -44(%ebp)
-	je	L1414
-	movl	-44(%ebp), %eax
-	movl	(%eax), %eax
-	addl	$4, %eax
-	movl	(%eax), %eax
-	movl	-44(%ebp), %edx
 	movl	%edx, (%esp)
 	call	*%eax
 L1414:
@@ -21645,18 +21651,34 @@ L1414:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-	cmpl	$0, -48(%ebp)
+LEHE289:
+	movl	$1, 4(%esp)
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN20CSmartStackAllocator17setDefaultOrderedEN15IStackAllocator9E_ORDEREDE
+	movl	$12, (%esp)
+	call	__Znwj
+	movl	%eax, %ebx
+	testl	%ebx, %ebx
 	je	L1415
-	movl	-48(%ebp), %eax
-	movl	(%eax), %eax
-	addl	$4, %eax
-	movl	(%eax), %eax
-	movl	-48(%ebp), %edx
-	movl	%edx, (%esp)
-	call	*%eax
+	movl	$LC247, 4(%esp)
+	movl	%ebx, (%esp)
+LEHB290:
+	call	__ZN6CTest9C1EPKc
+LEHE290:
+	movl	%ebx, %eax
+	jmp	L1416
 L1415:
+	movl	%ebx, %eax
+L1416:
+	movl	%eax, -44(%ebp)
+	movl	-44(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	$LC114, (%esp)
+LEHB291:
+	call	_printf
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK20CSmartStackAllocator11getCounterREv
@@ -21688,9 +21710,154 @@ L1415:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-	movl	$LC235, (%esp)
+LEHE291:
+	movl	$-1, 4(%esp)
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN20CSmartStackAllocator17setDefaultOrderedEN15IStackAllocator9E_ORDEREDE
+	movl	$12, (%esp)
+	call	__Znwj
+	movl	%eax, %ebx
+	testl	%ebx, %ebx
+	je	L1417
+	movl	$LC248, 4(%esp)
+	movl	%ebx, (%esp)
+LEHB292:
+	call	__ZN6CTest9C1EPKc
+LEHE292:
+	movl	%ebx, %eax
+	jmp	L1418
+L1417:
+	movl	%ebx, %eax
+L1418:
+	movl	%eax, -48(%ebp)
+	movl	-48(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	$LC116, (%esp)
+LEHB293:
+	call	_printf
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator11getCounterREv
+	movl	%eax, -572(%ebp)
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator11getCounterNEv
+	movl	%eax, -576(%ebp)
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator9getBeginREv
+	movl	%eax, %edi
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator9getBeginNEv
+	movl	%eax, %esi
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator10getMarkerREv
+	movl	%eax, %ebx
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator10getMarkerNEv
+	movl	-572(%ebp), %ecx
+	movl	%ecx, 24(%esp)
+	movl	-576(%ebp), %edx
+	movl	%edx, 20(%esp)
+	movl	%edi, 16(%esp)
+	movl	%esi, 12(%esp)
+	movl	%ebx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC241, (%esp)
+	call	_printf
+	cmpl	$0, -44(%ebp)
+	je	L1419
+	movl	-44(%ebp), %eax
+	movl	(%eax), %eax
+	addl	$4, %eax
+	movl	(%eax), %eax
+	movl	-44(%ebp), %edx
+	movl	%edx, (%esp)
+	call	*%eax
+L1419:
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator11getCounterREv
+	movl	%eax, -572(%ebp)
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator11getCounterNEv
+	movl	%eax, -576(%ebp)
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator9getBeginREv
+	movl	%eax, %edi
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator9getBeginNEv
+	movl	%eax, %esi
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator10getMarkerREv
+	movl	%eax, %ebx
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator10getMarkerNEv
+	movl	-572(%ebp), %ecx
+	movl	%ecx, 24(%esp)
+	movl	-576(%ebp), %edx
+	movl	%edx, 20(%esp)
+	movl	%edi, 16(%esp)
+	movl	%esi, 12(%esp)
+	movl	%ebx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC241, (%esp)
+	call	_printf
+	cmpl	$0, -48(%ebp)
+	je	L1420
+	movl	-48(%ebp), %eax
+	movl	(%eax), %eax
+	addl	$4, %eax
+	movl	(%eax), %eax
+	movl	-48(%ebp), %edx
+	movl	%edx, (%esp)
+	call	*%eax
+L1420:
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator11getCounterREv
+	movl	%eax, -572(%ebp)
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator11getCounterNEv
+	movl	%eax, -576(%ebp)
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator9getBeginREv
+	movl	%eax, %edi
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator9getBeginNEv
+	movl	%eax, %esi
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator10getMarkerREv
+	movl	%eax, %ebx
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK20CSmartStackAllocator10getMarkerNEv
+	movl	-572(%ebp), %ecx
+	movl	%ecx, 24(%esp)
+	movl	-576(%ebp), %edx
+	movl	%edx, 20(%esp)
+	movl	%edi, 16(%esp)
+	movl	%esi, 12(%esp)
+	movl	%ebx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC241, (%esp)
+	call	_printf
+	movl	$LC249, (%esp)
 	call	_puts
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21726,9 +21893,9 @@ L1415:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-	movl	$LC236, (%esp)
+	movl	$LC250, (%esp)
 	call	_puts
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21764,19 +21931,19 @@ L1415:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-LEHE288:
+LEHE293:
 	leal	-240(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN28CTempPolySmartStackAllocatorD1Ev
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN28CSmartStackAllocatorWithBuffILj128EED1Ev
-	movl	$LC237, (%esp)
-LEHB289:
+	movl	$LC251, (%esp)
+LEHB294:
 	call	_puts
-LEHE289:
+LEHE294:
 	movl	$0, -52(%ebp)
 	movl	$0, -56(%ebp)
 	movl	$0, -60(%ebp)
@@ -21784,9 +21951,9 @@ LEHE289:
 	movl	$__ZL16s_stackForThread, 4(%esp)
 	leal	-264(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB290:
+LEHB295:
 	call	__ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
-LEHE290:
+LEHE295:
 	movl	$8, (%esp)
 	call	__Znaj
 	movl	%eax, -52(%ebp)
@@ -21806,9 +21973,9 @@ LEHE290:
 	movl	$__ZL16s_stackForThread, 4(%esp)
 	leal	-288(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB291:
+LEHB296:
 	call	__ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
-LEHE291:
+LEHE296:
 	movl	$20, (%esp)
 	call	__Znaj
 	movl	%eax, -64(%ebp)
@@ -21846,10 +22013,10 @@ LEHE291:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
-LEHB292:
+	movl	$LC241, (%esp)
+LEHB297:
 	call	_printf
-	movl	$LC228, (%esp)
+	movl	$LC242, (%esp)
 	call	_puts
 	movl	$__ZL16s_stackForThread, (%esp)
 	call	__ZN20CSmartStackAllocator6beginNEv
@@ -21878,9 +22045,9 @@ LEHB292:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-	movl	$LC230, (%esp)
+	movl	$LC244, (%esp)
 	call	_puts
 	movl	$__ZL16s_stackForThread, (%esp)
 	call	__ZN20CSmartStackAllocator6beginREv
@@ -21909,37 +22076,37 @@ LEHB292:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-LEHE292:
-	movl	$LC238, 8(%esp)
+LEHE297:
+	movl	$LC252, 8(%esp)
 	movl	$__Z13test9thread_nPKc, 4(%esp)
 	leal	-292(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB293:
+LEHB298:
 	call	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_
-LEHE293:
-	movl	$LC239, 8(%esp)
+LEHE298:
+	movl	$LC253, 8(%esp)
 	movl	$__Z13test9thread_nPKc, 4(%esp)
 	leal	-296(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB294:
+LEHB299:
 	call	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_
-LEHE294:
-	movl	$LC240, 8(%esp)
+LEHE299:
+	movl	$LC254, 8(%esp)
 	movl	$__Z13test9thread_rPKc, 4(%esp)
 	leal	-300(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB295:
+LEHB300:
 	call	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_
-LEHE295:
-	movl	$LC241, 8(%esp)
+LEHE300:
+	movl	$LC255, 8(%esp)
 	movl	$__Z13test9thread_rPKc, 4(%esp)
 	leal	-304(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB296:
+LEHB301:
 	call	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_
-LEHE296:
+LEHE301:
 	movl	$500, -204(%ebp)
 	leal	-204(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -21948,11 +22115,11 @@ LEHE296:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	leal	-216(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB297:
+LEHB302:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE297:
-	movl	$LC242, (%esp)
-LEHB298:
+LEHE302:
+	movl	$LC256, (%esp)
+LEHB303:
 	call	_puts
 	movl	$__ZL16s_stackForThread, (%esp)
 	call	__ZNK20CSmartStackAllocator11getCounterREv
@@ -21979,7 +22146,7 @@ LEHB298:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
 	leal	-292(%ebp), %eax
 	movl	%eax, (%esp)
@@ -21993,7 +22160,7 @@ LEHB298:
 	leal	-304(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6thread4joinEv
-	movl	$LC243, (%esp)
+	movl	$LC257, (%esp)
 	call	_puts
 	movl	$__ZL16s_stackForThread, (%esp)
 	call	__ZNK20CSmartStackAllocator11getCounterREv
@@ -22020,9 +22187,9 @@ LEHB298:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-LEHE298:
+LEHE303:
 	leal	-304(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
@@ -22035,13 +22202,13 @@ LEHE298:
 	leal	-292(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
-	movl	$LC244, 8(%esp)
+	movl	$LC258, 8(%esp)
 	movl	$__Z13test9thread_nPKc, 4(%esp)
 	leal	-308(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB299:
+LEHB304:
 	call	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_
-LEHE299:
+LEHE304:
 	movl	$200, -188(%ebp)
 	leal	-188(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -22050,18 +22217,18 @@ LEHE299:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	leal	-200(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB300:
+LEHB305:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE300:
-	movl	$LC245, (%esp)
-LEHB301:
+LEHE305:
+	movl	$LC259, (%esp)
+LEHB306:
 	call	_puts
-	movl	$LC246, 8(%esp)
+	movl	$LC260, 8(%esp)
 	movl	$__Z13test9thread_nPKc, 4(%esp)
 	leal	-312(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_
-LEHE301:
+LEHE306:
 	movl	$200, -172(%ebp)
 	leal	-172(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -22070,18 +22237,18 @@ LEHE301:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	leal	-184(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB302:
+LEHB307:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE302:
-	movl	$LC245, (%esp)
-LEHB303:
+LEHE307:
+	movl	$LC259, (%esp)
+LEHB308:
 	call	_puts
-	movl	$LC247, 8(%esp)
+	movl	$LC261, 8(%esp)
 	movl	$__Z13test9thread_rPKc, 4(%esp)
 	leal	-316(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_
-LEHE303:
+LEHE308:
 	movl	$200, -156(%ebp)
 	leal	-156(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -22090,18 +22257,18 @@ LEHE303:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	leal	-168(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB304:
+LEHB309:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE304:
-	movl	$LC245, (%esp)
-LEHB305:
+LEHE309:
+	movl	$LC259, (%esp)
+LEHB310:
 	call	_puts
-	movl	$LC248, 8(%esp)
+	movl	$LC262, 8(%esp)
 	movl	$__Z13test9thread_rPKc, 4(%esp)
 	leal	-320(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_
-LEHE305:
+LEHE310:
 	movl	$200, -140(%ebp)
 	leal	-140(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -22110,11 +22277,11 @@ LEHE305:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	leal	-152(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB306:
+LEHB311:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE306:
-	movl	$LC245, (%esp)
-LEHB307:
+LEHE311:
+	movl	$LC259, (%esp)
+LEHB312:
 	call	_puts
 	movl	$__ZL16s_stackForThread, (%esp)
 	call	__ZNK20CSmartStackAllocator11getCounterREv
@@ -22141,9 +22308,9 @@ LEHB307:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-LEHE307:
+LEHE312:
 	movl	$1, 4(%esp)
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
@@ -22153,27 +22320,27 @@ LEHE307:
 	movl	%eax, 4(%esp)
 	leal	-360(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB308:
+LEHB313:
 	call	__ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
-LEHE308:
+LEHE313:
 	movl	$12, (%esp)
 	call	__Znwj
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1416
-	movl	$LC249, 4(%esp)
+	je	L1421
+	movl	$LC263, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB309:
+LEHB314:
 	call	__ZN6CTest9C1EPKc
-LEHE309:
+LEHE314:
 	movl	%ebx, %eax
-	jmp	L1417
-L1416:
+	jmp	L1422
+L1421:
 	movl	%ebx, %eax
-L1417:
+L1422:
 	movl	%eax, -76(%ebp)
 	cmpl	$0, -76(%ebp)
-	je	L1418
+	je	L1423
 	movl	-76(%ebp), %eax
 	movl	(%eax), %eax
 	addl	$4, %eax
@@ -22181,7 +22348,7 @@ L1417:
 	movl	-76(%ebp), %edx
 	movl	%edx, (%esp)
 	call	*%eax
-L1418:
+L1423:
 	movl	$__ZL16s_stackForThread, (%esp)
 	call	__ZNK20CSmartStackAllocator11getCounterREv
 	movl	%eax, -572(%ebp)
@@ -22207,23 +22374,98 @@ L1418:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
-LEHB310:
+	movl	$LC241, (%esp)
+LEHB315:
 	call	_printf
-LEHE310:
+LEHE315:
 	leal	-360(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN28CTempPolySmartStackAllocatorD1Ev
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN28CSmartStackAllocatorWithBuffILj128EED1Ev
-	movl	$LC250, 8(%esp)
+	movl	$0, 8(%esp)
+	movl	$__ZL16s_stackForThread, 4(%esp)
+	leal	-384(%ebp), %eax
+	movl	%eax, (%esp)
+LEHB316:
+	call	__ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
+LEHE316:
+	cmpl	$0, -52(%ebp)
+	je	L1424
+	movl	-52(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZdaPv
+L1424:
+	cmpl	$0, -56(%ebp)
+	je	L1425
+	movl	-56(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZdaPv
+L1425:
+	cmpl	$0, -60(%ebp)
+	je	L1426
+	movl	-60(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZdaPv
+L1426:
+	cmpl	$0, -64(%ebp)
+	je	L1427
+	movl	-64(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZdaPv
+L1427:
+	cmpl	$0, -68(%ebp)
+	je	L1428
+	movl	-68(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZdaPv
+L1428:
+	cmpl	$0, -72(%ebp)
+	je	L1429
+	movl	-72(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZdaPv
+L1429:
+	movl	$__ZL16s_stackForThread, (%esp)
+	call	__ZNK20CSmartStackAllocator11getCounterREv
+	movl	%eax, -572(%ebp)
+	movl	$__ZL16s_stackForThread, (%esp)
+	call	__ZNK20CSmartStackAllocator11getCounterNEv
+	movl	%eax, -576(%ebp)
+	movl	$__ZL16s_stackForThread, (%esp)
+	call	__ZNK20CSmartStackAllocator9getBeginREv
+	movl	%eax, %edi
+	movl	$__ZL16s_stackForThread, (%esp)
+	call	__ZNK20CSmartStackAllocator9getBeginNEv
+	movl	%eax, %esi
+	movl	$__ZL16s_stackForThread, (%esp)
+	call	__ZNK20CSmartStackAllocator10getMarkerREv
+	movl	%eax, %ebx
+	movl	$__ZL16s_stackForThread, (%esp)
+	call	__ZNK20CSmartStackAllocator10getMarkerNEv
+	movl	-572(%ebp), %ecx
+	movl	%ecx, 24(%esp)
+	movl	-576(%ebp), %edx
+	movl	%edx, 20(%esp)
+	movl	%edi, 16(%esp)
+	movl	%esi, 12(%esp)
+	movl	%ebx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC241, (%esp)
+LEHB317:
+	call	_printf
+LEHE317:
+	leal	-384(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN28CTempPolySmartStackAllocatorD1Ev
+	movl	$LC264, 8(%esp)
 	movl	$__Z13test9thread_nPKc, 4(%esp)
 	leal	-324(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB311:
+LEHB318:
 	call	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_
-LEHE311:
+LEHE318:
 	movl	$200, -124(%ebp)
 	leal	-124(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -22232,18 +22474,18 @@ LEHE311:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	leal	-136(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB312:
+LEHB319:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE312:
-	movl	$LC245, (%esp)
-LEHB313:
+LEHE319:
+	movl	$LC259, (%esp)
+LEHB320:
 	call	_puts
-	movl	$LC251, 8(%esp)
+	movl	$LC265, 8(%esp)
 	movl	$__Z13test9thread_nPKc, 4(%esp)
 	leal	-328(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadC1IRFvPKcEIRA29_S1_EEEOT_DpOT0_
-LEHE313:
+LEHE320:
 	movl	$200, -108(%ebp)
 	leal	-108(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -22252,18 +22494,18 @@ LEHE313:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	leal	-120(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB314:
+LEHB321:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE314:
-	movl	$LC245, (%esp)
-LEHB315:
+LEHE321:
+	movl	$LC259, (%esp)
+LEHB322:
 	call	_puts
-	movl	$LC252, 8(%esp)
+	movl	$LC266, 8(%esp)
 	movl	$__Z13test9thread_rPKc, 4(%esp)
 	leal	-332(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadC1IRFvPKcEIRA29_S1_EEEOT_DpOT0_
-LEHE315:
+LEHE322:
 	movl	$200, -92(%ebp)
 	leal	-92(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -22272,18 +22514,18 @@ LEHE315:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	leal	-104(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB316:
+LEHB323:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE316:
-	movl	$LC245, (%esp)
-LEHB317:
+LEHE323:
+	movl	$LC259, (%esp)
+LEHB324:
 	call	_puts
-	movl	$LC253, 8(%esp)
+	movl	$LC267, 8(%esp)
 	movl	$__Z13test9thread_rPKc, 4(%esp)
 	leal	-336(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadC1IRFvPKcEIRA29_S1_EEEOT_DpOT0_
-LEHE317:
+LEHE324:
 	movl	$200, -80(%ebp)
 	leal	-80(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -22292,11 +22534,11 @@ LEHE317:
 	call	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IivEERKT_
 	leal	-88(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB318:
+LEHB325:
 	call	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
-LEHE318:
-	movl	$LC245, (%esp)
-LEHB319:
+LEHE325:
+	movl	$LC259, (%esp)
+LEHB326:
 	call	_puts
 	movl	$__ZL16s_stackForThread, (%esp)
 	call	__ZNK20CSmartStackAllocator11getCounterREv
@@ -22323,7 +22565,7 @@ LEHB319:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
 	leal	-308(%ebp), %eax
 	movl	%eax, (%esp)
@@ -22349,7 +22591,7 @@ LEHB319:
 	leal	-336(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6thread4joinEv
-	movl	$LC243, (%esp)
+	movl	$LC257, (%esp)
 	call	_puts
 	movl	$__ZL16s_stackForThread, (%esp)
 	call	__ZNK20CSmartStackAllocator11getCounterREv
@@ -22376,9 +22618,9 @@ LEHB319:
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
+	movl	$LC241, (%esp)
 	call	_printf
-LEHE319:
+LEHE326:
 	leal	-336(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
@@ -22403,196 +22645,105 @@ LEHE319:
 	leal	-308(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
-	movl	$0, 8(%esp)
-	movl	$__ZL16s_stackForThread, 4(%esp)
-	leal	-384(%ebp), %eax
-	movl	%eax, (%esp)
-LEHB320:
-	call	__ZN28CTempPolySmartStackAllocatorC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
-LEHE320:
-	movl	-52(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZdlPv
-	movl	-56(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZdlPv
-	movl	-60(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZdlPv
-	movl	-64(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZdlPv
-	movl	-68(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZdlPv
-	movl	-72(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZdlPv
-	movl	$__ZL16s_stackForThread, (%esp)
-	call	__ZNK20CSmartStackAllocator11getCounterREv
-	movl	%eax, -572(%ebp)
-	movl	$__ZL16s_stackForThread, (%esp)
-	call	__ZNK20CSmartStackAllocator11getCounterNEv
-	movl	%eax, -576(%ebp)
-	movl	$__ZL16s_stackForThread, (%esp)
-	call	__ZNK20CSmartStackAllocator9getBeginREv
-	movl	%eax, %edi
-	movl	$__ZL16s_stackForThread, (%esp)
-	call	__ZNK20CSmartStackAllocator9getBeginNEv
+	jmp	L1508
+L1471:
 	movl	%eax, %esi
-	movl	$__ZL16s_stackForThread, (%esp)
-	call	__ZNK20CSmartStackAllocator10getMarkerREv
+	movl	%ebx, (%esp)
+	call	__ZdlPv
+	movl	%esi, %ebx
+	jmp	L1431
+L1473:
+	movl	%eax, %esi
+	movl	%ebx, (%esp)
+	call	__ZdlPv
+	movl	%esi, %ebx
+	jmp	L1431
+L1474:
+	movl	%eax, %esi
+	movl	%ebx, (%esp)
+	call	__ZdlPv
+	movl	%esi, %ebx
+	jmp	L1431
+L1475:
+	movl	%eax, %esi
+	movl	%ebx, (%esp)
+	call	__ZdlPv
+	movl	%esi, %ebx
+	jmp	L1431
+L1476:
+	movl	%eax, %esi
+	movl	%ebx, (%esp)
+	call	__ZdlPv
+	movl	%esi, %ebx
+	jmp	L1431
+L1477:
+	movl	%eax, %esi
+	movl	%ebx, (%esp)
+	call	__ZdlPv
+	movl	%esi, %ebx
+	jmp	L1431
+L1472:
 	movl	%eax, %ebx
-	movl	$__ZL16s_stackForThread, (%esp)
-	call	__ZNK20CSmartStackAllocator10getMarkerNEv
-	movl	-572(%ebp), %ecx
-	movl	%ecx, 24(%esp)
-	movl	-576(%ebp), %edx
-	movl	%edx, 20(%esp)
-	movl	%edi, 16(%esp)
-	movl	%esi, 12(%esp)
-	movl	%ebx, 8(%esp)
-	movl	%eax, 4(%esp)
-	movl	$LC227, (%esp)
-LEHB321:
-	call	_printf
-LEHE321:
-	leal	-384(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN28CTempPolySmartStackAllocatorD1Ev
-	jmp	L1497
-L1460:
-	movl	%eax, %esi
-	movl	%ebx, (%esp)
-	call	__ZdlPv
-	movl	%esi, %ebx
-	jmp	L1420
-L1462:
-	movl	%eax, %esi
-	movl	%ebx, (%esp)
-	call	__ZdlPv
-	movl	%esi, %ebx
-	jmp	L1420
-L1463:
-	movl	%eax, %esi
-	movl	%ebx, (%esp)
-	call	__ZdlPv
-	movl	%esi, %ebx
-	jmp	L1420
-L1464:
-	movl	%eax, %esi
-	movl	%ebx, (%esp)
-	call	__ZdlPv
-	movl	%esi, %ebx
-	jmp	L1420
-L1465:
-	movl	%eax, %esi
-	movl	%ebx, (%esp)
-	call	__ZdlPv
-	movl	%esi, %ebx
-	jmp	L1420
-L1466:
-	movl	%eax, %esi
-	movl	%ebx, (%esp)
-	call	__ZdlPv
-	movl	%esi, %ebx
-	jmp	L1420
-L1461:
-	movl	%eax, %ebx
-L1420:
+L1431:
 	leal	-240(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN28CTempPolySmartStackAllocatorD1Ev
-	jmp	L1426
-L1459:
+	jmp	L1437
+L1470:
 	movl	%eax, %ebx
-L1426:
+L1437:
 	leal	-556(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN28CSmartStackAllocatorWithBuffILj128EED1Ev
 	movl	%ebx, %eax
-	jmp	L1427
-L1458:
-L1427:
+	jmp	L1438
+L1469:
+L1438:
 	movl	%eax, (%esp)
-LEHB322:
+LEHB327:
 	call	__Unwind_Resume
-L1467:
-	movl	%eax, (%esp)
-	call	__Unwind_Resume
-L1468:
+L1478:
 	movl	%eax, (%esp)
 	call	__Unwind_Resume
-L1473:
+L1479:
+	movl	%eax, (%esp)
+	call	__Unwind_Resume
+L1484:
 	movl	%eax, %ebx
-	jmp	L1431
-L1474:
+	jmp	L1442
+L1485:
 	movl	%eax, %ebx
-L1431:
+L1442:
 	leal	-304(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
-	jmp	L1432
-L1472:
+	jmp	L1443
+L1483:
 	movl	%eax, %ebx
-L1432:
+L1443:
 	leal	-300(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
-	jmp	L1433
-L1471:
+	jmp	L1444
+L1482:
 	movl	%eax, %ebx
-L1433:
+L1444:
 	leal	-296(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
-	jmp	L1434
-L1470:
+	jmp	L1445
+L1481:
 	movl	%eax, %ebx
-L1434:
+L1445:
 	leal	-292(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
 	movl	%ebx, %eax
-	jmp	L1435
-L1469:
-L1435:
+	jmp	L1446
+L1480:
+L1446:
 	movl	%eax, (%esp)
 	call	__Unwind_Resume
-L1476:
-	movl	%eax, %ebx
-	jmp	L1437
-L1478:
-	movl	%eax, %ebx
-	jmp	L1439
-L1480:
-	movl	%eax, %ebx
-	jmp	L1441
-L1482:
-	movl	%eax, %ebx
-	jmp	L1443
-L1485:
-	movl	%eax, %esi
-	movl	%ebx, (%esp)
-	call	__ZdlPv
-	movl	%esi, %ebx
-	jmp	L1445
-L1486:
-	movl	%eax, %ebx
-L1445:
-	leal	-360(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN28CTempPolySmartStackAllocatorD1Ev
-	jmp	L1446
-L1484:
-	movl	%eax, %ebx
-L1446:
-	leal	-556(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN28CSmartStackAllocatorWithBuffILj128EED1Ev
-	movl	%ebx, %eax
-	movl	%eax, %ebx
-	jmp	L1443
 L1487:
 	movl	%eax, %ebx
 	jmp	L1448
@@ -22605,80 +22756,114 @@ L1491:
 L1493:
 	movl	%eax, %ebx
 	jmp	L1454
+L1496:
+	movl	%eax, %esi
+	movl	%ebx, (%esp)
+	call	__ZdlPv
+	movl	%esi, %ebx
+	jmp	L1456
+L1497:
+	movl	%eax, %ebx
+L1456:
+	leal	-360(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN28CTempPolySmartStackAllocatorD1Ev
+	jmp	L1457
+L1495:
+	movl	%eax, %ebx
+L1457:
+	leal	-556(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN28CSmartStackAllocatorWithBuffILj128EED1Ev
+	movl	%ebx, %eax
+	movl	%eax, %ebx
+	jmp	L1454
+L1499:
+	movl	%eax, %ebx
+	leal	-384(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN28CTempPolySmartStackAllocatorD1Ev
+	movl	%ebx, %eax
+	jmp	L1459
+L1498:
+L1459:
+	movl	%eax, %ebx
+	jmp	L1454
+L1500:
+	movl	%eax, %ebx
+	jmp	L1461
+L1502:
+	movl	%eax, %ebx
+	jmp	L1463
+L1504:
+	movl	%eax, %ebx
+	jmp	L1465
+L1506:
+	movl	%eax, %ebx
+	jmp	L1467
+L1507:
+	movl	%eax, %ebx
+L1467:
+	leal	-336(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSt6threadD1Ev
+	jmp	L1465
+L1505:
+	movl	%eax, %ebx
+L1465:
+	leal	-332(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSt6threadD1Ev
+	jmp	L1463
+L1503:
+	movl	%eax, %ebx
+L1463:
+	leal	-328(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSt6threadD1Ev
+	jmp	L1461
+L1501:
+	movl	%eax, %ebx
+L1461:
+	leal	-324(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSt6threadD1Ev
+	jmp	L1454
 L1494:
 	movl	%eax, %ebx
 L1454:
-	leal	-336(%ebp), %eax
+	leal	-320(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
 	jmp	L1452
 L1492:
 	movl	%eax, %ebx
 L1452:
-	leal	-332(%ebp), %eax
+	leal	-316(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
 	jmp	L1450
 L1490:
 	movl	%eax, %ebx
 L1450:
-	leal	-328(%ebp), %eax
+	leal	-312(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
 	jmp	L1448
 L1488:
 	movl	%eax, %ebx
 L1448:
-	leal	-324(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSt6threadD1Ev
-	jmp	L1443
-L1483:
-	movl	%eax, %ebx
-L1443:
-	leal	-320(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSt6threadD1Ev
-	jmp	L1441
-L1481:
-	movl	%eax, %ebx
-L1441:
-	leal	-316(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSt6threadD1Ev
-	jmp	L1439
-L1479:
-	movl	%eax, %ebx
-L1439:
-	leal	-312(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSt6threadD1Ev
-	jmp	L1437
-L1477:
-	movl	%eax, %ebx
-L1437:
 	leal	-308(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6threadD1Ev
 	movl	%ebx, %eax
-	jmp	L1455
-L1475:
-L1455:
+	jmp	L1468
+L1486:
+L1468:
 	movl	%eax, (%esp)
 	call	__Unwind_Resume
-L1496:
-	movl	%eax, %ebx
-	leal	-384(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN28CTempPolySmartStackAllocatorD1Ev
-	movl	%ebx, %eax
-	jmp	L1457
-L1495:
-L1457:
-	movl	%eax, (%esp)
-	call	__Unwind_Resume
-LEHE322:
-L1497:
+LEHE327:
+L1508:
 	addl	$604, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -22691,225 +22876,225 @@ L1497:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3176:
+LFE3170:
 	.section	.gcc_except_table,"w"
-LLSDA3176:
+LLSDA3170:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3176-LLSDACSB3176
-LLSDACSB3176:
-	.uleb128 LEHB274-LFB3176
-	.uleb128 LEHE274-LEHB274
-	.uleb128 0
-	.uleb128 0
-	.uleb128 LEHB275-LFB3176
-	.uleb128 LEHE275-LEHB275
-	.uleb128 L1458-LFB3176
-	.uleb128 0
-	.uleb128 LEHB276-LFB3176
-	.uleb128 LEHE276-LEHB276
-	.uleb128 L1459-LFB3176
-	.uleb128 0
-	.uleb128 LEHB277-LFB3176
-	.uleb128 LEHE277-LEHB277
-	.uleb128 L1460-LFB3176
-	.uleb128 0
-	.uleb128 LEHB278-LFB3176
-	.uleb128 LEHE278-LEHB278
-	.uleb128 L1461-LFB3176
-	.uleb128 0
-	.uleb128 LEHB279-LFB3176
+	.uleb128 LLSDACSE3170-LLSDACSB3170
+LLSDACSB3170:
+	.uleb128 LEHB279-LFB3170
 	.uleb128 LEHE279-LEHB279
-	.uleb128 L1462-LFB3176
 	.uleb128 0
-	.uleb128 LEHB280-LFB3176
+	.uleb128 0
+	.uleb128 LEHB280-LFB3170
 	.uleb128 LEHE280-LEHB280
-	.uleb128 L1461-LFB3176
+	.uleb128 L1469-LFB3170
 	.uleb128 0
-	.uleb128 LEHB281-LFB3176
+	.uleb128 LEHB281-LFB3170
 	.uleb128 LEHE281-LEHB281
-	.uleb128 L1463-LFB3176
+	.uleb128 L1470-LFB3170
 	.uleb128 0
-	.uleb128 LEHB282-LFB3176
+	.uleb128 LEHB282-LFB3170
 	.uleb128 LEHE282-LEHB282
-	.uleb128 L1461-LFB3176
+	.uleb128 L1471-LFB3170
 	.uleb128 0
-	.uleb128 LEHB283-LFB3176
+	.uleb128 LEHB283-LFB3170
 	.uleb128 LEHE283-LEHB283
-	.uleb128 L1464-LFB3176
+	.uleb128 L1472-LFB3170
 	.uleb128 0
-	.uleb128 LEHB284-LFB3176
+	.uleb128 LEHB284-LFB3170
 	.uleb128 LEHE284-LEHB284
-	.uleb128 L1461-LFB3176
+	.uleb128 L1473-LFB3170
 	.uleb128 0
-	.uleb128 LEHB285-LFB3176
+	.uleb128 LEHB285-LFB3170
 	.uleb128 LEHE285-LEHB285
-	.uleb128 L1465-LFB3176
+	.uleb128 L1472-LFB3170
 	.uleb128 0
-	.uleb128 LEHB286-LFB3176
+	.uleb128 LEHB286-LFB3170
 	.uleb128 LEHE286-LEHB286
-	.uleb128 L1461-LFB3176
+	.uleb128 L1474-LFB3170
 	.uleb128 0
-	.uleb128 LEHB287-LFB3176
+	.uleb128 LEHB287-LFB3170
 	.uleb128 LEHE287-LEHB287
-	.uleb128 L1466-LFB3176
+	.uleb128 L1472-LFB3170
 	.uleb128 0
-	.uleb128 LEHB288-LFB3176
+	.uleb128 LEHB288-LFB3170
 	.uleb128 LEHE288-LEHB288
-	.uleb128 L1461-LFB3176
+	.uleb128 L1475-LFB3170
 	.uleb128 0
-	.uleb128 LEHB289-LFB3176
+	.uleb128 LEHB289-LFB3170
 	.uleb128 LEHE289-LEHB289
+	.uleb128 L1472-LFB3170
 	.uleb128 0
-	.uleb128 0
-	.uleb128 LEHB290-LFB3176
+	.uleb128 LEHB290-LFB3170
 	.uleb128 LEHE290-LEHB290
-	.uleb128 L1467-LFB3176
+	.uleb128 L1476-LFB3170
 	.uleb128 0
-	.uleb128 LEHB291-LFB3176
+	.uleb128 LEHB291-LFB3170
 	.uleb128 LEHE291-LEHB291
-	.uleb128 L1468-LFB3176
+	.uleb128 L1472-LFB3170
 	.uleb128 0
-	.uleb128 LEHB292-LFB3176
+	.uleb128 LEHB292-LFB3170
 	.uleb128 LEHE292-LEHB292
+	.uleb128 L1477-LFB3170
 	.uleb128 0
-	.uleb128 0
-	.uleb128 LEHB293-LFB3176
+	.uleb128 LEHB293-LFB3170
 	.uleb128 LEHE293-LEHB293
-	.uleb128 L1469-LFB3176
+	.uleb128 L1472-LFB3170
 	.uleb128 0
-	.uleb128 LEHB294-LFB3176
+	.uleb128 LEHB294-LFB3170
 	.uleb128 LEHE294-LEHB294
-	.uleb128 L1470-LFB3176
 	.uleb128 0
-	.uleb128 LEHB295-LFB3176
+	.uleb128 0
+	.uleb128 LEHB295-LFB3170
 	.uleb128 LEHE295-LEHB295
-	.uleb128 L1471-LFB3176
+	.uleb128 L1478-LFB3170
 	.uleb128 0
-	.uleb128 LEHB296-LFB3176
+	.uleb128 LEHB296-LFB3170
 	.uleb128 LEHE296-LEHB296
-	.uleb128 L1472-LFB3176
+	.uleb128 L1479-LFB3170
 	.uleb128 0
-	.uleb128 LEHB297-LFB3176
+	.uleb128 LEHB297-LFB3170
 	.uleb128 LEHE297-LEHB297
-	.uleb128 L1473-LFB3176
 	.uleb128 0
-	.uleb128 LEHB298-LFB3176
+	.uleb128 0
+	.uleb128 LEHB298-LFB3170
 	.uleb128 LEHE298-LEHB298
-	.uleb128 L1474-LFB3176
+	.uleb128 L1480-LFB3170
 	.uleb128 0
-	.uleb128 LEHB299-LFB3176
+	.uleb128 LEHB299-LFB3170
 	.uleb128 LEHE299-LEHB299
-	.uleb128 L1475-LFB3176
+	.uleb128 L1481-LFB3170
 	.uleb128 0
-	.uleb128 LEHB300-LFB3176
+	.uleb128 LEHB300-LFB3170
 	.uleb128 LEHE300-LEHB300
-	.uleb128 L1476-LFB3176
+	.uleb128 L1482-LFB3170
 	.uleb128 0
-	.uleb128 LEHB301-LFB3176
+	.uleb128 LEHB301-LFB3170
 	.uleb128 LEHE301-LEHB301
-	.uleb128 L1477-LFB3176
+	.uleb128 L1483-LFB3170
 	.uleb128 0
-	.uleb128 LEHB302-LFB3176
+	.uleb128 LEHB302-LFB3170
 	.uleb128 LEHE302-LEHB302
-	.uleb128 L1478-LFB3176
+	.uleb128 L1484-LFB3170
 	.uleb128 0
-	.uleb128 LEHB303-LFB3176
+	.uleb128 LEHB303-LFB3170
 	.uleb128 LEHE303-LEHB303
-	.uleb128 L1479-LFB3176
+	.uleb128 L1485-LFB3170
 	.uleb128 0
-	.uleb128 LEHB304-LFB3176
+	.uleb128 LEHB304-LFB3170
 	.uleb128 LEHE304-LEHB304
-	.uleb128 L1480-LFB3176
+	.uleb128 L1486-LFB3170
 	.uleb128 0
-	.uleb128 LEHB305-LFB3176
+	.uleb128 LEHB305-LFB3170
 	.uleb128 LEHE305-LEHB305
-	.uleb128 L1481-LFB3176
+	.uleb128 L1487-LFB3170
 	.uleb128 0
-	.uleb128 LEHB306-LFB3176
+	.uleb128 LEHB306-LFB3170
 	.uleb128 LEHE306-LEHB306
-	.uleb128 L1482-LFB3176
+	.uleb128 L1488-LFB3170
 	.uleb128 0
-	.uleb128 LEHB307-LFB3176
+	.uleb128 LEHB307-LFB3170
 	.uleb128 LEHE307-LEHB307
-	.uleb128 L1483-LFB3176
+	.uleb128 L1489-LFB3170
 	.uleb128 0
-	.uleb128 LEHB308-LFB3176
+	.uleb128 LEHB308-LFB3170
 	.uleb128 LEHE308-LEHB308
-	.uleb128 L1484-LFB3176
+	.uleb128 L1490-LFB3170
 	.uleb128 0
-	.uleb128 LEHB309-LFB3176
+	.uleb128 LEHB309-LFB3170
 	.uleb128 LEHE309-LEHB309
-	.uleb128 L1485-LFB3176
+	.uleb128 L1491-LFB3170
 	.uleb128 0
-	.uleb128 LEHB310-LFB3176
+	.uleb128 LEHB310-LFB3170
 	.uleb128 LEHE310-LEHB310
-	.uleb128 L1486-LFB3176
+	.uleb128 L1492-LFB3170
 	.uleb128 0
-	.uleb128 LEHB311-LFB3176
+	.uleb128 LEHB311-LFB3170
 	.uleb128 LEHE311-LEHB311
-	.uleb128 L1483-LFB3176
+	.uleb128 L1493-LFB3170
 	.uleb128 0
-	.uleb128 LEHB312-LFB3176
+	.uleb128 LEHB312-LFB3170
 	.uleb128 LEHE312-LEHB312
-	.uleb128 L1487-LFB3176
+	.uleb128 L1494-LFB3170
 	.uleb128 0
-	.uleb128 LEHB313-LFB3176
+	.uleb128 LEHB313-LFB3170
 	.uleb128 LEHE313-LEHB313
-	.uleb128 L1488-LFB3176
+	.uleb128 L1495-LFB3170
 	.uleb128 0
-	.uleb128 LEHB314-LFB3176
+	.uleb128 LEHB314-LFB3170
 	.uleb128 LEHE314-LEHB314
-	.uleb128 L1489-LFB3176
+	.uleb128 L1496-LFB3170
 	.uleb128 0
-	.uleb128 LEHB315-LFB3176
+	.uleb128 LEHB315-LFB3170
 	.uleb128 LEHE315-LEHB315
-	.uleb128 L1490-LFB3176
+	.uleb128 L1497-LFB3170
 	.uleb128 0
-	.uleb128 LEHB316-LFB3176
+	.uleb128 LEHB316-LFB3170
 	.uleb128 LEHE316-LEHB316
-	.uleb128 L1491-LFB3176
+	.uleb128 L1498-LFB3170
 	.uleb128 0
-	.uleb128 LEHB317-LFB3176
+	.uleb128 LEHB317-LFB3170
 	.uleb128 LEHE317-LEHB317
-	.uleb128 L1492-LFB3176
+	.uleb128 L1499-LFB3170
 	.uleb128 0
-	.uleb128 LEHB318-LFB3176
+	.uleb128 LEHB318-LFB3170
 	.uleb128 LEHE318-LEHB318
-	.uleb128 L1493-LFB3176
+	.uleb128 L1494-LFB3170
 	.uleb128 0
-	.uleb128 LEHB319-LFB3176
+	.uleb128 LEHB319-LFB3170
 	.uleb128 LEHE319-LEHB319
-	.uleb128 L1494-LFB3176
+	.uleb128 L1500-LFB3170
 	.uleb128 0
-	.uleb128 LEHB320-LFB3176
+	.uleb128 LEHB320-LFB3170
 	.uleb128 LEHE320-LEHB320
-	.uleb128 L1495-LFB3176
+	.uleb128 L1501-LFB3170
 	.uleb128 0
-	.uleb128 LEHB321-LFB3176
+	.uleb128 LEHB321-LFB3170
 	.uleb128 LEHE321-LEHB321
-	.uleb128 L1496-LFB3176
+	.uleb128 L1502-LFB3170
 	.uleb128 0
-	.uleb128 LEHB322-LFB3176
+	.uleb128 LEHB322-LFB3170
 	.uleb128 LEHE322-LEHB322
+	.uleb128 L1503-LFB3170
+	.uleb128 0
+	.uleb128 LEHB323-LFB3170
+	.uleb128 LEHE323-LEHB323
+	.uleb128 L1504-LFB3170
+	.uleb128 0
+	.uleb128 LEHB324-LFB3170
+	.uleb128 LEHE324-LEHB324
+	.uleb128 L1505-LFB3170
+	.uleb128 0
+	.uleb128 LEHB325-LFB3170
+	.uleb128 LEHE325-LEHB325
+	.uleb128 L1506-LFB3170
+	.uleb128 0
+	.uleb128 LEHB326-LFB3170
+	.uleb128 LEHE326-LEHB326
+	.uleb128 L1507-LFB3170
+	.uleb128 0
+	.uleb128 LEHB327-LFB3170
+	.uleb128 LEHE327-LEHB327
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3176:
+LLSDACSE3170:
 	.text
 	.def	___main;	.scl	2;	.type	32;	.endef
 	.section .rdata,"dr"
 	.align 4
-LC254:
+LC268:
 	.ascii "---------- main:start ----------\0"
 	.align 4
-LC255:
+LC269:
 	.ascii "---------- main:end ----------\0"
 	.text
 	.globl	_main
 	.def	_main;	.scl	2;	.type	32;	.endef
 _main:
-LFB3177:
+LFB3171:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -22919,7 +23104,7 @@ LFB3177:
 	andl	$-16, %esp
 	subl	$16, %esp
 	call	___main
-	movl	$LC254, (%esp)
+	movl	$LC268, (%esp)
 	call	_puts
 	call	__Z5test0v
 	call	__Z5test1v
@@ -22930,9 +23115,10 @@ LFB3177:
 	call	__Z5test5v
 	call	__Z5test6v
 	call	__Z5test7v
-	call	__Z5test8v
+	call	__Z6test8av
+	call	__Z6test8bv
 	call	__Z5test9v
-	movl	$LC255, (%esp)
+	movl	$LC269, (%esp)
 	call	_puts
 	movl	$0, %eax
 	leave
@@ -22940,16 +23126,16 @@ LFB3177:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3177:
+LFE3171:
 	.section	.text$_Z7new_ptrI6CTest0IPKcEEPT_PcDpT0_,"x"
 	.linkonce discard
 	.globl	__Z7new_ptrI6CTest0IPKcEEPT_PcDpT0_
 	.def	__Z7new_ptrI6CTest0IPKcEEPT_PcDpT0_;	.scl	2;	.type	32;	.endef
 __Z7new_ptrI6CTest0IPKcEEPT_PcDpT0_:
-LFB3178:
+LFB3172:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3178
+	.cfi_lsda 0,LLSDA3172
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -22963,41 +23149,41 @@ LFB3178:
 	.cfi_offset 6, -16
 	.cfi_offset 3, -20
 	cmpl	$0, 8(%ebp)
-	jne	L1501
+	jne	L1512
 	movl	$0, %eax
-	jmp	L1507
-L1501:
+	jmp	L1518
+L1512:
 	movl	8(%ebp), %esi
 	movl	%esi, 4(%esp)
 	movl	$4, (%esp)
 	call	__ZnwjPc
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1503
+	je	L1514
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB323:
+LEHB328:
 	call	__ZN6CTest0C1EPKc
-LEHE323:
+LEHE328:
 	movl	%ebx, %eax
-	jmp	L1504
-L1503:
+	jmp	L1515
+L1514:
 	movl	%ebx, %eax
-L1504:
+L1515:
 	nop
-	jmp	L1507
-L1506:
+	jmp	L1518
+L1517:
 	movl	%eax, %edi
 	movl	%esi, 4(%esp)
 	movl	%ebx, (%esp)
 	call	__ZdlPvPc
 	movl	%edi, %eax
 	movl	%eax, (%esp)
-LEHB324:
+LEHB329:
 	call	__Unwind_Resume
-LEHE324:
-L1507:
+LEHE329:
+L1518:
 	addl	$28, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -23010,23 +23196,23 @@ L1507:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3178:
+LFE3172:
 	.section	.gcc_except_table,"w"
-LLSDA3178:
+LLSDA3172:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3178-LLSDACSB3178
-LLSDACSB3178:
-	.uleb128 LEHB323-LFB3178
-	.uleb128 LEHE323-LEHB323
-	.uleb128 L1506-LFB3178
+	.uleb128 LLSDACSE3172-LLSDACSB3172
+LLSDACSB3172:
+	.uleb128 LEHB328-LFB3172
+	.uleb128 LEHE328-LEHB328
+	.uleb128 L1517-LFB3172
 	.uleb128 0
-	.uleb128 LEHB324-LFB3178
-	.uleb128 LEHE324-LEHB324
+	.uleb128 LEHB329-LFB3172
+	.uleb128 LEHE329-LEHB329
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3178:
+LLSDACSE3172:
 	.section	.text$_Z7new_ptrI6CTest0IPKcEEPT_PcDpT0_,"x"
 	.linkonce discard
 	.weak	__Z7new_ptrI6CTest0JPKcEEPT_PcDpT0_
@@ -23037,7 +23223,7 @@ LLSDACSE3178:
 	.globl	__Z10delete_ptrI6CTest0EvRPT_Pc
 	.def	__Z10delete_ptrI6CTest0EvRPT_Pc;	.scl	2;	.type	32;	.endef
 __Z10delete_ptrI6CTest0EvRPT_Pc:
-LFB3179:
+LFB3173:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23045,148 +23231,6 @@ LFB3179:
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1509
-	jmp	L1508
-L1509:
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%eax, (%esp)
-	call	__ZN6CTest0D1Ev
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1508:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3179:
-	.section .rdata,"dr"
-LC256:
-	.ascii "delete_ptr(p=0x%p)\12\0"
-	.section	.text$_Z10delete_ptrI6CTest1EvRPT_,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrI6CTest1EvRPT_
-	.def	__Z10delete_ptrI6CTest1EvRPT_;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrI6CTest1EvRPT_:
-LFB3180:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%eax, 4(%esp)
-	movl	$LC256, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1512
-	jmp	L1511
-L1512:
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%eax, (%esp)
-	call	__ZN6CTest1D1Ev
-	movl	8(%ebp), %eax
-	movl	(%eax), %edx
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZdlPvPc
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1511:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3180:
-	.section .rdata,"dr"
-	.align 4
-LC257:
-	.ascii "delete_ptr(p=0x%p, array_num=%d)\12\0"
-	.section	.text$_Z10delete_ptrI6CTest1EvRPT_j,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrI6CTest1EvRPT_j
-	.def	__Z10delete_ptrI6CTest1EvRPT_j;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrI6CTest1EvRPT_j:
-LFB3181:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$40, %esp
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	12(%ebp), %edx
-	movl	%edx, 8(%esp)
-	movl	%eax, 4(%esp)
-	movl	$LC257, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1515
-	jmp	L1514
-L1515:
-	movl	$0, -12(%ebp)
-	jmp	L1517
-L1518:
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%eax, (%esp)
-	call	__ZN6CTest1D1Ev
-	addl	$1, -12(%ebp)
-L1517:
-	movl	-12(%ebp), %eax
-	cmpl	12(%ebp), %eax
-	jb	L1518
-	movl	8(%ebp), %eax
-	movl	(%eax), %edx
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZdaPvPc
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1514:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3181:
-	.section	.text$_Z10delete_ptrIcEvRPT_,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrIcEvRPT_
-	.def	__Z10delete_ptrIcEvRPT_;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIcEvRPT_:
-LFB3182:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%eax, 4(%esp)
-	movl	$LC256, (%esp)
-	call	_printf
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
@@ -23194,12 +23238,9 @@ LFB3182:
 	jmp	L1519
 L1520:
 	movl	8(%ebp), %eax
-	movl	(%eax), %edx
-	movl	8(%ebp), %eax
 	movl	(%eax), %eax
-	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZdlPvPc
+	call	__ZN6CTest0D1Ev
 	movl	8(%ebp), %eax
 	movl	$0, (%eax)
 L1519:
@@ -23208,13 +23249,64 @@ L1519:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3182:
-	.section	.text$_Z10delete_ptrIcEvRPT_j,"x"
+LFE3173:
+	.section .rdata,"dr"
+LC270:
+	.ascii "delete_ptr(p=0x%p)\12\0"
+	.section	.text$_Z10delete_ptrI6CTest1EvRPT_,"x"
 	.linkonce discard
-	.globl	__Z10delete_ptrIcEvRPT_j
-	.def	__Z10delete_ptrIcEvRPT_j;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIcEvRPT_j:
-LFB3183:
+	.globl	__Z10delete_ptrI6CTest1EvRPT_
+	.def	__Z10delete_ptrI6CTest1EvRPT_;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrI6CTest1EvRPT_:
+LFB3174:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%eax, 4(%esp)
+	movl	$LC270, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1523
+	jmp	L1522
+L1523:
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%eax, (%esp)
+	call	__ZN6CTest1D1Ev
+	movl	8(%ebp), %eax
+	movl	(%eax), %edx
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZdlPvPc
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1522:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3174:
+	.section .rdata,"dr"
+	.align 4
+LC271:
+	.ascii "delete_ptr(p=0x%p, array_num=%d)\12\0"
+	.section	.text$_Z10delete_ptrI6CTest1EvRPT_j,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrI6CTest1EvRPT_j
+	.def	__Z10delete_ptrI6CTest1EvRPT_j;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrI6CTest1EvRPT_j:
+LFB3175:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23227,22 +23319,26 @@ LFB3183:
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	%eax, 4(%esp)
-	movl	$LC257, (%esp)
+	movl	$LC271, (%esp)
 	call	_printf
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1523
-	jmp	L1522
-L1523:
-	movl	$0, -12(%ebp)
+	jne	L1526
 	jmp	L1525
 L1526:
+	movl	$0, -12(%ebp)
+	jmp	L1528
+L1529:
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%eax, (%esp)
+	call	__ZN6CTest1D1Ev
 	addl	$1, -12(%ebp)
-L1525:
+L1528:
 	movl	-12(%ebp), %eax
 	cmpl	12(%ebp), %eax
-	jb	L1526
+	jb	L1529
 	movl	8(%ebp), %eax
 	movl	(%eax), %edx
 	movl	8(%ebp), %eax
@@ -23252,19 +23348,19 @@ L1525:
 	call	__ZdaPvPc
 	movl	8(%ebp), %eax
 	movl	$0, (%eax)
-L1522:
+L1525:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3183:
-	.section	.text$_Z10delete_ptrI8CTest1exEvRPT_,"x"
+LFE3175:
+	.section	.text$_Z10delete_ptrIcEvRPT_,"x"
 	.linkonce discard
-	.globl	__Z10delete_ptrI8CTest1exEvRPT_
-	.def	__Z10delete_ptrI8CTest1exEvRPT_;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrI8CTest1exEvRPT_:
-LFB3184:
+	.globl	__Z10delete_ptrIcEvRPT_
+	.def	__Z10delete_ptrIcEvRPT_;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIcEvRPT_:
+LFB3176:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23275,14 +23371,104 @@ LFB3184:
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	movl	%eax, 4(%esp)
-	movl	$LC256, (%esp)
+	movl	$LC270, (%esp)
 	call	_printf
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1528
-	jmp	L1527
-L1528:
+	jne	L1531
+	jmp	L1530
+L1531:
+	movl	8(%ebp), %eax
+	movl	(%eax), %edx
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZdlPvPc
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1530:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3176:
+	.section	.text$_Z10delete_ptrIcEvRPT_j,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrIcEvRPT_j
+	.def	__Z10delete_ptrIcEvRPT_j;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIcEvRPT_j:
+LFB3177:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC271, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1534
+	jmp	L1533
+L1534:
+	movl	$0, -12(%ebp)
+	jmp	L1536
+L1537:
+	addl	$1, -12(%ebp)
+L1536:
+	movl	-12(%ebp), %eax
+	cmpl	12(%ebp), %eax
+	jb	L1537
+	movl	8(%ebp), %eax
+	movl	(%eax), %edx
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZdaPvPc
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1533:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3177:
+	.section	.text$_Z10delete_ptrI8CTest1exEvRPT_,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrI8CTest1exEvRPT_
+	.def	__Z10delete_ptrI8CTest1exEvRPT_;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrI8CTest1exEvRPT_:
+LFB3178:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%eax, 4(%esp)
+	movl	$LC270, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1539
+	jmp	L1538
+L1539:
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	movl	%eax, (%esp)
@@ -23296,23 +23482,23 @@ L1528:
 	call	__ZdlPvPc
 	movl	8(%ebp), %eax
 	movl	$0, (%eax)
-L1527:
+L1538:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3184:
+LFE3178:
 	.section	.text$_ZN10CSingletonI6CTest3EC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN10CSingletonI6CTest3EC1Ev
 	.def	__ZN10CSingletonI6CTest3EC1Ev;	.scl	2;	.type	32;	.endef
 __ZN10CSingletonI6CTest3EC1Ev:
-LFB3187:
+LFB3181:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3187
+	.cfi_lsda 0,LLSDA3181
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -23325,26 +23511,26 @@ LFB3187:
 	.cfi_offset 3, -16
 	movl	__ZN10CSingletonI6CTest3E11m_singletonE, %eax
 	testl	%eax, %eax
-	jne	L1536
+	jne	L1547
 	movl	8(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	$4, (%esp)
 	call	__ZnwI6CTest3EPvjR10CSingletonIT_E
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1532
+	je	L1543
 	movl	%ebx, (%esp)
-LEHB325:
+LEHB330:
 	call	__ZN6CTest3C1Ev
-LEHE325:
+LEHE330:
 	movl	%ebx, %eax
-	jmp	L1533
-L1532:
+	jmp	L1544
+L1543:
 	movl	%ebx, %eax
-L1533:
+L1544:
 	movl	%eax, __ZN10CSingletonI6CTest3E11m_singletonE
-	jmp	L1536
-L1535:
+	jmp	L1547
+L1546:
 	movl	%eax, %esi
 	movl	8(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -23352,10 +23538,10 @@ L1535:
 	call	__ZdlI6CTest3EvPvR10CSingletonIT_E
 	movl	%esi, %eax
 	movl	%eax, (%esp)
-LEHB326:
+LEHB331:
 	call	__Unwind_Resume
-LEHE326:
-L1536:
+LEHE331:
+L1547:
 	addl	$16, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -23366,23 +23552,23 @@ L1536:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3187:
+LFE3181:
 	.section	.gcc_except_table,"w"
-LLSDA3187:
+LLSDA3181:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3187-LLSDACSB3187
-LLSDACSB3187:
-	.uleb128 LEHB325-LFB3187
-	.uleb128 LEHE325-LEHB325
-	.uleb128 L1535-LFB3187
+	.uleb128 LLSDACSE3181-LLSDACSB3181
+LLSDACSB3181:
+	.uleb128 LEHB330-LFB3181
+	.uleb128 LEHE330-LEHB330
+	.uleb128 L1546-LFB3181
 	.uleb128 0
-	.uleb128 LEHB326-LFB3187
-	.uleb128 LEHE326-LEHB326
+	.uleb128 LEHB331-LFB3181
+	.uleb128 LEHE331-LEHB331
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3187:
+LLSDACSE3181:
 	.section	.text$_ZN10CSingletonI6CTest3EC1Ev,"x"
 	.linkonce discard
 	.section	.text$_ZN10CSingletonI6CTest3EptEv,"x"
@@ -23391,7 +23577,7 @@ LLSDACSE3187:
 	.globl	__ZN10CSingletonI6CTest3EptEv
 	.def	__ZN10CSingletonI6CTest3EptEv;	.scl	2;	.type	32;	.endef
 __ZN10CSingletonI6CTest3EptEv:
-LFB3188:
+LFB3182:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23404,14 +23590,14 @@ LFB3188:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3188:
+LFE3182:
 	.section	.text$_ZN10CSingletonI6CTest3E7destroyEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN10CSingletonI6CTest3E7destroyEv
 	.def	__ZN10CSingletonI6CTest3E7destroyEv;	.scl	2;	.type	32;	.endef
 __ZN10CSingletonI6CTest3E7destroyEv:
-LFB3189:
+LFB3183:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23421,9 +23607,9 @@ LFB3189:
 	subl	$24, %esp
 	movl	__ZN10CSingletonI6CTest3E11m_singletonE, %eax
 	testl	%eax, %eax
-	jne	L1540
-	jmp	L1539
-L1540:
+	jne	L1551
+	jmp	L1550
+L1551:
 	movl	__ZN10CSingletonI6CTest3E11m_singletonE, %eax
 	movl	%eax, (%esp)
 	call	__ZN6CTest3D1Ev
@@ -23433,20 +23619,20 @@ L1540:
 	movl	%eax, (%esp)
 	call	__ZdlI6CTest3EvPvR10CSingletonIT_E
 	movl	$0, __ZN10CSingletonI6CTest3E11m_singletonE
-L1539:
+L1550:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3189:
+LFE3183:
 	.section	.text$_ZN23CStackAllocatorWithBuffILj64EEC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN23CStackAllocatorWithBuffILj64EEC1Ev
 	.def	__ZN23CStackAllocatorWithBuffILj64EEC1Ev;	.scl	2;	.type	32;	.endef
 __ZN23CStackAllocatorWithBuffILj64EEC1Ev:
-LFB3192:
+LFB3186:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23468,14 +23654,14 @@ LFB3192:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3192:
+LFE3186:
 	.section	.text$_ZN23CStackAllocatorWithBuffILj64EED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN23CStackAllocatorWithBuffILj64EED1Ev
 	.def	__ZN23CStackAllocatorWithBuffILj64EED1Ev;	.scl	2;	.type	32;	.endef
 __ZN23CStackAllocatorWithBuffILj64EED1Ev:
-LFB3195:
+LFB3189:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23490,24 +23676,24 @@ LFB3195:
 	call	__ZN15CStackAllocatorD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1543
+	je	L1554
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1543:
+L1554:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3195:
+LFE3189:
 	.section	.text$_ZN23CStackAllocatorWithBuffILj64EED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN23CStackAllocatorWithBuffILj64EED0Ev
 	.def	__ZN23CStackAllocatorWithBuffILj64EED0Ev;	.scl	2;	.type	32;	.endef
 __ZN23CStackAllocatorWithBuffILj64EED0Ev:
-LFB3196:
+LFB3190:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23526,17 +23712,17 @@ LFB3196:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3196:
+LFE3190:
 	.section .rdata,"dr"
 	.align 4
-LC258:
+LC272:
 	.ascii "delete_ptr(p=0x%p, array_num=%d, stack_allocator.marker=%d)\12\0"
 	.section	.text$_Z10delete_ptrIfEvRPT_jR15CStackAllocator,"x"
 	.linkonce discard
 	.globl	__Z10delete_ptrIfEvRPT_jR15CStackAllocator
 	.def	__Z10delete_ptrIfEvRPT_jR15CStackAllocator;	.scl	2;	.type	32;	.endef
 __Z10delete_ptrIfEvRPT_jR15CStackAllocator:
-LFB3197:
+LFB3191:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23557,36 +23743,310 @@ LFB3197:
 	movl	12(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	%edx, 4(%esp)
-	movl	$LC258, (%esp)
+	movl	$LC272, (%esp)
 	call	_printf
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1549
-	jmp	L1548
-L1549:
+	jne	L1560
+	jmp	L1559
+L1560:
 	movl	$0, -12(%ebp)
-	jmp	L1551
-L1552:
+	jmp	L1562
+L1563:
 	addl	$1, -12(%ebp)
-L1551:
+L1562:
 	movl	-12(%ebp), %eax
 	cmpl	12(%ebp), %eax
-	jb	L1552
+	jb	L1563
 	movl	8(%ebp), %eax
 	movl	$0, (%eax)
-L1548:
+L1559:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3191:
+	.section	.text$_Z10delete_ptrIcEvRPT_jR15CStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrIcEvRPT_jR15CStackAllocator
+	.def	__Z10delete_ptrIcEvRPT_jR15CStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIcEvRPT_jR15CStackAllocator:
+LFB3192:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	16(%ebp), %eax
+	movl	(%eax), %eax
+	addl	$16, %eax
+	movl	(%eax), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, (%esp)
+	call	*%eax
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%eax, 12(%esp)
+	movl	12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC272, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1565
+	jmp	L1564
+L1565:
+	movl	$0, -12(%ebp)
+	jmp	L1567
+L1568:
+	addl	$1, -12(%ebp)
+L1567:
+	movl	-12(%ebp), %eax
+	cmpl	12(%ebp), %eax
+	jb	L1568
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1564:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3192:
+	.section	.text$_Z10delete_ptrIiEvRPT_jR15CStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrIiEvRPT_jR15CStackAllocator
+	.def	__Z10delete_ptrIiEvRPT_jR15CStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIiEvRPT_jR15CStackAllocator:
+LFB3193:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	16(%ebp), %eax
+	movl	(%eax), %eax
+	addl	$16, %eax
+	movl	(%eax), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, (%esp)
+	call	*%eax
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%eax, 12(%esp)
+	movl	12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC272, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1570
+	jmp	L1569
+L1570:
+	movl	$0, -12(%ebp)
+	jmp	L1572
+L1573:
+	addl	$1, -12(%ebp)
+L1572:
+	movl	-12(%ebp), %eax
+	cmpl	12(%ebp), %eax
+	jb	L1573
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1569:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3193:
+	.section .rdata,"dr"
+	.align 4
+LC273:
+	.ascii "delete_ptr(p=0x%p, stack_allocator.marker=%d)\12\0"
+	.section	.text$_Z10delete_ptrI7CTest4aEvRPT_R15CStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrI7CTest4aEvRPT_R15CStackAllocator
+	.def	__Z10delete_ptrI7CTest4aEvRPT_R15CStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrI7CTest4aEvRPT_R15CStackAllocator:
+LFB3194:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	addl	$16, %eax
+	movl	(%eax), %eax
+	movl	12(%ebp), %edx
+	movl	%edx, (%esp)
+	call	*%eax
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC273, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1575
+	jmp	L1574
+L1575:
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%eax, (%esp)
+	call	__ZN7CTest4aD1Ev
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1574:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3194:
+	.section	.text$_Z10delete_ptrIfEvRPT_R15CStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrIfEvRPT_R15CStackAllocator
+	.def	__Z10delete_ptrIfEvRPT_R15CStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIfEvRPT_R15CStackAllocator:
+LFB3195:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	addl	$16, %eax
+	movl	(%eax), %eax
+	movl	12(%ebp), %edx
+	movl	%edx, (%esp)
+	call	*%eax
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC273, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1578
+	jmp	L1577
+L1578:
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1577:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3195:
+	.section	.text$_Z10delete_ptrIcEvRPT_R15CStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrIcEvRPT_R15CStackAllocator
+	.def	__Z10delete_ptrIcEvRPT_R15CStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIcEvRPT_R15CStackAllocator:
+LFB3196:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	addl	$16, %eax
+	movl	(%eax), %eax
+	movl	12(%ebp), %edx
+	movl	%edx, (%esp)
+	call	*%eax
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC273, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1581
+	jmp	L1580
+L1581:
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1580:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3196:
+	.section	.text$_Z10delete_ptrIiEvRPT_R15CStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrIiEvRPT_R15CStackAllocator
+	.def	__Z10delete_ptrIiEvRPT_R15CStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIiEvRPT_R15CStackAllocator:
+LFB3197:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	addl	$16, %eax
+	movl	(%eax), %eax
+	movl	12(%ebp), %edx
+	movl	%edx, (%esp)
+	call	*%eax
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC273, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1584
+	jmp	L1583
+L1584:
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1583:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
 LFE3197:
-	.section	.text$_Z10delete_ptrIcEvRPT_jR15CStackAllocator,"x"
+	.section	.text$_Z10delete_ptrI7CTest4aEvRPT_jR15CStackAllocator,"x"
 	.linkonce discard
-	.globl	__Z10delete_ptrIcEvRPT_jR15CStackAllocator
-	.def	__Z10delete_ptrIcEvRPT_jR15CStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIcEvRPT_jR15CStackAllocator:
+	.globl	__Z10delete_ptrI7CTest4aEvRPT_jR15CStackAllocator
+	.def	__Z10delete_ptrI7CTest4aEvRPT_jR15CStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrI7CTest4aEvRPT_jR15CStackAllocator:
 LFB3198:
 	.cfi_startproc
 	pushl	%ebp
@@ -23608,316 +24068,42 @@ LFB3198:
 	movl	12(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	%edx, 4(%esp)
-	movl	$LC258, (%esp)
+	movl	$LC272, (%esp)
 	call	_printf
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1554
-	jmp	L1553
-L1554:
+	jne	L1587
+	jmp	L1586
+L1587:
 	movl	$0, -12(%ebp)
-	jmp	L1556
-L1557:
+	jmp	L1589
+L1590:
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%eax, (%esp)
+	call	__ZN7CTest4aD1Ev
 	addl	$1, -12(%ebp)
-L1556:
+L1589:
 	movl	-12(%ebp), %eax
 	cmpl	12(%ebp), %eax
-	jb	L1557
+	jb	L1590
 	movl	8(%ebp), %eax
 	movl	$0, (%eax)
-L1553:
+L1586:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
 LFE3198:
-	.section	.text$_Z10delete_ptrIiEvRPT_jR15CStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrIiEvRPT_jR15CStackAllocator
-	.def	__Z10delete_ptrIiEvRPT_jR15CStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIiEvRPT_jR15CStackAllocator:
-LFB3199:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$40, %esp
-	movl	16(%ebp), %eax
-	movl	(%eax), %eax
-	addl	$16, %eax
-	movl	(%eax), %eax
-	movl	16(%ebp), %edx
-	movl	%edx, (%esp)
-	call	*%eax
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%eax, 12(%esp)
-	movl	12(%ebp), %eax
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC258, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1559
-	jmp	L1558
-L1559:
-	movl	$0, -12(%ebp)
-	jmp	L1561
-L1562:
-	addl	$1, -12(%ebp)
-L1561:
-	movl	-12(%ebp), %eax
-	cmpl	12(%ebp), %eax
-	jb	L1562
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1558:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3199:
-	.section .rdata,"dr"
-	.align 4
-LC259:
-	.ascii "delete_ptr(p=0x%p, stack_allocator.marker=%d)\12\0"
-	.section	.text$_Z10delete_ptrI7CTest4aEvRPT_R15CStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrI7CTest4aEvRPT_R15CStackAllocator
-	.def	__Z10delete_ptrI7CTest4aEvRPT_R15CStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrI7CTest4aEvRPT_R15CStackAllocator:
-LFB3200:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	addl	$16, %eax
-	movl	(%eax), %eax
-	movl	12(%ebp), %edx
-	movl	%edx, (%esp)
-	call	*%eax
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC259, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1564
-	jmp	L1563
-L1564:
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%eax, (%esp)
-	call	__ZN7CTest4aD1Ev
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1563:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3200:
-	.section	.text$_Z10delete_ptrIfEvRPT_R15CStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrIfEvRPT_R15CStackAllocator
-	.def	__Z10delete_ptrIfEvRPT_R15CStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIfEvRPT_R15CStackAllocator:
-LFB3201:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	addl	$16, %eax
-	movl	(%eax), %eax
-	movl	12(%ebp), %edx
-	movl	%edx, (%esp)
-	call	*%eax
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC259, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1567
-	jmp	L1566
-L1567:
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1566:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3201:
-	.section	.text$_Z10delete_ptrIcEvRPT_R15CStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrIcEvRPT_R15CStackAllocator
-	.def	__Z10delete_ptrIcEvRPT_R15CStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIcEvRPT_R15CStackAllocator:
-LFB3202:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	addl	$16, %eax
-	movl	(%eax), %eax
-	movl	12(%ebp), %edx
-	movl	%edx, (%esp)
-	call	*%eax
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC259, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1570
-	jmp	L1569
-L1570:
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1569:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3202:
-	.section	.text$_Z10delete_ptrIiEvRPT_R15CStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrIiEvRPT_R15CStackAllocator
-	.def	__Z10delete_ptrIiEvRPT_R15CStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIiEvRPT_R15CStackAllocator:
-LFB3203:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	addl	$16, %eax
-	movl	(%eax), %eax
-	movl	12(%ebp), %edx
-	movl	%edx, (%esp)
-	call	*%eax
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC259, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1573
-	jmp	L1572
-L1573:
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1572:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3203:
-	.section	.text$_Z10delete_ptrI7CTest4aEvRPT_jR15CStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrI7CTest4aEvRPT_jR15CStackAllocator
-	.def	__Z10delete_ptrI7CTest4aEvRPT_jR15CStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrI7CTest4aEvRPT_jR15CStackAllocator:
-LFB3204:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$40, %esp
-	movl	16(%ebp), %eax
-	movl	(%eax), %eax
-	addl	$16, %eax
-	movl	(%eax), %eax
-	movl	16(%ebp), %edx
-	movl	%edx, (%esp)
-	call	*%eax
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%eax, 12(%esp)
-	movl	12(%ebp), %eax
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC258, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1576
-	jmp	L1575
-L1576:
-	movl	$0, -12(%ebp)
-	jmp	L1578
-L1579:
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%eax, (%esp)
-	call	__ZN7CTest4aD1Ev
-	addl	$1, -12(%ebp)
-L1578:
-	movl	-12(%ebp), %eax
-	cmpl	12(%ebp), %eax
-	jb	L1579
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1575:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3204:
 	.section	.text$_ZN27CDualStackAllocatorWithBuffILj64EEC1EN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN27CDualStackAllocatorWithBuffILj64EEC1EN15IStackAllocator9E_ORDEREDE
 	.def	__ZN27CDualStackAllocatorWithBuffILj64EEC1EN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZN27CDualStackAllocatorWithBuffILj64EEC1EN15IStackAllocator9E_ORDEREDE:
-LFB3207:
+LFB3201:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23941,14 +24127,14 @@ LFB3207:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3207:
+LFE3201:
 	.section	.text$_ZN27CDualStackAllocatorWithBuffILj64EED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN27CDualStackAllocatorWithBuffILj64EED1Ev
 	.def	__ZN27CDualStackAllocatorWithBuffILj64EED1Ev;	.scl	2;	.type	32;	.endef
 __ZN27CDualStackAllocatorWithBuffILj64EED1Ev:
-LFB3210:
+LFB3204:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23963,24 +24149,24 @@ LFB3210:
 	call	__ZN19CDualStackAllocatorD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1581
+	je	L1592
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1581:
+L1592:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3210:
+LFE3204:
 	.section	.text$_ZN27CDualStackAllocatorWithBuffILj64EED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN27CDualStackAllocatorWithBuffILj64EED0Ev
 	.def	__ZN27CDualStackAllocatorWithBuffILj64EED0Ev;	.scl	2;	.type	32;	.endef
 __ZN27CDualStackAllocatorWithBuffILj64EED0Ev:
-LFB3211:
+LFB3205:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -23999,17 +24185,17 @@ LFB3211:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3211:
+LFE3205:
 	.section .rdata,"dr"
 	.align 4
-LC260:
+LC274:
 	.ascii "delete_ptr(p=0x%p, array_num=%d, dual_allocator.marker=%d,%d)\12\0"
 	.section	.text$_Z10delete_ptrIfEvRPT_jR19CDualStackAllocator,"x"
 	.linkonce discard
 	.globl	__Z10delete_ptrIfEvRPT_jR19CDualStackAllocator
 	.def	__Z10delete_ptrIfEvRPT_jR19CDualStackAllocator;	.scl	2;	.type	32;	.endef
 __Z10delete_ptrIfEvRPT_jR19CDualStackAllocator:
-LFB3212:
+LFB3206:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24033,25 +24219,25 @@ LFB3212:
 	movl	12(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	%edx, 4(%esp)
-	movl	$LC260, (%esp)
+	movl	$LC274, (%esp)
 	call	_printf
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1587
-	jmp	L1586
-L1587:
+	jne	L1598
+	jmp	L1597
+L1598:
 	movl	$0, -12(%ebp)
-	jmp	L1589
-L1590:
+	jmp	L1600
+L1601:
 	addl	$1, -12(%ebp)
-L1589:
+L1600:
 	movl	-12(%ebp), %eax
 	cmpl	12(%ebp), %eax
-	jb	L1590
+	jb	L1601
 	movl	8(%ebp), %eax
 	movl	$0, (%eax)
-L1586:
+L1597:
 	addl	$52, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -24060,12 +24246,322 @@ L1586:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3212:
+LFE3206:
 	.section	.text$_Z10delete_ptrIcEvRPT_jR19CDualStackAllocator,"x"
 	.linkonce discard
 	.globl	__Z10delete_ptrIcEvRPT_jR19CDualStackAllocator
 	.def	__Z10delete_ptrIcEvRPT_jR19CDualStackAllocator;	.scl	2;	.type	32;	.endef
 __Z10delete_ptrIcEvRPT_jR19CDualStackAllocator:
+LFB3207:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$52, %esp
+	.cfi_offset 3, -12
+	movl	16(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerREv
+	movl	%eax, %ebx
+	movl	16(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerNEv
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%ebx, 16(%esp)
+	movl	%eax, 12(%esp)
+	movl	12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC274, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1603
+	jmp	L1602
+L1603:
+	movl	$0, -12(%ebp)
+	jmp	L1605
+L1606:
+	addl	$1, -12(%ebp)
+L1605:
+	movl	-12(%ebp), %eax
+	cmpl	12(%ebp), %eax
+	jb	L1606
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1602:
+	addl	$52, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3207:
+	.section	.text$_Z10delete_ptrIiEvRPT_jR19CDualStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrIiEvRPT_jR19CDualStackAllocator
+	.def	__Z10delete_ptrIiEvRPT_jR19CDualStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIiEvRPT_jR19CDualStackAllocator:
+LFB3208:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$52, %esp
+	.cfi_offset 3, -12
+	movl	16(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerREv
+	movl	%eax, %ebx
+	movl	16(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerNEv
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%ebx, 16(%esp)
+	movl	%eax, 12(%esp)
+	movl	12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC274, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1608
+	jmp	L1607
+L1608:
+	movl	$0, -12(%ebp)
+	jmp	L1610
+L1611:
+	addl	$1, -12(%ebp)
+L1610:
+	movl	-12(%ebp), %eax
+	cmpl	12(%ebp), %eax
+	jb	L1611
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1607:
+	addl	$52, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3208:
+	.section .rdata,"dr"
+	.align 4
+LC275:
+	.ascii "delete_ptr(p=0x%p, dual_allocator.marker=%d,%d)\12\0"
+	.section	.text$_Z10delete_ptrI7CTest4bEvRPT_R19CDualStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrI7CTest4bEvRPT_R19CDualStackAllocator
+	.def	__Z10delete_ptrI7CTest4bEvRPT_R19CDualStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrI7CTest4bEvRPT_R19CDualStackAllocator:
+LFB3209:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$20, %esp
+	.cfi_offset 3, -12
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerREv
+	movl	%eax, %ebx
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerNEv
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%ebx, 12(%esp)
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC275, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1613
+	jmp	L1612
+L1613:
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%eax, (%esp)
+	call	__ZN7CTest4bD1Ev
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1612:
+	addl	$20, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3209:
+	.section	.text$_Z10delete_ptrIfEvRPT_R19CDualStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrIfEvRPT_R19CDualStackAllocator
+	.def	__Z10delete_ptrIfEvRPT_R19CDualStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIfEvRPT_R19CDualStackAllocator:
+LFB3210:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$20, %esp
+	.cfi_offset 3, -12
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerREv
+	movl	%eax, %ebx
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerNEv
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%ebx, 12(%esp)
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC275, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1616
+	jmp	L1615
+L1616:
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1615:
+	addl	$20, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3210:
+	.section	.text$_Z10delete_ptrIcEvRPT_R19CDualStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrIcEvRPT_R19CDualStackAllocator
+	.def	__Z10delete_ptrIcEvRPT_R19CDualStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIcEvRPT_R19CDualStackAllocator:
+LFB3211:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$20, %esp
+	.cfi_offset 3, -12
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerREv
+	movl	%eax, %ebx
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerNEv
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%ebx, 12(%esp)
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC275, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1619
+	jmp	L1618
+L1619:
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1618:
+	addl	$20, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3211:
+	.section	.text$_Z10delete_ptrIiEvRPT_R19CDualStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrIiEvRPT_R19CDualStackAllocator
+	.def	__Z10delete_ptrIiEvRPT_R19CDualStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrIiEvRPT_R19CDualStackAllocator:
+LFB3212:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$20, %esp
+	.cfi_offset 3, -12
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerREv
+	movl	%eax, %ebx
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK19CDualStackAllocator10getMarkerNEv
+	movl	8(%ebp), %edx
+	movl	(%edx), %edx
+	movl	%ebx, 12(%esp)
+	movl	%eax, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	$LC275, (%esp)
+	call	_printf
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1622
+	jmp	L1621
+L1622:
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+L1621:
+	addl	$20, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3212:
+	.section	.text$_Z10delete_ptrI7CTest4bEvRPT_jR19CDualStackAllocator,"x"
+	.linkonce discard
+	.globl	__Z10delete_ptrI7CTest4bEvRPT_jR19CDualStackAllocator
+	.def	__Z10delete_ptrI7CTest4bEvRPT_jR19CDualStackAllocator;	.scl	2;	.type	32;	.endef
+__Z10delete_ptrI7CTest4bEvRPT_jR19CDualStackAllocator:
 LFB3213:
 	.cfi_startproc
 	pushl	%ebp
@@ -24090,25 +24586,29 @@ LFB3213:
 	movl	12(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	%edx, 4(%esp)
-	movl	$LC260, (%esp)
+	movl	$LC274, (%esp)
 	call	_printf
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1592
-	jmp	L1591
-L1592:
+	jne	L1625
+	jmp	L1624
+L1625:
 	movl	$0, -12(%ebp)
-	jmp	L1594
-L1595:
+	jmp	L1627
+L1628:
+	movl	8(%ebp), %eax
+	movl	(%eax), %eax
+	movl	%eax, (%esp)
+	call	__ZN7CTest4bD1Ev
 	addl	$1, -12(%ebp)
-L1594:
+L1627:
 	movl	-12(%ebp), %eax
 	cmpl	12(%ebp), %eax
-	jb	L1595
+	jb	L1628
 	movl	8(%ebp), %eax
 	movl	$0, (%eax)
-L1591:
+L1624:
 	addl	$52, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -24118,327 +24618,13 @@ L1591:
 	ret
 	.cfi_endproc
 LFE3213:
-	.section	.text$_Z10delete_ptrIiEvRPT_jR19CDualStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrIiEvRPT_jR19CDualStackAllocator
-	.def	__Z10delete_ptrIiEvRPT_jR19CDualStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIiEvRPT_jR19CDualStackAllocator:
-LFB3214:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%ebx
-	subl	$52, %esp
-	.cfi_offset 3, -12
-	movl	16(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerREv
-	movl	%eax, %ebx
-	movl	16(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerNEv
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%ebx, 16(%esp)
-	movl	%eax, 12(%esp)
-	movl	12(%ebp), %eax
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC260, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1597
-	jmp	L1596
-L1597:
-	movl	$0, -12(%ebp)
-	jmp	L1599
-L1600:
-	addl	$1, -12(%ebp)
-L1599:
-	movl	-12(%ebp), %eax
-	cmpl	12(%ebp), %eax
-	jb	L1600
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1596:
-	addl	$52, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3214:
-	.section .rdata,"dr"
-	.align 4
-LC261:
-	.ascii "delete_ptr(p=0x%p, dual_allocator.marker=%d,%d)\12\0"
-	.section	.text$_Z10delete_ptrI7CTest4bEvRPT_R19CDualStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrI7CTest4bEvRPT_R19CDualStackAllocator
-	.def	__Z10delete_ptrI7CTest4bEvRPT_R19CDualStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrI7CTest4bEvRPT_R19CDualStackAllocator:
-LFB3215:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%ebx
-	subl	$20, %esp
-	.cfi_offset 3, -12
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerREv
-	movl	%eax, %ebx
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerNEv
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%ebx, 12(%esp)
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC261, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1602
-	jmp	L1601
-L1602:
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%eax, (%esp)
-	call	__ZN7CTest4bD1Ev
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1601:
-	addl	$20, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3215:
-	.section	.text$_Z10delete_ptrIfEvRPT_R19CDualStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrIfEvRPT_R19CDualStackAllocator
-	.def	__Z10delete_ptrIfEvRPT_R19CDualStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIfEvRPT_R19CDualStackAllocator:
-LFB3216:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%ebx
-	subl	$20, %esp
-	.cfi_offset 3, -12
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerREv
-	movl	%eax, %ebx
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerNEv
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%ebx, 12(%esp)
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC261, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1605
-	jmp	L1604
-L1605:
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1604:
-	addl	$20, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3216:
-	.section	.text$_Z10delete_ptrIcEvRPT_R19CDualStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrIcEvRPT_R19CDualStackAllocator
-	.def	__Z10delete_ptrIcEvRPT_R19CDualStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIcEvRPT_R19CDualStackAllocator:
-LFB3217:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%ebx
-	subl	$20, %esp
-	.cfi_offset 3, -12
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerREv
-	movl	%eax, %ebx
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerNEv
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%ebx, 12(%esp)
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC261, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1608
-	jmp	L1607
-L1608:
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1607:
-	addl	$20, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3217:
-	.section	.text$_Z10delete_ptrIiEvRPT_R19CDualStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrIiEvRPT_R19CDualStackAllocator
-	.def	__Z10delete_ptrIiEvRPT_R19CDualStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrIiEvRPT_R19CDualStackAllocator:
-LFB3218:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%ebx
-	subl	$20, %esp
-	.cfi_offset 3, -12
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerREv
-	movl	%eax, %ebx
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerNEv
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%ebx, 12(%esp)
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC261, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1611
-	jmp	L1610
-L1611:
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1610:
-	addl	$20, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3218:
-	.section	.text$_Z10delete_ptrI7CTest4bEvRPT_jR19CDualStackAllocator,"x"
-	.linkonce discard
-	.globl	__Z10delete_ptrI7CTest4bEvRPT_jR19CDualStackAllocator
-	.def	__Z10delete_ptrI7CTest4bEvRPT_jR19CDualStackAllocator;	.scl	2;	.type	32;	.endef
-__Z10delete_ptrI7CTest4bEvRPT_jR19CDualStackAllocator:
-LFB3219:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%ebx
-	subl	$52, %esp
-	.cfi_offset 3, -12
-	movl	16(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerREv
-	movl	%eax, %ebx
-	movl	16(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNK19CDualStackAllocator10getMarkerNEv
-	movl	8(%ebp), %edx
-	movl	(%edx), %edx
-	movl	%ebx, 16(%esp)
-	movl	%eax, 12(%esp)
-	movl	12(%ebp), %eax
-	movl	%eax, 8(%esp)
-	movl	%edx, 4(%esp)
-	movl	$LC260, (%esp)
-	call	_printf
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1614
-	jmp	L1613
-L1614:
-	movl	$0, -12(%ebp)
-	jmp	L1616
-L1617:
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%eax, (%esp)
-	call	__ZN7CTest4bD1Ev
-	addl	$1, -12(%ebp)
-L1616:
-	movl	-12(%ebp), %eax
-	cmpl	12(%ebp), %eax
-	jb	L1617
-	movl	8(%ebp), %eax
-	movl	$0, (%eax)
-L1613:
-	addl	$52, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3219:
 	.section	.text$_ZNKSt13__atomic_baseIiE4loadESt12memory_order,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt13__atomic_baseIiE4loadESt12memory_order
 	.def	__ZNKSt13__atomic_baseIiE4loadESt12memory_order;	.scl	2;	.type	32;	.endef
 __ZNKSt13__atomic_baseIiE4loadESt12memory_order:
-LFB3238:
+LFB3232:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24458,14 +24644,14 @@ LFB3238:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3238:
+LFE3232:
 	.section	.text$_ZNSt13__atomic_baseIiE5storeEiSt12memory_order,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt13__atomic_baseIiE5storeEiSt12memory_order
 	.def	__ZNSt13__atomic_baseIiE5storeEiSt12memory_order;	.scl	2;	.type	32;	.endef
 __ZNSt13__atomic_baseIiE5storeEiSt12memory_order:
-LFB3239:
+LFB3233:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24486,14 +24672,14 @@ LFB3239:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3239:
+LFE3233:
 	.section	.text$_ZNSt13__atomic_baseIiE9fetch_addEiSt12memory_order,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt13__atomic_baseIiE9fetch_addEiSt12memory_order
 	.def	__ZNSt13__atomic_baseIiE9fetch_addEiSt12memory_order;	.scl	2;	.type	32;	.endef
 __ZNSt13__atomic_baseIiE9fetch_addEiSt12memory_order:
-LFB3240:
+LFB3234:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24509,14 +24695,14 @@ LFB3240:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3240:
+LFE3234:
 	.section	.text$_ZNSt13__atomic_baseIiE9fetch_subEiSt12memory_order,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt13__atomic_baseIiE9fetch_subEiSt12memory_order
 	.def	__ZNSt13__atomic_baseIiE9fetch_subEiSt12memory_order;	.scl	2;	.type	32;	.endef
 __ZNSt13__atomic_baseIiE9fetch_subEiSt12memory_order:
-LFB3241:
+LFB3235:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24533,14 +24719,14 @@ LFB3241:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3241:
+LFE3235:
 	.section	.text$_ZN22CPoolAllocatorWithTypeI6CTest5Li5EEC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EEC1Ev
 	.def	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EEC1Ev;	.scl	2;	.type	32;	.endef
 __ZN22CPoolAllocatorWithTypeI6CTest5Li5EEC1Ev:
-LFB3244:
+LFB3238:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24556,14 +24742,14 @@ LFB3244:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3244:
+LFE3238:
 	.section	.text$_ZN22CPoolAllocatorWithTypeI6CTest5Li5EED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EED1Ev
 	.def	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EED1Ev;	.scl	2;	.type	32;	.endef
 __ZN22CPoolAllocatorWithTypeI6CTest5Li5EED1Ev:
-LFB3247:
+LFB3241:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24579,14 +24765,14 @@ LFB3247:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3247:
+LFE3241:
 	.section	.text$_ZN22CPoolAllocatorWithTypeI6CTest5Li5EE10createDataIIPKcEEEPS0_DpT_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EE10createDataIIPKcEEEPS0_DpT_
 	.def	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EE10createDataIIPKcEEEPS0_DpT_;	.scl	2;	.type	32;	.endef
 __ZN22CPoolAllocatorWithTypeI6CTest5Li5EE10createDataIIPKcEEEPS0_DpT_:
-LFB3248:
+LFB3242:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24604,7 +24790,7 @@ LFB3248:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3248:
+LFE3242:
 	.weak	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EE10createDataIJPKcEEEPS0_DpT_
 	.def	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EE10createDataIJPKcEEEPS0_DpT_;	.scl	2;	.type	32;	.endef
 	.set	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EE10createDataIJPKcEEEPS0_DpT_,__ZN22CPoolAllocatorWithTypeI6CTest5Li5EE10createDataIIPKcEEEPS0_DpT_
@@ -24614,7 +24800,7 @@ LFE3248:
 	.globl	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EE11destroyDataERPS0_
 	.def	__ZN22CPoolAllocatorWithTypeI6CTest5Li5EE11destroyDataERPS0_;	.scl	2;	.type	32;	.endef
 __ZN22CPoolAllocatorWithTypeI6CTest5Li5EE11destroyDataERPS0_:
-LFB3249:
+LFB3243:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24632,14 +24818,14 @@ LFB3249:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3249:
+LFE3243:
 	.section	.text$_ZN14CPoolAllocator6createI7CTest5LIEEEPT_DpT0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN14CPoolAllocator6createI7CTest5LIEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createI7CTest5LIEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 __ZN14CPoolAllocator6createI7CTest5LIEEEPT_DpT0_:
-LFB3250:
+LFB3244:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24652,17 +24838,17 @@ LFB3250:
 	movl	$9, (%esp)
 	call	__ZnwjR14CPoolAllocator
 	testl	%eax, %eax
-	je	L1633
+	je	L1644
 	movl	$0, (%eax)
 	movl	$0, 4(%eax)
 	movb	$0, 8(%eax)
-L1633:
+L1644:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3250:
+LFE3244:
 	.weak	__ZN14CPoolAllocator6createI7CTest5LJEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createI7CTest5LJEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZN14CPoolAllocator6createI7CTest5LJEEEPT_DpT0_,__ZN14CPoolAllocator6createI7CTest5LIEEEPT_DpT0_
@@ -24672,7 +24858,7 @@ LFE3250:
 	.globl	__ZN14CPoolAllocator6createIcIEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIcIEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 __ZN14CPoolAllocator6createIcIEEEPT_DpT0_:
-LFB3251:
+LFB3245:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24685,15 +24871,15 @@ LFB3251:
 	movl	$1, (%esp)
 	call	__ZnwjR14CPoolAllocator
 	testl	%eax, %eax
-	je	L1637
+	je	L1648
 	movb	$0, (%eax)
-L1637:
+L1648:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3251:
+LFE3245:
 	.weak	__ZN14CPoolAllocator6createIcJEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIcJEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZN14CPoolAllocator6createIcJEEEPT_DpT0_,__ZN14CPoolAllocator6createIcIEEEPT_DpT0_
@@ -24703,7 +24889,7 @@ LFE3251:
 	.globl	__ZN14CPoolAllocator6createIsIEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIsIEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 __ZN14CPoolAllocator6createIsIEEEPT_DpT0_:
-LFB3252:
+LFB3246:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24716,15 +24902,15 @@ LFB3252:
 	movl	$2, (%esp)
 	call	__ZnwjR14CPoolAllocator
 	testl	%eax, %eax
-	je	L1641
+	je	L1652
 	movw	$0, (%eax)
-L1641:
+L1652:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3252:
+LFE3246:
 	.weak	__ZN14CPoolAllocator6createIsJEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIsJEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZN14CPoolAllocator6createIsJEEEPT_DpT0_,__ZN14CPoolAllocator6createIsIEEEPT_DpT0_
@@ -24734,7 +24920,7 @@ LFE3252:
 	.globl	__ZN14CPoolAllocator6createIiIEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIiIEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 __ZN14CPoolAllocator6createIiIEEEPT_DpT0_:
-LFB3253:
+LFB3247:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24747,15 +24933,15 @@ LFB3253:
 	movl	$4, (%esp)
 	call	__ZnwjR14CPoolAllocator
 	testl	%eax, %eax
-	je	L1645
+	je	L1656
 	movl	$0, (%eax)
-L1645:
+L1656:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3253:
+LFE3247:
 	.weak	__ZN14CPoolAllocator6createIiJEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIiJEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZN14CPoolAllocator6createIiJEEEPT_DpT0_,__ZN14CPoolAllocator6createIiIEEEPT_DpT0_
@@ -24765,7 +24951,7 @@ LFE3253:
 	.globl	__ZN14CPoolAllocator6createIfIEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIfIEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 __ZN14CPoolAllocator6createIfIEEEPT_DpT0_:
-LFB3254:
+LFB3248:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24778,16 +24964,16 @@ LFB3254:
 	movl	$4, (%esp)
 	call	__ZnwjR14CPoolAllocator
 	testl	%eax, %eax
-	je	L1649
-	movl	LC170, %edx
+	je	L1660
+	movl	LC164, %edx
 	movl	%edx, (%eax)
-L1649:
+L1660:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3254:
+LFE3248:
 	.weak	__ZN14CPoolAllocator6createIfJEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIfJEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZN14CPoolAllocator6createIfJEEEPT_DpT0_,__ZN14CPoolAllocator6createIfIEEEPT_DpT0_
@@ -24797,7 +24983,7 @@ LFE3254:
 	.globl	__ZN14CPoolAllocator6createIdIEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIdIEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 __ZN14CPoolAllocator6createIdIEEEPT_DpT0_:
-LFB3255:
+LFB3249:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24810,16 +24996,16 @@ LFB3255:
 	movl	$8, (%esp)
 	call	__ZnwjR14CPoolAllocator
 	testl	%eax, %eax
-	je	L1653
+	je	L1664
 	fldz
 	fstpl	(%eax)
-L1653:
+L1664:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3255:
+LFE3249:
 	.weak	__ZN14CPoolAllocator6createIdJEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIdJEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZN14CPoolAllocator6createIdJEEEPT_DpT0_,__ZN14CPoolAllocator6createIdIEEEPT_DpT0_
@@ -24829,7 +25015,7 @@ LFE3255:
 	.globl	__ZN14CPoolAllocator6createIxIEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIxIEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 __ZN14CPoolAllocator6createIxIEEEPT_DpT0_:
-LFB3256:
+LFB3250:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -24842,16 +25028,16 @@ LFB3256:
 	movl	$8, (%esp)
 	call	__ZnwjR14CPoolAllocator
 	testl	%eax, %eax
-	je	L1657
+	je	L1668
 	movl	$0, (%eax)
 	movl	$0, 4(%eax)
-L1657:
+L1668:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3256:
+LFE3250:
 	.weak	__ZN14CPoolAllocator6createIxJEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createIxJEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZN14CPoolAllocator6createIxJEEEPT_DpT0_,__ZN14CPoolAllocator6createIxIEEEPT_DpT0_
@@ -24861,6 +25047,216 @@ LFE3256:
 	.globl	__ZN14CPoolAllocator7destroyI7CTest5LEEvRPT_
 	.def	__ZN14CPoolAllocator7destroyI7CTest5LEEvRPT_;	.scl	2;	.type	32;	.endef
 __ZN14CPoolAllocator7destroyI7CTest5LEEvRPT_:
+LFB3251:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1671
+	jmp	L1670
+L1671:
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	movl	8(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZdlPvR14CPoolAllocator
+	movl	12(%ebp), %eax
+	movl	$0, (%eax)
+L1670:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3251:
+	.section	.text$_ZN14CPoolAllocator7destroyIcEEvRPT_,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN14CPoolAllocator7destroyIcEEvRPT_
+	.def	__ZN14CPoolAllocator7destroyIcEEvRPT_;	.scl	2;	.type	32;	.endef
+__ZN14CPoolAllocator7destroyIcEEvRPT_:
+LFB3252:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1674
+	jmp	L1673
+L1674:
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	movl	8(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZdlPvR14CPoolAllocator
+	movl	12(%ebp), %eax
+	movl	$0, (%eax)
+L1673:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3252:
+	.section	.text$_ZN14CPoolAllocator7destroyIsEEvRPT_,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN14CPoolAllocator7destroyIsEEvRPT_
+	.def	__ZN14CPoolAllocator7destroyIsEEvRPT_;	.scl	2;	.type	32;	.endef
+__ZN14CPoolAllocator7destroyIsEEvRPT_:
+LFB3253:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1677
+	jmp	L1676
+L1677:
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	movl	8(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZdlPvR14CPoolAllocator
+	movl	12(%ebp), %eax
+	movl	$0, (%eax)
+L1676:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3253:
+	.section	.text$_ZN14CPoolAllocator7destroyIiEEvRPT_,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN14CPoolAllocator7destroyIiEEvRPT_
+	.def	__ZN14CPoolAllocator7destroyIiEEvRPT_;	.scl	2;	.type	32;	.endef
+__ZN14CPoolAllocator7destroyIiEEvRPT_:
+LFB3254:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1680
+	jmp	L1679
+L1680:
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	movl	8(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZdlPvR14CPoolAllocator
+	movl	12(%ebp), %eax
+	movl	$0, (%eax)
+L1679:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3254:
+	.section	.text$_ZN14CPoolAllocator7destroyIfEEvRPT_,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN14CPoolAllocator7destroyIfEEvRPT_
+	.def	__ZN14CPoolAllocator7destroyIfEEvRPT_;	.scl	2;	.type	32;	.endef
+__ZN14CPoolAllocator7destroyIfEEvRPT_:
+LFB3255:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1683
+	jmp	L1682
+L1683:
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	movl	8(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZdlPvR14CPoolAllocator
+	movl	12(%ebp), %eax
+	movl	$0, (%eax)
+L1682:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3255:
+	.section	.text$_ZN14CPoolAllocator7destroyIdEEvRPT_,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN14CPoolAllocator7destroyIdEEvRPT_
+	.def	__ZN14CPoolAllocator7destroyIdEEvRPT_;	.scl	2;	.type	32;	.endef
+__ZN14CPoolAllocator7destroyIdEEvRPT_:
+LFB3256:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	testl	%eax, %eax
+	jne	L1686
+	jmp	L1685
+L1686:
+	movl	12(%ebp), %eax
+	movl	(%eax), %eax
+	movl	8(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZdlPvR14CPoolAllocator
+	movl	12(%ebp), %eax
+	movl	$0, (%eax)
+L1685:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3256:
+	.section	.text$_ZN14CPoolAllocator7destroyIxEEvRPT_,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN14CPoolAllocator7destroyIxEEvRPT_
+	.def	__ZN14CPoolAllocator7destroyIxEEvRPT_;	.scl	2;	.type	32;	.endef
+__ZN14CPoolAllocator7destroyIxEEvRPT_:
 LFB3257:
 	.cfi_startproc
 	pushl	%ebp
@@ -24872,9 +25268,9 @@ LFB3257:
 	movl	12(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1660
-	jmp	L1659
-L1660:
+	jne	L1689
+	jmp	L1688
+L1689:
 	movl	12(%ebp), %eax
 	movl	(%eax), %eax
 	movl	8(%ebp), %edx
@@ -24883,233 +25279,23 @@ L1660:
 	call	__ZdlPvR14CPoolAllocator
 	movl	12(%ebp), %eax
 	movl	$0, (%eax)
-L1659:
+L1688:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
 LFE3257:
-	.section	.text$_ZN14CPoolAllocator7destroyIcEEvRPT_,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZN14CPoolAllocator7destroyIcEEvRPT_
-	.def	__ZN14CPoolAllocator7destroyIcEEvRPT_;	.scl	2;	.type	32;	.endef
-__ZN14CPoolAllocator7destroyIcEEvRPT_:
-LFB3258:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1663
-	jmp	L1662
-L1663:
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	movl	8(%ebp), %edx
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZdlPvR14CPoolAllocator
-	movl	12(%ebp), %eax
-	movl	$0, (%eax)
-L1662:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3258:
-	.section	.text$_ZN14CPoolAllocator7destroyIsEEvRPT_,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZN14CPoolAllocator7destroyIsEEvRPT_
-	.def	__ZN14CPoolAllocator7destroyIsEEvRPT_;	.scl	2;	.type	32;	.endef
-__ZN14CPoolAllocator7destroyIsEEvRPT_:
-LFB3259:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1666
-	jmp	L1665
-L1666:
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	movl	8(%ebp), %edx
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZdlPvR14CPoolAllocator
-	movl	12(%ebp), %eax
-	movl	$0, (%eax)
-L1665:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3259:
-	.section	.text$_ZN14CPoolAllocator7destroyIiEEvRPT_,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZN14CPoolAllocator7destroyIiEEvRPT_
-	.def	__ZN14CPoolAllocator7destroyIiEEvRPT_;	.scl	2;	.type	32;	.endef
-__ZN14CPoolAllocator7destroyIiEEvRPT_:
-LFB3260:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1669
-	jmp	L1668
-L1669:
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	movl	8(%ebp), %edx
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZdlPvR14CPoolAllocator
-	movl	12(%ebp), %eax
-	movl	$0, (%eax)
-L1668:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3260:
-	.section	.text$_ZN14CPoolAllocator7destroyIfEEvRPT_,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZN14CPoolAllocator7destroyIfEEvRPT_
-	.def	__ZN14CPoolAllocator7destroyIfEEvRPT_;	.scl	2;	.type	32;	.endef
-__ZN14CPoolAllocator7destroyIfEEvRPT_:
-LFB3261:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1672
-	jmp	L1671
-L1672:
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	movl	8(%ebp), %edx
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZdlPvR14CPoolAllocator
-	movl	12(%ebp), %eax
-	movl	$0, (%eax)
-L1671:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3261:
-	.section	.text$_ZN14CPoolAllocator7destroyIdEEvRPT_,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZN14CPoolAllocator7destroyIdEEvRPT_
-	.def	__ZN14CPoolAllocator7destroyIdEEvRPT_;	.scl	2;	.type	32;	.endef
-__ZN14CPoolAllocator7destroyIdEEvRPT_:
-LFB3262:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1675
-	jmp	L1674
-L1675:
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	movl	8(%ebp), %edx
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZdlPvR14CPoolAllocator
-	movl	12(%ebp), %eax
-	movl	$0, (%eax)
-L1674:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3262:
-	.section	.text$_ZN14CPoolAllocator7destroyIxEEvRPT_,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZN14CPoolAllocator7destroyIxEEvRPT_
-	.def	__ZN14CPoolAllocator7destroyIxEEvRPT_;	.scl	2;	.type	32;	.endef
-__ZN14CPoolAllocator7destroyIxEEvRPT_:
-LFB3263:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	jne	L1678
-	jmp	L1677
-L1678:
-	movl	12(%ebp), %eax
-	movl	(%eax), %eax
-	movl	8(%ebp), %edx
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZdlPvR14CPoolAllocator
-	movl	12(%ebp), %eax
-	movl	$0, (%eax)
-L1677:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3263:
 	.section .rdata,"dr"
 	.align 4
-LC263:
+LC277:
 	.ascii "delete_ptr(p=0x%p, i_allocator=\"%s\":%d/%d/%d)\12\0"
 	.section	.text$_Z10delete_ptrI6CTest6EvRPT_R10IAllocator,"x"
 	.linkonce discard
 	.globl	__Z10delete_ptrI6CTest6EvRPT_R10IAllocator
 	.def	__Z10delete_ptrI6CTest6EvRPT_R10IAllocator;	.scl	2;	.type	32;	.endef
 __Z10delete_ptrI6CTest6EvRPT_R10IAllocator:
-LFB3264:
+LFB3258:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25160,14 +25346,14 @@ LFB3264:
 	movl	%ebx, 12(%esp)
 	movl	%eax, 8(%esp)
 	movl	%edx, 4(%esp)
-	movl	$LC263, (%esp)
+	movl	$LC277, (%esp)
 	call	_printf
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1681
-	jmp	L1680
-L1681:
+	jne	L1692
+	jmp	L1691
+L1692:
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	movl	(%eax), %eax
@@ -25184,7 +25370,7 @@ L1681:
 	call	__ZdlPvR10IAllocator
 	movl	8(%ebp), %eax
 	movl	$0, (%eax)
-L1680:
+L1691:
 	addl	$44, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -25197,17 +25383,17 @@ L1680:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3264:
+LFE3258:
 	.section .rdata,"dr"
 	.align 4
-LC264:
+LC278:
 	.ascii "delete_ptr(p=0x%p, array_num=%d, i_allocator=\"%s\":%d/%d/%d)\12\0"
 	.section	.text$_Z10delete_ptrI6CTest6EvRPT_jR10IAllocator,"x"
 	.linkonce discard
 	.globl	__Z10delete_ptrI6CTest6EvRPT_jR10IAllocator
 	.def	__Z10delete_ptrI6CTest6EvRPT_jR10IAllocator;	.scl	2;	.type	32;	.endef
 __Z10delete_ptrI6CTest6EvRPT_jR10IAllocator:
-LFB3265:
+LFB3259:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25260,17 +25446,17 @@ LFB3265:
 	movl	12(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	%edx, 4(%esp)
-	movl	$LC264, (%esp)
+	movl	$LC278, (%esp)
 	call	_printf
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1684
-	jmp	L1683
-L1684:
+	jne	L1695
+	jmp	L1694
+L1695:
 	movl	$0, -28(%ebp)
-	jmp	L1686
-L1687:
+	jmp	L1697
+L1698:
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	movl	(%eax), %eax
@@ -25280,10 +25466,10 @@ L1687:
 	movl	%edx, (%esp)
 	call	*%eax
 	addl	$1, -28(%ebp)
-L1686:
+L1697:
 	movl	-28(%ebp), %eax
 	cmpl	12(%ebp), %eax
-	jb	L1687
+	jb	L1698
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	movl	16(%ebp), %edx
@@ -25292,7 +25478,7 @@ L1686:
 	call	__ZdaPvR10IAllocator
 	movl	8(%ebp), %eax
 	movl	$0, (%eax)
-L1683:
+L1694:
 	addl	$60, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -25305,13 +25491,13 @@ L1683:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3265:
+LFE3259:
 	.section	.text$_Z10delete_ptrI8CTest6exEvRPT_R10IAllocator,"x"
 	.linkonce discard
 	.globl	__Z10delete_ptrI8CTest6exEvRPT_R10IAllocator
 	.def	__Z10delete_ptrI8CTest6exEvRPT_R10IAllocator;	.scl	2;	.type	32;	.endef
 __Z10delete_ptrI8CTest6exEvRPT_R10IAllocator:
-LFB3266:
+LFB3260:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25362,14 +25548,14 @@ LFB3266:
 	movl	%ebx, 12(%esp)
 	movl	%eax, 8(%esp)
 	movl	%edx, 4(%esp)
-	movl	$LC263, (%esp)
+	movl	$LC277, (%esp)
 	call	_printf
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1689
-	jmp	L1688
-L1689:
+	jne	L1700
+	jmp	L1699
+L1700:
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	movl	(%eax), %eax
@@ -25386,7 +25572,7 @@ L1689:
 	call	__ZdlPvR10IAllocator
 	movl	8(%ebp), %eax
 	movl	$0, (%eax)
-L1688:
+L1699:
 	addl	$44, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -25399,14 +25585,14 @@ L1688:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3266:
+LFE3260:
 	.section	.text$_ZN21CMonoAllocAdpWithBuffILj128EEC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN21CMonoAllocAdpWithBuffILj128EEC1Ev
 	.def	__ZN21CMonoAllocAdpWithBuffILj128EEC1Ev;	.scl	2;	.type	32;	.endef
 __ZN21CMonoAllocAdpWithBuffILj128EEC1Ev:
-LFB3269:
+LFB3263:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25428,14 +25614,14 @@ LFB3269:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3269:
+LFE3263:
 	.section	.text$_ZN21CMonoAllocAdpWithBuffILj128EED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN21CMonoAllocAdpWithBuffILj128EED1Ev
 	.def	__ZN21CMonoAllocAdpWithBuffILj128EED1Ev;	.scl	2;	.type	32;	.endef
 __ZN21CMonoAllocAdpWithBuffILj128EED1Ev:
-LFB3272:
+LFB3266:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25450,24 +25636,24 @@ LFB3272:
 	call	__ZN13CMonoAllocAdpD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1692
+	je	L1703
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1692:
+L1703:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3272:
+LFE3266:
 	.section	.text$_ZN21CMonoAllocAdpWithBuffILj128EED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN21CMonoAllocAdpWithBuffILj128EED0Ev
 	.def	__ZN21CMonoAllocAdpWithBuffILj128EED0Ev;	.scl	2;	.type	32;	.endef
 __ZN21CMonoAllocAdpWithBuffILj128EED0Ev:
-LFB3273:
+LFB3267:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25486,14 +25672,14 @@ LFB3273:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3273:
+LFE3267:
 	.section	.text$_ZN23CStackAllocatorWithBuffILj128EEC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN23CStackAllocatorWithBuffILj128EEC1Ev
 	.def	__ZN23CStackAllocatorWithBuffILj128EEC1Ev;	.scl	2;	.type	32;	.endef
 __ZN23CStackAllocatorWithBuffILj128EEC1Ev:
-LFB3276:
+LFB3270:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25515,14 +25701,14 @@ LFB3276:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3276:
+LFE3270:
 	.section	.text$_ZN23CStackAllocatorWithBuffILj128EED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN23CStackAllocatorWithBuffILj128EED1Ev
 	.def	__ZN23CStackAllocatorWithBuffILj128EED1Ev;	.scl	2;	.type	32;	.endef
 __ZN23CStackAllocatorWithBuffILj128EED1Ev:
-LFB3279:
+LFB3273:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25537,24 +25723,24 @@ LFB3279:
 	call	__ZN15CStackAllocatorD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1698
+	je	L1709
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1698:
+L1709:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3279:
+LFE3273:
 	.section	.text$_ZN23CStackAllocatorWithBuffILj128EED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN23CStackAllocatorWithBuffILj128EED0Ev
 	.def	__ZN23CStackAllocatorWithBuffILj128EED0Ev;	.scl	2;	.type	32;	.endef
 __ZN23CStackAllocatorWithBuffILj128EED0Ev:
-LFB3280:
+LFB3274:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25573,14 +25759,14 @@ LFB3280:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3280:
+LFE3274:
 	.section	.text$_ZN27CDualStackAllocatorWithBuffILj128EEC1EN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN27CDualStackAllocatorWithBuffILj128EEC1EN15IStackAllocator9E_ORDEREDE
 	.def	__ZN27CDualStackAllocatorWithBuffILj128EEC1EN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZN27CDualStackAllocatorWithBuffILj128EEC1EN15IStackAllocator9E_ORDEREDE:
-LFB3283:
+LFB3277:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25604,14 +25790,14 @@ LFB3283:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3283:
+LFE3277:
 	.section	.text$_ZN27CDualStackAllocatorWithBuffILj128EED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN27CDualStackAllocatorWithBuffILj128EED1Ev
 	.def	__ZN27CDualStackAllocatorWithBuffILj128EED1Ev;	.scl	2;	.type	32;	.endef
 __ZN27CDualStackAllocatorWithBuffILj128EED1Ev:
-LFB3286:
+LFB3280:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25626,24 +25812,24 @@ LFB3286:
 	call	__ZN19CDualStackAllocatorD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1704
+	je	L1715
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1704:
+L1715:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3286:
+LFE3280:
 	.section	.text$_ZN27CDualStackAllocatorWithBuffILj128EED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN27CDualStackAllocatorWithBuffILj128EED0Ev
 	.def	__ZN27CDualStackAllocatorWithBuffILj128EED0Ev;	.scl	2;	.type	32;	.endef
 __ZN27CDualStackAllocatorWithBuffILj128EED0Ev:
-LFB3287:
+LFB3281:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25662,14 +25848,14 @@ LFB3287:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3287:
+LFE3281:
 	.section	.text$_ZN22CPoolAllocatorWithBuffILj24ELi5EEC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN22CPoolAllocatorWithBuffILj24ELi5EEC1Ev
 	.def	__ZN22CPoolAllocatorWithBuffILj24ELi5EEC1Ev;	.scl	2;	.type	32;	.endef
 __ZN22CPoolAllocatorWithBuffILj24ELi5EEC1Ev:
-LFB3290:
+LFB3284:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25690,14 +25876,14 @@ LFB3290:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3290:
+LFE3284:
 	.section	.text$_ZN22CPoolAllocatorWithBuffILj24ELi5EED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN22CPoolAllocatorWithBuffILj24ELi5EED1Ev
 	.def	__ZN22CPoolAllocatorWithBuffILj24ELi5EED1Ev;	.scl	2;	.type	32;	.endef
 __ZN22CPoolAllocatorWithBuffILj24ELi5EED1Ev:
-LFB3293:
+LFB3287:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25713,13 +25899,113 @@ LFB3293:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3293:
+LFE3287:
 	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpEC2ER15IStackAllocatorNS0_13E_AUTO_REWINDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpEC2ER15IStackAllocatorNS0_13E_AUTO_REWINDE
 	.def	__ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpEC2ER15IStackAllocatorNS0_13E_AUTO_REWINDE;	.scl	2;	.type	32;	.endef
 __ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpEC2ER15IStackAllocatorNS0_13E_AUTO_REWINDE:
+LFB3289:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3289
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$20, %esp
+	.cfi_offset 3, -12
+	movl	8(%ebp), %eax
+	leal	4(%eax), %edx
+	movl	8(%ebp), %eax
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN22CTempPolyAllocatorBaseC2ER10IAllocator
+	movl	8(%ebp), %eax
+	leal	4(%eax), %edx
+	movl	16(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	12(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	%edx, (%esp)
+LEHB332:
+	call	__ZN15CIStackAllocAdpC1ER15IStackAllocatorNS_13E_AUTO_REWINDE
+LEHE332:
+	jmp	L1726
+L1725:
+	movl	%eax, %ebx
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN22CTempPolyAllocatorBaseD2Ev
+	movl	%ebx, %eax
+	movl	%eax, (%esp)
+LEHB333:
+	call	__Unwind_Resume
+LEHE333:
+L1726:
+	addl	$20, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3289:
+	.section	.gcc_except_table,"w"
+LLSDA3289:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3289-LLSDACSB3289
+LLSDACSB3289:
+	.uleb128 LEHB332-LFB3289
+	.uleb128 LEHE332-LEHB332
+	.uleb128 L1725-LFB3289
+	.uleb128 0
+	.uleb128 LEHB333-LFB3289
+	.uleb128 LEHE333-LEHB333
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3289:
+	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpEC2ER15IStackAllocatorNS0_13E_AUTO_REWINDE,"x"
+	.linkonce discard
+	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpED2Ev,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpED2Ev
+	.def	__ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpED2Ev;	.scl	2;	.type	32;	.endef
+__ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpED2Ev:
+LFB3292:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %eax
+	addl	$4, %eax
+	movl	%eax, (%esp)
+	call	__ZN15CIStackAllocAdpD1Ev
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN22CTempPolyAllocatorBaseD2Ev
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3292:
+	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpEC2ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpEC2ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE
+	.def	__ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpEC2ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE;	.scl	2;	.type	32;	.endef
+__ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpEC2ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE:
 LFB3295:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
@@ -25745,21 +26031,21 @@ LFB3295:
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
-LEHB327:
-	call	__ZN15CIStackAllocAdpC1ER15IStackAllocatorNS_13E_AUTO_REWINDE
-LEHE327:
-	jmp	L1715
-L1714:
+LEHB334:
+	call	__ZN14CStackAllocAdpC1ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE
+LEHE334:
+	jmp	L1732
+L1731:
 	movl	%eax, %ebx
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN22CTempPolyAllocatorBaseD2Ev
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB328:
+LEHB335:
 	call	__Unwind_Resume
-LEHE328:
-L1715:
+LEHE335:
+L1732:
 	addl	$20, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -25776,115 +26062,15 @@ LLSDA3295:
 	.byte	0x1
 	.uleb128 LLSDACSE3295-LLSDACSB3295
 LLSDACSB3295:
-	.uleb128 LEHB327-LFB3295
-	.uleb128 LEHE327-LEHB327
-	.uleb128 L1714-LFB3295
+	.uleb128 LEHB334-LFB3295
+	.uleb128 LEHE334-LEHB334
+	.uleb128 L1731-LFB3295
 	.uleb128 0
-	.uleb128 LEHB328-LFB3295
-	.uleb128 LEHE328-LEHB328
+	.uleb128 LEHB335-LFB3295
+	.uleb128 LEHE335-LEHB335
 	.uleb128 0
 	.uleb128 0
 LLSDACSE3295:
-	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpEC2ER15IStackAllocatorNS0_13E_AUTO_REWINDE,"x"
-	.linkonce discard
-	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpED2Ev,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpED2Ev
-	.def	__ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpED2Ev;	.scl	2;	.type	32;	.endef
-__ZN30CTempPolyAllocatorWithStackAdpI15CIStackAllocAdpED2Ev:
-LFB3298:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	8(%ebp), %eax
-	addl	$4, %eax
-	movl	%eax, (%esp)
-	call	__ZN15CIStackAllocAdpD1Ev
-	movl	8(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN22CTempPolyAllocatorBaseD2Ev
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3298:
-	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpEC2ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpEC2ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE
-	.def	__ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpEC2ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE;	.scl	2;	.type	32;	.endef
-__ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpEC2ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE:
-LFB3301:
-	.cfi_startproc
-	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3301
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%ebx
-	subl	$20, %esp
-	.cfi_offset 3, -12
-	movl	8(%ebp), %eax
-	leal	4(%eax), %edx
-	movl	8(%ebp), %eax
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZN22CTempPolyAllocatorBaseC2ER10IAllocator
-	movl	8(%ebp), %eax
-	leal	4(%eax), %edx
-	movl	16(%ebp), %eax
-	movl	%eax, 8(%esp)
-	movl	12(%ebp), %eax
-	movl	%eax, 4(%esp)
-	movl	%edx, (%esp)
-LEHB329:
-	call	__ZN14CStackAllocAdpC1ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE
-LEHE329:
-	jmp	L1721
-L1720:
-	movl	%eax, %ebx
-	movl	8(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN22CTempPolyAllocatorBaseD2Ev
-	movl	%ebx, %eax
-	movl	%eax, (%esp)
-LEHB330:
-	call	__Unwind_Resume
-LEHE330:
-L1721:
-	addl	$20, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3301:
-	.section	.gcc_except_table,"w"
-LLSDA3301:
-	.byte	0xff
-	.byte	0xff
-	.byte	0x1
-	.uleb128 LLSDACSE3301-LLSDACSB3301
-LLSDACSB3301:
-	.uleb128 LEHB329-LFB3301
-	.uleb128 LEHE329-LEHB329
-	.uleb128 L1720-LFB3301
-	.uleb128 0
-	.uleb128 LEHB330-LFB3301
-	.uleb128 LEHE330-LEHB330
-	.uleb128 0
-	.uleb128 0
-LLSDACSE3301:
 	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpEC2ER15CStackAllocatorN15CIStackAllocAdp13E_AUTO_REWINDE,"x"
 	.linkonce discard
 	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpED2Ev,"x"
@@ -25893,7 +26079,7 @@ LLSDACSE3301:
 	.globl	__ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpED2Ev
 	.def	__ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpED2Ev;	.scl	2;	.type	32;	.endef
 __ZN30CTempPolyAllocatorWithStackAdpI14CStackAllocAdpED2Ev:
-LFB3304:
+LFB3298:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -25913,17 +26099,17 @@ LFB3304:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3304:
+LFE3298:
 	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI18CDualStackAllocAdpEC2ER19CDualStackAllocatorN15IStackAllocator9E_ORDEREDEN15CIStackAllocAdp13E_AUTO_REWINDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN30CTempPolyAllocatorWithStackAdpI18CDualStackAllocAdpEC2ER19CDualStackAllocatorN15IStackAllocator9E_ORDEREDEN15CIStackAllocAdp13E_AUTO_REWINDE
 	.def	__ZN30CTempPolyAllocatorWithStackAdpI18CDualStackAllocAdpEC2ER19CDualStackAllocatorN15IStackAllocator9E_ORDEREDEN15CIStackAllocAdp13E_AUTO_REWINDE;	.scl	2;	.type	32;	.endef
 __ZN30CTempPolyAllocatorWithStackAdpI18CDualStackAllocAdpEC2ER19CDualStackAllocatorN15IStackAllocator9E_ORDEREDEN15CIStackAllocAdp13E_AUTO_REWINDE:
-LFB3307:
+LFB3301:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3307
+	.cfi_lsda 0,LLSDA3301
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -25947,21 +26133,21 @@ LFB3307:
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
-LEHB331:
+LEHB336:
 	call	__ZN18CDualStackAllocAdpC1ER19CDualStackAllocatorN15IStackAllocator9E_ORDEREDEN15CIStackAllocAdp13E_AUTO_REWINDE
-LEHE331:
-	jmp	L1727
-L1726:
+LEHE336:
+	jmp	L1738
+L1737:
 	movl	%eax, %ebx
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN22CTempPolyAllocatorBaseD2Ev
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB332:
+LEHB337:
 	call	__Unwind_Resume
-LEHE332:
-L1727:
+LEHE337:
+L1738:
 	addl	$20, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -25970,23 +26156,23 @@ L1727:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3307:
+LFE3301:
 	.section	.gcc_except_table,"w"
-LLSDA3307:
+LLSDA3301:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3307-LLSDACSB3307
-LLSDACSB3307:
-	.uleb128 LEHB331-LFB3307
-	.uleb128 LEHE331-LEHB331
-	.uleb128 L1726-LFB3307
+	.uleb128 LLSDACSE3301-LLSDACSB3301
+LLSDACSB3301:
+	.uleb128 LEHB336-LFB3301
+	.uleb128 LEHE336-LEHB336
+	.uleb128 L1737-LFB3301
 	.uleb128 0
-	.uleb128 LEHB332-LFB3307
-	.uleb128 LEHE332-LEHB332
+	.uleb128 LEHB337-LFB3301
+	.uleb128 LEHE337-LEHB337
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3307:
+LLSDACSE3301:
 	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI18CDualStackAllocAdpEC2ER19CDualStackAllocatorN15IStackAllocator9E_ORDEREDEN15CIStackAllocAdp13E_AUTO_REWINDE,"x"
 	.linkonce discard
 	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI18CDualStackAllocAdpED2Ev,"x"
@@ -25995,7 +26181,7 @@ LLSDACSE3307:
 	.globl	__ZN30CTempPolyAllocatorWithStackAdpI18CDualStackAllocAdpED2Ev
 	.def	__ZN30CTempPolyAllocatorWithStackAdpI18CDualStackAllocAdpED2Ev;	.scl	2;	.type	32;	.endef
 __ZN30CTempPolyAllocatorWithStackAdpI18CDualStackAllocAdpED2Ev:
-LFB3310:
+LFB3304:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26015,16 +26201,16 @@ LFB3310:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3310:
+LFE3304:
 	.section	.text$_Z11newWithInfoI6CTest7IPKcEEPT_S2_S2_jDpT0_,"x"
 	.linkonce discard
 	.globl	__Z11newWithInfoI6CTest7IPKcEEPT_S2_S2_jDpT0_
 	.def	__Z11newWithInfoI6CTest7IPKcEEPT_S2_S2_jDpT0_;	.scl	2;	.type	32;	.endef
 __Z11newWithInfoI6CTest7IPKcEEPT_S2_S2_jDpT0_:
-LFB3312:
+LFB3306:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3312
+	.cfi_lsda 0,LLSDA3306
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -26062,28 +26248,28 @@ LFB3312:
 	call	__Znwj
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1731
+	je	L1742
 	movl	20(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB333:
+LEHB338:
 	call	__ZN6CTest7C1EPKc
-LEHE333:
+LEHE338:
 	movl	%ebx, %eax
-	jmp	L1736
-L1731:
+	jmp	L1747
+L1742:
 	movl	%ebx, %eax
-	jmp	L1736
-L1735:
+	jmp	L1747
+L1746:
 	movl	%eax, %esi
 	movl	%ebx, (%esp)
 	call	__ZdlPv
 	movl	%esi, %eax
 	movl	%eax, (%esp)
-LEHB334:
+LEHB339:
 	call	__Unwind_Resume
-LEHE334:
-L1736:
+LEHE339:
+L1747:
 	addl	$64, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -26094,37 +26280,37 @@ L1736:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3312:
+LFE3306:
 	.section	.gcc_except_table,"w"
-LLSDA3312:
+LLSDA3306:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3312-LLSDACSB3312
-LLSDACSB3312:
-	.uleb128 LEHB333-LFB3312
-	.uleb128 LEHE333-LEHB333
-	.uleb128 L1735-LFB3312
+	.uleb128 LLSDACSE3306-LLSDACSB3306
+LLSDACSB3306:
+	.uleb128 LEHB338-LFB3306
+	.uleb128 LEHE338-LEHB338
+	.uleb128 L1746-LFB3306
 	.uleb128 0
-	.uleb128 LEHB334-LFB3312
-	.uleb128 LEHE334-LEHB334
+	.uleb128 LEHB339-LFB3306
+	.uleb128 LEHE339-LEHB339
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3312:
+LLSDACSE3306:
 	.section	.text$_Z11newWithInfoI6CTest7IPKcEEPT_S2_S2_jDpT0_,"x"
 	.linkonce discard
 	.weak	__Z11newWithInfoI6CTest7JPKcEEPT_S2_S2_jDpT0_
 	.def	__Z11newWithInfoI6CTest7JPKcEEPT_S2_S2_jDpT0_;	.scl	2;	.type	32;	.endef
 	.set	__Z11newWithInfoI6CTest7JPKcEEPT_S2_S2_jDpT0_,__Z11newWithInfoI6CTest7IPKcEEPT_S2_S2_jDpT0_
-	.section	.text$_Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_j,"x"
+	.section	.text$_Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_,"x"
 	.linkonce discard
-	.globl	__Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_j
-	.def	__Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_j;	.scl	2;	.type	32;	.endef
-__Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_j:
-LFB3313:
+	.globl	__Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_
+	.def	__Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_;	.scl	2;	.type	32;	.endef
+__Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_:
+LFB3307:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3313
+	.cfi_lsda 0,LLSDA3307
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -26143,8 +26329,7 @@ LFB3313:
 	fstps	-32(%ebp)
 	movl	$__ZTIA3_6CTest7, (%esp)
 	call	__ZNKSt9type_info4nameEv
-	movl	16(%ebp), %edx
-	movl	%edx, 24(%esp)
+	movl	$4, 24(%esp)
 	movl	%eax, 20(%esp)
 	movl	-32(%ebp), %eax
 	movl	%eax, 16(%esp)
@@ -26164,32 +26349,32 @@ LFB3313:
 	call	__Znaj
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1738
+	je	L1749
 	movl	$3, (%ebx)
 	leal	4(%ebx), %edi
 	movl	$2, %esi
 	movl	%edi, -60(%ebp)
-	jmp	L1739
-L1740:
+	jmp	L1750
+L1751:
 	movl	-60(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB335:
+LEHB340:
 	call	__ZN6CTest7C1Ev
-LEHE335:
+LEHE340:
 	addl	$12, -60(%ebp)
 	subl	$1, %esi
-L1739:
+L1750:
 	cmpl	$-1, %esi
-	jne	L1740
+	jne	L1751
 	leal	4(%ebx), %eax
-	jmp	L1747
-L1738:
+	jmp	L1758
+L1749:
 	movl	%ebx, %eax
-	jmp	L1747
-L1746:
+	jmp	L1758
+L1757:
 	movl	%eax, -60(%ebp)
 	testl	%edi, %edi
-	je	L1744
+	je	L1755
 	movl	$2, %eax
 	subl	%esi, %eax
 	movl	%eax, %edx
@@ -26198,25 +26383,25 @@ L1746:
 	addl	%edx, %eax
 	sall	$2, %eax
 	leal	(%edi,%eax), %esi
-L1745:
+L1756:
 	cmpl	%edi, %esi
-	je	L1744
+	je	L1755
 	subl	$12, %esi
 	movl	(%esi), %eax
 	movl	(%eax), %eax
 	movl	%esi, (%esp)
 	call	*%eax
-	jmp	L1745
-L1744:
+	jmp	L1756
+L1755:
 	movl	-60(%ebp), %esi
 	movl	%ebx, (%esp)
 	call	__ZdaPv
 	movl	%esi, %eax
 	movl	%eax, (%esp)
-LEHB336:
+LEHB341:
 	call	__Unwind_Resume
-LEHE336:
-L1747:
+LEHE341:
+L1758:
 	addl	$76, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -26229,34 +26414,34 @@ L1747:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3313:
+LFE3307:
 	.section	.gcc_except_table,"w"
-LLSDA3313:
+LLSDA3307:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3313-LLSDACSB3313
-LLSDACSB3313:
-	.uleb128 LEHB335-LFB3313
-	.uleb128 LEHE335-LEHB335
-	.uleb128 L1746-LFB3313
+	.uleb128 LLSDACSE3307-LLSDACSB3307
+LLSDACSB3307:
+	.uleb128 LEHB340-LFB3307
+	.uleb128 LEHE340-LEHB340
+	.uleb128 L1757-LFB3307
 	.uleb128 0
-	.uleb128 LEHB336-LFB3313
-	.uleb128 LEHE336-LEHB336
+	.uleb128 LEHB341-LFB3307
+	.uleb128 LEHE341-LEHB341
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3313:
-	.section	.text$_Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_j,"x"
+LLSDACSE3307:
+	.section	.text$_Z16newArrayWithInfoI6CTest7Lj3EEPT_PKcS4_,"x"
 	.linkonce discard
 	.section	.text$_Z11newWithInfoI13CDerivedTest7IPKcEEPT_S2_S2_jDpT0_,"x"
 	.linkonce discard
 	.globl	__Z11newWithInfoI13CDerivedTest7IPKcEEPT_S2_S2_jDpT0_
 	.def	__Z11newWithInfoI13CDerivedTest7IPKcEEPT_S2_S2_jDpT0_;	.scl	2;	.type	32;	.endef
 __Z11newWithInfoI13CDerivedTest7IPKcEEPT_S2_S2_jDpT0_:
-LFB3314:
+LFB3308:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3314
+	.cfi_lsda 0,LLSDA3308
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -26294,28 +26479,28 @@ LFB3314:
 	call	__Znwj
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1749
+	je	L1760
 	movl	20(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB337:
+LEHB342:
 	call	__ZN13CDerivedTest7C1EPKc
-LEHE337:
+LEHE342:
 	movl	%ebx, %eax
-	jmp	L1754
-L1749:
+	jmp	L1765
+L1760:
 	movl	%ebx, %eax
-	jmp	L1754
-L1753:
+	jmp	L1765
+L1764:
 	movl	%eax, %esi
 	movl	%ebx, (%esp)
 	call	__ZdlPv
 	movl	%esi, %eax
 	movl	%eax, (%esp)
-LEHB338:
+LEHB343:
 	call	__Unwind_Resume
-LEHE338:
-L1754:
+LEHE343:
+L1765:
 	addl	$64, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -26326,23 +26511,23 @@ L1754:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3314:
+LFE3308:
 	.section	.gcc_except_table,"w"
-LLSDA3314:
+LLSDA3308:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3314-LLSDACSB3314
-LLSDACSB3314:
-	.uleb128 LEHB337-LFB3314
-	.uleb128 LEHE337-LEHB337
-	.uleb128 L1753-LFB3314
+	.uleb128 LLSDACSE3308-LLSDACSB3308
+LLSDACSB3308:
+	.uleb128 LEHB342-LFB3308
+	.uleb128 LEHE342-LEHB342
+	.uleb128 L1764-LFB3308
 	.uleb128 0
-	.uleb128 LEHB338-LFB3314
-	.uleb128 LEHE338-LEHB338
+	.uleb128 LEHB343-LFB3308
+	.uleb128 LEHE343-LEHB343
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3314:
+LLSDACSE3308:
 	.section	.text$_Z11newWithInfoI13CDerivedTest7IPKcEEPT_S2_S2_jDpT0_,"x"
 	.linkonce discard
 	.weak	__Z11newWithInfoI13CDerivedTest7JPKcEEPT_S2_S2_jDpT0_
@@ -26354,7 +26539,7 @@ LLSDACSE3314:
 	.globl	__ZN25CTempPolyAllocatorWithAdpI12CStdAllocAdpEC1Ev
 	.def	__ZN25CTempPolyAllocatorWithAdpI12CStdAllocAdpEC1Ev;	.scl	2;	.type	32;	.endef
 __ZN25CTempPolyAllocatorWithAdpI12CStdAllocAdpEC1Ev:
-LFB3317:
+LFB3311:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26377,14 +26562,14 @@ LFB3317:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3317:
+LFE3311:
 	.section	.text$_ZN25CTempPolyAllocatorWithAdpI12CStdAllocAdpED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN25CTempPolyAllocatorWithAdpI12CStdAllocAdpED1Ev
 	.def	__ZN25CTempPolyAllocatorWithAdpI12CStdAllocAdpED1Ev;	.scl	2;	.type	32;	.endef
 __ZN25CTempPolyAllocatorWithAdpI12CStdAllocAdpED1Ev:
-LFB3320:
+LFB3314:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26404,14 +26589,14 @@ LFB3320:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3320:
+LFE3314:
 	.section	.text$_ZN24CTempPolyAllocatorDirectI13CMonoAllocAdpEC1ERS0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN24CTempPolyAllocatorDirectI13CMonoAllocAdpEC1ERS0_
 	.def	__ZN24CTempPolyAllocatorDirectI13CMonoAllocAdpEC1ERS0_;	.scl	2;	.type	32;	.endef
 __ZN24CTempPolyAllocatorDirectI13CMonoAllocAdpEC1ERS0_:
-LFB3323:
+LFB3317:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26429,14 +26614,14 @@ LFB3323:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3323:
+LFE3317:
 	.section	.text$_ZN24CTempPolyAllocatorDirectI13CMonoAllocAdpED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN24CTempPolyAllocatorDirectI13CMonoAllocAdpED1Ev
 	.def	__ZN24CTempPolyAllocatorDirectI13CMonoAllocAdpED1Ev;	.scl	2;	.type	32;	.endef
 __ZN24CTempPolyAllocatorDirectI13CMonoAllocAdpED1Ev:
-LFB3326:
+LFB3320:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26452,14 +26637,14 @@ LFB3326:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3326:
+LFE3320:
 	.section	.text$_ZN25CTempPolyAllocatorWithAdpI13CPoolAllocAdpEC1ER14CPoolAllocator,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN25CTempPolyAllocatorWithAdpI13CPoolAllocAdpEC1ER14CPoolAllocator
 	.def	__ZN25CTempPolyAllocatorWithAdpI13CPoolAllocAdpEC1ER14CPoolAllocator;	.scl	2;	.type	32;	.endef
 __ZN25CTempPolyAllocatorWithAdpI13CPoolAllocAdpEC1ER14CPoolAllocator:
-LFB3329:
+LFB3323:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26484,14 +26669,14 @@ LFB3329:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3329:
+LFE3323:
 	.section	.text$_ZN25CTempPolyAllocatorWithAdpI13CPoolAllocAdpED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN25CTempPolyAllocatorWithAdpI13CPoolAllocAdpED1Ev
 	.def	__ZN25CTempPolyAllocatorWithAdpI13CPoolAllocAdpED1Ev;	.scl	2;	.type	32;	.endef
 __ZN25CTempPolyAllocatorWithAdpI13CPoolAllocAdpED1Ev:
-LFB3332:
+LFB3326:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26511,13 +26696,13 @@ LFB3332:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3332:
-	.section	.text$_ZSt7forwardISt4pairIjN6CTest84DATAEEEOT_RNSt16remove_referenceIS4_E4typeE,"x"
+LFE3326:
+	.section	.text$_ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE,"x"
 	.linkonce discard
-	.globl	__ZSt7forwardISt4pairIjN6CTest84DATAEEEOT_RNSt16remove_referenceIS4_E4typeE
-	.def	__ZSt7forwardISt4pairIjN6CTest84DATAEEEOT_RNSt16remove_referenceIS4_E4typeE;	.scl	2;	.type	32;	.endef
-__ZSt7forwardISt4pairIjN6CTest84DATAEEEOT_RNSt16remove_referenceIS4_E4typeE:
-LFB3344:
+	.globl	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
+	.def	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE;	.scl	2;	.type	32;	.endef
+__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE:
+LFB3338:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26530,41 +26715,73 @@ LFB3344:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3344:
-	.section	.text$_ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE6insertIS6_IjS1_EvEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEOT_,"x"
+LFE3338:
+	.section	.text$_ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE,"x"
 	.linkonce discard
-	.align 2
-	.globl	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE6insertIS6_IjS1_EvEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEOT_
-	.def	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE6insertIS6_IjS1_EvEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEOT_;	.scl	2;	.type	32;	.endef
-__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE6insertIS6_IjS1_EvEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEOT_:
-LFB3343:
+	.globl	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE
+	.def	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE;	.scl	2;	.type	32;	.endef
+__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE:
+LFB3339:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	12(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZSt7forwardISt4pairIjN6CTest84DATAEEEOT_RNSt16remove_referenceIS4_E4typeE
-	movl	8(%ebp), %edx
-	movl	%eax, 4(%esp)
-	movl	%edx, (%esp)
-	call	__ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EE6insertIS1_IjS4_EvEES1_INS_14_Node_iteratorIS5_Lb0ELb0EEEbEOT_
-	leave
+	movl	8(%ebp), %eax
+	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3343:
+LFE3339:
+	.section	.text$_ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7emplaceIIjRKS1_EEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEDpOT_,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7emplaceIIjRKS1_EEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEDpOT_
+	.def	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7emplaceIIjRKS1_EEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEDpOT_;	.scl	2;	.type	32;	.endef
+__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7emplaceIIjRKS1_EEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEDpOT_:
+LFB3337:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$20, %esp
+	.cfi_offset 3, -12
+	movl	16(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE
+	movl	%eax, %ebx
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
+	movl	8(%ebp), %edx
+	movl	%ebx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	%edx, (%esp)
+	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE7emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbEDpOT_
+	addl	$20, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3337:
+	.weak	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7emplaceIJjRKS1_EEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEDpOT_
+	.def	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7emplaceIJjRKS1_EEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEDpOT_;	.scl	2;	.type	32;	.endef
+	.set	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7emplaceIJjRKS1_EEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEDpOT_,__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7emplaceIIjRKS1_EEES6_INSt8__detail14_Node_iteratorIS8_Lb0ELb0EEEbEDpOT_
 	.section	.text$_ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE4findERS7_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE4findERS7_
 	.def	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE4findERS7_;	.scl	2;	.type	32;	.endef
 __ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE4findERS7_:
-LFB3345:
+LFB3340:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26582,14 +26799,14 @@ LFB3345:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3345:
+LFE3340:
 	.section	.text$_ZNKSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE4cendEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE4cendEv
 	.def	__ZNKSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE4cendEv;	.scl	2;	.type	32;	.endef
 __ZNKSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE4cendEv:
-LFB3346:
+LFB3341:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26605,13 +26822,13 @@ LFB3346:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3346:
+LFE3341:
 	.section	.text$_ZNSt8__detaileqISt4pairIKjN6CTest84DATAEELb0EEEbRKNS_19_Node_iterator_baseIT_XT0_EEESA_,"x"
 	.linkonce discard
 	.globl	__ZNSt8__detaileqISt4pairIKjN6CTest84DATAEELb0EEEbRKNS_19_Node_iterator_baseIT_XT0_EEESA_
 	.def	__ZNSt8__detaileqISt4pairIKjN6CTest84DATAEELb0EEEbRKNS_19_Node_iterator_baseIT_XT0_EEESA_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detaileqISt4pairIKjN6CTest84DATAEELb0EEEbRKNS_19_Node_iterator_baseIT_XT0_EEESA_:
-LFB3347:
+LFB3342:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26629,14 +26846,14 @@ LFB3347:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3347:
+LFE3342:
 	.section	.text$_ZNKSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEptEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEptEv
 	.def	__ZNKSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEptEv;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEptEv:
-LFB3348:
+LFB3343:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26654,14 +26871,14 @@ LFB3348:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3348:
+LFE3343:
 	.section	.text$_ZN23CStackAllocatorWithBuffILj1024EEC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN23CStackAllocatorWithBuffILj1024EEC1Ev
 	.def	__ZN23CStackAllocatorWithBuffILj1024EEC1Ev;	.scl	2;	.type	32;	.endef
 __ZN23CStackAllocatorWithBuffILj1024EEC1Ev:
-LFB3351:
+LFB3346:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26683,14 +26900,14 @@ LFB3351:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3351:
+LFE3346:
 	.section	.text$_ZN23CStackAllocatorWithBuffILj1024EED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN23CStackAllocatorWithBuffILj1024EED1Ev
 	.def	__ZN23CStackAllocatorWithBuffILj1024EED1Ev;	.scl	2;	.type	32;	.endef
 __ZN23CStackAllocatorWithBuffILj1024EED1Ev:
-LFB3354:
+LFB3349:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26705,24 +26922,24 @@ LFB3354:
 	call	__ZN15CStackAllocatorD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1777
+	je	L1790
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1777:
+L1790:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3354:
+LFE3349:
 	.section	.text$_ZN23CStackAllocatorWithBuffILj1024EED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN23CStackAllocatorWithBuffILj1024EED0Ev
 	.def	__ZN23CStackAllocatorWithBuffILj1024EED0Ev;	.scl	2;	.type	32;	.endef
 __ZN23CStackAllocatorWithBuffILj1024EED0Ev:
-LFB3355:
+LFB3350:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26741,14 +26958,14 @@ LFB3355:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3355:
+LFE3350:
 	.section	.text$_ZNSaISt4pairIKjN6CTest84DATAEEEC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaISt4pairIKjN6CTest84DATAEEEC1Ev
 	.def	__ZNSaISt4pairIKjN6CTest84DATAEEEC1Ev;	.scl	2;	.type	32;	.endef
 __ZNSaISt4pairIKjN6CTest84DATAEEEC1Ev:
-LFB3358:
+LFB3353:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26764,14 +26981,14 @@ LFB3358:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3358:
+LFE3353:
 	.section	.text$_ZNSaISt4pairIKjN6CTest84DATAEEED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaISt4pairIKjN6CTest84DATAEEED1Ev
 	.def	__ZNSaISt4pairIKjN6CTest84DATAEEED1Ev;	.scl	2;	.type	32;	.endef
 __ZNSaISt4pairIKjN6CTest84DATAEEED1Ev:
-LFB3361:
+LFB3356:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26787,14 +27004,14 @@ LFB3361:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3361:
+LFE3356:
 	.section	.text$_ZNSt17__allow_copy_consILb1EEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt17__allow_copy_consILb1EEC2Ev
 	.def	__ZNSt17__allow_copy_consILb1EEC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt17__allow_copy_consILb1EEC2Ev:
-LFB3364:
+LFB3359:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26806,14 +27023,14 @@ LFB3364:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3364:
+LFE3359:
 	.section	.text$_ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEEC1EjRKS3_RKS5_RKS9_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEEC1EjRKS3_RKS5_RKS9_
 	.def	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEEC1EjRKS3_RKS5_RKS9_;	.scl	2;	.type	32;	.endef
 __ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEEC1EjRKS3_RKS5_RKS9_:
-LFB3367:
+LFB3362:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26840,14 +27057,14 @@ LFB3367:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3367:
+LFE3362:
 	.section	.text$_ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7reserveEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7reserveEj
 	.def	__ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7reserveEj;	.scl	2;	.type	32;	.endef
 __ZNSt13unordered_mapIjN6CTest84DATAESt4hashIjESt8equal_toIjESaISt4pairIKjS1_EEE7reserveEj:
-LFB3368:
+LFB3363:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26865,14 +27082,14 @@ LFB3368:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3368:
+LFE3363:
 	.section	.text$_ZNSt8__detail13_Before_beginISaINS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail13_Before_beginISaINS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEED1Ev
 	.def	__ZNSt8__detail13_Before_beginISaINS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEED1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail13_Before_beginISaINS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEED1Ev:
-LFB3372:
+LFB3367:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -26888,17 +27105,17 @@ LFB3372:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3372:
+LFE3367:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEED1Ev
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEED1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEED1Ev:
-LFB3374:
+LFB3369:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3374
+	.cfi_lsda 0,LLSDA3369
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -26926,26 +27143,55 @@ LFB3374:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3374:
+LFE3369:
 	.section	.gcc_except_table,"w"
-LLSDA3374:
+LLSDA3369:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3374-LLSDACSB3374
-LLSDACSB3374:
-LLSDACSE3374:
+	.uleb128 LLSDACSE3369-LLSDACSB3369
+LLSDACSB3369:
+LLSDACSE3369:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEED1Ev,"x"
 	.linkonce discard
+	.section	.text$_ZN23CStackAllocatorWithBuffILj4096EEC1Ev,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN23CStackAllocatorWithBuffILj4096EEC1Ev
+	.def	__ZN23CStackAllocatorWithBuffILj4096EEC1Ev;	.scl	2;	.type	32;	.endef
+__ZN23CStackAllocatorWithBuffILj4096EEC1Ev:
+LFB3372:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$12, %esp
+	movl	8(%ebp), %eax
+	leal	16(%eax), %edx
+	movl	8(%ebp), %eax
+	movl	$4096, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN15CStackAllocatorC2EPvj
+	movl	8(%ebp), %eax
+	movl	$__ZTV23CStackAllocatorWithBuffILj4096EE+8, (%eax)
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3372:
 	.section	.text$_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_S8_,"x"
 	.linkonce discard
 	.globl	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_S8_
 	.def	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_S8_;	.scl	2;	.type	32;	.endef
 __ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_S8_:
-LFB3393:
+LFB3391:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3393
+	.cfi_lsda 0,LLSDA3391
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -26958,28 +27204,28 @@ LFB3393:
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB339:
+LEHB344:
 	call	__ZNSsC1ERKSs
-LEHE339:
+LEHE344:
 	movl	16(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB340:
+LEHB345:
 	call	__ZNSs6appendERKSs
-LEHE340:
-	jmp	L1796
-L1795:
+LEHE345:
+	jmp	L1810
+L1809:
 	movl	%eax, %ebx
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSsD1Ev
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB341:
+LEHB346:
 	call	__Unwind_Resume
-LEHE341:
-L1796:
+LEHE346:
+L1810:
 	movl	8(%ebp), %eax
 	addl	$20, %esp
 	popl	%ebx
@@ -26989,27 +27235,27 @@ L1796:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3393:
+LFE3391:
 	.section	.gcc_except_table,"w"
-LLSDA3393:
+LLSDA3391:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3393-LLSDACSB3393
-LLSDACSB3393:
-	.uleb128 LEHB339-LFB3393
-	.uleb128 LEHE339-LEHB339
+	.uleb128 LLSDACSE3391-LLSDACSB3391
+LLSDACSB3391:
+	.uleb128 LEHB344-LFB3391
+	.uleb128 LEHE344-LEHB344
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB340-LFB3393
-	.uleb128 LEHE340-LEHB340
-	.uleb128 L1795-LFB3393
+	.uleb128 LEHB345-LFB3391
+	.uleb128 LEHE345-LEHB345
+	.uleb128 L1809-LFB3391
 	.uleb128 0
-	.uleb128 LEHB341-LFB3393
-	.uleb128 LEHE341-LEHB341
+	.uleb128 LEHB346-LFB3391
+	.uleb128 LEHE346-LEHB346
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3393:
+LLSDACSE3391:
 	.section	.text$_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_S8_,"x"
 	.linkonce discard
 	.section	.text$_ZSt4moveIRSsEONSt16remove_referenceIT_E4typeEOS2_,"x"
@@ -27017,7 +27263,7 @@ LLSDACSE3393:
 	.globl	__ZSt4moveIRSsEONSt16remove_referenceIT_E4typeEOS2_
 	.def	__ZSt4moveIRSsEONSt16remove_referenceIT_E4typeEOS2_;	.scl	2;	.type	32;	.endef
 __ZSt4moveIRSsEONSt16remove_referenceIT_E4typeEOS2_:
-LFB3395:
+LFB3393:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27030,13 +27276,13 @@ LFB3395:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3395:
+LFE3393:
 	.section	.text$_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_,"x"
 	.linkonce discard
 	.globl	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_
 	.def	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_;	.scl	2;	.type	32;	.endef
 __ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EOS6_RKS6_:
-LFB3394:
+LFB3392:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27061,42 +27307,106 @@ LFB3394:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3394:
-	.section	.text$_ZN23CStackAllocatorWithBuffILj8192EEC1Ev,"x"
+LFE3392:
+	.section	.text$_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_,"x"
 	.linkonce discard
-	.align 2
-	.globl	__ZN23CStackAllocatorWithBuffILj8192EEC1Ev
-	.def	__ZN23CStackAllocatorWithBuffILj8192EEC1Ev;	.scl	2;	.type	32;	.endef
-__ZN23CStackAllocatorWithBuffILj8192EEC1Ev:
-LFB3399:
+	.globl	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_
+	.def	__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_;	.scl	2;	.type	32;	.endef
+__ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_:
+LFB3395:
 	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3395
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
-	subl	$12, %esp
-	movl	8(%ebp), %eax
-	leal	16(%eax), %edx
-	movl	8(%ebp), %eax
-	movl	$8192, 8(%esp)
-	movl	%edx, 4(%esp)
+	pushl	%ebx
+	subl	$36, %esp
+	.cfi_offset 3, -12
+	movl	12(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN15CStackAllocatorC2EPvj
+	call	__ZNSt11char_traitsIcE6lengthEPKc
+	movl	%eax, -12(%ebp)
 	movl	8(%ebp), %eax
-	movl	$__ZTV23CStackAllocatorWithBuffILj8192EE+8, (%eax)
-	leave
+	movl	%eax, (%esp)
+LEHB347:
+	call	__ZNSsC1Ev
+LEHE347:
+	movl	16(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNKSs4sizeEv
+	movl	-12(%ebp), %edx
+	addl	%edx, %eax
+	movl	%eax, 4(%esp)
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+LEHB348:
+	call	__ZNSs7reserveEj
+	movl	-12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	12(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSs6appendEPKcj
+	movl	16(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSs6appendERKSs
+LEHE348:
+	jmp	L1819
+L1818:
+	movl	%eax, %ebx
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSsD1Ev
+	movl	%ebx, %eax
+	movl	%eax, (%esp)
+LEHB349:
+	call	__Unwind_Resume
+LEHE349:
+L1819:
+	movl	8(%ebp), %eax
+	addl	$36, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
-	ret
+	ret	$4
 	.cfi_endproc
-LFE3399:
-	.section	.text$_ZN23CStackAllocatorWithBuffILj8192EED1Ev,"x"
+LFE3395:
+	.section	.gcc_except_table,"w"
+LLSDA3395:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3395-LLSDACSB3395
+LLSDACSB3395:
+	.uleb128 LEHB347-LFB3395
+	.uleb128 LEHE347-LEHB347
+	.uleb128 0
+	.uleb128 0
+	.uleb128 LEHB348-LFB3395
+	.uleb128 LEHE348-LEHB348
+	.uleb128 L1818-LFB3395
+	.uleb128 0
+	.uleb128 LEHB349-LFB3395
+	.uleb128 LEHE349-LEHB349
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3395:
+	.section	.text$_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_,"x"
+	.linkonce discard
+	.section	.text$_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN23CStackAllocatorWithBuffILj8192EED1Ev
-	.def	__ZN23CStackAllocatorWithBuffILj8192EED1Ev;	.scl	2;	.type	32;	.endef
-__ZN23CStackAllocatorWithBuffILj8192EED1Ev:
+	.globl	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev
+	.def	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev;	.scl	2;	.type	32;	.endef
+__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev:
 LFB3402:
 	.cfi_startproc
 	pushl	%ebp
@@ -27106,84 +27416,26 @@ LFB3402:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	movl	8(%ebp), %eax
-	movl	$__ZTV23CStackAllocatorWithBuffILj8192EE+8, (%eax)
-	movl	8(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN15CStackAllocatorD2Ev
-	movl	$0, %eax
+	movl	(%eax), %eax
 	testl	%eax, %eax
-	je	L1802
+	je	L1820
 	movl	8(%ebp), %eax
+	movl	(%eax), %eax
 	movl	%eax, (%esp)
-	call	__ZdlPv
-L1802:
+	call	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv
+L1820:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
 LFE3402:
-	.section	.text$_ZN23CStackAllocatorWithBuffILj8192EED0Ev,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZN23CStackAllocatorWithBuffILj8192EED0Ev
-	.def	__ZN23CStackAllocatorWithBuffILj8192EED0Ev;	.scl	2;	.type	32;	.endef
-__ZN23CStackAllocatorWithBuffILj8192EED0Ev:
-LFB3403:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	8(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN23CStackAllocatorWithBuffILj8192EED1Ev
-	movl	8(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZdlPv
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3403:
-	.section	.text$_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev
-	.def	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev;	.scl	2;	.type	32;	.endef
-__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EED1Ev:
-LFB3408:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	testl	%eax, %eax
-	je	L1807
-	movl	8(%ebp), %eax
-	movl	(%eax), %eax
-	movl	%eax, (%esp)
-	call	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv
-L1807:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3408:
 	.section	.text$_ZNSt10_Hash_impl4hashIP11__pthread_tEEjRKT_,"x"
 	.linkonce discard
 	.globl	__ZNSt10_Hash_impl4hashIP11__pthread_tEEjRKT_
 	.def	__ZNSt10_Hash_impl4hashIP11__pthread_tEEjRKT_;	.scl	2;	.type	32;	.endef
 __ZNSt10_Hash_impl4hashIP11__pthread_tEEjRKT_:
-LFB3409:
+LFB3403:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27201,14 +27453,14 @@ LFB3409:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3409:
+LFE3403:
 	.section	.text$_ZNKSt6chrono8durationIxSt5ratioILx1ELx1000EEE5countEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt6chrono8durationIxSt5ratioILx1ELx1000EEE5countEv
 	.def	__ZNKSt6chrono8durationIxSt5ratioILx1ELx1000EEE5countEv;	.scl	2;	.type	32;	.endef
 __ZNKSt6chrono8durationIxSt5ratioILx1ELx1000EEE5countEv:
-LFB3413:
+LFB3407:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27223,14 +27475,14 @@ LFB3413:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3413:
+LFE3407:
 	.def	___divdi3;	.scl	2;	.type	32;	.endef
 	.section	.text$_ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1EEEES2_ILx1ELx1000EExLb1ELb0EE6__castIxS5_EES4_RKNS1_IT_T0_EE,"x"
 	.linkonce discard
 	.globl	__ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1EEEES2_ILx1ELx1000EExLb1ELb0EE6__castIxS5_EES4_RKNS1_IT_T0_EE
 	.def	__ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1EEEES2_ILx1ELx1000EExLb1ELb0EE6__castIxS5_EES4_RKNS1_IT_T0_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1EEEES2_ILx1ELx1000EExLb1ELb0EE6__castIxS5_EES4_RKNS1_IT_T0_EE:
-LFB3412:
+LFB3406:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27260,13 +27512,13 @@ LFB3412:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3412:
+LFE3406:
 	.section	.text$_ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1EEEExS2_ILx1ELx1000EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE,"x"
 	.linkonce discard
 	.globl	__ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1EEEExS2_ILx1ELx1000EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE
 	.def	__ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1EEEExS2_ILx1ELx1000EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1EEEExS2_ILx1ELx1000EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE:
-LFB3411:
+LFB3405:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27282,14 +27534,14 @@ LFB3411:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3411:
+LFE3405:
 	.section	.text$_ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IxvEERKT_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IxvEERKT_
 	.def	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IxvEERKT_;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IxvEERKT_:
-LFB3420:
+LFB3414:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27307,13 +27559,13 @@ LFB3420:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3420:
+LFE3414:
 	.section	.text$_ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000EEEES2_ILx1000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1EEEES4_RKNS1_IT_T0_EE,"x"
 	.linkonce discard
 	.globl	__ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000EEEES2_ILx1000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1EEEES4_RKNS1_IT_T0_EE
 	.def	__ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000EEEES2_ILx1000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1EEEES4_RKNS1_IT_T0_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000EEEES2_ILx1000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1EEEES4_RKNS1_IT_T0_EE:
-LFB3417:
+LFB3411:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27350,13 +27602,13 @@ LFB3417:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3417:
+LFE3411:
 	.section	.text$_ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000EEEExS2_ILx1ELx1EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE,"x"
 	.linkonce discard
 	.globl	__ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000EEEExS2_ILx1ELx1EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE
 	.def	__ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000EEEExS2_ILx1ELx1EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000EEEExS2_ILx1ELx1EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE:
-LFB3416:
+LFB3410:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27372,14 +27624,14 @@ LFB3416:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3416:
+LFE3410:
 	.section	.text$_ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IxS1_ILx1ELx1EEvEERKNS0_IT_T0_EE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IxS1_ILx1ELx1EEvEERKNS0_IT_T0_EE
 	.def	__ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IxS1_ILx1ELx1EEvEERKNS0_IT_T0_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono8durationIxSt5ratioILx1ELx1000EEEC1IxS1_ILx1ELx1EEvEERKNS0_IT_T0_EE:
-LFB3422:
+LFB3416:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27403,13 +27655,13 @@ LFB3422:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3422:
+LFE3416:
 	.section	.text$_ZNSt6chronomiIxSt5ratioILx1ELx1000EExS1_ILx1ELx1EEEENSt11common_typeIINS_8durationIT_T0_EENS5_IT1_T2_EEEE4typeERKS8_RKSB_,"x"
 	.linkonce discard
 	.globl	__ZNSt6chronomiIxSt5ratioILx1ELx1000EExS1_ILx1ELx1EEEENSt11common_typeIINS_8durationIT_T0_EENS5_IT1_T2_EEEE4typeERKS8_RKSB_
 	.def	__ZNSt6chronomiIxSt5ratioILx1ELx1000EExS1_ILx1ELx1EEEENSt11common_typeIINS_8durationIT_T0_EENS5_IT1_T2_EEEE4typeERKS8_RKSB_;	.scl	2;	.type	32;	.endef
 __ZNSt6chronomiIxSt5ratioILx1ELx1000EExS1_ILx1ELx1EEEENSt11common_typeIINS_8durationIT_T0_EENS5_IT1_T2_EEEE4typeERKS8_RKSB_:
-LFB3414:
+LFB3408:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27462,7 +27714,7 @@ LFB3414:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3414:
+LFE3408:
 	.weak	__ZNSt6chronomiIxSt5ratioILx1ELx1000EExS1_ILx1ELx1EEEENSt11common_typeIJNS_8durationIT_T0_EENS5_IT1_T2_EEEE4typeERKS8_RKSB_
 	.def	__ZNSt6chronomiIxSt5ratioILx1ELx1000EExS1_ILx1ELx1EEEENSt11common_typeIJNS_8durationIT_T0_EENS5_IT1_T2_EEEE4typeERKS8_RKSB_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt6chronomiIxSt5ratioILx1ELx1000EExS1_ILx1ELx1EEEENSt11common_typeIJNS_8durationIT_T0_EENS5_IT1_T2_EEEE4typeERKS8_RKSB_,__ZNSt6chronomiIxSt5ratioILx1ELx1000EExS1_ILx1ELx1EEEENSt11common_typeIINS_8durationIT_T0_EENS5_IT1_T2_EEEE4typeERKS8_RKSB_
@@ -27471,7 +27723,7 @@ LFE3414:
 	.globl	__ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000000000EEEES2_ILx1000000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1000EEEES4_RKNS1_IT_T0_EE
 	.def	__ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000000000EEEES2_ILx1000000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1000EEEES4_RKNS1_IT_T0_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1000000000EEEES2_ILx1000000ELx1EExLb0ELb1EE6__castIxS2_ILx1ELx1000EEEES4_RKNS1_IT_T0_EE:
-LFB3424:
+LFB3418:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27508,13 +27760,13 @@ LFB3424:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3424:
+LFE3418:
 	.section	.text$_ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000000000EEEExS2_ILx1ELx1000EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE,"x"
 	.linkonce discard
 	.globl	__ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000000000EEEExS2_ILx1ELx1000EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE
 	.def	__ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000000000EEEExS2_ILx1ELx1000EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1000000000EEEExS2_ILx1ELx1000EEEENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES8_E4typeERKNS1_IT0_T1_EE:
-LFB3423:
+LFB3417:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27530,16 +27782,16 @@ LFB3423:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3423:
+LFE3417:
 	.section	.text$_ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE,"x"
 	.linkonce discard
 	.globl	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE
 	.def	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE;	.scl	2;	.type	32;	.endef
 __ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE:
-LFB3410:
+LFB3404:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3410
+	.cfi_lsda 0,LLSDA3404
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -27571,38 +27823,38 @@ LFB3410:
 	movl	-20(%ebp), %edx
 	movl	%eax, (%esp)
 	movl	%edx, 4(%esp)
-LEHB342:
+LEHB350:
 	call	__ZNSt11this_thread11__sleep_forENSt6chrono8durationIxSt5ratioILx1ELx1EEEENS1_IxS2_ILx1ELx1000000000EEEE
-LEHE342:
-	jmp	L1832
-L1831:
+LEHE350:
+	jmp	L1845
+L1844:
 	movl	%eax, (%esp)
-LEHB343:
+LEHB351:
 	call	__Unwind_Resume
-LEHE343:
-L1832:
+LEHE351:
+L1845:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3410:
+LFE3404:
 	.section	.gcc_except_table,"w"
-LLSDA3410:
+LLSDA3404:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3410-LLSDACSB3410
-LLSDACSB3410:
-	.uleb128 LEHB342-LFB3410
-	.uleb128 LEHE342-LEHB342
-	.uleb128 L1831-LFB3410
+	.uleb128 LLSDACSE3404-LLSDACSB3404
+LLSDACSB3404:
+	.uleb128 LEHB350-LFB3404
+	.uleb128 LEHE350-LEHB350
+	.uleb128 L1844-LFB3404
 	.uleb128 0
-	.uleb128 LEHB343-LFB3410
-	.uleb128 LEHE343-LEHB343
+	.uleb128 LEHB351-LFB3404
+	.uleb128 LEHE351-LEHB351
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3410:
+LLSDACSE3404:
 	.section	.text$_ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1000EEEEvRKNSt6chrono8durationIT_T0_EE,"x"
 	.linkonce discard
 	.section	.text$_ZNKSt13__atomic_baseIjE4loadESt12memory_order,"x"
@@ -27611,7 +27863,7 @@ LLSDACSE3410:
 	.globl	__ZNKSt13__atomic_baseIjE4loadESt12memory_order
 	.def	__ZNKSt13__atomic_baseIjE4loadESt12memory_order;	.scl	2;	.type	32;	.endef
 __ZNKSt13__atomic_baseIjE4loadESt12memory_order:
-LFB3425:
+LFB3419:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27631,14 +27883,14 @@ LFB3425:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3425:
+LFE3419:
 	.section	.text$_ZNKSt6atomicIN15IStackAllocator9E_ORDEREDEE4loadESt12memory_order,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt6atomicIN15IStackAllocator9E_ORDEREDEE4loadESt12memory_order
 	.def	__ZNKSt6atomicIN15IStackAllocator9E_ORDEREDEE4loadESt12memory_order;	.scl	2;	.type	32;	.endef
 __ZNKSt6atomicIN15IStackAllocator9E_ORDEREDEE4loadESt12memory_order:
-LFB3426:
+LFB3420:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27655,14 +27907,14 @@ LFB3426:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3426:
+LFE3420:
 	.section	.text$_ZNSt6atomicIN15IStackAllocator9E_ORDEREDEE5storeES1_St12memory_order,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6atomicIN15IStackAllocator9E_ORDEREDEE5storeES1_St12memory_order
 	.def	__ZNSt6atomicIN15IStackAllocator9E_ORDEREDEE5storeES1_St12memory_order;	.scl	2;	.type	32;	.endef
 __ZNSt6atomicIN15IStackAllocator9E_ORDEREDEE5storeES1_St12memory_order:
-LFB3427:
+LFB3421:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27677,14 +27929,14 @@ LFB3427:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3427:
+LFE3421:
 	.section	.text$_ZNSt13__atomic_baseIjE5storeEjSt12memory_order,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt13__atomic_baseIjE5storeEjSt12memory_order
 	.def	__ZNSt13__atomic_baseIjE5storeEjSt12memory_order;	.scl	2;	.type	32;	.endef
 __ZNSt13__atomic_baseIjE5storeEjSt12memory_order:
-LFB3428:
+LFB3422:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27705,17 +27957,17 @@ LFB3428:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3428:
+LFE3422:
 	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI19CSmartStackAllocAdpEC2ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN30CTempPolyAllocatorWithStackAdpI19CSmartStackAllocAdpEC2ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
 	.def	__ZN30CTempPolyAllocatorWithStackAdpI19CSmartStackAllocAdpEC2ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZN30CTempPolyAllocatorWithStackAdpI19CSmartStackAllocAdpEC2ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE:
-LFB3430:
+LFB3424:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3430
+	.cfi_lsda 0,LLSDA3424
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -27737,21 +27989,21 @@ LFB3430:
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
-LEHB344:
+LEHB352:
 	call	__ZN19CSmartStackAllocAdpC1ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE
-LEHE344:
-	jmp	L1842
-L1841:
+LEHE352:
+	jmp	L1855
+L1854:
 	movl	%eax, %ebx
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN22CTempPolyAllocatorBaseD2Ev
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB345:
+LEHB353:
 	call	__Unwind_Resume
-LEHE345:
-L1842:
+LEHE353:
+L1855:
 	addl	$20, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -27760,23 +28012,23 @@ L1842:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3430:
+LFE3424:
 	.section	.gcc_except_table,"w"
-LLSDA3430:
+LLSDA3424:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3430-LLSDACSB3430
-LLSDACSB3430:
-	.uleb128 LEHB344-LFB3430
-	.uleb128 LEHE344-LEHB344
-	.uleb128 L1841-LFB3430
+	.uleb128 LLSDACSE3424-LLSDACSB3424
+LLSDACSB3424:
+	.uleb128 LEHB352-LFB3424
+	.uleb128 LEHE352-LEHB352
+	.uleb128 L1854-LFB3424
 	.uleb128 0
-	.uleb128 LEHB345-LFB3430
-	.uleb128 LEHE345-LEHB345
+	.uleb128 LEHB353-LFB3424
+	.uleb128 LEHE353-LEHB353
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3430:
+LLSDACSE3424:
 	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI19CSmartStackAllocAdpEC2ER20CSmartStackAllocatorN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.section	.text$_ZN30CTempPolyAllocatorWithStackAdpI19CSmartStackAllocAdpED2Ev,"x"
@@ -27785,7 +28037,7 @@ LLSDACSE3430:
 	.globl	__ZN30CTempPolyAllocatorWithStackAdpI19CSmartStackAllocAdpED2Ev
 	.def	__ZN30CTempPolyAllocatorWithStackAdpI19CSmartStackAllocAdpED2Ev;	.scl	2;	.type	32;	.endef
 __ZN30CTempPolyAllocatorWithStackAdpI19CSmartStackAllocAdpED2Ev:
-LFB3433:
+LFB3427:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27805,14 +28057,14 @@ LFB3433:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3433:
+LFE3427:
 	.section	.text$_ZN28CSmartStackAllocatorWithBuffILj1024EEC1EN15IStackAllocator9E_ORDEREDE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN28CSmartStackAllocatorWithBuffILj1024EEC1EN15IStackAllocator9E_ORDEREDE
 	.def	__ZN28CSmartStackAllocatorWithBuffILj1024EEC1EN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZN28CSmartStackAllocatorWithBuffILj1024EEC1EN15IStackAllocator9E_ORDEREDE:
-LFB3437:
+LFB3431:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27836,13 +28088,13 @@ LFB3437:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3437:
+LFE3431:
 	.section	.text$_ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1EEEES3_xLb1ELb1EE6__castIxS3_EES4_RKNS1_IT_T0_EE,"x"
 	.linkonce discard
 	.globl	__ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1EEEES3_xLb1ELb1EE6__castIxS3_EES4_RKNS1_IT_T0_EE
 	.def	__ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1EEEES3_xLb1ELb1EE6__castIxS3_EES4_RKNS1_IT_T0_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono20__duration_cast_implINS_8durationIxSt5ratioILx1ELx1EEEES3_xLb1ELb1EE6__castIxS3_EES4_RKNS1_IT_T0_EE:
-LFB3440:
+LFB3434:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27867,13 +28119,13 @@ LFB3440:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3440:
+LFE3434:
 	.section	.text$_ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1EEEExS3_EENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES7_E4typeERKNS1_IT0_T1_EE,"x"
 	.linkonce discard
 	.globl	__ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1EEEExS3_EENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES7_E4typeERKNS1_IT0_T1_EE
 	.def	__ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1EEEExS3_EENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES7_E4typeERKNS1_IT0_T1_EE;	.scl	2;	.type	32;	.endef
 __ZNSt6chrono13duration_castINS_8durationIxSt5ratioILx1ELx1EEEExS3_EENSt9enable_ifIXsrNS_13__is_durationIT_EE5valueES7_E4typeERKNS1_IT0_T1_EE:
-LFB3439:
+LFB3433:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27889,13 +28141,13 @@ LFB3439:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3439:
+LFE3433:
 	.section	.text$_ZNSt6chronomiIxSt5ratioILx1ELx1EExS2_EENSt11common_typeIINS_8durationIT_T0_EENS4_IT1_T2_EEEE4typeERKS7_RKSA_,"x"
 	.linkonce discard
 	.globl	__ZNSt6chronomiIxSt5ratioILx1ELx1EExS2_EENSt11common_typeIINS_8durationIT_T0_EENS4_IT1_T2_EEEE4typeERKS7_RKSA_
 	.def	__ZNSt6chronomiIxSt5ratioILx1ELx1EExS2_EENSt11common_typeIINS_8durationIT_T0_EENS4_IT1_T2_EEEE4typeERKS7_RKSA_;	.scl	2;	.type	32;	.endef
 __ZNSt6chronomiIxSt5ratioILx1ELx1EExS2_EENSt11common_typeIINS_8durationIT_T0_EENS4_IT1_T2_EEEE4typeERKS7_RKSA_:
-LFB3441:
+LFB3435:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -27948,7 +28200,7 @@ LFB3441:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3441:
+LFE3435:
 	.weak	__ZNSt6chronomiIxSt5ratioILx1ELx1EExS2_EENSt11common_typeIJNS_8durationIT_T0_EENS4_IT1_T2_EEEE4typeERKS7_RKSA_
 	.def	__ZNSt6chronomiIxSt5ratioILx1ELx1EExS2_EENSt11common_typeIJNS_8durationIT_T0_EENS4_IT1_T2_EEEE4typeERKS7_RKSA_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt6chronomiIxSt5ratioILx1ELx1EExS2_EENSt11common_typeIJNS_8durationIT_T0_EENS4_IT1_T2_EEEE4typeERKS7_RKSA_,__ZNSt6chronomiIxSt5ratioILx1ELx1EExS2_EENSt11common_typeIINS_8durationIT_T0_EENS4_IT1_T2_EEEE4typeERKS7_RKSA_
@@ -27957,10 +28209,10 @@ LFE3441:
 	.globl	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1EEEEvRKNSt6chrono8durationIT_T0_EE
 	.def	__ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1EEEEvRKNSt6chrono8durationIT_T0_EE;	.scl	2;	.type	32;	.endef
 __ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1EEEEvRKNSt6chrono8durationIT_T0_EE:
-LFB3438:
+LFB3432:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3438
+	.cfi_lsda 0,LLSDA3432
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -27992,38 +28244,38 @@ LFB3438:
 	movl	-20(%ebp), %edx
 	movl	%eax, (%esp)
 	movl	%edx, 4(%esp)
-LEHB346:
+LEHB354:
 	call	__ZNSt11this_thread11__sleep_forENSt6chrono8durationIxSt5ratioILx1ELx1EEEENS1_IxS2_ILx1ELx1000000000EEEE
-LEHE346:
-	jmp	L1855
-L1854:
+LEHE354:
+	jmp	L1868
+L1867:
 	movl	%eax, (%esp)
-LEHB347:
+LEHB355:
 	call	__Unwind_Resume
-LEHE347:
-L1855:
+LEHE355:
+L1868:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3438:
+LFE3432:
 	.section	.gcc_except_table,"w"
-LLSDA3438:
+LLSDA3432:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3438-LLSDACSB3438
-LLSDACSB3438:
-	.uleb128 LEHB346-LFB3438
-	.uleb128 LEHE346-LEHB346
-	.uleb128 L1854-LFB3438
+	.uleb128 LLSDACSE3432-LLSDACSB3432
+LLSDACSB3432:
+	.uleb128 LEHB354-LFB3432
+	.uleb128 LEHE354-LEHB354
+	.uleb128 L1867-LFB3432
 	.uleb128 0
-	.uleb128 LEHB347-LFB3438
-	.uleb128 LEHE347-LEHB347
+	.uleb128 LEHB355-LFB3432
+	.uleb128 LEHE355-LEHB355
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3438:
+LLSDACSE3432:
 	.section	.text$_ZNSt11this_thread9sleep_forIxSt5ratioILx1ELx1EEEEvRKNSt6chrono8durationIT_T0_EE,"x"
 	.linkonce discard
 	.section	.text$_ZN28CSmartStackAllocatorWithBuffILj128EEC1EN15IStackAllocator9E_ORDEREDE,"x"
@@ -28032,7 +28284,7 @@ LLSDACSE3438:
 	.globl	__ZN28CSmartStackAllocatorWithBuffILj128EEC1EN15IStackAllocator9E_ORDEREDE
 	.def	__ZN28CSmartStackAllocatorWithBuffILj128EEC1EN15IStackAllocator9E_ORDEREDE;	.scl	2;	.type	32;	.endef
 __ZN28CSmartStackAllocatorWithBuffILj128EEC1EN15IStackAllocator9E_ORDEREDE:
-LFB3444:
+LFB3438:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28056,14 +28308,14 @@ LFB3444:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3444:
+LFE3438:
 	.section	.text$_ZN28CSmartStackAllocatorWithBuffILj128EED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN28CSmartStackAllocatorWithBuffILj128EED1Ev
 	.def	__ZN28CSmartStackAllocatorWithBuffILj128EED1Ev;	.scl	2;	.type	32;	.endef
 __ZN28CSmartStackAllocatorWithBuffILj128EED1Ev:
-LFB3447:
+LFB3441:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28078,24 +28330,24 @@ LFB3447:
 	call	__ZN20CSmartStackAllocatorD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L1857
+	je	L1870
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L1857:
+L1870:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3447:
+LFE3441:
 	.section	.text$_ZN28CSmartStackAllocatorWithBuffILj128EED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN28CSmartStackAllocatorWithBuffILj128EED0Ev
 	.def	__ZN28CSmartStackAllocatorWithBuffILj128EED0Ev;	.scl	2;	.type	32;	.endef
 __ZN28CSmartStackAllocatorWithBuffILj128EED0Ev:
-LFB3448:
+LFB3442:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28114,13 +28366,13 @@ LFB3448:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3448:
+LFE3442:
 	.section	.text$_ZSt7forwardIRFvPKcEEOT_RNSt16remove_referenceIS4_E4typeE,"x"
 	.linkonce discard
 	.globl	__ZSt7forwardIRFvPKcEEOT_RNSt16remove_referenceIS4_E4typeE
 	.def	__ZSt7forwardIRFvPKcEEOT_RNSt16remove_referenceIS4_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardIRFvPKcEEOT_RNSt16remove_referenceIS4_E4typeE:
-LFB3450:
+LFB3444:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28133,13 +28385,13 @@ LFB3450:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3450:
+LFE3444:
 	.section	.text$_ZSt7forwardIRA28_KcEOT_RNSt16remove_referenceIS3_E4typeE,"x"
 	.linkonce discard
 	.globl	__ZSt7forwardIRA28_KcEOT_RNSt16remove_referenceIS3_E4typeE
 	.def	__ZSt7forwardIRA28_KcEOT_RNSt16remove_referenceIS3_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardIRA28_KcEOT_RNSt16remove_referenceIS3_E4typeE:
-LFB3451:
+LFB3445:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28152,14 +28404,14 @@ LFB3451:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3451:
+LFE3445:
 	.section	.text$_ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EED2Ev
 	.def	__ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EED2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EED2Ev:
-LFB3454:
+LFB3448:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28176,14 +28428,14 @@ LFB3454:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3454:
+LFE3448:
 	.section	.text$_ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEED1Ev
 	.def	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEED1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEED1Ev:
-LFB3457:
+LFB3451:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28199,17 +28451,17 @@ LFB3457:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3457:
+LFE3451:
 	.section	.text$_ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_
 	.def	__ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_;	.scl	2;	.type	32;	.endef
 __ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_:
-LFB3459:
+LFB3453:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3459
+	.cfi_lsda 0,LLSDA3453
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -28232,9 +28484,9 @@ LFB3459:
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
-LEHB348:
+LEHB356:
 	call	__ZSt13__bind_simpleIRFvPKcEIRA28_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_
-LEHE348:
+LEHE356:
 	subl	$4, %esp
 	leal	-24(%ebp), %eax
 	leal	-16(%ebp), %edx
@@ -28242,9 +28494,9 @@ LEHE348:
 	movl	8(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-LEHB349:
+LEHB357:
 	call	__ZNSt6thread15_M_make_routineISt12_Bind_simpleIFPFvPKcES3_EEEESt10shared_ptrINS_5_ImplIT_EEEOSA_
-LEHE349:
+LEHE357:
 	subl	$4, %esp
 	leal	-24(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -28255,17 +28507,17 @@ LEHE349:
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB350:
+LEHB358:
 	call	__ZNSt6thread15_M_start_threadESt10shared_ptrINS_10_Impl_baseEE
-LEHE350:
+LEHE358:
 	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10shared_ptrINSt6thread10_Impl_baseEED1Ev
 	leal	-24(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEED1Ev
-	jmp	L1875
-L1874:
+	jmp	L1888
+L1887:
 	movl	%eax, %ebx
 	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
@@ -28274,14 +28526,14 @@ L1874:
 	movl	%eax, (%esp)
 	call	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEED1Ev
 	movl	%ebx, %eax
-	jmp	L1872
-L1873:
-L1872:
+	jmp	L1885
+L1886:
+L1885:
 	movl	%eax, (%esp)
-LEHB351:
+LEHB359:
 	call	__Unwind_Resume
-LEHE351:
-L1875:
+LEHE359:
+L1888:
 	movl	-4(%ebp), %ebx
 	leave
 	.cfi_restore 5
@@ -28289,31 +28541,31 @@ L1875:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3459:
+LFE3453:
 	.section	.gcc_except_table,"w"
-LLSDA3459:
+LLSDA3453:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3459-LLSDACSB3459
-LLSDACSB3459:
-	.uleb128 LEHB348-LFB3459
-	.uleb128 LEHE348-LEHB348
+	.uleb128 LLSDACSE3453-LLSDACSB3453
+LLSDACSB3453:
+	.uleb128 LEHB356-LFB3453
+	.uleb128 LEHE356-LEHB356
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB349-LFB3459
-	.uleb128 LEHE349-LEHB349
-	.uleb128 L1873-LFB3459
+	.uleb128 LEHB357-LFB3453
+	.uleb128 LEHE357-LEHB357
+	.uleb128 L1886-LFB3453
 	.uleb128 0
-	.uleb128 LEHB350-LFB3459
-	.uleb128 LEHE350-LEHB350
-	.uleb128 L1874-LFB3459
+	.uleb128 LEHB358-LFB3453
+	.uleb128 LEHE358-LEHB358
+	.uleb128 L1887-LFB3453
 	.uleb128 0
-	.uleb128 LEHB351-LFB3459
-	.uleb128 LEHE351-LEHB351
+	.uleb128 LEHB359-LFB3453
+	.uleb128 LEHE359-LEHB359
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3459:
+LLSDACSE3453:
 	.section	.text$_ZNSt6threadC1IRFvPKcEIRA28_S1_EEEOT_DpOT0_,"x"
 	.linkonce discard
 	.weak	__ZNSt6threadC1IRFvPKcEJRA28_S1_EEEOT_DpOT0_
@@ -28324,7 +28576,7 @@ LLSDACSE3459:
 	.globl	__ZSt7forwardIRA29_KcEOT_RNSt16remove_referenceIS3_E4typeE
 	.def	__ZSt7forwardIRA29_KcEOT_RNSt16remove_referenceIS3_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardIRA29_KcEOT_RNSt16remove_referenceIS3_E4typeE:
-LFB3461:
+LFB3455:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28337,17 +28589,17 @@ LFB3461:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3461:
+LFE3455:
 	.section	.text$_ZNSt6threadC1IRFvPKcEIRA29_S1_EEEOT_DpOT0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6threadC1IRFvPKcEIRA29_S1_EEEOT_DpOT0_
 	.def	__ZNSt6threadC1IRFvPKcEIRA29_S1_EEEOT_DpOT0_;	.scl	2;	.type	32;	.endef
 __ZNSt6threadC1IRFvPKcEIRA29_S1_EEEOT_DpOT0_:
-LFB3463:
+LFB3457:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3463
+	.cfi_lsda 0,LLSDA3457
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -28370,9 +28622,9 @@ LFB3463:
 	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
-LEHB352:
+LEHB360:
 	call	__ZSt13__bind_simpleIRFvPKcEIRA29_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_
-LEHE352:
+LEHE360:
 	subl	$4, %esp
 	leal	-24(%ebp), %eax
 	leal	-16(%ebp), %edx
@@ -28380,9 +28632,9 @@ LEHE352:
 	movl	8(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-LEHB353:
+LEHB361:
 	call	__ZNSt6thread15_M_make_routineISt12_Bind_simpleIFPFvPKcES3_EEEESt10shared_ptrINS_5_ImplIT_EEEOSA_
-LEHE353:
+LEHE361:
 	subl	$4, %esp
 	leal	-24(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -28393,17 +28645,17 @@ LEHE353:
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB354:
+LEHB362:
 	call	__ZNSt6thread15_M_start_threadESt10shared_ptrINS_10_Impl_baseEE
-LEHE354:
+LEHE362:
 	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10shared_ptrINSt6thread10_Impl_baseEED1Ev
 	leal	-24(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEED1Ev
-	jmp	L1883
-L1882:
+	jmp	L1896
+L1895:
 	movl	%eax, %ebx
 	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
@@ -28412,14 +28664,14 @@ L1882:
 	movl	%eax, (%esp)
 	call	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEED1Ev
 	movl	%ebx, %eax
-	jmp	L1880
-L1881:
-L1880:
+	jmp	L1893
+L1894:
+L1893:
 	movl	%eax, (%esp)
-LEHB355:
+LEHB363:
 	call	__Unwind_Resume
-LEHE355:
-L1883:
+LEHE363:
+L1896:
 	movl	-4(%ebp), %ebx
 	leave
 	.cfi_restore 5
@@ -28427,31 +28679,31 @@ L1883:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3463:
+LFE3457:
 	.section	.gcc_except_table,"w"
-LLSDA3463:
+LLSDA3457:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3463-LLSDACSB3463
-LLSDACSB3463:
-	.uleb128 LEHB352-LFB3463
-	.uleb128 LEHE352-LEHB352
+	.uleb128 LLSDACSE3457-LLSDACSB3457
+LLSDACSB3457:
+	.uleb128 LEHB360-LFB3457
+	.uleb128 LEHE360-LEHB360
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB353-LFB3463
-	.uleb128 LEHE353-LEHB353
-	.uleb128 L1881-LFB3463
+	.uleb128 LEHB361-LFB3457
+	.uleb128 LEHE361-LEHB361
+	.uleb128 L1894-LFB3457
 	.uleb128 0
-	.uleb128 LEHB354-LFB3463
-	.uleb128 LEHE354-LEHB354
-	.uleb128 L1882-LFB3463
+	.uleb128 LEHB362-LFB3457
+	.uleb128 LEHE362-LEHB362
+	.uleb128 L1895-LFB3457
 	.uleb128 0
-	.uleb128 LEHB355-LFB3463
-	.uleb128 LEHE355-LEHB355
+	.uleb128 LEHB363-LFB3457
+	.uleb128 LEHE363-LEHB363
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3463:
+LLSDACSE3457:
 	.section	.text$_ZNSt6threadC1IRFvPKcEIRA29_S1_EEEOT_DpOT0_,"x"
 	.linkonce discard
 	.weak	__ZNSt6threadC1IRFvPKcEJRA29_S1_EEEOT_DpOT0_
@@ -28462,7 +28714,7 @@ LLSDACSE3463:
 	.globl	__ZnwI6CTest3EPvjR10CSingletonIT_E
 	.def	__ZnwI6CTest3EPvjR10CSingletonIT_E;	.scl	2;	.type	32;	.endef
 __ZnwI6CTest3EPvjR10CSingletonIT_E:
-LFB3464:
+LFB3458:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28475,13 +28727,13 @@ LFB3464:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3464:
+LFE3458:
 	.section	.text$_ZdlI6CTest3EvPvR10CSingletonIT_E,"x"
 	.linkonce discard
 	.globl	__ZdlI6CTest3EvPvR10CSingletonIT_E
 	.def	__ZdlI6CTest3EvPvR10CSingletonIT_E;	.scl	2;	.type	32;	.endef
 __ZdlI6CTest3EvPvR10CSingletonIT_E:
-LFB3465:
+LFB3459:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28493,14 +28745,14 @@ LFB3465:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3465:
+LFE3459:
 	.section	.text$_ZN22CPoolAllocatorWithBuffILj8ELi5EEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN22CPoolAllocatorWithBuffILj8ELi5EEC2Ev
 	.def	__ZN22CPoolAllocatorWithBuffILj8ELi5EEC2Ev;	.scl	2;	.type	32;	.endef
 __ZN22CPoolAllocatorWithBuffILj8ELi5EEC2Ev:
-LFB3467:
+LFB3461:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28521,14 +28773,14 @@ LFB3467:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3467:
+LFE3461:
 	.section	.text$_ZN22CPoolAllocatorWithBuffILj8ELi5EED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN22CPoolAllocatorWithBuffILj8ELi5EED2Ev
 	.def	__ZN22CPoolAllocatorWithBuffILj8ELi5EED2Ev;	.scl	2;	.type	32;	.endef
 __ZN22CPoolAllocatorWithBuffILj8ELi5EED2Ev:
-LFB3470:
+LFB3464:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28544,17 +28796,17 @@ LFB3470:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3470:
+LFE3464:
 	.section	.text$_ZN14CPoolAllocator6createI6CTest5IPKcEEEPT_DpT0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN14CPoolAllocator6createI6CTest5IPKcEEEPT_DpT0_
 	.def	__ZN14CPoolAllocator6createI6CTest5IPKcEEEPT_DpT0_;	.scl	2;	.type	32;	.endef
 __ZN14CPoolAllocator6createI6CTest5IPKcEEEPT_DpT0_:
-LFB3472:
+LFB3466:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3472
+	.cfi_lsda 0,LLSDA3466
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -28571,19 +28823,19 @@ LFB3472:
 	call	__ZnwjR14CPoolAllocator
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L1891
+	je	L1904
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB356:
+LEHB364:
 	call	__ZN6CTest5C1EPKc
-LEHE356:
+LEHE364:
 	movl	%ebx, %eax
-	jmp	L1896
-L1891:
+	jmp	L1909
+L1904:
 	movl	%ebx, %eax
-	jmp	L1896
-L1895:
+	jmp	L1909
+L1908:
 	movl	%eax, %esi
 	movl	8(%ebp), %eax
 	movl	%eax, 4(%esp)
@@ -28591,10 +28843,10 @@ L1895:
 	call	__ZdlPvR14CPoolAllocator
 	movl	%esi, %eax
 	movl	%eax, (%esp)
-LEHB357:
+LEHB365:
 	call	__Unwind_Resume
-LEHE357:
-L1896:
+LEHE365:
+L1909:
 	addl	$16, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -28605,23 +28857,23 @@ L1896:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3472:
+LFE3466:
 	.section	.gcc_except_table,"w"
-LLSDA3472:
+LLSDA3466:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3472-LLSDACSB3472
-LLSDACSB3472:
-	.uleb128 LEHB356-LFB3472
-	.uleb128 LEHE356-LEHB356
-	.uleb128 L1895-LFB3472
+	.uleb128 LLSDACSE3466-LLSDACSB3466
+LLSDACSB3466:
+	.uleb128 LEHB364-LFB3466
+	.uleb128 LEHE364-LEHB364
+	.uleb128 L1908-LFB3466
 	.uleb128 0
-	.uleb128 LEHB357-LFB3472
-	.uleb128 LEHE357-LEHB357
+	.uleb128 LEHB365-LFB3466
+	.uleb128 LEHE365-LEHB365
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3472:
+LLSDACSE3466:
 	.section	.text$_ZN14CPoolAllocator6createI6CTest5IPKcEEEPT_DpT0_,"x"
 	.linkonce discard
 	.weak	__ZN14CPoolAllocator6createI6CTest5JPKcEEEPT_DpT0_
@@ -28633,7 +28885,7 @@ LLSDACSE3472:
 	.globl	__ZN14CPoolAllocator7destroyI6CTest5EEvRPT_
 	.def	__ZN14CPoolAllocator7destroyI6CTest5EEvRPT_;	.scl	2;	.type	32;	.endef
 __ZN14CPoolAllocator7destroyI6CTest5EEvRPT_:
-LFB3473:
+LFB3467:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28644,9 +28896,9 @@ LFB3473:
 	movl	12(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L1898
-	jmp	L1897
-L1898:
+	jne	L1911
+	jmp	L1910
+L1911:
 	movl	12(%ebp), %eax
 	movl	(%eax), %eax
 	movl	%eax, (%esp)
@@ -28659,86 +28911,95 @@ L1898:
 	call	__ZdlPvR14CPoolAllocator
 	movl	12(%ebp), %eax
 	movl	$0, (%eax)
-L1897:
+L1910:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3473:
-	.section	.text$_ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EE6insertIS1_IjS4_EvEES1_INS_14_Node_iteratorIS5_Lb0ELb0EEEbEOT_,"x"
+LFE3467:
+	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE7emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbEDpOT_,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EE6insertIS1_IjS4_EvEES1_INS_14_Node_iteratorIS5_Lb0ELb0EEEbEOT_
-	.def	__ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EE6insertIS1_IjS4_EvEES1_INS_14_Node_iteratorIS5_Lb0ELb0EEEbEOT_;	.scl	2;	.type	32;	.endef
-__ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EE6insertIS1_IjS4_EvEES1_INS_14_Node_iteratorIS5_Lb0ELb0EEEbEOT_:
-LFB3482:
+	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE7emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbEDpOT_
+	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE7emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbEDpOT_;	.scl	2;	.type	32;	.endef
+__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE7emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbEDpOT_:
+LFB3476:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3482
+	.cfi_lsda 0,LLSDA3476
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
+	pushl	%esi
 	pushl	%ebx
-	subl	$36, %esp
-	.cfi_offset 3, -12
-	movl	8(%ebp), %eax
+	subl	$32, %esp
+	.cfi_offset 6, -12
+	.cfi_offset 3, -16
+	movl	16(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZNSt8__detail12_Insert_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE20_M_conjure_hashtableEv
-	movl	%eax, -12(%ebp)
+	call	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE
+	movl	%eax, %ebx
 	movl	12(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZSt7forwardISt4pairIjN6CTest84DATAEEEOT_RNSt16remove_referenceIS4_E4typeE
+	call	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
+	movl	%ebx, 12(%esp)
 	movl	%eax, 8(%esp)
-	movb	%bl, 4(%esp)
-	movl	-12(%ebp), %eax
+	movl	%esi, %eax
+	movb	%al, 4(%esp)
+	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB358:
-	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIS0_IjS3_EEEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_
-LEHE358:
-	jmp	L1904
-L1903:
+LEHB366:
+	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_
+LEHE366:
+	jmp	L1917
+L1916:
 	movl	%eax, (%esp)
-LEHB359:
+LEHB367:
 	call	__Unwind_Resume
-LEHE359:
-L1904:
-	addl	$36, %esp
+LEHE367:
+L1917:
+	addl	$32, %esp
 	popl	%ebx
 	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
 	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3482:
+LFE3476:
 	.section	.gcc_except_table,"w"
-LLSDA3482:
+LLSDA3476:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3482-LLSDACSB3482
-LLSDACSB3482:
-	.uleb128 LEHB358-LFB3482
-	.uleb128 LEHE358-LEHB358
-	.uleb128 L1903-LFB3482
+	.uleb128 LLSDACSE3476-LLSDACSB3476
+LLSDACSB3476:
+	.uleb128 LEHB366-LFB3476
+	.uleb128 LEHE366-LEHB366
+	.uleb128 L1916-LFB3476
 	.uleb128 0
-	.uleb128 LEHB359-LFB3482
-	.uleb128 LEHE359-LEHB359
+	.uleb128 LEHB367-LFB3476
+	.uleb128 LEHE367-LEHB367
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3482:
-	.section	.text$_ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EE6insertIS1_IjS4_EvEES1_INS_14_Node_iteratorIS5_Lb0ELb0EEEbEOT_,"x"
+LLSDACSE3476:
+	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE7emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbEDpOT_,"x"
 	.linkonce discard
+	.weak	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE7emplaceIJjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbEDpOT_
+	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE7emplaceIJjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbEDpOT_;	.scl	2;	.type	32;	.endef
+	.set	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE7emplaceIJjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbEDpOT_,__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE7emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbEDpOT_
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE4findERS1_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE4findERS1_
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE4findERS1_;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE4findERS1_:
-LFB3483:
+LFB3477:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28771,36 +29032,36 @@ LFB3483:
 	call	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE12_M_find_nodeEjRS1_j
 	movl	%eax, -20(%ebp)
 	cmpl	$0, -20(%ebp)
-	je	L1906
+	je	L1919
 	movl	-20(%ebp), %eax
 	movl	%eax, 4(%esp)
 	leal	-24(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE
-	jmp	L1907
-L1906:
+	jmp	L1920
+L1919:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE3endEv
 	movl	%eax, -24(%ebp)
-L1907:
+L1920:
 	movl	-24(%ebp), %eax
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3483:
+LFE3477:
 	.section	.text$_ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE3endEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE3endEv
 	.def	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE3endEv;	.scl	2;	.type	32;	.endef
 __ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE3endEv:
-LFB3484:
+LFB3478:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3484
+	.cfi_lsda 0,LLSDA3478
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -28817,15 +29078,15 @@ LFB3484:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3484:
+LFE3478:
 	.section	.gcc_except_table,"w"
-LLSDA3484:
+LLSDA3478:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3484-LLSDACSB3484
-LLSDACSB3484:
-LLSDACSE3484:
+	.uleb128 LLSDACSE3478-LLSDACSB3478
+LLSDACSB3478:
+LLSDACSE3478:
 	.section	.text$_ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE3endEv,"x"
 	.linkonce discard
 	.section	.text$_ZSt11__addressofISt4pairIKjN6CTest84DATAEEEPT_RS5_,"x"
@@ -28833,7 +29094,7 @@ LLSDACSE3484:
 	.globl	__ZSt11__addressofISt4pairIKjN6CTest84DATAEEEPT_RS5_
 	.def	__ZSt11__addressofISt4pairIKjN6CTest84DATAEEEPT_RS5_;	.scl	2;	.type	32;	.endef
 __ZSt11__addressofISt4pairIKjN6CTest84DATAEEEPT_RS5_:
-LFB3485:
+LFB3479:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28846,14 +29107,14 @@ LFB3485:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3485:
+LFE3479:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorISt4pairIKjN6CTest84DATAEEEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorISt4pairIKjN6CTest84DATAEEEC2Ev
 	.def	__ZN9__gnu_cxx13new_allocatorISt4pairIKjN6CTest84DATAEEEC2Ev;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorISt4pairIKjN6CTest84DATAEEEC2Ev:
-LFB3487:
+LFB3481:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28865,14 +29126,14 @@ LFB3487:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3487:
+LFE3481:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorISt4pairIKjN6CTest84DATAEEED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorISt4pairIKjN6CTest84DATAEEED2Ev
 	.def	__ZN9__gnu_cxx13new_allocatorISt4pairIKjN6CTest84DATAEEED2Ev;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorISt4pairIKjN6CTest84DATAEEED2Ev:
-LFB3490:
+LFB3484:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28884,17 +29145,17 @@ LFB3490:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3490:
+LFE3484:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKS9_RKS5_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKS9_RKS5_
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKS9_RKS5_;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKS9_RKS5_:
-LFB3494:
+LFB3488:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3494
+	.cfi_lsda 0,LLSDA3488
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -28917,38 +29178,38 @@ LFB3494:
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB360:
+LEHB368:
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKSC_RKSD_RKS9_RKS7_RKS5_
-LEHE360:
-	jmp	L1919
-L1918:
+LEHE368:
+	jmp	L1932
+L1931:
 	movl	%eax, (%esp)
-LEHB361:
+LEHB369:
 	call	__Unwind_Resume
-LEHE361:
-L1919:
+LEHE369:
+L1932:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3494:
+LFE3488:
 	.section	.gcc_except_table,"w"
-LLSDA3494:
+LLSDA3488:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3494-LLSDACSB3494
-LLSDACSB3494:
-	.uleb128 LEHB360-LFB3494
-	.uleb128 LEHE360-LEHB360
-	.uleb128 L1918-LFB3494
+	.uleb128 LLSDACSE3488-LLSDACSB3488
+LLSDACSB3488:
+	.uleb128 LEHB368-LFB3488
+	.uleb128 LEHE368-LEHB368
+	.uleb128 L1931-LFB3488
 	.uleb128 0
-	.uleb128 LEHB361-LFB3494
-	.uleb128 LEHE361-LEHB361
+	.uleb128 LEHB369-LFB3488
+	.uleb128 LEHE369-LEHB369
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3494:
+LLSDACSE3488:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKS9_RKS5_,"x"
 	.linkonce discard
 	.section	.text$_ZNSt8__detail12_Rehash_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE7reserveEj,"x"
@@ -28957,7 +29218,7 @@ LLSDACSE3494:
 	.globl	__ZNSt8__detail12_Rehash_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE7reserveEj
 	.def	__ZNSt8__detail12_Rehash_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE7reserveEj;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail12_Rehash_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE7reserveEj:
-LFB3495:
+LFB3489:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -28997,14 +29258,14 @@ LFB3495:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3495:
+LFE3489:
 	.section	.text$_ZNSaINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEED2Ev
 	.def	__ZNSaINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEED2Ev;	.scl	2;	.type	32;	.endef
 __ZNSaINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEED2Ev:
-LFB3497:
+LFB3491:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29020,17 +29281,17 @@ LFB3497:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3497:
+LFE3491:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE5clearEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE5clearEv
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE5clearEv;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE5clearEv:
-LFB3499:
+LFB3493:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3499
+	.cfi_lsda 0,LLSDA3493
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -29064,15 +29325,15 @@ LFB3499:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3499:
+LFE3493:
 	.section	.gcc_except_table,"w"
-LLSDA3499:
+LLSDA3493:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3499-LLSDACSB3499
-LLSDACSB3499:
-LLSDACSE3499:
+	.uleb128 LLSDACSE3493-LLSDACSB3493
+LLSDACSB3493:
+LLSDACSE3493:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE5clearEv,"x"
 	.linkonce discard
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE21_M_deallocate_bucketsEPPNS6_15_Hash_node_baseEj,"x"
@@ -29081,7 +29342,7 @@ LLSDACSE3499:
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE21_M_deallocate_bucketsEPPNS6_15_Hash_node_baseEj
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE21_M_deallocate_bucketsEPPNS6_15_Hash_node_baseEj;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE21_M_deallocate_bucketsEPPNS6_15_Hash_node_baseEj:
-LFB3500:
+LFB3494:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29111,14 +29372,14 @@ LFB3500:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3500:
+LFE3494:
 	.section	.text$_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv
 	.def	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv;	.scl	2;	.type	32;	.endef
 __ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv:
-LFB3515:
+LFB3514:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29134,7 +29395,7 @@ LFB3515:
 	cmpl	$1, %eax
 	sete	%al
 	testb	%al, %al
-	je	L1925
+	je	L1938
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	addl	$8, %eax
@@ -29150,7 +29411,7 @@ LFB3515:
 	cmpl	$1, %eax
 	sete	%al
 	testb	%al, %al
-	je	L1925
+	je	L1938
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	addl	$12, %eax
@@ -29158,18 +29419,40 @@ LFB3515:
 	movl	8(%ebp), %edx
 	movl	%edx, (%esp)
 	call	*%eax
-L1925:
+L1938:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3515:
+LFE3514:
 	.section	.text$_ZNSt11_Tuple_implILj1EIPKcEE7_M_tailERS2_,"x"
 	.linkonce discard
 	.globl	__ZNSt11_Tuple_implILj1EIPKcEE7_M_tailERS2_
 	.def	__ZNSt11_Tuple_implILj1EIPKcEE7_M_tailERS2_;	.scl	2;	.type	32;	.endef
 __ZNSt11_Tuple_implILj1EIPKcEE7_M_tailERS2_:
+LFB3517:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	movl	8(%ebp), %eax
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3517:
+	.weak	__ZNSt11_Tuple_implILj1EJPKcEE7_M_tailERS2_
+	.def	__ZNSt11_Tuple_implILj1EJPKcEE7_M_tailERS2_;	.scl	2;	.type	32;	.endef
+	.set	__ZNSt11_Tuple_implILj1EJPKcEE7_M_tailERS2_,__ZNSt11_Tuple_implILj1EIPKcEE7_M_tailERS2_
+	.section	.text$_ZSt4moveIRSt11_Tuple_implILj2EIEEEONSt16remove_referenceIT_E4typeEOS4_,"x"
+	.linkonce discard
+	.globl	__ZSt4moveIRSt11_Tuple_implILj2EIEEEONSt16remove_referenceIT_E4typeEOS4_
+	.def	__ZSt4moveIRSt11_Tuple_implILj2EIEEEONSt16remove_referenceIT_E4typeEOS4_;	.scl	2;	.type	32;	.endef
+__ZSt4moveIRSt11_Tuple_implILj2EIEEEONSt16remove_referenceIT_E4typeEOS4_:
 LFB3518:
 	.cfi_startproc
 	pushl	%ebp
@@ -29184,28 +29467,6 @@ LFB3518:
 	ret
 	.cfi_endproc
 LFE3518:
-	.weak	__ZNSt11_Tuple_implILj1EJPKcEE7_M_tailERS2_
-	.def	__ZNSt11_Tuple_implILj1EJPKcEE7_M_tailERS2_;	.scl	2;	.type	32;	.endef
-	.set	__ZNSt11_Tuple_implILj1EJPKcEE7_M_tailERS2_,__ZNSt11_Tuple_implILj1EIPKcEE7_M_tailERS2_
-	.section	.text$_ZSt4moveIRSt11_Tuple_implILj2EIEEEONSt16remove_referenceIT_E4typeEOS4_,"x"
-	.linkonce discard
-	.globl	__ZSt4moveIRSt11_Tuple_implILj2EIEEEONSt16remove_referenceIT_E4typeEOS4_
-	.def	__ZSt4moveIRSt11_Tuple_implILj2EIEEEONSt16remove_referenceIT_E4typeEOS4_;	.scl	2;	.type	32;	.endef
-__ZSt4moveIRSt11_Tuple_implILj2EIEEEONSt16remove_referenceIT_E4typeEOS4_:
-LFB3519:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	movl	8(%ebp), %eax
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3519:
 	.weak	__ZSt4moveIRSt11_Tuple_implILj2EJEEEONSt16remove_referenceIT_E4typeEOS4_
 	.def	__ZSt4moveIRSt11_Tuple_implILj2EJEEEONSt16remove_referenceIT_E4typeEOS4_;	.scl	2;	.type	32;	.endef
 	.set	__ZSt4moveIRSt11_Tuple_implILj2EJEEEONSt16remove_referenceIT_E4typeEOS4_,__ZSt4moveIRSt11_Tuple_implILj2EIEEEONSt16remove_referenceIT_E4typeEOS4_
@@ -29214,7 +29475,7 @@ LFE3519:
 	.globl	__ZNSt10_Head_baseILj1EPKcLb0EE7_M_headERS2_
 	.def	__ZNSt10_Head_baseILj1EPKcLb0EE7_M_headERS2_;	.scl	2;	.type	32;	.endef
 __ZNSt10_Head_baseILj1EPKcLb0EE7_M_headERS2_:
-LFB3521:
+LFB3520:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29227,13 +29488,13 @@ LFB3521:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3521:
+LFE3520:
 	.section	.text$_ZNSt11_Tuple_implILj1EIPKcEE7_M_headERS2_,"x"
 	.linkonce discard
 	.globl	__ZNSt11_Tuple_implILj1EIPKcEE7_M_headERS2_
 	.def	__ZNSt11_Tuple_implILj1EIPKcEE7_M_headERS2_;	.scl	2;	.type	32;	.endef
 __ZNSt11_Tuple_implILj1EIPKcEE7_M_headERS2_:
-LFB3520:
+LFB3519:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29249,7 +29510,7 @@ LFB3520:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3520:
+LFE3519:
 	.weak	__ZNSt11_Tuple_implILj1EJPKcEE7_M_headERS2_
 	.def	__ZNSt11_Tuple_implILj1EJPKcEE7_M_headERS2_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt11_Tuple_implILj1EJPKcEE7_M_headERS2_,__ZNSt11_Tuple_implILj1EIPKcEE7_M_headERS2_
@@ -29258,7 +29519,7 @@ LFE3520:
 	.globl	__ZSt7forwardIPKcEOT_RNSt16remove_referenceIS2_E4typeE
 	.def	__ZSt7forwardIPKcEOT_RNSt16remove_referenceIS2_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardIPKcEOT_RNSt16remove_referenceIS2_E4typeE:
-LFB3522:
+LFB3521:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29271,14 +29532,14 @@ LFB3522:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3522:
+LFE3521:
 	.section	.text$_ZNSt10_Head_baseILj1EPKcLb0EEC2IS1_vEEOT_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_Head_baseILj1EPKcLb0EEC2IS1_vEEOT_
 	.def	__ZNSt10_Head_baseILj1EPKcLb0EEC2IS1_vEEOT_;	.scl	2;	.type	32;	.endef
 __ZNSt10_Head_baseILj1EPKcLb0EEC2IS1_vEEOT_:
-LFB3524:
+LFB3523:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29297,14 +29558,14 @@ LFB3524:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3524:
+LFE3523:
 	.section	.text$_ZNSt11_Tuple_implILj1EIPKcEEC2EOS2_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt11_Tuple_implILj1EIPKcEEC2EOS2_
 	.def	__ZNSt11_Tuple_implILj1EIPKcEEC2EOS2_;	.scl	2;	.type	32;	.endef
 __ZNSt11_Tuple_implILj1EIPKcEEC2EOS2_:
-LFB3526:
+LFB3525:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29331,7 +29592,7 @@ LFB3526:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3526:
+LFE3525:
 	.weak	__ZNSt11_Tuple_implILj1EJPKcEEC2EOS2_
 	.def	__ZNSt11_Tuple_implILj1EJPKcEEC2EOS2_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt11_Tuple_implILj1EJPKcEEC2EOS2_,__ZNSt11_Tuple_implILj1EIPKcEEC2EOS2_
@@ -29340,6 +29601,28 @@ LFE3526:
 	.globl	__ZNSt11_Tuple_implILj0EIPFvPKcES1_EE7_M_tailERS4_
 	.def	__ZNSt11_Tuple_implILj0EIPFvPKcES1_EE7_M_tailERS4_;	.scl	2;	.type	32;	.endef
 __ZNSt11_Tuple_implILj0EIPFvPKcES1_EE7_M_tailERS4_:
+LFB3530:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	movl	8(%ebp), %eax
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3530:
+	.weak	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EE7_M_tailERS4_
+	.def	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EE7_M_tailERS4_;	.scl	2;	.type	32;	.endef
+	.set	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EE7_M_tailERS4_,__ZNSt11_Tuple_implILj0EIPFvPKcES1_EE7_M_tailERS4_
+	.section	.text$_ZSt4moveIRSt11_Tuple_implILj1EIPKcEEEONSt16remove_referenceIT_E4typeEOS6_,"x"
+	.linkonce discard
+	.globl	__ZSt4moveIRSt11_Tuple_implILj1EIPKcEEEONSt16remove_referenceIT_E4typeEOS6_
+	.def	__ZSt4moveIRSt11_Tuple_implILj1EIPKcEEEONSt16remove_referenceIT_E4typeEOS6_;	.scl	2;	.type	32;	.endef
+__ZSt4moveIRSt11_Tuple_implILj1EIPKcEEEONSt16remove_referenceIT_E4typeEOS6_:
 LFB3531:
 	.cfi_startproc
 	pushl	%ebp
@@ -29354,28 +29637,6 @@ LFB3531:
 	ret
 	.cfi_endproc
 LFE3531:
-	.weak	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EE7_M_tailERS4_
-	.def	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EE7_M_tailERS4_;	.scl	2;	.type	32;	.endef
-	.set	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EE7_M_tailERS4_,__ZNSt11_Tuple_implILj0EIPFvPKcES1_EE7_M_tailERS4_
-	.section	.text$_ZSt4moveIRSt11_Tuple_implILj1EIPKcEEEONSt16remove_referenceIT_E4typeEOS6_,"x"
-	.linkonce discard
-	.globl	__ZSt4moveIRSt11_Tuple_implILj1EIPKcEEEONSt16remove_referenceIT_E4typeEOS6_
-	.def	__ZSt4moveIRSt11_Tuple_implILj1EIPKcEEEONSt16remove_referenceIT_E4typeEOS6_;	.scl	2;	.type	32;	.endef
-__ZSt4moveIRSt11_Tuple_implILj1EIPKcEEEONSt16remove_referenceIT_E4typeEOS6_:
-LFB3532:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	movl	8(%ebp), %eax
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3532:
 	.weak	__ZSt4moveIRSt11_Tuple_implILj1EJPKcEEEONSt16remove_referenceIT_E4typeEOS6_
 	.def	__ZSt4moveIRSt11_Tuple_implILj1EJPKcEEEONSt16remove_referenceIT_E4typeEOS6_;	.scl	2;	.type	32;	.endef
 	.set	__ZSt4moveIRSt11_Tuple_implILj1EJPKcEEEONSt16remove_referenceIT_E4typeEOS6_,__ZSt4moveIRSt11_Tuple_implILj1EIPKcEEEONSt16remove_referenceIT_E4typeEOS6_
@@ -29384,7 +29645,7 @@ LFE3532:
 	.globl	__ZNSt10_Head_baseILj0EPFvPKcELb0EE7_M_headERS4_
 	.def	__ZNSt10_Head_baseILj0EPFvPKcELb0EE7_M_headERS4_;	.scl	2;	.type	32;	.endef
 __ZNSt10_Head_baseILj0EPFvPKcELb0EE7_M_headERS4_:
-LFB3534:
+LFB3533:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29397,13 +29658,13 @@ LFB3534:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3534:
+LFE3533:
 	.section	.text$_ZNSt11_Tuple_implILj0EIPFvPKcES1_EE7_M_headERS4_,"x"
 	.linkonce discard
 	.globl	__ZNSt11_Tuple_implILj0EIPFvPKcES1_EE7_M_headERS4_
 	.def	__ZNSt11_Tuple_implILj0EIPFvPKcES1_EE7_M_headERS4_;	.scl	2;	.type	32;	.endef
 __ZNSt11_Tuple_implILj0EIPFvPKcES1_EE7_M_headERS4_:
-LFB3533:
+LFB3532:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29420,7 +29681,7 @@ LFB3533:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3533:
+LFE3532:
 	.weak	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EE7_M_headERS4_
 	.def	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EE7_M_headERS4_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EE7_M_headERS4_,__ZNSt11_Tuple_implILj0EIPFvPKcES1_EE7_M_headERS4_
@@ -29429,7 +29690,7 @@ LFE3533:
 	.globl	__ZSt7forwardIPFvPKcEEOT_RNSt16remove_referenceIS4_E4typeE
 	.def	__ZSt7forwardIPFvPKcEEOT_RNSt16remove_referenceIS4_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardIPFvPKcEEOT_RNSt16remove_referenceIS4_E4typeE:
-LFB3535:
+LFB3534:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29442,14 +29703,14 @@ LFB3535:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3535:
+LFE3534:
 	.section	.text$_ZNSt10_Head_baseILj0EPFvPKcELb0EEC2IS3_vEEOT_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_Head_baseILj0EPFvPKcELb0EEC2IS3_vEEOT_
 	.def	__ZNSt10_Head_baseILj0EPFvPKcELb0EEC2IS3_vEEOT_;	.scl	2;	.type	32;	.endef
 __ZNSt10_Head_baseILj0EPFvPKcELb0EEC2IS3_vEEOT_:
-LFB3537:
+LFB3536:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29468,14 +29729,14 @@ LFB3537:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3537:
+LFE3536:
 	.section	.text$_ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2EOS4_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2EOS4_
 	.def	__ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2EOS4_;	.scl	2;	.type	32;	.endef
 __ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2EOS4_:
-LFB3539:
+LFB3538:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29507,7 +29768,7 @@ LFB3539:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3539:
+LFE3538:
 	.weak	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EEC2EOS4_
 	.def	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EEC2EOS4_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EEC2EOS4_,__ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2EOS4_
@@ -29517,7 +29778,7 @@ LFE3539:
 	.globl	__ZNSt5tupleIIPFvPKcES1_EEC1EOS4_
 	.def	__ZNSt5tupleIIPFvPKcES1_EEC1EOS4_;	.scl	2;	.type	32;	.endef
 __ZNSt5tupleIIPFvPKcES1_EEC1EOS4_:
-LFB3542:
+LFB3541:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29535,7 +29796,7 @@ LFB3542:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3542:
+LFE3541:
 	.weak	__ZNSt5tupleIJPFvPKcES1_EEC1EOS4_
 	.def	__ZNSt5tupleIJPFvPKcES1_EEC1EOS4_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt5tupleIJPFvPKcES1_EEC1EOS4_,__ZNSt5tupleIIPFvPKcES1_EEC1EOS4_
@@ -29545,7 +29806,7 @@ LFE3542:
 	.globl	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1EOS5_
 	.def	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1EOS5_;	.scl	2;	.type	32;	.endef
 __ZNSt12_Bind_simpleIFPFvPKcES1_EEC1EOS5_:
-LFB3544:
+LFB3543:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29563,13 +29824,13 @@ LFB3544:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3544:
+LFE3543:
 	.section	.text$_ZSt13__bind_simpleIRFvPKcEIRA28_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_,"x"
 	.linkonce discard
 	.globl	__ZSt13__bind_simpleIRFvPKcEIRA28_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_
 	.def	__ZSt13__bind_simpleIRFvPKcEIRA28_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_;	.scl	2;	.type	32;	.endef
 __ZSt13__bind_simpleIRFvPKcEIRA28_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_:
-LFB3516:
+LFB3515:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29604,7 +29865,7 @@ LFB3516:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3516:
+LFE3515:
 	.weak	__ZSt13__bind_simpleIRFvPKcEJRA28_S0_EENSt19_Bind_simple_helperIT_JDpT0_EE6__typeEOS7_DpOS8_
 	.def	__ZSt13__bind_simpleIRFvPKcEJRA28_S0_EENSt19_Bind_simple_helperIT_JDpT0_EE6__typeEOS7_DpOS8_;	.scl	2;	.type	32;	.endef
 	.set	__ZSt13__bind_simpleIRFvPKcEJRA28_S0_EENSt19_Bind_simple_helperIT_JDpT0_EE6__typeEOS7_DpOS8_,__ZSt13__bind_simpleIRFvPKcEIRA28_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_
@@ -29613,7 +29874,7 @@ LFE3516:
 	.globl	__ZSt7forwardISt12_Bind_simpleIFPFvPKcES2_EEEOT_RNSt16remove_referenceIS7_E4typeE
 	.def	__ZSt7forwardISt12_Bind_simpleIFPFvPKcES2_EEEOT_RNSt16remove_referenceIS7_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardISt12_Bind_simpleIFPFvPKcES2_EEEOT_RNSt16remove_referenceIS7_E4typeE:
-LFB3546:
+LFB3545:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29626,14 +29887,14 @@ LFB3546:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3546:
+LFE3545:
 	.section	.text$_ZNSt6thread15_M_make_routineISt12_Bind_simpleIFPFvPKcES3_EEEESt10shared_ptrINS_5_ImplIT_EEEOSA_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6thread15_M_make_routineISt12_Bind_simpleIFPFvPKcES3_EEEESt10shared_ptrINS_5_ImplIT_EEEOSA_
 	.def	__ZNSt6thread15_M_make_routineISt12_Bind_simpleIFPFvPKcES3_EEEESt10shared_ptrINS_5_ImplIT_EEEOSA_;	.scl	2;	.type	32;	.endef
 __ZNSt6thread15_M_make_routineISt12_Bind_simpleIFPFvPKcES3_EEEESt10shared_ptrINS_5_ImplIT_EEEOSA_:
-LFB3545:
+LFB3544:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29655,13 +29916,13 @@ LFB3545:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3545:
+LFE3544:
 	.section	.text$_ZSt4moveIRSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEEONSt16remove_referenceIT_E4typeEOSE_,"x"
 	.linkonce discard
 	.globl	__ZSt4moveIRSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEEONSt16remove_referenceIT_E4typeEOSE_
 	.def	__ZSt4moveIRSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEEONSt16remove_referenceIT_E4typeEOSE_;	.scl	2;	.type	32;	.endef
 __ZSt4moveIRSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEEONSt16remove_referenceIT_E4typeEOSE_:
-LFB3548:
+LFB3547:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29674,14 +29935,14 @@ LFB3548:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3548:
+LFE3547:
 	.section	.text$_ZNSt10shared_ptrINSt6thread10_Impl_baseEEC1INS0_5_ImplISt12_Bind_simpleIFPFvPKcES7_EEEEvEEOS_IT_E,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10shared_ptrINSt6thread10_Impl_baseEEC1INS0_5_ImplISt12_Bind_simpleIFPFvPKcES7_EEEEvEEOS_IT_E
 	.def	__ZNSt10shared_ptrINSt6thread10_Impl_baseEEC1INS0_5_ImplISt12_Bind_simpleIFPFvPKcES7_EEEEvEEOS_IT_E;	.scl	2;	.type	32;	.endef
 __ZNSt10shared_ptrINSt6thread10_Impl_baseEEC1INS0_5_ImplISt12_Bind_simpleIFPFvPKcES7_EEEEvEEOS_IT_E:
-LFB3550:
+LFB3549:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29702,13 +29963,13 @@ LFB3550:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3550:
+LFE3549:
 	.section	.text$_ZSt13__bind_simpleIRFvPKcEIRA29_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_,"x"
 	.linkonce discard
 	.globl	__ZSt13__bind_simpleIRFvPKcEIRA29_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_
 	.def	__ZSt13__bind_simpleIRFvPKcEIRA29_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_;	.scl	2;	.type	32;	.endef
 __ZSt13__bind_simpleIRFvPKcEIRA29_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_:
-LFB3555:
+LFB3554:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29743,16 +30004,15 @@ LFB3555:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3555:
+LFE3554:
 	.weak	__ZSt13__bind_simpleIRFvPKcEJRA29_S0_EENSt19_Bind_simple_helperIT_JDpT0_EE6__typeEOS7_DpOS8_
 	.def	__ZSt13__bind_simpleIRFvPKcEJRA29_S0_EENSt19_Bind_simple_helperIT_JDpT0_EE6__typeEOS7_DpOS8_;	.scl	2;	.type	32;	.endef
 	.set	__ZSt13__bind_simpleIRFvPKcEJRA29_S0_EENSt19_Bind_simple_helperIT_JDpT0_EE6__typeEOS7_DpOS8_,__ZSt13__bind_simpleIRFvPKcEIRA29_S0_EENSt19_Bind_simple_helperIT_IDpT0_EE6__typeEOS7_DpOS8_
-	.section	.text$_ZNSt8__detail12_Insert_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE20_M_conjure_hashtableEv,"x"
+	.section	.text$_ZSt7forwardIRSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS6_E4typeE,"x"
 	.linkonce discard
-	.align 2
-	.globl	__ZNSt8__detail12_Insert_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE20_M_conjure_hashtableEv
-	.def	__ZNSt8__detail12_Insert_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE20_M_conjure_hashtableEv;	.scl	2;	.type	32;	.endef
-__ZNSt8__detail12_Insert_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE20_M_conjure_hashtableEv:
+	.globl	__ZSt7forwardIRSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS6_E4typeE
+	.def	__ZSt7forwardIRSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS6_E4typeE;	.scl	2;	.type	32;	.endef
+__ZSt7forwardIRSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS6_E4typeE:
 LFB3556:
 	.cfi_startproc
 	pushl	%ebp
@@ -29767,11 +30027,11 @@ LFB3556:
 	ret
 	.cfi_endproc
 LFE3556:
-	.section	.text$_ZSt7forwardIRSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS6_E4typeE,"x"
+	.section	.text$_ZNSt10__pair_getILj0EE5__getIKjN6CTest84DATAEEERT_RSt4pairIS5_T0_E,"x"
 	.linkonce discard
-	.globl	__ZSt7forwardIRSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS6_E4typeE
-	.def	__ZSt7forwardIRSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS6_E4typeE;	.scl	2;	.type	32;	.endef
-__ZSt7forwardIRSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS6_E4typeE:
+	.globl	__ZNSt10__pair_getILj0EE5__getIKjN6CTest84DATAEEERT_RSt4pairIS5_T0_E
+	.def	__ZNSt10__pair_getILj0EE5__getIKjN6CTest84DATAEEERT_RSt4pairIS5_T0_E;	.scl	2;	.type	32;	.endef
+__ZNSt10__pair_getILj0EE5__getIKjN6CTest84DATAEEERT_RSt4pairIS5_T0_E:
 LFB3558:
 	.cfi_startproc
 	pushl	%ebp
@@ -29786,31 +30046,12 @@ LFB3558:
 	ret
 	.cfi_endproc
 LFE3558:
-	.section	.text$_ZNSt10__pair_getILj0EE5__getIKjN6CTest84DATAEEERT_RSt4pairIS5_T0_E,"x"
-	.linkonce discard
-	.globl	__ZNSt10__pair_getILj0EE5__getIKjN6CTest84DATAEEERT_RSt4pairIS5_T0_E
-	.def	__ZNSt10__pair_getILj0EE5__getIKjN6CTest84DATAEEERT_RSt4pairIS5_T0_E;	.scl	2;	.type	32;	.endef
-__ZNSt10__pair_getILj0EE5__getIKjN6CTest84DATAEEERT_RSt4pairIS5_T0_E:
-LFB3560:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	movl	8(%ebp), %eax
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3560:
 	.section	.text$_ZSt3getILj0EKjN6CTest84DATAEERNSt13tuple_elementIXT_ESt4pairIT0_T1_EE4typeERS7_,"x"
 	.linkonce discard
 	.globl	__ZSt3getILj0EKjN6CTest84DATAEERNSt13tuple_elementIXT_ESt4pairIT0_T1_EE4typeERS7_
 	.def	__ZSt3getILj0EKjN6CTest84DATAEERNSt13tuple_elementIXT_ESt4pairIT0_T1_EE4typeERS7_;	.scl	2;	.type	32;	.endef
 __ZSt3getILj0EKjN6CTest84DATAEERNSt13tuple_elementIXT_ESt4pairIT0_T1_EE4typeERS7_:
-LFB3559:
+LFB3557:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29826,13 +30067,13 @@ LFB3559:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3559:
+LFE3557:
 	.section	.text$_ZSt7forwardINSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEEEOT_RNSt16remove_referenceIS8_E4typeE,"x"
 	.linkonce discard
 	.globl	__ZSt7forwardINSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEEEOT_RNSt16remove_referenceIS8_E4typeE
 	.def	__ZSt7forwardINSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEEEOT_RNSt16remove_referenceIS8_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardINSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEEEOT_RNSt16remove_referenceIS8_E4typeE:
-LFB3562:
+LFB3560:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29845,13 +30086,13 @@ LFB3562:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3562:
+LFE3560:
 	.section	.text$_ZSt7forwardIbEOT_RNSt16remove_referenceIS0_E4typeE,"x"
 	.linkonce discard
 	.globl	__ZSt7forwardIbEOT_RNSt16remove_referenceIS0_E4typeE
 	.def	__ZSt7forwardIbEOT_RNSt16remove_referenceIS0_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardIbEOT_RNSt16remove_referenceIS0_E4typeE:
-LFB3563:
+LFB3561:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29864,14 +30105,14 @@ LFB3563:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3563:
+LFE3561:
 	.section	.text$_ZNSt4pairINSt8__detail14_Node_iteratorIS_IKjN6CTest84DATAEELb0ELb0EEEbEC1IS6_bvEEOT_OT0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt4pairINSt8__detail14_Node_iteratorIS_IKjN6CTest84DATAEELb0ELb0EEEbEC1IS6_bvEEOT_OT0_
 	.def	__ZNSt4pairINSt8__detail14_Node_iteratorIS_IKjN6CTest84DATAEELb0ELb0EEEbEC1IS6_bvEEOT_OT0_;	.scl	2;	.type	32;	.endef
 __ZNSt4pairINSt8__detail14_Node_iteratorIS_IKjN6CTest84DATAEELb0ELb0EEEbEC1IS6_bvEEOT_OT0_:
-LFB3566:
+LFB3564:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29896,13 +30137,13 @@ LFB3566:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3566:
+LFE3564:
 	.section	.text$_ZSt9make_pairINSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEEbES2_INSt17__decay_and_stripIT_E6__typeENS8_IT0_E6__typeEEOS9_OSC_,"x"
 	.linkonce discard
 	.globl	__ZSt9make_pairINSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEEbES2_INSt17__decay_and_stripIT_E6__typeENS8_IT0_E6__typeEEOS9_OSC_
 	.def	__ZSt9make_pairINSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEEbES2_INSt17__decay_and_stripIT_E6__typeENS8_IT0_E6__typeEEOS9_OSC_;	.scl	2;	.type	32;	.endef
 __ZSt9make_pairINSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEEbES2_INSt17__decay_and_stripIT_E6__typeENS8_IT0_E6__typeEEOS9_OSC_:
-LFB3561:
+LFB3559:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -29934,17 +30175,17 @@ LFB3561:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3561:
-	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIS0_IjS3_EEEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_,"x"
+LFE3559:
+	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIS0_IjS3_EEEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_
-	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIS0_IjS3_EEEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_;	.scl	2;	.type	32;	.endef
-__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIS0_IjS3_EEEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_:
-LFB3557:
+	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_
+	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_;	.scl	2;	.type	32;	.endef
+__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_:
+LFB3555:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3557
+	.cfi_lsda 0,LLSDA3555
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -29953,21 +30194,26 @@ LFB3557:
 	pushl	%ebx
 	subl	$68, %esp
 	.cfi_offset 3, -12
+	movl	20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE
+	movl	%eax, %ebx
 	movl	16(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZSt7forwardISt4pairIjN6CTest84DATAEEEOT_RNSt16remove_referenceIS4_E4typeE
+	call	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
+	movl	%ebx, 8(%esp)
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB362:
-	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIS0_IjS3_EEEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_
+LEHB370:
+	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIjRKS3_EEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_
 	movl	%eax, -12(%ebp)
 	movl	-12(%ebp), %eax
 	leal	4(%eax), %ebx
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE10_M_extractEv
-LEHE362:
+LEHE370:
 	movl	%ebx, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZNKSt8__detail10_Select1stclIRSt4pairIKjN6CTest84DATAEEEEDTcl3getILi0EEcl7forwardIT_Efp_EEEOS8_
@@ -29976,9 +30222,9 @@ LEHE362:
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB363:
+LEHB371:
 	call	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE12_M_hash_codeERS2_
-LEHE363:
+LEHE371:
 	movl	%eax, -20(%ebp)
 	movl	-20(%ebp), %eax
 	movl	%eax, 8(%esp)
@@ -29986,7 +30232,7 @@ LEHE363:
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB364:
+LEHB372:
 	call	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexERS1_j
 	movl	%eax, -24(%ebp)
 	movl	-20(%ebp), %eax
@@ -30000,28 +30246,28 @@ LEHB364:
 	call	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE12_M_find_nodeEjRS1_j
 	movl	%eax, -28(%ebp)
 	cmpl	$0, -28(%ebp)
-	je	L1980
+	je	L1991
 	movl	-12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE18_M_deallocate_nodeEPNS6_10_Hash_nodeIS4_Lb0EEE
-LEHE364:
+LEHE372:
 	movb	$0, -41(%ebp)
 	movl	-28(%ebp), %eax
 	movl	%eax, 4(%esp)
 	leal	-40(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB365:
+LEHB373:
 	call	__ZNSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE
-LEHE365:
+LEHE373:
 	leal	-41(%ebp), %eax
 	movl	%eax, 4(%esp)
 	leal	-40(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZSt9make_pairINSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEEbES2_INSt17__decay_and_stripIT_E6__typeENS8_IT0_E6__typeEEOS9_OSC_
-	jmp	L1990
-L1980:
+	jmp	L2001
+L1991:
 	movb	$1, -33(%ebp)
 	movl	-12(%ebp), %eax
 	movl	%eax, 12(%esp)
@@ -30031,44 +30277,44 @@ L1980:
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB366:
+LEHB374:
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE21_M_insert_unique_nodeEjjPNS6_10_Hash_nodeIS4_Lb0EEE
-LEHE366:
+LEHE374:
 	movl	%eax, -32(%ebp)
 	leal	-33(%ebp), %eax
 	movl	%eax, 4(%esp)
 	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZSt9make_pairINSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEEbES2_INSt17__decay_and_stripIT_E6__typeENS8_IT0_E6__typeEEOS9_OSC_
-	jmp	L1990
-L1987:
+	jmp	L2001
+L1998:
 	movl	%eax, %ebx
 	call	___cxa_end_catch
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB367:
+LEHB375:
 	call	__Unwind_Resume
-LEHE367:
-L1986:
+LEHE375:
+L1997:
 	movl	%eax, (%esp)
 	call	___cxa_begin_catch
 	movl	-12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB368:
+LEHB376:
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE18_M_deallocate_nodeEPNS6_10_Hash_nodeIS4_Lb0EEE
 	call	___cxa_rethrow
-LEHE368:
-L1988:
+LEHE376:
+L1999:
 	movl	%eax, (%esp)
-LEHB369:
+LEHB377:
 	call	__Unwind_Resume
-L1989:
+L2000:
 	movl	%eax, (%esp)
 	call	__Unwind_Resume
-LEHE369:
-L1990:
+LEHE377:
+L2001:
 	addl	$68, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -30077,67 +30323,67 @@ L1990:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3557:
+LFE3555:
 	.section	.gcc_except_table,"w"
 	.align 4
-LLSDA3557:
+LLSDA3555:
 	.byte	0xff
 	.byte	0
-	.uleb128 LLSDATT3557-LLSDATTD3557
-LLSDATTD3557:
+	.uleb128 LLSDATT3555-LLSDATTD3555
+LLSDATTD3555:
 	.byte	0x1
-	.uleb128 LLSDACSE3557-LLSDACSB3557
-LLSDACSB3557:
-	.uleb128 LEHB362-LFB3557
-	.uleb128 LEHE362-LEHB362
+	.uleb128 LLSDACSE3555-LLSDACSB3555
+LLSDACSB3555:
+	.uleb128 LEHB370-LFB3555
+	.uleb128 LEHE370-LEHB370
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB363-LFB3557
-	.uleb128 LEHE363-LEHB363
-	.uleb128 L1986-LFB3557
+	.uleb128 LEHB371-LFB3555
+	.uleb128 LEHE371-LEHB371
+	.uleb128 L1997-LFB3555
 	.uleb128 0x1
-	.uleb128 LEHB364-LFB3557
-	.uleb128 LEHE364-LEHB364
+	.uleb128 LEHB372-LFB3555
+	.uleb128 LEHE372-LEHB372
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB365-LFB3557
-	.uleb128 LEHE365-LEHB365
-	.uleb128 L1988-LFB3557
+	.uleb128 LEHB373-LFB3555
+	.uleb128 LEHE373-LEHB373
+	.uleb128 L1999-LFB3555
 	.uleb128 0
-	.uleb128 LEHB366-LFB3557
-	.uleb128 LEHE366-LEHB366
-	.uleb128 L1989-LFB3557
+	.uleb128 LEHB374-LFB3555
+	.uleb128 LEHE374-LEHB374
+	.uleb128 L2000-LFB3555
 	.uleb128 0
-	.uleb128 LEHB367-LFB3557
-	.uleb128 LEHE367-LEHB367
-	.uleb128 0
-	.uleb128 0
-	.uleb128 LEHB368-LFB3557
-	.uleb128 LEHE368-LEHB368
-	.uleb128 L1987-LFB3557
-	.uleb128 0
-	.uleb128 LEHB369-LFB3557
-	.uleb128 LEHE369-LEHB369
+	.uleb128 LEHB375-LFB3555
+	.uleb128 LEHE375-LEHB375
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3557:
+	.uleb128 LEHB376-LFB3555
+	.uleb128 LEHE376-LEHB376
+	.uleb128 L1998-LFB3555
+	.uleb128 0
+	.uleb128 LEHB377-LFB3555
+	.uleb128 LEHE377-LEHB377
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3555:
 	.byte	0x1
 	.byte	0
 	.align 4
 	.long	0
-LLSDATT3557:
-	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIS0_IjS3_EEEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_,"x"
+LLSDATT3555:
+	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_,"x"
 	.linkonce discard
-	.weak	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIJS0_IjS3_EEEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_
-	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIJS0_IjS3_EEEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_;	.scl	2;	.type	32;	.endef
-	.set	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIJS0_IjS3_EEEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_,__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIS0_IjS3_EEEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_
+	.weak	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIJjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_
+	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIJjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_;	.scl	2;	.type	32;	.endef
+	.set	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIJjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_,__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE10_M_emplaceIIjRKS3_EEES0_INS6_14_Node_iteratorIS4_Lb0ELb0EEEbESt17integral_constantIbLb1EEDpOT_
 	.section	.text$_ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE12_M_hash_codeERS2_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE12_M_hash_codeERS2_
 	.def	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE12_M_hash_codeERS2_;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE12_M_hash_codeERS2_:
-LFB3567:
+LFB3565:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30163,14 +30409,14 @@ LFB3567:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3567:
+LFE3565:
 	.section	.text$_ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexERS1_j,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexERS1_j
 	.def	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexERS1_j;	.scl	2;	.type	32;	.endef
 __ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexERS1_j:
-LFB3568:
+LFB3566:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30193,14 +30439,14 @@ LFB3568:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3568:
+LFE3566:
 	.section	.text$_ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE12_M_find_nodeEjRS1_j,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE12_M_find_nodeEjRS1_j
 	.def	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE12_M_find_nodeEjRS1_j;	.scl	2;	.type	32;	.endef
 __ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE12_M_find_nodeEjRS1_j:
-LFB3569:
+LFB3567:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30219,26 +30465,26 @@ LFB3569:
 	call	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_find_before_nodeEjRS1_j
 	movl	%eax, -12(%ebp)
 	cmpl	$0, -12(%ebp)
-	je	L1996
+	je	L2007
 	movl	-12(%ebp), %eax
 	movl	(%eax), %eax
-	jmp	L1997
-L1996:
+	jmp	L2008
+L2007:
 	movl	$0, %eax
-L1997:
+L2008:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3569:
+LFE3567:
 	.section	.text$_ZNSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE
 	.def	__ZNSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE:
-LFB3572:
+LFB3570:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30256,14 +30502,14 @@ LFB3572:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3572:
+LFE3570:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE3endEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE3endEv
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE3endEv;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE3endEv:
-LFB3573:
+LFB3571:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30281,14 +30527,14 @@ LFB3573:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3573:
+LFE3571:
 	.section	.text$_ZNSt8__detail20_Node_const_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail20_Node_const_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE
 	.def	__ZNSt8__detail20_Node_const_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail20_Node_const_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE:
-LFB3576:
+LFB3574:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30306,14 +30552,14 @@ LFB3576:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3576:
+LFE3574:
 	.section	.text$_ZNSt8__detail12_Insert_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail12_Insert_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEEC2Ev
 	.def	__ZNSt8__detail12_Insert_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEEC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail12_Insert_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEEC2Ev:
-LFB3580:
+LFB3578:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30325,14 +30571,14 @@ LFB3580:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3580:
+LFE3578:
 	.section	.text$_ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EEC2Ev
 	.def	__ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EEC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EEC2Ev:
-LFB3582:
+LFB3580:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30348,14 +30594,14 @@ LFB3582:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3582:
+LFE3580:
 	.section	.text$_ZNSt8__detail9_EqualityIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb1EEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail9_EqualityIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb1EEC2Ev
 	.def	__ZNSt8__detail9_EqualityIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb1EEC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail9_EqualityIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb1EEC2Ev:
-LFB3585:
+LFB3583:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30367,17 +30613,17 @@ LFB3585:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3585:
+LFE3583:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKSC_RKSD_RKS9_RKS7_RKS5_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKSC_RKSD_RKS9_RKS7_RKS5_
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKSC_RKSD_RKS9_RKS7_RKS5_;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKSC_RKSD_RKS9_RKS7_RKS5_:
-LFB3588:
+LFB3586:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3588
+	.cfi_lsda 0,LLSDA3586
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -30398,9 +30644,9 @@ LFB3588:
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB370:
+LEHB378:
 	call	__ZNSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEEC2ERKS6_RKSA_RKSB_RKSC_RKS8_
-LEHE370:
+LEHE378:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt8__detail7_InsertIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEELb0ELb1EEC2Ev
@@ -30419,7 +30665,7 @@ LEHE370:
 	movl	$0, 12(%eax)
 	movl	8(%ebp), %eax
 	leal	16(%eax), %edx
-	movl	LC265, %eax
+	movl	LC279, %eax
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
 	call	__ZNSt8__detail20_Prime_rehash_policyC1Ef
@@ -30428,7 +30674,7 @@ LEHE370:
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
-LEHB371:
+LEHB379:
 	call	__ZNKSt8__detail20_Prime_rehash_policy11_M_next_bktEj
 	movl	8(%ebp), %edx
 	movl	%eax, 4(%edx)
@@ -30438,11 +30684,11 @@ LEHB371:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_allocate_bucketsEj
-LEHE371:
+LEHE379:
 	movl	8(%ebp), %edx
 	movl	%eax, (%edx)
-	jmp	L2008
-L2007:
+	jmp	L2019
+L2018:
 	movl	%eax, %ebx
 	movl	8(%ebp), %eax
 	addl	$8, %eax
@@ -30450,10 +30696,10 @@ L2007:
 	call	__ZNSt8__detail13_Before_beginISaINS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEED1Ev
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB372:
+LEHB380:
 	call	__Unwind_Resume
-LEHE372:
-L2008:
+LEHE380:
+L2019:
 	addl	$36, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -30462,27 +30708,27 @@ L2008:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3588:
+LFE3586:
 	.section	.gcc_except_table,"w"
-LLSDA3588:
+LLSDA3586:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3588-LLSDACSB3588
-LLSDACSB3588:
-	.uleb128 LEHB370-LFB3588
-	.uleb128 LEHE370-LEHB370
+	.uleb128 LLSDACSE3586-LLSDACSB3586
+LLSDACSB3586:
+	.uleb128 LEHB378-LFB3586
+	.uleb128 LEHE378-LEHB378
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB371-LFB3588
-	.uleb128 LEHE371-LEHB371
-	.uleb128 L2007-LFB3588
+	.uleb128 LEHB379-LFB3586
+	.uleb128 LEHE379-LEHB379
+	.uleb128 L2018-LFB3586
 	.uleb128 0
-	.uleb128 LEHB372-LFB3588
-	.uleb128 LEHE372-LEHB372
+	.uleb128 LEHB380-LFB3586
+	.uleb128 LEHE380-LEHB380
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3588:
+LLSDACSE3586:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEEC1EjRKSB_RKSC_RKSD_RKS9_RKS7_RKS5_,"x"
 	.linkonce discard
 	.section	.text$_ZNKSt8__detail12_Rehash_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE15max_load_factorEv,"x"
@@ -30491,7 +30737,7 @@ LLSDACSE3588:
 	.globl	__ZNKSt8__detail12_Rehash_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE15max_load_factorEv
 	.def	__ZNKSt8__detail12_Rehash_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE15max_load_factorEv;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail12_Rehash_baseIjSt4pairIKjN6CTest84DATAEESaIS5_ENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_20_Prime_rehash_policyENS_17_Hashtable_traitsILb0ELb0ELb1EEEE15max_load_factorEv:
-LFB3589:
+LFB3587:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30511,14 +30757,14 @@ LFB3589:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3589:
+LFE3587:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE6rehashEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE6rehashEj
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE6rehashEj;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE6rehashEj:
-LFB3590:
+LFB3588:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30559,7 +30805,7 @@ LFB3590:
 	movl	8(%ebp), %eax
 	movl	4(%eax), %eax
 	cmpl	-16(%ebp), %eax
-	je	L2012
+	je	L2023
 	movl	-12(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	-16(%ebp), %eax
@@ -30567,8 +30813,8 @@ LFB3590:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_rehashEjRS1_
-	jmp	L2011
-L2012:
+	jmp	L2022
+L2023:
 	movl	-12(%ebp), %eax
 	movl	(%eax), %eax
 	movl	8(%ebp), %edx
@@ -30576,20 +30822,20 @@ L2012:
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
 	call	__ZNSt8__detail20_Prime_rehash_policy8_M_resetEj
-L2011:
+L2022:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3590:
+LFE3588:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEED2Ev
 	.def	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEED2Ev;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEED2Ev:
-LFB3592:
+LFB3590:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30601,14 +30847,14 @@ LFB3592:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3592:
+LFE3590:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_deallocate_nodesEPNS6_10_Hash_nodeIS4_Lb0EEE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_deallocate_nodesEPNS6_10_Hash_nodeIS4_Lb0EEE
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_deallocate_nodesEPNS6_10_Hash_nodeIS4_Lb0EEE;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_deallocate_nodesEPNS6_10_Hash_nodeIS4_Lb0EEE:
-LFB3594:
+LFB3592:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30616,8 +30862,8 @@ LFB3594:
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
-	jmp	L2017
-L2018:
+	jmp	L2028
+L2029:
 	movl	12(%ebp), %eax
 	movl	%eax, -12(%ebp)
 	movl	12(%ebp), %eax
@@ -30629,22 +30875,22 @@ L2018:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE18_M_deallocate_nodeEPNS6_10_Hash_nodeIS4_Lb0EEE
-L2017:
+L2028:
 	cmpl	$0, 12(%ebp)
-	jne	L2018
+	jne	L2029
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3594:
+LFE3592:
 	.section	.text$_ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE8_M_beginEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE8_M_beginEv
 	.def	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE8_M_beginEv;	.scl	2;	.type	32;	.endef
 __ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE8_M_beginEv:
-LFB3595:
+LFB3593:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30661,14 +30907,14 @@ LFB3595:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3595:
+LFE3593:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv:
-LFB3596:
+LFB3594:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30682,14 +30928,14 @@ LFB3596:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3596:
+LFE3594:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE17_M_node_allocatorEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE17_M_node_allocatorEv
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE17_M_node_allocatorEv;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE17_M_node_allocatorEv:
-LFB3597:
+LFB3595:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30703,14 +30949,14 @@ LFB3597:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3597:
+LFE3595:
 	.section	.text$_ZNSaIPNSt8__detail15_Hash_node_baseEEC1INS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEERKSaIT_E,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaIPNSt8__detail15_Hash_node_baseEEC1INS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEERKSaIT_E
 	.def	__ZNSaIPNSt8__detail15_Hash_node_baseEEC1INS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEERKSaIT_E;	.scl	2;	.type	32;	.endef
 __ZNSaIPNSt8__detail15_Hash_node_baseEEC1INS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEERKSaIT_E:
-LFB3600:
+LFB3598:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30726,14 +30972,14 @@ LFB3600:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3600:
+LFE3598:
 	.section	.text$_ZNSaIPNSt8__detail15_Hash_node_baseEED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaIPNSt8__detail15_Hash_node_baseEED1Ev
 	.def	__ZNSaIPNSt8__detail15_Hash_node_baseEED1Ev;	.scl	2;	.type	32;	.endef
 __ZNSaIPNSt8__detail15_Hash_node_baseEED1Ev:
-LFB3603:
+LFB3601:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30749,14 +30995,14 @@ LFB3603:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3603:
+LFE3601:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE10deallocateEPS3_j,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE10deallocateEPS3_j
 	.def	__ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE10deallocateEPS3_j;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE10deallocateEPS3_j:
-LFB3604:
+LFB3602:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30772,14 +31018,14 @@ LFB3604:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3604:
+LFE3602:
 	.section	.text$_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv
 	.def	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv;	.scl	2;	.type	32;	.endef
 __ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv:
-LFB3609:
+LFB3610:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30788,7 +31034,7 @@ LFB3609:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	cmpl	$0, 8(%ebp)
-	je	L2029
+	je	L2040
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	addl	$4, %eax
@@ -30796,19 +31042,19 @@ LFB3609:
 	movl	8(%ebp), %edx
 	movl	%edx, (%esp)
 	call	*%eax
-L2029:
+L2040:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3609:
+LFE3610:
 	.section	.text$_ZNSt26_Maybe_wrap_member_pointerIPFvPKcEE9__do_wrapEOS3_,"x"
 	.linkonce discard
 	.globl	__ZNSt26_Maybe_wrap_member_pointerIPFvPKcEE9__do_wrapEOS3_
 	.def	__ZNSt26_Maybe_wrap_member_pointerIPFvPKcEE9__do_wrapEOS3_;	.scl	2;	.type	32;	.endef
 __ZNSt26_Maybe_wrap_member_pointerIPFvPKcEE9__do_wrapEOS3_:
-LFB3610:
+LFB3611:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30821,13 +31067,13 @@ LFB3610:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3610:
+LFE3611:
 	.section	.text$_ZSt4moveIRPFvPKcEEONSt16remove_referenceIT_E4typeEOS6_,"x"
 	.linkonce discard
 	.globl	__ZSt4moveIRPFvPKcEEONSt16remove_referenceIT_E4typeEOS6_
 	.def	__ZSt4moveIRPFvPKcEEONSt16remove_referenceIT_E4typeEOS6_;	.scl	2;	.type	32;	.endef
 __ZSt4moveIRPFvPKcEEONSt16remove_referenceIT_E4typeEOS6_:
-LFB3612:
+LFB3613:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30840,14 +31086,14 @@ LFB3612:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3612:
+LFE3613:
 	.section	.text$_ZNSt11_Tuple_implILj2EIEEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt11_Tuple_implILj2EIEEC2Ev
 	.def	__ZNSt11_Tuple_implILj2EIEEC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt11_Tuple_implILj2EIEEC2Ev:
-LFB3617:
+LFB3618:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30859,7 +31105,7 @@ LFB3617:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3617:
+LFE3618:
 	.weak	__ZNSt11_Tuple_implILj2EJEEC2Ev
 	.def	__ZNSt11_Tuple_implILj2EJEEC2Ev;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt11_Tuple_implILj2EJEEC2Ev,__ZNSt11_Tuple_implILj2EIEEC2Ev
@@ -30869,7 +31115,7 @@ LFE3617:
 	.globl	__ZNSt10_Head_baseILj1EPKcLb0EEC2ERKS1_
 	.def	__ZNSt10_Head_baseILj1EPKcLb0EEC2ERKS1_;	.scl	2;	.type	32;	.endef
 __ZNSt10_Head_baseILj1EPKcLb0EEC2ERKS1_:
-LFB3620:
+LFB3621:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30885,14 +31131,14 @@ LFB3620:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3620:
+LFE3621:
 	.section	.text$_ZNSt11_Tuple_implILj1EIPKcEEC2ERKS1_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt11_Tuple_implILj1EIPKcEEC2ERKS1_
 	.def	__ZNSt11_Tuple_implILj1EIPKcEEC2ERKS1_;	.scl	2;	.type	32;	.endef
 __ZNSt11_Tuple_implILj1EIPKcEEC2ERKS1_:
-LFB3622:
+LFB3623:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30913,7 +31159,7 @@ LFB3622:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3622:
+LFE3623:
 	.weak	__ZNSt11_Tuple_implILj1EJPKcEEC2ERKS1_
 	.def	__ZNSt11_Tuple_implILj1EJPKcEEC2ERKS1_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt11_Tuple_implILj1EJPKcEEC2ERKS1_,__ZNSt11_Tuple_implILj1EIPKcEEC2ERKS1_
@@ -30923,7 +31169,7 @@ LFE3622:
 	.globl	__ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2IS3_IRA28_S0_EvEEOT_DpOT0_
 	.def	__ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2IS3_IRA28_S0_EvEEOT_DpOT0_;	.scl	2;	.type	32;	.endef
 __ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2IS3_IRA28_S0_EvEEOT_DpOT0_:
-LFB3624:
+LFB3625:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30953,7 +31199,7 @@ LFB3624:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3624:
+LFE3625:
 	.weak	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EEC2IS3_JRA28_S0_EvEEOT_DpOT0_
 	.def	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EEC2IS3_JRA28_S0_EvEEOT_DpOT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EEC2IS3_JRA28_S0_EvEEOT_DpOT0_,__ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2IS3_IRA28_S0_EvEEOT_DpOT0_
@@ -30963,7 +31209,7 @@ LFE3624:
 	.globl	__ZNSt5tupleIIPFvPKcES1_EEC1IS3_RA28_S0_vEEOT_OT0_
 	.def	__ZNSt5tupleIIPFvPKcES1_EEC1IS3_RA28_S0_vEEOT_OT0_;	.scl	2;	.type	32;	.endef
 __ZNSt5tupleIIPFvPKcES1_EEC1IS3_RA28_S0_vEEOT_OT0_:
-LFB3627:
+LFB3628:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -30993,7 +31239,7 @@ LFB3627:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3627:
+LFE3628:
 	.weak	__ZNSt5tupleIJPFvPKcES1_EEC1IS3_RA28_S0_vEEOT_OT0_
 	.def	__ZNSt5tupleIJPFvPKcES1_EEC1IS3_RA28_S0_vEEOT_OT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt5tupleIJPFvPKcES1_EEC1IS3_RA28_S0_vEEOT_OT0_,__ZNSt5tupleIIPFvPKcES1_EEC1IS3_RA28_S0_vEEOT_OT0_
@@ -31003,7 +31249,7 @@ LFE3627:
 	.globl	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IIRA28_S0_EvEEOS3_DpOT_
 	.def	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IIRA28_S0_EvEEOS3_DpOT_;	.scl	2;	.type	32;	.endef
 __ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IIRA28_S0_EvEEOS3_DpOT_:
-LFB3629:
+LFB3630:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31033,7 +31279,7 @@ LFB3629:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3629:
+LFE3630:
 	.weak	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IJRA28_S0_EvEEOS3_DpOT_
 	.def	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IJRA28_S0_EvEEOS3_DpOT_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IJRA28_S0_EvEEOS3_DpOT_,__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IIRA28_S0_EvEEOS3_DpOT_
@@ -31042,10 +31288,10 @@ LFE3629:
 	.globl	__ZSt11make_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEIS8_EESt10shared_ptrIT_EDpOT0_
 	.def	__ZSt11make_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEIS8_EESt10shared_ptrIT_EDpOT0_;	.scl	2;	.type	32;	.endef
 __ZSt11make_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEIS8_EESt10shared_ptrIT_EDpOT0_:
-LFB3630:
+LFB3631:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3630
+	.cfi_lsda 0,LLSDA3631
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -31066,25 +31312,25 @@ LFB3630:
 	leal	-9(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-LEHB373:
+LEHB381:
 	call	__ZSt15allocate_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_EIS8_EESt10shared_ptrIT_ERKT0_DpOT1_
-LEHE373:
+LEHE381:
 	subl	$4, %esp
 	leal	-9(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev
-	jmp	L2045
-L2044:
+	jmp	L2056
+L2055:
 	movl	%eax, %ebx
 	leal	-9(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB374:
+LEHB382:
 	call	__Unwind_Resume
-LEHE374:
-L2045:
+LEHE382:
+L2056:
 	movl	8(%ebp), %eax
 	movl	-4(%ebp), %ebx
 	leave
@@ -31093,23 +31339,23 @@ L2045:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3630:
+LFE3631:
 	.section	.gcc_except_table,"w"
-LLSDA3630:
+LLSDA3631:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3630-LLSDACSB3630
-LLSDACSB3630:
-	.uleb128 LEHB373-LFB3630
-	.uleb128 LEHE373-LEHB373
-	.uleb128 L2044-LFB3630
+	.uleb128 LLSDACSE3631-LLSDACSB3631
+LLSDACSB3631:
+	.uleb128 LEHB381-LFB3631
+	.uleb128 LEHE381-LEHB381
+	.uleb128 L2055-LFB3631
 	.uleb128 0
-	.uleb128 LEHB374-LFB3630
-	.uleb128 LEHE374-LEHB374
+	.uleb128 LEHB382-LFB3631
+	.uleb128 LEHE382-LEHB382
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3630:
+LLSDACSE3631:
 	.section	.text$_ZSt11make_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEIS8_EESt10shared_ptrIT_EDpOT0_,"x"
 	.linkonce discard
 	.weak	__ZSt11make_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEJS8_EESt10shared_ptrIT_EDpOT0_
@@ -31121,7 +31367,7 @@ LLSDACSE3630:
 	.globl	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1Ev
 	.def	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1Ev:
-LFB3637:
+LFB3638:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31135,14 +31381,14 @@ LFB3637:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3637:
+LFE3638:
 	.section	.text$_ZNSt12__shared_ptrINSt6thread10_Impl_baseELN9__gnu_cxx12_Lock_policyE2EEC2INS0_5_ImplISt12_Bind_simpleIFPFvPKcES9_EEEEvEEOS_IT_LS3_2EE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt12__shared_ptrINSt6thread10_Impl_baseELN9__gnu_cxx12_Lock_policyE2EEC2INS0_5_ImplISt12_Bind_simpleIFPFvPKcES9_EEEEvEEOS_IT_LS3_2EE
 	.def	__ZNSt12__shared_ptrINSt6thread10_Impl_baseELN9__gnu_cxx12_Lock_policyE2EEC2INS0_5_ImplISt12_Bind_simpleIFPFvPKcES9_EEEEvEEOS_IT_LS3_2EE;	.scl	2;	.type	32;	.endef
 __ZNSt12__shared_ptrINSt6thread10_Impl_baseELN9__gnu_cxx12_Lock_policyE2EEC2INS0_5_ImplISt12_Bind_simpleIFPFvPKcES9_EEEEvEEOS_IT_LS3_2EE:
-LFB3638:
+LFB3639:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31172,14 +31418,14 @@ LFB3638:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3638:
+LFE3639:
 	.section	.text$_ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2IS3_IRA29_S0_EvEEOT_DpOT0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2IS3_IRA29_S0_EvEEOT_DpOT0_
 	.def	__ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2IS3_IRA29_S0_EvEEOT_DpOT0_;	.scl	2;	.type	32;	.endef
 __ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2IS3_IRA29_S0_EvEEOT_DpOT0_:
-LFB3646:
+LFB3647:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31209,7 +31455,7 @@ LFB3646:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3646:
+LFE3647:
 	.weak	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EEC2IS3_JRA29_S0_EvEEOT_DpOT0_
 	.def	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EEC2IS3_JRA29_S0_EvEEOT_DpOT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt11_Tuple_implILj0EJPFvPKcES1_EEC2IS3_JRA29_S0_EvEEOT_DpOT0_,__ZNSt11_Tuple_implILj0EIPFvPKcES1_EEC2IS3_IRA29_S0_EvEEOT_DpOT0_
@@ -31219,7 +31465,7 @@ LFE3646:
 	.globl	__ZNSt5tupleIIPFvPKcES1_EEC1IS3_RA29_S0_vEEOT_OT0_
 	.def	__ZNSt5tupleIIPFvPKcES1_EEC1IS3_RA29_S0_vEEOT_OT0_;	.scl	2;	.type	32;	.endef
 __ZNSt5tupleIIPFvPKcES1_EEC1IS3_RA29_S0_vEEOT_OT0_:
-LFB3649:
+LFB3650:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31249,7 +31495,7 @@ LFB3649:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3649:
+LFE3650:
 	.weak	__ZNSt5tupleIJPFvPKcES1_EEC1IS3_RA29_S0_vEEOT_OT0_
 	.def	__ZNSt5tupleIJPFvPKcES1_EEC1IS3_RA29_S0_vEEOT_OT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt5tupleIJPFvPKcES1_EEC1IS3_RA29_S0_vEEOT_OT0_,__ZNSt5tupleIIPFvPKcES1_EEC1IS3_RA29_S0_vEEOT_OT0_
@@ -31259,7 +31505,7 @@ LFE3649:
 	.globl	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IIRA29_S0_EvEEOS3_DpOT_
 	.def	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IIRA29_S0_EvEEOS3_DpOT_;	.scl	2;	.type	32;	.endef
 __ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IIRA29_S0_EvEEOS3_DpOT_:
-LFB3651:
+LFB3652:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31289,63 +31535,70 @@ LFB3651:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3651:
+LFE3652:
 	.weak	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IJRA29_S0_EvEEOS3_DpOT_
 	.def	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IJRA29_S0_EvEEOS3_DpOT_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IJRA29_S0_EvEEOS3_DpOT_,__ZNSt12_Bind_simpleIFPFvPKcES1_EEC1IIRA29_S0_EvEEOS3_DpOT_
-	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIS0_IjS3_EEEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_,"x"
+	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIjRKS3_EEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIS0_IjS3_EEEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_
-	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIS0_IjS3_EEEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_;	.scl	2;	.type	32;	.endef
-__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIS0_IjS3_EEEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_:
-LFB3652:
+	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIjRKS3_EEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_
+	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIjRKS3_EEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_;	.scl	2;	.type	32;	.endef
+__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIjRKS3_EEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_:
+LFB3653:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3652
+	.cfi_lsda 0,LLSDA3653
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
+	pushl	%esi
 	pushl	%ebx
-	subl	$36, %esp
-	.cfi_offset 3, -12
+	subl	$32, %esp
+	.cfi_offset 6, -12
+	.cfi_offset 3, -16
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE17_M_node_allocatorEv
 	movl	$0, 8(%esp)
 	movl	$1, 4(%esp)
 	movl	%eax, (%esp)
-LEHB375:
+LEHB383:
 	call	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE8allocateEjPKv
-LEHE375:
+LEHE383:
 	movl	%eax, -12(%ebp)
+	movl	16(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE
+	movl	%eax, %esi
 	movl	12(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZSt7forwardISt4pairIjN6CTest84DATAEEEOT_RNSt16remove_referenceIS4_E4typeE
+	call	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
 	movl	%eax, %ebx
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE17_M_node_allocatorEv
+	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
 	movl	-12(%ebp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-LEHB376:
-	call	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IS3_IjS6_EEEEvPT_DpOT0_
-LEHE376:
+LEHB384:
+	call	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IjRKS6_EEEvPT_DpOT0_
+LEHE384:
 	movl	-12(%ebp), %eax
-	jmp	L2057
-L2056:
+	jmp	L2068
+L2067:
 	movl	%eax, %ebx
 	call	___cxa_end_catch
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB377:
+LEHB385:
 	call	__Unwind_Resume
-LEHE377:
-L2055:
+LEHE385:
+L2066:
 	movl	%eax, (%esp)
 	call	___cxa_begin_catch
 	movl	8(%ebp), %eax
@@ -31356,63 +31609,65 @@ L2055:
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE10deallocateEPS8_j
-LEHB378:
+LEHB386:
 	call	___cxa_rethrow
-LEHE378:
-L2057:
-	addl	$36, %esp
+LEHE386:
+L2068:
+	addl	$32, %esp
 	popl	%ebx
 	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
 	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3652:
+LFE3653:
 	.section	.gcc_except_table,"w"
 	.align 4
-LLSDA3652:
+LLSDA3653:
 	.byte	0xff
 	.byte	0
-	.uleb128 LLSDATT3652-LLSDATTD3652
-LLSDATTD3652:
+	.uleb128 LLSDATT3653-LLSDATTD3653
+LLSDATTD3653:
 	.byte	0x1
-	.uleb128 LLSDACSE3652-LLSDACSB3652
-LLSDACSB3652:
-	.uleb128 LEHB375-LFB3652
-	.uleb128 LEHE375-LEHB375
+	.uleb128 LLSDACSE3653-LLSDACSB3653
+LLSDACSB3653:
+	.uleb128 LEHB383-LFB3653
+	.uleb128 LEHE383-LEHB383
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB376-LFB3652
-	.uleb128 LEHE376-LEHB376
-	.uleb128 L2055-LFB3652
+	.uleb128 LEHB384-LFB3653
+	.uleb128 LEHE384-LEHB384
+	.uleb128 L2066-LFB3653
 	.uleb128 0x1
-	.uleb128 LEHB377-LFB3652
-	.uleb128 LEHE377-LEHB377
+	.uleb128 LEHB385-LFB3653
+	.uleb128 LEHE385-LEHB385
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB378-LFB3652
-	.uleb128 LEHE378-LEHB378
-	.uleb128 L2056-LFB3652
+	.uleb128 LEHB386-LFB3653
+	.uleb128 LEHE386-LEHB386
+	.uleb128 L2067-LFB3653
 	.uleb128 0
-LLSDACSE3652:
+LLSDACSE3653:
 	.byte	0x1
 	.byte	0
 	.align 4
 	.long	0
-LLSDATT3652:
-	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIS0_IjS3_EEEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_,"x"
+LLSDATT3653:
+	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIjRKS3_EEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_,"x"
 	.linkonce discard
-	.weak	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIJS0_IjS3_EEEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_
-	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIJS0_IjS3_EEEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_;	.scl	2;	.type	32;	.endef
-	.set	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIJS0_IjS3_EEEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_,__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIS0_IjS3_EEEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_
+	.weak	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIJjRKS3_EEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_
+	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIJjRKS3_EEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_;	.scl	2;	.type	32;	.endef
+	.set	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIJjRKS3_EEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_,__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE16_M_allocate_nodeIIjRKS3_EEEPNS6_10_Hash_nodeIS4_Lb0EEEDpOT_
 	.section	.text$_ZNSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE10_M_extractEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE10_M_extractEv
 	.def	__ZNSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE10_M_extractEv;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE10_M_extractEv:
-LFB3653:
+LFB3654:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31428,14 +31683,14 @@ LFB3653:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3653:
+LFE3654:
 	.section	.text$_ZNKSt8__detail10_Select1stclIRSt4pairIKjN6CTest84DATAEEEEDTcl3getILi0EEcl7forwardIT_Efp_EEEOS8_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail10_Select1stclIRSt4pairIKjN6CTest84DATAEEEEDTcl3getILi0EEcl7forwardIT_Efp_EEEOS8_
 	.def	__ZNKSt8__detail10_Select1stclIRSt4pairIKjN6CTest84DATAEEEEDTcl3getILi0EEcl7forwardIT_Efp_EEEOS8_;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail10_Select1stclIRSt4pairIKjN6CTest84DATAEEEEDTcl3getILi0EEcl7forwardIT_Efp_EEEOS8_:
-LFB3654:
+LFB3655:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31453,14 +31708,14 @@ LFB3654:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3654:
+LFE3655:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE18_M_deallocate_nodeEPNS6_10_Hash_nodeIS4_Lb0EEE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE18_M_deallocate_nodeEPNS6_10_Hash_nodeIS4_Lb0EEE
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE18_M_deallocate_nodeEPNS6_10_Hash_nodeIS4_Lb0EEE;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE18_M_deallocate_nodeEPNS6_10_Hash_nodeIS4_Lb0EEE:
-LFB3655:
+LFB3656:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31488,17 +31743,17 @@ LFB3655:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3655:
+LFE3656:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE21_M_insert_unique_nodeEjjPNS6_10_Hash_nodeIS4_Lb0EEE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE21_M_insert_unique_nodeEjjPNS6_10_Hash_nodeIS4_Lb0EEE
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE21_M_insert_unique_nodeEjjPNS6_10_Hash_nodeIS4_Lb0EEE;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE21_M_insert_unique_nodeEjjPNS6_10_Hash_nodeIS4_Lb0EEE:
-LFB3656:
+LFB3657:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3656
+	.cfi_lsda 0,LLSDA3657
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -31524,21 +31779,21 @@ LFB3656:
 	movl	%edx, 8(%esp)
 	movl	%eax, 4(%esp)
 	movl	%ecx, (%esp)
-LEHB379:
+LEHB387:
 	call	__ZNKSt8__detail20_Prime_rehash_policy14_M_need_rehashEjjj
-LEHE379:
+LEHE387:
 	movl	%eax, -28(%ebp)
 	movl	%edx, -24(%ebp)
 	movzbl	-28(%ebp), %eax
 	testb	%al, %al
-	je	L2064
+	je	L2075
 	movl	-24(%ebp), %eax
 	movl	-12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB380:
+LEHB388:
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_rehashEjRS1_
 	movl	20(%ebp), %eax
 	leal	4(%eax), %ebx
@@ -31555,7 +31810,7 @@ LEHB380:
 	movl	%eax, (%esp)
 	call	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexERS1_j
 	movl	%eax, 12(%ebp)
-L2064:
+L2075:
 	movl	16(%ebp), %eax
 	movl	%eax, 8(%esp)
 	movl	20(%ebp), %eax
@@ -31570,7 +31825,7 @@ L2064:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE22_M_insert_bucket_beginEjPNS6_10_Hash_nodeIS4_Lb0EEE
-LEHE380:
+LEHE388:
 	movl	8(%ebp), %eax
 	movl	12(%eax), %eax
 	leal	1(%eax), %edx
@@ -31582,13 +31837,13 @@ LEHE380:
 	movl	%eax, (%esp)
 	call	__ZNSt8__detail14_Node_iteratorISt4pairIKjN6CTest84DATAEELb0ELb0EEC1EPNS_10_Hash_nodeIS5_Lb0EEE
 	movl	-16(%ebp), %eax
-	jmp	L2072
-L2071:
+	jmp	L2083
+L2082:
 	movl	%eax, %ebx
 	call	___cxa_end_catch
 	movl	%ebx, %eax
-	jmp	L2067
-L2070:
+	jmp	L2078
+L2081:
 	movl	%eax, (%esp)
 	call	___cxa_begin_catch
 	movl	20(%ebp), %eax
@@ -31596,16 +31851,16 @@ L2070:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE18_M_deallocate_nodeEPNS6_10_Hash_nodeIS4_Lb0EEE
-LEHB381:
+LEHB389:
 	call	___cxa_rethrow
-LEHE381:
-L2069:
-L2067:
+LEHE389:
+L2080:
+L2078:
 	movl	%eax, (%esp)
-LEHB382:
+LEHB390:
 	call	__Unwind_Resume
-LEHE382:
-L2072:
+LEHE390:
+L2083:
 	addl	$52, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -31614,39 +31869,39 @@ L2072:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3656:
+LFE3657:
 	.section	.gcc_except_table,"w"
 	.align 4
-LLSDA3656:
+LLSDA3657:
 	.byte	0xff
 	.byte	0
-	.uleb128 LLSDATT3656-LLSDATTD3656
-LLSDATTD3656:
+	.uleb128 LLSDATT3657-LLSDATTD3657
+LLSDATTD3657:
 	.byte	0x1
-	.uleb128 LLSDACSE3656-LLSDACSB3656
-LLSDACSB3656:
-	.uleb128 LEHB379-LFB3656
-	.uleb128 LEHE379-LEHB379
-	.uleb128 L2069-LFB3656
+	.uleb128 LLSDACSE3657-LLSDACSB3657
+LLSDACSB3657:
+	.uleb128 LEHB387-LFB3657
+	.uleb128 LEHE387-LEHB387
+	.uleb128 L2080-LFB3657
 	.uleb128 0
-	.uleb128 LEHB380-LFB3656
-	.uleb128 LEHE380-LEHB380
-	.uleb128 L2070-LFB3656
+	.uleb128 LEHB388-LFB3657
+	.uleb128 LEHE388-LEHB388
+	.uleb128 L2081-LFB3657
 	.uleb128 0x1
-	.uleb128 LEHB381-LFB3656
-	.uleb128 LEHE381-LEHB381
-	.uleb128 L2071-LFB3656
+	.uleb128 LEHB389-LFB3657
+	.uleb128 LEHE389-LEHB389
+	.uleb128 L2082-LFB3657
 	.uleb128 0
-	.uleb128 LEHB382-LFB3656
-	.uleb128 LEHE382-LEHB382
+	.uleb128 LEHB390-LFB3657
+	.uleb128 LEHE390-LEHB390
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3656:
+LLSDACSE3657:
 	.byte	0x1
 	.byte	0
 	.align 4
 	.long	0
-LLSDATT3656:
+LLSDATT3657:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE21_M_insert_unique_nodeEjjPNS6_10_Hash_nodeIS4_Lb0EEE,"x"
 	.linkonce discard
 	.section	.text$_ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE5_M_h1Ev,"x"
@@ -31655,7 +31910,7 @@ LLSDATT3656:
 	.globl	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE5_M_h1Ev
 	.def	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE5_M_h1Ev;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE5_M_h1Ev:
-LFB3657:
+LFB3658:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31671,14 +31926,14 @@ LFB3657:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3657:
+LFE3658:
 	.section	.text$_ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE15_M_bucket_indexERS2_jj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE15_M_bucket_indexERS2_jj
 	.def	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE15_M_bucket_indexERS2_jj;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE15_M_bucket_indexERS2_jj:
-LFB3658:
+LFB3659:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31700,14 +31955,14 @@ LFB3658:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3658:
+LFE3659:
 	.section	.text$_ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_find_before_nodeEjRS1_j,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_find_before_nodeEjRS1_j
 	.def	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_find_before_nodeEjRS1_j;	.scl	2;	.type	32;	.endef
 __ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_find_before_nodeEjRS1_j:
-LFB3659:
+LFB3660:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31723,14 +31978,14 @@ LFB3659:
 	movl	(%eax), %eax
 	movl	%eax, -12(%ebp)
 	cmpl	$0, -12(%ebp)
-	jne	L2078
+	jne	L2089
 	movl	$0, %eax
-	jmp	L2079
-L2078:
+	jmp	L2090
+L2089:
 	movl	-12(%ebp), %eax
 	movl	(%eax), %eax
 	movl	%eax, -16(%ebp)
-L2086:
+L2097:
 	movl	-16(%ebp), %eax
 	movl	%eax, 12(%esp)
 	movl	20(%ebp), %eax
@@ -31741,14 +31996,14 @@ L2086:
 	movl	%eax, (%esp)
 	call	__ZNKSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_equalsERS2_jPNS_10_Hash_nodeIS5_Lb0EEE
 	testb	%al, %al
-	je	L2080
+	je	L2091
 	movl	-12(%ebp), %eax
-	jmp	L2079
-L2080:
+	jmp	L2090
+L2091:
 	movl	-16(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	je	L2081
+	je	L2092
 	movl	-16(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNKSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EE7_M_nextEv
@@ -31757,40 +32012,40 @@ L2080:
 	movl	%eax, (%esp)
 	call	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexEPNS6_10_Hash_nodeIS4_Lb0EEE
 	cmpl	12(%ebp), %eax
-	je	L2082
-L2081:
+	je	L2093
+L2092:
 	movl	$1, %eax
-	jmp	L2083
-L2082:
+	jmp	L2094
+L2093:
 	movl	$0, %eax
-L2083:
+L2094:
 	testb	%al, %al
-	je	L2084
+	je	L2095
 	nop
 	movl	$0, %eax
-	jmp	L2079
-L2084:
+	jmp	L2090
+L2095:
 	movl	-16(%ebp), %eax
 	movl	%eax, -12(%ebp)
 	movl	-16(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNKSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EE7_M_nextEv
 	movl	%eax, -16(%ebp)
-	jmp	L2086
-L2079:
+	jmp	L2097
+L2090:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3659:
+LFE3660:
 	.section	.text$_ZNSt8__detail19_Node_iterator_baseISt4pairIKjN6CTest84DATAEELb0EEC2EPNS_10_Hash_nodeIS5_Lb0EEE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail19_Node_iterator_baseISt4pairIKjN6CTest84DATAEELb0EEC2EPNS_10_Hash_nodeIS5_Lb0EEE
 	.def	__ZNSt8__detail19_Node_iterator_baseISt4pairIKjN6CTest84DATAEELb0EEC2EPNS_10_Hash_nodeIS5_Lb0EEE;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail19_Node_iterator_baseISt4pairIKjN6CTest84DATAEELb0EEC2EPNS_10_Hash_nodeIS5_Lb0EEE:
-LFB3661:
+LFB3662:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31805,14 +32060,14 @@ LFB3661:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3661:
+LFE3662:
 	.section	.text$_ZNSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEEC2ERKS6_RKSA_RKSB_RKSC_RKS8_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEEC2ERKS6_RKSA_RKSB_RKSC_RKS8_
 	.def	__ZNSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEEC2ERKS6_RKSA_RKSB_RKSC_RKS8_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEEC2ERKS6_RKSA_RKSB_RKSC_RKS8_:
-LFB3664:
+LFB3665:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31841,13 +32096,13 @@ LFB3664:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3664:
+LFE3665:
 	.section	.text$_ZSt7forwardIRKSaISt4pairIKjN6CTest84DATAEEEEOT_RNSt16remove_referenceIS8_E4typeE,"x"
 	.linkonce discard
 	.globl	__ZSt7forwardIRKSaISt4pairIKjN6CTest84DATAEEEEOT_RNSt16remove_referenceIS8_E4typeE
 	.def	__ZSt7forwardIRKSaISt4pairIKjN6CTest84DATAEEEEOT_RNSt16remove_referenceIS8_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardIRKSaISt4pairIKjN6CTest84DATAEEEEOT_RNSt16remove_referenceIS8_E4typeE:
-LFB3667:
+LFB3668:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31860,14 +32115,14 @@ LFB3667:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3667:
+LFE3668:
 	.section	.text$_ZNSt8__detail13_Before_beginISaINS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEEC1IRKSaIS6_EEEOT_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail13_Before_beginISaINS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEEC1IRKSaIS6_EEEOT_
 	.def	__ZNSt8__detail13_Before_beginISaINS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEEC1IRKSaIS6_EEEOT_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail13_Before_beginISaINS_10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEEC1IRKSaIS6_EEEOT_:
-LFB3669:
+LFB3670:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31890,17 +32145,17 @@ LFB3669:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3669:
+LFE3670:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_allocate_bucketsEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_allocate_bucketsEj
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_allocate_bucketsEj;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_allocate_bucketsEj:
-LFB3670:
+LFB3671:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3670
+	.cfi_lsda 0,LLSDA3671
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -31921,9 +32176,9 @@ LFB3670:
 	movl	%eax, 4(%esp)
 	leal	-13(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB383:
+LEHB391:
 	call	__ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8allocateEjPKv
-LEHE383:
+LEHE391:
 	movl	%eax, -12(%ebp)
 	movl	12(%ebp), %eax
 	leal	0(,%eax,4), %edx
@@ -31937,18 +32192,18 @@ LEHE383:
 	movl	%eax, (%esp)
 	call	__ZNSaIPNSt8__detail15_Hash_node_baseEED1Ev
 	movl	%ebx, %eax
-	jmp	L2096
-L2095:
+	jmp	L2107
+L2106:
 	movl	%eax, %ebx
 	leal	-13(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaIPNSt8__detail15_Hash_node_baseEED1Ev
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB384:
+LEHB392:
 	call	__Unwind_Resume
-LEHE384:
-L2096:
+LEHE392:
+L2107:
 	addl	$36, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -31957,23 +32212,23 @@ L2096:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3670:
+LFE3671:
 	.section	.gcc_except_table,"w"
-LLSDA3670:
+LLSDA3671:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3670-LLSDACSB3670
-LLSDACSB3670:
-	.uleb128 LEHB383-LFB3670
-	.uleb128 LEHE383-LEHB383
-	.uleb128 L2095-LFB3670
+	.uleb128 LLSDACSE3671-LLSDACSB3671
+LLSDACSB3671:
+	.uleb128 LEHB391-LFB3671
+	.uleb128 LEHE391-LEHB391
+	.uleb128 L2106-LFB3671
 	.uleb128 0
-	.uleb128 LEHB384-LFB3670
-	.uleb128 LEHE384-LEHB384
+	.uleb128 LEHB392-LFB3671
+	.uleb128 LEHE392-LEHB392
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3670:
+LLSDACSE3671:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_allocate_bucketsEj,"x"
 	.linkonce discard
 	.section	.text$_ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15__rehash_policyEv,"x"
@@ -31982,7 +32237,7 @@ LLSDACSE3670:
 	.globl	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15__rehash_policyEv
 	.def	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15__rehash_policyEv;	.scl	2;	.type	32;	.endef
 __ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15__rehash_policyEv:
-LFB3671:
+LFB3672:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -31996,13 +32251,13 @@ LFB3671:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3671:
+LFE3672:
 	.section	.text$_ZSt3maxIjERKT_S2_S2_,"x"
 	.linkonce discard
 	.globl	__ZSt3maxIjERKT_S2_S2_
 	.def	__ZSt3maxIjERKT_S2_S2_;	.scl	2;	.type	32;	.endef
 __ZSt3maxIjERKT_S2_S2_:
-LFB3672:
+LFB3673:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32014,28 +32269,28 @@ LFB3672:
 	movl	12(%ebp), %eax
 	movl	(%eax), %eax
 	cmpl	%eax, %edx
-	jae	L2100
+	jae	L2111
 	movl	12(%ebp), %eax
-	jmp	L2101
-L2100:
+	jmp	L2112
+L2111:
 	movl	8(%ebp), %eax
-L2101:
+L2112:
 	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3672:
+LFE3673:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_rehashEjRS1_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_rehashEjRS1_
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_rehashEjRS1_;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_rehashEjRS1_:
-LFB3673:
+LFB3674:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3673
+	.cfi_lsda 0,LLSDA3674
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -32049,11 +32304,11 @@ LFB3673:
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB385:
+LEHB393:
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE13_M_rehash_auxEjSt17integral_constantIbLb1EE
-LEHE385:
-	jmp	L2107
-L2105:
+LEHE393:
+	jmp	L2118
+L2116:
 	movl	%eax, (%esp)
 	call	___cxa_begin_catch
 	movl	16(%ebp), %eax
@@ -32063,18 +32318,18 @@ L2105:
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
 	call	__ZNSt8__detail20_Prime_rehash_policy8_M_resetEj
-LEHB386:
+LEHB394:
 	call	___cxa_rethrow
-LEHE386:
-L2106:
+LEHE394:
+L2117:
 	movl	%eax, %ebx
 	call	___cxa_end_catch
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB387:
+LEHB395:
 	call	__Unwind_Resume
-LEHE387:
-L2107:
+LEHE395:
+L2118:
 	addl	$36, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -32083,37 +32338,37 @@ L2107:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3673:
+LFE3674:
 	.section	.gcc_except_table,"w"
 	.align 4
-LLSDA3673:
+LLSDA3674:
 	.byte	0xff
 	.byte	0
-	.uleb128 LLSDATT3673-LLSDATTD3673
-LLSDATTD3673:
+	.uleb128 LLSDATT3674-LLSDATTD3674
+LLSDATTD3674:
 	.byte	0x1
-	.uleb128 LLSDACSE3673-LLSDACSB3673
-LLSDACSB3673:
-	.uleb128 LEHB385-LFB3673
-	.uleb128 LEHE385-LEHB385
-	.uleb128 L2105-LFB3673
+	.uleb128 LLSDACSE3674-LLSDACSB3674
+LLSDACSB3674:
+	.uleb128 LEHB393-LFB3674
+	.uleb128 LEHE393-LEHB393
+	.uleb128 L2116-LFB3674
 	.uleb128 0x3
-	.uleb128 LEHB386-LFB3673
-	.uleb128 LEHE386-LEHB386
-	.uleb128 L2106-LFB3673
+	.uleb128 LEHB394-LFB3674
+	.uleb128 LEHE394-LEHB394
+	.uleb128 L2117-LFB3674
 	.uleb128 0
-	.uleb128 LEHB387-LFB3673
-	.uleb128 LEHE387-LEHB387
+	.uleb128 LEHB395-LFB3674
+	.uleb128 LEHE395-LEHB395
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3673:
+LLSDACSE3674:
 	.byte	0x1
 	.byte	0
 	.byte	0
 	.byte	0x7d
 	.align 4
 	.long	0
-LLSDATT3673:
+LLSDATT3674:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_rehashEjRS1_,"x"
 	.linkonce discard
 	.section	.text$_ZNKSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EE7_M_nextEv,"x"
@@ -32122,7 +32377,7 @@ LLSDATT3673:
 	.globl	__ZNKSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EE7_M_nextEv
 	.def	__ZNKSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EE7_M_nextEv;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EE7_M_nextEv:
-LFB3674:
+LFB3675:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32136,14 +32391,14 @@ LFB3674:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3674:
+LFE3675:
 	.section	.text$_ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv
 	.def	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv;	.scl	2;	.type	32;	.endef
 __ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv:
-LFB3675:
+LFB3676:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32157,14 +32412,14 @@ LFB3675:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3675:
+LFE3676:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEEC2Ev
 	.def	__ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEEC2Ev;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEEC2Ev:
-LFB3677:
+LFB3678:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32176,14 +32431,14 @@ LFB3677:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3677:
+LFE3678:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEED2Ev
 	.def	__ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEED2Ev;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEED2Ev:
-LFB3680:
+LFB3681:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32195,42 +32450,13 @@ LFB3680:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3680:
+LFE3681:
 	.section	.text$_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED2Ev
 	.def	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED2Ev:
-LFB3683:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	8(%ebp), %eax
-	movl	$__ZTVSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE+8, (%eax)
-	movl	$0, %eax
-	testl	%eax, %eax
-	je	L2115
-	movl	8(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZdlPv
-L2115:
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3683:
-	.section	.text$_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED1Ev,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED1Ev
-	.def	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED1Ev;	.scl	2;	.type	32;	.endef
-__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED1Ev:
 LFB3684:
 	.cfi_startproc
 	pushl	%ebp
@@ -32243,24 +32469,53 @@ LFB3684:
 	movl	$__ZTVSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE+8, (%eax)
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L2118
+	je	L2126
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L2118:
+L2126:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
 LFE3684:
+	.section	.text$_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED1Ev,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED1Ev
+	.def	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED1Ev;	.scl	2;	.type	32;	.endef
+__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED1Ev:
+LFB3685:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %eax
+	movl	$__ZTVSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE+8, (%eax)
+	movl	$0, %eax
+	testl	%eax, %eax
+	je	L2129
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZdlPv
+L2129:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3685:
 	.section	.text$_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED0Ev
 	.def	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED0Ev;	.scl	2;	.type	32;	.endef
 __ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED0Ev:
-LFB3685:
+LFB3686:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32279,14 +32534,14 @@ LFB3685:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3685:
+LFE3686:
 	.section	.text$_ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC1Ev
 	.def	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC1Ev;	.scl	2;	.type	32;	.endef
 __ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC1Ev:
-LFB3688:
+LFB3689:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32302,36 +32557,13 @@ LFB3688:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3688:
+LFE3689:
 	.section	.text$_ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED2Ev
 	.def	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED2Ev;	.scl	2;	.type	32;	.endef
 __ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED2Ev:
-LFB3690:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	subl	$24, %esp
-	movl	8(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEED2Ev
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3690:
-	.section	.text$_ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev
-	.def	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev;	.scl	2;	.type	32;	.endef
-__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev:
 LFB3691:
 	.cfi_startproc
 	pushl	%ebp
@@ -32349,15 +32581,38 @@ LFB3691:
 	ret
 	.cfi_endproc
 LFE3691:
+	.section	.text$_ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev
+	.def	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev;	.scl	2;	.type	32;	.endef
+__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev:
+LFB3692:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEED2Ev
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3692:
 	.section	.text$_ZSt15allocate_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_EIS8_EESt10shared_ptrIT_ERKT0_DpOT1_,"x"
 	.linkonce discard
 	.globl	__ZSt15allocate_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_EIS8_EESt10shared_ptrIT_ERKT0_DpOT1_
 	.def	__ZSt15allocate_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_EIS8_EESt10shared_ptrIT_ERKT0_DpOT1_;	.scl	2;	.type	32;	.endef
 __ZSt15allocate_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_EIS8_EESt10shared_ptrIT_ERKT0_DpOT1_:
-LFB3692:
+LFB3693:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3692
+	.cfi_lsda 0,LLSDA3693
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -32375,16 +32630,16 @@ LFB3692:
 	movb	%bl, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB388:
+LEHB396:
 	call	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEC1ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_
-LEHE388:
-	jmp	L2132
-L2131:
+LEHE396:
+	jmp	L2143
+L2142:
 	movl	%eax, (%esp)
-LEHB389:
+LEHB397:
 	call	__Unwind_Resume
-LEHE389:
-L2132:
+LEHE397:
+L2143:
 	movl	8(%ebp), %eax
 	addl	$36, %esp
 	popl	%ebx
@@ -32394,23 +32649,23 @@ L2132:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3692:
+LFE3693:
 	.section	.gcc_except_table,"w"
-LLSDA3692:
+LLSDA3693:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3692-LLSDACSB3692
-LLSDACSB3692:
-	.uleb128 LEHB388-LFB3692
-	.uleb128 LEHE388-LEHB388
-	.uleb128 L2131-LFB3692
+	.uleb128 LLSDACSE3693-LLSDACSB3693
+LLSDACSB3693:
+	.uleb128 LEHB396-LFB3693
+	.uleb128 LEHE396-LEHB396
+	.uleb128 L2142-LFB3693
 	.uleb128 0
-	.uleb128 LEHB389-LFB3692
-	.uleb128 LEHE389-LEHB389
+	.uleb128 LEHB397-LFB3693
+	.uleb128 LEHE397-LEHB397
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3692:
+LLSDACSE3693:
 	.section	.text$_ZSt15allocate_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_EIS8_EESt10shared_ptrIT_ERKT0_DpOT1_,"x"
 	.linkonce discard
 	.weak	__ZSt15allocate_sharedINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_EJS8_EESt10shared_ptrIT_ERKT0_DpOT1_
@@ -32422,7 +32677,7 @@ LLSDACSE3692:
 	.globl	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EE7_M_swapERS2_
 	.def	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EE7_M_swapERS2_;	.scl	2;	.type	32;	.endef
 __ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EE7_M_swapERS2_:
-LFB3696:
+LFB3697:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32445,14 +32700,14 @@ LFB3696:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3696:
+LFE3697:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE8allocateEjPKv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE8allocateEjPKv
 	.def	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE8allocateEjPKv;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE8allocateEjPKv:
-LFB3697:
+LFB3698:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32466,9 +32721,9 @@ LFB3697:
 	cmpl	12(%ebp), %eax
 	setb	%al
 	testb	%al, %al
-	je	L2135
+	je	L2146
 	call	__ZSt17__throw_bad_allocv
-L2135:
+L2146:
 	movl	12(%ebp), %eax
 	sall	$5, %eax
 	movl	%eax, (%esp)
@@ -32478,56 +32733,65 @@ L2135:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3697:
-	.section	.text$_ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IS3_IjS6_EEEEvPT_DpOT0_,"x"
+LFE3698:
+	.section	.text$_ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IjRKS6_EEEvPT_DpOT0_,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IS3_IjS6_EEEEvPT_DpOT0_
-	.def	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IS3_IjS6_EEEEvPT_DpOT0_;	.scl	2;	.type	32;	.endef
-__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IS3_IjS6_EEEEvPT_DpOT0_:
-LFB3698:
+	.globl	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IjRKS6_EEEvPT_DpOT0_
+	.def	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IjRKS6_EEEvPT_DpOT0_;	.scl	2;	.type	32;	.endef
+__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IjRKS6_EEEvPT_DpOT0_:
+LFB3699:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
+	pushl	%esi
 	pushl	%ebx
-	subl	$20, %esp
-	.cfi_offset 3, -12
+	subl	$16, %esp
+	.cfi_offset 6, -12
+	.cfi_offset 3, -16
 	movl	16(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZSt7forwardISt4pairIjN6CTest84DATAEEEOT_RNSt16remove_referenceIS4_E4typeE
+	call	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
 	movl	%eax, %ebx
+	movl	20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE
+	movl	%eax, %esi
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	$32, (%esp)
 	call	__ZnwjPv
 	testl	%eax, %eax
-	je	L2137
+	je	L2148
+	movl	%esi, 8(%esp)
 	movl	%ebx, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIS1_IjS4_EEEEDpOT_
-L2137:
-	addl	$20, %esp
+	call	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIjRKS4_EEEDpOT_
+L2148:
+	addl	$16, %esp
 	popl	%ebx
 	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
 	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3698:
-	.weak	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_JS3_IjS6_EEEEvPT_DpOT0_
-	.def	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_JS3_IjS6_EEEEvPT_DpOT0_;	.scl	2;	.type	32;	.endef
-	.set	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_JS3_IjS6_EEEEvPT_DpOT0_,__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IS3_IjS6_EEEEvPT_DpOT0_
+LFE3699:
+	.weak	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_JjRKS6_EEEvPT_DpOT0_
+	.def	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_JjRKS6_EEEvPT_DpOT0_;	.scl	2;	.type	32;	.endef
+	.set	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_JjRKS6_EEEvPT_DpOT0_,__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE9constructIS8_IjRKS6_EEEvPT_DpOT0_
 	.section	.text$_ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE10deallocateEPS8_j,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE10deallocateEPS8_j
 	.def	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE10deallocateEPS8_j;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE10deallocateEPS8_j:
-LFB3699:
+LFB3700:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32543,13 +32807,13 @@ LFB3699:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3699:
+LFE3700:
 	.section	.text$_ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EE6_S_getERS2_,"x"
 	.linkonce discard
 	.globl	__ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EE6_S_getERS2_
 	.def	__ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EE6_S_getERS2_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EE6_S_getERS2_:
-LFB3700:
+LFB3701:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32562,32 +32826,13 @@ LFB3700:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3700:
+LFE3701:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE7destroyIS8_EEvPT_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE7destroyIS8_EEvPT_
 	.def	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE7destroyIS8_EEvPT_;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE7destroyIS8_EEvPT_:
-LFB3701:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3701:
-	.section	.text$_ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE13_M_store_codeEPNS_10_Hash_nodeIS5_Lb0EEEj,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE13_M_store_codeEPNS_10_Hash_nodeIS5_Lb0EEEj
-	.def	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE13_M_store_codeEPNS_10_Hash_nodeIS5_Lb0EEEj;	.scl	2;	.type	32;	.endef
-__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE13_M_store_codeEPNS_10_Hash_nodeIS5_Lb0EEEj:
 LFB3702:
 	.cfi_startproc
 	pushl	%ebp
@@ -32601,13 +32846,32 @@ LFB3702:
 	ret
 	.cfi_endproc
 LFE3702:
+	.section	.text$_ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE13_M_store_codeEPNS_10_Hash_nodeIS5_Lb0EEEj,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE13_M_store_codeEPNS_10_Hash_nodeIS5_Lb0EEEj
+	.def	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE13_M_store_codeEPNS_10_Hash_nodeIS5_Lb0EEEj;	.scl	2;	.type	32;	.endef
+__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE13_M_store_codeEPNS_10_Hash_nodeIS5_Lb0EEEj:
+LFB3703:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3703:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE22_M_insert_bucket_beginEjPNS6_10_Hash_nodeIS4_Lb0EEE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE22_M_insert_bucket_beginEjPNS6_10_Hash_nodeIS4_Lb0EEE
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE22_M_insert_bucket_beginEjPNS6_10_Hash_nodeIS4_Lb0EEE;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE22_M_insert_bucket_beginEjPNS6_10_Hash_nodeIS4_Lb0EEE:
-LFB3703:
+LFB3704:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32624,7 +32888,7 @@ LFB3703:
 	addl	%edx, %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	je	L2146
+	je	L2157
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	movl	12(%ebp), %edx
@@ -32642,8 +32906,8 @@ LFB3703:
 	movl	(%eax), %eax
 	movl	16(%ebp), %edx
 	movl	%edx, (%eax)
-	jmp	L2145
-L2146:
+	jmp	L2156
+L2157:
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv
@@ -32658,7 +32922,7 @@ L2146:
 	movl	16(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	je	L2148
+	je	L2159
 	movl	8(%ebp), %eax
 	movl	(%eax), %ebx
 	movl	16(%ebp), %eax
@@ -32672,7 +32936,7 @@ L2146:
 	leal	(%ebx,%eax), %edx
 	movl	16(%ebp), %eax
 	movl	%eax, (%edx)
-L2148:
+L2159:
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	movl	12(%ebp), %edx
@@ -32682,7 +32946,7 @@ L2148:
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv
 	movl	%eax, (%ebx)
-L2145:
+L2156:
 	addl	$20, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -32691,13 +32955,13 @@ L2145:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3703:
+LFE3704:
 	.section	.text$_ZNSt8__detail21_Hashtable_ebo_helperILi1ESt4hashIjELb1EE7_S_cgetERKS3_,"x"
 	.linkonce discard
 	.globl	__ZNSt8__detail21_Hashtable_ebo_helperILi1ESt4hashIjELb1EE7_S_cgetERKS3_
 	.def	__ZNSt8__detail21_Hashtable_ebo_helperILi1ESt4hashIjELb1EE7_S_cgetERKS3_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail21_Hashtable_ebo_helperILi1ESt4hashIjELb1EE7_S_cgetERKS3_:
-LFB3704:
+LFB3705:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32710,14 +32974,14 @@ LFB3704:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3704:
+LFE3705:
 	.section	.text$_ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE5_M_h2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE5_M_h2Ev
 	.def	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE5_M_h2Ev;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE5_M_h2Ev:
-LFB3705:
+LFB3706:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32733,14 +32997,14 @@ LFB3705:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3705:
+LFE3706:
 	.section	.text$_ZNKSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_equalsERS2_jPNS_10_Hash_nodeIS5_Lb0EEE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_equalsERS2_jPNS_10_Hash_nodeIS5_Lb0EEE
 	.def	__ZNKSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_equalsERS2_jPNS_10_Hash_nodeIS5_Lb0EEE;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEE9_M_equalsERS2_jPNS_10_Hash_nodeIS5_Lb0EEE:
-LFB3706:
+LFB3707:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32774,14 +33038,14 @@ LFB3706:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3706:
+LFE3707:
 	.section	.text$_ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexEPNS6_10_Hash_nodeIS4_Lb0EEE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexEPNS6_10_Hash_nodeIS4_Lb0EEE
 	.def	__ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexEPNS6_10_Hash_nodeIS4_Lb0EEE;	.scl	2;	.type	32;	.endef
 __ZNKSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_bucket_indexEPNS6_10_Hash_nodeIS4_Lb0EEE:
-LFB3707:
+LFB3708:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32802,14 +33066,14 @@ LFB3707:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3707:
+LFE3708:
 	.section	.text$_ZNSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EEC2ERKS6_RKS8_RKS9_RKSA_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EEC2ERKS6_RKS8_RKS9_RKSA_
 	.def	__ZNSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EEC2ERKS6_RKS8_RKS9_RKSA_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EEC2ERKS6_RKS8_RKS9_RKSA_:
-LFB3709:
+LFB3710:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32837,14 +33101,14 @@ LFB3709:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3709:
+LFE3710:
 	.section	.text$_ZNSt8__detail21_Hashtable_ebo_helperILi0ESt8equal_toIjELb1EEC2ERKS2_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail21_Hashtable_ebo_helperILi0ESt8equal_toIjELb1EEC2ERKS2_
 	.def	__ZNSt8__detail21_Hashtable_ebo_helperILi0ESt8equal_toIjELb1EEC2ERKS2_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail21_Hashtable_ebo_helperILi0ESt8equal_toIjELb1EEC2ERKS2_:
-LFB3712:
+LFB3713:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32856,14 +33120,14 @@ LFB3712:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3712:
+LFE3713:
 	.section	.text$_ZNSaINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEC2IS5_EERKSaIT_E,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEC2IS5_EERKSaIT_E
 	.def	__ZNSaINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEC2IS5_EERKSaIT_E;	.scl	2;	.type	32;	.endef
 __ZNSaINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEC2IS5_EERKSaIT_E:
-LFB3715:
+LFB3716:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32879,14 +33143,14 @@ LFB3715:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3715:
+LFE3716:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8allocateEjPKv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8allocateEjPKv
 	.def	__ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8allocateEjPKv;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8allocateEjPKv:
-LFB3717:
+LFB3718:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32900,9 +33164,9 @@ LFB3717:
 	cmpl	12(%ebp), %eax
 	setb	%al
 	testb	%al, %al
-	je	L2161
+	je	L2172
 	call	__ZSt17__throw_bad_allocv
-L2161:
+L2172:
 	movl	12(%ebp), %eax
 	sall	$2, %eax
 	movl	%eax, (%esp)
@@ -32912,14 +33176,14 @@ L2161:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3717:
+LFE3718:
 	.section	.text$_ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE13_M_rehash_auxEjSt17integral_constantIbLb1EE,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE13_M_rehash_auxEjSt17integral_constantIbLb1EE
 	.def	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE13_M_rehash_auxEjSt17integral_constantIbLb1EE;	.scl	2;	.type	32;	.endef
 __ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE13_M_rehash_auxEjSt17integral_constantIbLb1EE:
-LFB3718:
+LFB3719:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -32944,8 +33208,8 @@ LFB3718:
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv
 	movl	$0, (%eax)
 	movl	$0, -16(%ebp)
-	jmp	L2164
-L2168:
+	jmp	L2175
+L2179:
 	movl	-12(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNKSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EE7_M_nextEv
@@ -32964,7 +33228,7 @@ L2168:
 	addl	%edx, %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	jne	L2165
+	jne	L2176
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt10_HashtableIjSt4pairIKjN6CTest84DATAEESaIS4_ENSt8__detail10_Select1stESt8equal_toIjESt4hashIjENS6_18_Mod_range_hashingENS6_20_Default_ranged_hashENS6_20_Prime_rehash_policyENS6_17_Hashtable_traitsILb0ELb0ELb1EEEE15_M_before_beginEv
@@ -32987,18 +33251,18 @@ L2168:
 	movl	-12(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	je	L2166
+	je	L2177
 	movl	-16(%ebp), %eax
 	leal	0(,%eax,4), %edx
 	movl	-20(%ebp), %eax
 	addl	%eax, %edx
 	movl	-12(%ebp), %eax
 	movl	%eax, (%edx)
-L2166:
+L2177:
 	movl	-28(%ebp), %eax
 	movl	%eax, -16(%ebp)
-	jmp	L2167
-L2165:
+	jmp	L2178
+L2176:
 	movl	-28(%ebp), %eax
 	leal	0(,%eax,4), %edx
 	movl	-20(%ebp), %eax
@@ -33014,12 +33278,12 @@ L2165:
 	movl	(%eax), %eax
 	movl	-12(%ebp), %edx
 	movl	%edx, (%eax)
-L2167:
+L2178:
 	movl	-24(%ebp), %eax
 	movl	%eax, -12(%ebp)
-L2164:
+L2175:
 	cmpl	$0, -12(%ebp)
-	jne	L2168
+	jne	L2179
 	movl	8(%ebp), %eax
 	movl	4(%eax), %edx
 	movl	8(%ebp), %eax
@@ -33043,14 +33307,14 @@ L2164:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3718:
+LFE3719:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEC2Ev
 	.def	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEC2Ev;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEC2Ev:
-LFB3720:
+LFB3721:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33062,14 +33326,14 @@ LFB3720:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3720:
+LFE3721:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEED2Ev
 	.def	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEED2Ev;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEED2Ev:
-LFB3723:
+LFB3724:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33081,14 +33345,14 @@ LFB3723:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3723:
+LFE3724:
 	.section	.text$_ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEC1ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEC1ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_
 	.def	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEC1ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_;	.scl	2;	.type	32;	.endef
 __ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEC1ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_:
-LFB3727:
+LFB3728:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33116,7 +33380,7 @@ LFB3727:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3727:
+LFE3728:
 	.weak	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEC1ISaIS9_EJS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_
 	.def	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEC1ISaIS9_EJS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEC1ISaIS9_EJS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_,__ZNSt10shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEC1ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_
@@ -33126,7 +33390,7 @@ LFE3727:
 	.globl	__ZNK9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE8max_sizeEv
 	.def	__ZNK9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE8max_sizeEv;	.scl	2;	.type	32;	.endef
 __ZNK9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEE8max_sizeEv:
-LFB3728:
+LFB3729:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33139,47 +33403,97 @@ LFB3728:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3728:
-	.section	.text$_ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIS1_IjS4_EEEEDpOT_,"x"
+LFE3729:
+	.section	.text$_ZNSt4pairIKjN6CTest84DATAEEC1IjvEEOT_RKS2_,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIS1_IjS4_EEEEDpOT_
-	.def	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIS1_IjS4_EEEEDpOT_;	.scl	2;	.type	32;	.endef
-__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIS1_IjS4_EEEEDpOT_:
-LFB3731:
+	.globl	__ZNSt4pairIKjN6CTest84DATAEEC1IjvEEOT_RKS2_
+	.def	__ZNSt4pairIKjN6CTest84DATAEEC1IjvEEOT_RKS2_;	.scl	2;	.type	32;	.endef
+__ZNSt4pairIKjN6CTest84DATAEEC1IjvEEOT_RKS2_:
+LFB3733:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
-	subl	$8, %esp
-	movl	8(%ebp), %eax
-	movl	%eax, (%esp)
-	call	__ZNSt8__detail15_Hash_node_baseC2Ev
+	subl	$4, %esp
 	movl	12(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZSt7forwardISt4pairIjN6CTest84DATAEEEOT_RNSt16remove_referenceIS4_E4typeE
-	movl	8(%ebp), %edx
-	addl	$4, %edx
-	movl	%eax, 4(%esp)
-	movl	%edx, (%esp)
-	call	__ZNSt4pairIKjN6CTest84DATAEEC1IjS2_vEEOS_IT_T0_E
+	call	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
+	movl	(%eax), %edx
+	movl	8(%ebp), %eax
+	movl	%edx, (%eax)
+	movl	8(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	(%edx), %ecx
+	movl	%ecx, 4(%eax)
+	movl	4(%edx), %ecx
+	movl	%ecx, 8(%eax)
+	movl	8(%edx), %ecx
+	movl	%ecx, 12(%eax)
+	movl	12(%edx), %ecx
+	movl	%ecx, 16(%eax)
+	movl	16(%edx), %ecx
+	movl	%ecx, 20(%eax)
+	movl	20(%edx), %edx
+	movl	%edx, 24(%eax)
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3731:
-	.weak	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IJS1_IjS4_EEEEDpOT_
-	.def	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IJS1_IjS4_EEEEDpOT_;	.scl	2;	.type	32;	.endef
-	.set	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IJS1_IjS4_EEEEDpOT_,__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIS1_IjS4_EEEEDpOT_
+LFE3733:
+	.section	.text$_ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIjRKS4_EEEDpOT_,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIjRKS4_EEEDpOT_
+	.def	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIjRKS4_EEEDpOT_;	.scl	2;	.type	32;	.endef
+__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIjRKS4_EEEDpOT_:
+LFB3735:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$12, %esp
+	.cfi_offset 3, -12
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNSt8__detail15_Hash_node_baseC2Ev
+	movl	16(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZSt7forwardIRKN6CTest84DATAEEOT_RNSt16remove_referenceIS4_E4typeE
+	movl	%eax, %ebx
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZSt7forwardIjEOT_RNSt16remove_referenceIS0_E4typeE
+	movl	8(%ebp), %edx
+	addl	$4, %edx
+	movl	%ebx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	%edx, (%esp)
+	call	__ZNSt4pairIKjN6CTest84DATAEEC1IjvEEOT_RKS2_
+	addl	$12, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3735:
+	.weak	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IJjRKS4_EEEDpOT_
+	.def	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IJjRKS4_EEEDpOT_;	.scl	2;	.type	32;	.endef
+	.set	__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IJjRKS4_EEEDpOT_,__ZNSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEC1IIjRKS4_EEEDpOT_
 	.section	.text$_ZNSt8__detail21_Hashtable_ebo_helperILi2ENS_18_Mod_range_hashingELb1EE7_S_cgetERKS2_,"x"
 	.linkonce discard
 	.globl	__ZNSt8__detail21_Hashtable_ebo_helperILi2ENS_18_Mod_range_hashingELb1EE7_S_cgetERKS2_
 	.def	__ZNSt8__detail21_Hashtable_ebo_helperILi2ENS_18_Mod_range_hashingELb1EE7_S_cgetERKS2_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail21_Hashtable_ebo_helperILi2ENS_18_Mod_range_hashingELb1EE7_S_cgetERKS2_:
-LFB3732:
+LFB3736:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33192,13 +33506,13 @@ LFB3732:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3732:
+LFE3736:
 	.section	.text$_ZNSt8__detail13_Equal_helperIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjEjLb0EE9_S_equalsERKS8_RKS6_RS2_jPNS_10_Hash_nodeIS5_Lb0EEE,"x"
 	.linkonce discard
 	.globl	__ZNSt8__detail13_Equal_helperIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjEjLb0EE9_S_equalsERKS8_RKS6_RS2_jPNS_10_Hash_nodeIS5_Lb0EEE
 	.def	__ZNSt8__detail13_Equal_helperIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjEjLb0EE9_S_equalsERKS8_RKS6_RS2_jPNS_10_Hash_nodeIS5_Lb0EEE;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail13_Equal_helperIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjEjLb0EE9_S_equalsERKS8_RKS6_RS2_jPNS_10_Hash_nodeIS5_Lb0EEE:
-LFB3733:
+LFB3737:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33223,14 +33537,14 @@ LFB3733:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3733:
+LFE3737:
 	.section	.text$_ZNKSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEE5_M_eqEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEE5_M_eqEv
 	.def	__ZNKSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEE5_M_eqEv;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail15_Hashtable_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt8equal_toIjESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashENS_17_Hashtable_traitsILb0ELb0ELb1EEEE5_M_eqEv:
-LFB3734:
+LFB3738:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33246,14 +33560,14 @@ LFB3734:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3734:
+LFE3738:
 	.section	.text$_ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE10_M_extractEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE10_M_extractEv
 	.def	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE10_M_extractEv;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE10_M_extractEv:
-LFB3735:
+LFB3739:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33269,13 +33583,13 @@ LFB3735:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3735:
+LFE3739:
 	.section	.text$_ZSt7forwardIRKSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS7_E4typeE,"x"
 	.linkonce discard
 	.globl	__ZSt7forwardIRKSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS7_E4typeE
 	.def	__ZSt7forwardIRKSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS7_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardIRKSt4pairIKjN6CTest84DATAEEEOT_RNSt16remove_referenceIS7_E4typeE:
-LFB3737:
+LFB3741:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33288,13 +33602,13 @@ LFB3737:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3737:
+LFE3741:
 	.section	.text$_ZNSt10__pair_getILj0EE11__const_getIKjN6CTest84DATAEEERKT_RKSt4pairIS5_T0_E,"x"
 	.linkonce discard
 	.globl	__ZNSt10__pair_getILj0EE11__const_getIKjN6CTest84DATAEEERKT_RKSt4pairIS5_T0_E
 	.def	__ZNSt10__pair_getILj0EE11__const_getIKjN6CTest84DATAEEERKT_RKSt4pairIS5_T0_E;	.scl	2;	.type	32;	.endef
 __ZNSt10__pair_getILj0EE11__const_getIKjN6CTest84DATAEEERKT_RKSt4pairIS5_T0_E:
-LFB3739:
+LFB3743:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33307,13 +33621,13 @@ LFB3739:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3739:
+LFE3743:
 	.section	.text$_ZSt3getILj0EKjN6CTest84DATAEERKNSt13tuple_elementIXT_ESt4pairIT0_T1_EE4typeERKS7_,"x"
 	.linkonce discard
 	.globl	__ZSt3getILj0EKjN6CTest84DATAEERKNSt13tuple_elementIXT_ESt4pairIT0_T1_EE4typeERKS7_
 	.def	__ZSt3getILj0EKjN6CTest84DATAEERKNSt13tuple_elementIXT_ESt4pairIT0_T1_EE4typeERKS7_;	.scl	2;	.type	32;	.endef
 __ZSt3getILj0EKjN6CTest84DATAEERKNSt13tuple_elementIXT_ESt4pairIT0_T1_EE4typeERKS7_:
-LFB3738:
+LFB3742:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33329,14 +33643,14 @@ LFB3738:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3738:
+LFE3742:
 	.section	.text$_ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE15_M_bucket_indexEPKNS_10_Hash_nodeIS5_Lb0EEEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE15_M_bucket_indexEPKNS_10_Hash_nodeIS5_Lb0EEEj
 	.def	__ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE15_M_bucket_indexEPKNS_10_Hash_nodeIS5_Lb0EEEj;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail15_Hash_code_baseIjSt4pairIKjN6CTest84DATAEENS_10_Select1stESt4hashIjENS_18_Mod_range_hashingENS_20_Default_ranged_hashELb0EE15_M_bucket_indexEPKNS_10_Hash_nodeIS5_Lb0EEEj:
-LFB3736:
+LFB3740:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33378,14 +33692,14 @@ LFB3736:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3736:
+LFE3740:
 	.section	.text$_ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EEC2ERKS1_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EEC2ERKS1_
 	.def	__ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EEC2ERKS1_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EEC2ERKS1_:
-LFB3741:
+LFB3745:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33397,14 +33711,14 @@ LFB3741:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3741:
+LFE3745:
 	.section	.text$_ZNSt8__detail21_Hashtable_ebo_helperILi1ESt4hashIjELb1EEC2ERKS2_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail21_Hashtable_ebo_helperILi1ESt4hashIjELb1EEC2ERKS2_
 	.def	__ZNSt8__detail21_Hashtable_ebo_helperILi1ESt4hashIjELb1EEC2ERKS2_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail21_Hashtable_ebo_helperILi1ESt4hashIjELb1EEC2ERKS2_:
-LFB3744:
+LFB3748:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33416,14 +33730,14 @@ LFB3744:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3744:
+LFE3748:
 	.section	.text$_ZNSt8__detail21_Hashtable_ebo_helperILi2ENS_18_Mod_range_hashingELb1EEC2ERKS1_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8__detail21_Hashtable_ebo_helperILi2ENS_18_Mod_range_hashingELb1EEC2ERKS1_
 	.def	__ZNSt8__detail21_Hashtable_ebo_helperILi2ENS_18_Mod_range_hashingELb1EEC2ERKS1_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail21_Hashtable_ebo_helperILi2ENS_18_Mod_range_hashingELb1EEC2ERKS1_:
-LFB3747:
+LFB3751:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33435,14 +33749,14 @@ LFB3747:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3747:
+LFE3751:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEC2Ev
 	.def	__ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEC2Ev;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorINSt8__detail10_Hash_nodeISt4pairIKjN6CTest84DATAEELb0EEEEC2Ev:
-LFB3750:
+LFB3754:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33454,14 +33768,14 @@ LFB3750:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3750:
+LFE3754:
 	.section	.text$_ZNK9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8max_sizeEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8max_sizeEv
 	.def	__ZNK9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8max_sizeEv;	.scl	2;	.type	32;	.endef
 __ZNK9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8max_sizeEv:
-LFB3752:
+LFB3756:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33474,14 +33788,14 @@ LFB3752:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3752:
+LFE3756:
 	.section	.text$_ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EEC2ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EEC2ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_
 	.def	__ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EEC2ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_;	.scl	2;	.type	32;	.endef
 __ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EEC2ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_:
-LFB3754:
+LFB3758:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33532,7 +33846,7 @@ LFB3754:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3754:
+LFE3758:
 	.weak	__ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EEC2ISaIS9_EJS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_
 	.def	__ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EEC2ISaIS9_EJS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EEC2ISaIS9_EJS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_,__ZNSt12__shared_ptrINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEELN9__gnu_cxx12_Lock_policyE2EEC2ISaIS9_EIS8_EEESt19_Sp_make_shared_tagRKT_DpOT0_
@@ -33542,7 +33856,7 @@ LFE3754:
 	.globl	__ZNKSt8equal_toIjEclERKjS2_
 	.def	__ZNKSt8equal_toIjEclERKjS2_;	.scl	2;	.type	32;	.endef
 __ZNKSt8equal_toIjEclERKjS2_:
-LFB3756:
+LFB3760:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33560,13 +33874,13 @@ LFB3756:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3756:
+LFE3760:
 	.section	.text$_ZNSt8__detail21_Hashtable_ebo_helperILi0ESt8equal_toIjELb1EE7_S_cgetERKS3_,"x"
 	.linkonce discard
 	.globl	__ZNSt8__detail21_Hashtable_ebo_helperILi0ESt8equal_toIjELb1EE7_S_cgetERKS3_
 	.def	__ZNSt8__detail21_Hashtable_ebo_helperILi0ESt8equal_toIjELb1EE7_S_cgetERKS3_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail21_Hashtable_ebo_helperILi0ESt8equal_toIjELb1EE7_S_cgetERKS3_:
-LFB3757:
+LFB3761:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33579,13 +33893,13 @@ LFB3757:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3757:
+LFE3761:
 	.section	.text$_ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EE7_S_cgetERKS2_,"x"
 	.linkonce discard
 	.globl	__ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EE7_S_cgetERKS2_
 	.def	__ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EE7_S_cgetERKS2_;	.scl	2;	.type	32;	.endef
 __ZNSt8__detail21_Hashtable_ebo_helperILi0ENS_10_Select1stELb1EE7_S_cgetERKS2_:
-LFB3758:
+LFB3762:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33598,14 +33912,14 @@ LFB3758:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3758:
+LFE3762:
 	.section	.text$_ZNKSt8__detail10_Select1stclIRKSt4pairIKjN6CTest84DATAEEEEDTcl3getILi0EEcl7forwardIT_Efp_EEEOS9_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt8__detail10_Select1stclIRKSt4pairIKjN6CTest84DATAEEEEDTcl3getILi0EEcl7forwardIT_Efp_EEEOS9_
 	.def	__ZNKSt8__detail10_Select1stclIRKSt4pairIKjN6CTest84DATAEEEEDTcl3getILi0EEcl7forwardIT_Efp_EEEOS9_;	.scl	2;	.type	32;	.endef
 __ZNKSt8__detail10_Select1stclIRKSt4pairIKjN6CTest84DATAEEEEDTcl3getILi0EEcl7forwardIT_Efp_EEEOS9_:
-LFB3759:
+LFB3763:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33623,13 +33937,13 @@ LFB3759:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3759:
+LFE3763:
 	.section	.text$_ZSt4moveIRKSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEEONSt16remove_referenceIT_E4typeEOSE_,"x"
 	.linkonce discard
 	.globl	__ZSt4moveIRKSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEEONSt16remove_referenceIT_E4typeEOSE_
 	.def	__ZSt4moveIRKSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEEONSt16remove_referenceIT_E4typeEOSE_;	.scl	2;	.type	32;	.endef
 __ZSt4moveIRKSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEEONSt16remove_referenceIT_E4typeEOSE_:
-LFB3762:
+LFB3766:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33642,13 +33956,13 @@ LFB3762:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3762:
+LFE3766:
 	.section	.text$_ZSt7forwardIKSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEEOT_RNSt16remove_referenceISC_E4typeE,"x"
 	.linkonce discard
 	.globl	__ZSt7forwardIKSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEEOT_RNSt16remove_referenceISC_E4typeE
 	.def	__ZSt7forwardIKSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEEOT_RNSt16remove_referenceISC_E4typeE;	.scl	2;	.type	32;	.endef
 __ZSt7forwardIKSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEEOT_RNSt16remove_referenceISC_E4typeE:
-LFB3763:
+LFB3767:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33661,17 +33975,17 @@ LFB3763:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3763:
+LFE3767:
 	.section	.text$_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1INSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES8_EEEESaISD_EISC_EEESt19_Sp_make_shared_tagPT_RKT0_DpOT1_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1INSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES8_EEEESaISD_EISC_EEESt19_Sp_make_shared_tagPT_RKT0_DpOT1_
 	.def	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1INSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES8_EEEESaISD_EISC_EEESt19_Sp_make_shared_tagPT_RKT0_DpOT1_;	.scl	2;	.type	32;	.endef
 __ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1INSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES8_EEEESaISD_EISC_EEESt19_Sp_make_shared_tagPT_RKT0_DpOT1_:
-LFB3765:
+LFB3769:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3765
+	.cfi_lsda 0,LLSDA3769
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -33690,9 +34004,9 @@ LFB3765:
 	movl	$1, 4(%esp)
 	leal	-13(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB390:
+LEHB398:
 	call	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE8allocateERSF_j
-LEHE390:
+LEHE398:
 	movl	%eax, -12(%ebp)
 	movl	24(%ebp), %eax
 	movl	%eax, (%esp)
@@ -33707,21 +34021,21 @@ LEHE390:
 	movl	%eax, 4(%esp)
 	leal	-13(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB391:
+LEHB399:
 	call	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE9constructISE_IKSB_S9_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSF_PT_DpOSJ_
-LEHE391:
+LEHE399:
 	movl	8(%ebp), %eax
 	movl	-12(%ebp), %edx
 	movl	%edx, (%eax)
 	leal	-13(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEED1Ev
-	jmp	L2218
-L2217:
+	jmp	L2230
+L2229:
 	movl	%eax, %ebx
 	call	___cxa_end_catch
-	jmp	L2213
-L2216:
+	jmp	L2225
+L2228:
 	movl	%eax, (%esp)
 	call	___cxa_begin_catch
 	movl	$1, 8(%esp)
@@ -33729,22 +34043,22 @@ L2216:
 	movl	%eax, 4(%esp)
 	leal	-13(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB392:
+LEHB400:
 	call	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE10deallocateERSF_PSE_j
 	call	___cxa_rethrow
-LEHE392:
-L2215:
+LEHE400:
+L2227:
 	movl	%eax, %ebx
-L2213:
+L2225:
 	leal	-13(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEED1Ev
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB393:
+LEHB401:
 	call	__Unwind_Resume
-LEHE393:
-L2218:
+LEHE401:
+L2230:
 	addl	$36, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -33753,39 +34067,39 @@ L2218:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3765:
+LFE3769:
 	.section	.gcc_except_table,"w"
 	.align 4
-LLSDA3765:
+LLSDA3769:
 	.byte	0xff
 	.byte	0
-	.uleb128 LLSDATT3765-LLSDATTD3765
-LLSDATTD3765:
+	.uleb128 LLSDATT3769-LLSDATTD3769
+LLSDATTD3769:
 	.byte	0x1
-	.uleb128 LLSDACSE3765-LLSDACSB3765
-LLSDACSB3765:
-	.uleb128 LEHB390-LFB3765
-	.uleb128 LEHE390-LEHB390
-	.uleb128 L2215-LFB3765
+	.uleb128 LLSDACSE3769-LLSDACSB3769
+LLSDACSB3769:
+	.uleb128 LEHB398-LFB3769
+	.uleb128 LEHE398-LEHB398
+	.uleb128 L2227-LFB3769
 	.uleb128 0
-	.uleb128 LEHB391-LFB3765
-	.uleb128 LEHE391-LEHB391
-	.uleb128 L2216-LFB3765
+	.uleb128 LEHB399-LFB3769
+	.uleb128 LEHE399-LEHB399
+	.uleb128 L2228-LFB3769
 	.uleb128 0x1
-	.uleb128 LEHB392-LFB3765
-	.uleb128 LEHE392-LEHB392
-	.uleb128 L2217-LFB3765
+	.uleb128 LEHB400-LFB3769
+	.uleb128 LEHE400-LEHB400
+	.uleb128 L2229-LFB3769
 	.uleb128 0
-	.uleb128 LEHB393-LFB3765
-	.uleb128 LEHE393-LEHB393
+	.uleb128 LEHB401-LFB3769
+	.uleb128 LEHE401-LEHB401
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3765:
+LLSDACSE3769:
 	.byte	0x1
 	.byte	0
 	.align 4
 	.long	0
-LLSDATT3765:
+LLSDATT3769:
 	.section	.text$_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1INSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES8_EEEESaISD_EISC_EEESt19_Sp_make_shared_tagPT_RKT0_DpOT1_,"x"
 	.linkonce discard
 	.weak	__ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1INSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES8_EEEESaISD_EJSC_EEESt19_Sp_make_shared_tagPT_RKT0_DpOT1_
@@ -33797,10 +34111,10 @@ LLSDATT3765:
 	.globl	__ZNKSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info
 	.def	__ZNKSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info;	.scl	2;	.type	32;	.endef
 __ZNKSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info:
-LFB3766:
+LFB3770:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3766
+	.cfi_lsda 0,LLSDA3770
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -33810,7 +34124,7 @@ LFB3766:
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	testl	%eax, %eax
-	je	L2220
+	je	L2232
 	movl	8(%ebp), %eax
 	movl	(%eax), %eax
 	movl	(%eax), %eax
@@ -33822,24 +34136,24 @@ LFB3766:
 	movl	%ecx, 4(%esp)
 	movl	%edx, (%esp)
 	call	*%eax
-	jmp	L2221
-L2220:
+	jmp	L2233
+L2232:
 	movl	$0, %eax
-L2221:
+L2233:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3766:
+LFE3770:
 	.section	.gcc_except_table,"w"
-LLSDA3766:
+LLSDA3770:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3766-LLSDACSB3766
-LLSDACSB3766:
-LLSDACSE3766:
+	.uleb128 LLSDACSE3770-LLSDACSB3770
+LLSDACSB3770:
+LLSDACSE3770:
 	.section	.text$_ZNKSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info,"x"
 	.linkonce discard
 	.section	.text$_ZSt32__enable_shared_from_this_helperILN9__gnu_cxx12_Lock_policyE2EEvRKSt14__shared_countIXT_EEz,"x"
@@ -33847,7 +34161,7 @@ LLSDACSE3766:
 	.globl	__ZSt32__enable_shared_from_this_helperILN9__gnu_cxx12_Lock_policyE2EEvRKSt14__shared_countIXT_EEz
 	.def	__ZSt32__enable_shared_from_this_helperILN9__gnu_cxx12_Lock_policyE2EEvRKSt14__shared_countIXT_EEz;	.scl	2;	.type	32;	.endef
 __ZSt32__enable_shared_from_this_helperILN9__gnu_cxx12_Lock_policyE2EEvRKSt14__shared_countIXT_EEz:
-LFB3767:
+LFB3771:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33859,14 +34173,14 @@ LFB3767:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3767:
+LFE3771:
 	.section	.text$_ZNSaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEEC1IS9_EERKSaIT_E,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEEC1IS9_EERKSaIT_E
 	.def	__ZNSaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEEC1IS9_EERKSaIT_E;	.scl	2;	.type	32;	.endef
 __ZNSaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEEC1IS9_EERKSaIT_E:
-LFB3770:
+LFB3774:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33882,14 +34196,14 @@ LFB3770:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3770:
+LFE3774:
 	.section	.text$_ZNSaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEED1Ev
 	.def	__ZNSaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEED1Ev;	.scl	2;	.type	32;	.endef
 __ZNSaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEED1Ev:
-LFB3773:
+LFB3777:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33905,13 +34219,13 @@ LFB3773:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3773:
+LFE3777:
 	.section	.text$_ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE8allocateERSF_j,"x"
 	.linkonce discard
 	.globl	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE8allocateERSF_j
 	.def	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE8allocateERSF_j;	.scl	2;	.type	32;	.endef
 __ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE8allocateERSF_j:
-LFB3774:
+LFB3778:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33930,13 +34244,13 @@ LFB3774:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3774:
+LFE3778:
 	.section	.text$_ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE9constructISE_IKSB_S9_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSF_PT_DpOSJ_,"x"
 	.linkonce discard
 	.globl	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE9constructISE_IKSB_S9_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSF_PT_DpOSJ_
 	.def	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE9constructISE_IKSB_S9_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSF_PT_DpOSJ_;	.scl	2;	.type	32;	.endef
 __ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE9constructISE_IKSB_S9_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSF_PT_DpOSJ_:
-LFB3775:
+LFB3779:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33968,7 +34282,7 @@ LFB3775:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3775:
+LFE3779:
 	.weak	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE9constructISE_JKSB_S9_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSF_PT_DpOSJ_
 	.def	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE9constructISE_JKSB_S9_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSF_PT_DpOSJ_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE9constructISE_JKSB_S9_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSF_PT_DpOSJ_,__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE9constructISE_IKSB_S9_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSF_PT_DpOSJ_
@@ -33977,7 +34291,7 @@ LFE3775:
 	.globl	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE10deallocateERSF_PSE_j
 	.def	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE10deallocateERSF_PSE_j;	.scl	2;	.type	32;	.endef
 __ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE10deallocateERSF_PSE_j:
-LFB3776:
+LFB3780:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -33997,14 +34311,14 @@ LFB3776:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3776:
+LFE3780:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEEC2Ev
 	.def	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEEC2Ev;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEEC2Ev:
-LFB3778:
+LFB3782:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34016,14 +34330,14 @@ LFB3778:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3778:
+LFE3782:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEED2Ev
 	.def	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEED2Ev;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEED2Ev:
-LFB3781:
+LFB3785:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34035,14 +34349,14 @@ LFB3781:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3781:
+LFE3785:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE8allocateEjPKv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE8allocateEjPKv
 	.def	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE8allocateEjPKv;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE8allocateEjPKv:
-LFB3783:
+LFB3787:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34056,9 +34370,9 @@ LFB3783:
 	cmpl	12(%ebp), %eax
 	setb	%al
 	testb	%al, %al
-	je	L2235
+	je	L2247
 	call	__ZSt17__throw_bad_allocv
-L2235:
+L2247:
 	movl	12(%ebp), %edx
 	movl	%edx, %eax
 	sall	$3, %eax
@@ -34071,13 +34385,13 @@ L2235:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3783:
+LFE3787:
 	.section	.text$_ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE12_S_constructISE_IKSB_S9_EEENSt9enable_ifIXsrNSG_18__construct_helperIT_IDpT0_EEE5valueEvE4typeERSF_PSL_DpOSM_,"x"
 	.linkonce discard
 	.globl	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE12_S_constructISE_IKSB_S9_EEENSt9enable_ifIXsrNSG_18__construct_helperIT_IDpT0_EEE5valueEvE4typeERSF_PSL_DpOSM_
 	.def	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE12_S_constructISE_IKSB_S9_EEENSt9enable_ifIXsrNSG_18__construct_helperIT_IDpT0_EEE5valueEvE4typeERSF_PSL_DpOSM_;	.scl	2;	.type	32;	.endef
 __ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE12_S_constructISE_IKSB_S9_EEENSt9enable_ifIXsrNSG_18__construct_helperIT_IDpT0_EEE5valueEvE4typeERSF_PSL_DpOSM_:
-LFB3784:
+LFB3788:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34109,7 +34423,7 @@ LFB3784:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3784:
+LFE3788:
 	.weak	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE12_S_constructISE_JKSB_S9_EEENSt9enable_ifIXsrNSG_18__construct_helperIT_JDpT0_EEE5valueEvE4typeERSF_PSL_DpOSM_
 	.def	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE12_S_constructISE_JKSB_S9_EEENSt9enable_ifIXsrNSG_18__construct_helperIT_JDpT0_EEE5valueEvE4typeERSF_PSL_DpOSM_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE12_S_constructISE_JKSB_S9_EEENSt9enable_ifIXsrNSG_18__construct_helperIT_JDpT0_EEE5valueEvE4typeERSF_PSL_DpOSM_,__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE12_S_constructISE_IKSB_S9_EEENSt9enable_ifIXsrNSG_18__construct_helperIT_IDpT0_EEE5valueEvE4typeERSF_PSL_DpOSM_
@@ -34119,7 +34433,7 @@ LFE3784:
 	.globl	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE10deallocateEPSE_j
 	.def	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE10deallocateEPSE_j;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE10deallocateEPSE_j:
-LFB3785:
+LFB3789:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34135,14 +34449,14 @@ LFB3785:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3785:
+LFE3789:
 	.section	.text$_ZNK9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE8max_sizeEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE8max_sizeEv
 	.def	__ZNK9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE8max_sizeEv;	.scl	2;	.type	32;	.endef
 __ZNK9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE8max_sizeEv:
-LFB3786:
+LFB3790:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34155,17 +34469,17 @@ LFB3786:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3786:
+LFE3790:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE9constructISE_IKSC_SA_EEEvPT_DpOT0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE9constructISE_IKSC_SA_EEEvPT_DpOT0_
 	.def	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE9constructISE_IKSC_SA_EEEvPT_DpOT0_;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE9constructISE_IKSC_SA_EEEvPT_DpOT0_:
-LFB3787:
+LFB3791:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3787
+	.cfi_lsda 0,LLSDA3791
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -34197,20 +34511,20 @@ LFB3787:
 	call	__ZnwjPv
 	movl	%eax, %ebx
 	testl	%ebx, %ebx
-	je	L2243
+	je	L2255
 	movl	%edi, 8(%esp)
 	movl	-44(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%ebx, (%esp)
-LEHB394:
+LEHB402:
 	call	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEC1IIS8_EEESA_DpOT_
-LEHE394:
-L2243:
+LEHE402:
+L2255:
 	leal	-25(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev
-	jmp	L2246
-L2245:
+	jmp	L2258
+L2257:
 	movl	%eax, %edi
 	movl	%esi, 4(%esp)
 	movl	%ebx, (%esp)
@@ -34221,10 +34535,10 @@ L2245:
 	call	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEED1Ev
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB395:
+LEHB403:
 	call	__Unwind_Resume
-LEHE395:
-L2246:
+LEHE403:
+L2258:
 	addl	$44, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -34237,23 +34551,23 @@ L2246:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3787:
+LFE3791:
 	.section	.gcc_except_table,"w"
-LLSDA3787:
+LLSDA3791:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3787-LLSDACSB3787
-LLSDACSB3787:
-	.uleb128 LEHB394-LFB3787
-	.uleb128 LEHE394-LEHB394
-	.uleb128 L2245-LFB3787
+	.uleb128 LLSDACSE3791-LLSDACSB3791
+LLSDACSB3791:
+	.uleb128 LEHB402-LFB3791
+	.uleb128 LEHE402-LEHB402
+	.uleb128 L2257-LFB3791
 	.uleb128 0
-	.uleb128 LEHB395-LFB3787
-	.uleb128 LEHE395-LEHB395
+	.uleb128 LEHB403-LFB3791
+	.uleb128 LEHE403-LEHB403
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3787:
+LLSDACSE3791:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE9constructISE_IKSC_SA_EEEvPT_DpOT0_,"x"
 	.linkonce discard
 	.weak	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE9constructISE_JKSC_SA_EEEvPT_DpOT0_
@@ -34265,7 +34579,7 @@ LLSDACSE3787:
 	.globl	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC2ERKS9_
 	.def	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC2ERKS9_;	.scl	2;	.type	32;	.endef
 __ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC2ERKS9_:
-LFB3789:
+LFB3793:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34283,14 +34597,14 @@ LFB3789:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3789:
+LFE3793:
 	.section	.text$_ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC1ERKS9_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC1ERKS9_
 	.def	__ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC1ERKS9_;	.scl	2;	.type	32;	.endef
 __ZNSaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEEEC1ERKS9_:
-LFB3790:
+LFB3794:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34308,14 +34622,14 @@ LFB3790:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3790:
+LFE3794:
 	.section	.text$_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE5_ImplD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE5_ImplD1Ev
 	.def	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE5_ImplD1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE5_ImplD1Ev:
-LFB3794:
+LFB3798:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34331,17 +34645,17 @@ LFB3794:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3794:
+LFE3798:
 	.section	.text$_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEC1IIS8_EEESA_DpOT_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEC1IIS8_EEESA_DpOT_
 	.def	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEC1IIS8_EEESA_DpOT_;	.scl	2;	.type	32;	.endef
 __ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEC1IIS8_EEESA_DpOT_:
-LFB3796:
+LFB3800:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3796
+	.cfi_lsda 0,LLSDA3800
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -34388,11 +34702,11 @@ LFB3796:
 	movl	%edx, 4(%esp)
 	movl	12(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB396:
+LEHB404:
 	call	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE9constructIS9_IS8_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSA_PT_DpOSD_
-LEHE396:
-	jmp	L2254
-L2253:
+LEHE404:
+	jmp	L2266
+L2265:
 	movl	%eax, %ebx
 	movl	8(%ebp), %eax
 	addl	$12, %eax
@@ -34403,10 +34717,10 @@ L2253:
 	call	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED2Ev
 	movl	%ebx, %eax
 	movl	%eax, (%esp)
-LEHB397:
+LEHB405:
 	call	__Unwind_Resume
-LEHE397:
-L2254:
+LEHE405:
+L2266:
 	addl	$36, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -34415,23 +34729,23 @@ L2254:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3796:
+LFE3800:
 	.section	.gcc_except_table,"w"
-LLSDA3796:
+LLSDA3800:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3796-LLSDACSB3796
-LLSDACSB3796:
-	.uleb128 LEHB396-LFB3796
-	.uleb128 LEHE396-LEHB396
-	.uleb128 L2253-LFB3796
+	.uleb128 LLSDACSE3800-LLSDACSB3800
+LLSDACSB3800:
+	.uleb128 LEHB404-LFB3800
+	.uleb128 LEHE404-LEHB404
+	.uleb128 L2265-LFB3800
 	.uleb128 0
-	.uleb128 LEHB397-LFB3796
-	.uleb128 LEHE397-LEHB397
+	.uleb128 LEHB405-LFB3800
+	.uleb128 LEHE405-LEHB405
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3796:
+LLSDACSE3800:
 	.section	.text$_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEC1IIS8_EEESA_DpOT_,"x"
 	.linkonce discard
 	.weak	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EEC1IJS8_EEESA_DpOT_
@@ -34443,25 +34757,6 @@ LLSDACSE3796:
 	.globl	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEC2ERKSB_
 	.def	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEC2ERKSB_;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEEC2ERKSB_:
-LFB3798:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3798:
-	.section	.text$_ZNSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZNSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev
-	.def	__ZNSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev;	.scl	2;	.type	32;	.endef
-__ZNSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev:
 LFB3802:
 	.cfi_startproc
 	pushl	%ebp
@@ -34475,13 +34770,32 @@ LFB3802:
 	ret
 	.cfi_endproc
 LFE3802:
+	.section	.text$_ZNSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZNSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev
+	.def	__ZNSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev;	.scl	2;	.type	32;	.endef
+__ZNSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev:
+LFB3806:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3806:
 	.section	.text$_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev
 	.def	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EEC2Ev:
-LFB3804:
+LFB3808:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34503,14 +34817,14 @@ LFB3804:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3804:
+LFE3808:
 	.section	.text$_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE5_ImplC1ESA_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE5_ImplC1ESA_
 	.def	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE5_ImplC1ESA_;	.scl	2;	.type	32;	.endef
 __ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE5_ImplC1ESA_:
-LFB3808:
+LFB3812:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34530,13 +34844,13 @@ LFB3808:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3808:
+LFE3812:
 	.section	.text$_ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE9constructIS9_IS8_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSA_PT_DpOSD_,"x"
 	.linkonce discard
 	.globl	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE9constructIS9_IS8_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSA_PT_DpOSD_
 	.def	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE9constructIS9_IS8_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSA_PT_DpOSD_;	.scl	2;	.type	32;	.endef
 __ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE9constructIS9_IS8_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSA_PT_DpOSD_:
-LFB3809:
+LFB3813:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34558,7 +34872,7 @@ LFB3809:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3809:
+LFE3813:
 	.weak	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE9constructIS9_JS8_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSA_PT_DpOSD_
 	.def	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE9constructIS9_JS8_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSA_PT_DpOSD_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE9constructIS9_JS8_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSA_PT_DpOSD_,__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE9constructIS9_IS8_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERSA_PT_DpOSD_
@@ -34567,7 +34881,7 @@ LFE3809:
 	.globl	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE12_S_constructIS9_IS8_EEENSt9enable_ifIXsrNSB_18__construct_helperIT_IDpT0_EEE5valueEvE4typeERSA_PSF_DpOSG_
 	.def	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE12_S_constructIS9_IS8_EEENSt9enable_ifIXsrNSB_18__construct_helperIT_IDpT0_EEE5valueEvE4typeERSA_PSF_DpOSG_;	.scl	2;	.type	32;	.endef
 __ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE12_S_constructIS9_IS8_EEENSt9enable_ifIXsrNSB_18__construct_helperIT_IDpT0_EEE5valueEvE4typeERSA_PSF_DpOSG_:
-LFB3810:
+LFB3814:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34589,7 +34903,7 @@ LFB3810:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3810:
+LFE3814:
 	.weak	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE12_S_constructIS9_JS8_EEENSt9enable_ifIXsrNSB_18__construct_helperIT_JDpT0_EEE5valueEvE4typeERSA_PSF_DpOSG_
 	.def	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE12_S_constructIS9_JS8_EEENSt9enable_ifIXsrNSB_18__construct_helperIT_JDpT0_EEE5valueEvE4typeERSA_PSF_DpOSG_;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE12_S_constructIS9_JS8_EEENSt9enable_ifIXsrNSB_18__construct_helperIT_JDpT0_EEE5valueEvE4typeERSA_PSF_DpOSG_,__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE12_S_constructIS9_IS8_EEENSt9enable_ifIXsrNSB_18__construct_helperIT_IDpT0_EEE5valueEvE4typeERSA_PSF_DpOSG_
@@ -34599,7 +34913,7 @@ LFE3810:
 	.globl	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEE9constructISA_IS9_EEEvPT_DpOT0_
 	.def	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEE9constructISA_IS9_EEEvPT_DpOT0_;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEE9constructISA_IS9_EEEvPT_DpOT0_:
-LFB3811:
+LFB3815:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34618,11 +34932,11 @@ LFB3811:
 	movl	$20, (%esp)
 	call	__ZnwjPv
 	testl	%eax, %eax
-	je	L2261
+	je	L2273
 	movl	%ebx, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEC1EOS7_
-L2261:
+L2273:
 	addl	$20, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -34631,7 +34945,7 @@ L2261:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3811:
+LFE3815:
 	.weak	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEE9constructISA_JS9_EEEvPT_DpOT0_
 	.def	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEE9constructISA_JS9_EEEvPT_DpOT0_;	.scl	2;	.type	32;	.endef
 	.set	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEE9constructISA_JS9_EEEvPT_DpOT0_,__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEE9constructISA_IS9_EEEvPT_DpOT0_
@@ -34641,7 +34955,7 @@ LFE3811:
 	.globl	__ZNSt6thread10_Impl_baseC2Ev
 	.def	__ZNSt6thread10_Impl_baseC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6thread10_Impl_baseC2Ev:
-LFB3820:
+LFB3824:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34659,14 +34973,14 @@ LFB3820:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3820:
+LFE3824:
 	.section	.text$_ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEC1EOS7_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEC1EOS7_
 	.def	__ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEC1EOS7_;	.scl	2;	.type	32;	.endef
 __ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEC1EOS7_:
-LFB3823:
+LFB3827:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34692,7 +35006,7 @@ LFB3823:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3823:
+LFE3827:
 	.globl	__ZTVSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE
 	.section	.rdata$_ZTVSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE,"dr"
 	.linkonce same_size
@@ -34721,7 +35035,7 @@ __ZTVNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEEE:
 	.globl	__ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEED1Ev
 	.def	__ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEED1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEED1Ev:
-LFB3826:
+LFB3830:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34736,24 +35050,24 @@ LFB3826:
 	call	__ZNSt6thread10_Impl_baseD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L2266
+	je	L2278
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L2266:
+L2278:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3826:
+LFE3830:
 	.section	.text$_ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEED0Ev
 	.def	__ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEED0Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEED0Ev:
-LFB3827:
+LFB3831:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -34772,7 +35086,7 @@ LFB3827:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3827:
+LFE3831:
 	.globl	__ZTV28CSmartStackAllocatorWithBuffILj128EE
 	.section	.rdata$_ZTV28CSmartStackAllocatorWithBuffILj128EE,"dr"
 	.linkonce same_size
@@ -34876,13 +35190,13 @@ __ZTVSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE:
 	.long	___cxa_pure_virtual
 	.long	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv
 	.long	___cxa_pure_virtual
-	.globl	__ZTV23CStackAllocatorWithBuffILj8192EE
-	.section	.rdata$_ZTV23CStackAllocatorWithBuffILj8192EE,"dr"
+	.globl	__ZTV23CStackAllocatorWithBuffILj4096EE
+	.section	.rdata$_ZTV23CStackAllocatorWithBuffILj4096EE,"dr"
 	.linkonce same_size
 	.align 32
-__ZTV23CStackAllocatorWithBuffILj8192EE:
+__ZTV23CStackAllocatorWithBuffILj4096EE:
 	.long	0
-	.long	__ZTI23CStackAllocatorWithBuffILj8192EE
+	.long	__ZTI23CStackAllocatorWithBuffILj4096EE
 	.long	__ZNK15CStackAllocator8getTotalEv
 	.long	__ZNK15CStackAllocator7getUsedEv
 	.long	__ZNK15CStackAllocator9getRemainEv
@@ -34893,8 +35207,8 @@ __ZTV23CStackAllocatorWithBuffILj8192EE:
 	.long	__ZN15CStackAllocator4backEPKv
 	.long	__ZN15CStackAllocator5clearEv
 	.long	__ZN15CStackAllocator8clearAllEv
-	.long	__ZN23CStackAllocatorWithBuffILj8192EED1Ev
-	.long	__ZN23CStackAllocatorWithBuffILj8192EED0Ev
+	.long	__ZN23CStackAllocatorWithBuffILj4096EED1Ev
+	.long	__ZN23CStackAllocatorWithBuffILj4096EED0Ev
 	.globl	__ZTV23CStackAllocatorWithBuffILj1024EE
 	.section	.rdata$_ZTV23CStackAllocatorWithBuffILj1024EE,"dr"
 	.linkonce same_size
@@ -35404,19 +35718,19 @@ __ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE:
 	.long	__ZTVN10__cxxabiv120__si_class_type_infoE+8
 	.long	__ZTSSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE
 	.long	__ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE
-	.globl	__ZTS23CStackAllocatorWithBuffILj8192EE
-	.section	.rdata$_ZTS23CStackAllocatorWithBuffILj8192EE,"dr"
+	.globl	__ZTS23CStackAllocatorWithBuffILj4096EE
+	.section	.rdata$_ZTS23CStackAllocatorWithBuffILj4096EE,"dr"
 	.linkonce same_size
 	.align 32
-__ZTS23CStackAllocatorWithBuffILj8192EE:
-	.ascii "23CStackAllocatorWithBuffILj8192EE\0"
-	.globl	__ZTI23CStackAllocatorWithBuffILj8192EE
-	.section	.rdata$_ZTI23CStackAllocatorWithBuffILj8192EE,"dr"
+__ZTS23CStackAllocatorWithBuffILj4096EE:
+	.ascii "23CStackAllocatorWithBuffILj4096EE\0"
+	.globl	__ZTI23CStackAllocatorWithBuffILj4096EE
+	.section	.rdata$_ZTI23CStackAllocatorWithBuffILj4096EE,"dr"
 	.linkonce same_size
 	.align 4
-__ZTI23CStackAllocatorWithBuffILj8192EE:
+__ZTI23CStackAllocatorWithBuffILj4096EE:
 	.long	__ZTVN10__cxxabiv120__si_class_type_infoE+8
-	.long	__ZTS23CStackAllocatorWithBuffILj8192EE
+	.long	__ZTS23CStackAllocatorWithBuffILj4096EE
 	.long	__ZTI15CStackAllocator
 	.globl	__ZTS23CStackAllocatorWithBuffILj1024EE
 	.section	.rdata$_ZTS23CStackAllocatorWithBuffILj1024EE,"dr"
@@ -35759,7 +36073,7 @@ __ZTI6CTest2:
 	.text
 	.def	__Z41__static_initialization_and_destruction_0ii;	.scl	3;	.type	32;	.endef
 __Z41__static_initialization_and_destruction_0ii:
-LFB3844:
+LFB3848:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -35768,11 +36082,15 @@ LFB3844:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	cmpl	$1, 8(%ebp)
-	jne	L2272
+	jne	L2284
 	cmpl	$65535, 12(%ebp)
-	jne	L2272
+	jne	L2284
 	movl	$__ZN16CTest3Singleton111m_singletonE, (%esp)
 	call	__ZN16CTest3Singleton1C1Ev
+	movl	$_s_parmaDataBuff, (%esp)
+	call	__ZN23CStackAllocatorWithBuffILj1024EEC1Ev
+	movl	$_s_tempStack, (%esp)
+	call	__ZN23CStackAllocatorWithBuffILj4096EEC1Ev
 	leal	-16(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6thread2idC1Ev
@@ -35785,22 +36103,26 @@ LFB3844:
 	movl	$1, 4(%esp)
 	movl	$__ZL16s_stackForThread, (%esp)
 	call	__ZN28CSmartStackAllocatorWithBuffILj1024EEC1EN15IStackAllocator9E_ORDEREDE
-L2272:
+L2284:
 	cmpl	$0, 8(%ebp)
-	jne	L2271
+	jne	L2283
 	cmpl	$65535, 12(%ebp)
-	jne	L2271
+	jne	L2283
 	movl	$__ZL16s_stackForThread, (%esp)
 	call	__ZN28CSmartStackAllocatorWithBuffILj1024EED1Ev
+	movl	$_s_tempStack, (%esp)
+	call	__ZN23CStackAllocatorWithBuffILj4096EED1Ev
+	movl	$_s_parmaDataBuff, (%esp)
+	call	__ZN23CStackAllocatorWithBuffILj1024EED1Ev
 	movl	$__ZN16CTest3Singleton111m_singletonE, (%esp)
 	call	__ZN16CTest3Singleton1D1Ev
-L2271:
+L2283:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3844:
+LFE3848:
 	.section .rdata,"dr"
 	.align 4
 __ZL11DSA_DEFAULT:
@@ -35814,264 +36136,6 @@ __ZL11DSA_REVERSE:
 	.align 4
 __ZL17INITIAL_THREAD_ID:
 	.long	-1
-	.align 32
-__ZN14crc_inner_calcL11s_calcTableE:
-	.long	0
-	.long	1996959894
-	.long	-301047508
-	.long	-1727442502
-	.long	124634137
-	.long	1886057615
-	.long	-379345611
-	.long	-1637575261
-	.long	249268274
-	.long	2044508324
-	.long	-522852066
-	.long	-1747789432
-	.long	162941995
-	.long	2125561021
-	.long	-407360249
-	.long	-1866523247
-	.long	498536548
-	.long	1789927666
-	.long	-205950648
-	.long	-2067906082
-	.long	450548861
-	.long	1843258603
-	.long	-187386543
-	.long	-2083289657
-	.long	325883990
-	.long	1684777152
-	.long	-43845254
-	.long	-1973040660
-	.long	335633487
-	.long	1661365465
-	.long	-99664541
-	.long	-1928851979
-	.long	997073096
-	.long	1281953886
-	.long	-715111964
-	.long	-1570279054
-	.long	1006888145
-	.long	1258607687
-	.long	-770865667
-	.long	-1526024853
-	.long	901097722
-	.long	1119000684
-	.long	-608450090
-	.long	-1396901568
-	.long	853044451
-	.long	1172266101
-	.long	-589951537
-	.long	-1412350631
-	.long	651767980
-	.long	1373503546
-	.long	-925412992
-	.long	-1076862698
-	.long	565507253
-	.long	1454621731
-	.long	-809855591
-	.long	-1195530993
-	.long	671266974
-	.long	1594198024
-	.long	-972236366
-	.long	-1324619484
-	.long	795835527
-	.long	1483230225
-	.long	-1050600021
-	.long	-1234817731
-	.long	1994146192
-	.long	31158534
-	.long	-1731059524
-	.long	-271249366
-	.long	1907459465
-	.long	112637215
-	.long	-1614814043
-	.long	-390540237
-	.long	2013776290
-	.long	251722036
-	.long	-1777751922
-	.long	-519137256
-	.long	2137656763
-	.long	141376813
-	.long	-1855689577
-	.long	-429695999
-	.long	1802195444
-	.long	476864866
-	.long	-2056965928
-	.long	-228458418
-	.long	1812370925
-	.long	453092731
-	.long	-2113342271
-	.long	-183516073
-	.long	1706088902
-	.long	314042704
-	.long	-1950435094
-	.long	-54949764
-	.long	1658658271
-	.long	366619977
-	.long	-1932296973
-	.long	-69972891
-	.long	1303535960
-	.long	984961486
-	.long	-1547960204
-	.long	-725929758
-	.long	1256170817
-	.long	1037604311
-	.long	-1529756563
-	.long	-740887301
-	.long	1131014506
-	.long	879679996
-	.long	-1385723834
-	.long	-631195440
-	.long	1141124467
-	.long	855842277
-	.long	-1442165665
-	.long	-586318647
-	.long	1342533948
-	.long	654459306
-	.long	-1106571248
-	.long	-921952122
-	.long	1466479909
-	.long	544179635
-	.long	-1184443383
-	.long	-832445281
-	.long	1591671054
-	.long	702138776
-	.long	-1328506846
-	.long	-942167884
-	.long	1504918807
-	.long	783551873
-	.long	-1212326853
-	.long	-1061524307
-	.long	-306674912
-	.long	-1698712650
-	.long	62317068
-	.long	1957810842
-	.long	-355121351
-	.long	-1647151185
-	.long	81470997
-	.long	1943803523
-	.long	-480048366
-	.long	-1805370492
-	.long	225274430
-	.long	2053790376
-	.long	-468791541
-	.long	-1828061283
-	.long	167816743
-	.long	2097651377
-	.long	-267414716
-	.long	-2029476910
-	.long	503444072
-	.long	1762050814
-	.long	-144550051
-	.long	-2140837941
-	.long	426522225
-	.long	1852507879
-	.long	-19653770
-	.long	-1982649376
-	.long	282753626
-	.long	1742555852
-	.long	-105259153
-	.long	-1900089351
-	.long	397917763
-	.long	1622183637
-	.long	-690576408
-	.long	-1580100738
-	.long	953729732
-	.long	1340076626
-	.long	-776247311
-	.long	-1497606297
-	.long	1068828381
-	.long	1219638859
-	.long	-670225446
-	.long	-1358292148
-	.long	906185462
-	.long	1090812512
-	.long	-547295293
-	.long	-1469587627
-	.long	829329135
-	.long	1181335161
-	.long	-882789492
-	.long	-1134132454
-	.long	628085408
-	.long	1382605366
-	.long	-871598187
-	.long	-1156888829
-	.long	570562233
-	.long	1426400815
-	.long	-977650754
-	.long	-1296233688
-	.long	733239954
-	.long	1555261956
-	.long	-1026031705
-	.long	-1244606671
-	.long	752459403
-	.long	1541320221
-	.long	-1687895376
-	.long	-328994266
-	.long	1969922972
-	.long	40735498
-	.long	-1677130071
-	.long	-351390145
-	.long	1913087877
-	.long	83908371
-	.long	-1782625662
-	.long	-491226604
-	.long	2075208622
-	.long	213261112
-	.long	-1831694693
-	.long	-438977011
-	.long	2094854071
-	.long	198958881
-	.long	-2032938284
-	.long	-237706686
-	.long	1759359992
-	.long	534414190
-	.long	-2118248755
-	.long	-155638181
-	.long	1873836001
-	.long	414664567
-	.long	-2012718362
-	.long	-15766928
-	.long	1711684554
-	.long	285281116
-	.long	-1889165569
-	.long	-127750551
-	.long	1634467795
-	.long	376229701
-	.long	-1609899400
-	.long	-686959890
-	.long	1308918612
-	.long	956543938
-	.long	-1486412191
-	.long	-799009033
-	.long	1231636301
-	.long	1047427035
-	.long	-1362007478
-	.long	-640263460
-	.long	1088359270
-	.long	936918000
-	.long	-1447252397
-	.long	-558129467
-	.long	1202900863
-	.long	817233897
-	.long	-1111625188
-	.long	-893730166
-	.long	1404277552
-	.long	615818150
-	.long	-1160759803
-	.long	-841546093
-	.long	1423857449
-	.long	601450431
-	.long	-1285129682
-	.long	-1000256840
-	.long	1567103746
-	.long	711928724
-	.long	-1274298825
-	.long	-1022587231
-	.long	1510334235
-	.long	755167117
 	.align 4
 __ZN9__gnu_cxxL21__default_lock_policyE:
 	.long	2
@@ -36092,7 +36156,7 @@ __ZN10CSingletonI6CTest3E15m_singletonBuffE:
 	.globl	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EED1Ev
 	.def	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EED1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EED1Ev:
-LFB3847:
+LFB3851:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36111,24 +36175,24 @@ LFB3847:
 	call	__ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EED2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L2274
+	je	L2286
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L2274:
+L2286:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3847:
+LFE3851:
 	.section	.text$_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EED0Ev
 	.def	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EED0Ev;	.scl	2;	.type	32;	.endef
 __ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EED0Ev:
-LFB3848:
+LFB3852:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36147,17 +36211,17 @@ LFB3848:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3848:
+LFE3852:
 	.section	.text$_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv
 	.def	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv;	.scl	2;	.type	32;	.endef
 __ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv:
-LFB3849:
+LFB3853:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3849
+	.cfi_lsda 0,LLSDA3853
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -36176,15 +36240,15 @@ LFB3849:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3849:
+LFE3853:
 	.section	.gcc_except_table,"w"
-LLSDA3849:
+LLSDA3853:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3849-LLSDACSB3849
-LLSDACSB3849:
-LLSDACSE3849:
+	.uleb128 LLSDACSE3853-LLSDACSB3853
+LLSDACSB3853:
+LLSDACSE3853:
 	.section	.text$_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv,"x"
 	.linkonce discard
 	.section	.text$_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv,"x"
@@ -36193,10 +36257,10 @@ LLSDACSE3849:
 	.globl	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv
 	.def	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv;	.scl	2;	.type	32;	.endef
 __ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv:
-LFB3850:
+LFB3854:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3850
+	.cfi_lsda 0,LLSDA3854
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -36228,15 +36292,15 @@ LFB3850:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3850:
+LFE3854:
 	.section	.gcc_except_table,"w"
-LLSDA3850:
+LLSDA3854:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3850-LLSDACSB3850
-LLSDACSB3850:
-LLSDACSE3850:
+	.uleb128 LLSDACSE3854-LLSDACSB3854
+LLSDACSB3854:
+LLSDACSE3854:
 	.section	.text$_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv,"x"
 	.linkonce discard
 	.section	.text$_ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info,"x"
@@ -36245,7 +36309,7 @@ LLSDACSE3850:
 	.globl	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info
 	.def	__ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info;	.scl	2;	.type	32;	.endef
 __ZNSt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEESaIS9_ELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info:
-LFB3851:
+LFB3855:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36258,26 +36322,26 @@ LFB3851:
 	movl	%eax, (%esp)
 	call	__ZNKSt9type_infoeqERKS_
 	testb	%al, %al
-	je	L2282
+	je	L2294
 	movl	8(%ebp), %eax
 	addl	$16, %eax
-	jmp	L2283
-L2282:
+	jmp	L2295
+L2294:
 	movl	$0, %eax
-L2283:
+L2295:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3851:
+LFE3855:
 	.section	.text$_ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEE6_M_runEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEE6_M_runEv
 	.def	__ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEE6_M_runEv;	.scl	2;	.type	32;	.endef
 __ZNSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES3_EEE6_M_runEv:
-LFB3852:
+LFB3856:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36294,14 +36358,14 @@ LFB3852:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3852:
+LFE3856:
 	.section	.text$_ZN28CSmartStackAllocatorWithBuffILj1024EED1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN28CSmartStackAllocatorWithBuffILj1024EED1Ev
 	.def	__ZN28CSmartStackAllocatorWithBuffILj1024EED1Ev;	.scl	2;	.type	32;	.endef
 __ZN28CSmartStackAllocatorWithBuffILj1024EED1Ev:
-LFB3855:
+LFB3859:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36316,24 +36380,24 @@ LFB3855:
 	call	__ZN20CSmartStackAllocatorD2Ev
 	movl	$0, %eax
 	testl	%eax, %eax
-	je	L2286
+	je	L2298
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZdlPv
-L2286:
+L2298:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3855:
+LFE3859:
 	.section	.text$_ZN28CSmartStackAllocatorWithBuffILj1024EED0Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN28CSmartStackAllocatorWithBuffILj1024EED0Ev
 	.def	__ZN28CSmartStackAllocatorWithBuffILj1024EED0Ev;	.scl	2;	.type	32;	.endef
 __ZN28CSmartStackAllocatorWithBuffILj1024EED0Ev:
-LFB3856:
+LFB3860:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36352,13 +36416,71 @@ LFB3856:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3856:
+LFE3860:
+	.section	.text$_ZN23CStackAllocatorWithBuffILj4096EED1Ev,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN23CStackAllocatorWithBuffILj4096EED1Ev
+	.def	__ZN23CStackAllocatorWithBuffILj4096EED1Ev;	.scl	2;	.type	32;	.endef
+__ZN23CStackAllocatorWithBuffILj4096EED1Ev:
+LFB3863:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %eax
+	movl	$__ZTV23CStackAllocatorWithBuffILj4096EE+8, (%eax)
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN15CStackAllocatorD2Ev
+	movl	$0, %eax
+	testl	%eax, %eax
+	je	L2303
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZdlPv
+L2303:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3863:
+	.section	.text$_ZN23CStackAllocatorWithBuffILj4096EED0Ev,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN23CStackAllocatorWithBuffILj4096EED0Ev
+	.def	__ZN23CStackAllocatorWithBuffILj4096EED0Ev;	.scl	2;	.type	32;	.endef
+__ZN23CStackAllocatorWithBuffILj4096EED0Ev:
+LFB3864:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN23CStackAllocatorWithBuffILj4096EED1Ev
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZdlPv
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3864:
 	.section	.text$_ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE7destroyIS9_EEvRSA_PT_,"x"
 	.linkonce discard
 	.globl	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE7destroyIS9_EEvRSA_PT_
 	.def	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE7destroyIS9_EEvRSA_PT_;	.scl	2;	.type	32;	.endef
 __ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE7destroyIS9_EEvRSA_PT_:
-LFB3857:
+LFB3865:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36376,13 +36498,13 @@ LFB3857:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3857:
+LFE3865:
 	.section	.text$_ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE7destroyISE_EEvRSF_PT_,"x"
 	.linkonce discard
 	.globl	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE7destroyISE_EEvRSF_PT_
 	.def	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE7destroyISE_EEvRSF_PT_;	.scl	2;	.type	32;	.endef
 __ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE7destroyISE_EEvRSF_PT_:
-LFB3858:
+LFB3866:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36400,17 +36522,17 @@ LFB3858:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3858:
+LFE3866:
 	.section	.text$_ZNSt12_Bind_simpleIFPFvPKcES1_EEclEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt12_Bind_simpleIFPFvPKcES1_EEclEv
 	.def	__ZNSt12_Bind_simpleIFPFvPKcES1_EEclEv;	.scl	2;	.type	32;	.endef
 __ZNSt12_Bind_simpleIFPFvPKcES1_EEclEv:
-LFB3859:
+LFB3867:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3859
+	.cfi_lsda 0,LLSDA3867
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -36420,38 +36542,38 @@ LFB3859:
 	movb	%al, 4(%esp)
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-LEHB398:
+LEHB406:
 	call	__ZNSt12_Bind_simpleIFPFvPKcES1_EE9_M_invokeIILj0EEEEvSt12_Index_tupleIIXspT_EEE
-LEHE398:
-	jmp	L2297
-L2296:
+LEHE406:
+	jmp	L2314
+L2313:
 	movl	%eax, (%esp)
-LEHB399:
+LEHB407:
 	call	__Unwind_Resume
-LEHE399:
-L2297:
+LEHE407:
+L2314:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3859:
+LFE3867:
 	.section	.gcc_except_table,"w"
-LLSDA3859:
+LLSDA3867:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3859-LLSDACSB3859
-LLSDACSB3859:
-	.uleb128 LEHB398-LFB3859
-	.uleb128 LEHE398-LEHB398
-	.uleb128 L2296-LFB3859
+	.uleb128 LLSDACSE3867-LLSDACSB3867
+LLSDACSB3867:
+	.uleb128 LEHB406-LFB3867
+	.uleb128 LEHE406-LEHB406
+	.uleb128 L2313-LFB3867
 	.uleb128 0
-	.uleb128 LEHB399-LFB3859
-	.uleb128 LEHE399-LEHB399
+	.uleb128 LEHB407-LFB3867
+	.uleb128 LEHE407-LEHB407
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3859:
+LLSDACSE3867:
 	.section	.text$_ZNSt12_Bind_simpleIFPFvPKcES1_EEclEv,"x"
 	.linkonce discard
 	.section	.text$_ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE10_S_destroyIS9_EENSt9enable_ifIXsrNSB_16__destroy_helperIT_EE5valueEvE4typeERSA_PSF_,"x"
@@ -36459,7 +36581,7 @@ LLSDACSE3859:
 	.globl	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE10_S_destroyIS9_EENSt9enable_ifIXsrNSB_16__destroy_helperIT_EE5valueEvE4typeERSA_PSF_
 	.def	__ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE10_S_destroyIS9_EENSt9enable_ifIXsrNSB_16__destroy_helperIT_EE5valueEvE4typeERSA_PSF_;	.scl	2;	.type	32;	.endef
 __ZNSt16allocator_traitsISaINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES4_EEEEEE10_S_destroyIS9_EENSt9enable_ifIXsrNSB_16__destroy_helperIT_EE5valueEvE4typeERSA_PSF_:
-LFB3860:
+LFB3868:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36477,13 +36599,13 @@ LFB3860:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3860:
+LFE3868:
 	.section	.text$_ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE10_S_destroyISE_EENSt9enable_ifIXsrNSG_16__destroy_helperIT_EE5valueEvE4typeERSF_PSK_,"x"
 	.linkonce discard
 	.globl	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE10_S_destroyISE_EENSt9enable_ifIXsrNSG_16__destroy_helperIT_EE5valueEvE4typeERSF_PSK_
 	.def	__ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE10_S_destroyISE_EENSt9enable_ifIXsrNSG_16__destroy_helperIT_EE5valueEvE4typeERSF_PSK_;	.scl	2;	.type	32;	.endef
 __ZNSt16allocator_traitsISaISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEESaISA_ELN9__gnu_cxx12_Lock_policyE2EEEE10_S_destroyISE_EENSt9enable_ifIXsrNSG_16__destroy_helperIT_EE5valueEvE4typeERSF_PSK_:
-LFB3861:
+LFB3869:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36501,13 +36623,13 @@ LFB3861:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3861:
+LFE3869:
 	.section	.text$_ZSt12__get_helperILj0EPFvPKcEIS1_EENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS5_DpT1_EE,"x"
 	.linkonce discard
 	.globl	__ZSt12__get_helperILj0EPFvPKcEIS1_EENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS5_DpT1_EE
 	.def	__ZSt12__get_helperILj0EPFvPKcEIS1_EENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS5_DpT1_EE;	.scl	2;	.type	32;	.endef
 __ZSt12__get_helperILj0EPFvPKcEIS1_EENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS5_DpT1_EE:
-LFB3864:
+LFB3872:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36523,7 +36645,7 @@ LFB3864:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3864:
+LFE3872:
 	.weak	__ZSt12__get_helperILj0EPFvPKcEJS1_EENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS5_DpT1_EE
 	.def	__ZSt12__get_helperILj0EPFvPKcEJS1_EENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS5_DpT1_EE;	.scl	2;	.type	32;	.endef
 	.set	__ZSt12__get_helperILj0EPFvPKcEJS1_EENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS5_DpT1_EE,__ZSt12__get_helperILj0EPFvPKcEIS1_EENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS5_DpT1_EE
@@ -36532,7 +36654,7 @@ LFE3864:
 	.globl	__ZSt3getILj0EIPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERS9_
 	.def	__ZSt3getILj0EIPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERS9_;	.scl	2;	.type	32;	.endef
 __ZSt3getILj0EIPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERS9_:
-LFB3863:
+LFB3871:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36548,7 +36670,7 @@ LFB3863:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3863:
+LFE3871:
 	.weak	__ZSt3getILj0EJPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERS9_
 	.def	__ZSt3getILj0EJPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERS9_;	.scl	2;	.type	32;	.endef
 	.set	__ZSt3getILj0EJPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERS9_,__ZSt3getILj0EIPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERS9_
@@ -36557,7 +36679,7 @@ LFE3863:
 	.globl	__ZSt12__get_helperILj1EPKcIEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS3_DpT1_EE
 	.def	__ZSt12__get_helperILj1EPKcIEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS3_DpT1_EE;	.scl	2;	.type	32;	.endef
 __ZSt12__get_helperILj1EPKcIEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS3_DpT1_EE:
-LFB3866:
+LFB3874:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36573,7 +36695,7 @@ LFB3866:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3866:
+LFE3874:
 	.weak	__ZSt12__get_helperILj1EPKcJEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS3_DpT1_EE
 	.def	__ZSt12__get_helperILj1EPKcJEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS3_DpT1_EE;	.scl	2;	.type	32;	.endef
 	.set	__ZSt12__get_helperILj1EPKcJEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EJS3_DpT1_EE,__ZSt12__get_helperILj1EPKcIEENSt9__add_refIT0_E4typeERSt11_Tuple_implIXT_EIS3_DpT1_EE
@@ -36582,7 +36704,7 @@ LFE3866:
 	.globl	__ZSt3getILj1EIPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERS9_
 	.def	__ZSt3getILj1EIPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERS9_;	.scl	2;	.type	32;	.endef
 __ZSt3getILj1EIPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERS9_:
-LFB3865:
+LFB3873:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36598,7 +36720,7 @@ LFB3865:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3865:
+LFE3873:
 	.weak	__ZSt3getILj1EJPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERS9_
 	.def	__ZSt3getILj1EJPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERS9_;	.scl	2;	.type	32;	.endef
 	.set	__ZSt3getILj1EJPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeEE4typeERS9_,__ZSt3getILj1EIPFvPKcES1_EENSt9__add_refINSt13tuple_elementIXT_ESt5tupleIIDpT0_EEE4typeEE4typeERS9_
@@ -36608,7 +36730,7 @@ LFE3865:
 	.globl	__ZNSt12_Bind_simpleIFPFvPKcES1_EE9_M_invokeIILj0EEEEvSt12_Index_tupleIIXspT_EEE
 	.def	__ZNSt12_Bind_simpleIFPFvPKcES1_EE9_M_invokeIILj0EEEEvSt12_Index_tupleIIXspT_EEE;	.scl	2;	.type	32;	.endef
 __ZNSt12_Bind_simpleIFPFvPKcES1_EE9_M_invokeIILj0EEEEvSt12_Index_tupleIIXspT_EEE:
-LFB3862:
+LFB3870:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36640,7 +36762,7 @@ LFB3862:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3862:
+LFE3870:
 	.weak	__ZNSt12_Bind_simpleIFPFvPKcES1_EE9_M_invokeIJLj0EEEEvSt12_Index_tupleIJXspT_EEE
 	.def	__ZNSt12_Bind_simpleIFPFvPKcES1_EE9_M_invokeIJLj0EEEEvSt12_Index_tupleIJXspT_EEE;	.scl	2;	.type	32;	.endef
 	.set	__ZNSt12_Bind_simpleIFPFvPKcES1_EE9_M_invokeIJLj0EEEEvSt12_Index_tupleIJXspT_EEE,__ZNSt12_Bind_simpleIFPFvPKcES1_EE9_M_invokeIILj0EEEEvSt12_Index_tupleIIXspT_EEE
@@ -36650,7 +36772,7 @@ LFE3862:
 	.globl	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEE7destroyISA_EEvPT_
 	.def	__ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEE7destroyISA_EEvPT_;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES5_EEEEE7destroyISA_EEvPT_:
-LFB3867:
+LFB3875:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36669,14 +36791,14 @@ LFB3867:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3867:
+LFE3875:
 	.section	.text$_ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE7destroyISE_EEvPT_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE7destroyISE_EEvPT_
 	.def	__ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE7destroyISE_EEvPT_;	.scl	2;	.type	32;	.endef
 __ZN9__gnu_cxx13new_allocatorISt23_Sp_counted_ptr_inplaceINSt6thread5_ImplISt12_Bind_simpleIFPFvPKcES6_EEEESaISB_ELNS_12_Lock_policyE2EEE7destroyISE_EEvPT_:
-LFB3868:
+LFB3876:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36692,7 +36814,7 @@ LFB3868:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3868:
+LFE3876:
 	.globl	__ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE
 	.section	.rdata$_ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE,"dr"
 	.linkonce same_size
@@ -36709,7 +36831,7 @@ __ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE:
 	.text
 	.def	__GLOBAL__sub_I__Z5test0v;	.scl	3;	.type	32;	.endef
 __GLOBAL__sub_I__Z5test0v:
-LFB3869:
+LFB3877:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36725,14 +36847,14 @@ LFB3869:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3869:
+LFE3877:
 	.section	.ctors,"w"
 	.align 4
 	.long	__GLOBAL__sub_I__Z5test0v
 	.text
 	.def	__GLOBAL__sub_D__Z5test0v;	.scl	3;	.type	32;	.endef
 __GLOBAL__sub_D__Z5test0v:
-LFB3870:
+LFB3878:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -36748,7 +36870,7 @@ LFB3870:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3870:
+LFE3878:
 	.section	.dtors,"w"
 	.align 4
 	.long	__GLOBAL__sub_D__Z5test0v
@@ -36808,10 +36930,10 @@ ___emutls_v._ZN14CPolyAllocator11m_allocatorE:
 	.long	___emutls_t._ZN14CPolyAllocator11m_allocatorE
 	.section .rdata,"dr"
 	.align 4
-LC170:
+LC164:
 	.long	0
 	.align 4
-LC265:
+LC279:
 	.long	1065353216
 	.ident	"GCC: (GNU) 4.8.2"
 	.def	_printf;	.scl	2;	.type	32;	.endef
@@ -36830,12 +36952,19 @@ LC265:
 	.def	__ZNSsC1EPKcRKSaIcE;	.scl	2;	.type	32;	.endef
 	.def	__ZNSaIcED1Ev;	.scl	2;	.type	32;	.endef
 	.def	__ZNSsD1Ev;	.scl	2;	.type	32;	.endef
+	.def	__ZNSspLEPKc;	.scl	2;	.type	32;	.endef
+	.def	__ZNSsaSEOSs;	.scl	2;	.type	32;	.endef
+	.def	__ZNKSs6lengthEv;	.scl	2;	.type	32;	.endef
 	.def	__ZNKSs5c_strEv;	.scl	2;	.type	32;	.endef
 	.def	__ZSt9terminatev;	.scl	2;	.type	32;	.endef
 	.def	__ZNSt6thread4joinEv;	.scl	2;	.type	32;	.endef
 	.def	__ZNSsC1ERKSs;	.scl	2;	.type	32;	.endef
 	.def	__ZNSs6appendERKSs;	.scl	2;	.type	32;	.endef
 	.def	__ZNSsC1EOSs;	.scl	2;	.type	32;	.endef
+	.def	__ZNSsC1Ev;	.scl	2;	.type	32;	.endef
+	.def	__ZNKSs4sizeEv;	.scl	2;	.type	32;	.endef
+	.def	__ZNSs7reserveEj;	.scl	2;	.type	32;	.endef
+	.def	__ZNSs6appendEPKcj;	.scl	2;	.type	32;	.endef
 	.def	__ZNSt11this_thread11__sleep_forENSt6chrono8durationIxSt5ratioILx1ELx1EEEENS1_IxS2_ILx1ELx1000000000EEEE;	.scl	2;	.type	32;	.endef
 	.def	__ZNSt6thread15_M_start_threadESt10shared_ptrINS_10_Impl_baseEE;	.scl	2;	.type	32;	.endef
 	.def	_memset;	.scl	2;	.type	32;	.endef

@@ -2239,7 +2239,7 @@ public:
 	const char* getName() const override { return "CDualStackAllocAdp"; }//アロケータ名取得
 	CDualStackAllocator& getAllocator(){ return *static_cast<CDualStackAllocator*>(&m_allocator); }//アロケータ取得
 	const CDualStackAllocator& getAllocator() const { return *static_cast<CDualStackAllocator*>(&m_allocator); }//アロケータ取得
-	IStackAllocator::E_ORDERED getOrdered() const { m_ordered; }//スタック順取得
+	IStackAllocator::E_ORDERED getOrdered() const { return m_ordered; }//スタック順取得
 	void setOrdered(const IStackAllocator::E_ORDERED ordered){ m_ordered = ordered; }//スタック順更新
 	IStackAllocator::marker_t getRewindMarkerN() const { return m_rewindMarker; }//巻き戻しマーカー（正順）取得
 	IStackAllocator::marker_t getRewindMarkerR() const { return m_rewindMarkerR; }//巻き戻しマーカー（逆順）取得
@@ -3750,7 +3750,7 @@ class CSmartStackAllocator : public IStackAllocator
 {
 public:
 	//型
-	typedef int counter_t;//カウンター型
+	typedef int counter_t;//カウンタ型
 public:
 	//アクセッサ
 	std::size_t getTotal() const override { return m_buffSize; }//全体のメモリ量を取得
@@ -3779,11 +3779,11 @@ public:
 	marker_t getBeginD() const { return getBegin(m_defaultOrdered.load()); }//開始マーカーを取得
 	marker_t getBegin(const E_ORDERED ordered) const { return ordered == DEFAULT ? getBeginD() : ordered == REVERSE ? getBeginR() : getBeginN(); }//開始マーカーを取得
 	marker_t getBegin() const { return getBeginD(); }//開始マーカーを取得
-	marker_t getCounterN() const { return m_counterN.load(); }//メモリ確保カウンター（正順）を取得
-	marker_t getCounterR() const { return m_counterR.load(); }//メモリ確保カウンター（逆順）を取得
-	marker_t getCounterD() const { return getCounter(m_defaultOrdered.load()); }//メモリ確保カウンターを取得
-	marker_t getCounter(const E_ORDERED ordered) const { return ordered == DEFAULT ? getCounterD() : ordered == REVERSE ? getCounterR() : getCounterN(); }//メモリ確保カウンターを取得
-	marker_t getCounter() const { return getCounterD(); }//メモリ確保カウンターを取得
+	marker_t getCounterN() const { return m_counterN.load(); }//メモリ確保カウンタ（正順）を取得
+	marker_t getCounterR() const { return m_counterR.load(); }//メモリ確保カウンタ（逆順）を取得
+	marker_t getCounterD() const { return getCounter(m_defaultOrdered.load()); }//メモリ確保カウンタを取得
+	marker_t getCounter(const E_ORDERED ordered) const { return ordered == DEFAULT ? getCounterD() : ordered == REVERSE ? getCounterR() : getCounterN(); }//メモリ確保カウンタを取得
+	marker_t getCounter() const { return getCounterD(); }//メモリ確保カウンタを取得
 public:
 	//メソッド
 	//メモリ確保（正順）
@@ -3879,11 +3879,11 @@ private:
 		if (m_counterR.load() <= 0)
 			return;
 		const marker_t now_r = reinterpret_cast<uintptr_t>(p)-reinterpret_cast<uintptr_t>(m_buffPtr);
-		if (now_r > m_beginR.load() || now_r < m_usedR.load())
+		if (now_r >= m_beginR.load() || now_r < m_usedR.load())
 			return;
 		//ポインタが逆順スタックとして適正のため、処理開始
 		m_lock.lock();//ロック取得
-		if (m_counterR.load() <= 0 || now_r > m_beginR.load() || now_r < m_usedR.load())//範囲の再チェック
+		if (m_counterR.load() <= 0 || now_r >= m_beginR.load() || now_r < m_usedR.load())//範囲の再チェック
 		{
 			m_lock.unlock();//ロック解放
 			return;
@@ -3897,11 +3897,12 @@ public:
 	//メモリ破棄
 	void free(void* p)
 	{
-		freeN(p);
-		freeR(p);
+		//ポインタをチェックして処理するので正順と逆順の両方の処理をまとめて実行する
+		freeN(p);//正順
+		freeR(p);//逆順
 	}
 	//マーカー位置を記憶してメモリ確保のカウントを開始（正順）
-	//※メモリ確保カウンターをリセット
+	//※メモリ確保カウンタをリセット
 	void beginN()
 	{
 		m_lock.lock();//ロック取得
@@ -3910,7 +3911,7 @@ public:
 		m_lock.unlock();//ロック解放
 	}
 	//マーカー位置を記憶してメモリ確保のカウントを開始（逆順）
-	//※メモリ確保カウンターをリセット
+	//※メモリ確保カウンタをリセット
 	void beginR()
 	{
 		m_lock.lock();//ロック取得
@@ -3919,26 +3920,26 @@ public:
 		m_lock.unlock();//ロック解放
 	}
 	//マーカー位置を記憶してメモリ確保のカウントを開始 
-	//※メモリ確保カウンターをリセット
+	//※メモリ確保カウンタをリセット
 	void beginD()
 	{
 		begin(m_defaultOrdered.load());
 	}
 	//マーカー位置を記憶してメモリ確保のカウントを開始 
-	//※メモリ確保カウンターをリセット
+	//※メモリ確保カウンタをリセット
 	void begin(const E_ORDERED ordered)
 	{
 		ordered == DEFAULT ? beginD() : ordered == REVERSE ? beginR() : beginN();
 	}
 	//マーカー位置を記憶してメモリ確保のカウントを開始 
-	//※メモリ確保カウンターをリセット
+	//※メモリ確保カウンタをリセット
 	void begin()
 	{
 		beginD();
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す（正順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※マーカー指定版
 	void backN(const marker_t marker_n)
 	{
@@ -3955,7 +3956,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す（正順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※ポインタ指定版
 	void backN(const void* p)
 	{
@@ -3964,7 +3965,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す（逆順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※マーカー指定版
 	void backR(const marker_t marker_r)
 	{
@@ -3981,7 +3982,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す（逆順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※ポインタ指定版
 	void backR(const void* p)
 	{
@@ -3990,7 +3991,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※マーカー指定版
 	void backD(const marker_t marker)
 	{
@@ -3998,7 +3999,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※ポインタ指定版
 	void backD(const void* p)
 	{
@@ -4006,7 +4007,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※マーカー指定版
 	void back(const E_ORDERED ordered, const marker_t marker)
 	{
@@ -4014,7 +4015,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※ポインタ指定版
 	void back(const E_ORDERED ordered, const void* p)
 	{
@@ -4022,7 +4023,7 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※マーカー指定版
 	void back(const marker_t marker) override
 	{
@@ -4030,14 +4031,14 @@ public:
 	}
 	//【このクラスでは非推奨メソッド】
 	//メモリを以前のマーカーに戻す
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	//※ポインタ指定版
 	void back(const void* p) override
 	{
 		backD(p);
 	}
 	//メモリ破棄（正順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clearN()
 	{
 		m_lock.lock();//ロック取得
@@ -4047,7 +4048,7 @@ public:
 		m_lock.unlock();//ロック解放
 	}
 	//メモリ破棄（逆順）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clearR()
 	{
 		m_lock.lock();//ロック取得
@@ -4057,32 +4058,32 @@ public:
 		m_lock.unlock();//ロック解放
 	}
 	//メモリ破棄
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clearD()
 	{
 		clear(m_defaultOrdered.load());
 	}
 	//メモリ破棄（両方）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clearNR()
 	{
 		clearN();
 		clearR();
 	}
 	//メモリ破棄
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clear(const E_ORDERED ordered)
 	{
 		ordered == DEFAULT ? clearD() : ordered == REVERSE ? clearR() : clearN();
 	}
 	//メモリ破棄
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clear() override
 	{
 		clearD();
 	}
 	//メモリ破棄（全て）
-	//※開始マーカーとメモリ確保カウンターもリセットする
+	//※開始マーカーとメモリ確保カウンタもリセットする
 	void clearAll() override
 	{
 		clearNR();
@@ -4097,8 +4098,8 @@ public:
 		m_usedR.store(buff_size);//マーカー（逆順）
 		m_beginN.store(0);//開始マーカー（正順）※カウントを開始した位置（自動開放でこの位置に戻す）
 		m_beginR.store(buff_size);//開始マーカー（逆順）※カウントを開始した位置（自動開放でこの位置に戻す）
-		m_counterN.store(0);//メモリ確保カウンター（正順）
-		m_counterR.store(0);//メモリ確保カウンター（逆順）
+		m_counterN.store(0);//メモリ確保カウンタ（正順）
+		m_counterR.store(0);//メモリ確保カウンタ（逆順）
 		setDefaultOrdered(default_ordered);//デフォルトのスタック順
 	}
 	//デストラクタ
@@ -4112,8 +4113,8 @@ private:
 	std::atomic<marker_t> m_usedR;//マーカー（逆順）
 	std::atomic<marker_t> m_beginN;//開始マーカー（正順）※カウントを開始した位置（自動開放でこの位置に戻す）
 	std::atomic<marker_t> m_beginR;//開始マーカー（逆順）※カウントを開始した位置（自動開放でこの位置に戻す）
-	std::atomic<counter_t> m_counterN;//メモリ確保カウンター（正順）
-	std::atomic<counter_t> m_counterR;//メモリ確保カウンター（逆順）
+	std::atomic<counter_t> m_counterN;//メモリ確保カウンタ（正順）
+	std::atomic<counter_t> m_counterR;//メモリ確保カウンタ（逆順）
 	std::atomic<E_ORDERED> m_defaultOrdered;//デフォルトのスタック順
 	CSpinLock m_lock;//ロック
 };
@@ -4228,7 +4229,7 @@ public:
 	const char* getName() const override{ return "CSmartStackAllocAdp"; }//アロケータ名取得
 	CSmartStackAllocator& getAllocator(){ return *static_cast<CSmartStackAllocator*>(&m_allocator); }//アロケータ取得
 	const CSmartStackAllocator& getAllocator() const { return *static_cast<CSmartStackAllocator*>(&m_allocator); }//アロケータ取得
-	IStackAllocator::E_ORDERED getOrdered() const { m_ordered; }//スタック順取得
+	IStackAllocator::E_ORDERED getOrdered() const { return m_ordered; }//スタック順取得
 	void setOrdered(const IStackAllocator::E_ORDERED ordered){ m_ordered = ordered; }//スタック順更新
 public:
 	//メソッド
@@ -4246,11 +4247,11 @@ public:
 	}
 public:
 	//デフォルトコンストラクタ
-	CSmartStackAllocAdp() = delete;
+	CSmartStackAllocAdp() = delete;//コンストラクタ引数必須
 	//コンストラクタ
 	//※自動巻き戻しには対応しない
 	CSmartStackAllocAdp(CSmartStackAllocator& stack, const IStackAllocator::E_ORDERED ordered = IStackAllocator::DEFAULT) :
-		CIStackAllocAdp(stack, NOREWIND),//双方向スタックアロケータ
+		CIStackAllocAdp(stack, NOREWIND),//スマートスタックアロケータ
 		m_ordered(ordered)//スタック順
 	{}
 	//デストラクタ
@@ -4385,7 +4386,7 @@ void test9()
 		printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", allocator.getMarkerN(), allocator.getMarkerR(), allocator.getBeginN(), allocator.getBeginR(), allocator.getCounterN(), allocator.getCounterR());
 	}
 	{
-		printf("----------スレッド使用チェック\n");
+		printf("----------スレッドテスト\n");
 		//【想定】スレッド開始前に、同じバッファを他の用途に少し使う
 		//　　　　（これは常駐するデータで破棄しないものとする）
 		int* parmanent_data1 = nullptr;
@@ -4427,11 +4428,12 @@ void test9()
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));//500msecスリープ
 			printf("sleep(500msec)\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+			//スレッド終了待ち
 			th1.join();
 			th2.join();
 			th3.join();
 			th4.join();
-			printf("join\n");
+			printf("joined\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
 		}
 
@@ -4451,12 +4453,24 @@ void test9()
 			printf("sleep(200msec)\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
 			{
-				//途中で多態アロケータはTLSでアロケータをスレッドごとに分けて使っているので、
+				//多態アロケータはTLSでアロケータをスレッドごとに分けて使っているので、
 				//他のスレッドが動作中に異なるアロケータを使っても問題なし
 				CSmartStackAllocatorWithBuff<128> allocator;
 				CTempPolySmartStackAllocator poly_allocator(allocator);
 				CTest9* obj_p = new CTest9("スレッドテスト(割り込み)");
 				delete obj_p;
+				printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+			}
+			{
+				//カウント開始前に確保したメモリを途中で破棄してもカウンタには影響しない
+				//※カウント開始位置以前の位置にあるメモリは、カウンタに影響しない
+				CTempPolySmartStackAllocator poly_allocator(s_stackForThread);
+				delete[] parmanent_data1;
+				delete[] parmanent_data2;
+				delete[] parmanent_data3;
+				delete[] parmanent_data4;
+				delete[] parmanent_data5;
+				delete[] parmanent_data6;
 				printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
 			}
 			std::thread th9 = std::thread(test9thread_n, "スレッドテスト9-9(N)");
@@ -4472,6 +4486,7 @@ void test9()
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));//200msecスリープ
 			printf("sleep(200msec)\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
+			//スレッド終了待ち
 			th5.join();
 			th6.join();
 			th7.join();
@@ -4480,19 +4495,7 @@ void test9()
 			th10.join();
 			th11.join();
 			th12.join();
-			printf("join\n");
-			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
-		}
-
-		{
-			//カウント開始前に確保したメモリを破棄しても何の影響もない
-			CTempPolySmartStackAllocator poly_allocator(s_stackForThread);
-			delete parmanent_data1;
-			delete parmanent_data2;
-			delete parmanent_data3;
-			delete parmanent_data4;
-			delete parmanent_data5;
-			delete parmanent_data6;
+			printf("joined\n");
 			printf("marker=(%d,%d), begin=(%d,%d), counter=(%d,%d)\n", s_stackForThread.getMarkerN(), s_stackForThread.getMarkerR(), s_stackForThread.getBeginN(), s_stackForThread.getBeginR(), s_stackForThread.getCounterN(), s_stackForThread.getCounterR());
 		}
 	}

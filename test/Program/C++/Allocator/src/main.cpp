@@ -53,8 +53,10 @@
 #ifndef ENABLE_OVERRIDE
 #define overide
 #endif//ENABLE_OVERRIDE
-#ifndef ENABLE_CONSTEXPR
-#define constexpr
+#ifdef ENABLE_CONSTEXPR
+#define CONSTEXPR constexpr
+#else//ENABLE_CONSTEXPR
+#define CONSTEXPR const
 #endif//ENABLE_CONSTEXPR
 
 //関数名取得マクロ
@@ -2699,7 +2701,7 @@ float getGameTimeDummy(){ return 0.f; }//ゲーム時間取得
 #ifdef ENABLE_CONSTEXPR
 //【constexpr版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
 //※再帰処理部（直接使用しない）
-constexpr const char* getConstFileNameRecursive(const char* str, const std::size_t len)
+CONSTEXPR const char* getConstFileNameRecursive(const char* str, const std::size_t len)
 {
 	return len == 0 ?
 	str :
@@ -2708,7 +2710,7 @@ constexpr const char* getConstFileNameRecursive(const char* str, const std::size
 			getConstFileNameRecursive(str, len - 1);
 }
 //【constexpr版】ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
-constexpr const char* getConstFileName(const char* str)
+CONSTEXPR const char* getConstFileName(const char* str)
 {
 	return getConstFileNameRecursive(str, strlen(str));
 }
@@ -3245,14 +3247,14 @@ namespace crc_inner_calc//直接使用しない処理を隠ぺいするためのネームスペース
 #ifndef USE_CRC_CALC_TABLE
 	//--------------------
 	//CRC生成多項式計算（再帰処理）
-	constexpr crc32_t calcPoly(crc32_t poly, const int n)
+	CONSTEXPR crc32_t calcPoly(crc32_t poly, const int n)
 	{
 		return n == 0 ? poly : calcPoly(poly & 1 ? 0xedb88320u ^ (poly >> 1) : (poly >> 1), n - 1);
 	}
 #else//USE_CRC_CALC_TABLE
 	//--------------------
 	//CRC生成多項式計算計算済みテーブル
-	constexpr crc32_t s_calcTable[] =
+	CONSTEXPR crc32_t s_calcTable[] =
 	{
 		0x00000000u, 0x77073096u, 0xee0e612cu, 0x990951bau, 0x076dc419u, 0x706af48fu, 0xe963a535u, 0x9e6495a3u,
 		0x0edb8832u, 0x79dcb8a4u, 0xe0d5e91eu, 0x97d2d988u, 0x09b64c2bu, 0x7eb17cbdu, 0xe7b82d07u, 0x90bf1d91u,
@@ -3290,7 +3292,7 @@ namespace crc_inner_calc//直接使用しない処理を隠ぺいするためのネームスペース
 #endif//USE_CRC_CALC_TABLE
 	//--------------------
 	//文字列からCRC算出用（再帰処理）
-	constexpr crc32_t calcStr(const crc32_t crc, const char* str)
+	CONSTEXPR crc32_t calcStr(const crc32_t crc, const char* str)
 	{
 	#ifndef USE_CRC_CALC_TABLE
 		return *str == '\0' ? crc : calcStr(calcPoly(static_cast<crc32_t>((crc ^ *str) & 0xffu), 8) ^ (crc >> 8), str + 1);//CRC生成多項式計算計算を合成
@@ -3300,7 +3302,7 @@ namespace crc_inner_calc//直接使用しない処理を隠ぺいするためのネームスペース
 	}
 	//--------------------
 	//データ長を指定してCRC算出用（再帰処理）
-	constexpr crc32_t calcData(const crc32_t crc, const char* data, const std::size_t len)
+	CONSTEXPR crc32_t calcData(const crc32_t crc, const char* data, const std::size_t len)
 	{
 	#ifndef USE_CRC_CALC_TABLE
 		return len == 0 ? crc : calcData(calcPoly(static_cast<crc32_t>((crc ^ *data) & 0xffu), 8) ^ (crc >> 8), data + 1, len - 1);//CRC生成多項式計算計算を合成
@@ -3311,20 +3313,20 @@ namespace crc_inner_calc//直接使用しない処理を隠ぺいするためのネームスペース
 }
 //--------------------
 //【constexpr版】文字列からCRC算出
-constexpr crc32_t calcConstCRC32(const char* str)
+CONSTEXPR crc32_t calcConstCRC32(const char* str)
 {
 	return ~crc_inner_calc::calcStr(~0u, str);
 }
 //--------------------
 //【constexpr版】データ長を指定してCRC算出
-constexpr crc32_t calcConstCRC32(const char* data, const std::size_t len)
+CONSTEXPR crc32_t calcConstCRC32(const char* data, const std::size_t len)
 {
 	return ~crc_inner_calc::calcData(~0u, data, len);
 }
 #ifdef ENABLE_USER_DEFINED_LITERALS
 //--------------------
 //【ユーザー定義リテラル版】データ長を指定してCRC算出
-constexpr crc32_t operator "" _crc32(const char* str, std::size_t len)
+CONSTEXPR crc32_t operator "" _crc32(const char* str, std::size_t len)
 {
 	return calcConstCRC32(str, len);
 }

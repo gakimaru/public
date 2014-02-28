@@ -1,106 +1,138 @@
-[90m[40mlevel=0, name="asVerbose", valueAsOutput=0, forOutput=1, forOutputMask=1
+[90m[40mlevel=0, name="asVerbose", valueAsOutput=0, forLog=1, forNotice=0, forMask=1
            prev=asVerbose(0)
            next=asNormal(2)
-[39m[49m[90m[40mlevel=1, name="asDetail", valueAsOutput=0, forOutput=1, forOutputMask=1
+[39m[49m[90m[40mlevel=1, name="asDetail", valueAsOutput=0, forLog=1, forNotice=0, forMask=1
            prev=asDetail(1)
            next=asNormal(2)
-[39m[49m[39m[49mlevel=2, name="asNormal", valueAsOutput=1, forOutput=1, forOutputMask=1
+[39m[49m[39m[49mlevel=2, name="asNormal", valueAsOutput=1, forLog=1, forNotice=1, forMask=1
            prev=asVerbose(0)
            next=asImportant(4)
-[39m[49mlevel=3, name="(undefined)", valueAsOutput=1, forOutput=0, forOutputMask=0
+[39m[49mlevel=3, name="(undefined)", valueAsOutput=1, forLog=0, forNotice=0, forMask=0
            prev=(undefined)(3)
            next=(undefined)(3)
-[94m[40mlevel=4, name="asImportant", valueAsOutput=2, forOutput=1, forOutputMask=1
+[94m[40mlevel=4, name="asImportant", valueAsOutput=2, forLog=1, forNotice=1, forMask=1
            prev=asNormal(2)
            next=asWarning(6)
-[39m[49mlevel=5, name="(undefined)", valueAsOutput=2, forOutput=0, forOutputMask=0
+[39m[49mlevel=5, name="(undefined)", valueAsOutput=2, forLog=0, forNotice=0, forMask=0
            prev=(undefined)(5)
            next=(undefined)(5)
-[95m[40mlevel=6, name="asWarning", valueAsOutput=3, forOutput=1, forOutputMask=1
+[95m[40mlevel=6, name="asWarning", valueAsOutput=3, forLog=1, forNotice=1, forMask=1
            prev=asImportant(4)
            next=asCritical(8)
-[39m[49mlevel=7, name="(undefined)", valueAsOutput=3, forOutput=0, forOutputMask=0
+[39m[49mlevel=7, name="(undefined)", valueAsOutput=3, forLog=0, forNotice=0, forMask=0
            prev=(undefined)(7)
            next=(undefined)(7)
-[91m[40mlevel=8, name="asCritical", valueAsOutput=4, forOutput=1, forOutputMask=1
+[91m[40mlevel=8, name="asCritical", valueAsOutput=4, forLog=1, forNotice=1, forMask=1
            prev=asWarning(6)
            next=asAbsolute(10)
-[39m[49mlevel=9, name="(undefined)", valueAsOutput=4, forOutput=0, forOutputMask=0
+[39m[49mlevel=9, name="(undefined)", valueAsOutput=4, forLog=0, forNotice=0, forMask=0
            prev=(undefined)(9)
            next=(undefined)(9)
-level=10, name="asAbsolute", valueAsOutput=5, forOutput=1, forOutputMask=1
+level=10, name="asAbsolute", valueAsOutput=5, forLog=1, forNotice=0, forMask=1
            prev=asCritical(8)
            next=asAbsolute(10)
-level=11, name="asSilent", valueAsOutput=5, forOutput=0, forOutputMask=1
+level=11, name="asSilent", valueAsOutput=5, forLog=0, forNotice=0, forMask=1
            prev=asSilent(11)
            next=asSilent(11)
-level=12, name="asSilentAbsolutely", valueAsOutput=6, forOutput=0, forOutputMask=1
+level=12, name="asSilentAbsolutely", valueAsOutput=6, forLog=0, forNotice=0, forMask=1
            prev=asSilentAbsolutely(12)
            next=asSilentAbsolutely(12)
-category=0, name="forAny", isAssigned=1, isReserved=0, forOutput=1, forSetLevel=1
-category=1, name="forLogic", isAssigned=1, isReserved=0, forOutput=1, forSetLevel=1
-category=2, name="forResource", isAssigned=1, isReserved=0, forOutput=1, forSetLevel=1
-category=3, name="for3D", isAssigned=1, isReserved=0, forOutput=1, forSetLevel=1
-category=4, name="for2D", isAssigned=1, isReserved=0, forOutput=1, forSetLevel=1
-category=5, name="forSound", isAssigned=1, isReserved=0, forOutput=1, forSetLevel=1
-category=6, name="forScript", isAssigned=1, isReserved=0, forOutput=1, forSetLevel=1
-category=7, name="forGameData", isAssigned=1, isReserved=0, forOutput=1, forSetLevel=1
-category=8, name="forReserved01", isAssigned=0, isReserved=1, forOutput=1, forSetLevel=1
-category=9, name="forReserved02", isAssigned=0, isReserved=1, forOutput=1, forSetLevel=1
-category=10, name="forReserved03", isAssigned=0, isReserved=1, forOutput=1, forSetLevel=1
-category=11, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=12, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=13, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=14, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=15, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=16, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=17, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=18, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=19, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=20, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=21, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=22, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=23, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=24, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=25, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=26, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=27, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=28, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=29, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=30, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=31, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=32, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=33, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=34, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=35, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=36, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=37, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=38, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=39, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=40, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=41, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=42, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=43, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=44, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=45, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=46, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=47, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=48, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=49, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=50, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=51, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=52, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=53, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=54, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=55, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=56, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=57, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=58, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=59, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=60, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=61, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=62, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=63, name="(undefined)", isAssigned=0, isReserved=1, forOutput=0, forSetLevel=0
-category=64, name="forEvery", isAssigned=1, isReserved=0, forOutput=0, forSetLevel=1
-category=65, name="forCallppoint", isAssigned=1, isReserved=0, forOutput=1, forSetLevel=0
-category=66, name="forCriticalCallppoint", isAssigned=1, isReserved=0, forOutput=1, forSetLevel=0
+category=0, name="forAny", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
+category=1, name="forLogic", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
+category=2, name="forResource", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
+category=3, name="for3D", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
+category=4, name="for2D", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
+category=5, name="forSound", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
+category=6, name="forScript", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
+category=7, name="forGameData", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
+category=8, name="forReserved01", isAssigned=0, isReserved=1, forLog=1, forNotice=1, forMask=1
+category=9, name="forReserved02", isAssigned=0, isReserved=1, forLog=1, forNotice=1, forMask=1
+category=10, name="forReserved03", isAssigned=0, isReserved=1, forLog=1, forNotice=1, forMask=1
+category=11, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=12, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=13, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=14, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=15, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=16, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=17, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=18, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=19, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=20, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=21, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=22, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=23, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=24, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=25, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=26, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=27, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=28, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=29, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=30, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=31, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=32, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=33, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=34, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=35, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=36, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=37, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=38, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=39, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=40, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=41, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=42, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=43, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=44, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=45, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=46, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=47, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=48, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=49, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=50, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=51, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=52, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=53, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=54, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=55, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=56, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=57, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=58, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=59, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=60, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=61, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=62, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=63, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
+category=64, name="forEvery", isAssigned=1, isReserved=0, forLog=0, forNotice=0, forMask=1
+category=65, name="forCallppoint", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=0
+category=66, name="forCriticalCallppoint", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=0
+---------- printCommon() ----------
+logLevel=asNormal, noticeLevel=asCritical
+[39m[49m通常メッセージ by テスト
+[39m[49m[94m[40m重要メッセージ by テスト
+[39m[49m[95m[40m警告メッセージ by テスト
+[39m[49m[91m[40m重大メッセージ by テスト
+[39m[49m絶対メッセージ by テスト
+[39m[49m通常メッセージ by テスト
+[39m[49m[91m[40m【ログ出力専用】重大メッセージ by テスト
+[39m[49m---------- printCommon() ----------
+logLevel=asDetail, noticeLevel=asDetail
+[39m[49m通常メッセージ by テスト
+[39m[49m[90m[40m冗長メッセージ by テスト
+[39m[49m[90m[40m詳細メッセージ by テスト
+[39m[49m[94m[40m重要メッセージ by テスト
+[39m[49m[95m[40m警告メッセージ by テスト
+[39m[49m[91m[40m重大メッセージ by テスト
+[39m[49m絶対メッセージ by テスト
+[39m[49m通常メッセージ by テスト
+[39m[49m[91m[40m【ログ出力専用】重大メッセージ by テスト
+[39m[49m---------- printCommon() ----------
+logLevel=asSilentAbsolutely, noticeLevel=asSilentAbsolutely
+---------- printCommon() ----------
+logLevel=asNormal, noticeLevel=asCritical
+[39m[49m通常メッセージ by テスト
+[39m[49m[94m[40m重要メッセージ by テスト
+[39m[49m[95m[40m警告メッセージ by テスト
+[39m[49m[91m[40m重大メッセージ by テスト
+[39m[49m絶対メッセージ by テスト
+[39m[49m通常メッセージ by テスト
+[39m[49m[91m[40m【ログ出力専用】重大メッセージ by テスト
+[39m[49m

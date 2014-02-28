@@ -865,6 +865,40 @@ LFB3553:
 	ret	$4
 	.cfi_endproc
 LFE3553:
+	.section	.text$_ZNK6dbgLog5levelgeERKS0_,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZNK6dbgLog5levelgeERKS0_
+	.def	__ZNK6dbgLog5levelgeERKS0_;	.scl	2;	.type	32;	.endef
+__ZNK6dbgLog5levelgeERKS0_:
+LFB3559:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$20, %esp
+	.cfi_offset 3, -12
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level13valueAsOutputEv
+	movl	%eax, %ebx
+	movl	12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level13valueAsOutputEv
+	cmpb	%al, %bl
+	setae	%al
+	addl	$20, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3559:
 	.section	.text$_ZN6dbgLog5levelaSERKS0_,"x"
 	.linkonce discard
 	.align 2
@@ -957,12 +991,12 @@ LFB3568:
 	ret
 	.cfi_endproc
 LFE3568:
-	.section	.text$_ZNK6dbgLog5level9forOutputEv,"x"
+	.section	.text$_ZNK6dbgLog5level6forLogEv,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZNK6dbgLog5level9forOutputEv
-	.def	__ZNK6dbgLog5level9forOutputEv;	.scl	2;	.type	32;	.endef
-__ZNK6dbgLog5level9forOutputEv:
+	.globl	__ZNK6dbgLog5level6forLogEv
+	.def	__ZNK6dbgLog5level6forLogEv;	.scl	2;	.type	32;	.endef
+__ZNK6dbgLog5level6forLogEv:
 LFB3569:
 	.cfi_startproc
 	pushl	%ebp
@@ -978,12 +1012,12 @@ LFB3569:
 	ret
 	.cfi_endproc
 LFE3569:
-	.section	.text$_ZNK6dbgLog5level13forOutputMaskEv,"x"
+	.section	.text$_ZNK6dbgLog5level9forNoticeEv,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZNK6dbgLog5level13forOutputMaskEv
-	.def	__ZNK6dbgLog5level13forOutputMaskEv;	.scl	2;	.type	32;	.endef
-__ZNK6dbgLog5level13forOutputMaskEv:
+	.globl	__ZNK6dbgLog5level9forNoticeEv
+	.def	__ZNK6dbgLog5level9forNoticeEv;	.scl	2;	.type	32;	.endef
+__ZNK6dbgLog5level9forNoticeEv:
 LFB3570:
 	.cfi_startproc
 	pushl	%ebp
@@ -999,12 +1033,33 @@ LFB3570:
 	ret
 	.cfi_endproc
 LFE3570:
+	.section	.text$_ZNK6dbgLog5level7forMaskEv,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZNK6dbgLog5level7forMaskEv
+	.def	__ZNK6dbgLog5level7forMaskEv;	.scl	2;	.type	32;	.endef
+__ZNK6dbgLog5level7forMaskEv:
+LFB3571:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	movl	8(%ebp), %eax
+	movzbl	7(%eax), %eax
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3571:
 	.section	.text$_ZSt4moveIN6dbgLog5colorEEONSt16remove_referenceIT_E4typeEOS3_,"x"
 	.linkonce discard
 	.globl	__ZSt4moveIN6dbgLog5colorEEONSt16remove_referenceIT_E4typeEOS3_
 	.def	__ZSt4moveIN6dbgLog5colorEEONSt16remove_referenceIT_E4typeEOS3_;	.scl	2;	.type	32;	.endef
 __ZSt4moveIN6dbgLog5colorEEONSt16remove_referenceIT_E4typeEOS3_:
-LFB3572:
+LFB3573:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1017,14 +1072,14 @@ LFB3572:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3572:
+LFE3573:
 	.section	.text$_ZNK6dbgLog5level11changeColorEb,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK6dbgLog5level11changeColorEb
 	.def	__ZNK6dbgLog5level11changeColorEb;	.scl	2;	.type	32;	.endef
 __ZNK6dbgLog5level11changeColorEb:
-LFB3574:
+LFB3575:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1038,10 +1093,10 @@ LFB3574:
 	xorl	$1, %eax
 	movzbl	%al, %ecx
 	movl	12(%ebp), %eax
-	movzbl	8(%eax), %eax
+	movzbl	9(%eax), %eax
 	movzbl	%al, %edx
 	movl	12(%ebp), %eax
-	movzbl	7(%eax), %eax
+	movzbl	8(%eax), %eax
 	movzbl	%al, %eax
 	movl	%ecx, 16(%esp)
 	movl	%edx, 12(%esp)
@@ -1066,14 +1121,87 @@ LFB3574:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3574:
+LFE3575:
+	.section	.text$_ZNK6dbgLog5level20changeColorForNoticeEb,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZNK6dbgLog5level20changeColorForNoticeEb
+	.def	__ZNK6dbgLog5level20changeColorForNoticeEb;	.scl	2;	.type	32;	.endef
+__ZNK6dbgLog5level20changeColorForNoticeEb:
+LFB3576:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$56, %esp
+	movl	16(%ebp), %eax
+	movb	%al, -28(%ebp)
+	movzbl	-28(%ebp), %eax
+	xorl	$1, %eax
+	movzbl	%al, %ecx
+	movl	12(%ebp), %eax
+	movzbl	11(%eax), %eax
+	movzbl	%al, %edx
+	movl	12(%ebp), %eax
+	movzbl	10(%eax), %eax
+	movzbl	%al, %eax
+	movl	%ecx, 16(%esp)
+	movl	%edx, 12(%esp)
+	movl	%eax, 8(%esp)
+	movl	$1, 4(%esp)
+	leal	-14(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5colorC1ENS0_8target_tENS0_7color_tES2_b
+	leal	-14(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZSt4moveIN6dbgLog5colorEEONSt16remove_referenceIT_E4typeEOS3_
+	movl	%eax, 4(%esp)
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5colorC1EOS0_
+	leal	-14(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5colorD1Ev
+	movl	8(%ebp), %eax
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret	$4
+	.cfi_endproc
+LFE3576:
+	.section	.text$_ZN6dbgLog5level3getEh,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog5level3getEh
+	.def	__ZN6dbgLog5level3getEh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog5level3getEh:
+LFB3577:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$8, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -4(%ebp)
+	movzbl	-4(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5level9container3getEh
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3577:
 	.section	.text$_ZNK6dbgLog5level4prevEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK6dbgLog5level4prevEv
 	.def	__ZNK6dbgLog5level4prevEv;	.scl	2;	.type	32;	.endef
 __ZNK6dbgLog5level4prevEv:
-LFB3577:
+LFB3578:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1085,25 +1213,30 @@ LFB3577:
 	movl	%eax, (%esp)
 	call	__ZNK6dbgLog5level13valueAsOutputEv
 	testb	%al, %al
-	je	L72
+	je	L80
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK6dbgLog5level13valueAsOutputEv
 	cmpb	$5, %al
-	ja	L72
+	ja	L80
 	movl	8(%ebp), %eax
 	movzbl	5(%eax), %eax
 	xorl	$1, %eax
 	testb	%al, %al
-	je	L73
-L72:
-	movl	$1, %eax
-	jmp	L74
-L73:
-	movl	$0, %eax
-L74:
+	je	L81
+	movl	8(%ebp), %eax
+	movzbl	6(%eax), %eax
+	xorl	$1, %eax
 	testb	%al, %al
-	je	L75
+	je	L81
+L80:
+	movl	$1, %eax
+	jmp	L82
+L81:
+	movl	$0, %eax
+L82:
+	testb	%al, %al
+	je	L83
 	movl	__ZN6dbgLog5level9container9m_poolPtrE, %ecx
 	movl	8(%ebp), %eax
 	movzbl	4(%eax), %eax
@@ -1113,8 +1246,8 @@ L74:
 	addl	%edx, %eax
 	sall	$2, %eax
 	addl	%ecx, %eax
-	jmp	L76
-L75:
+	jmp	L84
+L83:
 	movl	__ZN6dbgLog5level9container9m_poolPtrE, %ecx
 	movl	8(%ebp), %eax
 	movzbl	4(%eax), %eax
@@ -1128,20 +1261,20 @@ L75:
 	addl	%edx, %eax
 	sall	$2, %eax
 	addl	%ecx, %eax
-L76:
+L84:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3577:
+LFE3578:
 	.section	.text$_ZNK6dbgLog5level4nextEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK6dbgLog5level4nextEv
 	.def	__ZNK6dbgLog5level4nextEv;	.scl	2;	.type	32;	.endef
 __ZNK6dbgLog5level4nextEv:
-LFB3578:
+LFB3579:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1156,20 +1289,25 @@ LFB3578:
 	movl	%eax, (%esp)
 	call	__ZNK6dbgLog5level13valueAsOutputEv
 	cmpb	$4, %al
-	ja	L78
+	ja	L86
 	movl	8(%ebp), %eax
 	movzbl	5(%eax), %eax
 	xorl	$1, %eax
 	testb	%al, %al
-	je	L79
-L78:
-	movl	$1, %eax
-	jmp	L80
-L79:
-	movl	$0, %eax
-L80:
+	je	L87
+	movl	8(%ebp), %eax
+	movzbl	6(%eax), %eax
+	xorl	$1, %eax
 	testb	%al, %al
-	je	L81
+	je	L87
+L86:
+	movl	$1, %eax
+	jmp	L88
+L87:
+	movl	$0, %eax
+L88:
+	testb	%al, %al
+	je	L89
 	movl	__ZN6dbgLog5level9container9m_poolPtrE, %ecx
 	movl	8(%ebp), %eax
 	movzbl	4(%eax), %eax
@@ -1179,8 +1317,8 @@ L80:
 	addl	%edx, %eax
 	sall	$2, %eax
 	addl	%ecx, %eax
-	jmp	L82
-L81:
+	jmp	L90
+L89:
 	movl	__ZN6dbgLog5level9container9m_poolPtrE, %ecx
 	movl	8(%ebp), %eax
 	movzbl	4(%eax), %eax
@@ -1194,20 +1332,20 @@ L81:
 	addl	%edx, %eax
 	sall	$2, %eax
 	addl	%ecx, %eax
-L82:
+L90:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3578:
+LFE3579:
 	.section	.text$_ZN6dbgLog5levelC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog5levelC1Ev
 	.def	__ZN6dbgLog5levelC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog5levelC1Ev:
-LFB3581:
+LFB3582:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1224,123 +1362,34 @@ LFB3581:
 	movl	8(%ebp), %eax
 	movb	$0, 6(%eax)
 	movl	8(%ebp), %eax
-	movb	$32, 7(%eax)
+	movb	$0, 7(%eax)
 	movl	8(%ebp), %eax
 	movb	$32, 8(%eax)
 	movl	8(%ebp), %eax
 	movb	$32, 9(%eax)
 	movl	8(%ebp), %eax
 	movb	$32, 10(%eax)
+	movl	8(%ebp), %eax
+	movb	$32, 11(%eax)
 	call	__ZN6dbgLog5level9container14initializeOnceEv
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3581:
+LFE3582:
 	.section .rdata,"dr"
 	.align 4
 LC2:
 	.ascii "value >= BEGIN && value <= END\0"
 LC3:
 	.ascii "call_point.cpp\0"
-	.section	.text$_ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_,"x"
+	.section	.text$_ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
-	.def	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_:
-LFB3586:
-	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	pushl	%edi
-	pushl	%esi
-	pushl	%ebx
-	subl	$60, %esp
-	.cfi_offset 7, -12
-	.cfi_offset 6, -16
-	.cfi_offset 3, -20
-	movl	12(%ebp), %eax
-	movl	20(%ebp), %edi
-	movl	24(%ebp), %esi
-	movl	28(%ebp), %ebx
-	movl	32(%ebp), %ecx
-	movl	36(%ebp), %edx
-	movl	%edx, -56(%ebp)
-	movl	40(%ebp), %edx
-	movb	%al, -28(%ebp)
-	movl	%edi, %eax
-	movb	%al, -32(%ebp)
-	movl	%esi, %eax
-	movb	%al, -36(%ebp)
-	movb	%bl, -40(%ebp)
-	movb	%cl, -44(%ebp)
-	movzbl	-56(%ebp), %eax
-	movb	%al, -48(%ebp)
-	movl	%edx, %eax
-	movb	%al, -52(%ebp)
-	movl	8(%ebp), %eax
-	movl	16(%ebp), %edx
-	movl	%edx, (%eax)
-	movl	8(%ebp), %eax
-	movzbl	-28(%ebp), %edx
-	movb	%dl, 4(%eax)
-	movl	8(%ebp), %eax
-	movzbl	-32(%ebp), %edx
-	movb	%dl, 5(%eax)
-	movl	8(%ebp), %eax
-	movzbl	-36(%ebp), %edx
-	movb	%dl, 6(%eax)
-	movl	8(%ebp), %eax
-	movzbl	-40(%ebp), %edx
-	movb	%dl, 7(%eax)
-	movl	8(%ebp), %eax
-	movzbl	-44(%ebp), %edx
-	movb	%dl, 8(%eax)
-	movl	8(%ebp), %eax
-	movzbl	-48(%ebp), %edx
-	movb	%dl, 9(%eax)
-	movl	8(%ebp), %eax
-	movzbl	-52(%ebp), %edx
-	movb	%dl, 10(%eax)
-	cmpb	$13, -28(%ebp)
-	jbe	L85
-	movl	$LC2, 12(%esp)
-	movl	$__ZZN6dbgLog5levelC1EhPKcbbNS_5color7color_tES4_S4_S4_E19__PRETTY_FUNCTION__, 8(%esp)
-	movl	$467, 4(%esp)
-	movl	$LC3, (%esp)
-	call	___assert_func
-L85:
-	movl	8(%ebp), %eax
-	movzbl	4(%eax), %eax
-	movzbl	%al, %eax
-	movl	8(%ebp), %edx
-	movl	%edx, 4(%esp)
-	movl	%eax, (%esp)
-	call	__ZN6dbgLog5level9container3setEhRKS0_
-	addl	$60, %esp
-	popl	%ebx
-	.cfi_restore 3
-	popl	%esi
-	.cfi_restore 6
-	popl	%edi
-	.cfi_restore 7
-	popl	%ebp
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
-	ret
-	.cfi_endproc
-LFE3586:
-	.section	.text$_ZN6dbgLog5levelC1EhPKcbbNS_5color7color_tES4_S4_S4_,"x"
-	.linkonce discard
-	.align 2
-	.globl	__ZN6dbgLog5levelC1EhPKcbbNS_5color7color_tES4_S4_S4_
-	.def	__ZN6dbgLog5levelC1EhPKcbbNS_5color7color_tES4_S4_S4_;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog5levelC1EhPKcbbNS_5color7color_tES4_S4_S4_:
+	.globl	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
+	.def	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_:
 LFB3587:
 	.cfi_startproc
 	pushl	%ebp
@@ -1351,29 +1400,32 @@ LFB3587:
 	pushl	%edi
 	pushl	%esi
 	pushl	%ebx
-	subl	$60, %esp
+	subl	$76, %esp
 	.cfi_offset 7, -12
 	.cfi_offset 6, -16
 	.cfi_offset 3, -20
-	movl	12(%ebp), %eax
-	movl	20(%ebp), %edi
-	movl	24(%ebp), %esi
-	movl	28(%ebp), %ebx
-	movl	32(%ebp), %ecx
-	movl	36(%ebp), %edx
-	movl	%edx, -56(%ebp)
-	movl	40(%ebp), %edx
-	movb	%al, -28(%ebp)
-	movl	%edi, %eax
-	movb	%al, -32(%ebp)
-	movl	%esi, %eax
-	movb	%al, -36(%ebp)
-	movb	%bl, -40(%ebp)
-	movb	%cl, -44(%ebp)
-	movzbl	-56(%ebp), %eax
-	movb	%al, -48(%ebp)
-	movl	%edx, %eax
-	movb	%al, -52(%ebp)
+	movl	12(%ebp), %edx
+	movl	20(%ebp), %eax
+	movl	%eax, -60(%ebp)
+	movl	24(%ebp), %ecx
+	movl	%ecx, -64(%ebp)
+	movl	28(%ebp), %edi
+	movl	32(%ebp), %esi
+	movl	36(%ebp), %ebx
+	movl	40(%ebp), %ecx
+	movl	44(%ebp), %eax
+	movb	%dl, -28(%ebp)
+	movzbl	-60(%ebp), %edx
+	movb	%dl, -32(%ebp)
+	movzbl	-64(%ebp), %edx
+	movb	%dl, -36(%ebp)
+	movl	%edi, %edx
+	movb	%dl, -40(%ebp)
+	movl	%esi, %edx
+	movb	%dl, -44(%ebp)
+	movb	%bl, -48(%ebp)
+	movb	%cl, -52(%ebp)
+	movb	%al, -56(%ebp)
 	movl	8(%ebp), %eax
 	movl	16(%ebp), %edx
 	movl	%edx, (%eax)
@@ -1398,14 +1450,17 @@ LFB3587:
 	movl	8(%ebp), %eax
 	movzbl	-52(%ebp), %edx
 	movb	%dl, 10(%eax)
+	movl	8(%ebp), %eax
+	movzbl	-56(%ebp), %edx
+	movb	%dl, 11(%eax)
 	cmpb	$13, -28(%ebp)
-	jbe	L87
+	jbe	L93
 	movl	$LC2, 12(%esp)
-	movl	$__ZZN6dbgLog5levelC1EhPKcbbNS_5color7color_tES4_S4_S4_E19__PRETTY_FUNCTION__, 8(%esp)
-	movl	$467, 4(%esp)
+	movl	$__ZZN6dbgLog5levelC1EhPKcbbbNS_5color7color_tES4_S4_S4_E19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$472, 4(%esp)
 	movl	$LC3, (%esp)
 	call	___assert_func
-L87:
+L93:
 	movl	8(%ebp), %eax
 	movzbl	4(%eax), %eax
 	movzbl	%al, %eax
@@ -1413,7 +1468,7 @@ L87:
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog5level9container3setEhRKS0_
-	addl	$60, %esp
+	addl	$76, %esp
 	popl	%ebx
 	.cfi_restore 3
 	popl	%esi
@@ -1426,31 +1481,167 @@ L87:
 	ret
 	.cfi_endproc
 LFE3587:
-	.section	.text$_ZN6dbgLog5levelD2Ev,"x"
+	.section	.text$_ZN6dbgLog5levelC1EhPKcbbbNS_5color7color_tES4_S4_S4_,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog5levelD2Ev
-	.def	__ZN6dbgLog5levelD2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog5levelD2Ev:
-LFB3592:
+	.globl	__ZN6dbgLog5levelC1EhPKcbbbNS_5color7color_tES4_S4_S4_
+	.def	__ZN6dbgLog5levelC1EhPKcbbbNS_5color7color_tES4_S4_S4_;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog5levelC1EhPKcbbbNS_5color7color_tES4_S4_S4_:
+LFB3588:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
+	pushl	%edi
+	pushl	%esi
+	pushl	%ebx
+	subl	$76, %esp
+	.cfi_offset 7, -12
+	.cfi_offset 6, -16
+	.cfi_offset 3, -20
+	movl	12(%ebp), %edx
+	movl	20(%ebp), %eax
+	movl	%eax, -60(%ebp)
+	movl	24(%ebp), %ecx
+	movl	%ecx, -64(%ebp)
+	movl	28(%ebp), %edi
+	movl	32(%ebp), %esi
+	movl	36(%ebp), %ebx
+	movl	40(%ebp), %ecx
+	movl	44(%ebp), %eax
+	movb	%dl, -28(%ebp)
+	movzbl	-60(%ebp), %edx
+	movb	%dl, -32(%ebp)
+	movzbl	-64(%ebp), %edx
+	movb	%dl, -36(%ebp)
+	movl	%edi, %edx
+	movb	%dl, -40(%ebp)
+	movl	%esi, %edx
+	movb	%dl, -44(%ebp)
+	movb	%bl, -48(%ebp)
+	movb	%cl, -52(%ebp)
+	movb	%al, -56(%ebp)
+	movl	8(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, (%eax)
+	movl	8(%ebp), %eax
+	movzbl	-28(%ebp), %edx
+	movb	%dl, 4(%eax)
+	movl	8(%ebp), %eax
+	movzbl	-32(%ebp), %edx
+	movb	%dl, 5(%eax)
+	movl	8(%ebp), %eax
+	movzbl	-36(%ebp), %edx
+	movb	%dl, 6(%eax)
+	movl	8(%ebp), %eax
+	movzbl	-40(%ebp), %edx
+	movb	%dl, 7(%eax)
+	movl	8(%ebp), %eax
+	movzbl	-44(%ebp), %edx
+	movb	%dl, 8(%eax)
+	movl	8(%ebp), %eax
+	movzbl	-48(%ebp), %edx
+	movb	%dl, 9(%eax)
+	movl	8(%ebp), %eax
+	movzbl	-52(%ebp), %edx
+	movb	%dl, 10(%eax)
+	movl	8(%ebp), %eax
+	movzbl	-56(%ebp), %edx
+	movb	%dl, 11(%eax)
+	cmpb	$13, -28(%ebp)
+	jbe	L95
+	movl	$LC2, 12(%esp)
+	movl	$__ZZN6dbgLog5levelC1EhPKcbbbNS_5color7color_tES4_S4_S4_E19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$472, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L95:
+	movl	8(%ebp), %eax
+	movzbl	4(%eax), %eax
+	movzbl	%al, %eax
+	movl	8(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5level9container3setEhRKS0_
+	addl	$76, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
+	popl	%edi
+	.cfi_restore 7
 	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3592:
-	.section	.text$_ZN6dbgLog5levelD1Ev,"x"
+LFE3588:
+	.section	.text$_ZN6dbgLog5levelC1Eh,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog5levelD1Ev
-	.def	__ZN6dbgLog5levelD1Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog5levelD1Ev:
+	.globl	__ZN6dbgLog5levelC1Eh
+	.def	__ZN6dbgLog5levelC1Eh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog5levelC1Eh:
+LFB3591:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	12(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movl	8(%ebp), %eax
+	movl	$0, (%eax)
+	movl	8(%ebp), %eax
+	movzbl	-12(%ebp), %edx
+	movb	%dl, 4(%eax)
+	movl	8(%ebp), %eax
+	movb	$0, 5(%eax)
+	movl	8(%ebp), %eax
+	movb	$0, 6(%eax)
+	movl	8(%ebp), %eax
+	movb	$0, 7(%eax)
+	movl	8(%ebp), %eax
+	movb	$32, 8(%eax)
+	movl	8(%ebp), %eax
+	movb	$32, 9(%eax)
+	movl	8(%ebp), %eax
+	movb	$32, 10(%eax)
+	movl	8(%ebp), %eax
+	movb	$32, 11(%eax)
+	cmpb	$13, -12(%ebp)
+	jbe	L97
+	movl	$LC2, 12(%esp)
+	movl	$__ZZN6dbgLog5levelC1EhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$486, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L97:
+	movl	8(%ebp), %eax
+	movzbl	4(%eax), %eax
+	movzbl	%al, %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5level9container3getEh
+	movl	%eax, 4(%esp)
+	movl	8(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5levelaSERKS0_
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3591:
+	.section	.text$_ZN6dbgLog5levelD2Ev,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN6dbgLog5levelD2Ev
+	.def	__ZN6dbgLog5levelD2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog5levelD2Ev:
 LFB3593:
 	.cfi_startproc
 	pushl	%ebp
@@ -1464,6 +1655,25 @@ LFB3593:
 	ret
 	.cfi_endproc
 LFE3593:
+	.section	.text$_ZN6dbgLog5levelD1Ev,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZN6dbgLog5levelD1Ev
+	.def	__ZN6dbgLog5levelD1Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog5levelD1Ev:
+LFB3594:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3594:
 	.section .rdata,"dr"
 LC4:
 	.ascii "(END)\0"
@@ -1473,7 +1683,7 @@ LC4:
 	.globl	__ZN6dbgLog9level_endC1Ev
 	.def	__ZN6dbgLog9level_endC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog9level_endC1Ev:
-LFB3598:
+LFB3599:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1482,29 +1692,30 @@ LFB3598:
 	.cfi_def_cfa_register 5
 	subl	$56, %esp
 	movl	8(%ebp), %eax
+	movl	$32, 36(%esp)
 	movl	$32, 32(%esp)
 	movl	$32, 28(%esp)
 	movl	$32, 24(%esp)
-	movl	$32, 20(%esp)
+	movl	$0, 20(%esp)
 	movl	$0, 16(%esp)
 	movl	$0, 12(%esp)
 	movl	$LC4, 8(%esp)
 	movl	$13, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3598:
-	.section	.text$_ZN6dbgLog12level_normalILh2ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EED2Ev,"x"
+LFE3599:
+	.section	.text$_ZN6dbgLog12level_normalILh2ELb1ELb1ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh2ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EED2Ev
-	.def	__ZN6dbgLog12level_normalILh2ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh2ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EED2Ev:
-LFB3601:
+	.globl	__ZN6dbgLog12level_normalILh2ELb1ELb1ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EED2Ev
+	.def	__ZN6dbgLog12level_normalILh2ELb1ELb1ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh2ELb1ELb1ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EED2Ev:
+LFB3602:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1520,7 +1731,7 @@ LFB3601:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3601:
+LFE3602:
 	.section .rdata,"dr"
 LC5:
 	.ascii "asNormal\0"
@@ -1530,7 +1741,7 @@ LC5:
 	.globl	__ZN6dbgLog14level_asNormalC1Ev
 	.def	__ZN6dbgLog14level_asNormalC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog14level_asNormalC1Ev:
-LFB3604:
+LFB3605:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1541,20 +1752,20 @@ LFB3604:
 	movl	8(%ebp), %eax
 	movl	$LC5, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh2ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EEC2EPKc
+	call	__ZN6dbgLog12level_normalILh2ELb1ELb1ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3604:
-	.section	.text$_ZN6dbgLog12level_normalILh0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev,"x"
+LFE3605:
+	.section	.text$_ZN6dbgLog12level_normalILh0ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev
-	.def	__ZN6dbgLog12level_normalILh0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev:
-LFB3607:
+	.globl	__ZN6dbgLog12level_normalILh0ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev
+	.def	__ZN6dbgLog12level_normalILh0ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh0ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev:
+LFB3608:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1570,7 +1781,7 @@ LFB3607:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3607:
+LFE3608:
 	.section .rdata,"dr"
 LC6:
 	.ascii "asVerbose\0"
@@ -1580,7 +1791,7 @@ LC6:
 	.globl	__ZN6dbgLog15level_asVerboseC1Ev
 	.def	__ZN6dbgLog15level_asVerboseC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog15level_asVerboseC1Ev:
-LFB3610:
+LFB3611:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1591,20 +1802,20 @@ LFB3610:
 	movl	8(%ebp), %eax
 	movl	$LC6, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc
+	call	__ZN6dbgLog12level_normalILh0ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3610:
-	.section	.text$_ZN6dbgLog12level_normalILh1ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev,"x"
+LFE3611:
+	.section	.text$_ZN6dbgLog12level_normalILh1ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh1ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev
-	.def	__ZN6dbgLog12level_normalILh1ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh1ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev:
-LFB3613:
+	.globl	__ZN6dbgLog12level_normalILh1ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev
+	.def	__ZN6dbgLog12level_normalILh1ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh1ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev:
+LFB3614:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1620,7 +1831,7 @@ LFB3613:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3613:
+LFE3614:
 	.section .rdata,"dr"
 LC7:
 	.ascii "asDetail\0"
@@ -1630,7 +1841,7 @@ LC7:
 	.globl	__ZN6dbgLog14level_asDetailC1Ev
 	.def	__ZN6dbgLog14level_asDetailC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog14level_asDetailC1Ev:
-LFB3616:
+LFB3617:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1641,20 +1852,20 @@ LFB3616:
 	movl	8(%ebp), %eax
 	movl	$LC7, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh1ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc
+	call	__ZN6dbgLog12level_normalILh1ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3616:
-	.section	.text$_ZN6dbgLog12level_normalILh4ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EED2Ev,"x"
+LFE3617:
+	.section	.text$_ZN6dbgLog12level_normalILh4ELb1ELb1ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh4ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EED2Ev
-	.def	__ZN6dbgLog12level_normalILh4ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh4ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EED2Ev:
-LFB3619:
+	.globl	__ZN6dbgLog12level_normalILh4ELb1ELb1ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EED2Ev
+	.def	__ZN6dbgLog12level_normalILh4ELb1ELb1ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh4ELb1ELb1ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EED2Ev:
+LFB3620:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1670,7 +1881,7 @@ LFB3619:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3619:
+LFE3620:
 	.section .rdata,"dr"
 LC8:
 	.ascii "asImportant\0"
@@ -1680,7 +1891,7 @@ LC8:
 	.globl	__ZN6dbgLog17level_asImportantC1Ev
 	.def	__ZN6dbgLog17level_asImportantC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog17level_asImportantC1Ev:
-LFB3622:
+LFB3623:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1691,20 +1902,20 @@ LFB3622:
 	movl	8(%ebp), %eax
 	movl	$LC8, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh4ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EEC2EPKc
+	call	__ZN6dbgLog12level_normalILh4ELb1ELb1ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3622:
-	.section	.text$_ZN6dbgLog12level_normalILh6ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EED2Ev,"x"
+LFE3623:
+	.section	.text$_ZN6dbgLog12level_normalILh6ELb1ELb1ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh6ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EED2Ev
-	.def	__ZN6dbgLog12level_normalILh6ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh6ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EED2Ev:
-LFB3625:
+	.globl	__ZN6dbgLog12level_normalILh6ELb1ELb1ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EED2Ev
+	.def	__ZN6dbgLog12level_normalILh6ELb1ELb1ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh6ELb1ELb1ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EED2Ev:
+LFB3626:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1720,7 +1931,7 @@ LFB3625:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3625:
+LFE3626:
 	.section .rdata,"dr"
 LC9:
 	.ascii "asWarning\0"
@@ -1730,7 +1941,7 @@ LC9:
 	.globl	__ZN6dbgLog15level_asWarningC1Ev
 	.def	__ZN6dbgLog15level_asWarningC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog15level_asWarningC1Ev:
-LFB3628:
+LFB3629:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1741,20 +1952,20 @@ LFB3628:
 	movl	8(%ebp), %eax
 	movl	$LC9, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh6ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EEC2EPKc
+	call	__ZN6dbgLog12level_normalILh6ELb1ELb1ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3628:
-	.section	.text$_ZN6dbgLog12level_normalILh8ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EED2Ev,"x"
+LFE3629:
+	.section	.text$_ZN6dbgLog12level_normalILh8ELb1ELb1ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh8ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EED2Ev
-	.def	__ZN6dbgLog12level_normalILh8ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh8ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EED2Ev:
-LFB3631:
+	.globl	__ZN6dbgLog12level_normalILh8ELb1ELb1ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EED2Ev
+	.def	__ZN6dbgLog12level_normalILh8ELb1ELb1ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh8ELb1ELb1ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EED2Ev:
+LFB3632:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1770,7 +1981,7 @@ LFB3631:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3631:
+LFE3632:
 	.section .rdata,"dr"
 LC10:
 	.ascii "asCritical\0"
@@ -1780,7 +1991,7 @@ LC10:
 	.globl	__ZN6dbgLog16level_asCriticalC1Ev
 	.def	__ZN6dbgLog16level_asCriticalC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog16level_asCriticalC1Ev:
-LFB3634:
+LFB3635:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1791,20 +2002,20 @@ LFB3634:
 	movl	8(%ebp), %eax
 	movl	$LC10, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh8ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EEC2EPKc
+	call	__ZN6dbgLog12level_normalILh8ELb1ELb1ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3634:
-	.section	.text$_ZN6dbgLog12level_normalILh10ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EED2Ev,"x"
+LFE3635:
+	.section	.text$_ZN6dbgLog12level_normalILh10ELb1ELb0ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh10ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EED2Ev
-	.def	__ZN6dbgLog12level_normalILh10ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh10ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EED2Ev:
-LFB3637:
+	.globl	__ZN6dbgLog12level_normalILh10ELb1ELb0ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EED2Ev
+	.def	__ZN6dbgLog12level_normalILh10ELb1ELb0ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh10ELb1ELb0ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EED2Ev:
+LFB3638:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1820,7 +2031,7 @@ LFB3637:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3637:
+LFE3638:
 	.section .rdata,"dr"
 LC11:
 	.ascii "asAbsolute\0"
@@ -1830,7 +2041,7 @@ LC11:
 	.globl	__ZN6dbgLog16level_asAbsoluteC1Ev
 	.def	__ZN6dbgLog16level_asAbsoluteC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog16level_asAbsoluteC1Ev:
-LFB3640:
+LFB3641:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1841,20 +2052,20 @@ LFB3640:
 	movl	8(%ebp), %eax
 	movl	$LC11, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh10ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EEC2EPKc
+	call	__ZN6dbgLog12level_normalILh10ELb1ELb0ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3640:
+LFE3641:
 	.section	.text$_ZN6dbgLog13level_specialILh11EED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog13level_specialILh11EED2Ev
 	.def	__ZN6dbgLog13level_specialILh11EED2Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog13level_specialILh11EED2Ev:
-LFB3643:
+LFB3644:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1870,7 +2081,7 @@ LFB3643:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3643:
+LFE3644:
 	.section .rdata,"dr"
 LC12:
 	.ascii "asSilent\0"
@@ -1880,7 +2091,7 @@ LC12:
 	.globl	__ZN6dbgLog14level_asSilentC1Ev
 	.def	__ZN6dbgLog14level_asSilentC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog14level_asSilentC1Ev:
-LFB3646:
+LFB3647:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1897,14 +2108,14 @@ LFB3646:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3646:
+LFE3647:
 	.section	.text$_ZN6dbgLog13level_specialILh12EED2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog13level_specialILh12EED2Ev
 	.def	__ZN6dbgLog13level_specialILh12EED2Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog13level_specialILh12EED2Ev:
-LFB3649:
+LFB3650:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1920,7 +2131,7 @@ LFB3649:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3649:
+LFE3650:
 	.section .rdata,"dr"
 LC13:
 	.ascii "asSilentAbsolutely\0"
@@ -1930,7 +2141,7 @@ LC13:
 	.globl	__ZN6dbgLog24level_asSilentAbsolutelyC1Ev
 	.def	__ZN6dbgLog24level_asSilentAbsolutelyC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog24level_asSilentAbsolutelyC1Ev:
-LFB3652:
+LFB3653:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1947,7 +2158,7 @@ LFB3652:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3652:
+LFE3653:
 	.globl	__ZN6dbgLog5level9container15m_isInitializedE
 	.bss
 __ZN6dbgLog5level9container15m_isInitializedE:
@@ -1970,7 +2181,7 @@ __ZN6dbgLog5level9container15m_isAlreadyPoolE:
 	.globl	__ZN6dbgLog14level_asNormalD1Ev
 	.def	__ZN6dbgLog14level_asNormalD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog14level_asNormalD1Ev:
-LFB3659:
+LFB3660:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1980,20 +2191,20 @@ LFB3659:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh2ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EED2Ev
+	call	__ZN6dbgLog12level_normalILh2ELb1ELb1ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3659:
+LFE3660:
 	.section	.text$_ZN6dbgLog15level_asVerboseD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog15level_asVerboseD1Ev
 	.def	__ZN6dbgLog15level_asVerboseD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog15level_asVerboseD1Ev:
-LFB3662:
+LFB3663:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2003,20 +2214,20 @@ LFB3662:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev
+	call	__ZN6dbgLog12level_normalILh0ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3662:
+LFE3663:
 	.section	.text$_ZN6dbgLog14level_asDetailD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog14level_asDetailD1Ev
 	.def	__ZN6dbgLog14level_asDetailD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog14level_asDetailD1Ev:
-LFB3665:
+LFB3666:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2026,20 +2237,20 @@ LFB3665:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh1ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev
+	call	__ZN6dbgLog12level_normalILh1ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3665:
+LFE3666:
 	.section	.text$_ZN6dbgLog17level_asImportantD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog17level_asImportantD1Ev
 	.def	__ZN6dbgLog17level_asImportantD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog17level_asImportantD1Ev:
-LFB3668:
+LFB3669:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2049,20 +2260,20 @@ LFB3668:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh4ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EED2Ev
+	call	__ZN6dbgLog12level_normalILh4ELb1ELb1ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3668:
+LFE3669:
 	.section	.text$_ZN6dbgLog15level_asWarningD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog15level_asWarningD1Ev
 	.def	__ZN6dbgLog15level_asWarningD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog15level_asWarningD1Ev:
-LFB3671:
+LFB3672:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2072,20 +2283,20 @@ LFB3671:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh6ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EED2Ev
+	call	__ZN6dbgLog12level_normalILh6ELb1ELb1ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3671:
+LFE3672:
 	.section	.text$_ZN6dbgLog16level_asCriticalD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog16level_asCriticalD1Ev
 	.def	__ZN6dbgLog16level_asCriticalD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog16level_asCriticalD1Ev:
-LFB3674:
+LFB3675:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2095,20 +2306,20 @@ LFB3674:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh8ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EED2Ev
+	call	__ZN6dbgLog12level_normalILh8ELb1ELb1ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3674:
+LFE3675:
 	.section	.text$_ZN6dbgLog16level_asAbsoluteD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog16level_asAbsoluteD1Ev
 	.def	__ZN6dbgLog16level_asAbsoluteD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog16level_asAbsoluteD1Ev:
-LFB3677:
+LFB3678:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2118,20 +2329,20 @@ LFB3677:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog12level_normalILh10ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EED2Ev
+	call	__ZN6dbgLog12level_normalILh10ELb1ELb0ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3677:
+LFE3678:
 	.section	.text$_ZN6dbgLog14level_asSilentD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog14level_asSilentD1Ev
 	.def	__ZN6dbgLog14level_asSilentD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog14level_asSilentD1Ev:
-LFB3680:
+LFB3681:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2147,14 +2358,14 @@ LFB3680:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3680:
+LFE3681:
 	.section	.text$_ZN6dbgLog24level_asSilentAbsolutelyD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog24level_asSilentAbsolutelyD1Ev
 	.def	__ZN6dbgLog24level_asSilentAbsolutelyD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog24level_asSilentAbsolutelyD1Ev:
-LFB3683:
+LFB3684:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2170,14 +2381,14 @@ LFB3683:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3683:
+LFE3684:
 	.section	.text$_ZN6dbgLog9level_endD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog9level_endD1Ev
 	.def	__ZN6dbgLog9level_endD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog9level_endD1Ev:
-LFB3686:
+LFB3687:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2193,7 +2404,7 @@ LFB3686:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3686:
+LFE3687:
 	.section .rdata,"dr"
 LC14:
 	.ascii "(undefined)\0"
@@ -2202,7 +2413,7 @@ LC14:
 	.globl	__ZN6dbgLog5level9container14initializeOnceEv
 	.def	__ZN6dbgLog5level9container14initializeOnceEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog5level9container14initializeOnceEv:
-LFB3656:
+LFB3657:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2212,9 +2423,9 @@ LFB3656:
 	subl	$200, %esp
 	movzbl	__ZN6dbgLog5level9container15m_isInitializedE, %eax
 	testb	%al, %al
-	je	L141
-	jmp	L140
-L141:
+	je	L151
+	jmp	L150
+L151:
 	movb	$1, __ZN6dbgLog5level9container15m_isInitializedE
 	movl	$__ZN6dbgLog5level9container15m_isAlreadyPoolE, (%esp)
 	call	__ZNSt6bitsetILj14EE5resetEv
@@ -2224,20 +2435,21 @@ L141:
 	call	_memset
 	movl	$__ZN6dbgLog5level9container6m_poolE, __ZN6dbgLog5level9container9m_poolPtrE
 	movb	$0, -9(%ebp)
-	jmp	L143
-L144:
+	jmp	L153
+L154:
 	movzbl	-9(%ebp), %eax
+	movl	$32, 36(%esp)
 	movl	$32, 32(%esp)
 	movl	$32, 28(%esp)
 	movl	$32, 24(%esp)
-	movl	$32, 20(%esp)
+	movl	$0, 20(%esp)
 	movl	$0, 16(%esp)
 	movl	$0, 12(%esp)
 	movl	$LC14, 8(%esp)
 	movl	%eax, 4(%esp)
 	leal	-152(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC1EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC1EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leal	-152(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog5levelD1Ev
@@ -2256,9 +2468,9 @@ L144:
 	movl	%eax, (%esp)
 	call	__ZNSt6bitsetILj14EE9referenceD1Ev
 	addb	$1, -9(%ebp)
-L143:
+L153:
 	cmpb	$12, -9(%ebp)
-	jbe	L144
+	jbe	L154
 	leal	-132(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog14level_asNormalC1Ev
@@ -2319,18 +2531,18 @@ L143:
 	leal	-24(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog9level_endD1Ev
-L140:
+L150:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3656:
+LFE3657:
 .lcomm __ZN6dbgLogL20s_levelForInitializeE,12,4
 	.section .rdata,"dr"
 	.align 4
 LC15:
-	.ascii "level=%d, name=\"%s\", valueAsOutput=%d, forOutput=%d, forOutputMask=%d\12\0"
+	.ascii "level=%d, name=\"%s\", valueAsOutput=%d, forLog=%d, forNotice=%d, forMask=%d\12\0"
 LC16:
 	.ascii "           prev=%s(%d)\12\0"
 LC17:
@@ -2339,10 +2551,10 @@ LC17:
 	.globl	__ZN6dbgLog13printLevelAllEv
 	.def	__ZN6dbgLog13printLevelAllEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog13printLevelAllEv:
-LFB3687:
+LFB3688:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3687
+	.cfi_lsda 0,LLSDA3688
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -2365,8 +2577,8 @@ LFB3687:
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog5level9container3endEv
 	subl	$4, %esp
-	jmp	L146
-L147:
+	jmp	L156
+L157:
 	leal	-43(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK6dbgLog5level8iteratordeEv
@@ -2382,14 +2594,19 @@ LEHE0:
 	subl	$4, %esp
 	movl	-32(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZNK6dbgLog5level13forOutputMaskEv
+	call	__ZNK6dbgLog5level7forMaskEv
 	movzbl	%al, %eax
 	movl	%eax, -60(%ebp)
 	movl	-32(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZNK6dbgLog5level9forOutputEv
+	call	__ZNK6dbgLog5level9forNoticeEv
 	movzbl	%al, %eax
 	movl	%eax, -64(%ebp)
+	movl	-32(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level6forLogEv
+	movzbl	%al, %eax
+	movl	%eax, -68(%ebp)
 	movl	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK6dbgLog5level13valueAsOutputEv
@@ -2406,9 +2623,11 @@ LEHB1:
 	call	___getreent
 	movl	8(%eax), %eax
 	movl	-60(%ebp), %ecx
-	movl	%ecx, 24(%esp)
+	movl	%ecx, 28(%esp)
 	movl	-64(%ebp), %edx
-	movl	%edx, 20(%esp)
+	movl	%edx, 24(%esp)
+	movl	-68(%ebp), %ecx
+	movl	%ecx, 20(%esp)
 	movl	%edi, 16(%esp)
 	movl	%ebx, 12(%esp)
 	movl	%esi, 8(%esp)
@@ -2460,7 +2679,7 @@ LEHE1:
 	leal	-43(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK6dbgLog5level8iteratorppEv
-L146:
+L156:
 	movzbl	-44(%ebp), %eax
 	movb	%al, -41(%ebp)
 	leal	-41(%ebp), %eax
@@ -2473,23 +2692,23 @@ L146:
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog5level8iteratorD1Ev
 	testb	%bl, %bl
-	jne	L147
+	jne	L157
 	leal	-44(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog5level8iteratorD1Ev
 	leal	-43(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog5level8iteratorD1Ev
-	jmp	L152
-L151:
+	jmp	L162
+L161:
 	movl	%eax, %ebx
 	leal	-50(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog5colorD1Ev
 	movl	%ebx, %eax
-	jmp	L149
-L150:
-L149:
+	jmp	L159
+L160:
+L159:
 	movl	%eax, %ebx
 	leal	-44(%ebp), %eax
 	movl	%eax, (%esp)
@@ -2502,7 +2721,7 @@ L149:
 LEHB2:
 	call	__Unwind_Resume
 LEHE2:
-L152:
+L162:
 	leal	-12(%ebp), %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -2515,27 +2734,27 @@ L152:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3687:
+LFE3688:
 	.section	.gcc_except_table,"w"
-LLSDA3687:
+LLSDA3688:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3687-LLSDACSB3687
-LLSDACSB3687:
-	.uleb128 LEHB0-LFB3687
+	.uleb128 LLSDACSE3688-LLSDACSB3688
+LLSDACSB3688:
+	.uleb128 LEHB0-LFB3688
 	.uleb128 LEHE0-LEHB0
-	.uleb128 L150-LFB3687
+	.uleb128 L160-LFB3688
 	.uleb128 0
-	.uleb128 LEHB1-LFB3687
+	.uleb128 LEHB1-LFB3688
 	.uleb128 LEHE1-LEHB1
-	.uleb128 L151-LFB3687
+	.uleb128 L161-LFB3688
 	.uleb128 0
-	.uleb128 LEHB2-LFB3687
+	.uleb128 LEHB2-LFB3688
 	.uleb128 LEHE2-LEHB2
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3687:
+LLSDACSE3688:
 	.text
 	.section	.text$_ZNK6dbgLog8category8iteratordeEv,"x"
 	.linkonce discard
@@ -2543,7 +2762,7 @@ LLSDACSE3687:
 	.globl	__ZNK6dbgLog8category8iteratordeEv
 	.def	__ZNK6dbgLog8category8iteratordeEv;	.scl	2;	.type	32;	.endef
 __ZNK6dbgLog8category8iteratordeEv:
-LFB3689:
+LFB3690:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2561,14 +2780,14 @@ LFB3689:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3689:
+LFE3690:
 	.section	.text$_ZNK6dbgLog8category8iteratorneES1_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK6dbgLog8category8iteratorneES1_
 	.def	__ZNK6dbgLog8category8iteratorneES1_;	.scl	2;	.type	32;	.endef
 __ZNK6dbgLog8category8iteratorneES1_:
-LFB3691:
+LFB3692:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2586,14 +2805,14 @@ LFB3691:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3691:
+LFE3692:
 	.section	.text$_ZNK6dbgLog8category8iteratorppEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK6dbgLog8category8iteratorppEv
 	.def	__ZNK6dbgLog8category8iteratorppEv;	.scl	2;	.type	32;	.endef
 __ZNK6dbgLog8category8iteratorppEv:
-LFB3692:
+LFB3693:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2607,10 +2826,10 @@ LFB3692:
 	movzbl	(%eax), %ebx
 	call	__ZN6dbgLog8category9container8endValueEv
 	cmpb	%al, %bl
-	jb	L158
+	jb	L168
 	call	__ZN6dbgLog8category9container6getEndEv
-	jmp	L159
-L158:
+	jmp	L169
+L168:
 	movl	8(%ebp), %eax
 	movzbl	(%eax), %eax
 	leal	1(%eax), %edx
@@ -2621,7 +2840,7 @@ L158:
 	movzbl	%al, %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog8category9container3getEh
-L159:
+L169:
 	addl	$20, %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -2630,14 +2849,14 @@ L159:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3692:
+LFE3693:
 	.section	.text$_ZNSt8iteratorISt26bidirectional_iterator_tagN6dbgLog8categoryEiPS2_RS2_EC2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt8iteratorISt26bidirectional_iterator_tagN6dbgLog8categoryEiPS2_RS2_EC2Ev
 	.def	__ZNSt8iteratorISt26bidirectional_iterator_tagN6dbgLog8categoryEiPS2_RS2_EC2Ev;	.scl	2;	.type	32;	.endef
 __ZNSt8iteratorISt26bidirectional_iterator_tagN6dbgLog8categoryEiPS2_RS2_EC2Ev:
-LFB3699:
+LFB3700:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2649,14 +2868,14 @@ LFB3699:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3699:
+LFE3700:
 	.section	.text$_ZN6dbgLog8category8iteratorC1Eh,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog8category8iteratorC1Eh
 	.def	__ZN6dbgLog8category8iteratorC1Eh;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8category8iteratorC1Eh:
-LFB3702:
+LFB3703:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2677,14 +2896,14 @@ LFB3702:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3702:
+LFE3703:
 	.section	.text$_ZN6dbgLog8category8iteratorD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog8category8iteratorD1Ev
 	.def	__ZN6dbgLog8category8iteratorD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8category8iteratorD1Ev:
-LFB3717:
+LFB3718:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2696,13 +2915,13 @@ LFB3717:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3717:
+LFE3718:
 	.section	.text$_ZN6dbgLog8category9container10beginValueEv,"x"
 	.linkonce discard
 	.globl	__ZN6dbgLog8category9container10beginValueEv
 	.def	__ZN6dbgLog8category9container10beginValueEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8category9container10beginValueEv:
-LFB3718:
+LFB3719:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2715,13 +2934,13 @@ LFB3718:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3718:
+LFE3719:
 	.section	.text$_ZN6dbgLog8category9container8endValueEv,"x"
 	.linkonce discard
 	.globl	__ZN6dbgLog8category9container8endValueEv
 	.def	__ZN6dbgLog8category9container8endValueEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8category9container8endValueEv:
-LFB3719:
+LFB3720:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2734,13 +2953,13 @@ LFB3719:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3719:
+LFE3720:
 	.section	.text$_ZN6dbgLog8category9container3getEh,"x"
 	.linkonce discard
 	.globl	__ZN6dbgLog8category9container3getEh
 	.def	__ZN6dbgLog8category9container3getEh;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8category9container3getEh:
-LFB3720:
+LFB3721:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2750,22 +2969,25 @@ LFB3720:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movb	%al, -4(%ebp)
-	movl	__ZN6dbgLog8category9container9m_poolPtrE, %eax
+	movl	__ZN6dbgLog8category9container9m_poolPtrE, %ecx
 	movzbl	-4(%ebp), %edx
-	sall	$3, %edx
+	movl	%edx, %eax
+	addl	%eax, %eax
 	addl	%edx, %eax
+	sall	$2, %eax
+	addl	%ecx, %eax
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3720:
+LFE3721:
 	.section	.text$_ZN6dbgLog8category9container6getEndEv,"x"
 	.linkonce discard
 	.globl	__ZN6dbgLog8category9container6getEndEv
 	.def	__ZN6dbgLog8category9container6getEndEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8category9container6getEndEv:
-LFB3722:
+LFB3723:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2776,8 +2998,11 @@ LFB3722:
 	.cfi_offset 3, -12
 	movl	__ZN6dbgLog8category9container9m_poolPtrE, %ebx
 	call	__ZN6dbgLog8category9container8endValueEv
-	movzbl	%al, %eax
-	sall	$3, %eax
+	movzbl	%al, %edx
+	movl	%edx, %eax
+	addl	%eax, %eax
+	addl	%edx, %eax
+	sall	$2, %eax
 	addl	%ebx, %eax
 	popl	%ebx
 	.cfi_restore 3
@@ -2786,13 +3011,13 @@ LFB3722:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3722:
+LFE3723:
 	.section	.text$_ZN6dbgLog8category9container3setEhRKS0_,"x"
 	.linkonce discard
 	.globl	__ZN6dbgLog8category9container3setEhRKS0_
 	.def	__ZN6dbgLog8category9container3setEhRKS0_;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8category9container3setEhRKS0_:
-LFB3723:
+LFB3724:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2820,11 +3045,14 @@ LFB3723:
 	movl	%eax, (%esp)
 	call	__ZNSt6bitsetILj68EE9referenceD1Ev
 	testb	%bl, %bl
-	je	L173
-	movl	__ZN6dbgLog8category9container9m_poolPtrE, %eax
+	je	L183
+	movl	__ZN6dbgLog8category9container9m_poolPtrE, %ecx
 	movzbl	-28(%ebp), %edx
-	sall	$3, %edx
-	addl	%eax, %edx
+	movl	%edx, %eax
+	addl	%eax, %eax
+	addl	%edx, %eax
+	sall	$2, %eax
+	leal	(%ecx,%eax), %edx
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	%edx, (%esp)
@@ -2843,7 +3071,7 @@ LFB3723:
 	leal	-16(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6bitsetILj68EE9referenceD1Ev
-L173:
+L183:
 	movl	-4(%ebp), %ebx
 	leave
 	.cfi_restore 5
@@ -2851,13 +3079,13 @@ L173:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3723:
+LFE3724:
 	.section	.text$_ZN6dbgLog8category9container5beginEv,"x"
 	.linkonce discard
 	.globl	__ZN6dbgLog8category9container5beginEv
 	.def	__ZN6dbgLog8category9container5beginEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8category9container5beginEv:
-LFB3724:
+LFB3725:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2877,13 +3105,13 @@ LFB3724:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3724:
+LFE3725:
 	.section	.text$_ZN6dbgLog8category9container3endEv,"x"
 	.linkonce discard
 	.globl	__ZN6dbgLog8category9container3endEv
 	.def	__ZN6dbgLog8category9container3endEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8category9container3endEv:
-LFB3725:
+LFB3726:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2903,14 +3131,14 @@ LFB3725:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3725:
+LFE3726:
 	.section	.text$_ZN6dbgLog8categoryaSERKS0_,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog8categoryaSERKS0_
 	.def	__ZN6dbgLog8categoryaSERKS0_;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8categoryaSERKS0_:
-LFB3730:
+LFB3731:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2918,7 +3146,7 @@ LFB3730:
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
-	movl	$8, 8(%esp)
+	movl	$12, 8(%esp)
 	movl	12(%ebp), %eax
 	movl	%eax, 4(%esp)
 	movl	8(%ebp), %eax
@@ -2930,14 +3158,14 @@ LFB3730:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3730:
+LFE3731:
 	.section	.text$_ZNK6dbgLog8category5valueEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK6dbgLog8category5valueEv
 	.def	__ZNK6dbgLog8category5valueEv;	.scl	2;	.type	32;	.endef
 __ZNK6dbgLog8category5valueEv:
-LFB3734:
+LFB3735:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2951,14 +3179,14 @@ LFB3734:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3734:
+LFE3735:
 	.section	.text$_ZNK6dbgLog8category4nameEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK6dbgLog8category4nameEv
 	.def	__ZNK6dbgLog8category4nameEv;	.scl	2;	.type	32;	.endef
 __ZNK6dbgLog8category4nameEv:
-LFB3735:
+LFB3736:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2972,14 +3200,14 @@ LFB3735:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3735:
+LFE3736:
 	.section	.text$_ZNK6dbgLog8category10isAssignedEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK6dbgLog8category10isAssignedEv
 	.def	__ZNK6dbgLog8category10isAssignedEv;	.scl	2;	.type	32;	.endef
 __ZNK6dbgLog8category10isAssignedEv:
-LFB3736:
+LFB3737:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2993,14 +3221,14 @@ LFB3736:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3736:
+LFE3737:
 	.section	.text$_ZNK6dbgLog8category10isReservedEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNK6dbgLog8category10isReservedEv
 	.def	__ZNK6dbgLog8category10isReservedEv;	.scl	2;	.type	32;	.endef
 __ZNK6dbgLog8category10isReservedEv:
-LFB3737:
+LFB3738:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3015,14 +3243,14 @@ LFB3737:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3737:
-	.section	.text$_ZNK6dbgLog8category9forOutputEv,"x"
+LFE3738:
+	.section	.text$_ZNK6dbgLog8category6forLogEv,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZNK6dbgLog8category9forOutputEv
-	.def	__ZNK6dbgLog8category9forOutputEv;	.scl	2;	.type	32;	.endef
-__ZNK6dbgLog8category9forOutputEv:
-LFB3738:
+	.globl	__ZNK6dbgLog8category6forLogEv
+	.def	__ZNK6dbgLog8category6forLogEv;	.scl	2;	.type	32;	.endef
+__ZNK6dbgLog8category6forLogEv:
+LFB3739:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3036,14 +3264,14 @@ LFB3738:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3738:
-	.section	.text$_ZNK6dbgLog8category11forSetLevelEv,"x"
+LFE3739:
+	.section	.text$_ZNK6dbgLog8category9forNoticeEv,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZNK6dbgLog8category11forSetLevelEv
-	.def	__ZNK6dbgLog8category11forSetLevelEv;	.scl	2;	.type	32;	.endef
-__ZNK6dbgLog8category11forSetLevelEv:
-LFB3739:
+	.globl	__ZNK6dbgLog8category9forNoticeEv
+	.def	__ZNK6dbgLog8category9forNoticeEv;	.scl	2;	.type	32;	.endef
+__ZNK6dbgLog8category9forNoticeEv:
+LFB3740:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3057,14 +3285,59 @@ LFB3739:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3739:
+LFE3740:
+	.section	.text$_ZNK6dbgLog8category7forMaskEv,"x"
+	.linkonce discard
+	.align 2
+	.globl	__ZNK6dbgLog8category7forMaskEv
+	.def	__ZNK6dbgLog8category7forMaskEv;	.scl	2;	.type	32;	.endef
+__ZNK6dbgLog8category7forMaskEv:
+LFB3741:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	movl	8(%ebp), %eax
+	movzbl	8(%eax), %eax
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3741:
+	.section	.text$_ZN6dbgLog8category3getEh,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog8category3getEh
+	.def	__ZN6dbgLog8category3getEh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog8category3getEh:
+LFB3742:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$8, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -4(%ebp)
+	movzbl	-4(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog8category9container3getEh
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3742:
 	.section	.text$_ZN6dbgLog8categoryC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog8categoryC1Ev
 	.def	__ZN6dbgLog8categoryC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8categoryC1Ev:
-LFB3743:
+LFB3745:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3082,60 +3355,73 @@ LFB3743:
 	movb	$0, 6(%eax)
 	movl	8(%ebp), %eax
 	movb	$0, 7(%eax)
+	movl	8(%ebp), %eax
+	movb	$0, 8(%eax)
 	call	__ZN6dbgLog8category9container14initializeOnceEv
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3743:
-	.section	.text$_ZN6dbgLog8categoryC2EhPKcbbb,"x"
+LFE3745:
+	.section	.text$_ZN6dbgLog8categoryC2EhPKcbbbb,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog8categoryC2EhPKcbbb
-	.def	__ZN6dbgLog8categoryC2EhPKcbbb;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog8categoryC2EhPKcbbb:
-LFB3748:
+	.globl	__ZN6dbgLog8categoryC2EhPKcbbbb
+	.def	__ZN6dbgLog8categoryC2EhPKcbbbb;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog8categoryC2EhPKcbbbb:
+LFB3750:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
+	pushl	%edi
+	pushl	%esi
 	pushl	%ebx
-	subl	$36, %esp
-	.cfi_offset 3, -12
-	movl	12(%ebp), %ebx
-	movl	20(%ebp), %ecx
-	movl	24(%ebp), %edx
-	movl	28(%ebp), %eax
-	movb	%bl, -12(%ebp)
-	movb	%cl, -16(%ebp)
-	movb	%dl, -20(%ebp)
-	movb	%al, -24(%ebp)
+	subl	$60, %esp
+	.cfi_offset 7, -12
+	.cfi_offset 6, -16
+	.cfi_offset 3, -20
+	movl	12(%ebp), %esi
+	movl	20(%ebp), %ebx
+	movl	24(%ebp), %ecx
+	movl	28(%ebp), %edx
+	movl	32(%ebp), %edi
+	movl	%esi, %eax
+	movb	%al, -28(%ebp)
+	movb	%bl, -32(%ebp)
+	movb	%cl, -36(%ebp)
+	movb	%dl, -40(%ebp)
+	movl	%edi, %eax
+	movb	%al, -44(%ebp)
 	movl	8(%ebp), %eax
 	movl	16(%ebp), %edx
 	movl	%edx, (%eax)
 	movl	8(%ebp), %eax
-	movzbl	-12(%ebp), %edx
+	movzbl	-28(%ebp), %edx
 	movb	%dl, 4(%eax)
 	movl	8(%ebp), %eax
-	movzbl	-16(%ebp), %edx
+	movzbl	-32(%ebp), %edx
 	movb	%dl, 5(%eax)
 	movl	8(%ebp), %eax
-	movzbl	-20(%ebp), %edx
+	movzbl	-36(%ebp), %edx
 	movb	%dl, 6(%eax)
 	movl	8(%ebp), %eax
-	movzbl	-24(%ebp), %edx
+	movzbl	-40(%ebp), %edx
 	movb	%dl, 7(%eax)
-	cmpb	$67, -12(%ebp)
-	jbe	L195
+	movl	8(%ebp), %eax
+	movzbl	-44(%ebp), %edx
+	movb	%dl, 8(%eax)
+	cmpb	$67, -28(%ebp)
+	jbe	L209
 	movl	$LC2, 12(%esp)
-	movl	$__ZZN6dbgLog8categoryC1EhPKcbbbE19__PRETTY_FUNCTION__, 8(%esp)
-	movl	$814, 4(%esp)
+	movl	$__ZZN6dbgLog8categoryC1EhPKcbbbbE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$828, 4(%esp)
 	movl	$LC3, (%esp)
 	call	___assert_func
-L195:
+L209:
 	movl	8(%ebp), %eax
 	movzbl	4(%eax), %eax
 	movzbl	%al, %eax
@@ -3143,62 +3429,77 @@ L195:
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog8category9container3setEhRKS0_
-	addl	$36, %esp
+	addl	$60, %esp
 	popl	%ebx
 	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
+	popl	%edi
+	.cfi_restore 7
 	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3748:
-	.section	.text$_ZN6dbgLog8categoryC1EhPKcbbb,"x"
+LFE3750:
+	.section	.text$_ZN6dbgLog8categoryC1EhPKcbbbb,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog8categoryC1EhPKcbbb
-	.def	__ZN6dbgLog8categoryC1EhPKcbbb;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog8categoryC1EhPKcbbb:
-LFB3749:
+	.globl	__ZN6dbgLog8categoryC1EhPKcbbbb
+	.def	__ZN6dbgLog8categoryC1EhPKcbbbb;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog8categoryC1EhPKcbbbb:
+LFB3751:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
+	pushl	%edi
+	pushl	%esi
 	pushl	%ebx
-	subl	$36, %esp
-	.cfi_offset 3, -12
-	movl	12(%ebp), %ebx
-	movl	20(%ebp), %ecx
-	movl	24(%ebp), %edx
-	movl	28(%ebp), %eax
-	movb	%bl, -12(%ebp)
-	movb	%cl, -16(%ebp)
-	movb	%dl, -20(%ebp)
-	movb	%al, -24(%ebp)
+	subl	$60, %esp
+	.cfi_offset 7, -12
+	.cfi_offset 6, -16
+	.cfi_offset 3, -20
+	movl	12(%ebp), %esi
+	movl	20(%ebp), %ebx
+	movl	24(%ebp), %ecx
+	movl	28(%ebp), %edx
+	movl	32(%ebp), %edi
+	movl	%esi, %eax
+	movb	%al, -28(%ebp)
+	movb	%bl, -32(%ebp)
+	movb	%cl, -36(%ebp)
+	movb	%dl, -40(%ebp)
+	movl	%edi, %eax
+	movb	%al, -44(%ebp)
 	movl	8(%ebp), %eax
 	movl	16(%ebp), %edx
 	movl	%edx, (%eax)
 	movl	8(%ebp), %eax
-	movzbl	-12(%ebp), %edx
+	movzbl	-28(%ebp), %edx
 	movb	%dl, 4(%eax)
 	movl	8(%ebp), %eax
-	movzbl	-16(%ebp), %edx
+	movzbl	-32(%ebp), %edx
 	movb	%dl, 5(%eax)
 	movl	8(%ebp), %eax
-	movzbl	-20(%ebp), %edx
+	movzbl	-36(%ebp), %edx
 	movb	%dl, 6(%eax)
 	movl	8(%ebp), %eax
-	movzbl	-24(%ebp), %edx
+	movzbl	-40(%ebp), %edx
 	movb	%dl, 7(%eax)
-	cmpb	$67, -12(%ebp)
-	jbe	L197
+	movl	8(%ebp), %eax
+	movzbl	-44(%ebp), %edx
+	movb	%dl, 8(%eax)
+	cmpb	$67, -28(%ebp)
+	jbe	L211
 	movl	$LC2, 12(%esp)
-	movl	$__ZZN6dbgLog8categoryC1EhPKcbbbE19__PRETTY_FUNCTION__, 8(%esp)
-	movl	$814, 4(%esp)
+	movl	$__ZZN6dbgLog8categoryC1EhPKcbbbbE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$828, 4(%esp)
 	movl	$LC3, (%esp)
 	call	___assert_func
-L197:
+L211:
 	movl	8(%ebp), %eax
 	movzbl	4(%eax), %eax
 	movzbl	%al, %eax
@@ -3206,22 +3507,26 @@ L197:
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog8category9container3setEhRKS0_
-	addl	$36, %esp
+	addl	$60, %esp
 	popl	%ebx
 	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
+	popl	%edi
+	.cfi_restore 7
 	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3749:
+LFE3751:
 	.section	.text$_ZN6dbgLog8categoryD2Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog8categoryD2Ev
 	.def	__ZN6dbgLog8categoryD2Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8categoryD2Ev:
-LFB3754:
+LFB3756:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3233,14 +3538,14 @@ LFB3754:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3754:
+LFE3756:
 	.section	.text$_ZN6dbgLog8categoryD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog8categoryD1Ev
 	.def	__ZN6dbgLog8categoryD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8categoryD1Ev:
-LFB3755:
+LFB3757:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3252,14 +3557,14 @@ LFB3755:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3755:
+LFE3757:
 	.section	.text$_ZN6dbgLog12category_endC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog12category_endC1Ev
 	.def	__ZN6dbgLog12category_endC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog12category_endC1Ev:
-LFB3761:
+LFB3763:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3268,26 +3573,27 @@ LFB3761:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$0, 24(%esp)
 	movl	$0, 20(%esp)
 	movl	$0, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	$LC4, 8(%esp)
 	movl	$67, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3761:
-	.section	.text$_ZN6dbgLog17category_assignedILh0EED2Ev,"x"
+LFE3763:
+	.section	.text$_ZN6dbgLog17category_assignedILh0ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh0EED2Ev
-	.def	__ZN6dbgLog17category_assignedILh0EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh0EED2Ev:
-LFB3764:
+	.globl	__ZN6dbgLog17category_assignedILh0ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_assignedILh0ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh0ELb1ELb1EED2Ev:
+LFB3766:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3303,7 +3609,7 @@ LFB3764:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3764:
+LFE3766:
 	.section .rdata,"dr"
 LC18:
 	.ascii "forAny\0"
@@ -3313,7 +3619,7 @@ LC18:
 	.globl	__ZN6dbgLog15category_forAnyC1Ev
 	.def	__ZN6dbgLog15category_forAnyC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog15category_forAnyC1Ev:
-LFB3767:
+LFB3769:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3324,20 +3630,20 @@ LFB3767:
 	movl	8(%ebp), %eax
 	movl	$LC18, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh0EEC2EPKc
+	call	__ZN6dbgLog17category_assignedILh0ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3767:
-	.section	.text$_ZN6dbgLog17category_assignedILh1EED2Ev,"x"
+LFE3769:
+	.section	.text$_ZN6dbgLog17category_assignedILh1ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh1EED2Ev
-	.def	__ZN6dbgLog17category_assignedILh1EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh1EED2Ev:
-LFB3770:
+	.globl	__ZN6dbgLog17category_assignedILh1ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_assignedILh1ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh1ELb1ELb1EED2Ev:
+LFB3772:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3353,7 +3659,7 @@ LFB3770:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3770:
+LFE3772:
 	.section .rdata,"dr"
 LC19:
 	.ascii "forLogic\0"
@@ -3363,7 +3669,7 @@ LC19:
 	.globl	__ZN6dbgLog17category_forLogicC1Ev
 	.def	__ZN6dbgLog17category_forLogicC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog17category_forLogicC1Ev:
-LFB3773:
+LFB3775:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3374,20 +3680,20 @@ LFB3773:
 	movl	8(%ebp), %eax
 	movl	$LC19, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh1EEC2EPKc
+	call	__ZN6dbgLog17category_assignedILh1ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3773:
-	.section	.text$_ZN6dbgLog17category_assignedILh2EED2Ev,"x"
+LFE3775:
+	.section	.text$_ZN6dbgLog17category_assignedILh2ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh2EED2Ev
-	.def	__ZN6dbgLog17category_assignedILh2EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh2EED2Ev:
-LFB3776:
+	.globl	__ZN6dbgLog17category_assignedILh2ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_assignedILh2ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh2ELb1ELb1EED2Ev:
+LFB3778:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3403,7 +3709,7 @@ LFB3776:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3776:
+LFE3778:
 	.section .rdata,"dr"
 LC20:
 	.ascii "forResource\0"
@@ -3413,7 +3719,7 @@ LC20:
 	.globl	__ZN6dbgLog20category_forResourceC1Ev
 	.def	__ZN6dbgLog20category_forResourceC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog20category_forResourceC1Ev:
-LFB3779:
+LFB3781:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3424,20 +3730,20 @@ LFB3779:
 	movl	8(%ebp), %eax
 	movl	$LC20, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh2EEC2EPKc
+	call	__ZN6dbgLog17category_assignedILh2ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3779:
-	.section	.text$_ZN6dbgLog17category_assignedILh3EED2Ev,"x"
+LFE3781:
+	.section	.text$_ZN6dbgLog17category_assignedILh3ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh3EED2Ev
-	.def	__ZN6dbgLog17category_assignedILh3EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh3EED2Ev:
-LFB3782:
+	.globl	__ZN6dbgLog17category_assignedILh3ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_assignedILh3ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh3ELb1ELb1EED2Ev:
+LFB3784:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3453,7 +3759,7 @@ LFB3782:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3782:
+LFE3784:
 	.section .rdata,"dr"
 LC21:
 	.ascii "for3D\0"
@@ -3463,7 +3769,7 @@ LC21:
 	.globl	__ZN6dbgLog14category_for3DC1Ev
 	.def	__ZN6dbgLog14category_for3DC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog14category_for3DC1Ev:
-LFB3785:
+LFB3787:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3474,20 +3780,20 @@ LFB3785:
 	movl	8(%ebp), %eax
 	movl	$LC21, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh3EEC2EPKc
+	call	__ZN6dbgLog17category_assignedILh3ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3785:
-	.section	.text$_ZN6dbgLog17category_assignedILh4EED2Ev,"x"
+LFE3787:
+	.section	.text$_ZN6dbgLog17category_assignedILh4ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh4EED2Ev
-	.def	__ZN6dbgLog17category_assignedILh4EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh4EED2Ev:
-LFB3788:
+	.globl	__ZN6dbgLog17category_assignedILh4ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_assignedILh4ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh4ELb1ELb1EED2Ev:
+LFB3790:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3503,7 +3809,7 @@ LFB3788:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3788:
+LFE3790:
 	.section .rdata,"dr"
 LC22:
 	.ascii "for2D\0"
@@ -3513,7 +3819,7 @@ LC22:
 	.globl	__ZN6dbgLog14category_for2DC1Ev
 	.def	__ZN6dbgLog14category_for2DC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog14category_for2DC1Ev:
-LFB3791:
+LFB3793:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3524,20 +3830,20 @@ LFB3791:
 	movl	8(%ebp), %eax
 	movl	$LC22, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh4EEC2EPKc
+	call	__ZN6dbgLog17category_assignedILh4ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3791:
-	.section	.text$_ZN6dbgLog17category_assignedILh5EED2Ev,"x"
+LFE3793:
+	.section	.text$_ZN6dbgLog17category_assignedILh5ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh5EED2Ev
-	.def	__ZN6dbgLog17category_assignedILh5EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh5EED2Ev:
-LFB3794:
+	.globl	__ZN6dbgLog17category_assignedILh5ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_assignedILh5ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh5ELb1ELb1EED2Ev:
+LFB3796:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3553,7 +3859,7 @@ LFB3794:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3794:
+LFE3796:
 	.section .rdata,"dr"
 LC23:
 	.ascii "forSound\0"
@@ -3563,7 +3869,7 @@ LC23:
 	.globl	__ZN6dbgLog17category_forSoundC1Ev
 	.def	__ZN6dbgLog17category_forSoundC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog17category_forSoundC1Ev:
-LFB3797:
+LFB3799:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3574,20 +3880,20 @@ LFB3797:
 	movl	8(%ebp), %eax
 	movl	$LC23, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh5EEC2EPKc
+	call	__ZN6dbgLog17category_assignedILh5ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3797:
-	.section	.text$_ZN6dbgLog17category_assignedILh6EED2Ev,"x"
+LFE3799:
+	.section	.text$_ZN6dbgLog17category_assignedILh6ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh6EED2Ev
-	.def	__ZN6dbgLog17category_assignedILh6EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh6EED2Ev:
-LFB3800:
+	.globl	__ZN6dbgLog17category_assignedILh6ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_assignedILh6ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh6ELb1ELb1EED2Ev:
+LFB3802:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3603,7 +3909,7 @@ LFB3800:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3800:
+LFE3802:
 	.section .rdata,"dr"
 LC24:
 	.ascii "forScript\0"
@@ -3613,7 +3919,7 @@ LC24:
 	.globl	__ZN6dbgLog18category_forScriptC1Ev
 	.def	__ZN6dbgLog18category_forScriptC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog18category_forScriptC1Ev:
-LFB3803:
+LFB3805:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3624,20 +3930,20 @@ LFB3803:
 	movl	8(%ebp), %eax
 	movl	$LC24, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh6EEC2EPKc
+	call	__ZN6dbgLog17category_assignedILh6ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3803:
-	.section	.text$_ZN6dbgLog17category_assignedILh7EED2Ev,"x"
+LFE3805:
+	.section	.text$_ZN6dbgLog17category_assignedILh7ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh7EED2Ev
-	.def	__ZN6dbgLog17category_assignedILh7EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh7EED2Ev:
-LFB3806:
+	.globl	__ZN6dbgLog17category_assignedILh7ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_assignedILh7ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh7ELb1ELb1EED2Ev:
+LFB3808:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3653,7 +3959,7 @@ LFB3806:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3806:
+LFE3808:
 	.section .rdata,"dr"
 LC25:
 	.ascii "forGameData\0"
@@ -3663,7 +3969,7 @@ LC25:
 	.globl	__ZN6dbgLog20category_forGameDataC1Ev
 	.def	__ZN6dbgLog20category_forGameDataC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog20category_forGameDataC1Ev:
-LFB3809:
+LFB3811:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3674,20 +3980,20 @@ LFB3809:
 	movl	8(%ebp), %eax
 	movl	$LC25, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh7EEC2EPKc
+	call	__ZN6dbgLog17category_assignedILh7ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3809:
-	.section	.text$_ZN6dbgLog16category_specialILh64ELb0ELb1EED2Ev,"x"
+LFE3811:
+	.section	.text$_ZN6dbgLog16category_specialILh64ELb0ELb0ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog16category_specialILh64ELb0ELb1EED2Ev
-	.def	__ZN6dbgLog16category_specialILh64ELb0ELb1EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog16category_specialILh64ELb0ELb1EED2Ev:
-LFB3812:
+	.globl	__ZN6dbgLog16category_specialILh64ELb0ELb0ELb1EED2Ev
+	.def	__ZN6dbgLog16category_specialILh64ELb0ELb0ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog16category_specialILh64ELb0ELb0ELb1EED2Ev:
+LFB3814:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3703,7 +4009,7 @@ LFB3812:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3812:
+LFE3814:
 	.section .rdata,"dr"
 LC26:
 	.ascii "forEvery\0"
@@ -3713,7 +4019,7 @@ LC26:
 	.globl	__ZN6dbgLog17category_forEveryC1Ev
 	.def	__ZN6dbgLog17category_forEveryC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog17category_forEveryC1Ev:
-LFB3815:
+LFB3817:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3724,20 +4030,20 @@ LFB3815:
 	movl	8(%ebp), %eax
 	movl	$LC26, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog16category_specialILh64ELb0ELb1EEC2EPKc
+	call	__ZN6dbgLog16category_specialILh64ELb0ELb0ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3815:
-	.section	.text$_ZN6dbgLog16category_specialILh65ELb1ELb0EED2Ev,"x"
+LFE3817:
+	.section	.text$_ZN6dbgLog16category_specialILh65ELb1ELb1ELb0EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog16category_specialILh65ELb1ELb0EED2Ev
-	.def	__ZN6dbgLog16category_specialILh65ELb1ELb0EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog16category_specialILh65ELb1ELb0EED2Ev:
-LFB3818:
+	.globl	__ZN6dbgLog16category_specialILh65ELb1ELb1ELb0EED2Ev
+	.def	__ZN6dbgLog16category_specialILh65ELb1ELb1ELb0EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog16category_specialILh65ELb1ELb1ELb0EED2Ev:
+LFB3820:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3753,7 +4059,7 @@ LFB3818:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3818:
+LFE3820:
 	.section .rdata,"dr"
 LC27:
 	.ascii "forCallppoint\0"
@@ -3763,7 +4069,7 @@ LC27:
 	.globl	__ZN6dbgLog22category_forCallppointC1Ev
 	.def	__ZN6dbgLog22category_forCallppointC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog22category_forCallppointC1Ev:
-LFB3821:
+LFB3823:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3774,20 +4080,20 @@ LFB3821:
 	movl	8(%ebp), %eax
 	movl	$LC27, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog16category_specialILh65ELb1ELb0EEC2EPKc
+	call	__ZN6dbgLog16category_specialILh65ELb1ELb1ELb0EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3821:
-	.section	.text$_ZN6dbgLog16category_specialILh66ELb1ELb0EED2Ev,"x"
+LFE3823:
+	.section	.text$_ZN6dbgLog16category_specialILh66ELb1ELb1ELb0EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog16category_specialILh66ELb1ELb0EED2Ev
-	.def	__ZN6dbgLog16category_specialILh66ELb1ELb0EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog16category_specialILh66ELb1ELb0EED2Ev:
-LFB3824:
+	.globl	__ZN6dbgLog16category_specialILh66ELb1ELb1ELb0EED2Ev
+	.def	__ZN6dbgLog16category_specialILh66ELb1ELb1ELb0EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog16category_specialILh66ELb1ELb1ELb0EED2Ev:
+LFB3826:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3803,7 +4109,7 @@ LFB3824:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3824:
+LFE3826:
 	.section .rdata,"dr"
 LC28:
 	.ascii "forCriticalCallppoint\0"
@@ -3813,7 +4119,7 @@ LC28:
 	.globl	__ZN6dbgLog30category_forCriticalCallppointC1Ev
 	.def	__ZN6dbgLog30category_forCriticalCallppointC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog30category_forCriticalCallppointC1Ev:
-LFB3827:
+LFB3829:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3824,13 +4130,13 @@ LFB3827:
 	movl	8(%ebp), %eax
 	movl	$LC28, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog16category_specialILh66ELb1ELb0EEC2EPKc
+	call	__ZN6dbgLog16category_specialILh66ELb1ELb1ELb0EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3827:
+LFE3829:
 	.globl	__ZN6dbgLog8category9container15m_isInitializedE
 	.bss
 __ZN6dbgLog8category9container15m_isInitializedE:
@@ -3842,7 +4148,7 @@ __ZN6dbgLog8category9container9m_poolPtrE:
 	.globl	__ZN6dbgLog8category9container6m_poolE
 	.align 32
 __ZN6dbgLog8category9container6m_poolE:
-	.space 544
+	.space 816
 	.globl	__ZN6dbgLog8category9container15m_isAlreadyPoolE
 	.align 4
 __ZN6dbgLog8category9container15m_isAlreadyPoolE:
@@ -3853,7 +4159,7 @@ __ZN6dbgLog8category9container15m_isAlreadyPoolE:
 	.globl	__ZN6dbgLog15category_forAnyD1Ev
 	.def	__ZN6dbgLog15category_forAnyD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog15category_forAnyD1Ev:
-LFB3837:
+LFB3839:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3863,20 +4169,20 @@ LFB3837:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh0EED2Ev
+	call	__ZN6dbgLog17category_assignedILh0ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3837:
+LFE3839:
 	.section	.text$_ZN6dbgLog17category_forLogicD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog17category_forLogicD1Ev
 	.def	__ZN6dbgLog17category_forLogicD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog17category_forLogicD1Ev:
-LFB3840:
+LFB3842:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3886,20 +4192,20 @@ LFB3840:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh1EED2Ev
+	call	__ZN6dbgLog17category_assignedILh1ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3840:
+LFE3842:
 	.section	.text$_ZN6dbgLog20category_forResourceD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog20category_forResourceD1Ev
 	.def	__ZN6dbgLog20category_forResourceD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog20category_forResourceD1Ev:
-LFB3843:
+LFB3845:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3909,20 +4215,20 @@ LFB3843:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh2EED2Ev
+	call	__ZN6dbgLog17category_assignedILh2ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3843:
+LFE3845:
 	.section	.text$_ZN6dbgLog14category_for3DD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog14category_for3DD1Ev
 	.def	__ZN6dbgLog14category_for3DD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog14category_for3DD1Ev:
-LFB3846:
+LFB3848:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3932,20 +4238,20 @@ LFB3846:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh3EED2Ev
+	call	__ZN6dbgLog17category_assignedILh3ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3846:
+LFE3848:
 	.section	.text$_ZN6dbgLog14category_for2DD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog14category_for2DD1Ev
 	.def	__ZN6dbgLog14category_for2DD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog14category_for2DD1Ev:
-LFB3849:
+LFB3851:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3955,20 +4261,20 @@ LFB3849:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh4EED2Ev
+	call	__ZN6dbgLog17category_assignedILh4ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3849:
+LFE3851:
 	.section	.text$_ZN6dbgLog17category_forSoundD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog17category_forSoundD1Ev
 	.def	__ZN6dbgLog17category_forSoundD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog17category_forSoundD1Ev:
-LFB3852:
+LFB3854:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3978,20 +4284,20 @@ LFB3852:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh5EED2Ev
+	call	__ZN6dbgLog17category_assignedILh5ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3852:
+LFE3854:
 	.section	.text$_ZN6dbgLog18category_forScriptD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog18category_forScriptD1Ev
 	.def	__ZN6dbgLog18category_forScriptD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog18category_forScriptD1Ev:
-LFB3855:
+LFB3857:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4001,20 +4307,20 @@ LFB3855:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh6EED2Ev
+	call	__ZN6dbgLog17category_assignedILh6ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3855:
+LFE3857:
 	.section	.text$_ZN6dbgLog20category_forGameDataD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog20category_forGameDataD1Ev
 	.def	__ZN6dbgLog20category_forGameDataD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog20category_forGameDataD1Ev:
-LFB3858:
+LFB3860:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4024,20 +4330,20 @@ LFB3858:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_assignedILh7EED2Ev
+	call	__ZN6dbgLog17category_assignedILh7ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3858:
+LFE3860:
 	.section	.text$_ZN6dbgLog17category_forEveryD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog17category_forEveryD1Ev
 	.def	__ZN6dbgLog17category_forEveryD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog17category_forEveryD1Ev:
-LFB3861:
+LFB3863:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4047,20 +4353,20 @@ LFB3861:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog16category_specialILh64ELb0ELb1EED2Ev
+	call	__ZN6dbgLog16category_specialILh64ELb0ELb0ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3861:
+LFE3863:
 	.section	.text$_ZN6dbgLog22category_forCallppointD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog22category_forCallppointD1Ev
 	.def	__ZN6dbgLog22category_forCallppointD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog22category_forCallppointD1Ev:
-LFB3864:
+LFB3866:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4070,20 +4376,20 @@ LFB3864:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog16category_specialILh65ELb1ELb0EED2Ev
+	call	__ZN6dbgLog16category_specialILh65ELb1ELb1ELb0EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3864:
+LFE3866:
 	.section	.text$_ZN6dbgLog30category_forCriticalCallppointD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog30category_forCriticalCallppointD1Ev
 	.def	__ZN6dbgLog30category_forCriticalCallppointD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog30category_forCriticalCallppointD1Ev:
-LFB3867:
+LFB3869:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4093,20 +4399,20 @@ LFB3867:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog16category_specialILh66ELb1ELb0EED2Ev
+	call	__ZN6dbgLog16category_specialILh66ELb1ELb1ELb0EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3867:
+LFE3869:
 	.section	.text$_ZN6dbgLog12category_endD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog12category_endD1Ev
 	.def	__ZN6dbgLog12category_endD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog12category_endD1Ev:
-LFB3870:
+LFB3872:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4122,158 +4428,159 @@ LFB3870:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3870:
+LFE3872:
 	.text
 	.align 2
 	.globl	__ZN6dbgLog8category9container14initializeOnceEv
 	.def	__ZN6dbgLog8category9container14initializeOnceEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog8category9container14initializeOnceEv:
-LFB3834:
+LFB3836:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
-	subl	$168, %esp
+	subl	$216, %esp
 	movzbl	__ZN6dbgLog8category9container15m_isInitializedE, %eax
 	testb	%al, %al
-	je	L261
-	jmp	L260
-L261:
+	je	L275
+	jmp	L274
+L275:
 	movb	$1, __ZN6dbgLog8category9container15m_isInitializedE
 	movl	$__ZN6dbgLog8category9container15m_isAlreadyPoolE, (%esp)
 	call	__ZNSt6bitsetILj68EE5resetEv
-	movl	$544, 8(%esp)
+	movl	$816, 8(%esp)
 	movl	$0, 4(%esp)
 	movl	$__ZN6dbgLog8category9container6m_poolE, (%esp)
 	call	_memset
 	movl	$__ZN6dbgLog8category9container6m_poolE, __ZN6dbgLog8category9container9m_poolPtrE
 	movb	$0, -9(%ebp)
-	jmp	L263
-L264:
+	jmp	L277
+L278:
 	movzbl	-9(%ebp), %eax
+	movl	$0, 24(%esp)
 	movl	$0, 20(%esp)
 	movl	$0, 16(%esp)
 	movl	$0, 12(%esp)
 	movl	$LC14, 8(%esp)
 	movl	%eax, 4(%esp)
-	leal	-124(%ebp), %eax
+	leal	-176(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC1EhPKcbbb
-	leal	-124(%ebp), %eax
+	call	__ZN6dbgLog8categoryC1EhPKcbbbb
+	leal	-176(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog8categoryD1Ev
 	movzbl	-9(%ebp), %edx
-	leal	-116(%ebp), %eax
+	leal	-164(%ebp), %eax
 	movl	%edx, 8(%esp)
 	movl	$__ZN6dbgLog8category9container15m_isAlreadyPoolE, 4(%esp)
 	movl	%eax, (%esp)
 	call	__ZNSt6bitsetILj68EEixEj
 	subl	$4, %esp
 	movl	$0, 4(%esp)
-	leal	-116(%ebp), %eax
+	leal	-164(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6bitsetILj68EE9referenceaSEb
-	leal	-116(%ebp), %eax
+	leal	-164(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNSt6bitsetILj68EE9referenceD1Ev
 	addb	$1, -9(%ebp)
-L263:
+L277:
 	cmpb	$66, -9(%ebp)
-	jbe	L264
-	leal	-108(%ebp), %eax
+	jbe	L278
+	leal	-156(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog15category_forAnyC1Ev
-	leal	-108(%ebp), %eax
+	leal	-156(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog15category_forAnyD1Ev
-	leal	-100(%ebp), %eax
+	leal	-144(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog17category_forLogicC1Ev
-	leal	-100(%ebp), %eax
+	leal	-144(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog17category_forLogicD1Ev
-	leal	-92(%ebp), %eax
+	leal	-132(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog20category_forResourceC1Ev
-	leal	-92(%ebp), %eax
+	leal	-132(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog20category_forResourceD1Ev
-	leal	-84(%ebp), %eax
+	leal	-120(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog14category_for3DC1Ev
-	leal	-84(%ebp), %eax
+	leal	-120(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog14category_for3DD1Ev
-	leal	-76(%ebp), %eax
+	leal	-108(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog14category_for2DC1Ev
-	leal	-76(%ebp), %eax
+	leal	-108(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog14category_for2DD1Ev
-	leal	-68(%ebp), %eax
+	leal	-96(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog17category_forSoundC1Ev
-	leal	-68(%ebp), %eax
+	leal	-96(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog17category_forSoundD1Ev
-	leal	-60(%ebp), %eax
+	leal	-84(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog18category_forScriptC1Ev
-	leal	-60(%ebp), %eax
+	leal	-84(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog18category_forScriptD1Ev
-	leal	-52(%ebp), %eax
+	leal	-72(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog20category_forGameDataC1Ev
-	leal	-52(%ebp), %eax
+	leal	-72(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog20category_forGameDataD1Ev
-	leal	-44(%ebp), %eax
+	leal	-60(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog17category_forEveryC1Ev
-	leal	-44(%ebp), %eax
+	leal	-60(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog17category_forEveryD1Ev
-	leal	-36(%ebp), %eax
+	leal	-48(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog22category_forCallppointC1Ev
-	leal	-36(%ebp), %eax
+	leal	-48(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog22category_forCallppointD1Ev
-	leal	-28(%ebp), %eax
+	leal	-36(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog30category_forCriticalCallppointC1Ev
-	leal	-28(%ebp), %eax
+	leal	-36(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog30category_forCriticalCallppointD1Ev
-	leal	-20(%ebp), %eax
+	leal	-24(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog12category_endC1Ev
-	leal	-20(%ebp), %eax
+	leal	-24(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog12category_endD1Ev
-L260:
+L274:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3834:
-.lcomm __ZN6dbgLogL23s_categoryForInitializeE,8,4
+LFE3836:
+.lcomm __ZN6dbgLogL23s_categoryForInitializeE,12,4
 	.section .rdata,"dr"
 	.align 4
 LC29:
-	.ascii "category=%d, name=\"%s\", isAssigned=%d, isReserved=%d, forOutput=%d, forSetLevel=%d\12\0"
+	.ascii "category=%d, name=\"%s\", isAssigned=%d, isReserved=%d, forLog=%d, forNotice=%d, forMask=%d\12\0"
 	.text
 	.globl	__ZN6dbgLog16printCategoryAllEv
 	.def	__ZN6dbgLog16printCategoryAllEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog16printCategoryAllEv:
-LFB3871:
+LFB3873:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3871
+	.cfi_lsda 0,LLSDA3873
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -4296,22 +4603,27 @@ LFB3871:
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog8category9container3endEv
 	subl	$4, %esp
-	jmp	L266
-L267:
+	jmp	L280
+L281:
 	leal	-35(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK6dbgLog8category8iteratordeEv
 	movl	%eax, -32(%ebp)
 	movl	-32(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZNK6dbgLog8category11forSetLevelEv
+	call	__ZNK6dbgLog8category7forMaskEv
 	movzbl	%al, %eax
 	movl	%eax, -44(%ebp)
 	movl	-32(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZNK6dbgLog8category9forOutputEv
+	call	__ZNK6dbgLog8category9forNoticeEv
 	movzbl	%al, %ecx
 	movl	%ecx, -48(%ebp)
+	movl	-32(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category6forLogEv
+	movzbl	%al, %esi
+	movl	%esi, -52(%ebp)
 	movl	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK6dbgLog8category10isReservedEv
@@ -4329,9 +4641,11 @@ L267:
 	call	__ZNK6dbgLog8category5valueEv
 	movzbl	%al, %eax
 	movl	-44(%ebp), %edx
-	movl	%edx, 24(%esp)
+	movl	%edx, 28(%esp)
 	movl	-48(%ebp), %ecx
-	movl	%ecx, 20(%esp)
+	movl	%ecx, 24(%esp)
+	movl	-52(%ebp), %edx
+	movl	%edx, 20(%esp)
 	movl	%edi, 16(%esp)
 	movl	%esi, 12(%esp)
 	movl	%ebx, 8(%esp)
@@ -4343,7 +4657,7 @@ LEHE3:
 	leal	-35(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZNK6dbgLog8category8iteratorppEv
-L266:
+L280:
 	movzbl	-36(%ebp), %eax
 	movb	%al, -33(%ebp)
 	leal	-33(%ebp), %eax
@@ -4356,15 +4670,15 @@ L266:
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog8category8iteratorD1Ev
 	testb	%bl, %bl
-	jne	L267
+	jne	L281
 	leal	-36(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog8category8iteratorD1Ev
 	leal	-35(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog8category8iteratorD1Ev
-	jmp	L270
-L269:
+	jmp	L284
+L283:
 	movl	%eax, %ebx
 	leal	-36(%ebp), %eax
 	movl	%eax, (%esp)
@@ -4377,7 +4691,7 @@ L269:
 LEHB4:
 	call	__Unwind_Resume
 LEHE4:
-L270:
+L284:
 	leal	-12(%ebp), %esp
 	popl	%ebx
 	.cfi_restore 3
@@ -4390,30 +4704,30 @@ L270:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3871:
+LFE3873:
 	.section	.gcc_except_table,"w"
-LLSDA3871:
+LLSDA3873:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3871-LLSDACSB3871
-LLSDACSB3871:
-	.uleb128 LEHB3-LFB3871
+	.uleb128 LLSDACSE3873-LLSDACSB3873
+LLSDACSB3873:
+	.uleb128 LEHB3-LFB3873
 	.uleb128 LEHE3-LEHB3
-	.uleb128 L269-LFB3871
+	.uleb128 L283-LFB3873
 	.uleb128 0
-	.uleb128 LEHB4-LFB3871
+	.uleb128 LEHB4-LFB3873
 	.uleb128 LEHE4-LEHB4
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3871:
+LLSDACSE3873:
 	.text
 	.section	.text$_ZN6dbgLog3log16resetLogLevelAllEv,"x"
 	.linkonce discard
 	.globl	__ZN6dbgLog3log16resetLogLevelAllEv
 	.def	__ZN6dbgLog3log16resetLogLevelAllEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3log16resetLogLevelAllEv:
-LFB3872:
+LFB3874:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4427,29 +4741,29 @@ LFB3872:
 	movl	-8(%ebp), %eax
 	addl	$64, %eax
 	movl	%eax, -12(%ebp)
-	jmp	L272
-L273:
+	jmp	L286
+L287:
 	movl	-4(%ebp), %eax
 	movl	%eax, -16(%ebp)
 	movl	-16(%ebp), %eax
 	movb	$2, (%eax)
 	addl	$1, -4(%ebp)
-L272:
+L286:
 	movl	-4(%ebp), %eax
 	cmpl	-12(%ebp), %eax
-	jne	L273
+	jne	L287
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3872:
+LFE3874:
 	.section	.text$_ZN6dbgLog3log19resetNoticeLevelAllEv,"x"
 	.linkonce discard
 	.globl	__ZN6dbgLog3log19resetNoticeLevelAllEv
 	.def	__ZN6dbgLog3log19resetNoticeLevelAllEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3log19resetNoticeLevelAllEv:
-LFB3873:
+LFB3875:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4463,30 +4777,1345 @@ LFB3873:
 	movl	-8(%ebp), %eax
 	addl	$64, %eax
 	movl	%eax, -12(%ebp)
-	jmp	L275
-L276:
+	jmp	L289
+L290:
 	movl	-4(%ebp), %eax
 	movl	%eax, -16(%ebp)
 	movl	-16(%ebp), %eax
 	movb	$8, (%eax)
 	addl	$1, -4(%ebp)
-L275:
+L289:
 	movl	-4(%ebp), %eax
 	cmpl	-12(%ebp), %eax
-	jne	L276
+	jne	L290
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3873:
+LFE3875:
+	.section .rdata,"dr"
+LC30:
+	.ascii "o_category.forMask() == true\0"
+LC31:
+	.ascii "o_category.forLog() == true\0"
+	.section	.text$_ZN6dbgLog3log11getLogLevelEh,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log11getLogLevelEh
+	.def	__ZN6dbgLog3log11getLogLevelEh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log11getLogLevelEh:
+LFB3876:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$56, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	movzbl	-28(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog8category3getEh
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category7forMaskEv
+	testb	%al, %al
+	jne	L292
+	movl	$LC30, 12(%esp)
+	movl	$__ZZN6dbgLog3log11getLogLevelEhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1052, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L292:
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category6forLogEv
+	testb	%al, %al
+	jne	L293
+	movl	$LC31, 12(%esp)
+	movl	$__ZZN6dbgLog3log11getLogLevelEhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1053, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L293:
+	movzbl	-28(%ebp), %eax
+	movzbl	__ZN6dbgLog3log10m_logLevelE(%eax), %eax
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3876:
+	.section .rdata,"dr"
+LC32:
+	.ascii "o_level.forMask() == true\0"
+	.section	.text$_ZN6dbgLog3log11setLogLevelEhh,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log11setLogLevelEhh
+	.def	__ZN6dbgLog3log11setLogLevelEhh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log11setLogLevelEhh:
+LFB3877:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$72, %esp
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -44(%ebp)
+	movb	%al, -48(%ebp)
+	movzbl	-48(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5level3getEh
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level7forMaskEv
+	testb	%al, %al
+	jne	L296
+	movl	$LC32, 12(%esp)
+	movl	$__ZZN6dbgLog3log11setLogLevelEhhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1062, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L296:
+	movzbl	-44(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog8category3getEh
+	movl	%eax, -20(%ebp)
+	movl	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category7forMaskEv
+	testb	%al, %al
+	jne	L297
+	movl	$LC30, 12(%esp)
+	movl	$__ZZN6dbgLog3log11setLogLevelEhhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1064, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L297:
+	cmpb	$64, -44(%ebp)
+	jne	L298
+	movzbl	__ZN6dbgLog3log10m_logLevelE, %eax
+	movb	%al, -21(%ebp)
+	movl	$__ZN6dbgLog3log10m_logLevelE, -28(%ebp)
+	movl	-28(%ebp), %eax
+	movl	%eax, -12(%ebp)
+	movl	-28(%ebp), %eax
+	addl	$64, %eax
+	movl	%eax, -32(%ebp)
+	jmp	L299
+L300:
+	movl	-12(%ebp), %eax
+	movl	%eax, -36(%ebp)
+	movl	-36(%ebp), %eax
+	movzbl	-48(%ebp), %edx
+	movb	%dl, (%eax)
+	addl	$1, -12(%ebp)
+L299:
+	movl	-12(%ebp), %eax
+	cmpl	-32(%ebp), %eax
+	jne	L300
+	movzbl	-21(%ebp), %eax
+	jmp	L301
+L298:
+	movl	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category6forLogEv
+	testb	%al, %al
+	jne	L302
+	movl	$LC31, 12(%esp)
+	movl	$__ZZN6dbgLog3log11setLogLevelEhhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1072, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L302:
+	movzbl	-44(%ebp), %eax
+	movzbl	__ZN6dbgLog3log10m_logLevelE(%eax), %eax
+	movb	%al, -37(%ebp)
+	movzbl	-44(%ebp), %eax
+	movzbl	-48(%ebp), %edx
+	movb	%dl, __ZN6dbgLog3log10m_logLevelE(%eax)
+	movzbl	-37(%ebp), %eax
+L301:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3877:
+	.section .rdata,"dr"
+	.align 4
+LC33:
+	.ascii "o_category.forNotice() == true\0"
+	.section	.text$_ZN6dbgLog3log14getNoticeLevelEh,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log14getNoticeLevelEh
+	.def	__ZN6dbgLog3log14getNoticeLevelEh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log14getNoticeLevelEh:
+LFB3878:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$56, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	movzbl	-28(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog8category3getEh
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category7forMaskEv
+	testb	%al, %al
+	jne	L304
+	movl	$LC30, 12(%esp)
+	movl	$__ZZN6dbgLog3log14getNoticeLevelEhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1081, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L304:
+	movl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category9forNoticeEv
+	testb	%al, %al
+	jne	L305
+	movl	$LC33, 12(%esp)
+	movl	$__ZZN6dbgLog3log14getNoticeLevelEhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1082, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L305:
+	movzbl	-28(%ebp), %eax
+	movzbl	__ZN6dbgLog3log13m_noticeLevelE(%eax), %eax
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3878:
+	.section	.text$_ZN6dbgLog3log14setNoticeLevelEhh,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log14setNoticeLevelEhh
+	.def	__ZN6dbgLog3log14setNoticeLevelEhh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log14setNoticeLevelEhh:
+LFB3879:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$72, %esp
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -44(%ebp)
+	movb	%al, -48(%ebp)
+	movzbl	-48(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5level3getEh
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level7forMaskEv
+	testb	%al, %al
+	jne	L308
+	movl	$LC32, 12(%esp)
+	movl	$__ZZN6dbgLog3log14setNoticeLevelEhhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1091, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L308:
+	movzbl	-44(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog8category3getEh
+	movl	%eax, -20(%ebp)
+	movl	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category7forMaskEv
+	testb	%al, %al
+	jne	L309
+	movl	$LC30, 12(%esp)
+	movl	$__ZZN6dbgLog3log14setNoticeLevelEhhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1093, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L309:
+	cmpb	$64, -44(%ebp)
+	jne	L310
+	movzbl	__ZN6dbgLog3log13m_noticeLevelE, %eax
+	movb	%al, -21(%ebp)
+	movl	$__ZN6dbgLog3log13m_noticeLevelE, -28(%ebp)
+	movl	-28(%ebp), %eax
+	movl	%eax, -12(%ebp)
+	movl	-28(%ebp), %eax
+	addl	$64, %eax
+	movl	%eax, -32(%ebp)
+	jmp	L311
+L312:
+	movl	-12(%ebp), %eax
+	movl	%eax, -36(%ebp)
+	movl	-36(%ebp), %eax
+	movzbl	-48(%ebp), %edx
+	movb	%dl, (%eax)
+	addl	$1, -12(%ebp)
+L311:
+	movl	-12(%ebp), %eax
+	cmpl	-32(%ebp), %eax
+	jne	L312
+	movzbl	-21(%ebp), %eax
+	jmp	L313
+L310:
+	movl	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category9forNoticeEv
+	testb	%al, %al
+	jne	L314
+	movl	$LC33, 12(%esp)
+	movl	$__ZZN6dbgLog3log14setNoticeLevelEhhE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1101, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+L314:
+	movzbl	-44(%ebp), %eax
+	movzbl	__ZN6dbgLog3log13m_noticeLevelE(%eax), %eax
+	movb	%al, -37(%ebp)
+	movzbl	-44(%ebp), %eax
+	movzbl	-48(%ebp), %edx
+	movb	%dl, __ZN6dbgLog3log13m_noticeLevelE(%eax)
+	movzbl	-37(%ebp), %eax
+L313:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3879:
+	.section .rdata,"dr"
+	.align 4
+LC34:
+	.ascii "o_level.forLog() == true || o_level.forNotice() == true\0"
+	.align 4
+LC35:
+	.ascii "o_category.forLog() == true || o_category.forNotice() == true\0"
+	.section	.text$_ZN6dbgLog3log6vprintEhhhhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log6vprintEhhhhPKcPc
+	.def	__ZN6dbgLog3log6vprintEhhhhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log6vprintEhhhhPKcPc:
+LFB3880:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3880
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$84, %esp
+	.cfi_offset 3, -12
+	movl	8(%ebp), %ebx
+	movl	12(%ebp), %ecx
+	movl	16(%ebp), %edx
+	movl	20(%ebp), %eax
+	movb	%bl, -60(%ebp)
+	movb	%cl, -64(%ebp)
+	movb	%dl, -68(%ebp)
+	movb	%al, -72(%ebp)
+	movzbl	-68(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5level3getEh
+	movl	%eax, -20(%ebp)
+	movl	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level6forLogEv
+	xorl	$1, %eax
+	testb	%al, %al
+	je	L316
+	movl	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level9forNoticeEv
+	xorl	$1, %eax
+	testb	%al, %al
+	je	L316
+	movl	$LC34, 12(%esp)
+	movl	$__ZZN6dbgLog3log6vprintEhhhhPKcPcE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1112, 4(%esp)
+	movl	$LC3, (%esp)
+LEHB5:
+	call	___assert_func
+L316:
+	movzbl	-72(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog8category3getEh
+	movl	%eax, -24(%ebp)
+	movl	-24(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category6forLogEv
+	xorl	$1, %eax
+	testb	%al, %al
+	je	L317
+	movl	-24(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category9forNoticeEv
+	xorl	$1, %eax
+	testb	%al, %al
+	je	L317
+	movl	$LC35, 12(%esp)
+	movl	$__ZZN6dbgLog3log6vprintEhhhhPKcPcE19__PRETTY_FUNCTION__, 8(%esp)
+	movl	$1114, 4(%esp)
+	movl	$LC3, (%esp)
+	call	___assert_func
+LEHE5:
+L317:
+	movl	$0, -12(%ebp)
+	movl	$0, -16(%ebp)
+	movzbl	-60(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5level3getEh
+	movl	%eax, -28(%ebp)
+	movzbl	-64(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5level3getEh
+	movl	%eax, -32(%ebp)
+	movl	-28(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5levelgeERKS0_
+	testb	%al, %al
+	je	L318
+	movl	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level6forLogEv
+	testb	%al, %al
+	je	L318
+	movl	-24(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category6forLogEv
+	testb	%al, %al
+	je	L318
+	movl	$1, %eax
+	jmp	L319
+L318:
+	movl	$0, %eax
+L319:
+	testb	%al, %al
+	je	L320
+	leal	-38(%ebp), %eax
+	movl	$0, 8(%esp)
+	movl	-20(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB6:
+	call	__ZNK6dbgLog5level11changeColorEb
+LEHE6:
+	subl	$4, %esp
+LEHB7:
+	call	___getreent
+	movl	8(%eax), %eax
+	movl	28(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	24(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	_vfprintf
+LEHE7:
+	movl	%eax, -12(%ebp)
+	leal	-38(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5colorD1Ev
+L320:
+	movl	-32(%ebp), %eax
+	movl	%eax, 4(%esp)
+	movl	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5levelgeERKS0_
+	testb	%al, %al
+	je	L321
+	movl	-20(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level9forNoticeEv
+	testb	%al, %al
+	je	L321
+	movl	-24(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog8category9forNoticeEv
+	testb	%al, %al
+	je	L321
+	movl	$1, %eax
+	jmp	L322
+L321:
+	movl	$0, %eax
+L322:
+	testb	%al, %al
+	je	L323
+	leal	-44(%ebp), %eax
+	movl	$0, 8(%esp)
+	movl	-20(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB8:
+	call	__ZNK6dbgLog5level20changeColorForNoticeEb
+LEHE8:
+	subl	$4, %esp
+LEHB9:
+	call	___getreent
+	movl	12(%eax), %eax
+	movl	28(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	24(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	_vfprintf
+LEHE9:
+	movl	%eax, -16(%ebp)
+	leal	-44(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5colorD1Ev
+L323:
+	movl	-12(%ebp), %eax
+	cmpl	-16(%ebp), %eax
+	jle	L324
+	movl	-12(%ebp), %eax
+	jmp	L335
+L324:
+	movl	-16(%ebp), %eax
+	jmp	L335
+L332:
+	movl	%eax, %ebx
+	leal	-38(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5colorD1Ev
+	movl	%ebx, %eax
+	jmp	L328
+L331:
+L328:
+	movl	%eax, (%esp)
+LEHB10:
+	call	__Unwind_Resume
+L334:
+	movl	%eax, %ebx
+	leal	-44(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5colorD1Ev
+	movl	%ebx, %eax
+	jmp	L330
+L333:
+L330:
+	movl	%eax, (%esp)
+	call	__Unwind_Resume
+LEHE10:
+L335:
+	movl	-4(%ebp), %ebx
+	leave
+	.cfi_restore 5
+	.cfi_restore 3
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3880:
+	.section	.gcc_except_table,"w"
+LLSDA3880:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3880-LLSDACSB3880
+LLSDACSB3880:
+	.uleb128 LEHB5-LFB3880
+	.uleb128 LEHE5-LEHB5
+	.uleb128 0
+	.uleb128 0
+	.uleb128 LEHB6-LFB3880
+	.uleb128 LEHE6-LEHB6
+	.uleb128 L331-LFB3880
+	.uleb128 0
+	.uleb128 LEHB7-LFB3880
+	.uleb128 LEHE7-LEHB7
+	.uleb128 L332-LFB3880
+	.uleb128 0
+	.uleb128 LEHB8-LFB3880
+	.uleb128 LEHE8-LEHB8
+	.uleb128 L333-LFB3880
+	.uleb128 0
+	.uleb128 LEHB9-LFB3880
+	.uleb128 LEHE9-LEHB9
+	.uleb128 L334-LFB3880
+	.uleb128 0
+	.uleb128 LEHB10-LFB3880
+	.uleb128 LEHE10-LEHB10
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3880:
+	.section	.text$_ZN6dbgLog3log6vprintEhhhhPKcPc,"x"
+	.linkonce discard
+	.section	.text$_ZN6dbgLog3log6vprintEhhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log6vprintEhhPKcPc
+	.def	__ZN6dbgLog3log6vprintEhhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log6vprintEhhPKcPc:
+LFB3881:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%esi
+	pushl	%ebx
+	subl	$48, %esp
+	.cfi_offset 6, -12
+	.cfi_offset 3, -16
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -28(%ebp)
+	movb	%al, -32(%ebp)
+	movzbl	-32(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log11getLogLevelEh
+	movb	%al, -9(%ebp)
+	movzbl	-32(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log14getNoticeLevelEh
+	movb	%al, -10(%ebp)
+	movzbl	-32(%ebp), %ebx
+	movzbl	-28(%ebp), %ecx
+	movzbl	-10(%ebp), %edx
+	movzbl	-9(%ebp), %eax
+	movl	20(%ebp), %esi
+	movl	%esi, 20(%esp)
+	movl	16(%ebp), %esi
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	%ecx, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhhhPKcPc
+	addl	$48, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3881:
+	.section	.text$_ZN6dbgLog3log4vlogEhhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log4vlogEhhPKcPc
+	.def	__ZN6dbgLog3log4vlogEhhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log4vlogEhhPKcPc:
+LFB3882:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$52, %esp
+	.cfi_offset 3, -12
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -28(%ebp)
+	movb	%al, -32(%ebp)
+	movzbl	-32(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log11getLogLevelEh
+	movb	%al, -9(%ebp)
+	movb	$12, -10(%ebp)
+	movzbl	-32(%ebp), %ecx
+	movzbl	-28(%ebp), %edx
+	movzbl	-9(%ebp), %eax
+	movl	20(%ebp), %ebx
+	movl	%ebx, 20(%esp)
+	movl	16(%ebp), %ebx
+	movl	%ebx, 16(%esp)
+	movl	%ecx, 12(%esp)
+	movl	%edx, 8(%esp)
+	movl	$12, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhhhPKcPc
+	addl	$52, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3882:
+	.section	.text$_ZN6dbgLog3log7vnoticeEhhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	.def	__ZN6dbgLog3log7vnoticeEhhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log7vnoticeEhhPKcPc:
+LFB3883:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$52, %esp
+	.cfi_offset 3, -12
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -28(%ebp)
+	movb	%al, -32(%ebp)
+	movb	$12, -9(%ebp)
+	movzbl	-32(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log14getNoticeLevelEh
+	movb	%al, -10(%ebp)
+	movzbl	-32(%ebp), %ecx
+	movzbl	-28(%ebp), %edx
+	movzbl	-10(%ebp), %eax
+	movl	20(%ebp), %ebx
+	movl	%ebx, 20(%esp)
+	movl	16(%ebp), %ebx
+	movl	%ebx, 16(%esp)
+	movl	%ecx, 12(%esp)
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$12, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhhhPKcPc
+	addl	$52, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3883:
+	.section	.text$_ZN6dbgLog3log14vprintAsNormalEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log14vprintAsNormalEhPKcPc
+	.def	__ZN6dbgLog3log14vprintAsNormalEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log14vprintAsNormalEhPKcPc:
+LFB3887:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$2, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3887:
+	.section	.text$_ZN6dbgLog3log12vlogAsNormalEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log12vlogAsNormalEhPKcPc
+	.def	__ZN6dbgLog3log12vlogAsNormalEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log12vlogAsNormalEhPKcPc:
+LFB3888:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$2, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3888:
+	.section	.text$_ZN6dbgLog3log15vnoticeAsNormalEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log15vnoticeAsNormalEhPKcPc
+	.def	__ZN6dbgLog3log15vnoticeAsNormalEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log15vnoticeAsNormalEhPKcPc:
+LFB3889:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$2, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3889:
+	.section	.text$_ZN6dbgLog3log15vprintAsVerboseEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log15vprintAsVerboseEhPKcPc
+	.def	__ZN6dbgLog3log15vprintAsVerboseEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log15vprintAsVerboseEhPKcPc:
+LFB3890:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3890:
+	.section	.text$_ZN6dbgLog3log13vlogAsVerboseEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log13vlogAsVerboseEhPKcPc
+	.def	__ZN6dbgLog3log13vlogAsVerboseEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log13vlogAsVerboseEhPKcPc:
+LFB3891:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3891:
+	.section	.text$_ZN6dbgLog3log16vnoticeAsVerboseEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log16vnoticeAsVerboseEhPKcPc
+	.def	__ZN6dbgLog3log16vnoticeAsVerboseEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log16vnoticeAsVerboseEhPKcPc:
+LFB3892:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3892:
+	.section	.text$_ZN6dbgLog3log14vprintAsDetailEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log14vprintAsDetailEhPKcPc
+	.def	__ZN6dbgLog3log14vprintAsDetailEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log14vprintAsDetailEhPKcPc:
+LFB3893:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$1, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3893:
+	.section	.text$_ZN6dbgLog3log12vlogAsDetailEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log12vlogAsDetailEhPKcPc
+	.def	__ZN6dbgLog3log12vlogAsDetailEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log12vlogAsDetailEhPKcPc:
+LFB3894:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$1, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3894:
+	.section	.text$_ZN6dbgLog3log15vnoticeAsDetailEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log15vnoticeAsDetailEhPKcPc
+	.def	__ZN6dbgLog3log15vnoticeAsDetailEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log15vnoticeAsDetailEhPKcPc:
+LFB3895:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$1, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3895:
+	.section	.text$_ZN6dbgLog3log17vprintAsImportantEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log17vprintAsImportantEhPKcPc
+	.def	__ZN6dbgLog3log17vprintAsImportantEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log17vprintAsImportantEhPKcPc:
+LFB3896:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$4, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3896:
+	.section	.text$_ZN6dbgLog3log15vlogAsImportantEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log15vlogAsImportantEhPKcPc
+	.def	__ZN6dbgLog3log15vlogAsImportantEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log15vlogAsImportantEhPKcPc:
+LFB3897:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$4, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3897:
+	.section	.text$_ZN6dbgLog3log18vnoticeAsImportantEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log18vnoticeAsImportantEhPKcPc
+	.def	__ZN6dbgLog3log18vnoticeAsImportantEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log18vnoticeAsImportantEhPKcPc:
+LFB3898:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$4, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3898:
+	.section	.text$_ZN6dbgLog3log15vprintAsWarningEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log15vprintAsWarningEhPKcPc
+	.def	__ZN6dbgLog3log15vprintAsWarningEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log15vprintAsWarningEhPKcPc:
+LFB3899:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$6, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3899:
+	.section	.text$_ZN6dbgLog3log13vlogAsWarningEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log13vlogAsWarningEhPKcPc
+	.def	__ZN6dbgLog3log13vlogAsWarningEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log13vlogAsWarningEhPKcPc:
+LFB3900:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$6, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3900:
+	.section	.text$_ZN6dbgLog3log16vnoticeAsWarningEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log16vnoticeAsWarningEhPKcPc
+	.def	__ZN6dbgLog3log16vnoticeAsWarningEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log16vnoticeAsWarningEhPKcPc:
+LFB3901:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$6, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3901:
+	.section	.text$_ZN6dbgLog3log16vprintAsCriticalEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log16vprintAsCriticalEhPKcPc
+	.def	__ZN6dbgLog3log16vprintAsCriticalEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log16vprintAsCriticalEhPKcPc:
+LFB3902:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$8, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3902:
+	.section	.text$_ZN6dbgLog3log14vlogAsCriticalEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log14vlogAsCriticalEhPKcPc
+	.def	__ZN6dbgLog3log14vlogAsCriticalEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log14vlogAsCriticalEhPKcPc:
+LFB3903:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$8, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3903:
+	.section	.text$_ZN6dbgLog3log17vnoticeAsCriticalEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log17vnoticeAsCriticalEhPKcPc
+	.def	__ZN6dbgLog3log17vnoticeAsCriticalEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log17vnoticeAsCriticalEhPKcPc:
+LFB3904:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$8, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3904:
+	.section	.text$_ZN6dbgLog3log16vprintAsAbsoluteEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log16vprintAsAbsoluteEhPKcPc
+	.def	__ZN6dbgLog3log16vprintAsAbsoluteEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log16vprintAsAbsoluteEhPKcPc:
+LFB3905:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$10, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3905:
+	.section	.text$_ZN6dbgLog3log14vlogAsAbsoluteEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log14vlogAsAbsoluteEhPKcPc
+	.def	__ZN6dbgLog3log14vlogAsAbsoluteEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log14vlogAsAbsoluteEhPKcPc:
+LFB3906:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$10, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3906:
+	.section	.text$_ZN6dbgLog3log17vnoticeAsAbsoluteEhPKcPc,"x"
+	.linkonce discard
+	.globl	__ZN6dbgLog3log17vnoticeAsAbsoluteEhPKcPc
+	.def	__ZN6dbgLog3log17vnoticeAsAbsoluteEhPKcPc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog3log17vnoticeAsAbsoluteEhPKcPc:
+LFB3907:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$10, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3907:
 	.section	.text$_ZN6dbgLog3logC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog3logC1Ev
 	.def	__ZN6dbgLog3logC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3logC1Ev:
-LFB3880:
+LFB3931:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4500,14 +6129,14 @@ LFB3880:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3880:
+LFE3931:
 	.section	.text$_ZN6dbgLog3logD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog3logD1Ev
 	.def	__ZN6dbgLog3logD1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3logD1Ev:
-LFB3886:
+LFB3937:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4519,7 +6148,7 @@ LFB3886:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3886:
+LFE3937:
 	.globl	__ZN6dbgLog3log15m_isInitializedE
 	.bss
 __ZN6dbgLog3log15m_isInitializedE:
@@ -4537,7 +6166,7 @@ __ZN6dbgLog3log13m_noticeLevelE:
 	.globl	__ZN6dbgLog3log14initializeOnceEv
 	.def	__ZN6dbgLog3log14initializeOnceEv;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3log14initializeOnceEv:
-LFB3887:
+LFB3938:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4546,27 +6175,2170 @@ LFB3887:
 	.cfi_def_cfa_register 5
 	movzbl	__ZN6dbgLog3log15m_isInitializedE, %eax
 	testb	%al, %al
-	je	L281
-	jmp	L280
-L281:
+	je	L388
+	jmp	L387
+L388:
 	movb	$1, __ZN6dbgLog3log15m_isInitializedE
 	call	__ZN6dbgLog3log16resetLogLevelAllEv
 	call	__ZN6dbgLog3log19resetNoticeLevelAllEv
-L280:
+L387:
 	popl	%ebp
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3887:
+LFE3938:
 .lcomm __ZN6dbgLogL18s_logForInitializeE,132,32
-	.section	.text$_ZN6dbgLog17category_reservedILh8EED2Ev,"x"
+	.globl	__ZN6dbgLog16resetLogLevelAllEv
+	.def	__ZN6dbgLog16resetLogLevelAllEv;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog16resetLogLevelAllEv:
+LFB3939:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	call	__ZN6dbgLog3log16resetLogLevelAllEv
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3939:
+	.globl	__ZN6dbgLog19resetNoticeLevelAllEv
+	.def	__ZN6dbgLog19resetNoticeLevelAllEv;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog19resetNoticeLevelAllEv:
+LFB3940:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	call	__ZN6dbgLog3log19resetNoticeLevelAllEv
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3940:
+	.globl	__ZN6dbgLog11getLogLevelEh
+	.def	__ZN6dbgLog11getLogLevelEh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog11getLogLevelEh:
+LFB3941:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log11getLogLevelEh
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3941:
+	.globl	__ZN6dbgLog11setLogLevelEhh
+	.def	__ZN6dbgLog11setLogLevelEhh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog11setLogLevelEhh:
+LFB3942:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -12(%ebp)
+	movb	%al, -16(%ebp)
+	movzbl	-16(%ebp), %edx
+	movzbl	-12(%ebp), %eax
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log11setLogLevelEhh
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3942:
+	.globl	__ZN6dbgLog14getNoticeLevelEh
+	.def	__ZN6dbgLog14getNoticeLevelEh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog14getNoticeLevelEh:
+LFB3943:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log14getNoticeLevelEh
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3943:
+	.globl	__ZN6dbgLog14setNoticeLevelEhh
+	.def	__ZN6dbgLog14setNoticeLevelEhh;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog14setNoticeLevelEhh:
+LFB3944:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$24, %esp
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -12(%ebp)
+	movb	%al, -16(%ebp)
+	movzbl	-16(%ebp), %edx
+	movzbl	-12(%ebp), %eax
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log14setNoticeLevelEhh
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3944:
+	.def	__ZN6dbgLogL6vprintEhhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL6vprintEhhPKcPc:
+LFB3945:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -12(%ebp)
+	movb	%al, -16(%ebp)
+	movzbl	-16(%ebp), %edx
+	movzbl	-12(%ebp), %eax
+	movl	20(%ebp), %ecx
+	movl	%ecx, 12(%esp)
+	movl	16(%ebp), %ecx
+	movl	%ecx, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3945:
+	.def	__ZN6dbgLogL4vlogEhhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL4vlogEhhPKcPc:
+LFB3946:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -12(%ebp)
+	movb	%al, -16(%ebp)
+	movzbl	-16(%ebp), %edx
+	movzbl	-12(%ebp), %eax
+	movl	20(%ebp), %ecx
+	movl	%ecx, 12(%esp)
+	movl	16(%ebp), %ecx
+	movl	%ecx, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3946:
+	.def	__ZN6dbgLogL7vnoticeEhhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL7vnoticeEhhPKcPc:
+LFB3947:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -12(%ebp)
+	movb	%al, -16(%ebp)
+	movzbl	-16(%ebp), %edx
+	movzbl	-12(%ebp), %eax
+	movl	20(%ebp), %ecx
+	movl	%ecx, 12(%esp)
+	movl	16(%ebp), %ecx
+	movl	%ecx, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3947:
+	.def	__ZN6dbgLogL5printEhhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL5printEhhPKcz:
+LFB3948:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3948
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$56, %esp
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -28(%ebp)
+	movb	%al, -32(%ebp)
+	leal	20(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %ecx
+	movzbl	-32(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%ecx, 12(%esp)
+	movl	16(%ebp), %ecx
+	movl	%ecx, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB11:
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+LEHE11:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L410
+L409:
+	movl	%eax, (%esp)
+LEHB12:
+	call	__Unwind_Resume
+LEHE12:
+L410:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3948:
+	.section	.gcc_except_table,"w"
+LLSDA3948:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3948-LLSDACSB3948
+LLSDACSB3948:
+	.uleb128 LEHB11-LFB3948
+	.uleb128 LEHE11-LEHB11
+	.uleb128 L409-LFB3948
+	.uleb128 0
+	.uleb128 LEHB12-LFB3948
+	.uleb128 LEHE12-LEHB12
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3948:
+	.text
+	.def	__ZN6dbgLogL4log_EhhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL4log_EhhPKcz:
+LFB3949:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3949
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$56, %esp
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -28(%ebp)
+	movb	%al, -32(%ebp)
+	leal	20(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %ecx
+	movzbl	-32(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%ecx, 12(%esp)
+	movl	16(%ebp), %ecx
+	movl	%ecx, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB13:
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+LEHE13:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L415
+L414:
+	movl	%eax, (%esp)
+LEHB14:
+	call	__Unwind_Resume
+LEHE14:
+L415:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3949:
+	.section	.gcc_except_table,"w"
+LLSDA3949:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3949-LLSDACSB3949
+LLSDACSB3949:
+	.uleb128 LEHB13-LFB3949
+	.uleb128 LEHE13-LEHB13
+	.uleb128 L414-LFB3949
+	.uleb128 0
+	.uleb128 LEHB14-LFB3949
+	.uleb128 LEHE14-LEHB14
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3949:
+	.text
+	.def	__ZN6dbgLogL6noticeEhhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL6noticeEhhPKcz:
+LFB3950:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3950
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$56, %esp
+	movl	8(%ebp), %edx
+	movl	12(%ebp), %eax
+	movb	%dl, -28(%ebp)
+	movb	%al, -32(%ebp)
+	leal	20(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %ecx
+	movzbl	-32(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%ecx, 12(%esp)
+	movl	16(%ebp), %ecx
+	movl	%ecx, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB15:
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+LEHE15:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L420
+L419:
+	movl	%eax, (%esp)
+LEHB16:
+	call	__Unwind_Resume
+LEHE16:
+L420:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3950:
+	.section	.gcc_except_table,"w"
+LLSDA3950:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3950-LLSDACSB3950
+LLSDACSB3950:
+	.uleb128 LEHB15-LFB3950
+	.uleb128 LEHE15-LEHB15
+	.uleb128 L419-LFB3950
+	.uleb128 0
+	.uleb128 LEHB16-LFB3950
+	.uleb128 LEHE16-LEHB16
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3950:
+	.text
+	.def	__ZN6dbgLogL14vprintAsNormalEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL14vprintAsNormalEhPKcPc:
+LFB3951:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$2, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3951:
+	.def	__ZN6dbgLogL12vlogAsNormalEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL12vlogAsNormalEhPKcPc:
+LFB3952:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$2, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3952:
+	.def	__ZN6dbgLogL15vnoticeAsNormalEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL15vnoticeAsNormalEhPKcPc:
+LFB3953:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$2, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3953:
+	.def	__ZN6dbgLogL15vprintAsVerboseEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL15vprintAsVerboseEhPKcPc:
+LFB3954:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3954:
+	.def	__ZN6dbgLogL13vlogAsVerboseEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL13vlogAsVerboseEhPKcPc:
+LFB3955:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3955:
+	.def	__ZN6dbgLogL16vnoticeAsVerboseEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL16vnoticeAsVerboseEhPKcPc:
+LFB3956:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3956:
+	.def	__ZN6dbgLogL14vprintAsDetailEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL14vprintAsDetailEhPKcPc:
+LFB3957:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$1, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3957:
+	.def	__ZN6dbgLogL12vlogAsDetailEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL12vlogAsDetailEhPKcPc:
+LFB3958:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$1, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3958:
+	.def	__ZN6dbgLogL15vnoticeAsDetailEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL15vnoticeAsDetailEhPKcPc:
+LFB3959:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$1, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3959:
+	.def	__ZN6dbgLogL17vprintAsImportantEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL17vprintAsImportantEhPKcPc:
+LFB3960:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$4, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3960:
+	.def	__ZN6dbgLogL15vlogAsImportantEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL15vlogAsImportantEhPKcPc:
+LFB3961:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$4, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3961:
+	.def	__ZN6dbgLogL18vnoticeAsImportantEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL18vnoticeAsImportantEhPKcPc:
+LFB3962:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$4, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3962:
+	.def	__ZN6dbgLogL15vprintAsWarningEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL15vprintAsWarningEhPKcPc:
+LFB3963:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$6, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3963:
+	.def	__ZN6dbgLogL13vlogAsWarningEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL13vlogAsWarningEhPKcPc:
+LFB3964:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$6, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3964:
+	.def	__ZN6dbgLogL16vnoticeAsWarningEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL16vnoticeAsWarningEhPKcPc:
+LFB3965:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$6, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3965:
+	.def	__ZN6dbgLogL16vprintAsCriticalEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL16vprintAsCriticalEhPKcPc:
+LFB3966:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$8, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3966:
+	.def	__ZN6dbgLogL14vlogAsCriticalEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL14vlogAsCriticalEhPKcPc:
+LFB3967:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$8, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3967:
+	.def	__ZN6dbgLogL17vnoticeAsCriticalEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL17vnoticeAsCriticalEhPKcPc:
+LFB3968:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$8, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3968:
+	.def	__ZN6dbgLogL16vprintAsAbsoluteEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL16vprintAsAbsoluteEhPKcPc:
+LFB3969:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$10, (%esp)
+	call	__ZN6dbgLog3log6vprintEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3969:
+	.def	__ZN6dbgLogL14vlogAsAbsoluteEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL14vlogAsAbsoluteEhPKcPc:
+LFB3970:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$10, (%esp)
+	call	__ZN6dbgLog3log4vlogEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3970:
+	.def	__ZN6dbgLogL17vnoticeAsAbsoluteEhPKcPc;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL17vnoticeAsAbsoluteEhPKcPc:
+LFB3971:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -12(%ebp)
+	movzbl	-12(%ebp), %eax
+	movl	16(%ebp), %edx
+	movl	%edx, 12(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$10, (%esp)
+	call	__ZN6dbgLog3log7vnoticeEhhPKcPc
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3971:
+	.def	__ZN6dbgLogL13printAsNormalEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL13printAsNormalEhPKcz:
+LFB3972:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3972
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB17:
+	call	__ZN6dbgLog3log14vprintAsNormalEhPKcPc
+LEHE17:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L467
+L466:
+	movl	%eax, (%esp)
+LEHB18:
+	call	__Unwind_Resume
+LEHE18:
+L467:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3972:
+	.section	.gcc_except_table,"w"
+LLSDA3972:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3972-LLSDACSB3972
+LLSDACSB3972:
+	.uleb128 LEHB17-LFB3972
+	.uleb128 LEHE17-LEHB17
+	.uleb128 L466-LFB3972
+	.uleb128 0
+	.uleb128 LEHB18-LFB3972
+	.uleb128 LEHE18-LEHB18
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3972:
+	.text
+	.def	__ZN6dbgLogL11logAsNormalEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL11logAsNormalEhPKcz:
+LFB3973:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3973
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB19:
+	call	__ZN6dbgLog3log12vlogAsNormalEhPKcPc
+LEHE19:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L472
+L471:
+	movl	%eax, (%esp)
+LEHB20:
+	call	__Unwind_Resume
+LEHE20:
+L472:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3973:
+	.section	.gcc_except_table,"w"
+LLSDA3973:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3973-LLSDACSB3973
+LLSDACSB3973:
+	.uleb128 LEHB19-LFB3973
+	.uleb128 LEHE19-LEHB19
+	.uleb128 L471-LFB3973
+	.uleb128 0
+	.uleb128 LEHB20-LFB3973
+	.uleb128 LEHE20-LEHB20
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3973:
+	.text
+	.def	__ZN6dbgLogL14noticeAsNormalEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL14noticeAsNormalEhPKcz:
+LFB3974:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3974
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB21:
+	call	__ZN6dbgLog3log15vnoticeAsNormalEhPKcPc
+LEHE21:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L477
+L476:
+	movl	%eax, (%esp)
+LEHB22:
+	call	__Unwind_Resume
+LEHE22:
+L477:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3974:
+	.section	.gcc_except_table,"w"
+LLSDA3974:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3974-LLSDACSB3974
+LLSDACSB3974:
+	.uleb128 LEHB21-LFB3974
+	.uleb128 LEHE21-LEHB21
+	.uleb128 L476-LFB3974
+	.uleb128 0
+	.uleb128 LEHB22-LFB3974
+	.uleb128 LEHE22-LEHB22
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3974:
+	.text
+	.def	__ZN6dbgLogL14printAsVerboseEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL14printAsVerboseEhPKcz:
+LFB3975:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3975
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB23:
+	call	__ZN6dbgLog3log15vprintAsVerboseEhPKcPc
+LEHE23:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L482
+L481:
+	movl	%eax, (%esp)
+LEHB24:
+	call	__Unwind_Resume
+LEHE24:
+L482:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3975:
+	.section	.gcc_except_table,"w"
+LLSDA3975:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3975-LLSDACSB3975
+LLSDACSB3975:
+	.uleb128 LEHB23-LFB3975
+	.uleb128 LEHE23-LEHB23
+	.uleb128 L481-LFB3975
+	.uleb128 0
+	.uleb128 LEHB24-LFB3975
+	.uleb128 LEHE24-LEHB24
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3975:
+	.text
+	.def	__ZN6dbgLogL12logAsVerboseEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL12logAsVerboseEhPKcz:
+LFB3976:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3976
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB25:
+	call	__ZN6dbgLog3log13vlogAsVerboseEhPKcPc
+LEHE25:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L487
+L486:
+	movl	%eax, (%esp)
+LEHB26:
+	call	__Unwind_Resume
+LEHE26:
+L487:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3976:
+	.section	.gcc_except_table,"w"
+LLSDA3976:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3976-LLSDACSB3976
+LLSDACSB3976:
+	.uleb128 LEHB25-LFB3976
+	.uleb128 LEHE25-LEHB25
+	.uleb128 L486-LFB3976
+	.uleb128 0
+	.uleb128 LEHB26-LFB3976
+	.uleb128 LEHE26-LEHB26
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3976:
+	.text
+	.def	__ZN6dbgLogL15noticeAsVerboseEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL15noticeAsVerboseEhPKcz:
+LFB3977:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3977
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB27:
+	call	__ZN6dbgLog3log16vnoticeAsVerboseEhPKcPc
+LEHE27:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L492
+L491:
+	movl	%eax, (%esp)
+LEHB28:
+	call	__Unwind_Resume
+LEHE28:
+L492:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3977:
+	.section	.gcc_except_table,"w"
+LLSDA3977:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3977-LLSDACSB3977
+LLSDACSB3977:
+	.uleb128 LEHB27-LFB3977
+	.uleb128 LEHE27-LEHB27
+	.uleb128 L491-LFB3977
+	.uleb128 0
+	.uleb128 LEHB28-LFB3977
+	.uleb128 LEHE28-LEHB28
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3977:
+	.text
+	.def	__ZN6dbgLogL13printAsDetailEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL13printAsDetailEhPKcz:
+LFB3978:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3978
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB29:
+	call	__ZN6dbgLog3log14vprintAsDetailEhPKcPc
+LEHE29:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L497
+L496:
+	movl	%eax, (%esp)
+LEHB30:
+	call	__Unwind_Resume
+LEHE30:
+L497:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3978:
+	.section	.gcc_except_table,"w"
+LLSDA3978:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3978-LLSDACSB3978
+LLSDACSB3978:
+	.uleb128 LEHB29-LFB3978
+	.uleb128 LEHE29-LEHB29
+	.uleb128 L496-LFB3978
+	.uleb128 0
+	.uleb128 LEHB30-LFB3978
+	.uleb128 LEHE30-LEHB30
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3978:
+	.text
+	.def	__ZN6dbgLogL11logAsDetailEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL11logAsDetailEhPKcz:
+LFB3979:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3979
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB31:
+	call	__ZN6dbgLog3log12vlogAsDetailEhPKcPc
+LEHE31:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L502
+L501:
+	movl	%eax, (%esp)
+LEHB32:
+	call	__Unwind_Resume
+LEHE32:
+L502:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3979:
+	.section	.gcc_except_table,"w"
+LLSDA3979:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3979-LLSDACSB3979
+LLSDACSB3979:
+	.uleb128 LEHB31-LFB3979
+	.uleb128 LEHE31-LEHB31
+	.uleb128 L501-LFB3979
+	.uleb128 0
+	.uleb128 LEHB32-LFB3979
+	.uleb128 LEHE32-LEHB32
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3979:
+	.text
+	.def	__ZN6dbgLogL14noticeAsDetailEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL14noticeAsDetailEhPKcz:
+LFB3980:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3980
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB33:
+	call	__ZN6dbgLog3log15vnoticeAsDetailEhPKcPc
+LEHE33:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L507
+L506:
+	movl	%eax, (%esp)
+LEHB34:
+	call	__Unwind_Resume
+LEHE34:
+L507:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3980:
+	.section	.gcc_except_table,"w"
+LLSDA3980:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3980-LLSDACSB3980
+LLSDACSB3980:
+	.uleb128 LEHB33-LFB3980
+	.uleb128 LEHE33-LEHB33
+	.uleb128 L506-LFB3980
+	.uleb128 0
+	.uleb128 LEHB34-LFB3980
+	.uleb128 LEHE34-LEHB34
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3980:
+	.text
+	.def	__ZN6dbgLogL16printAsImportantEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL16printAsImportantEhPKcz:
+LFB3981:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3981
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB35:
+	call	__ZN6dbgLog3log17vprintAsImportantEhPKcPc
+LEHE35:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L512
+L511:
+	movl	%eax, (%esp)
+LEHB36:
+	call	__Unwind_Resume
+LEHE36:
+L512:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3981:
+	.section	.gcc_except_table,"w"
+LLSDA3981:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3981-LLSDACSB3981
+LLSDACSB3981:
+	.uleb128 LEHB35-LFB3981
+	.uleb128 LEHE35-LEHB35
+	.uleb128 L511-LFB3981
+	.uleb128 0
+	.uleb128 LEHB36-LFB3981
+	.uleb128 LEHE36-LEHB36
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3981:
+	.text
+	.def	__ZN6dbgLogL14logAsImportantEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL14logAsImportantEhPKcz:
+LFB3982:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3982
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB37:
+	call	__ZN6dbgLog3log15vlogAsImportantEhPKcPc
+LEHE37:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L517
+L516:
+	movl	%eax, (%esp)
+LEHB38:
+	call	__Unwind_Resume
+LEHE38:
+L517:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3982:
+	.section	.gcc_except_table,"w"
+LLSDA3982:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3982-LLSDACSB3982
+LLSDACSB3982:
+	.uleb128 LEHB37-LFB3982
+	.uleb128 LEHE37-LEHB37
+	.uleb128 L516-LFB3982
+	.uleb128 0
+	.uleb128 LEHB38-LFB3982
+	.uleb128 LEHE38-LEHB38
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3982:
+	.text
+	.def	__ZN6dbgLogL17noticeAsImportantEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL17noticeAsImportantEhPKcz:
+LFB3983:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3983
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB39:
+	call	__ZN6dbgLog3log18vnoticeAsImportantEhPKcPc
+LEHE39:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L522
+L521:
+	movl	%eax, (%esp)
+LEHB40:
+	call	__Unwind_Resume
+LEHE40:
+L522:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3983:
+	.section	.gcc_except_table,"w"
+LLSDA3983:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3983-LLSDACSB3983
+LLSDACSB3983:
+	.uleb128 LEHB39-LFB3983
+	.uleb128 LEHE39-LEHB39
+	.uleb128 L521-LFB3983
+	.uleb128 0
+	.uleb128 LEHB40-LFB3983
+	.uleb128 LEHE40-LEHB40
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3983:
+	.text
+	.def	__ZN6dbgLogL14printAsWarningEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL14printAsWarningEhPKcz:
+LFB3984:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3984
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB41:
+	call	__ZN6dbgLog3log15vprintAsWarningEhPKcPc
+LEHE41:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L527
+L526:
+	movl	%eax, (%esp)
+LEHB42:
+	call	__Unwind_Resume
+LEHE42:
+L527:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3984:
+	.section	.gcc_except_table,"w"
+LLSDA3984:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3984-LLSDACSB3984
+LLSDACSB3984:
+	.uleb128 LEHB41-LFB3984
+	.uleb128 LEHE41-LEHB41
+	.uleb128 L526-LFB3984
+	.uleb128 0
+	.uleb128 LEHB42-LFB3984
+	.uleb128 LEHE42-LEHB42
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3984:
+	.text
+	.def	__ZN6dbgLogL12logAsWarningEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL12logAsWarningEhPKcz:
+LFB3985:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3985
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB43:
+	call	__ZN6dbgLog3log13vlogAsWarningEhPKcPc
+LEHE43:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L532
+L531:
+	movl	%eax, (%esp)
+LEHB44:
+	call	__Unwind_Resume
+LEHE44:
+L532:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3985:
+	.section	.gcc_except_table,"w"
+LLSDA3985:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3985-LLSDACSB3985
+LLSDACSB3985:
+	.uleb128 LEHB43-LFB3985
+	.uleb128 LEHE43-LEHB43
+	.uleb128 L531-LFB3985
+	.uleb128 0
+	.uleb128 LEHB44-LFB3985
+	.uleb128 LEHE44-LEHB44
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3985:
+	.text
+	.def	__ZN6dbgLogL15noticeAsWarningEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL15noticeAsWarningEhPKcz:
+LFB3986:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3986
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB45:
+	call	__ZN6dbgLog3log16vnoticeAsWarningEhPKcPc
+LEHE45:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L537
+L536:
+	movl	%eax, (%esp)
+LEHB46:
+	call	__Unwind_Resume
+LEHE46:
+L537:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3986:
+	.section	.gcc_except_table,"w"
+LLSDA3986:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3986-LLSDACSB3986
+LLSDACSB3986:
+	.uleb128 LEHB45-LFB3986
+	.uleb128 LEHE45-LEHB45
+	.uleb128 L536-LFB3986
+	.uleb128 0
+	.uleb128 LEHB46-LFB3986
+	.uleb128 LEHE46-LEHB46
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3986:
+	.text
+	.def	__ZN6dbgLogL15printAsCriticalEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL15printAsCriticalEhPKcz:
+LFB3987:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3987
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB47:
+	call	__ZN6dbgLog3log16vprintAsCriticalEhPKcPc
+LEHE47:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L542
+L541:
+	movl	%eax, (%esp)
+LEHB48:
+	call	__Unwind_Resume
+LEHE48:
+L542:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3987:
+	.section	.gcc_except_table,"w"
+LLSDA3987:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3987-LLSDACSB3987
+LLSDACSB3987:
+	.uleb128 LEHB47-LFB3987
+	.uleb128 LEHE47-LEHB47
+	.uleb128 L541-LFB3987
+	.uleb128 0
+	.uleb128 LEHB48-LFB3987
+	.uleb128 LEHE48-LEHB48
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3987:
+	.text
+	.def	__ZN6dbgLogL13logAsCriticalEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL13logAsCriticalEhPKcz:
+LFB3988:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3988
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB49:
+	call	__ZN6dbgLog3log14vlogAsCriticalEhPKcPc
+LEHE49:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L547
+L546:
+	movl	%eax, (%esp)
+LEHB50:
+	call	__Unwind_Resume
+LEHE50:
+L547:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3988:
+	.section	.gcc_except_table,"w"
+LLSDA3988:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3988-LLSDACSB3988
+LLSDACSB3988:
+	.uleb128 LEHB49-LFB3988
+	.uleb128 LEHE49-LEHB49
+	.uleb128 L546-LFB3988
+	.uleb128 0
+	.uleb128 LEHB50-LFB3988
+	.uleb128 LEHE50-LEHB50
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3988:
+	.text
+	.def	__ZN6dbgLogL16noticeAsCriticalEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL16noticeAsCriticalEhPKcz:
+LFB3989:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3989
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB51:
+	call	__ZN6dbgLog3log17vnoticeAsCriticalEhPKcPc
+LEHE51:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L552
+L551:
+	movl	%eax, (%esp)
+LEHB52:
+	call	__Unwind_Resume
+LEHE52:
+L552:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3989:
+	.section	.gcc_except_table,"w"
+LLSDA3989:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3989-LLSDACSB3989
+LLSDACSB3989:
+	.uleb128 LEHB51-LFB3989
+	.uleb128 LEHE51-LEHB51
+	.uleb128 L551-LFB3989
+	.uleb128 0
+	.uleb128 LEHB52-LFB3989
+	.uleb128 LEHE52-LEHB52
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3989:
+	.text
+	.def	__ZN6dbgLogL15printAsAbsoluteEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL15printAsAbsoluteEhPKcz:
+LFB3990:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3990
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB53:
+	call	__ZN6dbgLog3log16vprintAsAbsoluteEhPKcPc
+LEHE53:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L557
+L556:
+	movl	%eax, (%esp)
+LEHB54:
+	call	__Unwind_Resume
+LEHE54:
+L557:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3990:
+	.section	.gcc_except_table,"w"
+LLSDA3990:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3990-LLSDACSB3990
+LLSDACSB3990:
+	.uleb128 LEHB53-LFB3990
+	.uleb128 LEHE53-LEHB53
+	.uleb128 L556-LFB3990
+	.uleb128 0
+	.uleb128 LEHB54-LFB3990
+	.uleb128 LEHE54-LEHB54
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3990:
+	.text
+	.def	__ZN6dbgLogL13logAsAbsoluteEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL13logAsAbsoluteEhPKcz:
+LFB3991:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3991
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB55:
+	call	__ZN6dbgLog3log14vlogAsAbsoluteEhPKcPc
+LEHE55:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L562
+L561:
+	movl	%eax, (%esp)
+LEHB56:
+	call	__Unwind_Resume
+LEHE56:
+L562:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3991:
+	.section	.gcc_except_table,"w"
+LLSDA3991:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3991-LLSDACSB3991
+LLSDACSB3991:
+	.uleb128 LEHB55-LFB3991
+	.uleb128 LEHE55-LEHB55
+	.uleb128 L561-LFB3991
+	.uleb128 0
+	.uleb128 LEHB56-LFB3991
+	.uleb128 LEHE56-LEHB56
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3991:
+	.text
+	.def	__ZN6dbgLogL16noticeAsAbsoluteEhPKcz;	.scl	3;	.type	32;	.endef
+__ZN6dbgLogL16noticeAsAbsoluteEhPKcz:
+LFB3992:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA3992
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	8(%ebp), %eax
+	movb	%al, -28(%ebp)
+	leal	16(%ebp), %eax
+	movl	%eax, -16(%ebp)
+	movl	-16(%ebp), %edx
+	movzbl	-28(%ebp), %eax
+	movl	%edx, 8(%esp)
+	movl	12(%ebp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+LEHB57:
+	call	__ZN6dbgLog3log17vnoticeAsAbsoluteEhPKcPc
+LEHE57:
+	movl	%eax, -12(%ebp)
+	movl	-12(%ebp), %eax
+	jmp	L567
+L566:
+	movl	%eax, (%esp)
+LEHB58:
+	call	__Unwind_Resume
+LEHE58:
+L567:
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE3992:
+	.section	.gcc_except_table,"w"
+LLSDA3992:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE3992-LLSDACSB3992
+LLSDACSB3992:
+	.uleb128 LEHB57-LFB3992
+	.uleb128 LEHE57-LEHB57
+	.uleb128 L566-LFB3992
+	.uleb128 0
+	.uleb128 LEHB58-LFB3992
+	.uleb128 LEHE58-LEHB58
+	.uleb128 0
+	.uleb128 0
+LLSDACSE3992:
+	.text
+	.section	.text$_ZN6dbgLog17category_reservedILh8ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_reservedILh8EED2Ev
-	.def	__ZN6dbgLog17category_reservedILh8EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_reservedILh8EED2Ev:
-LFB3890:
+	.globl	__ZN6dbgLog17category_reservedILh8ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_reservedILh8ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_reservedILh8ELb1ELb1EED2Ev:
+LFB3995:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4582,9 +8354,9 @@ LFB3890:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3890:
+LFE3995:
 	.section .rdata,"dr"
-LC30:
+LC36:
 	.ascii "forReserved01\0"
 	.section	.text$_ZN6dbgLog3ext22category_forReserved01C1Ev,"x"
 	.linkonce discard
@@ -4592,7 +8364,7 @@ LC30:
 	.globl	__ZN6dbgLog3ext22category_forReserved01C1Ev
 	.def	__ZN6dbgLog3ext22category_forReserved01C1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3ext22category_forReserved01C1Ev:
-LFB3893:
+LFB3998:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4601,22 +8373,22 @@ LFB3893:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	movl	8(%ebp), %eax
-	movl	$LC30, 4(%esp)
+	movl	$LC36, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_reservedILh8EEC2EPKc
+	call	__ZN6dbgLog17category_reservedILh8ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3893:
-	.section	.text$_ZN6dbgLog17category_reservedILh9EED2Ev,"x"
+LFE3998:
+	.section	.text$_ZN6dbgLog17category_reservedILh9ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_reservedILh9EED2Ev
-	.def	__ZN6dbgLog17category_reservedILh9EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_reservedILh9EED2Ev:
-LFB3896:
+	.globl	__ZN6dbgLog17category_reservedILh9ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_reservedILh9ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_reservedILh9ELb1ELb1EED2Ev:
+LFB4001:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4632,9 +8404,9 @@ LFB3896:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3896:
+LFE4001:
 	.section .rdata,"dr"
-LC31:
+LC37:
 	.ascii "forReserved02\0"
 	.section	.text$_ZN6dbgLog3ext22category_forReserved02C1Ev,"x"
 	.linkonce discard
@@ -4642,7 +8414,7 @@ LC31:
 	.globl	__ZN6dbgLog3ext22category_forReserved02C1Ev
 	.def	__ZN6dbgLog3ext22category_forReserved02C1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3ext22category_forReserved02C1Ev:
-LFB3899:
+LFB4004:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4651,22 +8423,22 @@ LFB3899:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	movl	8(%ebp), %eax
-	movl	$LC31, 4(%esp)
+	movl	$LC37, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_reservedILh9EEC2EPKc
+	call	__ZN6dbgLog17category_reservedILh9ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3899:
-	.section	.text$_ZN6dbgLog17category_reservedILh10EED2Ev,"x"
+LFE4004:
+	.section	.text$_ZN6dbgLog17category_reservedILh10ELb1ELb1EED2Ev,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_reservedILh10EED2Ev
-	.def	__ZN6dbgLog17category_reservedILh10EED2Ev;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_reservedILh10EED2Ev:
-LFB3902:
+	.globl	__ZN6dbgLog17category_reservedILh10ELb1ELb1EED2Ev
+	.def	__ZN6dbgLog17category_reservedILh10ELb1ELb1EED2Ev;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_reservedILh10ELb1ELb1EED2Ev:
+LFB4007:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4682,9 +8454,9 @@ LFB3902:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3902:
+LFE4007:
 	.section .rdata,"dr"
-LC32:
+LC38:
 	.ascii "forReserved03\0"
 	.section	.text$_ZN6dbgLog3ext22category_forReserved03C1Ev,"x"
 	.linkonce discard
@@ -4692,7 +8464,7 @@ LC32:
 	.globl	__ZN6dbgLog3ext22category_forReserved03C1Ev
 	.def	__ZN6dbgLog3ext22category_forReserved03C1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3ext22category_forReserved03C1Ev:
-LFB3905:
+LFB4010:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4701,22 +8473,22 @@ LFB3905:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	movl	8(%ebp), %eax
-	movl	$LC32, 4(%esp)
+	movl	$LC38, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_reservedILh10EEC2EPKc
+	call	__ZN6dbgLog17category_reservedILh10ELb1ELb1EEC2EPKc
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3905:
+LFE4010:
 	.section	.text$_ZN6dbgLog3ext22category_forReserved01D1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog3ext22category_forReserved01D1Ev
 	.def	__ZN6dbgLog3ext22category_forReserved01D1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3ext22category_forReserved01D1Ev:
-LFB3909:
+LFB4014:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4726,20 +8498,20 @@ LFB3909:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_reservedILh8EED2Ev
+	call	__ZN6dbgLog17category_reservedILh8ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3909:
+LFE4014:
 	.section	.text$_ZN6dbgLog3ext22category_forReserved02D1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog3ext22category_forReserved02D1Ev
 	.def	__ZN6dbgLog3ext22category_forReserved02D1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3ext22category_forReserved02D1Ev:
-LFB3912:
+LFB4017:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4749,20 +8521,20 @@ LFB3912:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_reservedILh9EED2Ev
+	call	__ZN6dbgLog17category_reservedILh9ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3912:
+LFE4017:
 	.section	.text$_ZN6dbgLog3ext22category_forReserved03D1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog3ext22category_forReserved03D1Ev
 	.def	__ZN6dbgLog3ext22category_forReserved03D1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3ext22category_forReserved03D1Ev:
-LFB3915:
+LFB4020:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4772,44 +8544,44 @@ LFB3915:
 	subl	$4, %esp
 	movl	8(%ebp), %eax
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog17category_reservedILh10EED2Ev
+	call	__ZN6dbgLog17category_reservedILh10ELb1ELb1EED2Ev
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3915:
+LFE4020:
 	.section	.text$_ZN6dbgLog3ext20categoryContainerExtC1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog3ext20categoryContainerExtC1Ev
 	.def	__ZN6dbgLog3ext20categoryContainerExtC1Ev;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog3ext20categoryContainerExtC1Ev:
-LFB3917:
+LFB4022:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
-	subl	$56, %esp
+	subl	$72, %esp
 	call	__ZN6dbgLog8category9container14initializeOnceEv
-	leal	-32(%ebp), %eax
+	leal	-44(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog3ext22category_forReserved01C1Ev
-	leal	-32(%ebp), %eax
+	leal	-44(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog3ext22category_forReserved01D1Ev
-	leal	-24(%ebp), %eax
+	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog3ext22category_forReserved02C1Ev
-	leal	-24(%ebp), %eax
+	leal	-32(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog3ext22category_forReserved02D1Ev
-	leal	-16(%ebp), %eax
+	leal	-20(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog3ext22category_forReserved03C1Ev
-	leal	-16(%ebp), %eax
+	leal	-20(%ebp), %eax
 	movl	%eax, (%esp)
 	call	__ZN6dbgLog3ext22category_forReserved03D1Ev
 	leave
@@ -4817,14 +8589,201 @@ LFB3917:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3917:
+LFE4022:
 .lcomm __ZN6dbgLog3extL23s_categoryForInitializeE,1,1
-	.def	___main;	.scl	2;	.type	32;	.endef
+	.section .rdata,"dr"
+	.align 4
+LC39:
+	.ascii "---------- printCommon() ----------\0"
+LC40:
+	.ascii "logLevel=%s, noticeLevel=%s\12\0"
+LC41:
+	.ascii "\343\203\206\343\202\271\343\203\210\0"
+LC42:
+	.ascii "\351\200\232\345\270\270\343\203\241\343\203\203\343\202\273\343\203\274\343\202\270 by %s\12\0"
+LC43:
+	.ascii "\345\206\227\351\225\267\343\203\241\343\203\203\343\202\273\343\203\274\343\202\270 by %s\12\0"
+LC44:
+	.ascii "\350\251\263\347\264\260\343\203\241\343\203\203\343\202\273\343\203\274\343\202\270 by %s\12\0"
+LC45:
+	.ascii "\351\207\215\350\246\201\343\203\241\343\203\203\343\202\273\343\203\274\343\202\270 by %s\12\0"
+LC46:
+	.ascii "\350\255\246\345\221\212\343\203\241\343\203\203\343\202\273\343\203\274\343\202\270 by %s\12\0"
+LC47:
+	.ascii "\351\207\215\345\244\247\343\203\241\343\203\203\343\202\273\343\203\274\343\202\270 by %s\12\0"
+LC48:
+	.ascii "\347\265\266\345\257\276\343\203\241\343\203\203\343\202\273\343\203\274\343\202\270 by %s\12\0"
+	.align 4
+LC49:
+	.ascii "\343\200\220\343\203\255\343\202\260\345\207\272\345\212\233\345\260\202\347\224\250\343\200\221\351\207\215\345\244\247\343\203\241\343\203\203\343\202\273\343\203\274\343\202\270 by %s\12\0"
+	.align 4
+LC50:
+	.ascii "\343\200\220\347\224\273\351\235\242\351\200\232\347\237\245\345\260\202\347\224\250\343\200\221\351\207\215\345\244\247\343\203\241\343\203\203\343\202\273\343\203\274\343\202\270 by %s\12\0"
 	.text
+	.globl	__Z11printCommonv
+	.def	__Z11printCommonv;	.scl	2;	.type	32;	.endef
+__Z11printCommonv:
+LFB4023:
+	.cfi_startproc
+	.cfi_personality 0,___gxx_personality_v0
+	.cfi_lsda 0,LLSDA4023
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	pushl	%ebx
+	subl	$52, %esp
+	.cfi_offset 3, -12
+	movl	$LC39, (%esp)
+LEHB59:
+	call	_puts
+	movl	$0, (%esp)
+	call	__ZN6dbgLog14getNoticeLevelEh
+	movzbl	%al, %eax
+	movl	%eax, 4(%esp)
+	leal	-36(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5levelC1Eh
+LEHE59:
+	leal	-36(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level4nameEv
+	movl	%eax, %ebx
+	movl	$0, (%esp)
+LEHB60:
+	call	__ZN6dbgLog11getLogLevelEh
+	movzbl	%al, %eax
+	movl	%eax, 4(%esp)
+	leal	-24(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5levelC1Eh
+LEHE60:
+	leal	-24(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZNK6dbgLog5level4nameEv
+	movl	%ebx, 8(%esp)
+	movl	%eax, 4(%esp)
+	movl	$LC40, (%esp)
+LEHB61:
+	call	_printf
+LEHE61:
+	leal	-24(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5levelD1Ev
+	leal	-36(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5levelD1Ev
+	movl	$LC41, -12(%ebp)
+	movl	-12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC42, 4(%esp)
+	movl	$0, (%esp)
+LEHB62:
+	call	__ZN6dbgLogL13printAsNormalEhPKcz
+	movl	-12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC43, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLogL14printAsVerboseEhPKcz
+	movl	-12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC44, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLogL13printAsDetailEhPKcz
+	movl	-12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC45, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLogL16printAsImportantEhPKcz
+	movl	-12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC46, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLogL14printAsWarningEhPKcz
+	movl	-12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC47, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLogL15printAsCriticalEhPKcz
+	movl	-12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC48, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLogL15printAsAbsoluteEhPKcz
+	movl	-12(%ebp), %eax
+	movl	%eax, 12(%esp)
+	movl	$LC42, 8(%esp)
+	movl	$0, 4(%esp)
+	movl	$2, (%esp)
+	call	__ZN6dbgLogL5printEhhPKcz
+	movl	-12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC49, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLogL13logAsCriticalEhPKcz
+	movl	-12(%ebp), %eax
+	movl	%eax, 8(%esp)
+	movl	$LC50, 4(%esp)
+	movl	$0, (%esp)
+	call	__ZN6dbgLogL16noticeAsCriticalEhPKcz
+	jmp	L589
+L588:
+	movl	%eax, %ebx
+	leal	-24(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5levelD1Ev
+	jmp	L586
+L587:
+	movl	%eax, %ebx
+L586:
+	leal	-36(%ebp), %eax
+	movl	%eax, (%esp)
+	call	__ZN6dbgLog5levelD1Ev
+	movl	%ebx, %eax
+	movl	%eax, (%esp)
+	call	__Unwind_Resume
+LEHE62:
+L589:
+	addl	$52, %esp
+	popl	%ebx
+	.cfi_restore 3
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+LFE4023:
+	.section	.gcc_except_table,"w"
+LLSDA4023:
+	.byte	0xff
+	.byte	0xff
+	.byte	0x1
+	.uleb128 LLSDACSE4023-LLSDACSB4023
+LLSDACSB4023:
+	.uleb128 LEHB59-LFB4023
+	.uleb128 LEHE59-LEHB59
+	.uleb128 0
+	.uleb128 0
+	.uleb128 LEHB60-LFB4023
+	.uleb128 LEHE60-LEHB60
+	.uleb128 L587-LFB4023
+	.uleb128 0
+	.uleb128 LEHB61-LFB4023
+	.uleb128 LEHE61-LEHB61
+	.uleb128 L588-LFB4023
+	.uleb128 0
+	.uleb128 LEHB62-LFB4023
+	.uleb128 LEHE62-LEHB62
+	.uleb128 0
+	.uleb128 0
+LLSDACSE4023:
+	.text
+	.def	___main;	.scl	2;	.type	32;	.endef
 	.globl	_main
 	.def	_main;	.scl	2;	.type	32;	.endef
 _main:
-LFB3918:
+LFB4024:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4832,23 +8791,42 @@ LFB3918:
 	movl	%esp, %ebp
 	.cfi_def_cfa_register 5
 	andl	$-16, %esp
+	subl	$16, %esp
 	call	___main
 	call	__ZN6dbgLog13printLevelAllEv
 	call	__ZN6dbgLog16printCategoryAllEv
+	call	__Z11printCommonv
+	movl	$1, 4(%esp)
+	movl	$64, (%esp)
+	call	__ZN6dbgLog11setLogLevelEhh
+	movl	$1, 4(%esp)
+	movl	$64, (%esp)
+	call	__ZN6dbgLog14setNoticeLevelEhh
+	call	__Z11printCommonv
+	movl	$12, 4(%esp)
+	movl	$64, (%esp)
+	call	__ZN6dbgLog11setLogLevelEhh
+	movl	$12, 4(%esp)
+	movl	$64, (%esp)
+	call	__ZN6dbgLog14setNoticeLevelEhh
+	call	__Z11printCommonv
+	call	__ZN6dbgLog16resetLogLevelAllEv
+	call	__ZN6dbgLog19resetNoticeLevelAllEv
+	call	__Z11printCommonv
 	movl	$0, %eax
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3918:
+LFE4024:
 	.section	.text$_ZNSt6bitsetILj14EEixEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6bitsetILj14EEixEj
 	.def	__ZNSt6bitsetILj14EEixEj;	.scl	2;	.type	32;	.endef
 __ZNSt6bitsetILj14EEixEj:
-LFB3955:
+LFB4061:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4869,14 +8847,14 @@ LFB3955:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3955:
+LFE4061:
 	.section	.text$_ZNSt6bitsetILj14EE9referenceD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6bitsetILj14EE9referenceD1Ev
 	.def	__ZNSt6bitsetILj14EE9referenceD1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6bitsetILj14EE9referenceD1Ev:
-LFB3958:
+LFB4064:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4888,14 +8866,14 @@ LFB3958:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3958:
+LFE4064:
 	.section	.text$_ZNKSt6bitsetILj14EE9referencecvbEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt6bitsetILj14EE9referencecvbEv
 	.def	__ZNKSt6bitsetILj14EE9referencecvbEv;	.scl	2;	.type	32;	.endef
 __ZNKSt6bitsetILj14EE9referencecvbEv:
-LFB3959:
+LFB4065:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4923,14 +8901,14 @@ LFB3959:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3959:
+LFE4065:
 	.section	.text$_ZNSt6bitsetILj14EE9referenceaSEb,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6bitsetILj14EE9referenceaSEb
 	.def	__ZNSt6bitsetILj14EE9referenceaSEb;	.scl	2;	.type	32;	.endef
 __ZNSt6bitsetILj14EE9referenceaSEb:
-LFB3960:
+LFB4066:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4941,7 +8919,7 @@ LFB3960:
 	movl	12(%ebp), %eax
 	movb	%al, -4(%ebp)
 	cmpb	$0, -4(%ebp)
-	je	L308
+	je	L599
 	movl	8(%ebp), %eax
 	movl	4(%eax), %eax
 	movl	%eax, (%esp)
@@ -4954,8 +8932,8 @@ LFB3960:
 	movl	(%ecx), %ecx
 	orl	%ecx, %edx
 	movl	%edx, (%eax)
-	jmp	L309
-L308:
+	jmp	L600
+L599:
 	movl	8(%ebp), %eax
 	movl	4(%eax), %eax
 	movl	%eax, (%esp)
@@ -4969,21 +8947,21 @@ L308:
 	movl	(%edx), %edx
 	andl	%ecx, %edx
 	movl	%edx, (%eax)
-L309:
+L600:
 	movl	8(%ebp), %eax
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3960:
-	.section	.text$_ZN6dbgLog12level_normalILh2ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EEC2EPKc,"x"
+LFE4066:
+	.section	.text$_ZN6dbgLog12level_normalILh2ELb1ELb1ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh2ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EEC2EPKc
-	.def	__ZN6dbgLog12level_normalILh2ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh2ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EEC2EPKc:
-LFB3962:
+	.globl	__ZN6dbgLog12level_normalILh2ELb1ELb1ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EEC2EPKc
+	.def	__ZN6dbgLog12level_normalILh2ELb1ELb1ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh2ELb1ELb1ELNS_5color7color_tE16ELS2_16ELS2_0ELS2_15EEC2EPKc:
+LFB4068:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4992,30 +8970,31 @@ LFB3962:
 	.cfi_def_cfa_register 5
 	subl	$56, %esp
 	movl	8(%ebp), %eax
-	movl	$15, 32(%esp)
-	movl	$0, 28(%esp)
+	movl	$15, 36(%esp)
+	movl	$0, 32(%esp)
+	movl	$16, 28(%esp)
 	movl	$16, 24(%esp)
-	movl	$16, 20(%esp)
+	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$2, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3962:
-	.section	.text$_ZN6dbgLog12level_normalILh0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc,"x"
+LFE4068:
+	.section	.text$_ZN6dbgLog12level_normalILh0ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc
-	.def	__ZN6dbgLog12level_normalILh0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc:
-LFB3965:
+	.globl	__ZN6dbgLog12level_normalILh0ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc
+	.def	__ZN6dbgLog12level_normalILh0ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh0ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc:
+LFB4071:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5024,30 +9003,31 @@ LFB3965:
 	.cfi_def_cfa_register 5
 	subl	$56, %esp
 	movl	8(%ebp), %eax
-	movl	$15, 32(%esp)
-	movl	$8, 28(%esp)
-	movl	$0, 24(%esp)
-	movl	$8, 20(%esp)
-	movl	$1, 16(%esp)
+	movl	$15, 36(%esp)
+	movl	$8, 32(%esp)
+	movl	$0, 28(%esp)
+	movl	$8, 24(%esp)
+	movl	$1, 20(%esp)
+	movl	$0, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$0, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3965:
-	.section	.text$_ZN6dbgLog12level_normalILh1ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc,"x"
+LFE4071:
+	.section	.text$_ZN6dbgLog12level_normalILh1ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh1ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc
-	.def	__ZN6dbgLog12level_normalILh1ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh1ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc:
-LFB3968:
+	.globl	__ZN6dbgLog12level_normalILh1ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc
+	.def	__ZN6dbgLog12level_normalILh1ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh1ELb1ELb0ELNS_5color7color_tE8ELS2_0ELS2_8ELS2_15EEC2EPKc:
+LFB4074:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5056,30 +9036,31 @@ LFB3968:
 	.cfi_def_cfa_register 5
 	subl	$56, %esp
 	movl	8(%ebp), %eax
-	movl	$15, 32(%esp)
-	movl	$8, 28(%esp)
-	movl	$0, 24(%esp)
-	movl	$8, 20(%esp)
-	movl	$1, 16(%esp)
+	movl	$15, 36(%esp)
+	movl	$8, 32(%esp)
+	movl	$0, 28(%esp)
+	movl	$8, 24(%esp)
+	movl	$1, 20(%esp)
+	movl	$0, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$1, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3968:
-	.section	.text$_ZN6dbgLog12level_normalILh4ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EEC2EPKc,"x"
+LFE4074:
+	.section	.text$_ZN6dbgLog12level_normalILh4ELb1ELb1ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh4ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EEC2EPKc
-	.def	__ZN6dbgLog12level_normalILh4ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh4ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EEC2EPKc:
-LFB3971:
+	.globl	__ZN6dbgLog12level_normalILh4ELb1ELb1ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EEC2EPKc
+	.def	__ZN6dbgLog12level_normalILh4ELb1ELb1ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh4ELb1ELb1ELNS_5color7color_tE12ELS2_0ELS2_12ELS2_15EEC2EPKc:
+LFB4077:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5088,30 +9069,31 @@ LFB3971:
 	.cfi_def_cfa_register 5
 	subl	$56, %esp
 	movl	8(%ebp), %eax
-	movl	$15, 32(%esp)
-	movl	$12, 28(%esp)
-	movl	$0, 24(%esp)
-	movl	$12, 20(%esp)
+	movl	$15, 36(%esp)
+	movl	$12, 32(%esp)
+	movl	$0, 28(%esp)
+	movl	$12, 24(%esp)
+	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$4, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3971:
-	.section	.text$_ZN6dbgLog12level_normalILh6ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EEC2EPKc,"x"
+LFE4077:
+	.section	.text$_ZN6dbgLog12level_normalILh6ELb1ELb1ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh6ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EEC2EPKc
-	.def	__ZN6dbgLog12level_normalILh6ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh6ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EEC2EPKc:
-LFB3974:
+	.globl	__ZN6dbgLog12level_normalILh6ELb1ELb1ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EEC2EPKc
+	.def	__ZN6dbgLog12level_normalILh6ELb1ELb1ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh6ELb1ELb1ELNS_5color7color_tE13ELS2_0ELS2_0ELS2_13EEC2EPKc:
+LFB4080:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5120,30 +9102,31 @@ LFB3974:
 	.cfi_def_cfa_register 5
 	subl	$56, %esp
 	movl	8(%ebp), %eax
-	movl	$13, 32(%esp)
+	movl	$13, 36(%esp)
+	movl	$0, 32(%esp)
 	movl	$0, 28(%esp)
-	movl	$0, 24(%esp)
-	movl	$13, 20(%esp)
+	movl	$13, 24(%esp)
+	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$6, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3974:
-	.section	.text$_ZN6dbgLog12level_normalILh8ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EEC2EPKc,"x"
+LFE4080:
+	.section	.text$_ZN6dbgLog12level_normalILh8ELb1ELb1ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh8ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EEC2EPKc
-	.def	__ZN6dbgLog12level_normalILh8ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh8ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EEC2EPKc:
-LFB3977:
+	.globl	__ZN6dbgLog12level_normalILh8ELb1ELb1ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EEC2EPKc
+	.def	__ZN6dbgLog12level_normalILh8ELb1ELb1ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh8ELb1ELb1ELNS_5color7color_tE9ELS2_0ELS2_11ELS2_9EEC2EPKc:
+LFB4083:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5152,30 +9135,31 @@ LFB3977:
 	.cfi_def_cfa_register 5
 	subl	$56, %esp
 	movl	8(%ebp), %eax
-	movl	$9, 32(%esp)
-	movl	$11, 28(%esp)
-	movl	$0, 24(%esp)
-	movl	$9, 20(%esp)
+	movl	$9, 36(%esp)
+	movl	$11, 32(%esp)
+	movl	$0, 28(%esp)
+	movl	$9, 24(%esp)
+	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$8, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3977:
-	.section	.text$_ZN6dbgLog12level_normalILh10ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EEC2EPKc,"x"
+LFE4083:
+	.section	.text$_ZN6dbgLog12level_normalILh10ELb1ELb0ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog12level_normalILh10ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EEC2EPKc
-	.def	__ZN6dbgLog12level_normalILh10ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog12level_normalILh10ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EEC2EPKc:
-LFB3980:
+	.globl	__ZN6dbgLog12level_normalILh10ELb1ELb0ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EEC2EPKc
+	.def	__ZN6dbgLog12level_normalILh10ELb1ELb0ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog12level_normalILh10ELb1ELb0ELNS_5color7color_tE32ELS2_32ELS2_32ELS2_32EEC2EPKc:
+LFB4086:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5184,30 +9168,31 @@ LFB3980:
 	.cfi_def_cfa_register 5
 	subl	$56, %esp
 	movl	8(%ebp), %eax
+	movl	$32, 36(%esp)
 	movl	$32, 32(%esp)
 	movl	$32, 28(%esp)
 	movl	$32, 24(%esp)
-	movl	$32, 20(%esp)
-	movl	$1, 16(%esp)
+	movl	$1, 20(%esp)
+	movl	$0, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$10, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3980:
+LFE4086:
 	.section	.text$_ZN6dbgLog13level_specialILh11EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog13level_specialILh11EEC2EPKc
 	.def	__ZN6dbgLog13level_specialILh11EEC2EPKc;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog13level_specialILh11EEC2EPKc:
-LFB3983:
+LFB4089:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5216,30 +9201,31 @@ LFB3983:
 	.cfi_def_cfa_register 5
 	subl	$56, %esp
 	movl	8(%ebp), %eax
+	movl	$32, 36(%esp)
 	movl	$32, 32(%esp)
 	movl	$32, 28(%esp)
 	movl	$32, 24(%esp)
-	movl	$32, 20(%esp)
-	movl	$1, 16(%esp)
+	movl	$1, 20(%esp)
+	movl	$0, 16(%esp)
 	movl	$0, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$11, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3983:
+LFE4089:
 	.section	.text$_ZN6dbgLog13level_specialILh12EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZN6dbgLog13level_specialILh12EEC2EPKc
 	.def	__ZN6dbgLog13level_specialILh12EEC2EPKc;	.scl	2;	.type	32;	.endef
 __ZN6dbgLog13level_specialILh12EEC2EPKc:
-LFB3986:
+LFB4092:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5248,30 +9234,31 @@ LFB3986:
 	.cfi_def_cfa_register 5
 	subl	$56, %esp
 	movl	8(%ebp), %eax
+	movl	$32, 36(%esp)
 	movl	$32, 32(%esp)
 	movl	$32, 28(%esp)
 	movl	$32, 24(%esp)
-	movl	$32, 20(%esp)
-	movl	$1, 16(%esp)
+	movl	$1, 20(%esp)
+	movl	$0, 16(%esp)
 	movl	$0, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$12, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog5levelC2EhPKcbbNS_5color7color_tES4_S4_S4_
+	call	__ZN6dbgLog5levelC2EhPKcbbbNS_5color7color_tES4_S4_S4_
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3986:
+LFE4092:
 	.section	.text$_ZNSt6bitsetILj14EE5resetEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6bitsetILj14EE5resetEv
 	.def	__ZNSt6bitsetILj14EE5resetEv;	.scl	2;	.type	32;	.endef
 __ZNSt6bitsetILj14EE5resetEv:
-LFB3988:
+LFB4094:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5288,14 +9275,14 @@ LFB3988:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3988:
+LFE4094:
 	.section	.text$_ZNSt6bitsetILj68EEixEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6bitsetILj68EEixEj
 	.def	__ZNSt6bitsetILj68EEixEj;	.scl	2;	.type	32;	.endef
 __ZNSt6bitsetILj68EEixEj:
-LFB3989:
+LFB4095:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5316,14 +9303,14 @@ LFB3989:
 	.cfi_def_cfa 4, 4
 	ret	$4
 	.cfi_endproc
-LFE3989:
+LFE4095:
 	.section	.text$_ZNSt6bitsetILj68EE9referenceD1Ev,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6bitsetILj68EE9referenceD1Ev
 	.def	__ZNSt6bitsetILj68EE9referenceD1Ev;	.scl	2;	.type	32;	.endef
 __ZNSt6bitsetILj68EE9referenceD1Ev:
-LFB3992:
+LFB4098:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5335,13 +9322,13 @@ LFB3992:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3992:
+LFE4098:
 	.section	.text$_ZNSt12_Base_bitsetILj3EE11_S_whichbitEj,"x"
 	.linkonce discard
 	.globl	__ZNSt12_Base_bitsetILj3EE11_S_whichbitEj
 	.def	__ZNSt12_Base_bitsetILj3EE11_S_whichbitEj;	.scl	2;	.type	32;	.endef
 __ZNSt12_Base_bitsetILj3EE11_S_whichbitEj:
-LFB3995:
+LFB4101:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5355,13 +9342,13 @@ LFB3995:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3995:
+LFE4101:
 	.section	.text$_ZNSt12_Base_bitsetILj3EE10_S_maskbitEj,"x"
 	.linkonce discard
 	.globl	__ZNSt12_Base_bitsetILj3EE10_S_maskbitEj
 	.def	__ZNSt12_Base_bitsetILj3EE10_S_maskbitEj;	.scl	2;	.type	32;	.endef
 __ZNSt12_Base_bitsetILj3EE10_S_maskbitEj:
-LFB3994:
+LFB4100:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5381,14 +9368,14 @@ LFB3994:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3994:
+LFE4100:
 	.section	.text$_ZNKSt6bitsetILj68EE9referencecvbEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNKSt6bitsetILj68EE9referencecvbEv
 	.def	__ZNKSt6bitsetILj68EE9referencecvbEv;	.scl	2;	.type	32;	.endef
 __ZNKSt6bitsetILj68EE9referencecvbEv:
-LFB3993:
+LFB4099:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5416,14 +9403,14 @@ LFB3993:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3993:
+LFE4099:
 	.section	.text$_ZNSt6bitsetILj68EE9referenceaSEb,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6bitsetILj68EE9referenceaSEb
 	.def	__ZNSt6bitsetILj68EE9referenceaSEb;	.scl	2;	.type	32;	.endef
 __ZNSt6bitsetILj68EE9referenceaSEb:
-LFB3996:
+LFB4102:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5434,7 +9421,7 @@ LFB3996:
 	movl	12(%ebp), %eax
 	movb	%al, -4(%ebp)
 	cmpb	$0, -4(%ebp)
-	je	L333
+	je	L624
 	movl	8(%ebp), %eax
 	movl	4(%eax), %eax
 	movl	%eax, (%esp)
@@ -5447,8 +9434,8 @@ LFB3996:
 	movl	(%ecx), %ecx
 	orl	%ecx, %edx
 	movl	%edx, (%eax)
-	jmp	L334
-L333:
+	jmp	L625
+L624:
 	movl	8(%ebp), %eax
 	movl	4(%eax), %eax
 	movl	%eax, (%esp)
@@ -5462,21 +9449,21 @@ L333:
 	movl	(%edx), %edx
 	andl	%ecx, %edx
 	movl	%edx, (%eax)
-L334:
+L625:
 	movl	8(%ebp), %eax
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3996:
-	.section	.text$_ZN6dbgLog17category_assignedILh0EEC2EPKc,"x"
+LFE4102:
+	.section	.text$_ZN6dbgLog17category_assignedILh0ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh0EEC2EPKc
-	.def	__ZN6dbgLog17category_assignedILh0EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh0EEC2EPKc:
-LFB3998:
+	.globl	__ZN6dbgLog17category_assignedILh0ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_assignedILh0ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh0ELb1ELb1EEC2EPKc:
+LFB4104:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5485,6 +9472,7 @@ LFB3998:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
@@ -5492,20 +9480,20 @@ LFB3998:
 	movl	%edx, 8(%esp)
 	movl	$0, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE3998:
-	.section	.text$_ZN6dbgLog17category_assignedILh1EEC2EPKc,"x"
+LFE4104:
+	.section	.text$_ZN6dbgLog17category_assignedILh1ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh1EEC2EPKc
-	.def	__ZN6dbgLog17category_assignedILh1EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh1EEC2EPKc:
-LFB4001:
+	.globl	__ZN6dbgLog17category_assignedILh1ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_assignedILh1ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh1ELb1ELb1EEC2EPKc:
+LFB4107:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5514,6 +9502,7 @@ LFB4001:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
@@ -5521,20 +9510,20 @@ LFB4001:
 	movl	%edx, 8(%esp)
 	movl	$1, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4001:
-	.section	.text$_ZN6dbgLog17category_assignedILh2EEC2EPKc,"x"
+LFE4107:
+	.section	.text$_ZN6dbgLog17category_assignedILh2ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh2EEC2EPKc
-	.def	__ZN6dbgLog17category_assignedILh2EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh2EEC2EPKc:
-LFB4004:
+	.globl	__ZN6dbgLog17category_assignedILh2ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_assignedILh2ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh2ELb1ELb1EEC2EPKc:
+LFB4110:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5543,6 +9532,7 @@ LFB4004:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
@@ -5550,20 +9540,20 @@ LFB4004:
 	movl	%edx, 8(%esp)
 	movl	$2, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4004:
-	.section	.text$_ZN6dbgLog17category_assignedILh3EEC2EPKc,"x"
+LFE4110:
+	.section	.text$_ZN6dbgLog17category_assignedILh3ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh3EEC2EPKc
-	.def	__ZN6dbgLog17category_assignedILh3EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh3EEC2EPKc:
-LFB4007:
+	.globl	__ZN6dbgLog17category_assignedILh3ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_assignedILh3ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh3ELb1ELb1EEC2EPKc:
+LFB4113:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5572,6 +9562,7 @@ LFB4007:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
@@ -5579,20 +9570,20 @@ LFB4007:
 	movl	%edx, 8(%esp)
 	movl	$3, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4007:
-	.section	.text$_ZN6dbgLog17category_assignedILh4EEC2EPKc,"x"
+LFE4113:
+	.section	.text$_ZN6dbgLog17category_assignedILh4ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh4EEC2EPKc
-	.def	__ZN6dbgLog17category_assignedILh4EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh4EEC2EPKc:
-LFB4010:
+	.globl	__ZN6dbgLog17category_assignedILh4ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_assignedILh4ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh4ELb1ELb1EEC2EPKc:
+LFB4116:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5601,6 +9592,7 @@ LFB4010:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
@@ -5608,20 +9600,20 @@ LFB4010:
 	movl	%edx, 8(%esp)
 	movl	$4, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4010:
-	.section	.text$_ZN6dbgLog17category_assignedILh5EEC2EPKc,"x"
+LFE4116:
+	.section	.text$_ZN6dbgLog17category_assignedILh5ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh5EEC2EPKc
-	.def	__ZN6dbgLog17category_assignedILh5EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh5EEC2EPKc:
-LFB4013:
+	.globl	__ZN6dbgLog17category_assignedILh5ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_assignedILh5ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh5ELb1ELb1EEC2EPKc:
+LFB4119:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5630,6 +9622,7 @@ LFB4013:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
@@ -5637,20 +9630,20 @@ LFB4013:
 	movl	%edx, 8(%esp)
 	movl	$5, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4013:
-	.section	.text$_ZN6dbgLog17category_assignedILh6EEC2EPKc,"x"
+LFE4119:
+	.section	.text$_ZN6dbgLog17category_assignedILh6ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh6EEC2EPKc
-	.def	__ZN6dbgLog17category_assignedILh6EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh6EEC2EPKc:
-LFB4016:
+	.globl	__ZN6dbgLog17category_assignedILh6ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_assignedILh6ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh6ELb1ELb1EEC2EPKc:
+LFB4122:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5659,6 +9652,7 @@ LFB4016:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
@@ -5666,20 +9660,20 @@ LFB4016:
 	movl	%edx, 8(%esp)
 	movl	$6, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4016:
-	.section	.text$_ZN6dbgLog17category_assignedILh7EEC2EPKc,"x"
+LFE4122:
+	.section	.text$_ZN6dbgLog17category_assignedILh7ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_assignedILh7EEC2EPKc
-	.def	__ZN6dbgLog17category_assignedILh7EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_assignedILh7EEC2EPKc:
-LFB4019:
+	.globl	__ZN6dbgLog17category_assignedILh7ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_assignedILh7ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_assignedILh7ELb1ELb1EEC2EPKc:
+LFB4125:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5688,6 +9682,7 @@ LFB4019:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
@@ -5695,20 +9690,20 @@ LFB4019:
 	movl	%edx, 8(%esp)
 	movl	$7, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4019:
-	.section	.text$_ZN6dbgLog16category_specialILh64ELb0ELb1EEC2EPKc,"x"
+LFE4125:
+	.section	.text$_ZN6dbgLog16category_specialILh64ELb0ELb0ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog16category_specialILh64ELb0ELb1EEC2EPKc
-	.def	__ZN6dbgLog16category_specialILh64ELb0ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog16category_specialILh64ELb0ELb1EEC2EPKc:
-LFB4022:
+	.globl	__ZN6dbgLog16category_specialILh64ELb0ELb0ELb1EEC2EPKc
+	.def	__ZN6dbgLog16category_specialILh64ELb0ELb0ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog16category_specialILh64ELb0ELb0ELb1EEC2EPKc:
+LFB4128:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5717,27 +9712,28 @@ LFB4022:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
-	movl	$1, 20(%esp)
+	movl	$1, 24(%esp)
+	movl	$0, 20(%esp)
 	movl	$0, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$64, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4022:
-	.section	.text$_ZN6dbgLog16category_specialILh65ELb1ELb0EEC2EPKc,"x"
+LFE4128:
+	.section	.text$_ZN6dbgLog16category_specialILh65ELb1ELb1ELb0EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog16category_specialILh65ELb1ELb0EEC2EPKc
-	.def	__ZN6dbgLog16category_specialILh65ELb1ELb0EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog16category_specialILh65ELb1ELb0EEC2EPKc:
-LFB4025:
+	.globl	__ZN6dbgLog16category_specialILh65ELb1ELb1ELb0EEC2EPKc
+	.def	__ZN6dbgLog16category_specialILh65ELb1ELb1ELb0EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog16category_specialILh65ELb1ELb1ELb0EEC2EPKc:
+LFB4131:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5746,27 +9742,28 @@ LFB4025:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
-	movl	$0, 20(%esp)
+	movl	$0, 24(%esp)
+	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$65, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4025:
-	.section	.text$_ZN6dbgLog16category_specialILh66ELb1ELb0EEC2EPKc,"x"
+LFE4131:
+	.section	.text$_ZN6dbgLog16category_specialILh66ELb1ELb1ELb0EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog16category_specialILh66ELb1ELb0EEC2EPKc
-	.def	__ZN6dbgLog16category_specialILh66ELb1ELb0EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog16category_specialILh66ELb1ELb0EEC2EPKc:
-LFB4028:
+	.globl	__ZN6dbgLog16category_specialILh66ELb1ELb1ELb0EEC2EPKc
+	.def	__ZN6dbgLog16category_specialILh66ELb1ELb1ELb0EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog16category_specialILh66ELb1ELb1ELb0EEC2EPKc:
+LFB4134:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5775,27 +9772,28 @@ LFB4028:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
-	movl	$0, 20(%esp)
+	movl	$0, 24(%esp)
+	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$1, 12(%esp)
 	movl	12(%ebp), %edx
 	movl	%edx, 8(%esp)
 	movl	$66, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4028:
+LFE4134:
 	.section	.text$_ZNSt6bitsetILj68EE5resetEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6bitsetILj68EE5resetEv
 	.def	__ZNSt6bitsetILj68EE5resetEv;	.scl	2;	.type	32;	.endef
 __ZNSt6bitsetILj68EE5resetEv:
-LFB4030:
+LFB4136:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5812,14 +9810,14 @@ LFB4030:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4030:
-	.section	.text$_ZN6dbgLog17category_reservedILh8EEC2EPKc,"x"
+LFE4136:
+	.section	.text$_ZN6dbgLog17category_reservedILh8ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_reservedILh8EEC2EPKc
-	.def	__ZN6dbgLog17category_reservedILh8EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_reservedILh8EEC2EPKc:
-LFB4032:
+	.globl	__ZN6dbgLog17category_reservedILh8ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_reservedILh8ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_reservedILh8ELb1ELb1EEC2EPKc:
+LFB4138:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5828,6 +9826,7 @@ LFB4032:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$0, 12(%esp)
@@ -5835,20 +9834,20 @@ LFB4032:
 	movl	%edx, 8(%esp)
 	movl	$8, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4032:
-	.section	.text$_ZN6dbgLog17category_reservedILh9EEC2EPKc,"x"
+LFE4138:
+	.section	.text$_ZN6dbgLog17category_reservedILh9ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_reservedILh9EEC2EPKc
-	.def	__ZN6dbgLog17category_reservedILh9EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_reservedILh9EEC2EPKc:
-LFB4035:
+	.globl	__ZN6dbgLog17category_reservedILh9ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_reservedILh9ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_reservedILh9ELb1ELb1EEC2EPKc:
+LFB4141:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5857,6 +9856,7 @@ LFB4035:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$0, 12(%esp)
@@ -5864,20 +9864,20 @@ LFB4035:
 	movl	%edx, 8(%esp)
 	movl	$9, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4035:
-	.section	.text$_ZN6dbgLog17category_reservedILh10EEC2EPKc,"x"
+LFE4141:
+	.section	.text$_ZN6dbgLog17category_reservedILh10ELb1ELb1EEC2EPKc,"x"
 	.linkonce discard
 	.align 2
-	.globl	__ZN6dbgLog17category_reservedILh10EEC2EPKc
-	.def	__ZN6dbgLog17category_reservedILh10EEC2EPKc;	.scl	2;	.type	32;	.endef
-__ZN6dbgLog17category_reservedILh10EEC2EPKc:
-LFB4038:
+	.globl	__ZN6dbgLog17category_reservedILh10ELb1ELb1EEC2EPKc
+	.def	__ZN6dbgLog17category_reservedILh10ELb1ELb1EEC2EPKc;	.scl	2;	.type	32;	.endef
+__ZN6dbgLog17category_reservedILh10ELb1ELb1EEC2EPKc:
+LFB4144:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5886,6 +9886,7 @@ LFB4038:
 	.cfi_def_cfa_register 5
 	subl	$40, %esp
 	movl	8(%ebp), %eax
+	movl	$1, 24(%esp)
 	movl	$1, 20(%esp)
 	movl	$1, 16(%esp)
 	movl	$0, 12(%esp)
@@ -5893,20 +9894,20 @@ LFB4038:
 	movl	%edx, 8(%esp)
 	movl	$10, 4(%esp)
 	movl	%eax, (%esp)
-	call	__ZN6dbgLog8categoryC2EhPKcbbb
+	call	__ZN6dbgLog8categoryC2EhPKcbbbb
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4038:
+LFE4144:
 	.section	.text$_ZNSt6bitsetILj14EE9referenceC1ERS0_j,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6bitsetILj14EE9referenceC1ERS0_j
 	.def	__ZNSt6bitsetILj14EE9referenceC1ERS0_j;	.scl	2;	.type	32;	.endef
 __ZNSt6bitsetILj14EE9referenceC1ERS0_j:
-LFB4063:
+LFB4169:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5931,14 +9932,14 @@ LFB4063:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4063:
+LFE4169:
 	.section	.text$_ZNSt6bitsetILj68EE9referenceC1ERS0_j,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt6bitsetILj68EE9referenceC1ERS0_j
 	.def	__ZNSt6bitsetILj68EE9referenceC1ERS0_j;	.scl	2;	.type	32;	.endef
 __ZNSt6bitsetILj68EE9referenceC1ERS0_j:
-LFB4066:
+LFB4172:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5963,14 +9964,14 @@ LFB4066:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4066:
+LFE4172:
 	.section	.text$_ZNSt12_Base_bitsetILj3EE11_M_do_resetEv,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt12_Base_bitsetILj3EE11_M_do_resetEv
 	.def	__ZNSt12_Base_bitsetILj3EE11_M_do_resetEv;	.scl	2;	.type	32;	.endef
 __ZNSt12_Base_bitsetILj3EE11_M_do_resetEv:
-LFB4067:
+LFB4173:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5989,13 +9990,13 @@ LFB4067:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4067:
+LFE4173:
 	.section	.text$_ZNSt12_Base_bitsetILj3EE12_S_whichwordEj,"x"
 	.linkonce discard
 	.globl	__ZNSt12_Base_bitsetILj3EE12_S_whichwordEj
 	.def	__ZNSt12_Base_bitsetILj3EE12_S_whichwordEj;	.scl	2;	.type	32;	.endef
 __ZNSt12_Base_bitsetILj3EE12_S_whichwordEj:
-LFB4078:
+LFB4184:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -6009,14 +10010,14 @@ LFB4078:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4078:
+LFE4184:
 	.section	.text$_ZNSt12_Base_bitsetILj3EE10_M_getwordEj,"x"
 	.linkonce discard
 	.align 2
 	.globl	__ZNSt12_Base_bitsetILj3EE10_M_getwordEj
 	.def	__ZNSt12_Base_bitsetILj3EE10_M_getwordEj;	.scl	2;	.type	32;	.endef
 __ZNSt12_Base_bitsetILj3EE10_M_getwordEj:
-LFB4077:
+LFB4183:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -6035,11 +10036,11 @@ LFB4077:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4077:
+LFE4183:
 	.text
 	.def	__Z41__static_initialization_and_destruction_0ii;	.scl	3;	.type	32;	.endef
 __Z41__static_initialization_and_destruction_0ii:
-LFB4090:
+LFB4196:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -6048,9 +10049,9 @@ LFB4090:
 	.cfi_def_cfa_register 5
 	subl	$24, %esp
 	cmpl	$1, 8(%ebp)
-	jne	L360
+	jne	L651
 	cmpl	$65535, 12(%ebp)
-	jne	L360
+	jne	L651
 	call	___getreent
 	movl	8(%eax), %eax
 	movl	%eax, __ZN6dbgLog5color8m_handleE
@@ -6067,11 +10068,11 @@ LFB4090:
 	call	__ZN6dbgLog3logC1Ev
 	movl	$__ZN6dbgLog3extL23s_categoryForInitializeE, (%esp)
 	call	__ZN6dbgLog3ext20categoryContainerExtC1Ev
-L360:
+L651:
 	cmpl	$0, 8(%ebp)
-	jne	L359
+	jne	L650
 	cmpl	$65535, 12(%ebp)
-	jne	L359
+	jne	L650
 	movl	$__ZN6dbgLogL18s_logForInitializeE, (%esp)
 	call	__ZN6dbgLog3logD1Ev
 	movl	$__ZN6dbgLogL23s_categoryForInitializeE, (%esp)
@@ -6080,16 +10081,16 @@ L360:
 	call	__ZN6dbgLog5levelD1Ev
 	movl	$__ZN6dbgLogL20s_colorForInitializeE, (%esp)
 	call	__ZN6dbgLog5colorD1Ev
-L359:
+L650:
 	leave
 	.cfi_restore 5
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4090:
+LFE4196:
 	.def	__GLOBAL__sub_I__ZN6dbgLog5color15m_isInitializedE;	.scl	3;	.type	32;	.endef
 __GLOBAL__sub_I__ZN6dbgLog5color15m_isInitializedE:
-LFB4091:
+LFB4197:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -6105,14 +10106,14 @@ LFB4091:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4091:
+LFE4197:
 	.section	.ctors,"w"
 	.align 4
 	.long	__GLOBAL__sub_I__ZN6dbgLog5color15m_isInitializedE
 	.text
 	.def	__GLOBAL__sub_D__ZN6dbgLog5color15m_isInitializedE;	.scl	3;	.type	32;	.endef
 __GLOBAL__sub_D__ZN6dbgLog5color15m_isInitializedE:
-LFB4092:
+LFB4198:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -6128,17 +10129,35 @@ LFB4092:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE4092:
+LFE4198:
 	.section	.dtors,"w"
 	.align 4
 	.long	__GLOBAL__sub_D__ZN6dbgLog5color15m_isInitializedE
 	.section .rdata,"dr"
 	.align 32
-__ZZN6dbgLog5levelC1EhPKcbbNS_5color7color_tES4_S4_S4_E19__PRETTY_FUNCTION__:
-	.ascii "dbgLog::level::level(dbgLog::level::value_t, const char*, bool, bool, dbgLog::color::color_t, dbgLog::color::color_t, dbgLog::color::color_t, dbgLog::color::color_t)\0"
+__ZZN6dbgLog5levelC1EhPKcbbbNS_5color7color_tES4_S4_S4_E19__PRETTY_FUNCTION__:
+	.ascii "dbgLog::level::level(dbgLog::level::value_t, const char*, bool, bool, bool, dbgLog::color::color_t, dbgLog::color::color_t, dbgLog::color::color_t, dbgLog::color::color_t)\0"
 	.align 32
-__ZZN6dbgLog8categoryC1EhPKcbbbE19__PRETTY_FUNCTION__:
-	.ascii "dbgLog::category::category(dbgLog::category::value_t, const char*, bool, bool, bool)\0"
+__ZZN6dbgLog8categoryC1EhPKcbbbbE19__PRETTY_FUNCTION__:
+	.ascii "dbgLog::category::category(dbgLog::category::value_t, const char*, bool, bool, bool, bool)\0"
+	.align 32
+__ZZN6dbgLog3log11getLogLevelEhE19__PRETTY_FUNCTION__:
+	.ascii "static dbgLog::level::value_t dbgLog::log::getLogLevel(dbgLog::category::value_t)\0"
+	.align 32
+__ZZN6dbgLog3log11setLogLevelEhhE19__PRETTY_FUNCTION__:
+	.ascii "static dbgLog::level::value_t dbgLog::log::setLogLevel(dbgLog::category::value_t, dbgLog::level::value_t)\0"
+	.align 32
+__ZZN6dbgLog3log14getNoticeLevelEhE19__PRETTY_FUNCTION__:
+	.ascii "static dbgLog::level::value_t dbgLog::log::getNoticeLevel(dbgLog::category::value_t)\0"
+	.align 32
+__ZZN6dbgLog3log14setNoticeLevelEhhE19__PRETTY_FUNCTION__:
+	.ascii "static dbgLog::level::value_t dbgLog::log::setNoticeLevel(dbgLog::category::value_t, dbgLog::level::value_t)\0"
+	.align 32
+__ZZN6dbgLog3log6vprintEhhhhPKcPcE19__PRETTY_FUNCTION__:
+	.ascii "static int dbgLog::log::vprint(dbgLog::level::value_t, dbgLog::level::value_t, dbgLog::level::value_t, dbgLog::category::value_t, const char*, va_list)\0"
+	.align 32
+__ZZN6dbgLog5levelC1EhE19__PRETTY_FUNCTION__:
+	.ascii "dbgLog::level::level(dbgLog::level::value_t)\0"
 	.ident	"GCC: (GNU) 4.8.2"
 	.def	_fwrite;	.scl	2;	.type	32;	.endef
 	.def	_fprintf;	.scl	2;	.type	32;	.endef
@@ -6148,4 +10167,6 @@ __ZZN6dbgLog8categoryC1EhPKcbbbE19__PRETTY_FUNCTION__:
 	.def	___getreent;	.scl	2;	.type	32;	.endef
 	.def	__Unwind_Resume;	.scl	2;	.type	32;	.endef
 	.def	_printf;	.scl	2;	.type	32;	.endef
+	.def	_vfprintf;	.scl	2;	.type	32;	.endef
+	.def	_puts;	.scl	2;	.type	32;	.endef
 	.def	_memset;	.scl	2;	.type	32;	.endef

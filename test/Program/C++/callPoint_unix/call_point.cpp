@@ -1,115 +1,116 @@
-#define TLS_IS_POSIX//yGCC—pzTLS‚ÌéŒ¾‚ğPOSIXƒXƒ^ƒCƒ‹‚É‚·‚é‚Í‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
-//#define USE_WINDOWS_CONSOLE_COLOR//yWindows—pzWindowsƒXƒ^ƒCƒ‹‚ÌƒRƒ“ƒ\[ƒ‹ƒJƒ‰[‚ğg—p
+#define TLS_IS_POSIX//ã€GCCç”¨ã€‘TLSã®å®£è¨€ã‚’POSIXã‚¹ã‚¿ã‚¤ãƒ«ã«ã™ã‚‹æ™‚ã¯ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹ã«ã™ã‚‹
+//#define USE_WINDOWS_CONSOLE_COLOR//ã€Windowsç”¨ã€‘Windowsã‚¹ã‚¿ã‚¤ãƒ«ã®ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã‚«ãƒ©ãƒ¼ã‚’ä½¿ç”¨
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <assert.h>//assert—p
-#include <memory.h>//memcpy—p
-#include <limits.h>//UCHAR_MAX—p
-#include <bitset>//std::bitset—p
-#include <iterator>//std::iterator—p
-#include <algorithm>//std::move—p
+#include <stdarg.h>//valistç”¨
+#include <assert.h>//assertç”¨
+#include <memory.h>//memcpyç”¨
+#include <limits.h>//UCHAR_MAXç”¨
+#include <bitset>//std::bitsetç”¨
+#include <iterator>//std::iteratorç”¨
+#include <algorithm>//std::moveç”¨
 
-#include <atomic>//C++11ƒAƒgƒ~ƒbƒNŒ^
+#include <atomic>//C++11ã‚¢ãƒˆãƒŸãƒƒã‚¯å‹
 
-//ƒXƒŒƒbƒhƒ[ƒJƒ‹ƒXƒgƒŒ[ƒWCüq
-//¦C++11d—l‹U‘•
+//ã‚¹ãƒ¬ãƒƒãƒ‰ãƒ­ãƒ¼ã‚«ãƒ«ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ä¿®é£¾å­
+//â€»C++11ä»•æ§˜å½è£…
 #ifdef TLS_IS_POSIX
-#define thread_local __thread//POSIXd—l
+#define thread_local __thread//POSIXä»•æ§˜
 #else//TLS_IS_POSIX
-#define thread_local __declspec(thread)//Windowsd—l
+#define thread_local __declspec(thread)//Windowsä»•æ§˜
 #endif//TLS_IS_POSIX
 
-//WindowsƒXƒ^ƒCƒ‹ƒJƒ‰[—p
+//Windowsã‚¹ã‚¿ã‚¤ãƒ«ã‚«ãƒ©ãƒ¼ç”¨
 #ifdef USE_WINDOWS_CONSOLE_COLOR
 #include <windows.h>
 #include <conio.h> 
 #endif//USE_WINDOWS_CONSOLE_COLOR
 
 //--------------------------------------------------------------------------------
-//ƒfƒoƒbƒOƒƒO
+//ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°
 namespace dbgLog
 {
 	//----------------------------------------
-	//ƒRƒ“ƒ\[ƒ‹ƒJƒ‰[
+	//ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã‚«ãƒ©ãƒ¼
 	class color
 	{
 	public:
-		//Œ^
-		//ƒnƒ“ƒhƒ‹Œ^
-	#ifdef USE_WINDOWS_CONSOLE_COLOR//Windows—p
+		//å‹
+		//ãƒãƒ³ãƒ‰ãƒ«å‹
+	#ifdef USE_WINDOWS_CONSOLE_COLOR//Windowsç”¨
 		typedef HANDLE handle_t;
-	#else//USE_WINDOWS_CONSOLE_COLOR//ƒGƒXƒP[ƒvƒV[ƒPƒ“ƒX—p
+	#else//USE_WINDOWS_CONSOLE_COLOR//ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç”¨
 		typedef FILE* handle_t;
 	#endif//USE_WINDOWS_CONSOLE_COLOR
 	public:
-		//’è”
-		//ƒJƒ‰[’l
+		//å®šæ•°
+		//ã‚«ãƒ©ãƒ¼å€¤
 		enum color_t : unsigned char
 		{
-			reset = 0x10,//ƒŠƒZƒbƒg
-			through = 0x20,//ƒXƒ‹[iŒ»óˆÛF‰½‚à‚µ‚È‚¢j
+			reset = 0x10,//ãƒªã‚»ãƒƒãƒˆ
+			through = 0x20,//ã‚¹ãƒ«ãƒ¼ï¼ˆç¾çŠ¶ç¶­æŒï¼šä½•ã‚‚ã—ãªã„ï¼‰
 
-		#ifdef USE_WINDOWS_CONSOLE_COLOR//Windows—p
-			R = 0x04,//Red:Ô
-			G = 0x02,//Green:—Î
-			B = 0x01,//Blue:Â
-			I = 0x08,//Intensity:‘N‚â‚©
-			BG_SHIFT = 4,//”wŒiFw’è‚ÌƒrƒbƒgƒVƒtƒg”
-		#else//USE_WINDOWS_CONSOLE_COLOR//ƒGƒXƒP[ƒvƒV[ƒPƒ“ƒX—p
-			R = 0x01,//Red:Ô
-			G = 0x02,//Green:—Î
-			B = 0x04,//Blue:Â
-			I = 0x08,//high Intensity:‘N‚â‚©
+		#ifdef USE_WINDOWS_CONSOLE_COLOR//Windowsç”¨
+			R = 0x04,//Red:èµ¤
+			G = 0x02,//Green:ç·‘
+			B = 0x01,//Blue:é’
+			I = 0x08,//Intensity:é®®ã‚„ã‹
+			BG_SHIFT = 4,//èƒŒæ™¯è‰²æŒ‡å®šæ™‚ã®ãƒ“ãƒƒãƒˆã‚·ãƒ•ãƒˆæ•°
+		#else//USE_WINDOWS_CONSOLE_COLOR//ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç”¨
+			R = 0x01,//Red:èµ¤
+			G = 0x02,//Green:ç·‘
+			B = 0x04,//Blue:é’
+			I = 0x08,//high Intensity:é®®ã‚„ã‹
 		#endif//USE_WINDOWS_CONSOLE_COLOR
 
-			RGB = 0x07,//RGBƒ}ƒXƒN
-			RGBI = 0x0f,//RGB+Iƒ}ƒXƒN
+			RGB = 0x07,//RGBãƒã‚¹ã‚¯
+			RGBI = 0x0f,//RGB+Iãƒã‚¹ã‚¯
 
-			//•W€ƒJƒ‰[
-			black = 0,//•
-			blue = B,//Â
-			red = R,//Ô
-			magenta = R | B,//‡
-			green = G,//—Î
-			cyan = G | B,//…
-			yellow = G | R,//‰©
-			white = G | R | B,//”’
+			//æ¨™æº–ã‚«ãƒ©ãƒ¼
+			black = 0,//é»’
+			blue = B,//é’
+			red = R,//èµ¤
+			magenta = R | B,//ç´«
+			green = G,//ç·‘
+			cyan = G | B,//æ°´
+			yellow = G | R,//é»„
+			white = G | R | B,//ç™½
 
-			//‘N‚â‚©‚ÈƒJƒ‰[
-			iBlack = I | black,//•
-			iBlue = I | blue,//Â
-			iRed = I | red,//Ô
-			iMagenta = I | magenta,//‡
-			iGreen = I | green,//—Î
-			iCyan = I | cyan,//…
-			iYellow = I | yellow ,//‰©
-			iWhite = I | white,//”’
+			//é®®ã‚„ã‹ãªã‚«ãƒ©ãƒ¼
+			iBlack = I | black,//é»’
+			iBlue = I | blue,//é’
+			iRed = I | red,//èµ¤
+			iMagenta = I | magenta,//ç´«
+			iGreen = I | green,//ç·‘
+			iCyan = I | cyan,//æ°´
+			iYellow = I | yellow ,//é»„
+			iWhite = I | white,//ç™½
 		};
-		//‘ÎÛ
+		//å¯¾è±¡
 		enum target_t : unsigned char
 		{
-			stdOut = 0,//‘ÎÛF•W€o—Í
-			stdErr = 1,//‘ÎÛF•W€ƒGƒ‰[
+			stdOut = 0,//å¯¾è±¡ï¼šæ¨™æº–å‡ºåŠ›
+			stdErr = 1,//å¯¾è±¡ï¼šæ¨™æº–ã‚¨ãƒ©ãƒ¼
 		};
 		static const int targetNum = 2;
 	public:
-		//ƒAƒNƒZƒbƒT
-		target_t getTarget() const { return m_target; }//‘ÎÛ
-		color_t getForeColor() const { return m_foreColor; }//ƒJƒ‰[F‘O–Ê
-		color_t getBackColor() const { return m_backColor; }//ƒJƒ‰[F”w–Ê
-		color_t getPrevForeColor() const { return m_prevForeColor; }//‘O‚ÌƒJƒ‰[:‘O–Ê
-		color_t getPrevBackColor() const { return m_prevBackColor; }//‘O‚ÌƒJƒ‰[:”w–Ê
-		bool isAutoRestore() const { return m_isAutoRestore; }//©“®ƒJƒ‰[•œŒ³Àsw’è
+		//ã‚¢ã‚¯ã‚»ãƒƒã‚µ
+		target_t getTarget() const { return m_target; }//å¯¾è±¡
+		color_t getForeColor() const { return m_foreColor; }//ã‚«ãƒ©ãƒ¼ï¼šå‰é¢
+		color_t getBackColor() const { return m_backColor; }//ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢
+		color_t getPrevForeColor() const { return m_prevForeColor; }//å‰ã®ã‚«ãƒ©ãƒ¼:å‰é¢
+		color_t getPrevBackColor() const { return m_prevBackColor; }//å‰ã®ã‚«ãƒ©ãƒ¼:èƒŒé¢
+		bool isAutoRestore() const { return m_isAutoRestore; }//è‡ªå‹•ã‚«ãƒ©ãƒ¼å¾©å…ƒå®Ÿè¡ŒæŒ‡å®š
 	public:
-		//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
-		operator int() const { return static_cast<int>(m_target); }//‘ÎÛ
-		operator target_t() const { return m_target; }//‘ÎÛ
+		//ã‚­ãƒ£ã‚¹ãƒˆã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+		operator int() const { return static_cast<int>(m_target); }//å¯¾è±¡
+		operator target_t() const { return m_target; }//å¯¾è±¡
 	public:
-		//ƒƒ\ƒbƒh
-		//ƒJƒ‰[•ÏX
-		//¦ÀÛ‚ÉƒRƒ“ƒ\[ƒ‹‚É”½‰f‚³‚¹‚é
+		//ãƒ¡ã‚½ãƒƒãƒ‰
+		//ã‚«ãƒ©ãƒ¼å¤‰æ›´
+		//â€»å®Ÿéš›ã«ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«åæ˜ ã•ã›ã‚‹
 		void changeColor()
 		{
 			if (m_foreColor == through)
@@ -118,178 +119,178 @@ namespace dbgLog
 		}
 		void changeColor(const target_t target, const color_t fore_color, const color_t back_color = black)
 		{
-			//‘ÎÛƒnƒ“ƒhƒ‹æ“¾
+			//å¯¾è±¡ãƒãƒ³ãƒ‰ãƒ«å–å¾—
 			const handle_t target_h = m_handle[target];
 
-			//ƒJƒ‰[•ÏX
+			//ã‚«ãƒ©ãƒ¼å¤‰æ›´
 			if (fore_color == reset)
 			{
-			#ifdef USE_WINDOWS_CONSOLE_COLOR//Windows—p
+			#ifdef USE_WINDOWS_CONSOLE_COLOR//Windowsç”¨
 				SetConsoleTextAttribute(target_h, m_ConsoleScreenBufferInfo[target].wAttributes);
-			#else//USE_WINDOWS_CONSOLE_COLOR//ƒGƒXƒP[ƒvƒV[ƒPƒ“ƒX—p
+			#else//USE_WINDOWS_CONSOLE_COLOR//ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç”¨
 				fprintf(target_h, "\x1b[39m\x1b[49m");//"\x1b[0m"
 			#endif//USE_WINDOWS_CONSOLE_COLOR
 			}
 			else
 			{
-			#ifdef USE_WINDOWS_CONSOLE_COLOR//Windows—p
+			#ifdef USE_WINDOWS_CONSOLE_COLOR//Windowsç”¨
 				SetConsoleTextAttribute(target_h, ((back_color & RGBI) << BG_SHIFT) | (fore_color & RGBI));
-			#else//USE_WINDOWS_CONSOLE_COLOR//ƒGƒXƒP[ƒvƒV[ƒPƒ“ƒX—p
+			#else//USE_WINDOWS_CONSOLE_COLOR//ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç”¨
 				fprintf(target_h, "\x1b[%dm\x1b[%dm", (fore_color & I ? 90 : 30) + (fore_color & RGB), (back_color & I ? 100 : 40) + (back_color & RGB));
 			#endif//USE_WINDOWS_CONSOLE_COLOR
 			}
 		}
 	public:
-		//ƒJƒ‰[‰Šú‰»iˆê‰ñŒÀ‚èj
+		//ã‚«ãƒ©ãƒ¼åˆæœŸåŒ–ï¼ˆä¸€å›é™ã‚Šï¼‰
 		static void initializeOnce();
 	public:
-		//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		color() :
-			m_target(stdOut),//‘ÎÛ
-			m_foreColor(reset),//ƒJƒ‰[F‘O–Ê
-			m_backColor(reset),//ƒJƒ‰[F”w–Ê
-			m_prevForeColor(reset),//‘O‚ÌƒJƒ‰[F‘O–Ê‚ğ‹L‰¯
-			m_prevBackColor(reset),//‘O‚ÌƒJƒ‰[F”w–Ê‚ğ‹L‰¯
-			m_isAutoRestore(false)//©“®ƒJƒ‰[•œŒ³Àsw’è
+			m_target(stdOut),//å¯¾è±¡
+			m_foreColor(reset),//ã‚«ãƒ©ãƒ¼ï¼šå‰é¢
+			m_backColor(reset),//ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢
+			m_prevForeColor(reset),//å‰ã®ã‚«ãƒ©ãƒ¼ï¼šå‰é¢ã‚’è¨˜æ†¶
+			m_prevBackColor(reset),//å‰ã®ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢ã‚’è¨˜æ†¶
+			m_isAutoRestore(false)//è‡ªå‹•ã‚«ãƒ©ãƒ¼å¾©å…ƒå®Ÿè¡ŒæŒ‡å®š
 		{
 			initializeOnce();
 		}
-		//ƒ€[ƒuƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ãƒ ãƒ¼ãƒ–ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		color(color&& src) :
-			m_target(src.m_target),//‘ÎÛ
-			m_foreColor(src.m_foreColor),//ƒJƒ‰[F‘O–Ê
-			m_backColor(src.m_backColor),//ƒJƒ‰[F”w–Ê
-			m_prevForeColor(src.m_prevForeColor),//‘O‚ÌƒJƒ‰[F‘O–Ê‚ğ‹L‰¯
-			m_prevBackColor(src.m_prevBackColor),//‘O‚ÌƒJƒ‰[F”w–Ê‚ğ‹L‰¯
-			m_isAutoRestore(src.m_isAutoRestore)//©“®ƒJƒ‰[•œŒ³Àsw’è
+			m_target(src.m_target),//å¯¾è±¡
+			m_foreColor(src.m_foreColor),//ã‚«ãƒ©ãƒ¼ï¼šå‰é¢
+			m_backColor(src.m_backColor),//ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢
+			m_prevForeColor(src.m_prevForeColor),//å‰ã®ã‚«ãƒ©ãƒ¼ï¼šå‰é¢ã‚’è¨˜æ†¶
+			m_prevBackColor(src.m_prevBackColor),//å‰ã®ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢ã‚’è¨˜æ†¶
+			m_isAutoRestore(src.m_isAutoRestore)//è‡ªå‹•ã‚«ãƒ©ãƒ¼å¾©å…ƒå®Ÿè¡ŒæŒ‡å®š
 		{
-			//ƒ€[ƒuƒRƒ“ƒXƒgƒ‰ƒNƒ^‚É‚Â‚«AˆÚ“®Œ³‚Ì“à—e‚ğ‰ü•Ï‚µAƒfƒXƒgƒ‰ƒNƒ^‚ª‹@”\‚µ‚È‚¢‚æ‚¤‚É‚·‚é
-			*const_cast<bool*>(&src.m_isAutoRestore) = false;//©“®ƒJƒ‰[•œŒ³Àsw’è‚ğ–³Œø‰»
+			//ãƒ ãƒ¼ãƒ–ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã«ã¤ãã€ç§»å‹•å…ƒã®å†…å®¹ã‚’æ”¹å¤‰ã—ã€ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãŒæ©Ÿèƒ½ã—ãªã„ã‚ˆã†ã«ã™ã‚‹
+			*const_cast<bool*>(&src.m_isAutoRestore) = false;//è‡ªå‹•ã‚«ãƒ©ãƒ¼å¾©å…ƒå®Ÿè¡ŒæŒ‡å®šã‚’ç„¡åŠ¹åŒ–
 		}
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		color(const target_t target, const color_t fore_color, const color_t back_color = black, const bool is_auto_restore = true) :
-			m_target(target),//‘ÎÛ
-			m_foreColor(fore_color),//ƒJƒ‰[F‘O–Ê
-			m_backColor(back_color),//ƒJƒ‰[F”w–Ê
-			m_prevForeColor(m_nowForeColor[m_target]),//‘O‚ÌƒJƒ‰[F‘O–Ê‚ğ‹L‰¯
-			m_prevBackColor(m_nowBackColor[m_target]),//‘O‚ÌƒJƒ‰[F”w–Ê‚ğ‹L‰¯
-			m_isAutoRestore(is_auto_restore)//©“®ƒJƒ‰[•œŒ³Àsw’è
+			m_target(target),//å¯¾è±¡
+			m_foreColor(fore_color),//ã‚«ãƒ©ãƒ¼ï¼šå‰é¢
+			m_backColor(back_color),//ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢
+			m_prevForeColor(m_nowForeColor[m_target]),//å‰ã®ã‚«ãƒ©ãƒ¼ï¼šå‰é¢ã‚’è¨˜æ†¶
+			m_prevBackColor(m_nowBackColor[m_target]),//å‰ã®ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢ã‚’è¨˜æ†¶
+			m_isAutoRestore(is_auto_restore)//è‡ªå‹•ã‚«ãƒ©ãƒ¼å¾©å…ƒå®Ÿè¡ŒæŒ‡å®š
 		{
 			if (m_foreColor == through || !m_isAutoRestore)
 				return;
-			m_nowForeColor[m_target] = m_foreColor;//Œ»İ‚ÌƒJƒ‰[F‘O–Êi‹L‰¯—pj‚ğXV
-			m_nowBackColor[m_target] = m_backColor;//Œ»İ‚ÌƒJƒ‰[F”w–Êi‹L‰¯—pj‚ğXV
+			m_nowForeColor[m_target] = m_foreColor;//ç¾åœ¨ã®ã‚«ãƒ©ãƒ¼ï¼šå‰é¢ï¼ˆè¨˜æ†¶ç”¨ï¼‰ã‚’æ›´æ–°
+			m_nowBackColor[m_target] = m_backColor;//ç¾åœ¨ã®ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢ï¼ˆè¨˜æ†¶ç”¨ï¼‰ã‚’æ›´æ–°
 			changeColor();
 		}
-		//ƒfƒXƒgƒ‰ƒNƒ^
+		//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		~color()
 		{
 			if (m_foreColor == through || !m_isAutoRestore)
 				return;
-			m_nowForeColor[m_target] = m_prevForeColor;//Œ»İ‚ÌƒJƒ‰[F‘O–Ê‚ğ‘O‚ÌƒJƒ‰[‚É–ß‚·
-			m_nowBackColor[m_target] = m_prevBackColor;//Œ»İ‚ÌƒJƒ‰[F”w–Ê‚ğ‘O‚ÌƒJƒ‰[‚É–ß‚·
+			m_nowForeColor[m_target] = m_prevForeColor;//ç¾åœ¨ã®ã‚«ãƒ©ãƒ¼ï¼šå‰é¢ã‚’å‰ã®ã‚«ãƒ©ãƒ¼ã«æˆ»ã™
+			m_nowBackColor[m_target] = m_prevBackColor;//ç¾åœ¨ã®ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢ã‚’å‰ã®ã‚«ãƒ©ãƒ¼ã«æˆ»ã™
 			changeColor(m_target, m_prevForeColor, m_prevBackColor);
 		}
 	private:
-		//ƒtƒB[ƒ‹ƒh
-		const target_t m_target;//‘ÎÛ
-		const color_t m_foreColor;//ƒJƒ‰[F‘O–Ê
-		const color_t m_backColor;//ƒJƒ‰[F”w–Ê
-		const color_t m_prevForeColor;//‘O‚ÌƒJƒ‰[F‘O–Ê
-		const color_t m_prevBackColor;//‘O‚ÌƒJƒ‰[F”w–Ê
-		const bool m_isAutoRestore;//©“®ƒJƒ‰[•œŒ³Àsw’è
-		static bool m_isInitialized;//‰Šú‰»Ï‚İ
-		static color_t m_nowForeColor[color::targetNum];//Œ»İ‚ÌƒJƒ‰[F‘O–Êi‹L‰¯—pj
-		static color_t m_nowBackColor[color::targetNum];//Œ»İ‚ÌƒJƒ‰[F”w–Êi‹L‰¯—pj
-	#ifdef USE_WINDOWS_CONSOLE_COLOR//Windows—p
-		static handle_t m_handle[color::targetNum];//ƒnƒ“ƒhƒ‹
-		static CONSOLE_SCREEN_BUFFER_INFO m_ConsoleScreenBufferInfo[color::targetNum];//ƒRƒ“ƒ\[ƒ‹ƒXƒNƒŠ[ƒ“ƒoƒbƒtƒ@iƒŠƒZƒbƒg—pj
-	#else//USE_WINDOWS_CONSOLE_COLOR//ƒGƒXƒP[ƒvƒV[ƒPƒ“ƒX—p	
-		static const handle_t m_handle[color::targetNum];//ƒnƒ“ƒhƒ‹
+		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+		const target_t m_target;//å¯¾è±¡
+		const color_t m_foreColor;//ã‚«ãƒ©ãƒ¼ï¼šå‰é¢
+		const color_t m_backColor;//ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢
+		const color_t m_prevForeColor;//å‰ã®ã‚«ãƒ©ãƒ¼ï¼šå‰é¢
+		const color_t m_prevBackColor;//å‰ã®ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢
+		const bool m_isAutoRestore;//è‡ªå‹•ã‚«ãƒ©ãƒ¼å¾©å…ƒå®Ÿè¡ŒæŒ‡å®š
+		static bool m_isInitialized;//åˆæœŸåŒ–æ¸ˆã¿
+		static color_t m_nowForeColor[color::targetNum];//ç¾åœ¨ã®ã‚«ãƒ©ãƒ¼ï¼šå‰é¢ï¼ˆè¨˜æ†¶ç”¨ï¼‰
+		static color_t m_nowBackColor[color::targetNum];//ç¾åœ¨ã®ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢ï¼ˆè¨˜æ†¶ç”¨ï¼‰
+	#ifdef USE_WINDOWS_CONSOLE_COLOR//Windowsç”¨
+		static handle_t m_handle[color::targetNum];//ãƒãƒ³ãƒ‰ãƒ«
+		static CONSOLE_SCREEN_BUFFER_INFO m_ConsoleScreenBufferInfo[color::targetNum];//ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ãƒãƒƒãƒ•ã‚¡ï¼ˆãƒªã‚»ãƒƒãƒˆç”¨ï¼‰
+	#else//USE_WINDOWS_CONSOLE_COLOR//ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç”¨	
+		static const handle_t m_handle[color::targetNum];//ãƒãƒ³ãƒ‰ãƒ«
 	#endif//USE_WINDOWS_CONSOLE_COLOR
 	};
 	//----------------------------------------
-	//ƒJƒ‰[‚ÌÃ“I•Ï”‚ğƒCƒ“ƒXƒ^ƒ“ƒX‰»
+	//ã‚«ãƒ©ãƒ¼ã®é™çš„å¤‰æ•°ã‚’ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–
 	bool color::m_isInitialized = false;
-	color::color_t color::m_nowForeColor[color::targetNum] =//Œ»İ‚ÌƒJƒ‰[F‘O–Êi‹L‰¯—pj
+	color::color_t color::m_nowForeColor[color::targetNum] =//ç¾åœ¨ã®ã‚«ãƒ©ãƒ¼ï¼šå‰é¢ï¼ˆè¨˜æ†¶ç”¨ï¼‰
 	{
-		color::reset,//•W€o—Í—p
-		color::reset,//•W€ƒGƒ‰[—p
+		color::reset,//æ¨™æº–å‡ºåŠ›ç”¨
+		color::reset,//æ¨™æº–ã‚¨ãƒ©ãƒ¼ç”¨
 	};
-	color::color_t color::m_nowBackColor[color::targetNum] =//Œ»İ‚ÌƒJƒ‰[F”w–Êi‹L‰¯—pj
+	color::color_t color::m_nowBackColor[color::targetNum] =//ç¾åœ¨ã®ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢ï¼ˆè¨˜æ†¶ç”¨ï¼‰
 	{
-		color::reset,//•W€o—Í—p
-		color::reset,//•W€ƒGƒ‰[—p
+		color::reset,//æ¨™æº–å‡ºåŠ›ç”¨
+		color::reset,//æ¨™æº–ã‚¨ãƒ©ãƒ¼ç”¨
 	};
-#ifdef USE_WINDOWS_CONSOLE_COLOR//Windows—p
+#ifdef USE_WINDOWS_CONSOLE_COLOR//Windowsç”¨
 	color::handle_t color::m_handle[color::targetNum];
-	CONSOLE_SCREEN_BUFFER_INFO color::m_ConsoleScreenBufferInfo[color::targetNum];//Windows—p‚ÌƒŠƒZƒbƒg—pƒJƒ‰[î•ñ
-#else//USE_WINDOWS_CONSOLE_COLOR//ƒGƒXƒP[ƒvƒV[ƒPƒ“ƒX—p
+	CONSOLE_SCREEN_BUFFER_INFO color::m_ConsoleScreenBufferInfo[color::targetNum];//Windowsç”¨ã®ãƒªã‚»ãƒƒãƒˆç”¨ã‚«ãƒ©ãƒ¼æƒ…å ±
+#else//USE_WINDOWS_CONSOLE_COLOR//ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç”¨
 	const color::handle_t color::m_handle[] =
 	{
-		stdout,//•W€o—Íƒnƒ“ƒhƒ‹
-		stderr,//•W€ƒGƒ‰[ƒnƒ“ƒhƒ‹
+		stdout,//æ¨™æº–å‡ºåŠ›ãƒãƒ³ãƒ‰ãƒ«
+		stderr,//æ¨™æº–ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒ«
 	};
 #endif//USE_WINDOWS_CONSOLE_COLOR
 	//----------------------------------------
-	//ƒRƒ“ƒ\[ƒ‹ƒJƒ‰[‰Šú‰»iˆê‰ñŒÀ‚èj
+	//ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã‚«ãƒ©ãƒ¼åˆæœŸåŒ–ï¼ˆä¸€å›é™ã‚Šï¼‰
 	void color::initializeOnce()
 	{
-		//‰Šú‰»Ï‚İƒ`ƒFƒbƒN
+		//åˆæœŸåŒ–æ¸ˆã¿ãƒã‚§ãƒƒã‚¯
 		if (m_isInitialized)
 			return;
-		//Ã“I•Ï”‚ğ‰Šú‰»
+		//é™çš„å¤‰æ•°ã‚’åˆæœŸåŒ–
 		m_isInitialized = true;
-#ifdef USE_WINDOWS_CONSOLE_COLOR//Windows—p
-		//ƒnƒ“ƒhƒ‹
-		m_handle[stdOut] = GetStdHandle(STD_OUTPUT_HANDLE);//•W€o—Íƒnƒ“ƒhƒ‹
-		m_handle[stdErr] = GetStdHandle(STD_ERROR_HANDLE);//•W€ƒGƒ‰[ƒnƒ“ƒhƒ‹
-		//ƒJƒ‰[•ÏXŠJn
+#ifdef USE_WINDOWS_CONSOLE_COLOR//Windowsç”¨
+		//ãƒãƒ³ãƒ‰ãƒ«
+		m_handle[stdOut] = GetStdHandle(STD_OUTPUT_HANDLE);//æ¨™æº–å‡ºåŠ›ãƒãƒ³ãƒ‰ãƒ«
+		m_handle[stdErr] = GetStdHandle(STD_ERROR_HANDLE);//æ¨™æº–ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒ«
+		//ã‚«ãƒ©ãƒ¼å¤‰æ›´é–‹å§‹
 		GetConsoleScreenBufferInfo(m_handle[stdOut], &m_ConsoleScreenBufferInfo[stdOut]);
 		GetConsoleScreenBufferInfo(m_handle[stdErr], &m_ConsoleScreenBufferInfo[stdErr]);
 #endif//USE_WINDOWS_CONSOLE_COLOR
 	}
 	//----------------------------------------
-	//ƒRƒ“ƒ\[ƒ‹ƒJƒ‰[—p•Ï”
-	static color s_colorForInitialize;//‰Šú‰»ˆ—Às‚Ì‚½‚ß‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	//ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã‚«ãƒ©ãƒ¼ç”¨å¤‰æ•°
+	static color s_colorForInitialize;//åˆæœŸåŒ–å‡¦ç†å®Ÿè¡Œã®ãŸã‚ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 
 	//----------------------------------------
-	//ƒŒƒxƒ‹
+	//ãƒ¬ãƒ™ãƒ«
 	class level
 	{
 	public:
-		//Œ^
-		typedef unsigned char value_t;//’liƒŒƒxƒ‹j
-		typedef unsigned char byte;//ƒoƒbƒtƒ@—p
+		//å‹
+		typedef unsigned char value_t;//å€¤ï¼ˆãƒ¬ãƒ™ãƒ«ï¼‰
+		typedef unsigned char byte;//ãƒãƒƒãƒ•ã‚¡ç”¨
 	private:
-		//’è”iŒvZ—pj
-		#define calcAsOutput(value) ((value) >> 1)//’l‚ğo—ÍƒŒƒxƒ‹‚É•ÏŠ·
-		#define calcAsValue(value) ((value) << 1)//o—ÍƒŒƒxƒ‹‚ğ’l‚É•ÏŠ·
+		//å®šæ•°ï¼ˆè¨ˆç®—ç”¨ï¼‰
+		#define calcAsOutput(value) ((value) >> 1)//å€¤ã‚’å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ã«å¤‰æ›
+		#define calcAsValue(value) ((value) << 1)//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ã‚’å€¤ã«å¤‰æ›
 	public:
-		//’è”
-		static const value_t NORMAL_NUM = 11;//’ÊíƒŒƒxƒ‹”
-		static const value_t SPECIAL_NUM = 2;//“ÁêƒŒƒxƒ‹”
-		static const value_t NUM = NORMAL_NUM + SPECIAL_NUM;//ƒŒƒxƒ‹‘”
-		static const value_t MIN = 0;//ƒŒƒxƒ‹Å¬’l
-		static const value_t MAX = NUM - 1;//ƒŒƒxƒ‹Å‘å’l
-		static const value_t NORMAL_MIN = MIN;//’ÊíƒŒƒxƒ‹Å¬’l
-		static const value_t NORMAL_MAX = NORMAL_MIN + NORMAL_NUM - 1;//’ÊíƒŒƒxƒ‹Å‘å’l
-		static const value_t SPECIAL_MIN = NORMAL_MAX + 1;//“ÁêƒŒƒxƒ‹Å¬’l
-		static const value_t SPECIAL_MAX = SPECIAL_MIN + SPECIAL_NUM - 1;//“ÁêƒŒƒxƒ‹Å‘å’l
-		static const value_t BEGIN = MIN;//ƒŒƒxƒ‹ŠJn’liƒCƒeƒŒ[ƒ^—pj
-		static const value_t END = NUM;//ƒŒƒxƒ‹I’[’liƒCƒeƒŒ[ƒ^—pj
-		static const value_t POOL_NUM = NUM + 1;//ƒŒƒxƒ‹‹L˜^”
-		static const value_t OUTPUT_LEVEL_MIN = calcAsOutput(NORMAL_MIN);//o—ÍƒŒƒxƒ‹Å¬’l
-		static const value_t OUTPUT_LEVEL_MAX = calcAsOutput(NORMAL_MAX);//o—ÍƒŒƒxƒ‹Å‘å’l
-		static_assert(SPECIAL_MAX == MAX, "invalid category numbers.");//’è”ƒ`ƒFƒbƒN
+		//å®šæ•°
+		static const value_t NORMAL_NUM = 11;//é€šå¸¸ãƒ¬ãƒ™ãƒ«æ•°
+		static const value_t SPECIAL_NUM = 2;//ç‰¹æ®Šãƒ¬ãƒ™ãƒ«æ•°
+		static const value_t NUM = NORMAL_NUM + SPECIAL_NUM;//ãƒ¬ãƒ™ãƒ«ç·æ•°
+		static const value_t MIN = 0;//ãƒ¬ãƒ™ãƒ«æœ€å°å€¤
+		static const value_t MAX = NUM - 1;//ãƒ¬ãƒ™ãƒ«æœ€å¤§å€¤
+		static const value_t NORMAL_MIN = MIN;//é€šå¸¸ãƒ¬ãƒ™ãƒ«æœ€å°å€¤
+		static const value_t NORMAL_MAX = NORMAL_MIN + NORMAL_NUM - 1;//é€šå¸¸ãƒ¬ãƒ™ãƒ«æœ€å¤§å€¤
+		static const value_t SPECIAL_MIN = NORMAL_MAX + 1;//ç‰¹æ®Šãƒ¬ãƒ™ãƒ«æœ€å°å€¤
+		static const value_t SPECIAL_MAX = SPECIAL_MIN + SPECIAL_NUM - 1;//ç‰¹æ®Šãƒ¬ãƒ™ãƒ«æœ€å¤§å€¤
+		static const value_t BEGIN = MIN;//ãƒ¬ãƒ™ãƒ«é–‹å§‹å€¤ï¼ˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç”¨ï¼‰
+		static const value_t END = NUM;//ãƒ¬ãƒ™ãƒ«çµ‚ç«¯å€¤ï¼ˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç”¨ï¼‰
+		static const value_t POOL_NUM = NUM + 1;//ãƒ¬ãƒ™ãƒ«è¨˜éŒ²æ•°
+		static const value_t OUTPUT_LEVEL_MIN = calcAsOutput(NORMAL_MIN);//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«æœ€å°å€¤
+		static const value_t OUTPUT_LEVEL_MAX = calcAsOutput(NORMAL_MAX);//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«æœ€å¤§å€¤
+		static_assert(SPECIAL_MAX == MAX, "invalid category numbers.");//å®šæ•°ãƒã‚§ãƒƒã‚¯
 	public:
-		//Œ^
+		//å‹
 		//--------------------
-		//ƒCƒeƒŒ[ƒ^
-		class iterator : public std::iterator<std::bidirectional_iterator_tag, level>//‘o•ûŒüƒCƒeƒŒ[ƒ^‚Æ‚µ‚ÄÀ‘•
+		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+		class iterator : public std::iterator<std::bidirectional_iterator_tag, level>//åŒæ–¹å‘ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã¨ã—ã¦å®Ÿè£…
 		{
 		public:
-			//ƒIƒyƒŒ[ƒ^
+			//ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 			const level* operator->() const { return &container::get(m_value); }
 			const level& operator*() const { return container::get(m_value); }
 			bool operator==(const iterator rhs) const { return m_value == rhs.m_value; }
@@ -299,10 +300,10 @@ namespace dbgLog
 			const level& operator--() const { if (m_value == container::beginValue()){ m_value = container::endValue(); return container::getEnd(); } return container::get(--m_value); }
 			const level& operator--(int) const { if (m_value == container::beginValue()){ m_value = container::endValue(); return container::getBegin(); } return container::get(m_value--); }
 		public:
-			//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
-			operator const level&() const { return container::get(m_value); }//’liƒŒƒxƒ‹j
+			//ã‚­ãƒ£ã‚¹ãƒˆã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			operator const level&() const { return container::get(m_value); }//å€¤ï¼ˆãƒ¬ãƒ™ãƒ«ï¼‰
 		public:
-			//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+			//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 			iterator(const value_t value) :
 				m_value(value)
 			{}
@@ -318,30 +319,30 @@ namespace dbgLog
 			iterator() :
 				m_value(container::endValue())
 			{}
-			//ƒfƒXƒgƒ‰ƒNƒ^
+			//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 			~iterator()
 			{}
 		private:
-			//ƒtƒB[ƒ‹ƒh
-			value_t mutable m_value;//’liƒŒƒxƒ‹j
+			//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+			value_t mutable m_value;//å€¤ï¼ˆãƒ¬ãƒ™ãƒ«ï¼‰
 		};
 		//--------------------
-		//constƒCƒeƒŒ[ƒ^
+		//constã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
 		typedef const iterator const_iterator;
 		//--------------------
-		//ƒRƒ“ƒeƒiiƒCƒeƒŒ[ƒ^—pj
+		//ã‚³ãƒ³ãƒ†ãƒŠï¼ˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç”¨ï¼‰
 		class container
 		{
 			friend class level;
 		public:
-			//ƒƒ\ƒbƒh
-			static const value_t beginValue(){ return BEGIN; }//ŠJn’læ“¾
-			static const value_t endValue(){ return END; }//I’[’læ“¾
-			static const level& get(const value_t value){ return m_poolPtr[value]; }//—v‘f‚ğæ“¾
-			static const level& getBegin(){ return m_poolPtr[beginValue()]; }//ŠJn—v‘f‚ğæ“¾
-			static const level& getEnd(){ return m_poolPtr[endValue()]; }//I’[—v‘f‚ğæ“¾
+			//ãƒ¡ã‚½ãƒƒãƒ‰
+			static const value_t beginValue(){ return BEGIN; }//é–‹å§‹å€¤å–å¾—
+			static const value_t endValue(){ return END; }//çµ‚ç«¯å€¤å–å¾—
+			static const level& get(const value_t value){ return m_poolPtr[value]; }//è¦ç´ ã‚’å–å¾—
+			static const level& getBegin(){ return m_poolPtr[beginValue()]; }//é–‹å§‹è¦ç´ ã‚’å–å¾—
+			static const level& getEnd(){ return m_poolPtr[endValue()]; }//çµ‚ç«¯è¦ç´ ã‚’å–å¾—
 		private:
-			static void set(const value_t value, const level& obj)//—v‘f‚ğXV
+			static void set(const value_t value, const level& obj)//è¦ç´ ã‚’æ›´æ–°
 			{
 				if (!container::m_isAlreadyPool[value])
 				{
@@ -350,24 +351,24 @@ namespace dbgLog
 				}
 			}
 		public:
-			static const iterator begin(){ return iterator(beginValue()); }//ŠJnƒCƒeƒŒ[ƒ^‚ğæ“¾
-			static const iterator end()	{ return iterator(endValue()); }//I’[ƒCƒeƒŒ[ƒ^‚ğæ“¾
-			static const_iterator cbegin(){ return const_iterator(beginValue()); }//ŠJnconstƒCƒeƒŒ[ƒ^‚ğæ“¾
-			static const_iterator cend(){ return const_iterator(endValue()); }//I’[constƒCƒeƒŒ[ƒ^‚ğæ“¾
-			//¦reverse_iterator”ñ‘Î‰
-			//ƒƒ\ƒbƒh
-			//‰Šú‰»iˆê‰ñŒÀ‚èj
+			static const iterator begin(){ return iterator(beginValue()); }//é–‹å§‹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
+			static const iterator end()	{ return iterator(endValue()); }//çµ‚ç«¯ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
+			static const_iterator cbegin(){ return const_iterator(beginValue()); }//é–‹å§‹constã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
+			static const_iterator cend(){ return const_iterator(endValue()); }//çµ‚ç«¯constã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
+			//â€»reverse_iteratoréå¯¾å¿œ
+			//ãƒ¡ã‚½ãƒƒãƒ‰
+			//åˆæœŸåŒ–ï¼ˆä¸€å›é™ã‚Šï¼‰
 			static void initializeOnce();
 		private:
-			//ƒtƒB[ƒ‹ƒh
-			static bool m_isInitialized;//‰Šú‰»Ï‚İ
-			static level* m_poolPtr;//—v‘f‚Ìƒv[ƒ‹iƒ|ƒCƒ“ƒ^j
-			static byte m_pool[];//—v‘f‚Ìƒv[ƒ‹iƒoƒbƒtƒ@j¦ƒoƒbƒtƒ@‚Æƒ|ƒCƒ“ƒ^‚ğ•ª‚¯‚Ä‚¢‚é‚Ì‚ÍAƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÌÀs‚ğ–h~‚·‚é‚½‚ß
-			static std::bitset<POOL_NUM> m_isAlreadyPool;//—v‘f‚Ì‰Šú‰»Ï‚İƒtƒ‰ƒO
+			//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+			static bool m_isInitialized;//åˆæœŸåŒ–æ¸ˆã¿
+			static level* m_poolPtr;//è¦ç´ ã®ãƒ—ãƒ¼ãƒ«ï¼ˆãƒã‚¤ãƒ³ã‚¿ï¼‰
+			static byte m_pool[];//è¦ç´ ã®ãƒ—ãƒ¼ãƒ«ï¼ˆãƒãƒƒãƒ•ã‚¡ï¼‰â€»ãƒãƒƒãƒ•ã‚¡ã¨ãƒã‚¤ãƒ³ã‚¿ã‚’åˆ†ã‘ã¦ã„ã‚‹ã®ã¯ã€ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã®å®Ÿè¡Œã‚’é˜²æ­¢ã™ã‚‹ãŸã‚
+			static std::bitset<POOL_NUM> m_isAlreadyPool;//è¦ç´ ã®åˆæœŸåŒ–æ¸ˆã¿ãƒ•ãƒ©ã‚°
 		};
 	public:
-		//ƒIƒyƒŒ[ƒ^
-		//¦o—ÍƒŒƒxƒ‹‚Å”äŠr‚·‚é
+		//ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+		//â€»å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ã§æ¯”è¼ƒã™ã‚‹
 		bool operator ==(const level& rhs) const { return valueAsOutput() == rhs.valueAsOutput(); }
 		bool operator !=(const level& rhs) const { return valueAsOutput() != rhs.valueAsOutput(); }
 		bool operator >(const level& rhs) const { return valueAsOutput() > rhs.valueAsOutput(); }
@@ -375,266 +376,275 @@ namespace dbgLog
 		bool operator <(const level& rhs) const { return valueAsOutput() < rhs.valueAsOutput(); }
 		bool operator <=(const level& rhs) const { return valueAsOutput() <= rhs.valueAsOutput(); }
 	private:
-		//ƒRƒs[ƒIƒyƒŒ[ƒ^
+		//ã‚³ãƒ”ãƒ¼ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 		level& operator=(const level& rhs)
 		{
 			memcpy(this, &rhs, sizeof(*this));
 			return *this;
 		}
 	public:
-		//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
-		operator int() const { return static_cast<int>(m_value); }//’liƒŒƒxƒ‹j
-		operator value_t() const { return m_value; }//’liƒŒƒxƒ‹j
-		operator const char*() const { return m_name; }//–¼‘O
+		//ã‚­ãƒ£ã‚¹ãƒˆã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+		operator int() const { return static_cast<int>(m_value); }//å€¤ï¼ˆãƒ¬ãƒ™ãƒ«ï¼‰
+		operator value_t() const { return m_value; }//å€¤ï¼ˆãƒ¬ãƒ™ãƒ«ï¼‰
+		operator const char*() const { return m_name; }//åå‰
 	public:
-		//ƒAƒNƒZƒbƒT
-		value_t value() const { return m_value; }//’liƒŒƒxƒ‹jæ“¾
-		const char* name() const { return m_name; }//–¼‘Oæ“¾
-		value_t valueAsOutput() const { return calcAsOutput(m_value); }//o—ÍƒŒƒxƒ‹æ“¾
-		bool forOutput() const { return m_forOutput; }//o—ÍƒŒƒxƒ‹‚Æ‚µ‚Äg—p‰Â”\‚©H
-		bool forOutputMask() const { return m_forOutputMask; }//o—ÍƒŒƒxƒ‹ƒ}ƒXƒN‚Æ‚µ‚Äg—p‰Â”\‚©H
-		color getColor() const { return std::move(changeColor(true)); }//ƒJƒ‰[æ“¾
-		color getColorForNotice() const { return std::move(changeColorForNotice(true)); }//ƒJƒ‰[æ“¾i‰æ–Ê’Ê’m—pj
+		//ã‚¢ã‚¯ã‚»ãƒƒã‚µ
+		value_t value() const { return m_value; }//å€¤ï¼ˆãƒ¬ãƒ™ãƒ«ï¼‰å–å¾—
+		const char* name() const { return m_name; }//åå‰å–å¾—
+		value_t valueAsOutput() const { return calcAsOutput(m_value); }//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«å–å¾—
+		bool forLog() const { return m_forLog; }//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		bool forNotice() const { return m_forNotice; }//ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		bool forMask() const { return m_forMask; }//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		color getColor() const { return std::move(changeColor(true)); }//ã‚«ãƒ©ãƒ¼å–å¾—
+		color getColorForNotice() const { return std::move(changeColorForNotice(true)); }//ã‚«ãƒ©ãƒ¼å–å¾—ï¼ˆç”»é¢é€šçŸ¥ç”¨ï¼‰
 	public:
-		//ƒƒ\ƒbƒh
-		//ƒJƒ‰[•ÏX
-		//¦–ß‚è’ló‚¯æ‚è•K{
-		//@–ß‚è’l‚ğó‚¯æ‚ç‚È‚¢‚Æ‚·‚®‚ÉƒfƒXƒgƒ‰ƒNƒ^‚ªÀs‚³‚ê‚ÄŒ³‚ÌƒJƒ‰[‚É–ß‚é‚Ì‚ÅÀÛ‚É”½‰f‚³‚ê‚È‚¢
+		//ãƒ¡ã‚½ãƒƒãƒ‰
+		//ã‚«ãƒ©ãƒ¼å¤‰æ›´
+		//â€»æˆ»ã‚Šå€¤å—ã‘å–ã‚Šå¿…é ˆ
+		//ã€€æˆ»ã‚Šå€¤ã‚’å—ã‘å–ã‚‰ãªã„ã¨ã™ãã«ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãŒå®Ÿè¡Œã•ã‚Œã¦å…ƒã®ã‚«ãƒ©ãƒ¼ã«æˆ»ã‚‹ã®ã§å®Ÿéš›ã«åæ˜ ã•ã‚Œãªã„
 		color changeColor(const bool is_only_get = false) const
 		{
 			return std::move(color(color::stdOut, m_foreColor, m_backColor, !is_only_get));
 		}
-		//ƒJƒ‰[•ÏXi‰æ–Ê’Ê’m—pj
-		//¦–ß‚è’ló‚¯æ‚è•K{
-		//@–ß‚è’l‚ğó‚¯æ‚ç‚È‚¢‚Æ‚·‚®‚ÉƒfƒXƒgƒ‰ƒNƒ^‚ªÀs‚³‚ê‚ÄŒ³‚ÌƒJƒ‰[‚É–ß‚é‚Ì‚ÅÀÛ‚É”½‰f‚³‚ê‚È‚¢
+		//ã‚«ãƒ©ãƒ¼å¤‰æ›´ï¼ˆç”»é¢é€šçŸ¥ç”¨ï¼‰
+		//â€»æˆ»ã‚Šå€¤å—ã‘å–ã‚Šå¿…é ˆ
+		//ã€€æˆ»ã‚Šå€¤ã‚’å—ã‘å–ã‚‰ãªã„ã¨ã™ãã«ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãŒå®Ÿè¡Œã•ã‚Œã¦å…ƒã®ã‚«ãƒ©ãƒ¼ã«æˆ»ã‚‹ã®ã§å®Ÿéš›ã«åæ˜ ã•ã‚Œãªã„
 		color changeColorForNotice(const bool is_only_get = false) const
 		{
 			return std::move(color(color::stdErr, m_foreColorForNotice, m_backColorForNotice, !is_only_get));
 		}
-		//ƒRƒ“ƒeƒi—v‘f‚ğæ“¾iƒVƒ‡[ƒgƒJƒbƒg—pj
+		//ã‚³ãƒ³ãƒ†ãƒŠè¦ç´ ã‚’å–å¾—ï¼ˆã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆç”¨ï¼‰
 		static const level& get(const value_t value){ return container::get(value); }
-		//‘O‚ÌƒŒƒxƒ‹‚ğæ“¾
+		//å‰ã®ãƒ¬ãƒ™ãƒ«ã‚’å–å¾—
 		const level& prev() const
 		{
-			if (valueAsOutput() <= OUTPUT_LEVEL_MIN || valueAsOutput() > OUTPUT_LEVEL_MAX || !m_forOutput)
+			if (valueAsOutput() <= OUTPUT_LEVEL_MIN || valueAsOutput() > OUTPUT_LEVEL_MAX || !(m_forLog || m_forNotice))
 				return container::m_poolPtr[m_value];
 			return container::m_poolPtr[calcAsValue(calcAsOutput(m_value) - 1)];
 		}
-		//Ÿ‚ÌƒŒƒxƒ‹‚ğæ“¾
+		//æ¬¡ã®ãƒ¬ãƒ™ãƒ«ã‚’å–å¾—
 		const level& next() const
 		{
-			if (valueAsOutput() < OUTPUT_LEVEL_MIN || valueAsOutput() >= OUTPUT_LEVEL_MAX || !m_forOutput)
+			if (valueAsOutput() < OUTPUT_LEVEL_MIN || valueAsOutput() >= OUTPUT_LEVEL_MAX || !(m_forLog || m_forNotice))
 				return container::m_poolPtr[m_value];
 			return container::m_poolPtr[calcAsValue(calcAsOutput(m_value) + 1)];
 		}
 	public:
-		//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		level() :
 			m_name(nullptr),
 			m_value(UCHAR_MAX),
-			m_forOutput(false),
-			m_forOutputMask(false),
+			m_forLog(false),
+			m_forNotice(false),
+			m_forMask(false),
 			m_foreColor(color::through),
 			m_backColor(color::through),
 			m_foreColorForNotice(color::through),
 			m_backColorForNotice(color::through)
 		{
-			container::initializeOnce();//ƒRƒ“ƒeƒi‰Šú‰»iˆê‰ñŒÀ‚èj
+			container::initializeOnce();//ã‚³ãƒ³ãƒ†ãƒŠåˆæœŸåŒ–ï¼ˆä¸€å›é™ã‚Šï¼‰
 		}
-		//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		level(const level& src) :
 			m_name(src.m_name),
 			m_value(src.m_value),
-			m_forOutput(src.m_forOutput),
-			m_forOutputMask(src.m_forOutputMask),
+			m_forLog(src.m_forLog),
+			m_forNotice(src.m_forNotice),
+			m_forMask(src.m_forMask),
 			m_foreColor(src.m_foreColor),
 			m_backColor(src.m_backColor),
 			m_foreColorForNotice(src.m_foreColorForNotice),
 			m_backColorForNotice(src.m_backColorForNotice)
 		{
 		}
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		level(const value_t value, const char* name, const bool for_output, const bool for_output_mask, const color::color_t fore_color, const color::color_t back_color, const color::color_t fore_color_for_notice, const color::color_t back_color_for_notice) :
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+		level(const value_t value, const char* name, const bool for_log, const bool for_notice, const bool for_mask, const color::color_t fore_color, const color::color_t back_color, const color::color_t fore_color_for_notice, const color::color_t back_color_for_notice) :
 			m_name(name),
 			m_value(value),
-			m_forOutput(for_output),
-			m_forOutputMask(for_output_mask),
+			m_forLog(for_log),
+			m_forNotice(for_notice),
+			m_forMask(for_mask),
 			m_foreColor(fore_color),
 			m_backColor(back_color),
 			m_foreColorForNotice(fore_color_for_notice),
 			m_backColorForNotice(back_color_for_notice)
 		{
 			assert(value >= BEGIN && value <= END);
-			container::set(m_value, *this);//ƒRƒ“ƒeƒi‚É“o˜^
+			container::set(m_value, *this);//ã‚³ãƒ³ãƒ†ãƒŠã«ç™»éŒ²
 		}
 		level(const value_t value) :
 			m_name(nullptr),
 			m_value(value),
-			m_forOutput(false),
-			m_forOutputMask(false),
+			m_forLog(false),
+			m_forNotice(false),
+			m_forMask(false),
 			m_foreColor(color::through),
 			m_backColor(color::through),
 			m_foreColorForNotice(color::through),
 			m_backColorForNotice(color::through)
 		{
 			assert(value >= BEGIN && value <= END);
-			*this = container::get(m_value);//ƒRƒ“ƒeƒi‚©‚çæ“¾‚µ‚Ä©g‚ÉƒRƒs[
+			*this = container::get(m_value);//ã‚³ãƒ³ãƒ†ãƒŠã‹ã‚‰å–å¾—ã—ã¦è‡ªèº«ã«ã‚³ãƒ”ãƒ¼
 		}
-		//ƒfƒXƒgƒ‰ƒNƒ^
+		//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		~level()
 		{}
 	private:
-		const char* m_name;//–¼‘O
-		const value_t m_value;//’liƒŒƒxƒ‹j
-		const bool m_forOutput;//o—ÍƒŒƒxƒ‹‚Æ‚µ‚Äg—p‰Â”\‚©H
-		const bool m_forOutputMask;//o—ÍƒŒƒxƒ‹ƒ}ƒXƒN‚Æ‚µ‚Äg—p‰Â”\‚©H
-		const color::color_t m_foreColor;//ƒJƒ‰[F‘O–Ê
-		const color::color_t m_backColor;//ƒJƒ‰[F”w–Ê
-		const color::color_t m_foreColorForNotice;//ƒJƒ‰[F‘O–Êi‰æ–Ê’Ê’m—pj
-		const color::color_t m_backColorForNotice;//ƒJƒ‰[F”w–Êi‰æ–Ê’Ê’m—pj
+		const char* m_name;//åå‰
+		const value_t m_value;//å€¤ï¼ˆãƒ¬ãƒ™ãƒ«ï¼‰
+		const bool m_forLog;//ãƒ­ã‚°å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		const bool m_forNotice;//ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		const bool m_forMask;//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		const color::color_t m_foreColor;//ã‚«ãƒ©ãƒ¼ï¼šå‰é¢
+		const color::color_t m_backColor;//ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢
+		const color::color_t m_foreColorForNotice;//ã‚«ãƒ©ãƒ¼ï¼šå‰é¢ï¼ˆç”»é¢é€šçŸ¥ç”¨ï¼‰
+		const color::color_t m_backColorForNotice;//ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢ï¼ˆç”»é¢é€šçŸ¥ç”¨ï¼‰
 	private:
-		//ƒ}ƒNƒÁ‹
+		//ãƒã‚¯ãƒ­æ¶ˆå»
 #ifndef ENABLE_CONSTEXPR
 #undef calcAsOutput
 #undef calcAsValue
 #endif//ENABLE_CONSTEXPR
 	};
 	//----------------------------------------
-	//ƒŒƒxƒ‹’è‹`—pƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXF’ÊíƒŒƒxƒ‹—p
-	template<unsigned char V, color::color_t fore_color, color::color_t back_color, color::color_t fore_color_for_notice, color::color_t back_color_for_notice>
+	//ãƒ¬ãƒ™ãƒ«å®šç¾©ç”¨ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚¯ãƒ©ã‚¹ï¼šé€šå¸¸ãƒ¬ãƒ™ãƒ«ç”¨
+	template<unsigned char V, bool for_log, bool for_notice, color::color_t fore_color, color::color_t back_color, color::color_t fore_color_for_notice, color::color_t back_color_for_notice>
 	class level_normal : public level
 	{
 	public:
-		//’è”
-		static const value_t VALUE = V;//’liƒŒƒxƒ‹j
-		static_assert(VALUE >= NORMAL_MIN && VALUE <= NORMAL_MAX, "out of range of level");//’l‚Ì”ÍˆÍƒ`ƒFƒbƒN
-		static const bool FOR_OUTPUT = true;//o—ÍƒŒƒxƒ‹‚Æ‚µ‚Äg—p‰Â”\‚©H
-		static const bool FOR_OUTPUT_MASK = true;//o—ÍƒŒƒxƒ‹ƒ}ƒXƒN‚Æ‚µ‚Äg—p‰Â”\‚©H
-		static const color::color_t FORE_COLOR = fore_color;//ƒJƒ‰[F‘O–Ê
-		static const color::color_t BACK_COLOR = back_color;//ƒJƒ‰[F”w–Ê
-		static const color::color_t FORE_COLOR_FOR_NOTICE = fore_color_for_notice;//ƒJƒ‰[F‘O–Êi‰æ–Ê’Ê’m—pj
-		static const color::color_t BACK_COLOR_FOR_NOTICE = back_color_for_notice;//ƒJƒ‰[F”w–Êi‰æ–Ê’Ê’m—pj
+		//å®šæ•°
+		static const value_t VALUE = V;//å€¤ï¼ˆãƒ¬ãƒ™ãƒ«ï¼‰
+		static_assert(VALUE >= NORMAL_MIN && VALUE <= NORMAL_MAX, "out of range of level");//å€¤ã®ç¯„å›²ãƒã‚§ãƒƒã‚¯
+		static const bool FOR_LOG = for_log;//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_NOTICE = for_notice;//ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_MASK = true;//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		static const color::color_t FORE_COLOR = fore_color;//ã‚«ãƒ©ãƒ¼ï¼šå‰é¢
+		static const color::color_t BACK_COLOR = back_color;//ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢
+		static const color::color_t FORE_COLOR_FOR_NOTICE = fore_color_for_notice;//ã‚«ãƒ©ãƒ¼ï¼šå‰é¢ï¼ˆç”»é¢é€šçŸ¥ç”¨ï¼‰
+		static const color::color_t BACK_COLOR_FOR_NOTICE = back_color_for_notice;//ã‚«ãƒ©ãƒ¼ï¼šèƒŒé¢ï¼ˆç”»é¢é€šçŸ¥ç”¨ï¼‰
 	public:
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		level_normal(const char* name) :
-			level(VALUE, name, FOR_OUTPUT, FOR_OUTPUT_MASK, FORE_COLOR, BACK_COLOR, FORE_COLOR_FOR_NOTICE, BACK_COLOR_FOR_NOTICE)
+			level(VALUE, name, FOR_LOG, FOR_NOTICE, FOR_MASK, FORE_COLOR, BACK_COLOR, FORE_COLOR_FOR_NOTICE, BACK_COLOR_FOR_NOTICE)
 		{}
 	};
 	//----------------------------------------
-	//ƒŒƒxƒ‹’è‹`—pƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXF“ÁêƒŒƒxƒ‹—p
+	//ãƒ¬ãƒ™ãƒ«å®šç¾©ç”¨ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚¯ãƒ©ã‚¹ï¼šç‰¹æ®Šãƒ¬ãƒ™ãƒ«ç”¨
 	template<unsigned char V>
 	class level_special : public level
 	{
 	public:
-		//’è”
-		static const value_t VALUE = V;//’liƒŒƒxƒ‹j
-		static_assert(VALUE >= SPECIAL_MIN && VALUE <= SPECIAL_MAX, "out of range of level");//’l‚Ì”ÍˆÍƒ`ƒFƒbƒN
-		static const bool FOR_OUTPUT = false;//o—ÍƒŒƒxƒ‹‚Æ‚µ‚Äg—p‰Â”\‚©H
-		static const bool FOR_OUTPUT_MASK = true;//o—ÍƒŒƒxƒ‹ƒ}ƒXƒN‚Æ‚µ‚Äg—p‰Â”\‚©H
+		//å®šæ•°
+		static const value_t VALUE = V;//å€¤ï¼ˆãƒ¬ãƒ™ãƒ«ï¼‰
+		static_assert(VALUE >= SPECIAL_MIN && VALUE <= SPECIAL_MAX, "out of range of level");//å€¤ã®ç¯„å›²ãƒã‚§ãƒƒã‚¯
+		static const bool FOR_LOG = false;//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_NOTICE = false;//ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_MASK = true;//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
 	public:
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		level_special(const char* name) :
-			level(VALUE, name, FOR_OUTPUT, FOR_OUTPUT_MASK, color::through, color::through, color::through, color::through)
+			level(VALUE, name, FOR_LOG, FOR_NOTICE, FOR_MASK, color::through, color::through, color::through, color::through)
 		{}
 	};
 	//----------------------------------------
-	//ƒŒƒxƒ‹’è‹`ƒNƒ‰ƒXFI’[—p
+	//ãƒ¬ãƒ™ãƒ«å®šç¾©ã‚¯ãƒ©ã‚¹ï¼šçµ‚ç«¯ç”¨
 	class level_end : public level
 	{
 	public:
-		//’è”
-		static const value_t VALUE = END;//’liƒŒƒxƒ‹j
-		static const bool FOR_OUTPUT = false;//o—ÍƒŒƒxƒ‹‚Æ‚µ‚Äg—p‰Â”\‚©H
-		static const bool FOR_OUTPUT_MASK = false;//o—ÍƒŒƒxƒ‹ƒ}ƒXƒN‚Æ‚µ‚Äg—p‰Â”\‚©H
+		//å®šæ•°
+		static const value_t VALUE = END;//å€¤ï¼ˆãƒ¬ãƒ™ãƒ«ï¼‰
+		static const bool FOR_LOG = false;//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_NOTICE = false;//ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_MASK = false;//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ã‹ï¼Ÿ
 	public:
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		level_end() :
-			level(VALUE, "(END)", FOR_OUTPUT, FOR_OUTPUT_MASK, color::through, color::through, color::through, color::through)
+			level(VALUE, "(END)", FOR_LOG, FOR_NOTICE, FOR_MASK, color::through, color::through, color::through, color::through)
 		{}
 	};
 	//----------------------------------------
-	//ƒŒƒxƒ‹’è”
+	//ãƒ¬ãƒ™ãƒ«å®šæ•°
 #define define_normalLevel(print_level, sub) (level::NORMAL_MIN + print_level * 2 + sub)
 #define define_specialLevel(value) (level::SPECIAL_MIN + value)
 	enum levelEnum : level::value_t
 	{
-		asNormal = define_normalLevel(1, 0),//’ÊíƒƒbƒZ[ƒW
-		asVerbose = define_normalLevel(0, 0),//ç’·ƒƒbƒZ[ƒW
-		asDetail = define_normalLevel(0, 1),//Ú×ƒƒbƒZ[ƒW
-		asImportant = define_normalLevel(2, 0),//d—vƒƒbƒZ[ƒW
-		asWarning = define_normalLevel(3, 0),//ŒxƒƒbƒZ[ƒW
-		asCritical = define_normalLevel(4, 0),//d‘åƒƒbƒZ[ƒW
-		asAbsolute = define_normalLevel(5, 0),//â‘ÎƒƒbƒZ[ƒWiƒƒOƒŒƒxƒ‹‚ÉŠÖŒW‚È‚­o—Í‚µ‚½‚¢ƒƒbƒZ[ƒWj
-		//ˆÈ‰ºAƒƒOƒŒƒxƒ‹^‰æ–Ê’Ê’mƒŒƒxƒ‹•ÏX—p
-		asSilent = define_specialLevel(0),//â‘ÎƒƒbƒZ[ƒWiƒƒOƒŒƒxƒ‹‚ÉŠÖŒW‚È‚­o—Í‚µ‚½‚¢ƒƒbƒZ[ƒWj
-		asSilentAbsolutely = define_specialLevel(1),//â‘ÎÃâi‘S‚Ä‚ÌƒƒbƒZ[ƒW‚ğo—Í‚µ‚È‚¢j
+		asNormal = define_normalLevel(1, 0),//é€šå¸¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		asVerbose = define_normalLevel(0, 0),//å†—é•·ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		asDetail = define_normalLevel(0, 1),//è©³ç´°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		asImportant = define_normalLevel(2, 0),//é‡è¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		asWarning = define_normalLevel(3, 0),//è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		asCritical = define_normalLevel(4, 0),//é‡å¤§ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		asAbsolute = define_normalLevel(5, 0),//çµ¶å¯¾ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼ˆãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã«é–¢ä¿‚ãªãå‡ºåŠ›ã—ãŸã„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼‰
+		//ä»¥ä¸‹ã€ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ï¼ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«å¤‰æ›´ç”¨
+		asSilent = define_specialLevel(0),//çµ¶å¯¾ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼ˆãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã«é–¢ä¿‚ãªãå‡ºåŠ›ã—ãŸã„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼‰
+		asSilentAbsolutely = define_specialLevel(1),//çµ¶å¯¾é™å¯‚ï¼ˆå…¨ã¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡ºåŠ›ã—ãªã„ï¼‰
 	};
 	//----------------------------------------
-	//ƒŒƒxƒ‹’è‹`
-#define declare_normalLevel(value, fore_color, back_color, fore_color_for_notice, back_color_for_notice) struct level_##value : public level_normal<value, fore_color, back_color, fore_color_for_notice, back_color_for_notice>{ level_##value () :level_normal<value, fore_color, back_color, fore_color_for_notice, back_color_for_notice>(#value){} }
+	//ãƒ¬ãƒ™ãƒ«å®šç¾©
+#define declare_normalLevel(value, for_log, for_notice, fore_color, back_color, fore_color_for_notice, back_color_for_notice) struct level_##value : public level_normal<value, for_log, for_notice, fore_color, back_color, fore_color_for_notice, back_color_for_notice>{ level_##value () :level_normal<value, for_log, for_notice, fore_color, back_color, fore_color_for_notice, back_color_for_notice>(#value){} }
 #define declare_specialLevel(value) struct level_##value : public level_special<value>{ level_##value () :level_special<value>(#value){} }
-	//¦ˆÈ‰ºAƒwƒbƒ_[‚ÅŒöŠJ‚·‚é•K—v‚È‚µ
-	declare_normalLevel(asNormal, color::reset, color::reset, color::black, color::iWhite);//’ÊíƒƒbƒZ[ƒW
-	declare_normalLevel(asVerbose, color::iBlack, color::black, color::iBlack, color::iWhite);//ç’·ƒƒbƒZ[ƒW
-	declare_normalLevel(asDetail, color::iBlack, color::black, color::iBlack, color::iWhite);//Ú×ƒƒbƒZ[ƒW
-	declare_normalLevel(asImportant, color::iBlue, color::black, color::iBlue, color::iWhite);//d—vƒƒbƒZ[ƒW
-	declare_normalLevel(asWarning, color::iMagenta, color::black, color::black, color::iMagenta);//ŒxƒƒbƒZ[ƒW
-	declare_normalLevel(asCritical, color::iRed, color::black, color::iYellow, color::iRed);//d‘åƒƒbƒZ[ƒW
-	declare_normalLevel(asAbsolute, color::through, color::through, color::through, color::through);//â‘ÎƒƒbƒZ[ƒWiƒƒOƒŒƒxƒ‹‚ÉŠÖŒW‚È‚­o—Í‚µ‚½‚¢ƒƒbƒZ[ƒWj
-	//ˆÈ‰ºAƒƒOƒŒƒxƒ‹^‰æ–Ê’Ê’mƒŒƒxƒ‹•ÏX—p
-	declare_specialLevel(asSilent);//Ãâiâ‘ÎƒƒbƒZ\ƒWˆÈŠOo—Í‚µ‚È‚¢j
-	declare_specialLevel(asSilentAbsolutely);//â‘ÎÃâi‘S‚Ä‚ÌƒƒbƒZ[ƒW‚ğo—Í‚µ‚È‚¢j
+	//â€»ä»¥ä¸‹ã€ãƒ˜ãƒƒãƒ€ãƒ¼ã§å…¬é–‹ã™ã‚‹å¿…è¦ãªã—
+	declare_normalLevel(asNormal, true, true, color::reset, color::reset, color::black, color::iWhite);//é€šå¸¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_normalLevel(asVerbose, true, false, color::iBlack, color::black, color::iBlack, color::iWhite);//å†—é•·ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_normalLevel(asDetail, true, false, color::iBlack, color::black, color::iBlack, color::iWhite);//è©³ç´°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_normalLevel(asImportant, true, true, color::iBlue, color::black, color::iBlue, color::iWhite);//é‡è¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_normalLevel(asWarning, true, true, color::iMagenta, color::black, color::black, color::iMagenta);//è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_normalLevel(asCritical, true, true, color::iRed, color::black, color::iYellow, color::iRed);//é‡å¤§ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_normalLevel(asAbsolute, true, false, color::through, color::through, color::through, color::through);//çµ¶å¯¾ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼ˆãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã«é–¢ä¿‚ãªãå‡ºåŠ›ã—ãŸã„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼‰
+	//ä»¥ä¸‹ã€ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ï¼ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«å¤‰æ›´ç”¨
+	declare_specialLevel(asSilent);//é™å¯‚ï¼ˆçµ¶å¯¾ãƒ¡ãƒƒã‚»â€•ã‚¸ä»¥å¤–å‡ºåŠ›ã—ãªã„ï¼‰
+	declare_specialLevel(asSilentAbsolutely);//çµ¶å¯¾é™å¯‚ï¼ˆå…¨ã¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡ºåŠ›ã—ãªã„ï¼‰
 
 	//----------------------------------------
-	//ƒŒƒxƒ‹ƒRƒ“ƒeƒi‚ÌÃ“I•Ï”‚ğƒCƒ“ƒXƒ^ƒ“ƒX‰»
+	//ãƒ¬ãƒ™ãƒ«ã‚³ãƒ³ãƒ†ãƒŠã®é™çš„å¤‰æ•°ã‚’ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–
 	bool level::container::m_isInitialized = false;
 	level* level::container::m_poolPtr = nullptr;
 	level::byte level::container::m_pool[(POOL_NUM)* sizeof(level)];
 	std::bitset<level::POOL_NUM> level::container::m_isAlreadyPool;
 	//----------------------------------------
-	//ƒŒƒxƒ‹ƒRƒ“ƒeƒi‰Šú‰»iˆê‰ñŒÀ‚èj
+	//ãƒ¬ãƒ™ãƒ«ã‚³ãƒ³ãƒ†ãƒŠåˆæœŸåŒ–ï¼ˆä¸€å›é™ã‚Šï¼‰
 	void level::container::initializeOnce()
 	{
-		//‰Šú‰»Ï‚İƒ`ƒFƒbƒN
+		//åˆæœŸåŒ–æ¸ˆã¿ãƒã‚§ãƒƒã‚¯
 		if (m_isInitialized)
 			return;
-		//Ã“I•Ï”‚ğ‰Šú‰»
+		//é™çš„å¤‰æ•°ã‚’åˆæœŸåŒ–
 		m_isInitialized = true;
 		m_isAlreadyPool.reset();
 		memset(m_pool, 0, sizeof(m_pool));
 		m_poolPtr = reinterpret_cast<level*>(m_pool);
-		//—v‘f‚ğ‰Šú‰»
+		//è¦ç´ ã‚’åˆæœŸåŒ–
 		for (level::value_t value = 0; value < level::NUM; ++value)
 		{
-			level(value, "(undefined)", false, false, color::through, color::through, color::through, color::through);
+			level(value, "(undefined)", false, false, false, color::through, color::through, color::through, color::through);
 			m_isAlreadyPool[value] = false;
 		}
-		//Š„‚è“–‚ÄÏ‚İƒŒƒxƒ‹‚ğİ’èiƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å—v‘f‚ğ“o˜^j
-		level_asNormal();//’ÊíƒƒbƒZ[ƒW
-		level_asVerbose();//ç’·ƒƒbƒZ[ƒW
-		level_asDetail();//Ú×ƒƒbƒZ[ƒW
-		level_asImportant();//d—vƒƒbƒZ[ƒW
-		level_asWarning();//ŒxƒƒbƒZ[ƒW
-		level_asCritical();//d‘åƒƒbƒZ[ƒW
-		level_asAbsolute();//â‘ÎƒƒbƒZ[ƒWiƒƒOƒŒƒxƒ‹‚ÉŠÖŒW‚È‚­o—Í‚µ‚½‚¢ƒƒbƒZ[ƒWj
-		level_asSilent();//Ãâiâ‘ÎƒƒbƒZ\ƒWˆÈŠOo—Í‚µ‚È‚¢j
-		level_asSilentAbsolutely();//â‘ÎÃâi‘S‚Ä‚ÌƒƒbƒZ[ƒW‚ğo—Í‚µ‚È‚¢j
-		level_end();//I’[
+		//å‰²ã‚Šå½“ã¦æ¸ˆã¿ãƒ¬ãƒ™ãƒ«ã‚’è¨­å®šï¼ˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§è¦ç´ ã‚’ç™»éŒ²ï¼‰
+		level_asNormal();//é€šå¸¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		level_asVerbose();//å†—é•·ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		level_asDetail();//è©³ç´°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		level_asImportant();//é‡è¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		level_asWarning();//è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		level_asCritical();//é‡å¤§ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		level_asAbsolute();//çµ¶å¯¾ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼ˆãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã«é–¢ä¿‚ãªãå‡ºåŠ›ã—ãŸã„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼‰
+		level_asSilent();//é™å¯‚ï¼ˆçµ¶å¯¾ãƒ¡ãƒƒã‚»â€•ã‚¸ä»¥å¤–å‡ºåŠ›ã—ãªã„ï¼‰
+		level_asSilentAbsolutely();//çµ¶å¯¾é™å¯‚ï¼ˆå…¨ã¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡ºåŠ›ã—ãªã„ï¼‰
+		level_end();//çµ‚ç«¯
 	}
 	//----------------------------------------
-	//ƒŒƒxƒ‹—p•Ï”
-	static level s_levelForInitialize;//‰Šú‰»ˆ—Às‚Ì‚½‚ß‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	//ãƒ¬ãƒ™ãƒ«ç”¨å¤‰æ•°
+	static level s_levelForInitialize;//åˆæœŸåŒ–å‡¦ç†å®Ÿè¡Œã®ãŸã‚ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	//----------------------------------------
-	//ƒŒƒxƒ‹ƒRƒ“ƒeƒi—ñ‹“
+	//ãƒ¬ãƒ™ãƒ«ã‚³ãƒ³ãƒ†ãƒŠåˆ—æŒ™
 	void printLevelAll()
 	{
-		for (auto& obj : level::container())//C++11ƒXƒ^ƒCƒ‹
-		//for (auto ite = level::container::begin(); ite != level::container::end(); ++ite)//‹Œ—ˆ‚ÌƒXƒ^ƒCƒ‹
-		//for (auto ite = level::container::cbegin(); ite != level::container::cend(); ++ite)//‹Œ—ˆ‚ÌƒXƒ^ƒCƒ‹
+		for (auto& obj : level::container())//C++11ã‚¹ã‚¿ã‚¤ãƒ«
+		//for (auto ite = level::container::begin(); ite != level::container::end(); ++ite)//æ—§æ¥ã®ã‚¹ã‚¿ã‚¤ãƒ«
+		//for (auto ite = level::container::cbegin(); ite != level::container::cend(); ++ite)//æ—§æ¥ã®ã‚¹ã‚¿ã‚¤ãƒ«
 		{
-			//const level& obj = ite;//ƒCƒeƒŒ[ƒ^‚ğ•ÏŠ·iƒCƒeƒŒ[ƒ^‚Ì‚Ü‚Ü‚Å‚àƒAƒ[‰‰Zq‚Å’¼Ú’l‘€ì‰Â”\j
+			//const level& obj = ite;//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å¤‰æ›ï¼ˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®ã¾ã¾ã§ã‚‚ã‚¢ãƒ­ãƒ¼æ¼”ç®—å­ã§ç›´æ¥å€¤æ“ä½œå¯èƒ½ï¼‰
 			color col(obj.changeColor());
-			fprintf(stdout, "level=%d, name=\"%s\", valueAsOutput=%d, forOutput=%d, forOutputMask=%d\n", obj.value(), obj.name(), obj.valueAsOutput(), obj.forOutput(), obj.forOutputMask());
+			fprintf(stdout, "level=%d, name=\"%s\", valueAsOutput=%d, forLog=%d, forNotice=%d, forMask=%d\n", obj.value(), obj.name(), obj.valueAsOutput(), obj.forLog(), obj.forNotice(), obj.forMask());
 			auto& prev = obj.prev();
 			auto& next = obj.next();
 			fprintf(stdout, "           prev=%s(%d)\n", prev.name(), prev.value());
@@ -643,43 +653,43 @@ namespace dbgLog
 	}
 
 	//----------------------------------------
-	//ƒJƒeƒSƒŠ
+	//ã‚«ãƒ†ã‚´ãƒª
 	class category
 	{
 	public:
-		//Œ^
-		typedef unsigned char value_t;//’liƒJƒeƒSƒŠj
-		typedef unsigned char byte;//ƒoƒbƒtƒ@—p
+		//å‹
+		typedef unsigned char value_t;//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰
+		typedef unsigned char byte;//ãƒãƒƒãƒ•ã‚¡ç”¨
 	public:
-		//’è”
-		static const value_t NORMAL_NUM = 64;//’ÊíƒJƒeƒSƒŠ”
-		static const value_t ASSIGNED_NUM = 8;//Š„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠ”
-		static const value_t RESERVED_NUM = NORMAL_NUM - ASSIGNED_NUM;//—\–ñƒJƒeƒSƒŠ”
-		static const value_t SPECIAL_NUM = 3;//“ÁêƒJƒeƒSƒŠ”
-		static const value_t NUM = NORMAL_NUM + SPECIAL_NUM;//ƒJƒeƒSƒŠ‘”
-		static const value_t MIN = 0;//ƒJƒeƒSƒŠÅ¬’l
-		static const value_t MAX = NUM - 1;//ƒJƒeƒSƒŠÅ‘å’l
-		static const value_t NORMAL_MIN = MIN;//’ÊíƒJƒeƒSƒŠÅ¬’l
-		static const value_t NORMAL_MAX = NORMAL_MIN + NORMAL_NUM - 1;//’ÊíƒJƒeƒSƒŠÅ‘å’l
-		static const value_t ASSIGNED_MIN = NORMAL_MIN;//Š„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠÅ¬’l
-		static const value_t ASSIGNED_MAX = ASSIGNED_MIN + ASSIGNED_NUM - 1;//Š„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠÅ‘å’l
-		static const value_t RESERVED_MIN = ASSIGNED_MAX + 1;//—\–ñƒJƒeƒSƒŠÅ¬’l
-		static const value_t RESERVED_MAX = RESERVED_MIN + RESERVED_NUM - 1;//—\–ñƒJƒeƒSƒŠÅ‘å’l
-		static const value_t SPECIAL_MIN = NORMAL_MAX + 1;//“ÁêƒJƒeƒSƒŠÅ¬’l
-		static const value_t SPECIAL_MAX = SPECIAL_MIN + SPECIAL_NUM - 1;//“ÁêƒJƒeƒSƒŠÅ‘å’l
-		static const value_t BEGIN = MIN;//ƒJƒeƒSƒŠŠJn’liƒCƒeƒŒ[ƒ^—pj
-		static const value_t END = NUM;//ƒJƒeƒSƒŠI’[’liƒCƒeƒŒ[ƒ^—pj
-		static const value_t POOL_NUM = NUM + 1;//ƒJƒeƒSƒŠ‹L˜^”
-		static_assert(NORMAL_MAX == RESERVED_MAX, "invalid category numbers.");//’è”ƒ`ƒFƒbƒN
-		static_assert(SPECIAL_MAX == MAX, "invalid category numbers.");//’è”ƒ`ƒFƒbƒN
+		//å®šæ•°
+		static const value_t NORMAL_NUM = 64;//é€šå¸¸ã‚«ãƒ†ã‚´ãƒªæ•°
+		static const value_t ASSIGNED_NUM = 8;//å‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªæ•°
+		static const value_t RESERVED_NUM = NORMAL_NUM - ASSIGNED_NUM;//äºˆç´„ã‚«ãƒ†ã‚´ãƒªæ•°
+		static const value_t SPECIAL_NUM = 3;//ç‰¹æ®Šã‚«ãƒ†ã‚´ãƒªæ•°
+		static const value_t NUM = NORMAL_NUM + SPECIAL_NUM;//ã‚«ãƒ†ã‚´ãƒªç·æ•°
+		static const value_t MIN = 0;//ã‚«ãƒ†ã‚´ãƒªæœ€å°å€¤
+		static const value_t MAX = NUM - 1;//ã‚«ãƒ†ã‚´ãƒªæœ€å¤§å€¤
+		static const value_t NORMAL_MIN = MIN;//é€šå¸¸ã‚«ãƒ†ã‚´ãƒªæœ€å°å€¤
+		static const value_t NORMAL_MAX = NORMAL_MIN + NORMAL_NUM - 1;//é€šå¸¸ã‚«ãƒ†ã‚´ãƒªæœ€å¤§å€¤
+		static const value_t ASSIGNED_MIN = NORMAL_MIN;//å‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªæœ€å°å€¤
+		static const value_t ASSIGNED_MAX = ASSIGNED_MIN + ASSIGNED_NUM - 1;//å‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªæœ€å¤§å€¤
+		static const value_t RESERVED_MIN = ASSIGNED_MAX + 1;//äºˆç´„ã‚«ãƒ†ã‚´ãƒªæœ€å°å€¤
+		static const value_t RESERVED_MAX = RESERVED_MIN + RESERVED_NUM - 1;//äºˆç´„ã‚«ãƒ†ã‚´ãƒªæœ€å¤§å€¤
+		static const value_t SPECIAL_MIN = NORMAL_MAX + 1;//ç‰¹æ®Šã‚«ãƒ†ã‚´ãƒªæœ€å°å€¤
+		static const value_t SPECIAL_MAX = SPECIAL_MIN + SPECIAL_NUM - 1;//ç‰¹æ®Šã‚«ãƒ†ã‚´ãƒªæœ€å¤§å€¤
+		static const value_t BEGIN = MIN;//ã‚«ãƒ†ã‚´ãƒªé–‹å§‹å€¤ï¼ˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç”¨ï¼‰
+		static const value_t END = NUM;//ã‚«ãƒ†ã‚´ãƒªçµ‚ç«¯å€¤ï¼ˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç”¨ï¼‰
+		static const value_t POOL_NUM = NUM + 1;//ã‚«ãƒ†ã‚´ãƒªè¨˜éŒ²æ•°
+		static_assert(NORMAL_MAX == RESERVED_MAX, "invalid category numbers.");//å®šæ•°ãƒã‚§ãƒƒã‚¯
+		static_assert(SPECIAL_MAX == MAX, "invalid category numbers.");//å®šæ•°ãƒã‚§ãƒƒã‚¯
 	public:
-		//Œ^
+		//å‹
 		//--------------------
-		//ƒCƒeƒŒ[ƒ^
-		class iterator : public std::iterator<std::bidirectional_iterator_tag, category>//‘o•ûŒüƒCƒeƒŒ[ƒ^‚Æ‚µ‚ÄÀ‘•
+		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+		class iterator : public std::iterator<std::bidirectional_iterator_tag, category>//åŒæ–¹å‘ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã¨ã—ã¦å®Ÿè£…
 		{
 		public:
-			//ƒIƒyƒŒ[ƒ^
+			//ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 			const category* operator->() const { return &container::get(m_value); }
 			const category& operator*() const { return container::get(m_value); }
 			bool operator==(const iterator rhs) const { return m_value == rhs.m_value; }
@@ -689,10 +699,10 @@ namespace dbgLog
 			const category& operator--() const { if (m_value == container::beginValue()){ m_value = container::endValue(); return container::getEnd(); } return container::get(--m_value); }
 			const category& operator--(int) const { if (m_value == container::beginValue()){ m_value = container::endValue(); return container::getBegin(); } return container::get(m_value--); }
 		public:
-			//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
-			operator const category&() const { return container::get(m_value); }//’liƒJƒeƒSƒŠj
+			//ã‚­ãƒ£ã‚¹ãƒˆã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			operator const category&() const { return container::get(m_value); }//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰
 		public:
-			//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+			//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 			iterator(const value_t value) :
 				m_value(value)
 			{}
@@ -708,30 +718,30 @@ namespace dbgLog
 			iterator() :
 				m_value(container::endValue())
 			{}
-			//ƒfƒXƒgƒ‰ƒNƒ^
+			//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 			~iterator()
 			{}
 		private:
-			//ƒtƒB[ƒ‹ƒh
-			value_t mutable m_value;//’liƒJƒeƒSƒŠj
+			//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+			value_t mutable m_value;//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰
 		};
 		//--------------------
-		//constƒCƒeƒŒ[ƒ^
+		//constã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
 		typedef const iterator const_iterator;
 		//--------------------
-		//ƒRƒ“ƒeƒiiƒCƒeƒŒ[ƒ^—pj
+		//ã‚³ãƒ³ãƒ†ãƒŠï¼ˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç”¨ï¼‰
 		class container
 		{
 			friend class category;
 		public:
-			//ƒƒ\ƒbƒh
-			static const value_t beginValue(){ return BEGIN; }//ŠJn’læ“¾
-			static const value_t endValue(){ return END; }//I’[’læ“¾
-			static const category& get(const value_t value){ return m_poolPtr[value]; }//—v‘f‚ğæ“¾
-			static const category& getBegin(){ return m_poolPtr[beginValue()]; }//ŠJn—v‘f‚ğæ“¾
-			static const category& getEnd(){ return m_poolPtr[endValue()]; }//I’[—v‘f‚ğæ“¾
+			//ãƒ¡ã‚½ãƒƒãƒ‰
+			static const value_t beginValue(){ return BEGIN; }//é–‹å§‹å€¤å–å¾—
+			static const value_t endValue(){ return END; }//çµ‚ç«¯å€¤å–å¾—
+			static const category& get(const value_t value){ return m_poolPtr[value]; }//è¦ç´ ã‚’å–å¾—
+			static const category& getBegin(){ return m_poolPtr[beginValue()]; }//é–‹å§‹è¦ç´ ã‚’å–å¾—
+			static const category& getEnd(){ return m_poolPtr[endValue()]; }//çµ‚ç«¯è¦ç´ ã‚’å–å¾—
 		private:
-			static void set(const value_t value, const category& obj)//—v‘f‚ğXV
+			static void set(const value_t value, const category& obj)//è¦ç´ ã‚’æ›´æ–°
 			{
 				if (!container::m_isAlreadyPool[value])
 				{
@@ -740,475 +750,799 @@ namespace dbgLog
 				}
 			}
 		public:
-			static const iterator begin(){ return iterator(beginValue()); }//ŠJnƒCƒeƒŒ[ƒ^‚ğæ“¾
-			static const iterator end()	{ return iterator(endValue()); }//I’[ƒCƒeƒŒ[ƒ^‚ğæ“¾
-			static const_iterator cbegin(){ return const_iterator(beginValue()); }//ŠJnconstƒCƒeƒŒ[ƒ^‚ğæ“¾
-			static const_iterator cend(){ return const_iterator(endValue()); }//I’[constƒCƒeƒŒ[ƒ^‚ğæ“¾
-			//¦reverse_iterator”ñ‘Î‰
-			//ƒƒ\ƒbƒh
-			//‰Šú‰»iˆê‰ñŒÀ‚èj
+			static const iterator begin(){ return iterator(beginValue()); }//é–‹å§‹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
+			static const iterator end()	{ return iterator(endValue()); }//çµ‚ç«¯ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
+			static const_iterator cbegin(){ return const_iterator(beginValue()); }//é–‹å§‹constã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
+			static const_iterator cend(){ return const_iterator(endValue()); }//çµ‚ç«¯constã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
+			//â€»reverse_iteratoréå¯¾å¿œ
+			//ãƒ¡ã‚½ãƒƒãƒ‰
+			//åˆæœŸåŒ–ï¼ˆä¸€å›é™ã‚Šï¼‰
 			static void initializeOnce();
 		private:
-			//ƒtƒB[ƒ‹ƒh
-			static bool m_isInitialized;//‰Šú‰»Ï‚İ
-			static category* m_poolPtr;//—v‘f‚Ìƒv[ƒ‹iƒ|ƒCƒ“ƒ^j
-			static byte m_pool[];//—v‘f‚Ìƒv[ƒ‹iƒoƒbƒtƒ@j¦ƒoƒbƒtƒ@‚Æƒ|ƒCƒ“ƒ^‚ğ•ª‚¯‚Ä‚¢‚é‚Ì‚ÍAƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÌÀs‚ğ–h~‚·‚é‚½‚ß
-			static std::bitset<POOL_NUM> m_isAlreadyPool;//—v‘f‚Ì‰Šú‰»Ï‚İƒtƒ‰ƒO
+			//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+			static bool m_isInitialized;//åˆæœŸåŒ–æ¸ˆã¿
+			static category* m_poolPtr;//è¦ç´ ã®ãƒ—ãƒ¼ãƒ«ï¼ˆãƒã‚¤ãƒ³ã‚¿ï¼‰
+			static byte m_pool[];//è¦ç´ ã®ãƒ—ãƒ¼ãƒ«ï¼ˆãƒãƒƒãƒ•ã‚¡ï¼‰â€»ãƒãƒƒãƒ•ã‚¡ã¨ãƒã‚¤ãƒ³ã‚¿ã‚’åˆ†ã‘ã¦ã„ã‚‹ã®ã¯ã€ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã®å®Ÿè¡Œã‚’é˜²æ­¢ã™ã‚‹ãŸã‚
+			static std::bitset<POOL_NUM> m_isAlreadyPool;//è¦ç´ ã®åˆæœŸåŒ–æ¸ˆã¿ãƒ•ãƒ©ã‚°
 		};
 	public:
-		//ƒIƒyƒŒ[ƒ^
+		//ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 		bool operator ==(const category& rhs) const { return m_value == rhs.m_value; }
 		bool operator !=(const category& rhs) const { return m_value != rhs.m_value; }
 	private:
-		//ƒRƒs[ƒIƒyƒŒ[ƒ^
+		//ã‚³ãƒ”ãƒ¼ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 		category& operator=(const category& rhs)
 		{
 			memcpy(this, &rhs, sizeof(*this));
 			return *this;
 		}
 	public:
-		//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
-		operator int() const { return static_cast<int>(m_value); }//’liƒJƒeƒSƒŠj
-		operator value_t() const { return m_value; }//’liƒJƒeƒSƒŠj
-		operator const char*() const { return m_name; }//–¼‘O
+		//ã‚­ãƒ£ã‚¹ãƒˆã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+		operator int() const { return static_cast<int>(m_value); }//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰
+		operator value_t() const { return m_value; }//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰
+		operator const char*() const { return m_name; }//åå‰
 	public:
-		//ƒAƒNƒZƒbƒT
-		value_t value() const { return m_value; }//’liƒJƒeƒSƒŠjæ“¾
-		const char* name() const { return m_name; }//–¼‘Oæ“¾
-		bool isAssigned() const { return m_isAssigned; }//Š„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠ‚©H
-		bool isReserved() const { return !m_isAssigned; }//—\–ñƒJƒeƒSƒŠ‚©H
-		bool forOutput() const { return m_forOutput; }//o—ÍƒJƒeƒSƒŠ‚Æ‚µ‚Äg—p‰Â”\‚©H
-		bool forSetLevel() const { return m_forSetLevel; }//ƒŒƒxƒ‹•ÏX‚Ìw’è‚Ég—p‰Â”\‚©H
+		//ã‚¢ã‚¯ã‚»ãƒƒã‚µ
+		value_t value() const { return m_value; }//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰å–å¾—
+		const char* name() const { return m_name; }//åå‰å–å¾—
+		bool isAssigned() const { return m_isAssigned; }//å‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªã‹ï¼Ÿ
+		bool isReserved() const { return !m_isAssigned; }//äºˆç´„ã‚«ãƒ†ã‚´ãƒªã‹ï¼Ÿ
+		bool forLog() const { return m_forLog; }//ãƒ­ã‚°å‡ºåŠ›å¯èƒ½ã‹ï¼Ÿ
+		bool forNotice() const { return m_forNotice; }//ç”»é¢é€šçŸ¥å¯èƒ½ã‹ï¼Ÿ
+		bool forMask() const { return m_forMask; }//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯å¯èƒ½ã‹ï¼Ÿ
 	public:
-		//ƒƒ\ƒbƒh
-		//ƒRƒ“ƒeƒi—v‘f‚ğæ“¾iƒVƒ‡[ƒgƒJƒbƒg—pj
+		//ãƒ¡ã‚½ãƒƒãƒ‰
+		//ã‚³ãƒ³ãƒ†ãƒŠè¦ç´ ã‚’å–å¾—ï¼ˆã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆç”¨ï¼‰
 		static const category& get(const value_t value){ return container::get(value); }
 	public:
-		//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		category() :
 			m_name(nullptr),
 			m_value(UCHAR_MAX),
 			m_isAssigned(false),
-			m_forOutput(false),
-			m_forSetLevel(false)
+			m_forLog(false),
+			m_forNotice(false),
+			m_forMask(false)
 		{
-			container::initializeOnce();//ƒRƒ“ƒeƒi‰Šú‰»iˆê‰ñŒÀ‚èj
+			container::initializeOnce();//ã‚³ãƒ³ãƒ†ãƒŠåˆæœŸåŒ–ï¼ˆä¸€å›é™ã‚Šï¼‰
 		}
-		//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		category(const category& src) :
 			m_name(src.m_name),
 			m_value(src.m_value),
 			m_isAssigned(src.m_isAssigned),
-			m_forOutput(src.m_forOutput),
-			m_forSetLevel(src.m_forSetLevel)
+			m_forLog(src.m_forLog),
+			m_forNotice(src.m_forNotice),
+			m_forMask(src.m_forMask)
 		{
 		}
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		category(const value_t value, const char* name, const bool is_assigned, const bool for_output, const bool for_set_level) :
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+		category(const value_t value, const char* name, const bool is_assigned, const bool for_log, const bool for_notice, const bool for_mask) :
 			m_name(name),
 			m_value(value),
 			m_isAssigned(is_assigned),
-			m_forOutput(for_output),
-			m_forSetLevel(for_set_level)
+			m_forLog(for_log),
+			m_forNotice(for_notice),
+			m_forMask(for_mask)
 		{
 			assert(value >= BEGIN && value <= END);
-			container::set(m_value, *this);//ƒRƒ“ƒeƒi‚É“o˜^
+			container::set(m_value, *this);//ã‚³ãƒ³ãƒ†ãƒŠã«ç™»éŒ²
 		}
 		category(const value_t value) :
 			m_name(nullptr),
 			m_value(value),
 			m_isAssigned(false),
-			m_forOutput(false),
-			m_forSetLevel(false)
+			m_forLog(false),
+			m_forNotice(false),
+			m_forMask(false)
 		{
 			assert(value >= BEGIN && value <= END);
-			*this = container::get(m_value);//ƒRƒ“ƒeƒi‚©‚çæ“¾‚µ‚Ä©g‚ÉƒRƒs[
+			*this = container::get(m_value);//ã‚³ãƒ³ãƒ†ãƒŠã‹ã‚‰å–å¾—ã—ã¦è‡ªèº«ã«ã‚³ãƒ”ãƒ¼
 		}
-		//ƒfƒXƒgƒ‰ƒNƒ^
+		//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		~category()
 		{}
 	private:
-		const char* m_name;//–¼‘O
-		const value_t m_value;//’liƒJƒeƒSƒŠj
-		const bool m_isAssigned;//Š„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠ‚©H
-		const bool m_forOutput;//o—ÍƒJƒeƒSƒŠ‚Æ‚µ‚Äg—p‰Â”\‚©H
-		const bool m_forSetLevel;//ƒŒƒxƒ‹•ÏX‚Ìw’è‚Ég—p‰Â”\‚©H
+		const char* m_name;//åå‰
+		const value_t m_value;//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰
+		const bool m_isAssigned;//å‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªã‹ï¼Ÿ
+		const bool m_forLog;//ãƒ­ã‚°å‡ºåŠ›å¯èƒ½ã‹ï¼Ÿ
+		const bool m_forNotice;//ç”»é¢é€šçŸ¥å¯èƒ½ã‹ï¼Ÿ
+		const bool m_forMask;//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯å¯èƒ½ã‹ï¼Ÿ
 	};
 	//----------------------------------------
-	//ƒJƒeƒSƒŠ’è‹`—pƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFŠ„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠ—p
-	template<unsigned char V>
+	//ã‚«ãƒ†ã‚´ãƒªå®šç¾©ç”¨ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚¯ãƒ©ã‚¹ï¼šå‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªç”¨
+	template<unsigned char V, bool for_log, bool for_notice>
 	class category_assigned : public category
 	{
 	public:
-		//’è”
-		static const value_t VALUE = V;//’liƒJƒeƒSƒŠj
-		static_assert(VALUE >= ASSIGNED_MIN && VALUE <= ASSIGNED_MAX, "out of range of category");//’l‚Ì”ÍˆÍƒ`ƒFƒbƒN
-		static const bool IS_ASSIGNED = true;//Š„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠ‚©H
-		static const bool FOR_OUTPUT = true;//o—ÍƒJƒeƒSƒŠ‚Æ‚µ‚Äg—p‰Â”\‚©H
-		static const bool FOR_SET_LEVEL = true;//ƒŒƒxƒ‹•ÏX‚Ìw’è‚Ég—p‰Â”\‚©H
+		//å®šæ•°
+		static const value_t VALUE = V;//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰
+		static_assert(VALUE >= ASSIGNED_MIN && VALUE <= ASSIGNED_MAX, "out of range of category");//å€¤ã®ç¯„å›²ãƒã‚§ãƒƒã‚¯
+		static const bool IS_ASSIGNED = true;//å‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªã‹ï¼Ÿ
+		static const bool FOR_LOG = for_log;//ãƒ­ã‚°å‡ºåŠ›å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_NOTICE = for_notice;//ç”»é¢é€šçŸ¥å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_MASK = true;//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯å¯èƒ½ã‹ï¼Ÿ
 	public:
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		category_assigned(const char* name) :
-			category(VALUE, name, IS_ASSIGNED, FOR_OUTPUT, FOR_SET_LEVEL)
+			category(VALUE, name, IS_ASSIGNED, FOR_LOG, FOR_NOTICE, FOR_MASK)
 		{}
 	};
 	//----------------------------------------
-	//ƒJƒeƒSƒŠ’è‹`—pƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXF—\–ñƒJƒeƒSƒŠ—p
-	template<unsigned char V>
+	//ã‚«ãƒ†ã‚´ãƒªå®šç¾©ç”¨ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚¯ãƒ©ã‚¹ï¼šäºˆç´„ã‚«ãƒ†ã‚´ãƒªç”¨
+	template<unsigned char V, bool for_log, bool for_notice>
 	class category_reserved: public category
 	{
 	public:
-		//’è”
-		static const value_t VALUE = V;//’liƒJƒeƒSƒŠj
-		static_assert(VALUE >= RESERVED_MIN && VALUE <= RESERVED_MAX, "out of range of category");//’l‚Ì”ÍˆÍƒ`ƒFƒbƒN
-		static const bool IS_ASSIGNED = false;//Š„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠ‚©H
-		static const bool FOR_OUTPUT = true;//o—ÍƒJƒeƒSƒŠ‚Æ‚µ‚Äg—p‰Â”\‚©H
-		static const bool FOR_SET_LEVEL = true;//ƒŒƒxƒ‹•ÏX‚Ìw’è‚Ég—p‰Â”\‚©H
+		//å®šæ•°
+		static const value_t VALUE = V;//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰
+		static_assert(VALUE >= RESERVED_MIN && VALUE <= RESERVED_MAX, "out of range of category");//å€¤ã®ç¯„å›²ãƒã‚§ãƒƒã‚¯
+		static const bool IS_ASSIGNED = false;//å‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªã‹ï¼Ÿ
+		static const bool FOR_LOG = for_log;//ãƒ­ã‚°å‡ºåŠ›å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_NOTICE = for_notice;//ç”»é¢é€šçŸ¥å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_MASK = true;//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯å¯èƒ½ã‹ï¼Ÿ
 	public:
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		category_reserved(const char* name) :
-			category(VALUE, name, IS_ASSIGNED, FOR_OUTPUT, FOR_SET_LEVEL)
+			category(VALUE, name, IS_ASSIGNED, FOR_LOG, FOR_NOTICE, FOR_MASK)
 		{}
 	};
 	//----------------------------------------
-	//ƒJƒeƒSƒŠ’è‹`—pƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXF“ÁêƒJƒeƒSƒŠ—p
-	template<unsigned char V, bool for_output, bool for_set_level>
+	//ã‚«ãƒ†ã‚´ãƒªå®šç¾©ç”¨ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚¯ãƒ©ã‚¹ï¼šç‰¹æ®Šã‚«ãƒ†ã‚´ãƒªç”¨
+	template<unsigned char V, bool for_log, bool for_notice, bool for_mask>
 	class category_special : public category
 	{
 	public:
-		//’è”
-		static const value_t VALUE = V;//’liƒJƒeƒSƒŠj
-		static_assert(VALUE >= SPECIAL_MIN && VALUE <= SPECIAL_MAX, "out of range of category");//’l‚Ì”ÍˆÍƒ`ƒFƒbƒN
-		static const bool IS_ASSIGNED = true;//Š„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠ‚©H
-		static const bool FOR_OUTPUT = for_output;//o—ÍƒJƒeƒSƒŠ‚Æ‚µ‚Äg—p‰Â”\‚©H
-		static const bool FOR_SET_LEVEL = for_set_level;//ƒŒƒxƒ‹•ÏX‚Ìw’è‚Ég—p‰Â”\‚©H
+		//å®šæ•°
+		static const value_t VALUE = V;//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰
+		static_assert(VALUE >= SPECIAL_MIN && VALUE <= SPECIAL_MAX, "out of range of category");//å€¤ã®ç¯„å›²ãƒã‚§ãƒƒã‚¯
+		static const bool IS_ASSIGNED = true;//å‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªã‹ï¼Ÿ
+		static const bool FOR_LOG = for_log;//ãƒ­ã‚°å‡ºåŠ›å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_NOTICE = for_notice;//ç”»é¢é€šçŸ¥å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_MASK = for_mask;//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯å¯èƒ½ã‹ï¼Ÿ
 	public:
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		category_special(const char* name) :
-			category(VALUE, name, IS_ASSIGNED, FOR_OUTPUT, FOR_SET_LEVEL)
+			category(VALUE, name, IS_ASSIGNED, FOR_LOG, FOR_NOTICE, FOR_MASK)
 		{}
 	};
 	//----------------------------------------
-	//ƒJƒeƒSƒŠ’è‹`ƒNƒ‰ƒXFI’[—p
+	//ã‚«ãƒ†ã‚´ãƒªå®šç¾©ã‚¯ãƒ©ã‚¹ï¼šçµ‚ç«¯ç”¨
 	class category_end : public category
 	{
 	public:
-		//’è”
-		static const value_t VALUE = END;//’liƒJƒeƒSƒŠj
-		static const bool IS_ASSIGNED = true;//Š„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠ‚©H
-		static const bool FOR_OUTPUT = false;//o—ÍƒJƒeƒSƒŠ‚Æ‚µ‚Äg—p‰Â”\‚©H
-		static const bool FOR_SET_LEVEL = false;//ƒŒƒxƒ‹•ÏX‚Ìw’è‚Ég—p‰Â”\‚©H
+		//å®šæ•°
+		static const value_t VALUE = END;//å€¤ï¼ˆã‚«ãƒ†ã‚´ãƒªï¼‰
+		static const bool IS_ASSIGNED = true;//å‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªã‹ï¼Ÿ
+		static const bool FOR_LOG = false;//ãƒ­ã‚°å‡ºåŠ›å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_NOTICE = false;//ç”»é¢é€šçŸ¥å¯èƒ½ã‹ï¼Ÿ
+		static const bool FOR_MASK = false;//å‡ºåŠ›ãƒ¬ãƒ™ãƒ«ãƒã‚¹ã‚¯å¯èƒ½ã‹ï¼Ÿ
 	public:
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		category_end() :
-			category(VALUE, "(END)", IS_ASSIGNED, FOR_OUTPUT, FOR_SET_LEVEL)
+			category(VALUE, "(END)", IS_ASSIGNED, FOR_LOG, FOR_NOTICE, FOR_MASK)
 		{}
 	};
 	//----------------------------------------
-	//ƒJƒeƒSƒŠ’è”
+	//ã‚«ãƒ†ã‚´ãƒªå®šæ•°
 #define define_assignedCategory(value) (category::ASSIGNED_MIN + value)
 #define define_revervedCategory(value) (category::RESERVED_MIN + value)
 #define define_specialCategory(value) (category::SPECIAL_MIN + value)
 	enum categoryEnum : category::value_t
 	{
-		forAny = define_assignedCategory(0),//‚È‚ñ‚Å‚àiƒJƒeƒSƒŠ‚È‚µj
-		forLogic = define_assignedCategory(1),//ƒvƒƒOƒ‰ƒ€ŠÖŒW
-		forResource = define_assignedCategory(2),//ƒŠƒ\[ƒXŠÖŒW
-		for3D = define_assignedCategory(3),//3DƒOƒ‰ƒtƒBƒbƒNƒXŠÖŒW
-		for2D = define_assignedCategory(4),//2DƒOƒ‰ƒtƒBƒbƒNƒXŠÖŒW
-		forSound = define_assignedCategory(5),//ƒTƒEƒ“ƒhŠÖŒW
-		forScript = define_assignedCategory(6),//ƒXƒNƒŠƒvƒgŠÖŒW
-		forGameData = define_assignedCategory(7),//ƒQ[ƒ€ƒf[ƒ^ŠÖŒW
-		//ƒƒOƒŒƒxƒ‹^‰æ–Ê’Ê’mƒŒƒxƒ‹•ÏX—p
-		forEvery = define_specialCategory(0),//‘S•”‚Ü‚Æ‚ß‚Ä•ÏX
-		//“Áê‚ÈƒJƒeƒSƒŠiƒvƒŠƒ“ƒgê—pj
-		forCallppoint = define_specialCategory(1),//’¼‹ß‚ÌƒR[ƒ‹ƒ|ƒCƒ“ƒg‚ÌƒJƒeƒSƒŠ‚É‡‚í‚¹‚éi‚È‚¯‚ê‚ÎforAnyˆµ‚¢j
-		forCriticalCallppoint = define_specialCategory(2),//’¼‹ß‚Ìd‘åƒR[ƒ‹ƒ|ƒCƒ“ƒg‚ÌƒJƒeƒSƒŠ‚É‡‚í‚¹‚éi‚È‚¯‚ê‚ÎforAnyˆµ‚¢j
+		forAny = define_assignedCategory(0),//ãªã‚“ã§ã‚‚ï¼ˆã‚«ãƒ†ã‚´ãƒªãªã—ï¼‰
+		forLogic = define_assignedCategory(1),//ãƒ—ãƒ­ã‚°ãƒ©ãƒ é–¢ä¿‚
+		forResource = define_assignedCategory(2),//ãƒªã‚½ãƒ¼ã‚¹é–¢ä¿‚
+		for3D = define_assignedCategory(3),//3Dã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹é–¢ä¿‚
+		for2D = define_assignedCategory(4),//2Dã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹é–¢ä¿‚
+		forSound = define_assignedCategory(5),//ã‚µã‚¦ãƒ³ãƒ‰é–¢ä¿‚
+		forScript = define_assignedCategory(6),//ã‚¹ã‚¯ãƒªãƒ—ãƒˆé–¢ä¿‚
+		forGameData = define_assignedCategory(7),//ã‚²ãƒ¼ãƒ ãƒ‡ãƒ¼ã‚¿é–¢ä¿‚
+		//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ï¼ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«å¤‰æ›´ç”¨
+		forEvery = define_specialCategory(0),//å…¨éƒ¨ã¾ã¨ã‚ã¦å¤‰æ›´
+		//ç‰¹æ®Šãªã‚«ãƒ†ã‚´ãƒªï¼ˆãƒ—ãƒªãƒ³ãƒˆæ™‚å°‚ç”¨ï¼‰
+		forCallppoint = define_specialCategory(1),//ç›´è¿‘ã®ã‚³ãƒ¼ãƒ«ãƒã‚¤ãƒ³ãƒˆã®ã‚«ãƒ†ã‚´ãƒªã«åˆã‚ã›ã‚‹ï¼ˆãªã‘ã‚Œã°forAnyæ‰±ã„ï¼‰
+		forCriticalCallppoint = define_specialCategory(2),//ç›´è¿‘ã®é‡å¤§ã‚³ãƒ¼ãƒ«ãƒã‚¤ãƒ³ãƒˆã®ã‚«ãƒ†ã‚´ãƒªã«åˆã‚ã›ã‚‹ï¼ˆãªã‘ã‚Œã°forAnyæ‰±ã„ï¼‰
 	};
 	//----------------------------------------
-	//ƒJƒeƒSƒŠ’è‹`
-#define declare_assignedCategory(value) struct category_##value : public category_assigned<value>{ category_##value () :category_assigned<value>(#value){} }
-#define declare_reservedCategory(value) struct category_##value : public category_reserved<value>{ category_##value () :category_reserved<value>(#value){} }
-#define declare_specialCategory(value, for_output, for_set_level) struct category_##value : public category_special<value, for_output, for_set_level>{ category_##value () :category_special<value, for_output, for_set_level>(#value){} }
-	//¦ˆÈ‰ºAƒwƒbƒ_[‚ÅŒöŠJ‚·‚é•K—v‚È‚µ
-	declare_assignedCategory(forAny);//‚È‚ñ‚Å‚àiƒJƒeƒSƒŠ‚È‚µj
-	declare_assignedCategory(forLogic);//ƒvƒƒOƒ‰ƒ€ŠÖŒW
-	declare_assignedCategory(forResource);//ƒŠƒ\[ƒXŠÖŒW
-	declare_assignedCategory(for3D);//3DƒOƒ‰ƒtƒBƒbƒNƒXŠÖŒW
-	declare_assignedCategory(for2D);//2DƒOƒ‰ƒtƒBƒbƒNƒXŠÖŒW
-	declare_assignedCategory(forSound);//ƒTƒEƒ“ƒhŠÖŒW
-	declare_assignedCategory(forScript);//ƒXƒNƒŠƒvƒgŠÖŒW
-	declare_assignedCategory(forGameData);//ƒQ[ƒ€ƒf[ƒ^ŠÖŒW
-	//ƒƒOƒŒƒxƒ‹^‰æ–Ê’Ê’mƒŒƒxƒ‹•ÏX—p
-	declare_specialCategory(forEvery, false, true);//‘S•”‚Ü‚Æ‚ß‚Ä•ÏX
-	//“Áê‚ÈƒJƒeƒSƒŠiƒvƒŠƒ“ƒgê—pj
-	declare_specialCategory(forCallppoint, true, false);//’¼‹ß‚ÌƒR[ƒ‹ƒ|ƒCƒ“ƒg‚ÌƒJƒeƒSƒŠ‚É‡‚í‚¹‚éi‚È‚¯‚ê‚ÎforAnyˆµ‚¢j
-	declare_specialCategory(forCriticalCallppoint, true, false);//’¼‹ß‚Ìd‘åƒR[ƒ‹ƒ|ƒCƒ“ƒg‚ÌƒJƒeƒSƒŠ‚É‡‚í‚¹‚éi‚È‚¯‚ê‚ÎforAnyˆµ‚¢j
+	//ã‚«ãƒ†ã‚´ãƒªå®šç¾©
+#define declare_assignedCategory(value, for_log, for_notice) struct category_##value : public category_assigned<value, for_log, for_notice>{ category_##value () :category_assigned<value, for_log, for_notice>(#value){} }
+#define declare_reservedCategory(value, for_log, for_notice) struct category_##value : public category_reserved<value, for_log, for_notice>{ category_##value () :category_reserved<value, for_log, for_notice>(#value){} }
+#define declare_specialCategory(value, for_log, for_notice, for_mask) struct category_##value : public category_special<value, for_log, for_notice, for_mask>{ category_##value () :category_special<value, for_log, for_notice, for_mask>(#value){} }
+	//â€»ä»¥ä¸‹ã€ãƒ˜ãƒƒãƒ€ãƒ¼ã§å…¬é–‹ã™ã‚‹å¿…è¦ãªã—
+	declare_assignedCategory(forAny, true, true);//ãªã‚“ã§ã‚‚ï¼ˆã‚«ãƒ†ã‚´ãƒªãªã—ï¼‰
+	declare_assignedCategory(forLogic, true, true);//ãƒ—ãƒ­ã‚°ãƒ©ãƒ é–¢ä¿‚
+	declare_assignedCategory(forResource, true, true);//ãƒªã‚½ãƒ¼ã‚¹é–¢ä¿‚
+	declare_assignedCategory(for3D, true, true);//3Dã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹é–¢ä¿‚
+	declare_assignedCategory(for2D, true, true);//2Dã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹é–¢ä¿‚
+	declare_assignedCategory(forSound, true, true);//ã‚µã‚¦ãƒ³ãƒ‰é–¢ä¿‚
+	declare_assignedCategory(forScript, true, true);//ã‚¹ã‚¯ãƒªãƒ—ãƒˆé–¢ä¿‚
+	declare_assignedCategory(forGameData, true, true);//ã‚²ãƒ¼ãƒ ãƒ‡ãƒ¼ã‚¿é–¢ä¿‚
+	//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ï¼ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«å¤‰æ›´ç”¨
+	declare_specialCategory(forEvery, false, false, true);//å…¨éƒ¨ã¾ã¨ã‚ã¦å¤‰æ›´
+	//ç‰¹æ®Šãªã‚«ãƒ†ã‚´ãƒªï¼ˆãƒ—ãƒªãƒ³ãƒˆæ™‚å°‚ç”¨ï¼‰
+	declare_specialCategory(forCallppoint, true, true, false);//ç›´è¿‘ã®ã‚³ãƒ¼ãƒ«ãƒã‚¤ãƒ³ãƒˆã®ã‚«ãƒ†ã‚´ãƒªã«åˆã‚ã›ã‚‹ï¼ˆãªã‘ã‚Œã°forAnyæ‰±ã„ï¼‰
+	declare_specialCategory(forCriticalCallppoint, true, true, false);//ç›´è¿‘ã®é‡å¤§ã‚³ãƒ¼ãƒ«ãƒã‚¤ãƒ³ãƒˆã®ã‚«ãƒ†ã‚´ãƒªã«åˆã‚ã›ã‚‹ï¼ˆãªã‘ã‚Œã°forAnyæ‰±ã„ï¼‰
 
 	//----------------------------------------
-	//ƒJƒeƒSƒŠƒRƒ“ƒeƒi‚ÌÃ“I•Ï”‚ğƒCƒ“ƒXƒ^ƒ“ƒX‰»
+	//ã‚«ãƒ†ã‚´ãƒªã‚³ãƒ³ãƒ†ãƒŠã®é™çš„å¤‰æ•°ã‚’ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–
 	bool category::container::m_isInitialized = false;
 	category* category::container::m_poolPtr = nullptr;
 	category::byte category::container::m_pool[(POOL_NUM)* sizeof(category)];
 	std::bitset<category::POOL_NUM> category::container::m_isAlreadyPool;
 	//----------------------------------------
-	//ƒJƒeƒSƒŠƒRƒ“ƒeƒi‰Šú‰»iˆê‰ñŒÀ‚èj
+	//ã‚«ãƒ†ã‚´ãƒªã‚³ãƒ³ãƒ†ãƒŠåˆæœŸåŒ–ï¼ˆä¸€å›é™ã‚Šï¼‰
 	void category::container::initializeOnce()
 	{
-		//‰Šú‰»Ï‚İƒ`ƒFƒbƒN
+		//åˆæœŸåŒ–æ¸ˆã¿ãƒã‚§ãƒƒã‚¯
 		if (m_isInitialized)
 			return;
-		//Ã“I•Ï”‚ğ‰Šú‰»
+		//é™çš„å¤‰æ•°ã‚’åˆæœŸåŒ–
 		m_isInitialized = true;
 		m_isAlreadyPool.reset();
 		memset(m_pool, 0, sizeof(m_pool));
 		m_poolPtr = reinterpret_cast<category*>(m_pool);
-		//—v‘f‚ğ‰Šú‰»
+		//è¦ç´ ã‚’åˆæœŸåŒ–
 		for (category::value_t value = 0; value < category::NUM; ++value)
 		{
-			category(value, "(undefined)", false, false, false);
+			category(value, "(undefined)", false, false, false, false);
 			m_isAlreadyPool[value] = false;
 		}
-		//Š„‚è“–‚ÄÏ‚İƒJƒeƒSƒŠ‚ğİ’èiƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å—v‘f‚ğ“o˜^j
-		category_forAny();//‚È‚ñ‚Å‚àiƒJƒeƒSƒŠ‚È‚µj
-		category_forLogic();//ƒvƒƒOƒ‰ƒ€ŠÖŒW
-		category_forResource();//ƒŠƒ\[ƒXŠÖŒW
-		category_for3D();//3DƒOƒ‰ƒtƒBƒbƒNƒXŠÖŒW
-		category_for2D();//2DƒOƒ‰ƒtƒBƒbƒNƒXŠÖŒW
-		category_forSound();//ƒTƒEƒ“ƒhŠÖŒW
-		category_forScript();//ƒXƒNƒŠƒvƒgŠÖŒW
-		category_forGameData();//ƒQ[ƒ€ƒf[ƒ^ŠÖŒW
-		//ƒƒOƒŒƒxƒ‹^‰æ–Ê’Ê’mƒŒƒxƒ‹•ÏX—p
-		category_forEvery();//‘S•”‚Ü‚Æ‚ß‚Ä•ÏX
-		//“Áê‚ÈƒJƒeƒSƒŠiƒvƒŠƒ“ƒgê—pj
-		category_forCallppoint();//’¼‹ß‚ÌƒR[ƒ‹ƒ|ƒCƒ“ƒg‚ÌƒJƒeƒSƒŠ‚É‡‚í‚¹‚éi‚È‚¯‚ê‚ÎforAnyˆµ‚¢j
-		category_forCriticalCallppoint();//’¼‹ß‚Ìd‘åƒR[ƒ‹ƒ|ƒCƒ“ƒg‚ÌƒJƒeƒSƒŠ‚É‡‚í‚¹‚éi‚È‚¯‚ê‚ÎforAnyˆµ‚¢j
-		category_end();//I’[
+		//å‰²ã‚Šå½“ã¦æ¸ˆã¿ã‚«ãƒ†ã‚´ãƒªã‚’è¨­å®šï¼ˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§è¦ç´ ã‚’ç™»éŒ²ï¼‰
+		category_forAny();//ãªã‚“ã§ã‚‚ï¼ˆã‚«ãƒ†ã‚´ãƒªãªã—ï¼‰
+		category_forLogic();//ãƒ—ãƒ­ã‚°ãƒ©ãƒ é–¢ä¿‚
+		category_forResource();//ãƒªã‚½ãƒ¼ã‚¹é–¢ä¿‚
+		category_for3D();//3Dã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹é–¢ä¿‚
+		category_for2D();//2Dã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹é–¢ä¿‚
+		category_forSound();//ã‚µã‚¦ãƒ³ãƒ‰é–¢ä¿‚
+		category_forScript();//ã‚¹ã‚¯ãƒªãƒ—ãƒˆé–¢ä¿‚
+		category_forGameData();//ã‚²ãƒ¼ãƒ ãƒ‡ãƒ¼ã‚¿é–¢ä¿‚
+		//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ï¼ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«å¤‰æ›´ç”¨
+		category_forEvery();//å…¨éƒ¨ã¾ã¨ã‚ã¦å¤‰æ›´
+		//ç‰¹æ®Šãªã‚«ãƒ†ã‚´ãƒªï¼ˆãƒ—ãƒªãƒ³ãƒˆæ™‚å°‚ç”¨ï¼‰
+		category_forCallppoint();//ç›´è¿‘ã®ã‚³ãƒ¼ãƒ«ãƒã‚¤ãƒ³ãƒˆã®ã‚«ãƒ†ã‚´ãƒªã«åˆã‚ã›ã‚‹ï¼ˆãªã‘ã‚Œã°forAnyæ‰±ã„ï¼‰
+		category_forCriticalCallppoint();//ç›´è¿‘ã®é‡å¤§ã‚³ãƒ¼ãƒ«ãƒã‚¤ãƒ³ãƒˆã®ã‚«ãƒ†ã‚´ãƒªã«åˆã‚ã›ã‚‹ï¼ˆãªã‘ã‚Œã°forAnyæ‰±ã„ï¼‰
+		category_end();//çµ‚ç«¯
 	}
 	//----------------------------------------
-	//ƒJƒeƒSƒŠ—p•Ï”
-	static category s_categoryForInitialize;//‰Šú‰»ˆ—Às‚Ì‚½‚ß‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	//ã‚«ãƒ†ã‚´ãƒªç”¨å¤‰æ•°
+	static category s_categoryForInitialize;//åˆæœŸåŒ–å‡¦ç†å®Ÿè¡Œã®ãŸã‚ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	//----------------------------------------
-	//ƒJƒeƒSƒŠƒRƒ“ƒeƒi—ñ‹“
+	//ã‚«ãƒ†ã‚´ãƒªã‚³ãƒ³ãƒ†ãƒŠåˆ—æŒ™
 	void printCategoryAll()
 	{
-		for (auto& obj : category::container())//C++11ƒXƒ^ƒCƒ‹
-		//for (auto ite = category::container::begin(); ite != category::container::end(); ++ite)//‹Œ—ˆ‚ÌƒXƒ^ƒCƒ‹
-		//for (auto ite = category::container::cbegin(); ite != category::container::cend(); ++ite)//‹Œ—ˆ‚ÌƒXƒ^ƒCƒ‹
+		for (auto& obj : category::container())//C++11ã‚¹ã‚¿ã‚¤ãƒ«
+		//for (auto ite = category::container::begin(); ite != category::container::end(); ++ite)//æ—§æ¥ã®ã‚¹ã‚¿ã‚¤ãƒ«
+		//for (auto ite = category::container::cbegin(); ite != category::container::cend(); ++ite)//æ—§æ¥ã®ã‚¹ã‚¿ã‚¤ãƒ«
 		{
-			//const category& obj = ite;//ƒCƒeƒŒ[ƒ^‚ğ•ÏŠ·iƒCƒeƒŒ[ƒ^‚Ì‚Ü‚Ü‚Å‚àƒAƒ[‰‰Zq‚Å’¼Ú’l‘€ì‰Â”\j
-			printf("category=%d, name=\"%s\", isAssigned=%d, isReserved=%d, forOutput=%d, forSetLevel=%d\n", obj.value(), obj.name(), obj.isAssigned(), obj.isReserved(), obj.forOutput(), obj.forSetLevel());
+			//const category& obj = ite;//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å¤‰æ›ï¼ˆã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®ã¾ã¾ã§ã‚‚ã‚¢ãƒ­ãƒ¼æ¼”ç®—å­ã§ç›´æ¥å€¤æ“ä½œå¯èƒ½ï¼‰
+			printf("category=%d, name=\"%s\", isAssigned=%d, isReserved=%d, forLog=%d, forNotice=%d, forMask=%d\n", obj.value(), obj.name(), obj.isAssigned(), obj.isReserved(), obj.forLog(), obj.forNotice(), obj.forMask());
 		}
 	}
 
 	//----------------------------------------
-	//ƒƒO
+	//ãƒ­ã‚°
 	class log
 	{
 	public:
-		//’è”
-		static const level::value_t DEFAULT_LOG_LEVEL = asNormal;//ƒfƒtƒHƒ‹ƒgƒƒOƒŒƒxƒ‹
-		static const level::value_t DEFAULT_NOTOICE_LEVEL = asCritical;//ƒfƒtƒHƒ‹ƒg‰æ–Ê’Ê’mƒŒƒxƒ‹
+		//å®šæ•°
+		static const level::value_t DEFAULT_LOG_LEVEL = asNormal;//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ­ã‚°ãƒ¬ãƒ™ãƒ«
+		static const level::value_t DEFAULT_NOTOICE_LEVEL = asCritical;//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«
 	public:
-		//ƒƒ\ƒbƒh
-		//ƒƒOƒŒƒxƒ‹‚ğ‘S‚ÄƒŠƒZƒbƒg
+		//ãƒ¡ã‚½ãƒƒãƒ‰
+		//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«åˆæœŸåŒ–ï¼ˆä¸€å›é™ã‚Šï¼‰
+		static void initializeOnce();
+		//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã‚’å…¨ã¦ãƒªã‚»ãƒƒãƒˆ
 		static void resetLogLevelAll()
 		{
 			for (level::value_t& value : m_logLevel)
 				value = DEFAULT_LOG_LEVEL;
 		}
-		//‰æ–Ê’Ê’mƒŒƒxƒ‹‚ğ‘S‚ÄƒŠƒZƒbƒg
+		//ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã‚’å…¨ã¦ãƒªã‚»ãƒƒãƒˆ
 		static void resetNoticeLevelAll()
 		{
 			for (level::value_t& value : m_noticeLevel)
 				value = DEFAULT_NOTOICE_LEVEL;
 		}
-		//ƒƒOƒŒƒxƒ‹‰Šú‰»iˆê‰ñŒÀ‚èj
-		static void initializeOnce();
-		//Œ»İ‚ÌƒƒOƒŒƒxƒ‹‚ğæ“¾
-		static level::value_t getLogLv(const category::value_t category)
+		//ç¾åœ¨ã®ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã‚’å–å¾—
+		static level::value_t getLogLevel(const category::value_t category_)
 		{
-			assert(category >= category::NORMAL_MIN && category <= category::NORMAL_MAX);
-			return m_logLevel[category];
+			const category& o_category = category::get(category_);
+			assert(o_category.forMask() == true);
+			assert(o_category.forLog() == true);
+			return m_logLevel[category_];
 		}
-		//Œ»İ‚ÌƒƒOƒŒƒxƒ‹‚ğ•ÏX
-		//¦w’è‚Ì’lˆÈã‚ÌƒŒƒxƒ‹‚ÌƒƒbƒZ[ƒW‚Ì‚İ‚ğƒƒOo—Í‚·‚é
-		void setLogLv(const category::value_t category, const level::value_t level)
+		//ç¾åœ¨ã®ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã‚’å¤‰æ›´
+		//â€»æŒ‡å®šã®å€¤ä»¥ä¸Šã®ãƒ¬ãƒ™ãƒ«ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ã¿ã‚’ãƒ­ã‚°å‡ºåŠ›ã™ã‚‹
+		//â€»å¤‰æ›´å‰ã®ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™ï¼ˆforEveryæŒ‡å®šæ™‚ã¯forAnyã®ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™ï¼‰
+		static level::value_t setLogLevel(const category::value_t category_, const level::value_t level_)
 		{
-			assert(category >= category::NORMAL_MIN && category <= category::NORMAL_MAX || category == forEvery);
-			if (category == forEvery)
+			const level& o_level = level::get(level_);
+			assert(o_level.forMask() == true);
+			const category& o_category = category::get(category_);
+			assert(o_category.forMask() == true);
+			if (category_ == forEvery)
 			{
+				const level::value_t prev = m_logLevel[forAny];
 				for (level::value_t& value : m_logLevel)
-					value = level;
-				return;
+					value = level_;
+				return prev;
 			}
-			m_logLevel[category] = level;
+			assert(o_category.forLog() == true);
+			const level::value_t prev = m_logLevel[category_];
+			m_logLevel[category_] = level_;
+			return prev;
 		}
-		//Œ»İ‚Ì‰æ–Ê’Ê’mƒŒƒxƒ‹‚ğæ“¾
-		static level::value_t getNoticeLv(const category::value_t category)
+		//ç¾åœ¨ã®ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã‚’å–å¾—
+		static level::value_t getNoticeLevel(const category::value_t category_)
 		{
-			assert(category >= category::NORMAL_MIN && category <= category::NORMAL_MAX);
-			return m_noticeLevel[category];
+			const category& o_category = category::get(category_);
+			assert(o_category.forMask() == true);
+			assert(o_category.forNotice() == true);
+			return m_noticeLevel[category_];
 		}
-		//Œ»İ‚Ì‰æ–Ê’Ê’mƒŒƒxƒ‹‚ğ•ÏX
-		//¦w’è‚Ì’lˆÈã‚ÌƒŒƒxƒ‹‚ÌƒƒbƒZ[ƒW‚Ì‚İ‚ğƒƒOo—Í‚·‚é
-		static void seNoticeLv(const category::value_t category, const level::value_t level)
+		//ç¾åœ¨ã®ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã‚’å¤‰æ›´
+		//â€»æŒ‡å®šã®å€¤ä»¥ä¸Šã®ãƒ¬ãƒ™ãƒ«ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ã¿ã‚’ãƒ­ã‚°å‡ºåŠ›ã™ã‚‹
+		//â€»å¤‰æ›´å‰ã®ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™ï¼ˆforEveryæŒ‡å®šæ™‚ã¯forAnyã®ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™ï¼‰
+		static level::value_t setNoticeLevel(const category::value_t category_, const level::value_t level_)
 		{
-			assert(category >= category::NORMAL_MIN && category <= category::NORMAL_MAX || category == forEvery);
-			if (category == forEvery)
+			const level& o_level = level::get(level_);
+			assert(o_level.forMask() == true);
+			const category& o_category = category::get(category_);
+			assert(o_category.forMask() == true);
+			if (category_ == forEvery)
 			{
+				const level::value_t prev = m_noticeLevel[forAny];
 				for (level::value_t& value : m_noticeLevel)
-					value = level;
-				return;
+					value = level_;
+				return prev;
 			}
-			m_noticeLevel[category] = level;
+			assert(o_category.forNotice() == true);
+			const level::value_t prev = m_noticeLevel[category_];
+			m_noticeLevel[category_] = level_;
+			return prev;
+		}
+	private:
+		//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼šãƒ¬ãƒ™ãƒ«ã‚’å¼•æ•°æŒ‡å®š
+		//â€»va_listã‚’å¼•æ•°ã«ã¨ã‚‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+		static int vprint(const level::value_t log_level, const level::value_t notice_level, const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+		{
+			const level& o_level = level::get(level_);
+			assert(o_level.forLog() == true || o_level.forNotice() == true);
+			const category& o_category = category::get(category_);
+			assert(o_category.forLog() == true || o_category.forNotice() == true);
+			int ret1 = 0;
+			int ret2 = 0;
+			const level& o_log_level = level::get(log_level);
+			const level& o_notice_level = level::get(notice_level);
+			if (o_level >= o_log_level && o_level.forLog() && o_category.forLog())
+			{
+				color col(o_level.changeColor());
+				ret1 = vfprintf(stdout, fmt, args);
+			}
+			if (o_level >= o_notice_level && o_level.forNotice() && o_category.forNotice())
+			{
+				color col(o_level.changeColorForNotice());
+				ret2 = vfprintf(stderr, fmt, args);
+			}
+			return ret1 > ret2 ? ret1 : ret2;
 		}
 	public:
-		//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥ãƒ¡ã‚½ãƒƒãƒ‰ï¼šãƒ¬ãƒ™ãƒ«ã‚’å¼•æ•°æŒ‡å®š
+		//â€»vprint***/vlog***/vnotice***
+		//â€»va_listã‚’å¼•æ•°ã«ã¨ã‚‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+		static int vprint(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+		{
+			const level::value_t log_level = getLogLevel(category_);
+			const level::value_t notice_level = getNoticeLevel(category_);
+			return vprint(log_level, notice_level, level_, category_, fmt, args);
+		}
+		static int vlog(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+		{
+			const level::value_t log_level = getLogLevel(category_);
+			const level::value_t notice_level = asSilentAbsolutely;
+			return vprint(log_level, notice_level, level_, category_, fmt, args);
+		}
+		static int vnotice(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+		{
+			const level::value_t log_level = asSilentAbsolutely;
+			const level::value_t notice_level = getNoticeLevel(category_);
+			return vprint(log_level, notice_level, level_, category_, fmt, args);
+		}
+		//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥ãƒ¡ã‚½ãƒƒãƒ‰ï¼šãƒ¬ãƒ™ãƒ«ã‚’å¼•æ•°æŒ‡å®š
+		//â€»print***/log***/notice***
+		//â€»å¯å¤‰é•·å¼•æ•°ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+		static int print(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vprint(level_, category_, fmt, args);
+			va_end(args);
+			return ret;
+		}
+		static int log_(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vlog(level_, category_, fmt, args);
+			va_end(args);
+			return ret;
+		}
+		static int notice(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vnotice(level_, category_, fmt, args);
+			va_end(args);
+			return ret;
+		}
+		//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥ãƒ¡ã‚½ãƒƒãƒ‰å®šç¾©ãƒã‚¯ãƒ­
+		//â€»vprint***/vlog***/vnotice***
+		//â€»va_listã‚’å¼•æ•°ã«ã¨ã‚‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+	#define declare_vprintMethods(level_) \
+		static int vprintAs##level_(const category::value_t category_, const char* fmt, va_list args) \
+		{ \
+			return vprint(as##level_, category_, fmt, args); \
+		} \
+		static int vlogAs##level_(const category::value_t category_, const char* fmt, va_list args) \
+		{ \
+			return vlog(as##level_, category_, fmt, args); \
+		} \
+		static int vnoticeAs##level_(const category::value_t category_, const char* fmt, va_list args) \
+		{ \
+			return vnotice(as##level_, category_, fmt, args); \
+		}
+		//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥ãƒ¡ã‚½ãƒƒãƒ‰å®šç¾©ãƒã‚¯ãƒ­
+		//â€»print***/log***/notice***
+		//â€»å¯å¤‰é•·å¼•æ•°ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+	#define declare_printMethods(level_) \
+		static int printAs##level_(const category::value_t category_, const char* fmt, ...) \
+		{ \
+			va_list args; \
+			va_start(args, fmt); \
+			const int ret = vprintAs##level_(category_, fmt, args); \
+			va_end(args); \
+			return ret; \
+		} \
+		static int logAs##level_(const category::value_t category_, const char* fmt, ...) \
+		{ \
+			va_list args; \
+			va_start(args, fmt); \
+			const int ret = vlogAs##level_(category_, fmt, args); \
+			va_end(args); \
+			return ret; \
+		} \
+		static int noticeAs##level_(const category::value_t category_, const char* fmt, ...) \
+		{ \
+			va_list args; \
+			va_start(args, fmt); \
+			const int ret = vnoticeAs##level_(category_, fmt, args); \
+			va_end(args); \
+			return ret; \
+		}
+		//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥ãƒ¡ã‚½ãƒƒãƒ‰
+		//â€»vprint***/vlog***/vnotice***
+		//â€»va_listã‚’å¼•æ•°ã«ã¨ã‚‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+		declare_vprintMethods(Normal);//é€šå¸¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_vprintMethods(Verbose);//å†—é•·ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_vprintMethods(Detail);//è©³ç´°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_vprintMethods(Important);//é‡è¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_vprintMethods(Warning);//è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_vprintMethods(Critical);//é‡å¤§ï¼ˆå•é¡Œï¼‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_vprintMethods(Absolute);//çµ¶å¯¾ï¼ˆå¿…é ˆï¼‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥ãƒ¡ã‚½ãƒƒãƒ‰
+		//â€»print***/log***/notice***
+		//â€»å¯å¤‰é•·å¼•æ•°ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+		declare_printMethods(Normal);//é€šå¸¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_printMethods(Verbose);//å†—é•·ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_printMethods(Detail);//è©³ç´°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_printMethods(Important);//é‡è¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_printMethods(Warning);//è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_printMethods(Critical);//é‡å¤§ï¼ˆå•é¡Œï¼‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+		declare_printMethods(Absolute);//çµ¶å¯¾ï¼ˆå¿…é ˆï¼‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	public:
+		//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		log()
 		{
 			initializeOnce();
 		}
-		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		log(const char* name):
 			m_name(name)
 		{
-			memcpy(m_tempLogLevel, m_logLevel, sizeof(m_tempLogLevel));//ˆêƒƒOƒŒƒxƒ‹
-			memcpy(m_tempNoticeLevel, m_noticeLevel, sizeof(m_tempNoticeLevel));//ˆê‰æ–Ê’Ê’mƒŒƒxƒ‹
+			memcpy(m_tempLogLevel, m_logLevel, sizeof(m_tempLogLevel));//ä¸€æ™‚ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«
+			memcpy(m_tempNoticeLevel, m_noticeLevel, sizeof(m_tempNoticeLevel));//ä¸€æ™‚ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«
 		}
-		//ƒfƒXƒgƒ‰ƒNƒ^
+		//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		~log()
 		{}
 	private:
-		//ƒtƒB[ƒ‹ƒh
-		const char* m_name;//ˆ—–¼
-		level::value_t m_tempLogLevel[category::NORMAL_NUM];//ˆêƒƒOƒŒƒxƒ‹
-		level::value_t m_tempNoticeLevel[category::NORMAL_NUM];//ˆê‰æ–Ê’Ê’mƒŒƒxƒ‹
-		static bool m_isInitialized;//‰Šú‰»Ï‚İƒtƒ‰ƒO
-		static level::value_t m_logLevel[category::NORMAL_NUM];//Œ»İ‚ÌƒƒOƒŒƒxƒ‹
-		static level::value_t m_noticeLevel[category::NORMAL_NUM];//Œ»İ‚Ì‰æ–Ê’Ê’mƒŒƒxƒ‹
+		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+		const char* m_name;//å‡¦ç†å
+		level::value_t m_tempLogLevel[category::NORMAL_NUM];//ä¸€æ™‚ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«
+		level::value_t m_tempNoticeLevel[category::NORMAL_NUM];//ä¸€æ™‚ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«
+		static bool m_isInitialized;//åˆæœŸåŒ–æ¸ˆã¿ãƒ•ãƒ©ã‚°
+		static level::value_t m_logLevel[category::NORMAL_NUM];//ç¾åœ¨ã®ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«
+		static level::value_t m_noticeLevel[category::NORMAL_NUM];//ç¾åœ¨ã®ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«
 	};
 	//----------------------------------------
-	//ƒƒO‚ÌÃ“I•Ï”‚ğƒCƒ“ƒXƒ^ƒ“ƒX‰»
-	bool log::m_isInitialized;//‰Šú‰»Ï‚İƒtƒ‰ƒO
-	level::value_t log::m_logLevel[category::NORMAL_NUM];//Œ»İ‚ÌƒƒOƒŒƒxƒ‹
-	level::value_t log::m_noticeLevel[category::NORMAL_NUM];//Œ»İ‚Ì‰æ–Ê’Ê’mƒŒƒxƒ‹
+	//ãƒ­ã‚°ã®é™çš„å¤‰æ•°ã‚’ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–
+	bool log::m_isInitialized;//åˆæœŸåŒ–æ¸ˆã¿ãƒ•ãƒ©ã‚°
+	level::value_t log::m_logLevel[category::NORMAL_NUM];//ç¾åœ¨ã®ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«
+	level::value_t log::m_noticeLevel[category::NORMAL_NUM];//ç¾åœ¨ã®ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«
 	//----------------------------------------
-	//ƒƒO‰Šú‰»iˆê‰ñŒÀ‚èj
+	//ãƒ­ã‚°åˆæœŸåŒ–ï¼ˆä¸€å›é™ã‚Šï¼‰
 	void log::initializeOnce()
 	{
-		//‰Šú‰»Ï‚İƒ`ƒFƒbƒN
+		//åˆæœŸåŒ–æ¸ˆã¿ãƒã‚§ãƒƒã‚¯
 		if (m_isInitialized)
 			return;
-		//Ã“I•Ï”‚ğ‰Šú‰»
+		//é™çš„å¤‰æ•°ã‚’åˆæœŸåŒ–
 		m_isInitialized = true;
 		resetLogLevelAll();
 		resetNoticeLevelAll();
 	}
 	//----------------------------------------
-	//ƒJƒeƒSƒŠ—p•Ï”
-	static log s_logForInitialize;//‰Šú‰»ˆ—Às‚Ì‚½‚ß‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	//ã‚«ãƒ†ã‚´ãƒªç”¨å¤‰æ•°
+	static log s_logForInitialize;//åˆæœŸåŒ–å‡¦ç†å®Ÿè¡Œã®ãŸã‚ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+	//----------------------------------------
+	//é–¢æ•°
+	//ãƒ¡ã‚½ãƒƒãƒ‰
+	//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã‚’å…¨ã¦ãƒªã‚»ãƒƒãƒˆ
+	void resetLogLevelAll()
+	{
+		log::resetLogLevelAll();
+	}
+	//ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã‚’å…¨ã¦ãƒªã‚»ãƒƒãƒˆ
+	void resetNoticeLevelAll()
+	{
+		log::resetNoticeLevelAll();
+	}
+	//ç¾åœ¨ã®ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã‚’å–å¾—
+	level::value_t getLogLevel(const category::value_t category_)
+	{
+		return log::getLogLevel(category_);
+	}
+	//ç¾åœ¨ã®ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ã‚’å¤‰æ›´
+	//â€»æŒ‡å®šã®å€¤ä»¥ä¸Šã®ãƒ¬ãƒ™ãƒ«ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ã¿ã‚’ãƒ­ã‚°å‡ºåŠ›ã™ã‚‹
+	level::value_t setLogLevel(const category::value_t category_, const level::value_t level_)
+	{
+		return log::setLogLevel(category_, level_);
+	}
+	//ç¾åœ¨ã®ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã‚’å–å¾—
+	level::value_t getNoticeLevel(const category::value_t category_)
+	{
+		return log::getNoticeLevel(category_);
+	}
+	//ç¾åœ¨ã®ç”»é¢é€šçŸ¥ãƒ¬ãƒ™ãƒ«ã‚’å¤‰æ›´
+	//â€»æŒ‡å®šã®å€¤ä»¥ä¸Šã®ãƒ¬ãƒ™ãƒ«ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ã¿ã‚’ãƒ­ã‚°å‡ºåŠ›ã™ã‚‹
+	level::value_t setNoticeLevel(const category::value_t category_, const level::value_t level_)
+	{
+		return log::setNoticeLevel(category_, level_);
+	}
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥é–¢æ•°ï¼šãƒ¬ãƒ™ãƒ«ã‚’å¼•æ•°æŒ‡å®š
+	//â€»vprint***/vlog***/vnotice***
+	//â€»va_listã‚’å¼•æ•°ã«ã¨ã‚‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+	static int vprint(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+	{
+		return log::vprint(level_, category_, fmt, args);
+	}
+	static int vlog(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+	{
+		return log::vlog(level_, category_, fmt, args);
+	}
+	static int vnotice(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+	{
+		return log::vnotice(level_, category_, fmt, args);
+	}
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥é–¢æ•°ï¼šãƒ¬ãƒ™ãƒ«ã‚’å¼•æ•°æŒ‡å®š
+	//â€»print***/log***/notice***
+	//â€»å¯å¤‰é•·å¼•æ•°ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+	static int print(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+	{
+		va_list args;
+		va_start(args, fmt);
+		const int ret = log::vprint(level_, category_, fmt, args);
+		va_end(args);
+		return ret;
+	}
+	static int log_(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+	{
+		va_list args;
+		va_start(args, fmt);
+		const int ret = log::vlog(level_, category_, fmt, args);
+		va_end(args);
+		return ret;
+	}
+	static int notice(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+	{
+		va_list args;
+		va_start(args, fmt);
+		const int ret = log::vnotice(level_, category_, fmt, args);
+		va_end(args);
+		return ret;
+	}
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥é–¢æ•°å®šç¾©ãƒã‚¯ãƒ­
+	//â€»vprint***/vlog***/vnotice***
+	//â€»va_listã‚’å¼•æ•°ã«ã¨ã‚‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+#define declare_vprintFuncs(level_) \
+	static int vprintAs##level_(const category::value_t category_, const char* fmt, va_list args) \
+	{ \
+		return log::vprint(as##level_, category_, fmt, args); \
+	} \
+	static int vlogAs##level_(const category::value_t category_, const char* fmt, va_list args) \
+	{ \
+		return log::vlog(as##level_, category_, fmt, args); \
+	} \
+	static int vnoticeAs##level_(const category::value_t category_, const char* fmt, va_list args) \
+	{ \
+		return log::vnotice(as##level_, category_, fmt, args); \
+	}
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥é–¢æ•°å®šç¾©ãƒã‚¯ãƒ­
+	//â€»print***/log***/notice***
+	//â€»å¯å¤‰é•·å¼•æ•°ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+#define declare_printFuncs(level_) \
+	static int printAs##level_(const category::value_t category_, const char* fmt, ...) \
+	{ \
+		va_list args; \
+		va_start(args, fmt); \
+		const int ret = log::vprintAs##level_(category_, fmt, args); \
+		va_end(args); \
+		return ret; \
+	} \
+	static int logAs##level_(const category::value_t category_, const char* fmt, ...) \
+	{ \
+		va_list args; \
+		va_start(args, fmt); \
+		const int ret = log::vlogAs##level_(category_, fmt, args); \
+		va_end(args); \
+		return ret; \
+	} \
+	static int noticeAs##level_(const category::value_t category_, const char* fmt, ...) \
+	{ \
+		va_list args; \
+		va_start(args, fmt); \
+		const int ret = log::vnoticeAs##level_(category_, fmt, args); \
+		va_end(args); \
+		return ret; \
+	}
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥é–¢æ•°
+	//â€»vprint***/vlog***/vnotice***
+	//â€»va_listã‚’å¼•æ•°ã«ã¨ã‚‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+	declare_vprintFuncs(Normal);//é€šå¸¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_vprintFuncs(Verbose);//å†—é•·ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_vprintFuncs(Detail);//è©³ç´°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_vprintFuncs(Important);//é‡è¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_vprintFuncs(Warning);//è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_vprintFuncs(Critical);//é‡å¤§ï¼ˆå•é¡Œï¼‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_vprintFuncs(Absolute);//çµ¶å¯¾ï¼ˆå¿…é ˆï¼‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›ï¼ãƒ­ã‚°å‡ºåŠ›ï¼ç”»é¢é€šçŸ¥é–¢æ•°
+	//â€»print***/log***/notice***
+	//â€»å¯å¤‰é•·å¼•æ•°ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+	declare_printFuncs(Normal);//é€šå¸¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_printFuncs(Verbose);//å†—é•·ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_printFuncs(Detail);//è©³ç´°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_printFuncs(Important);//é‡è¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_printFuncs(Warning);//è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_printFuncs(Critical);//é‡å¤§ï¼ˆå•é¡Œï¼‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	declare_printFuncs(Absolute);//çµ¶å¯¾ï¼ˆå¿…é ˆï¼‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 }//namespce dbgLog
 
 namespace dbgLog
 {
-	//ƒ†[ƒU[Šg’£
+	//ãƒ¦ãƒ¼ã‚¶ãƒ¼æ‹¡å¼µ
 	namespace ext
 	{
 		//----------------------------------------
-		//ƒJƒeƒSƒŠ’è”
+		//ã‚«ãƒ†ã‚´ãƒªå®šæ•°
 		enum categoryEnum : category::value_t
 		{
-			forReserved01 = define_revervedCategory(0),//(—\–ñ01)
-			forReserved02 = define_revervedCategory(1),//(—\–ñ01)
-			forReserved03 = define_revervedCategory(2),//(—\–ñ01)
+			forReserved01 = define_revervedCategory(0),//(äºˆç´„01)
+			forReserved02 = define_revervedCategory(1),//(äºˆç´„01)
+			forReserved03 = define_revervedCategory(2),//(äºˆç´„01)
 		};
 		//----------------------------------------
-		//ƒJƒeƒSƒŠ’è‹`
-		//¦ƒwƒbƒ_[‚ÅŒöŠJ‚·‚é•K—v‚È‚µ
-		declare_reservedCategory(forReserved01);//(—\–ñ01)
-		declare_reservedCategory(forReserved02);//(—\–ñ02)
-		declare_reservedCategory(forReserved03);//(—\–ñ03)
+		//ã‚«ãƒ†ã‚´ãƒªå®šç¾©
+		//â€»ãƒ˜ãƒƒãƒ€ãƒ¼ã§å…¬é–‹ã™ã‚‹å¿…è¦ãªã—
+		declare_reservedCategory(forReserved01, true, true);//(äºˆç´„01)
+		declare_reservedCategory(forReserved02, true, true);//(äºˆç´„02)
+		declare_reservedCategory(forReserved03, true, true);//(äºˆç´„03)
 		//----------------------------------------
-		//ƒJƒeƒSƒŠƒRƒ“ƒeƒiŠg’£‰Šú‰»
+		//ã‚«ãƒ†ã‚´ãƒªã‚³ãƒ³ãƒ†ãƒŠæ‹¡å¼µåˆæœŸåŒ–
 		struct categoryContainerExt
 		{
 			categoryContainerExt()
 			{
 				category::container::initializeOnce();
-				category_forReserved01();//(—\–ñ01) 
-				category_forReserved02();//(—\–ñ02)
-				category_forReserved03();//(—\–ñ03)
+				category_forReserved01();//(äºˆç´„01) 
+				category_forReserved02();//(äºˆç´„02)
+				category_forReserved03();//(äºˆç´„03)
 			}
 		};
 		//----------------------------------------
-		//•Ï”
-		static categoryContainerExt s_categoryForInitialize;//‰Šú‰»ˆ—Às‚Ì‚½‚ß‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+		//å¤‰æ•°
+		static categoryContainerExt s_categoryForInitialize;//åˆæœŸåŒ–å‡¦ç†å®Ÿè¡Œã®ãŸã‚ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	}//namespace ext
 }//namespace dbgLog
-#if 0
-};
-
-	//ƒƒOƒŒƒxƒ‹æ“¾
-	getLoglv(forAny);//–ß‚è’l‚Æ‚µ‚ÄƒƒOƒŒƒxƒ‹‚ª•Ô‚é
-	
-	//Lv.1F’ÊíƒƒbƒZ[ƒW
-	printAsNormal(forAny, "’ÊíƒƒbƒZ[ƒW by %s\n", name);
-	//Lv.0Fç’·ƒƒbƒZ[ƒW
-	printAsVerbose(forAny, "ç’·ƒƒbƒZ[ƒW by %s\n", name);
-	//Lv.0FÚ×ƒƒbƒZ[ƒW
-	printAsDetail(forAny, "Ú×ƒƒbƒZ[ƒW by %s\n", name);
-	//Lv.2Fd—vƒƒbƒZ[ƒW
-	printAsImportant(forAny, "d—vƒƒbƒZ[ƒW by %s\n", name);
-	//Lv.3FŒxƒƒbƒZ[ƒW
-	printAsWarning(forAny, "ŒxƒƒbƒZ[ƒW by %s\n", name);
-	//LV.4Fd‘åi–â‘èjƒƒbƒZ[ƒW
-	printAsCritical(forAny, "d‘åƒƒbƒZ[ƒW by %s\n", name);
-	//Lv.5Fâ‘Îi•K{jƒƒbƒZ[ƒW
-	printAsAbsolute(forAny, "â‘ÎƒƒbƒZ[ƒW by %s\n", name);
-
-	//ƒŒƒxƒ‹‚ğˆø”w’è
-	printLv(asNormal, forAny, "’ÊíƒƒbƒZ[ƒW by %s\n", name);
-	//¦”š‚Åw’è‚µ‚Ä‚à‰Â
-	//¦Lv.0`5ˆÈŠO‚ğw’è‚µ‚½ê‡AƒƒOƒŒƒxƒ‹‚É‚æ‚ç‚¸‰½‚ào—Í‚³‚ê‚È‚¢
-	printLv(2, forAny, "d—vƒƒbƒZ[ƒW by %s\n", name);
-}
-
-
-//----------------------------------------
-//‰æ–Ê’Ê’mƒŒƒxƒ‹
-
-//‰æ–Ê’Ê’mƒŒƒxƒ‹•ÏX
-//¦ƒƒOƒŒƒxƒ‹‚æ‚è’á‚¢ƒŒƒxƒ‹‚ğİ’è‚µ‚Ä‚à’Ê’m‚³‚ê‚È‚¢
-setNoticeLv(asCritical, forAny);//d‘åƒƒbƒZ[ƒW‚Ì‚İ‰æ–Ê’Ê’m
-//¦ŠeƒŒƒxƒ‹‚Ì„§•\¦ƒJƒ‰[
-//@Lv.1F’Êí      ... •
-//@Lv.0Fç’·/Ú× ... i•\¦‚³‚ê‚È‚¢j
-//@Lv.2Fd—v      ... Â
-//@Lv.3FŒx      ... ‡
-//@Lv.4Fd‘å      ... Ô
-//@Lv.5Fâ‘Î      ... i•\¦‚³‚ê‚È‚¢j
-
-//‰æ–Ê’Ê’mƒŒƒxƒ‹æ“¾
-getNoticeLvAs(forAny);//–ß‚è’l‚Æ‚µ‚Ä‰æ–Ê’Ê’mƒŒƒxƒ‹‚ª•Ô‚é
-#endif
 
 
 
 //----------------------------------------
-//ƒR[ƒ‹ƒ|ƒCƒ“ƒg
+//ã‚³ãƒ¼ãƒ«ãƒã‚¤ãƒ³ãƒˆ
 class callPoint
 {
 
 };
+//----------------------------------------
+//ãƒ†ã‚¹ãƒˆ
 
-//ƒeƒXƒg
+//ãƒãƒ¼ãƒ ã‚¹ãƒ¼ãƒšãƒ¼ã‚¹è¡¨è¨˜çœç•¥ç”¨
+using namespace dbgLog;
+
+//--------------------
+//ãƒ†ã‚¹ãƒˆï¼ˆå…±é€šé–¢æ•°ï¼‰
+void printCommon()
+{
+	printf("---------- printCommon() ----------\n");
+	printf("logLevel=%s, noticeLevel=%s\n", level(getLogLevel(forAny)).name(), level(getNoticeLevel(forAny)).name());
+	
+	//ãƒ—ãƒªãƒ³ãƒˆæ–‡
+	const char* name = "ãƒ†ã‚¹ãƒˆ";
+	//Lv.1ï¼šé€šå¸¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	printAsNormal(forAny, "é€šå¸¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ by %s\n", name);
+	//Lv.0ï¼šå†—é•·ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	printAsVerbose(forAny, "å†—é•·ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ by %s\n", name);
+	//Lv.0ï¼šè©³ç´°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	printAsDetail(forAny, "è©³ç´°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ by %s\n", name);
+	//Lv.2ï¼šé‡è¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	printAsImportant(forAny, "é‡è¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ by %s\n", name);
+	//Lv.3ï¼šè­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	printAsWarning(forAny, "è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ by %s\n", name);
+	//LV.4ï¼šé‡å¤§ï¼ˆå•é¡Œï¼‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	printAsCritical(forAny, "é‡å¤§ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ by %s\n", name);
+	//Lv.5ï¼šçµ¶å¯¾ï¼ˆå¿…é ˆï¼‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+	printAsAbsolute(forAny, "çµ¶å¯¾ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ by %s\n", name);
+	//ãƒ¬ãƒ™ãƒ«ã‚’å¼•æ•°æŒ‡å®š
+	print(asNormal, forAny, "é€šå¸¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ by %s\n", name);
+	//ãƒ­ã‚°å‡ºåŠ›å°‚ç”¨é–¢æ•°
+	logAsCritical(forAny, "ã€ãƒ­ã‚°å‡ºåŠ›å°‚ç”¨ã€‘é‡å¤§ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ by %s\n", name);
+	//ç”»é¢é€šçŸ¥å°‚ç”¨é–¢æ•°
+	noticeAsCritical(forAny, "ã€ç”»é¢é€šçŸ¥å°‚ç”¨ã€‘é‡å¤§ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ by %s\n", name);
+}
+//--------------------
+//ãƒ†ã‚¹ãƒˆ
 int main(const int argc, const char* argv[])
 {
-	//ƒŒƒxƒ‹‚ğ—ñ‹“
-	dbgLog::printLevelAll();
-	//ƒJƒeƒSƒŠ‚ğ—ñ‹“
-	dbgLog::printCategoryAll();
+	//ãƒ¬ãƒ™ãƒ«ã‚’åˆ—æŒ™
+	printLevelAll();
+	//ã‚«ãƒ†ã‚´ãƒªã‚’åˆ—æŒ™
+	printCategoryAll();
+	
+	//ãƒ—ãƒªãƒ³ãƒˆ
+	printCommon();
+	
+	//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«å¤‰æ›´
+	setLogLevel(forEvery, asDetail);
+	setNoticeLevel(forEvery, asDetail);
+	
+	//ãƒ—ãƒªãƒ³ãƒˆ
+	printCommon();
+
+	//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«å¤‰æ›´
+	setLogLevel(forEvery, asSilentAbsolutely);
+	setNoticeLevel(forEvery, asSilentAbsolutely);
+
+	//ãƒ—ãƒªãƒ³ãƒˆ
+	printCommon();
+
+	//ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ãƒªã‚»ãƒƒãƒˆ
+	resetLogLevelAll();
+	resetNoticeLevelAll();
+
+	//ãƒ—ãƒªãƒ³ãƒˆ
+	printCommon();
+
 	return EXIT_SUCCESS;
 }
 

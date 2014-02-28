@@ -1,5 +1,5 @@
-//#define TLS_IS_POSIX//【GCC用】TLSの宣言をPOSIXスタイルにする時はこのマクロを有効にする
-#define USE_WINDOWS_CONSOLE_COLOR//【Windows用】Windowsスタイルのコンソールカラーを使用
+#define TLS_IS_POSIX//【GCC用】TLSの宣言をPOSIXスタイルにする時はこのマクロを有効にする
+//#define USE_WINDOWS_CONSOLE_COLOR//【Windows用】Windowsスタイルのコンソールカラーを使用
 
 #include <stdio.h>
 #include <stdlib.h>

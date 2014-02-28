@@ -102,37 +102,40 @@ category=61, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice
 category=62, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
 category=63, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
 category=64, name="forEvery", isAssigned=1, isReserved=0, forLog=0, forNotice=0, forMask=1
-category=65, name="forCallppoint", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=0
-category=66, name="forCriticalCallppoint", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=0
+category=65, name="forCallPoint", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=0
+category=66, name="forCriticalCallPoint", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=0
 ---------- printCommon() ----------
 logLevel=asNormal, noticeLevel=asCritical
-[39m[49m通常メッセージ by テスト
-[39m[49m[94m[40m重要メッセージ by テスト
-[39m[49m[95m[40m警告メッセージ by テスト
-[39m[49m[91m[40m重大メッセージ by テスト
-[39m[49m絶対メッセージ by テスト
-[39m[49m通常メッセージ by テスト
-[39m[49m[91m[40m【ログ出力専用】重大メッセージ by テスト
-[39m[49m---------- printCommon() ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ by テスト
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ by テスト
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ by テスト
+[asAbsolute,forAny] 絶対メッセージ by テスト
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用】重大メッセージ by テスト
+---------- printCommon() ----------
 logLevel=asDetail, noticeLevel=asDetail
-[39m[49m通常メッセージ by テスト
-[39m[49m[90m[40m冗長メッセージ by テスト
-[39m[49m[90m[40m詳細メッセージ by テスト
-[39m[49m[94m[40m重要メッセージ by テスト
-[39m[49m[95m[40m警告メッセージ by テスト
-[39m[49m[91m[40m重大メッセージ by テスト
-[39m[49m絶対メッセージ by テスト
-[39m[49m通常メッセージ by テスト
-[39m[49m[91m[40m【ログ出力専用】重大メッセージ by テスト
-[39m[49m---------- printCommon() ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
+[90m[40m[asVerbose,forAny][39m[49m 冗長メッセージ by テスト
+[90m[40m[asDetail,forAny][39m[49m 詳細メッセージ by テスト
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ by テスト
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ by テスト
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ by テスト
+[asAbsolute,forAny] 絶対メッセージ by テスト
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用】重大メッセージ by テスト
+[39m[49m[asNormal,forReserved01][39m[49m print:テスト（1）
+[39m[49m[asNormal,forReserved01][39m[49m print:テスト（2）
+[91m[40m[asCritical,forReserved01][39m[49m log:テスト（3）
+[39m[49m[asNormal,forReserved01][39m[49m name="テスト処理", srcFile="call_point.cpp(1965)  [Fri Feb 28 15:46:27 2014]", funcName="int main(int, const char**)"
+---------- printCommon() ----------
 logLevel=asSilentAbsolutely, noticeLevel=asSilentAbsolutely
 ---------- printCommon() ----------
 logLevel=asNormal, noticeLevel=asCritical
-[39m[49m通常メッセージ by テスト
-[39m[49m[94m[40m重要メッセージ by テスト
-[39m[49m[95m[40m警告メッセージ by テスト
-[39m[49m[91m[40m重大メッセージ by テスト
-[39m[49m絶対メッセージ by テスト
-[39m[49m通常メッセージ by テスト
-[39m[49m[91m[40m【ログ出力専用】重大メッセージ by テスト
-[39m[49m
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ by テスト
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ by テスト
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ by テスト
+[asAbsolute,forAny] 絶対メッセージ by テスト
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用】重大メッセージ by テスト

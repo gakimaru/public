@@ -1,5 +1,7 @@
 #define TLS_IS_POSIX//【GCC用】TLSの宣言をPOSIXスタイルにする時はこのマクロを有効にする
-//#define USE_WINDOWS_CONSOLE_COLOR//【Windows用】Windowsスタイルのコンソールカラーを使用
+//#define USE_FUNCSIG//【MS固有仕様】関数名に__FUNCSIG__を使用する時にこのマクロを有効にする
+//#define USE_STRCPY_S//【MS固有仕様】strcpy_sを使用する時にこのマクロを有効にする
+//#define USE_WINDOWS_CONSOLE_COLOR//【MS固有仕様】Windowsスタイルのコンソールカラーを使用
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,8 +13,9 @@
 #include <bitset>//std::bitset用
 #include <iterator>//std::iterator用
 #include <algorithm>//std::move用
-
-#include <atomic>//C++11アトミック型
+#include <atomic>//C++11アトミック操作
+#include <unordered_map>//C++11ハッシュテーブル
+#include <chrono>//C++11時間
 
 //スレッドローカルストレージ修飾子
 //※C++11仕様偽装
@@ -22,18 +25,46 @@
 #define thread_local __declspec(thread)//Windows仕様
 #endif//TLS_IS_POSIX
 
+//関数名取得マクロ
+#ifdef USE_FUNCSIG
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif//USE_FUNCSIG
+
+//ソースファイル名＆関数名取得マクロ
+#define TO_STRING(s) #s//__LINE__を文字列化するための二重マクロ
+#define TO_STRING_EX(s) TO_STRING(s)//__LINE__を文字列化するためのマクロ
+#define GET_CONCATENATED_SOURCE_FILE_NAME() __FILE__ "(" TO_STRING_EX(__LINE__) ")  [" __TIMESTAMP__ "]"//ファイル名合成＆取得マクロ
+#define GET_FUNC_NAME() __PRETTY_FUNCTION__//関数名取得マクロ
+
 //Windowsスタイルカラー用
 #ifdef USE_WINDOWS_CONSOLE_COLOR
 #include <windows.h>
 #include <conio.h> 
 #endif//USE_WINDOWS_CONSOLE_COLOR
 
+//--------------------
+//共通関数
+#include <string.h>
+//ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
+const char* getFileName(const char* str)
+{
+	std::size_t len = strlen(str);
+	const char* p = str + len;
+	for (; len > 0; --len, --p)
+	{
+		const char c = *(p - 1);
+		if (c == '\\' || c == '/')
+			return p;
+	}
+	return str;
+}
+
 //--------------------------------------------------------------------------------
-//デバッグログ
-namespace dbgLog
+//デバッグメッセージ
+namespace dbg
 {
 	//----------------------------------------
-	//コンソールカラー
+	//コンソールカラークラス
 	class color
 	{
 	public:
@@ -255,7 +286,7 @@ namespace dbgLog
 	static color s_colorForInitialize;//初期化処理実行のためのインスタンス
 
 	//----------------------------------------
-	//レベル
+	//レベルクラス
 	class level
 	{
 	public:
@@ -391,6 +422,7 @@ namespace dbgLog
 		//アクセッサ
 		value_t value() const { return m_value; }//値（レベル）取得
 		const char* name() const { return m_name; }//名前取得
+		static value_t calcValueAsOutput(const value_t value){ return calcAsOutput(value); }//出力レベル計算
 		value_t valueAsOutput() const { return calcAsOutput(m_value); }//出力レベル取得
 		bool forLog() const { return m_forLog; }//ログレベルとして使用可能か？
 		bool forNotice() const { return m_forNotice; }//画面通知レベルとして使用可能か？
@@ -653,7 +685,7 @@ namespace dbgLog
 	}
 
 	//----------------------------------------
-	//カテゴリ
+	//カテゴリクラス
 	class category
 	{
 	public:
@@ -942,8 +974,8 @@ namespace dbgLog
 		//ログレベル／画面通知レベル変更用
 		forEvery = define_specialCategory(0),//全部まとめて変更
 		//特殊なカテゴリ（プリント時専用）
-		forCallppoint = define_specialCategory(1),//直近のコールポイントのカテゴリに合わせる（なければforAny扱い）
-		forCriticalCallppoint = define_specialCategory(2),//直近の重大コールポイントのカテゴリに合わせる（なければforAny扱い）
+		forCallPoint = define_specialCategory(1),//直近のコールポイントのカテゴリに合わせる（なければforAny扱い）
+		forCriticalCallPoint = define_specialCategory(2),//直近の重大コールポイントのカテゴリに合わせる（なければforAny扱い）
 	};
 	//----------------------------------------
 	//カテゴリ定義
@@ -962,8 +994,8 @@ namespace dbgLog
 	//ログレベル／画面通知レベル変更用
 	declare_specialCategory(forEvery, false, false, true);//全部まとめて変更
 	//特殊なカテゴリ（プリント時専用）
-	declare_specialCategory(forCallppoint, true, true, false);//直近のコールポイントのカテゴリに合わせる（なければforAny扱い）
-	declare_specialCategory(forCriticalCallppoint, true, true, false);//直近の重大コールポイントのカテゴリに合わせる（なければforAny扱い）
+	declare_specialCategory(forCallPoint, true, true, false);//直近のコールポイントのカテゴリに合わせる（なければforAny扱い）
+	declare_specialCategory(forCriticalCallPoint, true, true, false);//直近の重大コールポイントのカテゴリに合わせる（なければforAny扱い）
 
 	//----------------------------------------
 	//カテゴリコンテナの静的変数をインスタンス化
@@ -1001,8 +1033,8 @@ namespace dbgLog
 		//ログレベル／画面通知レベル変更用
 		category_forEvery();//全部まとめて変更
 		//特殊なカテゴリ（プリント時専用）
-		category_forCallppoint();//直近のコールポイントのカテゴリに合わせる（なければforAny扱い）
-		category_forCriticalCallppoint();//直近の重大コールポイントのカテゴリに合わせる（なければforAny扱い）
+		category_forCallPoint();//直近のコールポイントのカテゴリに合わせる（なければforAny扱い）
+		category_forCriticalCallPoint();//直近の重大コールポイントのカテゴリに合わせる（なければforAny扱い）
 		category_end();//終端
 	}
 	//----------------------------------------
@@ -1022,41 +1054,95 @@ namespace dbgLog
 	}
 
 	//----------------------------------------
-	//ログ
-	class log
+	//メッセージクラス
+	class message
 	{
 	public:
 		//定数
 		static const level::value_t DEFAULT_LOG_LEVEL = asNormal;//デフォルトログレベル
 		static const level::value_t DEFAULT_NOTOICE_LEVEL = asCritical;//デフォルト画面通知レベル
 	public:
+		//アクセッサ
+		level::value_t getLevel() const { return m_level; }//レベル取得
+		category::value_t getCategory() const { return m_category; }//カテゴリ取得
+		const char* getName() const { return m_name; }//処理名取得
+		const char* getSrcFileName() const { return getFileName(m_srcFilename); }//ソースファイル名取得
+		const char* getFuncname() const { return m_funcName; }//関数名取得
+	public:
 		//メソッド
 		//ログレベル初期化（一回限り）
 		static void initializeOnce();
-		//ログレベルを全てリセット
-		static void resetLogLevelAll()
+		//適切なカテゴリに調整
+		//※forCallPoint, forCriticalCallPointに基づく変換
+		static category::value_t adjustProperCategory(const category::value_t category_)
 		{
-			for (level::value_t& value : m_logLevel)
-				value = DEFAULT_LOG_LEVEL;
-		}
-		//画面通知レベルを全てリセット
-		static void resetNoticeLevelAll()
-		{
-			for (level::value_t& value : m_noticeLevel)
-				value = DEFAULT_NOTOICE_LEVEL;
+			if (category_ == forCallPoint)//直前のコールポイントのカテゴリ
+			{
+				if (m_callPointStackHead)
+					return m_callPointStackHead->getCategory();
+				return forAny;//コールポイントがなければ forAny 扱い
+			}
+			else if (category_ == forCriticalCallPoint)//直近のクリティカルコールポイントのカテゴリ
+			{
+				message* node = m_callPointStackHead;
+				while (node)
+				{
+					if (node->getLevel() == asCritical)
+						return node->getCategory();
+					node = node->m_callPointStackNext;
+				}
+				return forAny;//コールポイントがなければ forAny 扱い
+			}
+			return category_;
 		}
 		//現在のログレベルを取得
-		static level::value_t getLogLevel(const category::value_t category_)
+		static level::value_t getLogLevelG(const category::value_t category_)
 		{
 			const category& o_category = category::get(category_);
 			assert(o_category.forMask() == true);
 			assert(o_category.forLog() == true);
-			return m_logLevel[category_];
+			return m_logLevelG[category_];
+		}
+		//【一時ログレベル版】
+		level::value_t getLogLevel(const category::value_t category_)
+		{
+			const category& o_category = category::get(category_);
+			assert(o_category.forMask() == true);
+			assert(o_category.forLog() == true);
+			return level::calcValueAsOutput(m_logLevelG[category_]) > level::calcValueAsOutput(m_logLevel[category_]) ?
+				m_logLevelG[category_] ://本来のレベルより低いレベルは扱えない
+				m_logLevel[category_];
+		}
+		//【コールポイント版】
+		static level::value_t getLogLevelCP(const category::value_t category_)
+		{
+			if (!m_callPointStackHead)
+				return getLogLevelG(category_);//コールポイント無かったら通常のログレベル
+			return m_callPointStackHead->getLogLevel(category_);
 		}
 		//現在のログレベルを変更
 		//※指定の値以上のレベルのメッセージのみをログ出力する
 		//※変更前のログレベルを返す（forEvery指定時はforAnyのログレベルを返す）
-		static level::value_t setLogLevel(const category::value_t category_, const level::value_t level_)
+		static level::value_t setLogLevelG(const level::value_t level_, const category::value_t category_)
+		{
+			const level& o_level = level::get(level_);
+			assert(o_level.forMask() == true);
+			const category& o_category = category::get(category_);
+			assert(o_category.forMask() == true);
+			if (category_ == forEvery)
+			{
+				const level::value_t prev = m_logLevelG[forAny];
+				for (level::value_t& value : m_logLevelG)
+					value = level_;
+				return prev;
+			}
+			assert(o_category.forLog() == true);
+			const level::value_t prev = m_logLevelG[category_];
+			m_logLevelG[category_] = level_;
+			return prev;
+		}
+		//【一時ログレベル版】
+		level::value_t setLogLevel(const level::value_t level_, const category::value_t category_)
 		{
 			const level& o_level = level::get(level_);
 			assert(o_level.forMask() == true);
@@ -1065,27 +1151,93 @@ namespace dbgLog
 			if (category_ == forEvery)
 			{
 				const level::value_t prev = m_logLevel[forAny];
-				for (level::value_t& value : m_logLevel)
-					value = level_;
+				for (int category_tmp = category::NORMAL_MIN; category_tmp <= category::NORMAL_MAX; ++category_tmp)
+				{
+					m_logLevel[category_tmp] =
+						level::calcValueAsOutput(m_logLevelG[category_tmp]) > level::calcValueAsOutput(level_) ?
+							m_logLevelG[category_tmp] ://本来のレベルより低くすることはできない
+							level_;
+				}
 				return prev;
 			}
 			assert(o_category.forLog() == true);
 			const level::value_t prev = m_logLevel[category_];
-			m_logLevel[category_] = level_;
+			m_logLevel[category_] =
+				level::calcValueAsOutput(m_logLevelG[category_]) > level::calcValueAsOutput(level_) ?
+					m_logLevelG[category_] ://本来のレベルより低くすることはできない
+					level_;
 			return prev;
 		}
+		//現在のログレベルをリセット
+		static void resetLogLevelG(const category::value_t category_)
+		{
+			setLogLevelG(DEFAULT_LOG_LEVEL, category_);
+		}
+		//【一時ログレベル版】
+		void resetLogLevel(const category::value_t category_)
+		{
+			setLogLevel(DEFAULT_LOG_LEVEL, category_);
+		}
+		//現在のログレベルを全てリセット
+		static void resetLogLevelAllG()
+		{
+			//resetLogLevelG(forEvery);//初期化処理でも呼び出されるので、共通処理を使わず単純に更新
+			for (level::value_t& value : m_logLevelG)
+				value = DEFAULT_LOG_LEVEL;
+		}
+		//【一時ログレベル版】
+		void resetLogLevelAll()
+		{
+			resetLogLevel(forEvery);
+		}
 		//現在の画面通知レベルを取得
-		static level::value_t getNoticeLevel(const category::value_t category_)
+		static level::value_t getNoticeLevelG(const category::value_t category_)
 		{
 			const category& o_category = category::get(category_);
 			assert(o_category.forMask() == true);
 			assert(o_category.forNotice() == true);
-			return m_noticeLevel[category_];
+			return m_noticeLevelG[category_];
+		}
+		//【一時画面通知レベル版】
+		level::value_t getNoticeLevel(const category::value_t category_)
+		{
+			const category& o_category = category::get(category_);
+			assert(o_category.forMask() == true);
+			assert(o_category.forNotice() == true);
+			return level::calcValueAsOutput(m_noticeLevelG[category_]) > level::calcValueAsOutput(m_noticeLevel[category_]) ?
+				m_noticeLevelG[category_] ://本来のレベルより低いレベルは扱えない
+				m_noticeLevel[category_];
+		}
+		//【コールポイント版】
+		static level::value_t getNoticeLevelCP(const category::value_t category_)
+		{
+			if (!m_callPointStackHead)
+				return getNoticeLevelG(category_);//コールポイント無かったら通常の画面通知レベル
+			return m_callPointStackHead->getNoticeLevel(category_);
 		}
 		//現在の画面通知レベルを変更
 		//※指定の値以上のレベルのメッセージのみをログ出力する
 		//※変更前の画面通知レベルを返す（forEvery指定時はforAnyの画面通知レベルを返す）
-		static level::value_t setNoticeLevel(const category::value_t category_, const level::value_t level_)
+		static level::value_t setNoticeLevelG(const level::value_t level_, const category::value_t category_)
+		{
+			const level& o_level = level::get(level_);
+			assert(o_level.forMask() == true);
+			const category& o_category = category::get(category_);
+			assert(o_category.forMask() == true);
+			if (category_ == forEvery)
+			{
+				const level::value_t prev = m_noticeLevelG[forAny];
+				for (level::value_t& value : m_noticeLevelG)
+					value = level_;
+				return prev;
+			}
+			assert(o_category.forNotice() == true);
+			const level::value_t prev = m_noticeLevelG[category_];
+			m_noticeLevelG[category_] = level_;
+			return prev;
+		}
+		//【一時画面通知レベル版】
+		level::value_t setNoticeLevel(const level::value_t level_, const category::value_t category_)
 		{
 			const level& o_level = level::get(level_);
 			assert(o_level.forMask() == true);
@@ -1094,19 +1246,49 @@ namespace dbgLog
 			if (category_ == forEvery)
 			{
 				const level::value_t prev = m_noticeLevel[forAny];
-				for (level::value_t& value : m_noticeLevel)
-					value = level_;
+				for (int category_tmp = category::NORMAL_MIN; category_tmp <= category::NORMAL_MAX; ++category_tmp)
+				{
+					m_noticeLevel[category_tmp] =
+						level::calcValueAsOutput(m_noticeLevelG[category_tmp]) > level::calcValueAsOutput(level_) ?
+						m_noticeLevelG[category_tmp] ://本来のレベルより低くすることはできない
+						level_;
+				}
 				return prev;
 			}
 			assert(o_category.forNotice() == true);
 			const level::value_t prev = m_noticeLevel[category_];
-			m_noticeLevel[category_] = level_;
+			m_noticeLevel[category_] =
+				level::calcValueAsOutput(m_noticeLevelG[category_]) > level::calcValueAsOutput(level_) ?
+				m_noticeLevelG[category_] ://本来のレベルより低くすることはできない
+				level_;
 			return prev;
+		}
+		//現在の画面通知レベルをリセット
+		static void resetNoticeLevelG(const category::value_t category_)
+		{
+			setNoticeLevelG(DEFAULT_NOTOICE_LEVEL, category_);
+		}
+		//【一時画面通知レベル版】
+		void resetNoticeLevel(const category::value_t category_)
+		{
+			setNoticeLevel(DEFAULT_NOTOICE_LEVEL, category_);
+		}
+		//現在の画面通知レベルを全てリセット
+		static void resetNoticeLevelAllG()
+		{
+			//resetNoticeLevelG(forEvery);//初期化処理でも呼び出されるので、共通処理を使わず単純に更新
+			for (level::value_t& value : m_noticeLevelG)
+				value = DEFAULT_NOTOICE_LEVEL;
+		}
+		//【一時画面通知レベル版】
+		void resetNoticeLevelAll()
+		{
+			resetNoticeLevel(forEvery);
 		}
 	private:
 		//メッセージ出力：レベルを引数指定
 		//※va_listを引数にとるバージョン
-		static int vprint(const level::value_t log_level, const level::value_t notice_level, const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+		static int vprintCommon(const level::value_t log_level, const level::value_t notice_level, const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)
 		{
 			const level& o_level = level::get(level_);
 			assert(o_level.forLog() == true || o_level.forNotice() == true);
@@ -1118,7 +1300,11 @@ namespace dbgLog
 			const level& o_notice_level = level::get(notice_level);
 			if (o_level >= o_log_level && o_level.forLog() && o_category.forLog())
 			{
-				color col(o_level.changeColor());
+				{
+					color col(o_level.changeColor());
+					fprintf(stdout, "[%s,%s]", o_level.name(), o_category.name());
+				}
+				fprintf(stdout, " ");
 				ret1 = vfprintf(stdout, fmt, args);
 			}
 			if (o_level >= o_notice_level && o_level.forNotice() && o_category.forNotice())
@@ -1132,28 +1318,84 @@ namespace dbgLog
 		//メッセージ出力／ログ出力／画面通知メソッド：レベルを引数指定
 		//※vprint***/vlog***/vnotice***
 		//※va_listを引数にとるバージョン
-		static int vprint(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+		static int vprintG(const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)
 		{
-			const level::value_t log_level = getLogLevel(category_);
-			const level::value_t notice_level = getNoticeLevel(category_);
-			return vprint(log_level, notice_level, level_, category_, fmt, args);
+			const category::value_t category_adj = adjustProperCategory(category_);
+			const level::value_t log_level = getLogLevelCP(category_adj);
+			const level::value_t notice_level = getNoticeLevelCP(category_adj);
+			return vprintCommon(log_level, notice_level, level_, category_, fmt, args);
 		}
-		static int vlog(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+		int vprint(const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)//【一時ログ／画面通知レベル版】
 		{
-			const level::value_t log_level = getLogLevel(category_);
+			const category::value_t category_adj = adjustProperCategory(category_);
+			const level::value_t log_level = getLogLevel(category_adj);
+			const level::value_t notice_level = getNoticeLevel(category_adj);
+			return vprintCommon(log_level, notice_level, level_, category_, fmt, args);
+		}
+		int vprint(const level::value_t level_, const char* fmt, va_list args)//【一時ログ／画面通知レベル版】
+		{
+			return vprint(level_, m_category, fmt, args);
+		}
+		int vprint(const char* fmt, va_list args)//【一時ログ／画面通知レベル版】
+		{
+			return vprint(m_level, m_category, fmt, args);
+		}
+		static int vlogG(const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)
+		{
+			const category::value_t category_adj = adjustProperCategory(category_);
+			const level::value_t log_level = getLogLevelCP(category_adj);
 			const level::value_t notice_level = asSilentAbsolutely;
-			return vprint(log_level, notice_level, level_, category_, fmt, args);
+			return vprintCommon(log_level, notice_level, level_, category_, fmt, args);
 		}
-		static int vnotice(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+		int vlog(const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)//【一時ログレベル版】
 		{
+			const category::value_t category_adj = adjustProperCategory(category_);
+			const level::value_t log_level = getLogLevel(category_adj);
+			const level::value_t notice_level = asSilentAbsolutely;
+			return vprintCommon(log_level, notice_level, level_, category_, fmt, args);
+		}
+		int vlog(const level::value_t level_, const char* fmt, va_list args)//【一時ログレベル版】
+		{
+			return vlog (level_, m_category, fmt, args);
+		}
+		int vlog(const char* fmt, va_list args)//【一時ログレベル版】
+		{
+			return vlog(m_level, m_category, fmt, args);
+		}
+		static int vnoticeG(const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)
+		{
+			const category::value_t category_adj = adjustProperCategory(category_);
 			const level::value_t log_level = asSilentAbsolutely;
-			const level::value_t notice_level = getNoticeLevel(category_);
-			return vprint(log_level, notice_level, level_, category_, fmt, args);
+			const level::value_t notice_level = getNoticeLevelCP(category_adj);
+			return vprintCommon(log_level, notice_level, level_, category_, fmt, args);
+		}
+		int vnotice(const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)//【一時画面通知レベル版】
+		{
+			const category::value_t category_adj = adjustProperCategory(category_);
+			const level::value_t log_level = asSilentAbsolutely;
+			const level::value_t notice_level = getNoticeLevel(category_adj);
+			return vprintCommon(log_level, notice_level, level_, category_, fmt, args);
+		}
+		int vnotice(const level::value_t level_, const char* fmt, va_list args)//【一時画面通知レベル版】
+		{
+			return vnotice(level_, m_category, fmt, args);
+		}
+		int vnotice(const char* fmt, va_list args)//【一時画面通知レベル版】
+		{
+			return vnotice(m_level, m_category, fmt, args);
 		}
 		//メッセージ出力／ログ出力／画面通知メソッド：レベルを引数指定
 		//※print***/log***/notice***
 		//※可変長引数バージョン
-		static int print(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+		static int printG(const level::value_t level_, const category::value_t category_, const char* fmt, ...)
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vprintG(level_, category_, fmt, args);
+			va_end(args);
+			return ret;
+		}
+		int print(const level::value_t level_, const category::value_t category_, const char* fmt, ...)//【一時ログ／画面通知レベル版】
 		{
 			va_list args;
 			va_start(args, fmt);
@@ -1161,7 +1403,31 @@ namespace dbgLog
 			va_end(args);
 			return ret;
 		}
-		static int log_(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+		int print(const level::value_t level_, const char* fmt, ...)//【一時ログ／画面通知レベル版】
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vprint(level_, fmt, args);
+			va_end(args);
+			return ret;
+		}
+		int print(const char* fmt, ...)//【一時ログ／画面通知レベル版】
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vprint(fmt, args);
+			va_end(args);
+			return ret;
+		}
+		static int logG(const level::value_t level_, const category::value_t category_, const char* fmt, ...)
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vlogG(level_, category_, fmt, args);
+			va_end(args);
+			return ret;
+		}
+		int log(const level::value_t level_, const category::value_t category_, const char* fmt, ...)//【一時ログレベル版】
 		{
 			va_list args;
 			va_start(args, fmt);
@@ -1169,7 +1435,31 @@ namespace dbgLog
 			va_end(args);
 			return ret;
 		}
-		static int notice(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+		int log(const level::value_t level_, const char* fmt, ...)//【一時ログレベル版】
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vlog(level_, fmt, args);
+			va_end(args);
+			return ret;
+		}
+		int log(const char* fmt, ...)//【一時ログレベル版】
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vlog(fmt, args);
+			va_end(args);
+			return ret;
+		}
+		static int noticeG(const level::value_t level_, const category::value_t category_, const char* fmt, ...)
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vnoticeG(level_, category_, fmt, args);
+			va_end(args);
+			return ret;
+		}
+		int notice(const level::value_t level_, const category::value_t category_, const char* fmt, ...)//【一時画面通知レベル版】
 		{
 			va_list args;
 			va_start(args, fmt);
@@ -1177,27 +1467,75 @@ namespace dbgLog
 			va_end(args);
 			return ret;
 		}
+		int notice(const level::value_t level_, const char* fmt, ...)//【一時画面通知レベル版】
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vnotice(level_, fmt, args);
+			va_end(args);
+			return ret;
+		}
+		int notice(const char* fmt, ...)//【一時画面通知レベル版】
+		{
+			va_list args;
+			va_start(args, fmt);
+			const int ret = vnotice(fmt, args);
+			va_end(args);
+			return ret;
+		}
 		//メッセージ出力／ログ出力／画面通知メソッド定義マクロ
 		//※vprint***/vlog***/vnotice***
 		//※va_listを引数にとるバージョン
 	#define declare_vprintMethods(level_) \
-		static int vprintAs##level_(const category::value_t category_, const char* fmt, va_list args) \
+		static int vprintAs##level_##G(const category::value_t category_, const char* fmt, va_list args) \
+		{ \
+			return vprintG(as##level_, category_, fmt, args); \
+		} \
+		int vprintAs##level_(const category::value_t category_, const char* fmt, va_list args)/*【一時ログ／画面通知レベル版】*/ \
 		{ \
 			return vprint(as##level_, category_, fmt, args); \
 		} \
-		static int vlogAs##level_(const category::value_t category_, const char* fmt, va_list args) \
+		int vprintAs##level_(const char* fmt, va_list args)/*【一時ログ／画面通知レベル版】*/ \
+		{ \
+			return vprint(as##level_, fmt, args); \
+		} \
+		static int vlogAs##level_##G(const category::value_t category_, const char* fmt, va_list args) \
+		{ \
+			return vlogG(as##level_, category_, fmt, args); \
+		} \
+		int vlogAs##level_(const category::value_t category_, const char* fmt, va_list args)/*【一時ログレベル版】*/ \
 		{ \
 			return vlog(as##level_, category_, fmt, args); \
 		} \
-		static int vnoticeAs##level_(const category::value_t category_, const char* fmt, va_list args) \
+		int vlogAs##level_(const char* fmt, va_list args)/*【一時ログレベル版】*/ \
+		{ \
+			return vlog(as##level_, fmt, args); \
+		} \
+		static int vnoticeAs##level_##G(const category::value_t category_, const char* fmt, va_list args) \
+		{ \
+			return vnoticeG(as##level_, category_, fmt, args); \
+		} \
+		int vnoticeAs##level_(const category::value_t category_, const char* fmt, va_list args)/*【一時画面通知レベル版】*/ \
 		{ \
 			return vnotice(as##level_, category_, fmt, args); \
+		} \
+		int vnoticeAs##level_(const char* fmt, va_list args)/*【一時画面通知レベル版】*/ \
+		{ \
+			return vnotice(as##level_, fmt, args); \
 		}
-		//メッセージ出力／ログ出力／画面通知メソッド定義マクロ
+			//メッセージ出力／ログ出力／画面通知メソッド定義マクロ
 		//※print***/log***/notice***
 		//※可変長引数バージョン
 	#define declare_printMethods(level_) \
-		static int printAs##level_(const category::value_t category_, const char* fmt, ...) \
+		static int printAs##level_##G(const category::value_t category_, const char* fmt, ...) \
+		{ \
+			va_list args; \
+			va_start(args, fmt); \
+			const int ret = vprintAs##level_##G(category_, fmt, args); \
+			va_end(args); \
+			return ret; \
+		} \
+		int printAs##level_(const category::value_t category_, const char* fmt, ...)/*【一時ログ／画面通知レベル版】*/ \
 		{ \
 			va_list args; \
 			va_start(args, fmt); \
@@ -1205,7 +1543,23 @@ namespace dbgLog
 			va_end(args); \
 			return ret; \
 		} \
-		static int logAs##level_(const category::value_t category_, const char* fmt, ...) \
+		int printAs##level_(const char* fmt, ...)/*【一時ログ／画面通知レベル版】*/ \
+		{ \
+			va_list args; \
+			va_start(args, fmt); \
+			const int ret = vprintAs##level_(fmt, args); \
+			va_end(args); \
+			return ret; \
+		} \
+		static int logAs##level_##G(const category::value_t category_, const char* fmt, ...) \
+		{ \
+			va_list args; \
+			va_start(args, fmt); \
+			const int ret = vlogAs##level_##G(category_, fmt, args); \
+			va_end(args); \
+			return ret; \
+		} \
+		int logAs##level_(const category::value_t category_, const char* fmt, ...)/*【一時ログレベル版】*/ \
 		{ \
 			va_list args; \
 			va_start(args, fmt); \
@@ -1213,15 +1567,39 @@ namespace dbgLog
 			va_end(args); \
 			return ret; \
 		} \
-		static int noticeAs##level_(const category::value_t category_, const char* fmt, ...) \
+		int logAs##level_(const char* fmt, ...)/*【一時ログレベル版】*/ \
+		{ \
+			va_list args; \
+			va_start(args, fmt); \
+			const int ret = vlogAs##level_(fmt, args); \
+			va_end(args); \
+			return ret; \
+		} \
+		static int noticeAs##level_##G(const category::value_t category_, const char* fmt, ...) \
+		{ \
+			va_list args; \
+			va_start(args, fmt); \
+			const int ret = vnoticeAs##level_##G(category_, fmt, args); \
+			va_end(args); \
+			return ret; \
+		} \
+		int noticeAs##level_(const category::value_t category_, const char* fmt, ...)/*【一時画面通知レベル版】*/ \
 		{ \
 			va_list args; \
 			va_start(args, fmt); \
 			const int ret = vnoticeAs##level_(category_, fmt, args); \
 			va_end(args); \
 			return ret; \
+		} \
+		int noticeAs##level_(const char* fmt, ...)/*【一時画面通知レベル版】*/ \
+		{ \
+			va_list args; \
+			va_start(args, fmt); \
+			const int ret = vnoticeAs##level_(fmt, args); \
+			va_end(args); \
+			return ret; \
 		}
-		//メッセージ出力／ログ出力／画面通知メソッド
+		//メッセージ出力／ログ出力／画面通知メソッド定義
 		//※vprint***/vlog***/vnotice***
 		//※va_listを引数にとるバージョン
 		declare_vprintMethods(Normal);//通常メッセージ
@@ -1231,7 +1609,7 @@ namespace dbgLog
 		declare_vprintMethods(Warning);//警告メッセージ
 		declare_vprintMethods(Critical);//重大（問題）メッセージ
 		declare_vprintMethods(Absolute);//絶対（必須）メッセージ
-		//メッセージ出力／ログ出力／画面通知メソッド
+		//メッセージ出力／ログ出力／画面通知メソッド定義
 		//※print***/log***/notice***
 		//※可変長引数バージョン
 		declare_printMethods(Normal);//通常メッセージ
@@ -1241,125 +1619,180 @@ namespace dbgLog
 		declare_printMethods(Warning);//警告メッセージ
 		declare_printMethods(Critical);//重大（問題）メッセージ
 		declare_printMethods(Absolute);//絶対（必須）メッセージ
+	protected:
+		//コールポイントスタックに自身をプッシュ
+		void pushCallPoint()
+		{
+			assert(m_callPointStackHead != this);
+			m_callPointStackNext = m_callPointStackHead;
+			m_callPointStackHead = this;
+		}
+		//コールポイントスタックから（自身を）ポップ
+		void popCallPoint()
+		{
+			assert(m_callPointStackHead == this);
+			m_callPointStackHead = m_callPointStackNext;
+			m_callPointStackNext = nullptr;
+		}
+	public:
+		//コールポイントスタックをリスト表示
+		static void printCallPointStack(const level::value_t level_,  category::value_t category_, const char* name)
+		{
+		}
 	public:
 		//デフォルトコンストラクタ
-		log()
+		message():
+			m_level(asNormal),
+			m_category(forAny),
+			m_name(nullptr),
+			m_srcFilename(nullptr),
+			m_funcName(nullptr),
+			m_callPointStackNext(nullptr)
 		{
 			initializeOnce();
 		}
 		//コンストラクタ
-		log(const char* name):
-			m_name(name)
+		message(const level::value_t level_, const category::value_t category_, const char* name, const char* src_file_name, const char* func_name) :
+			m_level(level_),
+			m_category(category_),
+			m_name(name),
+			m_srcFilename(src_file_name),
+			m_funcName(func_name),
+			m_callPointStackNext(nullptr)
 		{
-			memcpy(m_tempLogLevel, m_logLevel, sizeof(m_tempLogLevel));//一時ログレベル
-			memcpy(m_tempNoticeLevel, m_noticeLevel, sizeof(m_tempNoticeLevel));//一時画面通知レベル
+			assert(category_ >= category::NORMAL_MIN && category_ <= category::NORMAL_MAX);
+			memcpy(m_logLevel, m_logLevelG, sizeof(m_logLevel));//一時ログレベル
+			memcpy(m_noticeLevel, m_noticeLevelG, sizeof(m_noticeLevel));//一時画面通知レベル
 		}
 		//デストラクタ
-		~log()
+		~message()
 		{}
-	private:
+	protected:
 		//フィールド
+		const level::value_t m_level;//レベル
+		const category::value_t m_category;//カテゴリ
 		const char* m_name;//処理名
-		level::value_t m_tempLogLevel[category::NORMAL_NUM];//一時ログレベル
-		level::value_t m_tempNoticeLevel[category::NORMAL_NUM];//一時画面通知レベル
+		const char* m_srcFilename;//ソースファイル名
+		const char* m_funcName;//関数名
+		message* m_callPointStackNext;//次のコールポイントスタック
+	private:
+		level::value_t m_logLevel[category::NORMAL_NUM];//一時ログレベル
+		level::value_t m_noticeLevel[category::NORMAL_NUM];//一時画面通知レベル
 		static bool m_isInitialized;//初期化済みフラグ
-		static level::value_t m_logLevel[category::NORMAL_NUM];//現在のログレベル
-		static level::value_t m_noticeLevel[category::NORMAL_NUM];//現在の画面通知レベル
+		static level::value_t m_logLevelG[category::NORMAL_NUM];//現在のログレベル
+		static level::value_t m_noticeLevelG[category::NORMAL_NUM];//現在の画面通知レベル
+		static thread_local message* m_callPointStackHead;//コールポイントスタックの先頭
 	};
 	//----------------------------------------
-	//ログの静的変数をインスタンス化
-	bool log::m_isInitialized;//初期化済みフラグ
-	level::value_t log::m_logLevel[category::NORMAL_NUM];//現在のログレベル
-	level::value_t log::m_noticeLevel[category::NORMAL_NUM];//現在の画面通知レベル
+	//メッセージの静的変数をインスタンス化
+	bool message::m_isInitialized = false;//初期化済みフラグ
+	level::value_t message::m_logLevelG[category::NORMAL_NUM];//現在のログレベル
+	level::value_t message::m_noticeLevelG[category::NORMAL_NUM];//現在の画面通知レベル
+	thread_local message* message::m_callPointStackHead = nullptr;//コールポイントスタックの先頭
 	//----------------------------------------
-	//ログ初期化（一回限り）
-	void log::initializeOnce()
+	//メッセージ初期化（一回限り）
+	void message::initializeOnce()
 	{
 		//初期化済みチェック
 		if (m_isInitialized)
 			return;
 		//静的変数を初期化
 		m_isInitialized = true;
-		resetLogLevelAll();
-		resetNoticeLevelAll();
+		resetLogLevelAllG();
+		resetNoticeLevelAllG();
 	}
 	//----------------------------------------
-	//カテゴリ用変数
-	static log s_logForInitialize;//初期化処理実行のためのインスタンス
+	//メッセージ用変数
+	static message s_messageForInitialize;//初期化処理実行のためのインスタンス
+	//----------------------------------------
+	//コールポイントクラス
+	class callPoint : public message
+	{
+	};
 	//----------------------------------------
 	//関数
 	//メソッド
-	//ログレベルを全てリセット
-	void resetLogLevelAll()
-	{
-		log::resetLogLevelAll();
-	}
-	//画面通知レベルを全てリセット
-	void resetNoticeLevelAll()
-	{
-		log::resetNoticeLevelAll();
-	}
 	//現在のログレベルを取得
 	level::value_t getLogLevel(const category::value_t category_)
 	{
-		return log::getLogLevel(category_);
+		return message::getLogLevelG(category_);
 	}
 	//現在のログレベルを変更
 	//※指定の値以上のレベルのメッセージのみをログ出力する
-	level::value_t setLogLevel(const category::value_t category_, const level::value_t level_)
+	level::value_t setLogLevel(const level::value_t level_, const category::value_t category_)
 	{
-		return log::setLogLevel(category_, level_);
+		return message::setLogLevelG(level_, category_);
+	}
+	//現在のログレベルをリセット
+	void resetLogLevel(const category::value_t category_)
+	{
+		message::resetLogLevelG(category_);
+	}
+	//現在のログレベルを全てリセット
+	void resetLogLevelAll()
+	{
+		message::resetLogLevelAllG();
 	}
 	//現在の画面通知レベルを取得
 	level::value_t getNoticeLevel(const category::value_t category_)
 	{
-		return log::getNoticeLevel(category_);
+		return message::getNoticeLevelG(category_);
 	}
 	//現在の画面通知レベルを変更
 	//※指定の値以上のレベルのメッセージのみをログ出力する
-	level::value_t setNoticeLevel(const category::value_t category_, const level::value_t level_)
+	level::value_t setNoticeLevel(const level::value_t level_, const category::value_t category_)
 	{
-		return log::setNoticeLevel(category_, level_);
+		return message::setNoticeLevelG(level_, category_);
+	}
+	//現在の画面通知レベルをリセット
+	void resetNoticeLevel(const category::value_t category_)
+	{
+		message::resetNoticeLevelG(category_);
+	}
+	//現在の画面通知レベルを全てリセット
+	void resetNoticeLevelAll()
+	{
+		message::resetNoticeLevelAllG();
 	}
 	//メッセージ出力／ログ出力／画面通知関数：レベルを引数指定
 	//※vprint***/vlog***/vnotice***
 	//※va_listを引数にとるバージョン
-	static int vprint(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+	static int vprint(const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)
 	{
-		return log::vprint(level_, category_, fmt, args);
+		return message::vprintG(level_, category_, fmt, args);
 	}
-	static int vlog(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+	static int vlog(const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)
 	{
-		return log::vlog(level_, category_, fmt, args);
+		return message::vlogG(level_, category_, fmt, args);
 	}
-	static int vnotice(const level::value_t level_, category::value_t category_, const char* fmt, va_list args)
+	static int vnotice(const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)
 	{
-		return log::vnotice(level_, category_, fmt, args);
+		return message::vnoticeG(level_, category_, fmt, args);
 	}
 	//メッセージ出力／ログ出力／画面通知関数：レベルを引数指定
 	//※print***/log***/notice***
 	//※可変長引数バージョン
-	static int print(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+	static int print(const level::value_t level_, const category::value_t category_, const char* fmt, ...)
 	{
 		va_list args;
 		va_start(args, fmt);
-		const int ret = log::vprint(level_, category_, fmt, args);
+		const int ret = message::vprintG(level_, category_, fmt, args);
 		va_end(args);
 		return ret;
 	}
-	static int log_(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+	static int log(const level::value_t level_, const category::value_t category_, const char* fmt, ...)
 	{
 		va_list args;
 		va_start(args, fmt);
-		const int ret = log::vlog(level_, category_, fmt, args);
+		const int ret = message::vlogG(level_, category_, fmt, args);
 		va_end(args);
 		return ret;
 	}
-	static int notice(const level::value_t level_, category::value_t category_, const char* fmt, ...)
+	static int notice(const level::value_t level_, const category::value_t category_, const char* fmt, ...)
 	{
 		va_list args;
 		va_start(args, fmt);
-		const int ret = log::vnotice(level_, category_, fmt, args);
+		const int ret = message::vnoticeG(level_, category_, fmt, args);
 		va_end(args);
 		return ret;
 	}
@@ -1369,15 +1802,15 @@ namespace dbgLog
 #define declare_vprintFuncs(level_) \
 	static int vprintAs##level_(const category::value_t category_, const char* fmt, va_list args) \
 	{ \
-		return log::vprint(as##level_, category_, fmt, args); \
+		return message::vprintAs##level_##G(category_, fmt, args); \
 	} \
 	static int vlogAs##level_(const category::value_t category_, const char* fmt, va_list args) \
 	{ \
-		return log::vlog(as##level_, category_, fmt, args); \
+		return message::vlogAs##level_##G(category_, fmt, args); \
 	} \
 	static int vnoticeAs##level_(const category::value_t category_, const char* fmt, va_list args) \
 	{ \
-		return log::vnotice(as##level_, category_, fmt, args); \
+		return message::vnoticeAs##level_##G(category_, fmt, args); \
 	}
 	//メッセージ出力／ログ出力／画面通知関数定義マクロ
 	//※print***/log***/notice***
@@ -1387,7 +1820,7 @@ namespace dbgLog
 	{ \
 		va_list args; \
 		va_start(args, fmt); \
-		const int ret = log::vprintAs##level_(category_, fmt, args); \
+		const int ret = message::vprintAs##level_##G(category_, fmt, args); \
 		va_end(args); \
 		return ret; \
 	} \
@@ -1395,7 +1828,7 @@ namespace dbgLog
 	{ \
 		va_list args; \
 		va_start(args, fmt); \
-		const int ret = log::vlogAs##level_(category_, fmt, args); \
+		const int ret = message::vlogAs##level_##G(category_, fmt, args); \
 		va_end(args); \
 		return ret; \
 	} \
@@ -1403,11 +1836,11 @@ namespace dbgLog
 	{ \
 		va_list args; \
 		va_start(args, fmt); \
-		const int ret = log::vnoticeAs##level_(category_, fmt, args); \
+		const int ret = message::vnoticeAs##level_##G(category_, fmt, args); \
 		va_end(args); \
 		return ret; \
 	}
-	//メッセージ出力／ログ出力／画面通知関数
+	//メッセージ出力／ログ出力／画面通知関数定義
 	//※vprint***/vlog***/vnotice***
 	//※va_listを引数にとるバージョン
 	declare_vprintFuncs(Normal);//通常メッセージ
@@ -1417,7 +1850,7 @@ namespace dbgLog
 	declare_vprintFuncs(Warning);//警告メッセージ
 	declare_vprintFuncs(Critical);//重大（問題）メッセージ
 	declare_vprintFuncs(Absolute);//絶対（必須）メッセージ
-	//メッセージ出力／ログ出力／画面通知関数
+	//メッセージ出力／ログ出力／画面通知関数定義
 	//※print***/log***/notice***
 	//※可変長引数バージョン
 	declare_printFuncs(Normal);//通常メッセージ
@@ -1427,9 +1860,11 @@ namespace dbgLog
 	declare_printFuncs(Warning);//警告メッセージ
 	declare_printFuncs(Critical);//重大（問題）メッセージ
 	declare_printFuncs(Absolute);//絶対（必須）メッセージ
-}//namespce dbgLog
+}//namespce dbg
 
-namespace dbgLog
+//----------------------------------------
+//デバッグメッセージのユーザー拡張
+namespace dbg
 {
 	//ユーザー拡張
 	namespace ext
@@ -1464,28 +1899,25 @@ namespace dbgLog
 		//変数
 		static categoryContainerExt s_categoryForInitialize;//初期化処理実行のためのインスタンス
 	}//namespace ext
-}//namespace dbgLog
+}//namespace dbg
 
 
 
-//----------------------------------------
-//コールポイント
-class callPoint
-{
-
-};
 //----------------------------------------
 //テスト
 
 //ネームスーペース表記省略用
-using namespace dbgLog;
+using namespace dbg;
+using namespace dbg::ext;
 
 //--------------------
 //テスト（共通関数）
 void printCommon()
 {
 	printf("---------- printCommon() ----------\n");
-	printf("logLevel=%s, noticeLevel=%s\n", level(getLogLevel(forAny)).name(), level(getNoticeLevel(forAny)).name());
+	level log_level(getLogLevel(forAny));
+	level notice_level(getNoticeLevel(forAny));
+	printf("logLevel=%s, noticeLevel=%s\n", log_level.name(), notice_level.name());
 	
 	//プリント文
 	const char* name = "テスト";
@@ -1518,20 +1950,31 @@ int main(const int argc, const char* argv[])
 	printLevelAll();
 	//カテゴリを列挙
 	printCategoryAll();
-	
-	//プリント
-	printCommon();
-	
-	//ログレベル変更
-	setLogLevel(forEvery, asDetail);
-	setNoticeLevel(forEvery, asDetail);
-	
+
 	//プリント
 	printCommon();
 
 	//ログレベル変更
-	setLogLevel(forEvery, asSilentAbsolutely);
-	setNoticeLevel(forEvery, asSilentAbsolutely);
+	setLogLevel(asDetail, forEvery);
+	setNoticeLevel(asDetail, forEvery);
+	
+	//プリント
+	printCommon();
+
+	{
+		message msg(asCritical, forReserved01, "テスト処理", GET_CONCATENATED_SOURCE_FILE_NAME(), GET_FUNC_NAME());
+		msg.printAsNormal("print:テスト（%d）\n", 1);
+		msg.resetLogLevelAll();
+		msg.resetNoticeLevelAll();
+		msg.printAsNormal("print:テスト（%d）\n", 2);
+		msg.log("log:テスト（%d）\n", 3);
+		msg.notice("notice:テスト（%d）\n", 4);
+		msg.logAsNormal("name=\"%s\", srcFile=\"%s\", funcName=\"%s\"\n", msg.getName(), msg.getSrcFileName(), msg.getFuncname());
+	}
+
+	//ログレベル変更
+	setLogLevel(asSilentAbsolutely, forEvery);
+	setNoticeLevel(asSilentAbsolutely, forEvery);
 
 	//プリント
 	printCommon();
@@ -1542,6 +1985,10 @@ int main(const int argc, const char* argv[])
 
 	//プリント
 	printCommon();
+
+	message msg;
+	msg.getLogLevelG(for2D);
+	msg.getLogLevel(for2D);
 
 	return EXIT_SUCCESS;
 }

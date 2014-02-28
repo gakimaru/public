@@ -127,7 +127,31 @@ logLevel=asDetail, noticeLevel=asDetail
 [39m[49m[asNormal,forReserved01][39m[49m print:テスト（1）
 [39m[49m[asNormal,forReserved01][39m[49m print:テスト（2）
 [91m[40m[asCritical,forReserved01][39m[49m log:テスト（3）
-[39m[49m[asNormal,forReserved01][39m[49m name="テスト処理", srcFile="call_point.cpp(1965)  [Fri Feb 28 15:46:27 2014]", funcName="int main(int, const char**)"
+[39m[49m[asNormal,for3D][39m[49m name="テスト1", srcFile="call_point.cpp(2274)[Fri Feb 28 19:24:11 2014]", funcName="int main(int, const char**)"
+[91m[40m============================================================
+[asCritical,forAny][39m[49m Call point stack at "TEST1!"
+----------------------------------------
+  "テスト2" [39m[49m[asNormal,for2D][39m[49m ... int main(int, const char**) :  call_point.cpp(2284)[Fri Feb 28 19:24:11 2014]
+  "テスト1" [90m[40m[asDetail,for3D][39m[49m ... int main(int, const char**) :  call_point.cpp(2274)[Fri Feb 28 19:24:11 2014]
+[91m[40m============================================================
+[39m[49m[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "TEST2!"
+----------------------------------------
+  "テスト2" [39m[49m[asNormal,for2D][39m[49m
+  "テスト1" [90m[40m[asDetail,for3D][39m[49m
+[39m[49m============================================================
+[39m[49m[95m[40m============================================================
+[asWarning,forAny][39m[49m Call point stack at "TEST3!"
+----------------------------------------
+  "テスト2" [39m[49m[asNormal,for2D][39m[49m ... int main(int, const char**)
+  "テスト1" [90m[40m[asDetail,for3D][39m[49m ... int main(int, const char**)
+[95m[40m============================================================
+[39m[49m============================================================
+[asAbsolute,forAny] Call point stack at "TEST4!"
+----------------------------------------
+  "テスト2" [39m[49m[asNormal,for2D][39m[49m ...  call_point.cpp(2284)[Fri Feb 28 19:24:11 2014]
+  "テスト1" [90m[40m[asDetail,for3D][39m[49m ...  call_point.cpp(2274)[Fri Feb 28 19:24:11 2014]
+============================================================
 ---------- printCommon() ----------
 logLevel=asSilentAbsolutely, noticeLevel=asSilentAbsolutely
 ---------- printCommon() ----------

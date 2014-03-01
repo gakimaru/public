@@ -1,3 +1,4 @@
+---------- レベルを列挙 ----------
 [90m[40mlevel=0, name="asVerbose", valueAsOutput=0, forLog=1, forNotice=0, forMask=1
            prev=asVerbose(0)
            next=asNormal(2)
@@ -37,6 +38,7 @@ level=11, name="asSilent", valueAsOutput=5, forLog=0, forNotice=0, forMask=1
 level=12, name="asSilentAbsolutely", valueAsOutput=6, forLog=0, forNotice=0, forMask=1
            prev=asSilentAbsolutely(12)
            next=asSilentAbsolutely(12)
+---------- カテゴリを列挙 ----------
 category=0, name="forAny", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
 category=1, name="forLogic", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
 category=2, name="forResource", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
@@ -45,9 +47,9 @@ category=4, name="for2D", isAssigned=1, isReserved=0, forLog=1, forNotice=1, for
 category=5, name="forSound", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
 category=6, name="forScript", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
 category=7, name="forGameData", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=1
-category=8, name="forReserved01", isAssigned=0, isReserved=1, forLog=1, forNotice=1, forMask=1
-category=9, name="forReserved02", isAssigned=0, isReserved=1, forLog=1, forNotice=1, forMask=1
-category=10, name="forReserved03", isAssigned=0, isReserved=1, forLog=1, forNotice=1, forMask=1
+category=8, name="forThread", isAssigned=0, isReserved=1, forLog=1, forNotice=0, forMask=1
+category=9, name="forTaro", isAssigned=0, isReserved=1, forLog=1, forNotice=1, forMask=1
+category=10, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
 category=11, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
 category=12, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
 category=13, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice=0, forMask=0
@@ -104,62 +106,1051 @@ category=63, name="(undefined)", isAssigned=0, isReserved=1, forLog=0, forNotice
 category=64, name="forEvery", isAssigned=1, isReserved=0, forLog=0, forNotice=0, forMask=1
 category=65, name="forCallPoint", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=0
 category=66, name="forCriticalCallPoint", isAssigned=1, isReserved=0, forLog=1, forNotice=1, forMask=0
----------- printCommon() ----------
-logLevel=asNormal, noticeLevel=asCritical
-[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
-[94m[40m[asImportant,forAny][39m[49m 重要メッセージ by テスト
-[95m[40m[asWarning,forAny][39m[49m 警告メッセージ by テスト
-[91m[40m[asCritical,forAny][39m[49m 重大メッセージ by テスト
-[asAbsolute,forAny] 絶対メッセージ by テスト
-[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
-[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用】重大メッセージ by テスト
----------- printCommon() ----------
-logLevel=asDetail, noticeLevel=asDetail
-[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
-[90m[40m[asVerbose,forAny][39m[49m 冗長メッセージ by テスト
-[90m[40m[asDetail,forAny][39m[49m 詳細メッセージ by テスト
-[94m[40m[asImportant,forAny][39m[49m 重要メッセージ by テスト
-[95m[40m[asWarning,forAny][39m[49m 警告メッセージ by テスト
-[91m[40m[asCritical,forAny][39m[49m 重大メッセージ by テスト
-[asAbsolute,forAny] 絶対メッセージ by テスト
-[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
-[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用】重大メッセージ by テスト
-[39m[49m[asNormal,forReserved01][39m[49m print:テスト（1）
-[39m[49m[asNormal,forReserved01][39m[49m print:テスト（2）
-[91m[40m[asCritical,forReserved01][39m[49m log:テスト（3）
-[39m[49m[asNormal,for3D][39m[49m name="テスト1", srcFile="call_point.cpp(2274)[Fri Feb 28 19:24:11 2014]", funcName="int main(int, const char**)"
-[91m[40m============================================================
-[asCritical,forAny][39m[49m Call point stack at "TEST1!"
-----------------------------------------
-  "テスト2" [39m[49m[asNormal,for2D][39m[49m ... int main(int, const char**) :  call_point.cpp(2284)[Fri Feb 28 19:24:11 2014]
-  "テスト1" [90m[40m[asDetail,for3D][39m[49m ... int main(int, const char**) :  call_point.cpp(2274)[Fri Feb 28 19:24:11 2014]
-[91m[40m============================================================
-[39m[49m[39m[49m============================================================
-[asNormal,forAny][39m[49m Call point stack at "TEST2!"
-----------------------------------------
-  "テスト2" [39m[49m[asNormal,for2D][39m[49m
-  "テスト1" [90m[40m[asDetail,for3D][39m[49m
+---------- printCommon(初期状態) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(初期状態)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
 [39m[49m============================================================
-[39m[49m[95m[40m============================================================
-[asWarning,forAny][39m[49m Call point stack at "TEST3!"
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
 ----------------------------------------
-  "テスト2" [39m[49m[asNormal,for2D][39m[49m ... int main(int, const char**)
-  "テスト1" [90m[40m[asDetail,for3D][39m[49m ... int main(int, const char**)
-[95m[40m============================================================
 [39m[49m============================================================
-[asAbsolute,forAny] Call point stack at "TEST4!"
+[39m[49m---------- printCommon(処理１：表示属性変更) ----------
+[39m[49m[forAny][39m[49m 通常メッセージ(処理１：表示属性変更)
+[94m[40m[forAny][39m[49m 重要メッセージ
+[95m[40m[forAny][39m[49m 警告メッセージ
+[91m[40m[forAny][39m[49m 重大メッセージ
+[forAny] 絶対メッセージ
+[39m[49m[for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[for3D][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
 ----------------------------------------
-  "テスト2" [39m[49m[asNormal,for2D][39m[49m ...  call_point.cpp(2284)[Fri Feb 28 19:24:11 2014]
-  "テスト1" [90m[40m[asDetail,for3D][39m[49m ...  call_point.cpp(2274)[Fri Feb 28 19:24:11 2014]
+  "処理１：表示属性変更" [39m[49m[for3D][39m[49m
+  "ゲームループ" [91m[40m[forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理２：静寂) ----------
+[asAbsolute,forAny] 絶対メッセージ
+---------- printCommon(処理３：カラー非表示) ----------
+[asNormal,forAny] 通常メッセージ(処理３：カラー非表示)
+[asImportant,forAny] 重要メッセージ
+[asWarning,forAny] 警告メッセージ
+[asCritical,forAny] 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[asNormal,for3D] 【3D】通常メッセージ
+[asNormal,for2D] 【2D】通常メッセージ
+[asNormal,forLogic] 【Logic】通常メッセージ
+[asCritical,forLogic] 【CPのカテゴリ】重大メッセージ
+[asCritical,forAny] 【クリティカルCPのカテゴリ】重大メッセージ
+[asNormal,forAny] 【レベルを引数指定】通常メッセージ
+[asCritical,forAny] 【ログ出力専用関数】重大メッセージ
 ============================================================
----------- printCommon() ----------
-logLevel=asSilentAbsolutely, noticeLevel=asSilentAbsolutely
----------- printCommon() ----------
-logLevel=asNormal, noticeLevel=asCritical
-[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
-[94m[40m[asImportant,forAny][39m[49m 重要メッセージ by テスト
-[95m[40m[asWarning,forAny][39m[49m 警告メッセージ by テスト
-[91m[40m[asCritical,forAny][39m[49m 重大メッセージ by テスト
-[asAbsolute,forAny] 絶対メッセージ by テスト
-[39m[49m[asNormal,forAny][39m[49m 通常メッセージ by テスト
-[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用】重大メッセージ by テスト
+[asNormal,forAny] Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理３：カラー非表示" [asNormal,forLogic]
+  "ゲームループ" [asCritical,forAny]
+============================================================
+---------- printCommon(処理４：絶対静寂) ----------
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forGameData][39m[49m 【CPのカテゴリ】重大メッセージ
+---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forTaro][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "処理６：クリティカルCP" [91m[40m[asCritical,forTaro][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(ゲームループ) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(ゲームループ)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理１：表示属性変更) ----------
+[39m[49m[forAny][39m[49m 通常メッセージ(処理１：表示属性変更)
+[94m[40m[forAny][39m[49m 重要メッセージ
+[95m[40m[forAny][39m[49m 警告メッセージ
+[91m[40m[forAny][39m[49m 重大メッセージ
+[forAny] 絶対メッセージ
+[39m[49m[for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[for3D][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理１：表示属性変更" [39m[49m[for3D][39m[49m
+  "ゲームループ" [91m[40m[forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理２：静寂) ----------
+[asAbsolute,forAny] 絶対メッセージ
+---------- printCommon(処理３：カラー非表示) ----------
+[asNormal,forAny] 通常メッセージ(処理３：カラー非表示)
+[asImportant,forAny] 重要メッセージ
+[asWarning,forAny] 警告メッセージ
+[asCritical,forAny] 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[asNormal,for3D] 【3D】通常メッセージ
+[asNormal,for2D] 【2D】通常メッセージ
+[asNormal,forLogic] 【Logic】通常メッセージ
+[asCritical,forLogic] 【CPのカテゴリ】重大メッセージ
+[asCritical,forAny] 【クリティカルCPのカテゴリ】重大メッセージ
+[asNormal,forAny] 【レベルを引数指定】通常メッセージ
+[asCritical,forAny] 【ログ出力専用関数】重大メッセージ
+============================================================
+[asNormal,forAny] Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理３：カラー非表示" [asNormal,forLogic]
+  "ゲームループ" [asCritical,forAny]
+============================================================
+---------- printCommon(処理４：絶対静寂) ----------
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forGameData][39m[49m 【CPのカテゴリ】重大メッセージ
+---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forTaro][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "処理６：クリティカルCP" [91m[40m[asCritical,forTaro][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(ゲームループ) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(ゲームループ)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理１：表示属性変更) ----------
+[39m[49m[forAny][39m[49m 通常メッセージ(処理１：表示属性変更)
+[94m[40m[forAny][39m[49m 重要メッセージ
+[95m[40m[forAny][39m[49m 警告メッセージ
+[91m[40m[forAny][39m[49m 重大メッセージ
+[forAny] 絶対メッセージ
+[39m[49m[for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[for3D][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理１：表示属性変更" [39m[49m[for3D][39m[49m
+  "ゲームループ" [91m[40m[forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理２：静寂) ----------
+[asAbsolute,forAny] 絶対メッセージ
+---------- printCommon(処理３：カラー非表示) ----------
+[asNormal,forAny] 通常メッセージ(処理３：カラー非表示)
+[asImportant,forAny] 重要メッセージ
+[asWarning,forAny] 警告メッセージ
+[asCritical,forAny] 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[asNormal,for3D] 【3D】通常メッセージ
+[asNormal,for2D] 【2D】通常メッセージ
+[asNormal,forLogic] 【Logic】通常メッセージ
+[asCritical,forLogic] 【CPのカテゴリ】重大メッセージ
+[asCritical,forAny] 【クリティカルCPのカテゴリ】重大メッセージ
+[asNormal,forAny] 【レベルを引数指定】通常メッセージ
+[asCritical,forAny] 【ログ出力専用関数】重大メッセージ
+============================================================
+[asNormal,forAny] Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理３：カラー非表示" [asNormal,forLogic]
+  "ゲームループ" [asCritical,forAny]
+============================================================
+---------- printCommon(処理４：絶対静寂) ----------
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forGameData][39m[49m 【CPのカテゴリ】重大メッセージ
+---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forTaro][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "処理６：クリティカルCP" [91m[40m[asCritical,forTaro][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(ゲームループ) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(ゲームループ)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理１：表示属性変更) ----------
+[39m[49m[forAny][39m[49m 通常メッセージ(処理１：表示属性変更)
+[94m[40m[forAny][39m[49m 重要メッセージ
+[95m[40m[forAny][39m[49m 警告メッセージ
+[91m[40m[forAny][39m[49m 重大メッセージ
+[forAny] 絶対メッセージ
+[39m[49m[for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[for3D][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理１：表示属性変更" [39m[49m[for3D][39m[49m
+  "ゲームループ" [91m[40m[forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理２：静寂) ----------
+[asAbsolute,forAny] 絶対メッセージ
+---------- printCommon(処理３：カラー非表示) ----------
+[asNormal,forAny] 通常メッセージ(処理３：カラー非表示)
+[asImportant,forAny] 重要メッセージ
+[asWarning,forAny] 警告メッセージ
+[asCritical,forAny] 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[asNormal,for3D] 【3D】通常メッセージ
+[asNormal,for2D] 【2D】通常メッセージ
+[asNormal,forLogic] 【Logic】通常メッセージ
+[asCritical,forLogic] 【CPのカテゴリ】重大メッセージ
+[asCritical,forAny] 【クリティカルCPのカテゴリ】重大メッセージ
+[asNormal,forAny] 【レベルを引数指定】通常メッセージ
+[asCritical,forAny] 【ログ出力専用関数】重大メッセージ
+============================================================
+[asNormal,forAny] Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理３：カラー非表示" [asNormal,forLogic]
+  "ゲームループ" [asCritical,forAny]
+============================================================
+---------- printCommon(処理４：絶対静寂) ----------
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forGameData][39m[49m 【CPのカテゴリ】重大メッセージ
+---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forTaro][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "処理６：クリティカルCP" [91m[40m[asCritical,forTaro][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(ゲームループ) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(ゲームループ)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理１：表示属性変更) ----------
+[39m[49m[forAny][39m[49m 通常メッセージ(処理１：表示属性変更)
+[94m[40m[forAny][39m[49m 重要メッセージ
+[95m[40m[forAny][39m[49m 警告メッセージ
+[91m[40m[forAny][39m[49m 重大メッセージ
+[forAny] 絶対メッセージ
+[39m[49m[for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[for3D][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理１：表示属性変更" [39m[49m[for3D][39m[49m
+  "ゲームループ" [91m[40m[forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理２：静寂) ----------
+[asAbsolute,forAny] 絶対メッセージ
+---------- printCommon(処理３：カラー非表示) ----------
+[asNormal,forAny] 通常メッセージ(処理３：カラー非表示)
+[asImportant,forAny] 重要メッセージ
+[asWarning,forAny] 警告メッセージ
+[asCritical,forAny] 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[asNormal,for3D] 【3D】通常メッセージ
+[asNormal,for2D] 【2D】通常メッセージ
+[asNormal,forLogic] 【Logic】通常メッセージ
+[asCritical,forLogic] 【CPのカテゴリ】重大メッセージ
+[asCritical,forAny] 【クリティカルCPのカテゴリ】重大メッセージ
+[asNormal,forAny] 【レベルを引数指定】通常メッセージ
+[asCritical,forAny] 【ログ出力専用関数】重大メッセージ
+============================================================
+[asNormal,forAny] Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理３：カラー非表示" [asNormal,forLogic]
+  "ゲームループ" [asCritical,forAny]
+============================================================
+---------- printCommon(処理４：絶対静寂) ----------
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forGameData][39m[49m 【CPのカテゴリ】重大メッセージ
+---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forTaro][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "処理６：クリティカルCP" [91m[40m[asCritical,forTaro][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(ゲームループ) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(ゲームループ)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理１：表示属性変更) ----------
+[39m[49m[forAny][39m[49m 通常メッセージ(処理１：表示属性変更)
+[94m[40m[forAny][39m[49m 重要メッセージ
+[95m[40m[forAny][39m[49m 警告メッセージ
+[91m[40m[forAny][39m[49m 重大メッセージ
+[forAny] 絶対メッセージ
+[39m[49m[for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[for3D][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理１：表示属性変更" [39m[49m[for3D][39m[49m
+  "ゲームループ" [91m[40m[forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理２：静寂) ----------
+[asAbsolute,forAny] 絶対メッセージ
+---------- printCommon(処理３：カラー非表示) ----------
+[asNormal,forAny] 通常メッセージ(処理３：カラー非表示)
+[asImportant,forAny] 重要メッセージ
+[asWarning,forAny] 警告メッセージ
+[asCritical,forAny] 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[asNormal,for3D] 【3D】通常メッセージ
+[asNormal,for2D] 【2D】通常メッセージ
+[asNormal,forLogic] 【Logic】通常メッセージ
+[asCritical,forLogic] 【CPのカテゴリ】重大メッセージ
+[asCritical,forAny] 【クリティカルCPのカテゴリ】重大メッセージ
+[asNormal,forAny] 【レベルを引数指定】通常メッセージ
+[asCritical,forAny] 【ログ出力専用関数】重大メッセージ
+============================================================
+[asNormal,forAny] Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理３：カラー非表示" [asNormal,forLogic]
+  "ゲームループ" [asCritical,forAny]
+============================================================
+---------- printCommon(処理４：絶対静寂) ----------
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forGameData][39m[49m 【CPのカテゴリ】重大メッセージ
+---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forTaro][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "処理６：クリティカルCP" [91m[40m[asCritical,forTaro][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(ゲームループ) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(ゲームループ)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理１：表示属性変更) ----------
+[39m[49m[forAny][39m[49m 通常メッセージ(処理１：表示属性変更)
+[94m[40m[forAny][39m[49m 重要メッセージ
+[95m[40m[forAny][39m[49m 警告メッセージ
+[91m[40m[forAny][39m[49m 重大メッセージ
+[forAny] 絶対メッセージ
+[39m[49m[for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[for3D][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理１：表示属性変更" [39m[49m[for3D][39m[49m
+  "ゲームループ" [91m[40m[forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理２：静寂) ----------
+[asAbsolute,forAny] 絶対メッセージ
+---------- printCommon(処理３：カラー非表示) ----------
+[asNormal,forAny] 通常メッセージ(処理３：カラー非表示)
+[asImportant,forAny] 重要メッセージ
+[asWarning,forAny] 警告メッセージ
+[asCritical,forAny] 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[asNormal,for3D] 【3D】通常メッセージ
+[asNormal,for2D] 【2D】通常メッセージ
+[asNormal,forLogic] 【Logic】通常メッセージ
+[asCritical,forLogic] 【CPのカテゴリ】重大メッセージ
+[asCritical,forAny] 【クリティカルCPのカテゴリ】重大メッセージ
+[asNormal,forAny] 【レベルを引数指定】通常メッセージ
+[asCritical,forAny] 【ログ出力専用関数】重大メッセージ
+============================================================
+[asNormal,forAny] Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理３：カラー非表示" [asNormal,forLogic]
+  "ゲームループ" [asCritical,forAny]
+============================================================
+---------- printCommon(処理４：絶対静寂) ----------
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forGameData][39m[49m 【CPのカテゴリ】重大メッセージ
+---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forTaro][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "処理６：クリティカルCP" [91m[40m[asCritical,forTaro][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(ゲームループ) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(ゲームループ)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理１：表示属性変更) ----------
+[39m[49m[forAny][39m[49m 通常メッセージ(処理１：表示属性変更)
+[94m[40m[forAny][39m[49m 重要メッセージ
+[95m[40m[forAny][39m[49m 警告メッセージ
+[91m[40m[forAny][39m[49m 重大メッセージ
+[forAny] 絶対メッセージ
+[39m[49m[for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[for3D][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理１：表示属性変更" [39m[49m[for3D][39m[49m
+  "ゲームループ" [91m[40m[forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理２：静寂) ----------
+[asAbsolute,forAny] 絶対メッセージ
+---------- printCommon(処理３：カラー非表示) ----------
+[asNormal,forAny] 通常メッセージ(処理３：カラー非表示)
+[asImportant,forAny] 重要メッセージ
+[asWarning,forAny] 警告メッセージ
+[asCritical,forAny] 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[asNormal,for3D] 【3D】通常メッセージ
+[asNormal,for2D] 【2D】通常メッセージ
+[asNormal,forLogic] 【Logic】通常メッセージ
+[asCritical,forLogic] 【CPのカテゴリ】重大メッセージ
+[asCritical,forAny] 【クリティカルCPのカテゴリ】重大メッセージ
+[asNormal,forAny] 【レベルを引数指定】通常メッセージ
+[asCritical,forAny] 【ログ出力専用関数】重大メッセージ
+============================================================
+[asNormal,forAny] Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理３：カラー非表示" [asNormal,forLogic]
+  "ゲームループ" [asCritical,forAny]
+============================================================
+---------- printCommon(処理４：絶対静寂) ----------
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forGameData][39m[49m 【CPのカテゴリ】重大メッセージ
+---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forTaro][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "処理６：クリティカルCP" [91m[40m[asCritical,forTaro][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(ゲームループ) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(ゲームループ)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理１：表示属性変更) ----------
+[39m[49m[forAny][39m[49m 通常メッセージ(処理１：表示属性変更)
+[94m[40m[forAny][39m[49m 重要メッセージ
+[95m[40m[forAny][39m[49m 警告メッセージ
+[91m[40m[forAny][39m[49m 重大メッセージ
+[forAny] 絶対メッセージ
+[39m[49m[for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[for3D][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理１：表示属性変更" [39m[49m[for3D][39m[49m
+  "ゲームループ" [91m[40m[forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理２：静寂) ----------
+[asAbsolute,forAny] 絶対メッセージ
+---------- printCommon(処理３：カラー非表示) ----------
+[asNormal,forAny] 通常メッセージ(処理３：カラー非表示)
+[asImportant,forAny] 重要メッセージ
+[asWarning,forAny] 警告メッセージ
+[asCritical,forAny] 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[asNormal,for3D] 【3D】通常メッセージ
+[asNormal,for2D] 【2D】通常メッセージ
+[asNormal,forLogic] 【Logic】通常メッセージ
+[asCritical,forLogic] 【CPのカテゴリ】重大メッセージ
+[asCritical,forAny] 【クリティカルCPのカテゴリ】重大メッセージ
+[asNormal,forAny] 【レベルを引数指定】通常メッセージ
+[asCritical,forAny] 【ログ出力専用関数】重大メッセージ
+============================================================
+[asNormal,forAny] Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理３：カラー非表示" [asNormal,forLogic]
+  "ゲームループ" [asCritical,forAny]
+============================================================
+---------- printCommon(処理４：絶対静寂) ----------
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forGameData][39m[49m 【CPのカテゴリ】重大メッセージ
+---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forTaro][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "処理６：クリティカルCP" [91m[40m[asCritical,forTaro][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(ゲームループ) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(ゲームループ)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理１：表示属性変更) ----------
+[39m[49m[forAny][39m[49m 通常メッセージ(処理１：表示属性変更)
+[94m[40m[forAny][39m[49m 重要メッセージ
+[95m[40m[forAny][39m[49m 警告メッセージ
+[91m[40m[forAny][39m[49m 重大メッセージ
+[forAny] 絶対メッセージ
+[39m[49m[for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[for3D][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理１：表示属性変更" [39m[49m[for3D][39m[49m
+  "ゲームループ" [91m[40m[forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理２：静寂) ----------
+[asAbsolute,forAny] 絶対メッセージ
+---------- printCommon(処理３：カラー非表示) ----------
+[asNormal,forAny] 通常メッセージ(処理３：カラー非表示)
+[asImportant,forAny] 重要メッセージ
+[asWarning,forAny] 警告メッセージ
+[asCritical,forAny] 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[asNormal,for3D] 【3D】通常メッセージ
+[asNormal,for2D] 【2D】通常メッセージ
+[asNormal,forLogic] 【Logic】通常メッセージ
+[asCritical,forLogic] 【CPのカテゴリ】重大メッセージ
+[asCritical,forAny] 【クリティカルCPのカテゴリ】重大メッセージ
+[asNormal,forAny] 【レベルを引数指定】通常メッセージ
+[asCritical,forAny] 【ログ出力専用関数】重大メッセージ
+============================================================
+[asNormal,forAny] Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理３：カラー非表示" [asNormal,forLogic]
+  "ゲームループ" [asCritical,forAny]
+============================================================
+---------- printCommon(処理４：絶対静寂) ----------
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forGameData][39m[49m 【CPのカテゴリ】重大メッセージ
+---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(処理５：なにもしない) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(処理５：なにもしない)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forSound][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forTaro][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "処理５：なにもしない" [39m[49m[asNormal,forSound][39m[49m
+  "処理６：クリティカルCP" [91m[40m[asCritical,forTaro][39m[49m
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m---------- printCommon(ゲームループ) ----------
+[39m[49m[asNormal,forAny][39m[49m 通常メッセージ(ゲームループ)
+[94m[40m[asImportant,forAny][39m[49m 重要メッセージ
+[95m[40m[asWarning,forAny][39m[49m 警告メッセージ
+[91m[40m[asCritical,forAny][39m[49m 重大メッセージ
+[asAbsolute,forAny] 絶対メッセージ
+[39m[49m[asNormal,for3D][39m[49m 【3D】通常メッセージ
+[39m[49m[asNormal,for2D][39m[49m 【2D】通常メッセージ
+[39m[49m[asNormal,forLogic][39m[49m 【Logic】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【CPのカテゴリ】重大メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【クリティカルCPのカテゴリ】重大メッセージ
+[39m[49m[asNormal,forAny][39m[49m 【レベルを引数指定】通常メッセージ
+[91m[40m[asCritical,forAny][39m[49m 【ログ出力専用関数】重大メッセージ
+[39m[49m============================================================
+[asNormal,forAny][39m[49m Call point stack at "CP(コールポイント)スタック表示"
+----------------------------------------
+  "ゲームループ" [91m[40m[asCritical,forAny][39m[49m
+[39m[49m============================================================
+[39m[49m--- PROFILE ---
+size()=8, Buffer:Total=65536,Used=6344,Remain=59192
+4.543672sec (10 cnt): "ゲームループ" void gameLoop()
+1.471738sec (30 cnt): "処理７：スレッド" void subProc7(const char*)
+1.260947sec (20 cnt): "処理５：なにもしない" void subProc5()
+1.070501sec (10 cnt): "処理６：クリティカルCP" void subProc6()
+0.705802sec (10 cnt): "処理３：カラー非表示" void subProc3()
+0.694451sec (10 cnt): "処理２：静寂" void subProc2()
+0.449567sec (10 cnt): "処理４：絶対静寂" void subProc4()
+0.397678sec (10 cnt): "処理１：表示属性変更" void subProc1()
+work:total=2048,used=60,remain=1988

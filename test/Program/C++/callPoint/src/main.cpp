@@ -3991,6 +3991,7 @@ namespace dbg
 			}
 			return category_;
 		}
+		//-----「表示属性」系処理
 		//現在の表示属性を取得
 		static attr_t getAttrG(){ return m_attrG; }
 		//【一時表示属性版】
@@ -4045,6 +4046,7 @@ namespace dbg
 			if (m_hasPushed)
 				--m_attrHasChangedG;
 		}
+		//-----「ログレベル」系処理
 		//現在のログレベルを取得
 		static level::value_t getLogLevelG(const category::value_t category_)
 		{
@@ -4177,6 +4179,7 @@ namespace dbg
 			if (m_hasPushed)
 				--m_logLevelHasChangedG;
 		}
+		//-----「画面通知レベル」系処理
 		//現在の画面通知レベルを取得
 		static level::value_t getNoticeLevelG(const category::value_t category_)
 		{
@@ -4310,6 +4313,90 @@ namespace dbg
 				--m_noticeLevelHasChangedG;
 		}
 	protected:
+		//-----「コールポイント操作」系処理（共通内部処理）
+		//コールポイントスタックに自身をプッシュ
+		void pushCallPoint()
+		{
+			if (m_hasPushed)
+				return;
+			m_hasPushed = true;
+			assert(m_callPointStackHead != this);
+			m_callPointStackNext = m_callPointStackHead;
+			m_callPointStackHead = this;
+		}
+		//コールポイントスタックから（自身を）ポップ
+		void popCallPoint()
+		{
+			if (!m_hasPushed)
+				return;
+			m_hasPushed = false;
+			assert(m_callPointStackHead == this);
+			m_callPointStackHead = m_callPointStackNext;
+			m_callPointStackNext = nullptr;
+		}
+	public:
+		//-----「コールポイント操作」系処理
+		//直前のコールポイントを取得
+		static message* getLastCallPoint()
+		{
+			return m_callPointStackHead;
+		}
+		//直近のクリティカルコールポイントを取得
+		static message* getLastCriticalCallPoint()
+		{
+			message* node = m_callPointStackHead;
+			while (node)
+			{
+				if (node->getLevel() == asCritical)
+					break;
+				node = node->m_callPointStackNext;
+			}
+			return node;
+		}
+		//直近で表示属性を更新したコールポイントを取得
+		static message* getLastCallPointWithAttrHasChanged()
+		{
+			if (m_attrHasChangedG == 0)
+				return nullptr;
+			message* node = m_callPointStackHead;
+			while (node)
+			{
+				if (node->attrHasChanged())
+					break;
+				node = node->m_callPointStackNext;
+			}
+			return node;
+		}
+		//直近でログレベルを更新したコールポイントを取得
+		static message* getLastCallPointWithLogLevelHasChanged()
+		{
+			if (m_logLevelHasChangedG == 0)
+				return nullptr;
+			message* node = m_callPointStackHead;
+			while (node)
+			{
+				if (node->logLevelHasChanged())
+					break;
+				node = node->m_callPointStackNext;
+			}
+			return node;
+		}
+		//直近で画面通知レベルを更新したコールポイントを取得
+		static message* getLastCallPointWithNoticeLevelHasChanged()
+		{
+			if (m_noticeLevelHasChangedG == 0)
+				return nullptr;
+			message* node = m_callPointStackHead;
+			while (node)
+			{
+				if (node->noticeLevelHasChanged())
+					break;
+				node = node->m_callPointStackNext;
+			}
+			return node;
+		}
+	protected:
+		//-----「メッセージバッファ操作」系処理（共通内部処理）
 		//メッセージバッファ確保
 		static void beginBuffer()
 		{
@@ -4392,6 +4479,7 @@ namespace dbg
 			is_allow_log = (o_level >= o_log_level && o_level.forLog() && o_category.forLog());
 			is_allow_notice = (o_level >= o_notice_level && o_level.forNotice() && o_category.forNotice());
 		}
+		//-----「メッセージ出力」系処理（共通内部処理）
 		//メッセージ出力：レベルを引数指定
 		//※va_listを引数にとるバージョン
 		static int vprintCommon(const attr_t attr, const level::value_t log_level, const level::value_t notice_level, const level::value_t level_, const category::value_t category_, const char* fmt, va_list args)
@@ -4422,6 +4510,7 @@ namespace dbg
 			flushBuffer(o_level, is_allow_log, is_allow_notice, true);
 			return ret;
 		}
+		//-----「コールポイントスタック出力」系処理（共通内部処理）
 		//コールポイントスタックをリスト表示
 		static void printCPStackCommon(const attr_t attr, const level::value_t log_level, const level::value_t level_, const category::value_t category_, const char* name, const control_t control)
 		{
@@ -4500,6 +4589,7 @@ namespace dbg
 			flushBuffer(o_level, true, false, without_color);
 		}
 	public:
+		//-----「メッセージ出力」系処理
 		//メッセージ出力／ログ出力／画面通知メソッド：レベルを引数指定
 		//※vprint***/vlog***/vnotice***
 		//※va_listを引数にとるバージョン
@@ -4714,7 +4804,7 @@ namespace dbg
 		{ \
 			return vnotice(as##level_, fmt, args); \
 		}
-			//メッセージ出力／ログ出力／画面通知メソッド定義マクロ
+		//メッセージ出力／ログ出力／画面通知メソッド定義マクロ
 		//※print***/log***/notice***
 		//※可変長引数バージョン
 	#define declare_printMethods(level_) \
@@ -4810,87 +4900,7 @@ namespace dbg
 		declare_printMethods(Warning);//警告メッセージ
 		declare_printMethods(Critical);//重大（問題）メッセージ
 		declare_printMethods(Absolute);//絶対（必須）メッセージ
-	protected:
-		//コールポイントスタックに自身をプッシュ
-		void pushCallPoint()
-		{
-			if (m_hasPushed)
-				return;
-			m_hasPushed = true;
-			assert(m_callPointStackHead != this);
-			m_callPointStackNext = m_callPointStackHead;
-			m_callPointStackHead = this;
-		}
-		//コールポイントスタックから（自身を）ポップ
-		void popCallPoint()
-		{
-			if (!m_hasPushed)
-				return;
-			m_hasPushed = false;
-			assert(m_callPointStackHead == this);
-			m_callPointStackHead = m_callPointStackNext;
-			m_callPointStackNext = nullptr;
-		}
-	public:
-		//直前のコールポイントを取得
-		static message* getLastCallPoint()
-		{
-			return m_callPointStackHead;
-		}
-		//直近のクリティカルコールポイントを取得
-		static message* getLastCriticalCallPoint()
-		{
-			message* node = m_callPointStackHead;
-			while (node)
-			{
-				if (node->getLevel() == asCritical)
-					break;
-				node = node->m_callPointStackNext;
-			}
-			return node;
-		}
-		//直近で表示属性を更新したコールポイントを取得
-		static message* getLastCallPointWithAttrHasChanged()
-		{
-			if (m_attrHasChangedG == 0)
-				return nullptr;
-			message* node = m_callPointStackHead;
-			while (node)
-			{
-				if (node->attrHasChanged())
-					break;
-				node = node->m_callPointStackNext;
-			}
-			return node;
-		}
-		//直近でログレベルを更新したコールポイントを取得
-		static message* getLastCallPointWithLogLevelHasChanged()
-		{
-			if (m_logLevelHasChangedG == 0)
-				return nullptr;
-			message* node = m_callPointStackHead;
-			while (node)
-			{
-				if (node->logLevelHasChanged())
-					break;
-				node = node->m_callPointStackNext;
-			}
-			return node;
-		}
-		//直近で画面通知レベルを更新したコールポイントを取得
-		static message* getLastCallPointWithNoticeLevelHasChanged()
-		{
-			if (m_noticeLevelHasChangedG == 0)
-				return nullptr;
-			message* node = m_callPointStackHead;
-			while (node)
-			{
-				if (node->noticeLevelHasChanged())
-					break;
-				node = node->m_callPointStackNext;
-			}
-			return node;
-		}
+		//-----「コールポイントスタック出力」系処理
 		//コールポイントスタックをリスト表示
 		static void printCPStackG(const level::value_t level_, category::value_t category_, const char* name, const control_t control = simplePrint)
 		{
@@ -4944,7 +4954,7 @@ namespace dbg
 			initializeOnce();
 		}
 		//コンストラクタ
-		message(const level::value_t level_, const category::value_t category_, const char* name, const char* src_file_name = nullptr, const char* func_name = nullptr) :
+		message(const level::value_t level_, const category::value_t category_, const char* name = nullptr, const char* src_file_name = nullptr, const char* func_name = nullptr) :
 			m_level(level_),//レベル
 			m_category(category_),//カテゴリ
 			m_name(name),//名前
@@ -5345,11 +5355,16 @@ void printCommon(const char* name)
 	print(asNormal, forAny, "【レベルを引数指定】通常メッセージ\n");
 	logAsCritical(forAny, "【ログ出力専用関数】重大メッセージ\n");
 	noticeAsCritical(forAny, "【画面通知専用関数】重大メッセージ\n");
+	message msg(asWarning, forAny);
+	msg.delAttr(withLevel | withCategory);
+	msg.print("messageクラスを使って、");
+	msg.print("同じレベルとカテゴリのメッセージを\n");
+	msg.print("連続で出力\n");
 	printCPStackAsNormal(forAny, "CP(コールポイント)スタック表示");
 }
 //ランダム時間ウェイトする
 static std::mt19937 s_rndEngine;
-void initRnadom()//初期化
+void initRnadom()//乱数初期化
 {
 	//乱数初期化
 	std::random_device rd;
@@ -5437,7 +5452,7 @@ void subProc4()
 //処理５
 void subProc5()
 {
-	callPointAsNormal cp(forSound, "処理５：なにもしない", recProfile, __CPARGS());
+	callPointAsNormal cp(forSound, "処理５：変更なし", recProfile, __CPARGS());
 	randomWait();//ウェイト
 	printCommon(cp.getName());//共通処理
 }

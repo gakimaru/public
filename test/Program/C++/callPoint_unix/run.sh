@@ -3,6 +3,6 @@
 #cat call_point.log
 #cat call_point_err.log
 
-echo $ ./call_point 2>&1 call_point.log
-./call_point 2>&1 call_point.log
+echo '$ ./call_point > call_point.log 2>&1'
+./call_point > call_point.log 2>&1
 cat call_point.log

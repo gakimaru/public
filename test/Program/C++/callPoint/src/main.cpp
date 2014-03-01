@@ -6,23 +6,30 @@
 #define USE_ALIGNED_MALLOC//【MS固有仕様】_aligned_mallocを使用する時はこのマクロを有効にする
 #define USE_FRIEND_WITH_NEW_OPERATOR//【MS固有仕様？】operator new()をクラス内でフレンド化する時はこのマクロを有効にする
 
+//#define ENABLE_CONSTEXPR//【C++11用】constexprを有効にする時はこのマクロを有効にする
+//#define ENABLE_USER_DEFINED_LITERALS//【C++11用】ユーザー定義リテラルを有効にする時はこのマクロを有効にする
+
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <stdarg.h>//valist用
 #include <assert.h>//assert用
 #include <memory.h>//memcpy用
+#include <string.h>//strcpy,vsprintf用
+#include <stdarg.h>//valist用
 #include <stdint.h>//uintptr_t用
 #include <limits.h>//UCHAR_MAX用
+#include <cstddef>//std::size_t用
 #include <bitset>//std::bitset用
 #include <iterator>//std::iterator用
-#include <algorithm>//std::move用
+#include <algorithm>//std::move, std::sort用
+#include <string>//std::string用
 #include <atomic>//C++11アトミック操作
-#include <vector>//vector
 #include <unordered_map>//C++11ハッシュテーブル
-#include <chrono>//C++11時間
+#include <map>//STL map
 #include <thread>//C++11スレッド
+#include <chrono>//C++11時間
 #include <random>//C++11乱数
+#include <vector>//STL vector
 
 #ifdef USE_ALIGNED_MALLOC
 #include <malloc.h>//malloc,_aligned_malloc用
@@ -80,6 +87,19 @@
 #define thread_local __thread//POSIX仕様
 #endif//TLS_IS_WINDOWS
 
+//C++11互換用マクロ
+#ifndef ENABLE_NULLPTR
+#define nullptr NULL
+#endif//ENABLE_NULLPTR
+#ifndef ENABLE_OVERRIDE
+#define overide
+#endif//ENABLE_OVERRIDE
+#ifdef ENABLE_CONSTEXPR
+#define CONSTEXPR constexpr
+#else//ENABLE_CONSTEXPR
+#define CONSTEXPR const
+#endif//ENABLE_CONSTEXPR
+
 //関数名取得マクロ
 #ifdef USE_FUNCSIG
 #define __PRETTY_FUNCTION__ __FUNCSIG__
@@ -114,6 +134,141 @@ const char* getFileName(const char* str)
 	return str;
 }
 
+//--------------------
+//CRC算出
+
+#include <cstddef>//std::size_t用
+#include <assert.h>//assert用
+
+//--------------------
+//型
+typedef unsigned int crc32_t;//CRC32型
+
+//--------------------
+//CRC算出関数
+namespace crc_inner_calc//直接使用しない処理を隠ぺいするためのネームスペース
+{
+#ifndef USE_CRC_CALC_TABLE
+	//--------------------
+	//CRC生成多項式計算（再帰処理）
+	CONSTEXPR crc32_t calcPoly(crc32_t poly, const int n)
+	{
+		return n == 0 ? poly : calcPoly(poly & 1 ? 0xedb88320u ^ (poly >> 1) : (poly >> 1), n - 1);
+	}
+#else//USE_CRC_CALC_TABLE
+	//--------------------
+	//CRC生成多項式計算計算済みテーブル
+	CONSTEXPR crc32_t s_calcTable[] =
+	{
+		0x00000000u, 0x77073096u, 0xee0e612cu, 0x990951bau, 0x076dc419u, 0x706af48fu, 0xe963a535u, 0x9e6495a3u,
+		0x0edb8832u, 0x79dcb8a4u, 0xe0d5e91eu, 0x97d2d988u, 0x09b64c2bu, 0x7eb17cbdu, 0xe7b82d07u, 0x90bf1d91u,
+		0x1db71064u, 0x6ab020f2u, 0xf3b97148u, 0x84be41deu, 0x1adad47du, 0x6ddde4ebu, 0xf4d4b551u, 0x83d385c7u,
+		0x136c9856u, 0x646ba8c0u, 0xfd62f97au, 0x8a65c9ecu, 0x14015c4fu, 0x63066cd9u, 0xfa0f3d63u, 0x8d080df5u,
+		0x3b6e20c8u, 0x4c69105eu, 0xd56041e4u, 0xa2677172u, 0x3c03e4d1u, 0x4b04d447u, 0xd20d85fdu, 0xa50ab56bu,
+		0x35b5a8fau, 0x42b2986cu, 0xdbbbc9d6u, 0xacbcf940u, 0x32d86ce3u, 0x45df5c75u, 0xdcd60dcfu, 0xabd13d59u,
+		0x26d930acu, 0x51de003au, 0xc8d75180u, 0xbfd06116u, 0x21b4f4b5u, 0x56b3c423u, 0xcfba9599u, 0xb8bda50fu,
+		0x2802b89eu, 0x5f058808u, 0xc60cd9b2u, 0xb10be924u, 0x2f6f7c87u, 0x58684c11u, 0xc1611dabu, 0xb6662d3du,
+		0x76dc4190u, 0x01db7106u, 0x98d220bcu, 0xefd5102au, 0x71b18589u, 0x06b6b51fu, 0x9fbfe4a5u, 0xe8b8d433u,
+		0x7807c9a2u, 0x0f00f934u, 0x9609a88eu, 0xe10e9818u, 0x7f6a0dbbu, 0x086d3d2du, 0x91646c97u, 0xe6635c01u,
+		0x6b6b51f4u, 0x1c6c6162u, 0x856530d8u, 0xf262004eu, 0x6c0695edu, 0x1b01a57bu, 0x8208f4c1u, 0xf50fc457u,
+		0x65b0d9c6u, 0x12b7e950u, 0x8bbeb8eau, 0xfcb9887cu, 0x62dd1ddfu, 0x15da2d49u, 0x8cd37cf3u, 0xfbd44c65u,
+		0x4db26158u, 0x3ab551ceu, 0xa3bc0074u, 0xd4bb30e2u, 0x4adfa541u, 0x3dd895d7u, 0xa4d1c46du, 0xd3d6f4fbu,
+		0x4369e96au, 0x346ed9fcu, 0xad678846u, 0xda60b8d0u, 0x44042d73u, 0x33031de5u, 0xaa0a4c5fu, 0xdd0d7cc9u,
+		0x5005713cu, 0x270241aau, 0xbe0b1010u, 0xc90c2086u, 0x5768b525u, 0x206f85b3u, 0xb966d409u, 0xce61e49fu,
+		0x5edef90eu, 0x29d9c998u, 0xb0d09822u, 0xc7d7a8b4u, 0x59b33d17u, 0x2eb40d81u, 0xb7bd5c3bu, 0xc0ba6cadu,
+		0xedb88320u, 0x9abfb3b6u, 0x03b6e20cu, 0x74b1d29au, 0xead54739u, 0x9dd277afu, 0x04db2615u, 0x73dc1683u,
+		0xe3630b12u, 0x94643b84u, 0x0d6d6a3eu, 0x7a6a5aa8u, 0xe40ecf0bu, 0x9309ff9du, 0x0a00ae27u, 0x7d079eb1u,
+		0xf00f9344u, 0x8708a3d2u, 0x1e01f268u, 0x6906c2feu, 0xf762575du, 0x806567cbu, 0x196c3671u, 0x6e6b06e7u,
+		0xfed41b76u, 0x89d32be0u, 0x10da7a5au, 0x67dd4accu, 0xf9b9df6fu, 0x8ebeeff9u, 0x17b7be43u, 0x60b08ed5u,
+		0xd6d6a3e8u, 0xa1d1937eu, 0x38d8c2c4u, 0x4fdff252u, 0xd1bb67f1u, 0xa6bc5767u, 0x3fb506ddu, 0x48b2364bu,
+		0xd80d2bdau, 0xaf0a1b4cu, 0x36034af6u, 0x41047a60u, 0xdf60efc3u, 0xa867df55u, 0x316e8eefu, 0x4669be79u,
+		0xcb61b38cu, 0xbc66831au, 0x256fd2a0u, 0x5268e236u, 0xcc0c7795u, 0xbb0b4703u, 0x220216b9u, 0x5505262fu,
+		0xc5ba3bbeu, 0xb2bd0b28u, 0x2bb45a92u, 0x5cb36a04u, 0xc2d7ffa7u, 0xb5d0cf31u, 0x2cd99e8bu, 0x5bdeae1du,
+		0x9b64c2b0u, 0xec63f226u, 0x756aa39cu, 0x026d930au, 0x9c0906a9u, 0xeb0e363fu, 0x72076785u, 0x05005713u,
+		0x95bf4a82u, 0xe2b87a14u, 0x7bb12baeu, 0x0cb61b38u, 0x92d28e9bu, 0xe5d5be0du, 0x7cdcefb7u, 0x0bdbdf21u,
+		0x86d3d2d4u, 0xf1d4e242u, 0x68ddb3f8u, 0x1fda836eu, 0x81be16cdu, 0xf6b9265bu, 0x6fb077e1u, 0x18b74777u,
+		0x88085ae6u, 0xff0f6a70u, 0x66063bcau, 0x11010b5cu, 0x8f659effu, 0xf862ae69u, 0x616bffd3u, 0x166ccf45u,
+		0xa00ae278u, 0xd70dd2eeu, 0x4e048354u, 0x3903b3c2u, 0xa7672661u, 0xd06016f7u, 0x4969474du, 0x3e6e77dbu,
+		0xaed16a4au, 0xd9d65adcu, 0x40df0b66u, 0x37d83bf0u, 0xa9bcae53u, 0xdebb9ec5u, 0x47b2cf7fu, 0x30b5ffe9u,
+		0xbdbdf21cu, 0xcabac28au, 0x53b39330u, 0x24b4a3a6u, 0xbad03605u, 0xcdd70693u, 0x54de5729u, 0x23d967bfu,
+		0xb3667a2eu, 0xc4614ab8u, 0x5d681b02u, 0x2a6f2b94u, 0xb40bbe37u, 0xc30c8ea1u, 0x5a05df1bu, 0x2d02ef8du
+	};
+#endif//USE_CRC_CALC_TABLE
+	//--------------------
+	//文字列からCRC算出用（再帰処理）
+	CONSTEXPR crc32_t calcStr(const crc32_t crc, const char* str)
+	{
+#ifndef USE_CRC_CALC_TABLE
+		return *str == '\0' ? crc : calcStr(calcPoly(static_cast<crc32_t>((crc ^ *str) & 0xffu), 8) ^ (crc >> 8), str + 1);//CRC生成多項式計算計算を合成
+#else//USE_CRC_CALC_TABLE
+		return *str == '\0' ? crc : calcStr(s_calcTable[(crc ^ *str) & 0xffu] ^ (crc >> 8), str + 1);//CRC生成多項式計算計算済みテーブルの値を合成
+#endif//USE_CRC_CALC_TABLE
+	}
+	//--------------------
+	//データ長を指定してCRC算出用（再帰処理）
+	CONSTEXPR crc32_t calcData(const crc32_t crc, const char* data, const std::size_t len)
+	{
+#ifndef USE_CRC_CALC_TABLE
+		return len == 0 ? crc : calcData(calcPoly(static_cast<crc32_t>((crc ^ *data) & 0xffu), 8) ^ (crc >> 8), data + 1, len - 1);//CRC生成多項式計算計算を合成
+#else//USE_CRC_CALC_TABLE
+		return len == 0 ? crc : calcData(s_calcTable[(crc ^ *data) & 0xffu] ^ (crc >> 8), data + 1, len - 1);//CRC生成多項式計算計算済みテーブルの値を合成
+#endif//USE_CRC_CALC_TABLE
+	}
+}
+//--------------------
+//【constexpr版】文字列からCRC算出
+CONSTEXPR crc32_t calcConstCRC32(const char* str)
+{
+	return ~crc_inner_calc::calcStr(~0u, str);
+}
+//--------------------
+//【constexpr版】データ長を指定してCRC算出
+CONSTEXPR crc32_t calcConstCRC32(const char* data, const std::size_t len)
+{
+	return ~crc_inner_calc::calcData(~0u, data, len);
+}
+#ifdef ENABLE_USER_DEFINED_LITERALS
+//--------------------
+//【ユーザー定義リテラル版】データ長を指定してCRC算出
+CONSTEXPR crc32_t operator "" _crc32(const char* str, std::size_t len)
+{
+	return calcConstCRC32(str, len);
+}
+#endif//ENABLE_USER_DEFINED_LITERALS
+//--------------------
+//【通常関数版】文字列からCRC算出
+crc32_t calcCRC32(const char* str)
+{
+	crc32_t crc = ~0u;
+	const char* p = str;
+	while (*p)
+	{
+#ifndef USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::calcPoly(static_cast<crc32_t>((crc ^ *p) & 0xffu), 8) ^ (crc >> 8);//CRC生成多項式計算計算を合成
+#else//USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::s_calcTable[(crc ^ *p) & 0xffu] ^ (crc >> 8);//CRC生成多項式計算計算済みテーブルの値を合成
+#endif//USE_CRC_CALC_TABLE
+		++p;
+	}
+	return ~crc;
+}
+//--------------------
+//【通常関数版】データ長を指定してCRC算出
+crc32_t calcCRC32(const char* data, const std::size_t len)
+{
+	crc32_t crc = ~0u;
+	const char* p = data;
+	for (std::size_t pos = 0; pos < len; ++pos, ++p)
+	{
+#ifndef USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::calcPoly(static_cast<crc32_t>((crc ^ *p) & 0xffu), 8) ^ (crc >> 8);//CRC生成多項式計算計算を合成
+#else//USE_CRC_CALC_TABLE
+		crc = crc_inner_calc::s_calcTable[(crc ^ *p) & 0xffu] ^ (crc >> 8);//CRC生成多項式計算計算済みテーブルの値を合成
+#endif//USE_CRC_CALC_TABLE
+	}
+	return ~crc;
+}
+
 //----------------------------------------
 //スレッドIDクラス
 //※IDをハッシュ化した場合、TLSを活用して高速化
@@ -143,6 +298,7 @@ public:
 	//アクセッサ
 	const THREAD_ID getID() const { return m_threadId; }//スレッドIDを取得
 	const char* getName() const { return m_threadName; }//スレッド名を取得
+	crc32_t getNameCrc() const { return m_threadNameCrc; }//スレッド名のCRCを取得
 public:
 	//アクセッサ（static）
 #ifdef THREAD_ID_IS_HASH
@@ -151,6 +307,7 @@ public:
 	static THREAD_ID getThisID(){ return GetThisThreadID(); }//現在のスレッドのスレッドIDを取得
 #endif//THREAD_ID_IS_HASH
 	static const char* getThisName(){ return m_thisThreadName; }//現在のスレッドのスレッド名を取得
+	static crc32_t getThisNameCrc(){ return m_thisThreadNameCrc; }//現在のスレッドのスレッド名のCRCを取得
 public:
 	//メソッド
 	bool isThisThread() const { return m_threadId == getThisID(); }//現在のスレッドと同じスレッドか判定
@@ -169,6 +326,7 @@ private:
 		m_thisThreadID = GetThisThreadID();
 #endif//THREAD_ID_IS_HASH
 		m_thisThreadName = name;
+		m_thisThreadNameCrc = calcCRC32(name);
 	}
 public:
 	//オペレータ（許可）
@@ -180,6 +338,7 @@ public:
 	{
 		m_threadId = o.m_threadId;
 		m_threadName = o.m_threadName;
+		m_threadNameCrc = o.m_threadNameCrc;
 		return *this;
 	}
 private:
@@ -189,7 +348,8 @@ public:
 	//コピーコンストラクタ（許可）
 	explicit CThreadID(const CThreadID& o) :
 		m_threadId(o.m_threadId),
-		m_threadName(o.m_threadName)
+		m_threadName(o.m_threadName),
+		m_threadNameCrc(o.m_threadNameCrc)
 	{
 	}
 private:
@@ -204,6 +364,7 @@ public:
 		resetThisThread(name);
 		m_threadId = getThisID();
 		m_threadName = getThisName();
+		m_threadNameCrc = getThisNameCrc();
 	}
 	//デフォルトコンストラクタ
 	//※既にTLSに記録済みのスレッドID（と名前）を取得
@@ -212,21 +373,25 @@ public:
 		setThisThread();
 		m_threadId = getThisID();
 		m_threadName = getThisName();
+		m_threadNameCrc = getThisNameCrc();
 	}
 private:
 	//フィールド
 	THREAD_ID m_threadId;//スレッドID（オブジェクトに保存する値）
 	const char* m_threadName;//スレッド名（オブジェクトに保存する値）
+	crc32_t m_threadNameCrc;//スレッド名のCRC（オブジェクトに保存する値）
 #ifdef THREAD_ID_IS_HASH
 	static thread_local THREAD_ID m_thisThreadID;//現在のスレッドのスレッドID(TLS)
 #endif//THREAD_ID_IS_HASH
 	static thread_local const char* m_thisThreadName;//現在のスレッド名(TLS)
+	static thread_local crc32_t m_thisThreadNameCrc;//現在のスレッド名のCRC(TLS)
 };
 //static変数のインスタンス化
 #ifdef THREAD_ID_IS_HASH
 thread_local THREAD_ID CThreadID::m_thisThreadID = INITIAL_THREAD_ID;//スレッドID(TLS)
 #endif//THREAD_ID_IS_HASH
 thread_local const char* CThreadID::m_thisThreadName = nullptr;//スレッド名(TLS)
+thread_local crc32_t CThreadID::m_thisThreadNameCrc = 0;//スレッド名のCrc(TLS)
 
 //--------------------------------------------------------------------------------
 //軽量スピンロック
@@ -2670,45 +2835,43 @@ namespace dbg
 		{
 			key_t m_key;//キー
 			std::string m_name;//処理名
-			THREAD_ID m_threadId;//スレッドID
-			std::string m_threadName;//スレッド名
 			std::string m_srcFileName;//ソースファイル名
 			std::string m_funcName;//関数名
 			struct TIME
 			{
-				double sum;//処理時間の合計
-				float max;//最大の処理時間
-				float min;//最小の処理時間
-				int count;//計測回数
-				float average() const { return count == 0 ? 0 : static_cast<float>(sum / static_cast<double>(count)); }
+				double m_sum;//処理時間の合計
+				float m_max;//最大の処理時間
+				float m_min;//最小の処理時間
+				int m_count;//計測回数
+				float average() const { return m_count == 0 ? 0 : static_cast<float>(m_sum / static_cast<double>(m_count)); }
 				//計測時間集計
 				void add(const double time)
 				{
-					++count;
-					sum += time;
+					++m_count;
+					m_sum += time;
 					const float time_f = static_cast<float>(time);
-					if (max == 0.f || max < time_f)
-						max = time_f;
-					if (min == 0.f || min > time_f)
-						min = time_f;
+					if (m_max == 0.f || m_max < time_f)
+						m_max = time_f;
+					if (m_min == 0.f || m_min > time_f)
+						m_min = time_f;
 				}
 				//計測時間集計
-				void add(const TIME& time)
+				void add(const TIME& src)
 				{
-					count += time.count;
-					sum += time.sum;
-					if (max == 0.f || max < time.max)
-						max = time.max;
-					if (min == 0.f || min > time.min)
-						min = time.min;
+					m_count += src.m_count;
+					m_sum += src.m_sum;
+					if (m_max == 0.f || m_max < src.m_max)
+						m_max = src.m_max;
+					if (m_min == 0.f || m_min > src.m_min)
+						m_min = src.m_min;
 				}
 				//計測時間リセット
 				void reset()
 				{
-					sum = 0.;
-					max = 0.f;
-					min = 0.f;
-					count = 0;
+					m_sum = 0.;
+					m_max = 0.f;
+					m_min = 0.f;
+					m_count = 0;
 				}
 				//コピー演算子
 				TIME& operator=(TIME& rhs)
@@ -2716,28 +2879,133 @@ namespace dbg
 					memcpy(this, &rhs, sizeof(*this));
 					return *this;
 				}
+				//ムーブコンストラクタ
+				TIME(const TIME&& src):
+					m_sum(src.m_sum),
+					m_max(src.m_max),
+					m_min(src.m_min),
+					m_count(src.m_count)
+				{}
+				//デフォルトコンストラクタ
+				TIME() :
+					m_sum(0.),
+					m_max(0.f),
+					m_min(0.f),
+					m_count(0)
+				{}
 			};
-			TIME m_total;//処理全体の集計
-			TIME m_frame;//フレーム内の集計
-			bool m_inCountOnFrame;//フレームの集計があったか？
-			int m_frameCount;//計測フレーム数
-			float m_time;//（前回計測時の）処理時間
-			//計測時間を加算
-			void add(const double time)
+			//計測時間情報
+			struct MEASURE
 			{
-				m_time = static_cast<float>(time);
-				m_frame.add(time);
-				m_inCountOnFrame = true;
+				TIME m_total;//処理全体の集計
+				TIME m_frame;//フレーム内の集計
+				bool m_inCountOnFrame;//フレームの集計があったか？
+				int m_frameCount;//計測フレーム数
+				float m_time;//（前回計測時の）処理時間
+				//計測時間を加算
+				void add(const double time)
+				{
+					m_time = static_cast<float>(time);
+					m_frame.add(time);
+					m_inCountOnFrame = true;
+				}
+				//フレーム集計
+				void sumOnFrame()
+				{
+					if (m_inCountOnFrame)
+					{
+						m_inCountOnFrame = false;
+						m_total.add(m_frame);
+						m_frame.reset();
+						++m_frameCount;
+					}
+				}
+				//ムーブコンストラクタ
+				MEASURE(MEASURE&& src) :
+					m_total(std::move(src.m_total)),
+					m_frame(std::move(src.m_frame)),
+					m_inCountOnFrame(src.m_inCountOnFrame),
+					m_frameCount(src.m_frameCount),
+					m_time(src.m_time)
+				{}
+				//コンストラクタ
+				MEASURE() :
+					m_total(),
+					m_frame(),
+					m_inCountOnFrame(false),
+					m_frameCount(0),
+					m_time(0.f)
+				{}
+			};
+			MEASURE m_measure;//計測情報
+			//スレッド情報
+			struct THREAD_INFO
+			{
+				crc32_t m_nameCrc;//スレッド名のCRC
+				std::string m_name;//スレッド名
+				MEASURE m_measure;//計測情報
+				//計測時間を加算
+				void add(const double time)
+				{
+					m_measure.add(time);
+				}
+				//フレーム集計
+				void sumOnFrame()
+				{
+					m_measure.sumOnFrame();
+				}
+				//ムーブコンストラクタ
+				THREAD_INFO(THREAD_INFO&& src) :
+					m_nameCrc(src.m_nameCrc),
+					m_name(std::move(src.m_name)),
+					m_measure(std::move(src.m_measure))
+				{}
+				//コンストラクタ
+				THREAD_INFO(const crc32_t name_crc, const char* name) :
+					m_nameCrc(name_crc),
+					m_name(name),
+					m_measure()
+				{}
+			};
+			typedef std::map<crc32_t, THREAD_INFO> threadList_t;//マップ型
+			threadList_t m_threadList;
+			//計測時間を加算
+			void add(const double time, const CThreadID& thread_id)
+			{
+				m_measure.add(time);
+				
+				//スレッドごとの集計
+				const crc32_t thread_name_crc = thread_id.getNameCrc();
+				const char* thread_name = thread_id.getName();
+				THREAD_INFO* thread_info = nullptr;
+				{
+					threadList_t::iterator ite = m_threadList.find(thread_name_crc);
+					if (ite != m_threadList.end())
+						thread_info = &ite->second;
+					else
+					{
+						m_threadList.emplace(thread_name_crc, std::move(THREAD_INFO(thread_name_crc, thread_name)));
+						ite = m_threadList.find(thread_name_crc);
+						if (ite != m_threadList.end())
+							thread_info = &ite->second;
+					}
+				}
+				if (thread_info)
+				{
+					thread_info->add(time);
+				}
 			}
 			//フレーム集計
 			void sumOnFrame()
 			{
-				if (m_inCountOnFrame)
+				if (m_measure.m_inCountOnFrame)
 				{
-					m_inCountOnFrame = false;
-					m_total.add(m_frame);
-					m_frame.reset();
-					++m_frameCount;
+					m_measure.sumOnFrame();
+
+					for (auto& ite : m_threadList)
+					{
+						ite.second.sumOnFrame();
+					}
 				}
 			}
 			//ムーブコンストラクタ
@@ -2746,32 +3014,19 @@ namespace dbg
 			PROFILE(PROFILE&& src) :
 				m_key(src.m_key),
 				m_name(std::move(src.m_name)),
-				m_threadId(src.m_threadId),
-				m_threadName(std::move(src.m_threadName)),
 				m_srcFileName(std::move(src.m_srcFileName)),
 				m_funcName(std::move(src.m_funcName)),
-				m_inCountOnFrame(src.m_inCountOnFrame),
-				m_frameCount(src.m_frameCount),
-				m_time(src.m_time)
-			{
-				m_total = src.m_total;
-				m_frame = src.m_frame;
-			}
+				m_measure(std::move(src.m_measure)),
+				m_threadList(std::move(src.m_threadList))
+			{}
 			//コンストラクタ
-			PROFILE(const key_t key, const char* name, const THREAD_ID thread_id, const char* thread_name, const char* src_file_name, const char* func_name) :
+			PROFILE(const key_t key, const char* name, const char* src_file_name, const char* func_name) :
 				m_key(key),
 				m_name(name),
-				m_threadId(thread_id),
-				m_threadName(thread_name),
 				m_srcFileName(src_file_name),
 				m_funcName(func_name),
-				m_inCountOnFrame(false),
-				m_frameCount(0),
-				m_time(0.f)
-			{
-				m_total.reset();
-				m_frame.reset();
-			}
+				m_measure()
+			{}
 		};
 		typedef std::unordered_map<key_t, PROFILE> table_t;//ハッシュテーブル型
 		typedef table_t::iterator iterator;//イテレータ型
@@ -2784,16 +3039,9 @@ namespace dbg
 	public:
 		//メソッド
 		//プロファイル追加／集計
-		void addProfile(const key_t key, const char* name, const CThreadID* thread_id, const char* src_file_name, const char* func_name, const double time)
+		void addProfile(const key_t key, const char* name, const CThreadID& thread_id, const char* src_file_name, const char* func_name, const double time)
 		{
 			m_lock.lock();
-			THREAD_ID thread_id_ = INITIAL_THREAD_ID;
-			const char* thread_name = "(unknown)";
-			if (thread_id)
-			{
-				thread_id_ = thread_id->getID();
-				thread_name = thread_id->getName();
-			}
 			CTempPolyStackAllocator allocator(m_buff);
 			PROFILE* profile = nullptr;
 			{
@@ -2802,7 +3050,7 @@ namespace dbg
 					profile = &ite->second;
 				else
 				{
-					m_table->emplace(key, std::move(PROFILE(key, name, thread_id_, thread_name, src_file_name, func_name)));
+					m_table->emplace(key, std::move(PROFILE(key, name, src_file_name, func_name)));
 					ite = m_table->find(key);
 					if (ite != m_table->end())
 						profile = &ite->second;
@@ -2810,7 +3058,7 @@ namespace dbg
 			}
 			if (profile)
 			{
-				profile->add(time);
+				profile->add(time, thread_id);
 			}
 			m_lock.unlock();
 		}
@@ -2873,6 +3121,7 @@ namespace dbg
 		//デストラクタ
 		~CProfiler()
 		{
+			//シングルトンなのでデストラクタではなにもしない
 		}
 	private:
 		//フィールド
@@ -2888,7 +3137,7 @@ namespace dbg
 }//dbg
 
 //--------------------------------------------------------------------------------
-//デバッグメッセージ
+//デバッグロギングシステム
 namespace dbg
 {
 	//----------------------------------------
@@ -2908,7 +3157,7 @@ namespace dbg
 		//カラー値
 		enum color_t : unsigned char
 		{
-			reset = 0x10,//リセット
+			reset = 0x10,//リセット（基本状態に戻す）※「前のカラー」に戻すのではない
 			through = 0x20,//スルー（現状維持：何もしない）
 
 		#ifdef USE_WINDOWS_CONSOLE_COLOR//Windows用
@@ -3350,6 +3599,7 @@ namespace dbg
 		~level()
 		{}
 	private:
+		//フィールド
 		const char* m_name;//名前
 		const value_t m_value;//値（レベル）
 		const bool m_forLog;//ログ出力レベルとして使用可能か？
@@ -3361,10 +3611,8 @@ namespace dbg
 		const color::color_t m_backColorForNotice;//カラー：背面（画面通知用）
 	private:
 		//マクロ消去
-#ifndef ENABLE_CONSTEXPR
-#undef calcAsOutput
-#undef calcAsValue
-#endif//ENABLE_CONSTEXPR
+		#undef calcAsOutput
+		#undef calcAsValue
 	};
 	//----------------------------------------
 	//レベル定義用テンプレートクラス：通常レベル用
@@ -3454,7 +3702,6 @@ namespace dbg
 	//以下、ログレベル／画面通知レベル変更用
 	declare_specialLevel(asSilent);//静寂（絶対メッセ―ジ以外出力しない）
 	declare_specialLevel(asSilentAbsolutely);//絶対静寂（全てのメッセージを出力しない）
-
 	//----------------------------------------
 	//レベルコンテナの静的変数をインスタンス化
 	bool level::container::m_isInitialized = false;
@@ -3703,6 +3950,7 @@ namespace dbg
 		~category()
 		{}
 	private:
+		//フィールド
 		const char* m_name;//名前
 		const value_t m_value;//値（カテゴリ）
 		const bool m_isAssigned;//割り当て済みカテゴリか？
@@ -3824,7 +4072,6 @@ namespace dbg
 	//特殊なカテゴリ（プリント時専用）
 	declare_specialCategory(forCallPoint, true, true, false);//直近のコールポイントのカテゴリに合わせる（なければforAny扱い）
 	declare_specialCategory(forCriticalCallPoint, true, true, false);//直近の重大コールポイントのカテゴリに合わせる（なければforAny扱い）
-
 	//----------------------------------------
 	//カテゴリコンテナの静的変数をインスタンス化
 	bool category::container::m_isInitialized = false;
@@ -3920,24 +4167,31 @@ namespace dbg
 		~messageBuffer()
 		{}
 	private:
-		static pool_t m_pool;
+		//フィールド
+		static pool_t m_pool;//バッファのプール
 	};
 	//メッセージ固定バッファ用静的変数インスタンス化
-	messageBuffer::pool_t messageBuffer::m_pool;
+	messageBuffer::pool_t messageBuffer::m_pool;//バッファのプール
 
 	//----------------------------------------
-	//メッセージ表示属性
+	//表示属性
+	//※コールポイントの集計に関する設定も扱う
 	enum msgAttrEnum : unsigned char//属性
 	{
-		withSeqNo = 0x01,//シーケンス番号表示
+		//表示属性
+		withSeqNo = 0x01,//シーケンス番号表示（未実装）
 		withLevel = 0x02,//レベル名表示
 		withCategory = 0x04,//カテゴリ名表示
 		withoutColor = 0x08,//カラーなし
+		//コールポイント集計属性
+		withoutProfile = 0x10,//プロファイラへの記録無効化（未実装）
+		withoutThreadProfile = 0x20,//プロファイラでのスレッド別集計無効化（未実装）
 	};
 	//----------------------------------------
 	//メッセージ操作
 	enum msgCtrlEnum :unsigned char
 	{
+		//コールポイントスタック表示操作
 		simplePrint = 0x00,//シンプル
 		withFuncName = 0x01,//関数名を共に表示
 		withFileName = 0x02,//ファイル名を共に表示
@@ -4425,7 +4679,7 @@ namespace dbg
 		{
 			if (!m_messageBuff)
 				return;
-			//【仮処理】本来はメッセージをキューイングする処理
+			//【仮処理】本来はメッセージをキューイングしてロギング処理／画面通知処理に渡す
 			if (flush_log)
 			{
 				if (log_without_color)
@@ -5083,9 +5337,9 @@ namespace dbg
 				
 				//パフォーマンス記録
 				CProfiler profiler;
-				profiler.addProfile(m_key, m_name, &thread_id, getFileName(m_srcFileName), m_funcName, getElapsedTime());
+				profiler.addProfile(m_key, m_name, thread_id, getFileName(m_srcFileName), m_funcName, getElapsedTime());
 			}
-			//popCallPoint();//コールポイントをポップ　※ポップは親クラスが行うので不要
+			//popCallPoint();//コールポイントをポップ　※ポップは親クラスが行うのでここでは不要
 		}
 	private:
 		//フィールド
@@ -5119,10 +5373,13 @@ namespace dbg
 #define __CPARGS() reinterpret_cast<callPoint::key_t>(GET_CONCATENATED_SOURCE_FILE_NAME()), GET_CONCATENATED_SOURCE_FILE_NAME(), GET_FUNC_NAME()
 	//----------------------------------------
 	//関数
+	//現在の表示属性を取得
 	message::attr_t getAttr(){ return message::getAttrG(); }
+	//現在の表示属性を変更
 	//void setAttr(const message::attr_t attr){ message::setAttrG(attr); }
 	message::attr_t addAttr(const message::attr_t attr){ return message::addAttrG(attr); }
 	message::attr_t delAttr(const message::attr_t attr){ return message::delAttrG(attr); }
+	//現在の表示属性をリセット
 	void resetAttr(){ message::resetAttrG(); }
 	//現在のログレベルを取得
 	level::value_t getLogLevel(const category::value_t category_)
@@ -5272,6 +5529,7 @@ namespace dbg
 	declare_printFuncs(Warning);//警告メッセージ
 	declare_printFuncs(Critical);//重大（問題）メッセージ
 	declare_printFuncs(Absolute);//絶対（必須）メッセージ
+	//コールポイントスタック表示
 	void printCPStack(const level::value_t level_, category::value_t category_, const char* name, const message::control_t control = simplePrint)
 	{
 		message::printCPStackG(level_, category_, name, control);
@@ -5301,21 +5559,26 @@ namespace dbg
 		//カテゴリ定数
 		enum categoryEnum : category::value_t
 		{
+			//拡張用のカテゴリ番号を、ユーザー定義カテゴリに割り当て
 			forThread = define_revervedCategory(0),//スレッド
 			forTaro = define_revervedCategory(1),//太郎専用
 		};
 		//----------------------------------------
 		//カテゴリ定義
+		//※カテゴリ定数に対するカテゴリの実体（名前など）を作成（以下はテンプレートクラスを実体化するマクロ）
 		//※ヘッダーで公開する必要なし
 		declare_reservedCategory(forThread, true, false);//スレッド
 		declare_reservedCategory(forTaro, true, true);//太郎専用
 		//----------------------------------------
-		//カテゴリコンテナ拡張初期化
+		//ユーザー定義カテゴリをカテゴリコンテナに登録
+		//※コンストラクタ＋静的変数でmain関数の前に自動実行
+		//※一度クラスのインタンスを生成すれば、自動的に登録される
 		struct categoryContainerExt
 		{
+			//コンストラクタ
 			categoryContainerExt()
 			{
-				category::container::initializeOnce();
+				category::container::initializeOnce();//念のため、先に組み込みカテゴリの初期化を実行
 				category_forThread();//スレッド
 				category_forTaro();//太郎専用
 			}
@@ -5331,15 +5594,16 @@ namespace dbg
 //----------------------------------------
 //テスト
 
-//ネームスーペース表記省略用
+//--------------------
+//ネームスペース使用宣言
 using namespace dbg;
-using namespace dbg::ext;
+using namespace dbg::ext;//ユーザー定義拡張（カテゴリ追加）
 
 //--------------------
 //テスト（共通関数）
 void printCommon(const char* name)
 {
-	printf("---------- printCommon(%s) ----------\n", name);
+	printf("---------- printCommon(%s) ----------\n", name);//C言語標準のプリント文
 	printAsNormal(forAny, "通常メッセージ(%s)\n", name);
 	printAsVerbose(forAny, "冗長メッセージ\n");
 	printAsDetail(forAny, "詳細メッセージ\n");
@@ -5356,7 +5620,7 @@ void printCommon(const char* name)
 	logAsCritical(forAny, "【ログ出力専用関数】重大メッセージ\n");
 	noticeAsCritical(forAny, "【画面通知専用関数】重大メッセージ\n");
 	message msg(asWarning, forAny);
-	msg.delAttr(withLevel | withCategory);
+	msg.delAttr(withLevel | withCategory);//msgオブジェクトでprintした時だけレベルとカテゴリの表示をOFF
 	msg.print("messageクラスを使って、");
 	msg.print("同じレベルとカテゴリのメッセージを\n");
 	msg.print("連続で出力\n");
@@ -5393,15 +5657,15 @@ void gameLoop()
 			extern void subProc5();
 			extern void subProc6();
 			extern void subProc7(const char* thread_name);
-			std::thread th1 = std::thread(subProc7, "スレッドA");
+			std::thread th1 = std::thread(subProc7, "スレッドA");//スレッド処理
 			subProc1();//処理１
 			subProc2();//処理２
 			subProc3();//処理３
-			std::thread th2 = std::thread(subProc7, "スレッドB");
+			std::thread th2 = std::thread(subProc7, "スレッドB");//スレッド処理
 			subProc4();//処理４
 			subProc5();//処理５
 			subProc6();//処理６
-			std::thread th3 = std::thread(subProc7, "スレッドC");
+			std::thread th3 = std::thread(subProc7, "スレッドC");//スレッド処理
 			printCommon(cp.getName());//共通処理
 			th1.join();
 			th2.join();
@@ -5414,11 +5678,13 @@ void gameLoop()
 			profiler.sumOnFrame();
 		}
 	}
+	extern void subProc8();
+	subProc8();//処理８
 }
 //処理１
 void subProc1()
 {
-	callPointAsNormal cp(for3D, "処理１：表示属性変更", recProfile, __CPARGS());
+	callPointAsNormal cp(for3D, "処理１：表示属性変更", recProfile, __CPARGS());//コールポイント ※__CPARGS()は必ず付ける
 	cp.delAttr(withLevel);//レベル表示なし
 	//cp.delAttr(withCategory);//カテゴリ表示なし
 	randomWait();//ウェイト
@@ -5428,7 +5694,7 @@ void subProc1()
 void subProc2()
 {
 	callPointAsNormal cp(for2D, "処理２：静寂", recProfile, __CPARGS());
-	cp.setLogLevel(asSilent, forEvery);//以降のログ表示なし（画面通知はあり）
+	cp.setLogLevel(asSilent, forEvery);//以降のログ表示なし（画面通知はあり）※プログラム側の都合で、一部のログ出力を抑制したい時に使う
 	randomWait();//ウェイト
 	printCommon(cp.getName());//共通処理
 }
@@ -5459,60 +5725,104 @@ void subProc5()
 //処理６
 void subProc6()
 {
-	//コールポイントがクリティカル
-	callPointAsCritical cp(forTaro, "処理６：クリティカルCP", recProfile, __CPARGS());
+	//コールポイントがクリティカル＆プロファイル集計無し
+	callPointAsCritical cp(forTaro, "処理６：クリティカルCP", noProfile, __CPARGS());
 	randomWait();//ウェイト
-	subProc5();
+	subProc5();//処理５を呼び出し
 }
 //処理７
 void subProc7(const char* thread_name)
 {
 	callPointAsCritical cp(forThread, "処理７：スレッド", recProfile, __CPARGS());
-	CThreadID thread_id(thread_name);
+	CThreadID thread_id(thread_name);//スレッドに名前を付ける
 	//スレッド用（ウェイトのみ）
 	randomWait();//ウェイト
 }
+//処理８
+void subProc8()
+{
+	callPointAsNormal cp(forGameData, "処理８：基本ログレベルを変更", recProfile, __CPARGS());
+	setLogLevel(asDetail, forEvery);//全てのカテゴリのログレベルをasDetailに
+	setNoticeLevel(asDetail, forEvery);//全てのカテゴリの画面通知レベルをasDetailに
+	//cp.setLogLevel(asDetail, forEvery);//コールポイントに対しては「詳細」を設定
+	//cp.setNoticeLevel(asDetail, forEvery);//（同上）
+	randomWait();//ウェイト
+	printCommon(cp.getName());//共通処理
+	//【補足】
+	//コールポイントに対する操作ではなく、同名の関数でログレベル／画面通知レベルを変更
+	//この場合、永続的な設定の変更のため、コールポイントを抜けても元に戻らない
+	//デバッグメニューなどを用いて、ユーザーが任意のタイミングで変更することを想定
+	//つまり、この基本設定の変更処理は通常使用禁止（デバッグメニュー用処理など、一部の処理でのみ行う）
+	//基本設定は「ユーザーのための設定」である都合から、コールポイントでそれより低いログレベルを
+	//設定しても無効となる（以下、そのテスト）
+	setLogLevel(asSilent, forEvery);//基本設定を「静寂」に
+	setNoticeLevel(asSilent, forEvery);//（同上）
+	cp.setLogLevel(asDetail, forEvery);//コールポイントに対しては「詳細」を設定
+	cp.setNoticeLevel(asDetail, forEvery);//（同上）
+	printCommon(cp.getName());//共通処理
+}
 //--------------------
-//テスト（プロファイルを表示）
+//テスト（プロファイルを集計して表示）
 void printProfile()
 {
 	printf("--- PROFILE ---\n");
-	CProfiler profiler;
+	CProfiler profiler;//プロファイラ取得
 	printf("size()=%d, Buffer:Total=%d,Used=%d,Remain=%d\n", profiler.size(), profiler.getBuffTotal(), profiler.getBuffUsed(), profiler.getBuffRemain());
 	CStackAllocatorWithBuff<2048> work;//ワーク領域確保
 	CTempPolyStackAllocator alloc(work);//new 演算子でワーク領域を使うように設定（処理ブロックを抜けたら自動解除）
 	//ソートのためにvectorに移し替え
 	typedef std::vector<const CProfiler::PROFILE*> vec_t;
 	vec_t vec;
-	for (auto& o : profiler)
+	for (auto& ite : profiler)//プロファイラ自身がイテレータなので、そのままループ処理で計測結果を取り出す
 	{
-		const CProfiler::PROFILE& profile = o.second;
+		const CProfiler::PROFILE& profile = ite.second;
 		vec.push_back(&profile);
 	}
 	//ソート
-	//※トータル処理時間が大きい順
 	std::sort(vec.begin(), vec.end(),
-		[](const CProfiler::PROFILE* lhs, const CProfiler::PROFILE* rhs)->bool
-	{
-		return lhs->m_total.sum > rhs->m_total.sum;
-	}
+		[](const CProfiler::PROFILE* lhs, const CProfiler::PROFILE* rhs) -> bool
+		{
+			return lhs->m_measure.m_total.m_sum > rhs->m_measure.m_total.m_sum;//トータル処理時間が大きい順
+		}
 	);
 	//表示
 	for (auto& ite : vec)
 	{
 		const CProfiler::PROFILE& profile = *ite;
-		//printf("name=\"%s\", funcname=\"%s\", srcFileName=\"%s\", TOTAL:(count=%d, sum=%.6llf, max=%.6f, min=%.6f, ave=%.6f), FRAME:(count=%d, sum=%.6llf, max=%.6f, min=%.6f, ave=%.6f), frameCount=%d\n",
-		//	profile.m_name.c_str(), profile.m_funcName.c_str(), profile.m_srcFileName.c_str(), 
-		//	profile.m_total.count, profile.m_total.sum, profile.m_total.min, profile.m_total.max, profile.m_total.average(), 
-		//	profile.m_frame.count, profile.m_frame.sum, profile.m_frame.min, profile.m_frame.max, profile.m_frame.average(), 
-		//	profile.m_frameCount);
-		printf("%8.6fsec (%d cnt): \"%s\" %s\n", profile.m_total.sum, profile.m_total.count, profile.m_name.c_str(), profile.m_funcName.c_str());
+		printf("%8.6f sec (%d cnt):\"%s\" %s\n", profile.m_measure.m_total.m_sum, profile.m_measure.m_total.m_count, profile.m_name.c_str(), profile.m_funcName.c_str());
+
+		//スレッド情報表示
+		{
+			//スレッドの処理が終わった時に、スタックのマーカーを自動的に元の位置に戻す設定
+			CStackAllocAdp work_tmp(work,CIStackAllocAdp::AUTO_REWIND);
+
+			//ソートのためにvectorに移し替え
+			typedef std::vector<const CProfiler::PROFILE::THREAD_INFO*> vec_th_t;
+			vec_th_t vec_th;
+			for (auto& ite : profile.m_threadList)
+			{
+				const CProfiler::PROFILE::THREAD_INFO& thread_info = ite.second;
+				vec_th.push_back(&thread_info);
+			}
+			//ソート
+			std::sort(vec_th.begin(), vec_th.end(),
+				[](const CProfiler::PROFILE::THREAD_INFO* lhs, const CProfiler::PROFILE::THREAD_INFO* rhs) -> bool
+				{
+					return lhs->m_measure.m_total.m_sum > rhs->m_measure.m_total.m_sum;//トータル処理時間が大きい順
+				}
+			);
+			for (auto& ite_th : vec_th)
+			{
+				const CProfiler::PROFILE::THREAD_INFO& thread_info = *ite_th;
+				printf("                         %8.6f sec (%d cnt):\"%s\"\n", thread_info.m_measure.m_total.m_sum, thread_info.m_measure.m_total.m_count, thread_info.m_name.c_str());
+			}
+		}
 	}
 	printf("work:total=%d,used=%d,remain=%d\n", work.getTotal(), work.getUsed(), work.getRemain());
 }
 
 //--------------------
-//テスト
+//テスト（メイン）
 int main(const int argc, const char* argv[])
 {
 	//スレッドに名前を付ける

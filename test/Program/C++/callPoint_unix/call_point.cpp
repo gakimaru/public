@@ -22,7 +22,6 @@
 #include <bitset>//std::bitset用
 #include <iterator>//std::iterator用
 #include <algorithm>//std::move, std::sort用
-#include <string>//std::string用
 #include <atomic>//C++11アトミック操作
 #include <unordered_map>//C++11ハッシュテーブル
 #include <map>//STL map
@@ -117,7 +116,6 @@
 
 //--------------------
 //共通関数
-#include <string.h>
 //ファイル名取得関数（ディレクトリ部を除いた文字列を返す）
 const char* getFileName(const char* str)
 {
@@ -2555,8 +2553,7 @@ void* operator new(const std::size_t size) throw()
 	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();//メモリ確保情報取得
 	if (info)
 		align = info->m_align;
-	void* p = allocator->alloc(size, align);
-	return p;
+	return allocator->alloc(size, align);
 }
 //配列版
 void* operator new[](const std::size_t size) throw()
@@ -2566,8 +2563,7 @@ void* operator new[](const std::size_t size) throw()
 	const ALLOC_INFO* info = CPolyAllocator::getAllocInfoWithReset();//メモリ確保情報取得
 	if (info)
 		align = info->m_align;
-	void* p = allocator->alloc(size, align);
-	return p;
+	return allocator->alloc(size, align);
 }
 //delete
 void operator delete(void* p) throw()
@@ -2830,144 +2826,220 @@ namespace dbg
 		//型
 		typedef CStackAllocatorWithBuff<BUFF_SIZE> buffer_t;//バッファ型
 		typedef uintptr_t key_t;//キー型
+		//簡易文字列型
+		struct PROFILE;
+		struct THREAD_INFO;
+		class string
+		{
+			friend struct PROFILE;
+			friend struct THREAD_INFO;
+		public:
+			//オペレータ
+			const char* operator()() const { return m_str; }
+		public:
+			//キャストオペレータ
+			operator const char*() const { return m_str; }
+		public:
+			//メソッド
+			const char* c_str() const { return m_str; }
+		private:
+			//ムーブコンストラクタ
+			string(string&& src) :
+				m_str(src.m_str)
+			{
+				src.m_str = nullptr;
+			}
+			//コンストラクタ
+			string(const char* str, crc32_t crc = 0):
+				m_str(nullptr)
+			{
+				if (!str)
+					return;
+				//CRCが渡されたら優先的に文字列プールテーブルをチェック
+				strTable_t::iterator end_ite = m_strTable->end();
+				strTable_t::iterator ite;
+				if (crc != 0)
+				{
+					ite = m_strTable->find(crc);
+					if (ite != end_ite)
+					{
+						//文字列プールテーブルから見つかった
+						m_str = ite->second;
+						return;
+					}
+				}
+				//CRC算出/文字列コピー用に文字列長を算出
+				const std::size_t len = strlen(str);
+				//CRC未算出なら算出して文字列プールテーブルをチェック
+				if (crc == 0)
+				{
+					crc = calcCRC32(str, len);
+					ite = m_strTable->find(crc);
+				}
+				if (ite != end_ite)
+				{
+					//文字列プールテーブルから見つかった
+					m_str = ite->second;
+					return;
+				}
+				//文字列プールテーブルに文字列を登録
+				{
+					const std::size_t size = len + 1;
+					char* buff = new char[len + 1];//delete は destroyTable()でまとめて行う
+					if (buff)
+					{
+						memcpy(buff, str, size);
+						m_strTable->emplace(crc, buff);
+						m_str = buff;
+					}
+				}
+			}
+			//デストラクタ
+			~string()
+			{}
+		private:
+			//フィールド
+			const char* m_str;
+		};
+		//計測時間
+		struct TIME
+		{
+			double m_sum;//処理時間の合計
+			float m_max;//最大の処理時間
+			float m_min;//最小の処理時間
+			int m_count;//計測回数
+			float average() const { return m_count == 0 ? 0 : static_cast<float>(m_sum / static_cast<double>(m_count)); }
+			//計測時間集計
+			void add(const double time)
+			{
+				++m_count;
+				m_sum += time;
+				const float time_f = static_cast<float>(time);
+				if (m_max == 0.f || m_max < time_f)
+					m_max = time_f;
+				if (m_min == 0.f || m_min > time_f)
+					m_min = time_f;
+			}
+			//計測時間集計
+			void add(const TIME& src)
+			{
+				m_count += src.m_count;
+				m_sum += src.m_sum;
+				if (m_max == 0.f || m_max < src.m_max)
+					m_max = src.m_max;
+				if (m_min == 0.f || m_min > src.m_min)
+					m_min = src.m_min;
+			}
+			//計測時間リセット
+			void reset()
+			{
+				m_sum = 0.;
+				m_max = 0.f;
+				m_min = 0.f;
+				m_count = 0;
+			}
+			//コピー演算子
+			TIME& operator=(TIME& rhs)
+			{
+				memcpy(this, &rhs, sizeof(*this));
+				return *this;
+			}
+			//ムーブコンストラクタ
+			TIME(const TIME&& src) :
+				m_sum(src.m_sum),
+				m_max(src.m_max),
+				m_min(src.m_min),
+				m_count(src.m_count)
+			{}
+			//デフォルトコンストラクタ
+			TIME() :
+				m_sum(0.),
+				m_max(0.f),
+				m_min(0.f),
+				m_count(0)
+			{}
+		};
+		//計測時間情報
+		struct MEASURE
+		{
+			TIME m_total;//処理全体の集計
+			TIME m_frame;//フレーム内の集計
+			bool m_inCountOnFrame;//フレームの集計があったか？
+			int m_frameCount;//計測フレーム数
+			float m_time;//（前回計測時の）処理時間
+			//計測時間を加算
+			void add(const double time)
+			{
+				m_time = static_cast<float>(time);
+				m_frame.add(time);
+				m_inCountOnFrame = true;
+			}
+			//フレーム集計
+			void sumOnFrame()
+			{
+				if (m_inCountOnFrame)
+				{
+					m_inCountOnFrame = false;
+					m_total.add(m_frame);
+					m_frame.reset();
+					++m_frameCount;
+				}
+			}
+			//ムーブコンストラクタ
+			MEASURE(MEASURE&& src) :
+				m_total(std::move(src.m_total)),
+				m_frame(std::move(src.m_frame)),
+				m_inCountOnFrame(src.m_inCountOnFrame),
+				m_frameCount(src.m_frameCount),
+				m_time(src.m_time)
+			{}
+			//コンストラクタ
+			MEASURE() :
+				m_total(),
+				m_frame(),
+				m_inCountOnFrame(false),
+				m_frameCount(0),
+				m_time(0.f)
+			{}
+		};
+		//スレッド情報
+		struct THREAD_INFO
+		{
+			crc32_t m_nameCrc;//スレッド名のCRC
+			string m_name;//スレッド名
+			MEASURE m_measure;//計測情報
+			//計測時間を加算
+			void add(const double time)
+			{
+				m_measure.add(time);
+			}
+			//フレーム集計
+			void sumOnFrame()
+			{
+				m_measure.sumOnFrame();
+			}
+			//ムーブコンストラクタ
+			THREAD_INFO(THREAD_INFO&& src) :
+				m_nameCrc(src.m_nameCrc),
+				m_name(std::move(src.m_name)),
+				m_measure(std::move(src.m_measure))
+			{}
+			//コンストラクタ
+			THREAD_INFO(const crc32_t name_crc, const char* name) :
+				m_nameCrc(name_crc),
+				m_name(name, name_crc),
+				m_measure()
+			{}
+		};
+		typedef std::map<crc32_t, THREAD_INFO> threadList_t;//スレッド情報リスト型
 		//プロファイル
 		struct PROFILE
 		{
 			key_t m_key;//キー
-			std::string m_name;//処理名
-			std::string m_srcFileName;//ソースファイル名
-			std::string m_funcName;//関数名
-			struct TIME
-			{
-				double m_sum;//処理時間の合計
-				float m_max;//最大の処理時間
-				float m_min;//最小の処理時間
-				int m_count;//計測回数
-				float average() const { return m_count == 0 ? 0 : static_cast<float>(m_sum / static_cast<double>(m_count)); }
-				//計測時間集計
-				void add(const double time)
-				{
-					++m_count;
-					m_sum += time;
-					const float time_f = static_cast<float>(time);
-					if (m_max == 0.f || m_max < time_f)
-						m_max = time_f;
-					if (m_min == 0.f || m_min > time_f)
-						m_min = time_f;
-				}
-				//計測時間集計
-				void add(const TIME& src)
-				{
-					m_count += src.m_count;
-					m_sum += src.m_sum;
-					if (m_max == 0.f || m_max < src.m_max)
-						m_max = src.m_max;
-					if (m_min == 0.f || m_min > src.m_min)
-						m_min = src.m_min;
-				}
-				//計測時間リセット
-				void reset()
-				{
-					m_sum = 0.;
-					m_max = 0.f;
-					m_min = 0.f;
-					m_count = 0;
-				}
-				//コピー演算子
-				TIME& operator=(TIME& rhs)
-				{
-					memcpy(this, &rhs, sizeof(*this));
-					return *this;
-				}
-				//ムーブコンストラクタ
-				TIME(const TIME&& src):
-					m_sum(src.m_sum),
-					m_max(src.m_max),
-					m_min(src.m_min),
-					m_count(src.m_count)
-				{}
-				//デフォルトコンストラクタ
-				TIME() :
-					m_sum(0.),
-					m_max(0.f),
-					m_min(0.f),
-					m_count(0)
-				{}
-			};
-			//計測時間情報
-			struct MEASURE
-			{
-				TIME m_total;//処理全体の集計
-				TIME m_frame;//フレーム内の集計
-				bool m_inCountOnFrame;//フレームの集計があったか？
-				int m_frameCount;//計測フレーム数
-				float m_time;//（前回計測時の）処理時間
-				//計測時間を加算
-				void add(const double time)
-				{
-					m_time = static_cast<float>(time);
-					m_frame.add(time);
-					m_inCountOnFrame = true;
-				}
-				//フレーム集計
-				void sumOnFrame()
-				{
-					if (m_inCountOnFrame)
-					{
-						m_inCountOnFrame = false;
-						m_total.add(m_frame);
-						m_frame.reset();
-						++m_frameCount;
-					}
-				}
-				//ムーブコンストラクタ
-				MEASURE(MEASURE&& src) :
-					m_total(std::move(src.m_total)),
-					m_frame(std::move(src.m_frame)),
-					m_inCountOnFrame(src.m_inCountOnFrame),
-					m_frameCount(src.m_frameCount),
-					m_time(src.m_time)
-				{}
-				//コンストラクタ
-				MEASURE() :
-					m_total(),
-					m_frame(),
-					m_inCountOnFrame(false),
-					m_frameCount(0),
-					m_time(0.f)
-				{}
-			};
+			string m_name;//処理名
+			string m_srcFileName;//ソースファイル名
+			string m_funcName;//関数名
 			MEASURE m_measure;//計測情報
-			//スレッド情報
-			struct THREAD_INFO
-			{
-				crc32_t m_nameCrc;//スレッド名のCRC
-				std::string m_name;//スレッド名
-				MEASURE m_measure;//計測情報
-				//計測時間を加算
-				void add(const double time)
-				{
-					m_measure.add(time);
-				}
-				//フレーム集計
-				void sumOnFrame()
-				{
-					m_measure.sumOnFrame();
-				}
-				//ムーブコンストラクタ
-				THREAD_INFO(THREAD_INFO&& src) :
-					m_nameCrc(src.m_nameCrc),
-					m_name(std::move(src.m_name)),
-					m_measure(std::move(src.m_measure))
-				{}
-				//コンストラクタ
-				THREAD_INFO(const crc32_t name_crc, const char* name) :
-					m_nameCrc(name_crc),
-					m_name(name),
-					m_measure()
-				{}
-			};
-			typedef std::map<crc32_t, THREAD_INFO> threadList_t;//マップ型
 			threadList_t m_threadList;
 			//計測時間を加算
 			void add(const double time, const CThreadID& thread_id)
@@ -3010,7 +3082,6 @@ namespace dbg
 			}
 			//ムーブコンストラクタ
 			//※要素追加の際の無駄なオブジェクト生成と破棄を防ぐ
-			//　（std::string向けの対処：std::move()を使って受け渡し）
 			PROFILE(PROFILE&& src) :
 				m_key(src.m_key),
 				m_name(std::move(src.m_name)),
@@ -3028,9 +3099,10 @@ namespace dbg
 				m_measure()
 			{}
 		};
-		typedef std::unordered_map<key_t, PROFILE> table_t;//ハッシュテーブル型
+		typedef std::unordered_map<key_t, PROFILE> table_t;//プロファイルテーブル型（ハッシュテーブル）
 		typedef table_t::iterator iterator;//イテレータ型
 		typedef table_t::const_iterator const_iterator;//イテレータ型
+		typedef std::unordered_map<crc32_t, const char*> strTable_t;//スレッド名テーブル型（ハッシュテーブル）
 	public:
 		//アクセッサ
 		std::size_t getBuffTotal()const{ return m_buff.getTotal(); }
@@ -3082,26 +3154,40 @@ namespace dbg
 		table_t::const_iterator cbegin() const { return m_table->cbegin(); }
 		table_t::const_iterator cend() const { return m_table->cend(); }
 		//テーブル生成
-		void createTable()
+		static void createTable()
 		{
 			m_lock.lock();
 			if (!m_table)
 			{
 				CTempPolyStackAllocator allocator(m_buff);
+				//プロファイルテーブルを生成
 				m_table = new table_t();
-				m_table->reserve(1024);
+				//m_table->reserve(1024);//予約
+				//文字列プールテーブルを生成
+				m_strTable = new strTable_t();
+				//m_strTable->reserve(1024);//予約
 			}
 			m_lock.unlock();
 		}
 		//テーブル破棄
-		void destroyTable()
+		static void destroyTable()
 		{
 			m_lock.lock();
 			if (m_table)
 			{
 				CTempPolyStackAllocator allocator(m_buff);
+				//文字列プールテーブルを破棄
+				for (auto& ite : *m_strTable)
+				{
+					if (ite.second)
+						delete[] ite.second;//文字列を破棄
+				}
+				delete m_strTable;
+				m_strTable = nullptr;
+				//プロファイルテーブルを破棄
 				delete m_table;
 				m_table = nullptr;
+				//プロファイル／文字列用バッファをクリア
 				m_buff.clearN();
 			}
 			m_lock.unlock();
@@ -3125,14 +3211,16 @@ namespace dbg
 		}
 	private:
 		//フィールド
-		static table_t* m_table;//ハッシュテーブル
-		static buffer_t m_buff;//記録用バッファ
+		static table_t* m_table;//プロファイルハッシュテーブル（ハッシュテーブル）
+		static strTable_t* m_strTable;//文字列プールテーブル（ハッシュテーブル）
+		static buffer_t m_buff;//プロファイル／文字列用バッファ
 		static CSpinLock m_lock;//ロック
 	};
 	//----------------------------------------
 	//プロファイラの静的変数をインスタンス化
-	CProfiler::table_t* CProfiler::m_table;//ハッシュテーブル
-	CProfiler::buffer_t CProfiler::m_buff;//記録用バッファ
+	CProfiler::table_t* CProfiler::m_table = nullptr;//プロファイルハッシュテーブル（ハッシュテーブル）
+	CProfiler::strTable_t* CProfiler::m_strTable = nullptr;//文字列プールテーブル（ハッシュテーブル）
+	CProfiler::buffer_t CProfiler::m_buff;//プロファイル／文字列用バッファ
 	CSpinLock CProfiler::m_lock;//ロック
 }//dbg
 
@@ -5793,7 +5881,7 @@ void printProfile()
 	for (auto& ite : vec)
 	{
 		const CProfiler::PROFILE& profile = *ite;
-		printf("%8.6f sec (%d cnt):\"%s\" %s\n", profile.m_measure.m_total.m_sum, profile.m_measure.m_total.m_count, profile.m_name.c_str(), profile.m_funcName.c_str());
+		printf("%8.6f sec (%d cnt):\"%s\" %s\n", profile.m_measure.m_total.m_sum, profile.m_measure.m_total.m_count, profile.m_name(), profile.m_funcName());
 
 		//スレッド情報表示
 		{
@@ -5801,24 +5889,24 @@ void printProfile()
 			CStackAllocAdp work_tmp(work,CIStackAllocAdp::AUTO_REWIND);
 
 			//ソートのためにvectorに移し替え
-			typedef std::vector<const CProfiler::PROFILE::THREAD_INFO*> vec_th_t;
+			typedef std::vector<const CProfiler::THREAD_INFO*> vec_th_t;
 			vec_th_t vec_th;
 			for (auto& ite : profile.m_threadList)
 			{
-				const CProfiler::PROFILE::THREAD_INFO& thread_info = ite.second;
+				const CProfiler::THREAD_INFO& thread_info = ite.second;
 				vec_th.push_back(&thread_info);
 			}
 			//ソート
 			std::sort(vec_th.begin(), vec_th.end(),
-				[](const CProfiler::PROFILE::THREAD_INFO* lhs, const CProfiler::PROFILE::THREAD_INFO* rhs) -> bool
+				[](const CProfiler::THREAD_INFO* lhs, const CProfiler::THREAD_INFO* rhs) -> bool
 				{
 					return lhs->m_measure.m_total.m_sum > rhs->m_measure.m_total.m_sum;//トータル処理時間が大きい順
 				}
 			);
 			for (auto& ite_th : vec_th)
 			{
-				const CProfiler::PROFILE::THREAD_INFO& thread_info = *ite_th;
-				printf("                         %8.6f sec (%d cnt):\"%s\"\n", thread_info.m_measure.m_total.m_sum, thread_info.m_measure.m_total.m_count, thread_info.m_name.c_str());
+				const CProfiler::THREAD_INFO& thread_info = *ite_th;
+				printf("                         %8.6f sec (%d cnt):\"%s\"\n", thread_info.m_measure.m_total.m_sum, thread_info.m_measure.m_total.m_count, thread_info.m_name());
 			}
 		}
 	}
@@ -5848,6 +5936,9 @@ int main(const int argc, const char* argv[])
 
 	//プロファイルを表示
 	printProfile();
+
+	//プロファイラ破棄
+	CProfiler::destroyTable();
 
 	return EXIT_SUCCESS;
 }

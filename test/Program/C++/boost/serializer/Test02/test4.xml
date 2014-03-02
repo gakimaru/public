@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="10">
+<obj class_id="0" tracking_level="0" version="99">
+	<m_data1>123</m_data1>
+	<m_data2>4.5599999</m_data2>
+	<m_data3>
+		<count>3</count>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
+	</m_data3>
+	<m_data4 class_id="1" tracking_level="1" version="100" object_id="_0">
+		<m_val1>10</m_val1>
+		<m_val2>11</m_val2>
+	</m_data4>
+	<m_data5>
+		<count>2</count>
+		<item object_id="_1">
+			<m_val1>12</m_val1>
+			<m_val2>13</m_val2>
+		</item>
+		<item object_id="_2">
+			<m_val1>14</m_val1>
+			<m_val2>15</m_val2>
+		</item>
+	</m_data5>
+	<m_data6 class_id_reference="1" object_id="_3">
+		<m_val1>16</m_val1>
+		<m_val2>17</m_val2>
+	</m_data6>
+	<m_data7 class_id="-1"></m_data7>
+</obj>

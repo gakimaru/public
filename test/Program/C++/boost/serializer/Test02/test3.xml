@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="10">
+<obj class_id="0" tracking_level="0" version="99">
+	<m_data1>123</m_data1>
+	<m_data2>4.5599999</m_data2>
+	<m_data3>
+		<count>3</count>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
+	</m_data3>
+</obj>

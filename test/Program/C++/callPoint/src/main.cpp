@@ -5667,6 +5667,7 @@ void gameLoop()
 			subProc6();//処理６
 			std::thread th3 = std::thread(subProc7, "スレッドC");//スレッド処理
 			printCommon(cp.getName());//共通処理
+			//スレッド終了待ち
 			th1.join();
 			th2.join();
 			th3.join();
@@ -5736,6 +5737,9 @@ void subProc7(const char* thread_name)
 	callPointAsCritical cp(forThread, "処理７：スレッド", recProfile, __CPARGS());
 	CThreadID thread_id(thread_name);//スレッドに名前を付ける
 	//スレッド用（ウェイトのみ）
+	//※他のスレッドとの干渉がないことを確認するために、スレッドの処理時間をやや長めにする
+	randomWait();//ウェイト
+	randomWait();//ウェイト
 	randomWait();//ウェイト
 }
 //処理８

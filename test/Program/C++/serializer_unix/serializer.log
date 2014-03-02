@@ -1,0 +1,19 @@
+&obj=0x0x28abe4
+[operator<<] name=CTest1, typeName=6CTest1, item=0x0x28abe4
+T::ver=123.456
+serialize
+obj.m_data1=0x0x28abe4
+obj.m_data2=0x0x28abe8
+obj.m_data3=0x0x28abec
+[operator&] name=data1, typeName=i, item=0x0x28abe4 [0]
+[operator&] name=data2, typeName=f, item=0x0x28abe8 [0]
+[operator&] name=data3, typeName=c, item=0x0x28abec [3]
+[operator>>] name=CTest1, typeName=6CTest1, item=0x0x28abe4
+T::ver=123.456
+serialize
+obj.m_data1=0x0x28abe4
+obj.m_data2=0x0x28abe8
+obj.m_data3=0x0x28abec
+[operator&] name=data1, typeName=i, item=0x0x28abe4 [0]
+[operator&] name=data2, typeName=f, item=0x0x28abe8 [0]
+[operator&] name=data3, typeName=c, item=0x0x28abec [3]

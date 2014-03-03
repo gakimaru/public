@@ -3,32 +3,50 @@
 data1=1
 data2=2.34
 data3={5, 6, 7}
-data4:a=8,b=9,c=10.0
-data5:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
-data6:[0]={a=11,b=12,c=13.0},[1]={a=14,b=15,c=16.0}
-data7:a=17,b=18,c=19.0
-CSaveDataSerializer::gatherer(ver=5,6)
-serialize(ver=1,2)
-serialize::STRUCT(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize::STRUCT(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize::STRUCT(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize::STRUCT(ver=3,4) sizeof(CTest1::STRUCT)=12
-save(ver=1,2)
-gatherer(ver=1,2)
+data4a:a=8,b=9,c=10.0
+data4b:a=11,b=12,c=13.0
+data5a:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
+data5b:[0]=0,[1]=0,[2]=1,[8190]=1,[8191]=0
+data6:[0]={a=14,b=15,c=16.0},[1]={a=17,b=18,c=19.0}
+data7a(0x0x800103b8):a=20,b=21,c=22.0
+data7b(0x0x0):
+gatherer<CSaveDataSerializer>(ver=5,6)
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2116
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+save<CTest1>(ver=1,2)
+gatherer<CTest1>(ver=1,2)
 処理結果：エラーなし
 --------------------
 デシリアライズ：バイナリアーカイブ
-CSaveDataSerializer::distributor(ver=0,0)
-beforeLoad(ver=0,0)
-serialize(ver=0,0)
-load(ver=0,0)
-afterLoad(ver=0,0)
-distributor(ver=0,0)
+[operator>>] name=CTest1, typeName=19CSaveDataSerializer, item=0x0x0, size=2395, arrNum=0, isObj=1, isArr=0, isPtr=0, isNull=0
+distributor<CSaveDataSerializer>(ver=0,0)
+[operator>>] name=CTest1, typeName=6CTest1, item=0x0x413040, size=2116, arrNum=0, isObj=1, isArr=0, isPtr=0, isNull=0
+beforeLoad<CTest1>(ver=0,0)
+serialize<CTest1>(ver=0,0) sizeof(CTest1)=2116
+[operator&] name=data1, typeName=i, item=0x0x413040, size=4, arrNum=0, isObj=0, isArr=0, isPtr=0, isNull=0
+[operator&] name=data2, typeName=f, item=0x0x413044, size=4, arrNum=0, isObj=0, isArr=0, isPtr=0, isNull=0
+[operator&] name=data3, typeName=c, item=0x0x413048, size=1, arrNum=3, isObj=0, isArr=1, isPtr=0, isNull=0
+[operator&] name=data4a, typeName=N6CTest16STRUCTE, item=0x0x41304c, size=12, arrNum=0, isObj=1, isArr=0, isPtr=0, isNull=0
+[operator&] name=data4b, typeName=c, item=0x0x413058, size=1, arrNum=12, isObj=0, isArr=1, isPtr=0, isNull=0
+[operator&] name=data5a, typeName=St6bitsetILj8192EE, item=0x0x413064, size=1024, arrNum=0, isObj=0, isArr=0, isPtr=0, isNull=0
+[operator&] name=data5b, typeName=c, item=0x0x413464, size=1, arrNum=1024, isObj=0, isArr=1, isPtr=0, isNull=0
+[operator&] name=data6, typeName=N6CTest16STRUCTE, item=0x0x413864, size=12, arrNum=2, isObj=1, isArr=1, isPtr=0, isNull=0
+[operator&] name=data7a, typeName=N6CTest16STRUCTE, item=0x0x800103b8, size=12, arrNum=0, isObj=1, isArr=0, isPtr=1, isNull=0
+[operator&] name=data7b, typeName=N6CTest16STRUCTE, item=0x0x0, size=12, arrNum=0, isObj=1, isArr=0, isPtr=1, isNull=1
+load<CTest1>(ver=0,0)
+afterLoad<CTest1>(ver=0,0)
+distributor<CTest1>(ver=0,0)
 処理結果：エラーなし
 data1=1
 data2=2.34
 data3={5, 6, 7}
-data4:a=8,b=9,c=10.0
-data5:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
-data6:[0]={a=11,b=12,c=13.0},[1]={a=14,b=15,c=16.0}
-data7:a=17,b=18,c=19.0
+data4a:a=8,b=9,c=10.0
+data4b:a=11,b=12,c=13.0
+data5a:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
+data5b:[0]=0,[1]=0,[2]=1,[8190]=1,[8191]=0
+data6:[0]={a=14,b=15,c=16.0},[1]={a=17,b=18,c=19.0}
+data7a(0x0x800103b8):a=20,b=21,c=22.0
+data7b(0x0x0):

@@ -217,11 +217,11 @@ crc32_t calcCRC32(const char* data, const std::size_t len)
 	const char* p = data;
 	for (std::size_t pos = 0; pos < len; ++pos, ++p)
 	{
-#ifndef USE_CRC_CALC_TABLE
+	#ifndef USE_CRC_CALC_TABLE
 		crc = crc_inner_calc::calcPoly(static_cast<crc32_t>((crc ^ *p) & 0xffu), 8) ^ (crc >> 8);//CRC生成多項式計算計算を合成
-#else//USE_CRC_CALC_TABLE
+	#else//USE_CRC_CALC_TABLE
 		crc = crc_inner_calc::s_calcTable[(crc ^ *p) & 0xffu] ^ (crc >> 8);//CRC生成多項式計算計算済みテーブルの値を合成
-#endif//USE_CRC_CALC_TABLE
+	#endif//USE_CRC_CALC_TABLE
 	}
 	return ~crc;
 }
@@ -248,15 +248,15 @@ public:
 	void lock(const int spin_count = DEFAULT_SPIN_COUNT)
 	{
 		int spin_count_now = 0;
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+	#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
 		while (m_lock.test_and_set())//std::atomic_flag版（高速）
 		{
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
+	#else//SPIN_LOCK_USE_ATOMIC_FLAG
 		bool prev = false;
 		while (m_lock.compare_exchange_weak(prev, true))//std::atomic_bool版（軽量）
 		{
 			prev = false;
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+	#endif//SPIN_LOCK_USE_ATOMIC_FLAG
 			if (spin_count == 0 || ++spin_count_now % spin_count == 0)
 				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
 		}
@@ -264,21 +264,21 @@ public:
 	//ロック解放
 	void unlock()
 	{
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+	#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
 		m_lock.clear();//std::atomic_flag版（高速）
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
+	#else//SPIN_LOCK_USE_ATOMIC_FLAG
 		m_lock.store(false);//std::atomic_bool版（軽量）
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+	#endif//SPIN_LOCK_USE_ATOMIC_FLAG
 	}
 public:
 	//コンストラクタ
 	CSpinLock()
 	{
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
+	#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
 		m_lock.clear();//ロック用フラグ（高速）
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
+	#else//SPIN_LOCK_USE_ATOMIC_FLAG
 		m_lock.store(false);//ロック用フラグ（軽量）
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+	#endif//SPIN_LOCK_USE_ATOMIC_FLAG
 	}
 	//デストラクタ
 	~CSpinLock()
@@ -2911,7 +2911,7 @@ namespace serial
 		template<class T>
 		CIArchive& operator&(const CItem<T> item_obj)
 		{
-			//printf("[operator&] name=%s, typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNull=%d\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObject(), item_obj.isArray(), item_obj.isPtr(), item_obj.isNull());
+			printf("[operator&] name=%s, typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNull=%d\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObject(), item_obj.isArray(), item_obj.isPtr(), item_obj.isNull());
 			
 			//データ項目を記録
 			//※全ての記録が終わった後、データを読み込みながらデータ項目に書き込んでいく
@@ -2925,7 +2925,7 @@ namespace serial
 		template<class T>
 		CIArchive& operator>>(CItem<T> item_obj)
 		{
-			//printf("[operator>>] name=%s, typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNull=%d\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObject(), item_obj.isArray(), item_obj.isPtr(), item_obj.isNull());
+			printf("[operator>>] name=%s, typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNull=%d\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObject(), item_obj.isArray(), item_obj.isPtr(), item_obj.isNull());
 			
 			//ネストレベルが0ならシグネチャーを読み込み
 			if (m_nestLevel == 0)
@@ -3422,40 +3422,48 @@ public:
 	void setData2(const float value){ m_data2 = value; }//データ2更新
 	char getData3(const int index) const { return m_data3[index]; }//データ3取得
 	void setData3(const int index, const int value){ m_data3[index] = value; }//データ3更新
-	STRUCT& getData4(){ return m_data4; }//データ4取得
-	const STRUCT& getData4() const { return m_data4; }//データ4取得
-	bool getData5(const int index) const { return m_data5[index]; }//データ5取得
-	void setData5(const int index, const bool value){ m_data5[index] = value; }//データ5更新
+	STRUCT& getData4a(){ return m_data4a; }//データ4a取得
+	const STRUCT& getData4a() const { return m_data4a; }//データ4a取得
+	STRUCT& getData4b(){ return m_data4b; }//データ4b取得
+	const STRUCT& getData4b() const { return m_data4b; }//データ4b取得
+	bool getData5a(const int index) const { return m_data5a[index]; }//データ5a取得
+	void setData5a(const int index, const bool value){ m_data5a[index] = value; }//データ5a更新
+	bool getData5b(const int index) const { return m_data5b[index]; }//データ5b取得
+	void setData5b(const int index, const bool value){ m_data5b[index] = value; }//データ5b更新
 	STRUCT& getData6(const int index){ return m_data6[index]; }//データ6取得
 	const STRUCT& getData6(const int index) const { return m_data6[index]; }//データ6取得
-	STRUCT* getData7(){ return m_data7; }//データ7取得
-	const STRUCT* getData7() const { return m_data7; }//データ7取得
-	STRUCT* getData8(){ return m_data8; }//データ8取得
-	const STRUCT* getData8() const { return m_data8; }//データ8取得
+	STRUCT* getData7a(){ return m_data7a; }//データ7a取得
+	const STRUCT* getData7a() const { return m_data7a; }//データ7a取得
+	STRUCT* getData7b(){ return m_data7b; }//データ7取得
+	const STRUCT* getData7b() const { return m_data7b; }//データ7取得
 public:
 	//コンストラクタ
 	CTest1() :
 		m_data1(0),
 		m_data2(0.f),
-		m_data4(),
-		m_data7(nullptr),
-		m_data8(nullptr)
+		m_data4a(),
+		m_data4b(),
+		m_data7a(nullptr),
+		m_data7b(nullptr)
 	{
 		m_data3[0] = 0;
 		m_data3[1] = 0;
-		m_data5.reset();
-		m_data7 = new STRUCT();
+		m_data5a.reset();
+		m_data5b.reset();
+		m_data7a = new STRUCT();
 	}
 private:
 	//フィールド
 	int m_data1;//データ1
 	float m_data2;//データ2
 	char m_data3[3];//データ3
-	STRUCT m_data4;//データ4
-	std::bitset<8192> m_data5;//データ5
+	STRUCT m_data4a;//データ4a
+	STRUCT m_data4b;//データ4b
+	std::bitset<8192> m_data5a;//データ5a
+	std::bitset<8192> m_data5b;//データ5b
 	STRUCT m_data6[2];//データ6
-	STRUCT* m_data7;//データ7
-	STRUCT* m_data8;//データ8
+	STRUCT* m_data7a;//データ7a
+	STRUCT* m_data7b;//データ7b
 };
 //--------------------
 //セーブデータ作成用クラス
@@ -3483,21 +3491,26 @@ void initSaveData()
 	data.setData3(0, 5);
 	data.setData3(1, 6);
 	data.setData3(2, 7);
-	data.getData4().m_a = 8;
-	data.getData4().m_b = 9;
-	data.getData4().m_c = 10.f;
-	data.setData5(0, true);
-	data.setData5(1, true);
-	data.setData5(8191, true);
-	data.getData6(0).m_a = 11;
-	data.getData6(0).m_b = 12;
-	data.getData6(0).m_c = 13.f;
-	data.getData6(1).m_a = 14;
-	data.getData6(1).m_b = 15;
-	data.getData6(1).m_c = 16.f;
-	data.getData7()->m_a = 17;
-	data.getData7()->m_b = 18;
-	data.getData7()->m_c = 19.f;
+	data.getData4a().m_a = 8;
+	data.getData4a().m_b = 9;
+	data.getData4a().m_c = 10.f;
+	data.getData4b().m_a = 11;
+	data.getData4b().m_b = 12;
+	data.getData4b().m_c = 13.f;
+	data.setData5a(0, true);
+	data.setData5a(1, true);
+	data.setData5a(8191, true);
+	data.setData5b(2, true);
+	data.setData5b(8190, true);
+	data.getData6(0).m_a = 14;
+	data.getData6(0).m_b = 15;
+	data.getData6(0).m_c = 16.f;
+	data.getData6(1).m_a = 17;
+	data.getData6(1).m_b = 18;
+	data.getData6(1).m_c = 19.f;
+	data.getData7a()->m_a = 20;
+	data.getData7a()->m_b = 21;
+	data.getData7a()->m_c = 22.f;
 }
 
 //セーブデータ内容表示
@@ -3509,10 +3522,13 @@ void printSaveData()
 	printf("data1=%d\n", data.getData1());
 	printf("data2=%.2f\n", data.getData2());
 	printf("data3={%d, %d, %d}\n", data.getData3(0), data.getData3(1), data.getData3(2));
-	printf("data4:a=%d,b=%d,c=%.1f\n", data.getData4().m_a, data.getData4().m_b, data.getData4().m_c);
-	printf("data5:[0]=%d,[1]=%d,[2]=%d,[8190]=%d,[8191]=%d\n", data.getData5(0), data.getData5(1), data.getData5(2), data.getData5(8190), data.getData5(8191));
+	printf("data4a:a=%d,b=%d,c=%.1f\n", data.getData4a().m_a, data.getData4a().m_b, data.getData4a().m_c);
+	printf("data4b:a=%d,b=%d,c=%.1f\n", data.getData4b().m_a, data.getData4b().m_b, data.getData4b().m_c);
+	printf("data5a:[0]=%d,[1]=%d,[2]=%d,[8190]=%d,[8191]=%d\n", data.getData5a(0), data.getData5a(1), data.getData5a(2), data.getData5a(8190), data.getData5a(8191));
+	printf("data5b:[0]=%d,[1]=%d,[2]=%d,[8190]=%d,[8191]=%d\n", data.getData5b(0), data.getData5b(1), data.getData5b(2), data.getData5b(8190), data.getData5b(8191));
 	printf("data6:[0]={a=%d,b=%d,c=%.1f},[1]={a=%d,b=%d,c=%.1f}\n", data.getData6(0).m_a, data.getData6(0).m_b, data.getData6(0).m_c, data.getData6(1).m_a, data.getData6(1).m_b, data.getData6(1).m_c);
-	printf("data7:a=%d,b=%d,c=%.1f\n", data.getData7()->m_a, data.getData7()->m_b, data.getData7()->m_c);
+	printf("data7a(0x%p):a=%d,b=%d,c=%.1f\n", data.getData7a(), data.getData7a()->m_a, data.getData7a()->m_b, data.getData7a()->m_c);
+	printf("data7b(0x%p):\n", data.getData7b());
 }
 
 //--------------------
@@ -3527,7 +3543,7 @@ namespace serial
 	struct beforeLoad<Arc, CTest1> {
 		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
 		{
-			printf("beforeLoad(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("beforeLoad<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
@@ -3539,25 +3555,52 @@ namespace serial
 	struct serialize<Arc, CTest1> {
 		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver)
 		{
-			printf("serialize(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("serialize<CTest1>(ver=%d,%d) sizeof(CTest1)=%d\n", ver.getMajor(), ver.getMinor(), sizeof(CTest1));
 			arc & pair("data1", obj.m_data1);
 			arc & pair("data2", obj.m_data2);
 			arc & pair("data3", obj.m_data3);
-			arc & pair("data4", obj.m_data4);
-			arc & pairBin("data5", obj.m_data5);
+			arc & pair("data4a", obj.m_data4a);
+			arc & pairBin("data4b", obj.m_data4b);
+			arc & pair("data5a", obj.m_data5a);
+			arc & pairBin("data5b", obj.m_data5b);
 			arc & pair("data6", obj.m_data6);
-			arc & pair("data7", obj.m_data7);
-			arc & pair("data8", obj.m_data8);
+			arc & pair("data7a", obj.m_data7a);
+			arc & pair("data7b", obj.m_data7b);
 		}
 	};
+#endif
+#if 1
 	template<class Arc>
 	struct serialize<Arc, CTest1::STRUCT> {
 		void operator()(Arc& arc, const CTest1::STRUCT& obj, const CVersion& ver)
 		{
-			printf("serialize::STRUCT(ver=%d,%d) sizeof(CTest1::STRUCT)=%d\n", ver.getMajor(), ver.getMinor(), sizeof(CTest1::STRUCT));
+			printf("serialize<CTest1::STRUCT>(ver=%d,%d) sizeof(CTest1::STRUCT)=%d\n", ver.getMajor(), ver.getMinor(), sizeof(CTest1::STRUCT));
 			arc & pair("data1", obj.m_a);
 			arc & pair("data2", obj.m_b);
 			arc & pair("data3", obj.m_c);
+		}
+	};
+#endif
+#if 0
+	//標準クラスライブラリに対応する関数も定義できる
+	//std::bitsetを1ビットずつ別項目で書き出すサンプル
+	//※膨大なワークバッファを要するので注意
+	template<class Arc, std::size_t N>
+	struct serialize<Arc, std::bitset<N> > {
+		void operator()(Arc& arc, const std::bitset<N>& obj, const CVersion& ver)
+		{
+			printf("serialize<std::bitset<N>>(ver=%d,%d) sizeof(std::bitset<N>)=%d\n", ver.getMajor(), ver.getMinor(), sizeof(std::bitset<N>));
+			for (int i = 0; i < N; ++i)
+			{
+				char name[16];
+			#ifdef USE_STRCPY_S
+				sprintf_s(name,sizeof(name),  "no%d", i);
+			#else//USE_STRCPY_S
+				sprintf(name, "no%d", i);
+			#endif//USE_STRCPY_S
+				bool bit = obj[i];
+				arc & pair(name, bit);
+			}
 		}
 	};
 #endif
@@ -3569,7 +3612,7 @@ namespace serial
 	struct save<Arc, CTest1> {
 		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver)
 		{
-			printf("save(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("save<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
@@ -3581,7 +3624,7 @@ namespace serial
 	struct load<Arc, CTest1> {
 		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
 		{
-			printf("load(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("load<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
@@ -3593,7 +3636,7 @@ namespace serial
 	struct afterLoad<Arc, CTest1> {
 		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
 		{
-			printf("afterLoad(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("afterLoad<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
@@ -3605,7 +3648,7 @@ namespace serial
 	struct gatherer<Arc, CTest1> {
 		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver)
 		{
-			printf("gatherer(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("gatherer<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
@@ -3617,7 +3660,7 @@ namespace serial
 	struct distributor<Arc, CTest1> {
 		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
 		{
-			printf("distributor(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("distributor<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
@@ -3629,7 +3672,7 @@ namespace serial
 	struct gatherer<Arc, CSaveDataSerializer> {
 		void operator()(Arc& arc, const CSaveDataSerializer& obj, const CVersion& ver)
 		{
-			printf("CSaveDataSerializer::gatherer(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("gatherer<CSaveDataSerializer>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 			//対象データ取得
 			CTest1& data = s_saveData;
 			//シリアライズ
@@ -3645,7 +3688,7 @@ namespace serial
 	struct distributor<Arc, CSaveDataSerializer> {
 		void operator()(Arc& arc, CSaveDataSerializer& obj, const CVersion& ver)
 		{
-			printf("CSaveDataSerializer::distributor(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("distributor<CSaveDataSerializer>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 			//対象データ取得
 			CTest1& data = s_saveData;
 			//デシリアライズ
@@ -3654,6 +3697,11 @@ namespace serial
 	};
 #endif
 }//namespace serial
+
+//セーブデータ用バッファ
+static char s_saveBuff[1 * 1024 * 1024];
+//ワークバッファ
+static char s_workBuff[8 * 1024 * 1024];
 
 //--------------------
 //シリアライズテスト１：バイナリアーカイブ
@@ -3665,11 +3713,8 @@ void serializeTest1(const char* file_path)
 	initSaveData();
 	//セーブデータ表示
 	printSaveData();
-	//バッファ準備
-	char buff[16 * 1024];//セーブデータ用バッファ
-	char work[16 * 1024];//ワーク用バッファ
 	//シリアライズ
-	serial::COBinaryArchive arc(buff, work);//出力アーカイブ作成：テキストアーカイブ
+	serial::COBinaryArchive arc(s_saveBuff, s_workBuff);//出力アーカイブ作成：テキストアーカイブ
 	arc << serial::pair<CSaveDataSerializer>("SaveData");//シリアライズ
 	printf("処理結果：%s\n", arc.hasFatalError() ? "致命的なエラーあり" : "エラーなし");
 	//ファイルに書き出し
@@ -3679,7 +3724,7 @@ void serializeTest1(const char* file_path)
 #else//USE_STRCPY_S
 	FILE* fp = fopen(file_path, "wb");
 #endif//USE_STRCPY_S
-	fwrite(buff, 1, arc.getBuffPos(), fp);
+	fwrite(s_saveBuff, 1, arc.getBuffPos(), fp);
 	fclose(fp);
 	fp = NULL;
 }
@@ -3689,9 +3734,6 @@ void deserializeTest1(const char* file_path)
 {
 	printf("--------------------\n");
 	printf("デシリアライズ：バイナリアーカイブ\n");
-	//バッファ準備
-	char buff[16 * 1024];//セーブデータ用バッファ
-	char work[16 * 1024];//ワーク用バッファ
 	//ファイルから読み込み
 #ifdef USE_STRCPY_S
 	FILE* fp = nullptr;
@@ -3702,11 +3744,11 @@ void deserializeTest1(const char* file_path)
 	fseek(fp, 0, SEEK_END);
 	long file_size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-	fread(buff, 1, file_size, fp);
+	fread(s_saveBuff, 1, file_size, fp);
 	fclose(fp);
 	fp = NULL;
 	//デシリアライズ
-	serial::CIBinaryArchive arc(buff, file_size, work);
+	serial::CIBinaryArchive arc(s_saveBuff, file_size, s_workBuff);
 	arc >> serial::pair<CSaveDataSerializer>("CTest1", file_size);
 	printf("処理結果：%s\n", arc.hasFatalError() ? "致命的なエラーあり" : "エラーなし");
 	//セーブデータ表示

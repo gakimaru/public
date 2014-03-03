@@ -5,16 +5,55 @@ data2=2.34
 data3={5, 6, 7}
 data4:a=8,b=9,c=0
 data5:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
+[operator<<] name=SaveData, typeName=19CSaveDataSerializer, item=0x0x0 [0], size=0, array=0, isPtr=0
 CSaveDataSerializer::gatherer(ver=5,6)
+[operator<<] name=CTest1, typeName=6CTest1, item=0x0x412040 [0], size=1080, array=0, isPtr=0
 serialize(ver=1,2)
-serialize::STRUCT(ver=3,4)
+[operator&] name=data1, typeName=i, item=0x0x412040 [0], size=4, array=0, isPtr=0
+[operator&] name=data2, typeName=f, item=0x0x412044 [0], size=4, array=0, isPtr=0
+[operator&] name=data3, typeName=c, item=0x0x412048 [3], size=1, array=3, isPtr=0
+[operator&] name=data4, typeName=N6CTest16STRUCTE, item=0x0x41204c [0], size=12, array=0, isPtr=0
+[operator<<] name=data4, typeName=N6CTest16STRUCTE, item=0x0x41204c [0], size=12, array=0, isPtr=0
+serialize::STRUCT(ver=3,4) sizeof(CTest1::STRUCT)=12
+[operator&] name=data1, typeName=i, item=0x0x41204c [0], size=4, array=0, isPtr=0
+[operator&] name=data2, typeName=c, item=0x0x412050 [0], size=1, array=0, isPtr=0
+[operator&] name=data3, typeName=f, item=0x0x412054 [0], size=4, array=0, isPtr=0
+[operator&] name=data5, typeName=c, item=0x0x412058 [1024], size=1, array=1024, isPtr=0
+[operator&] name=data6, typeName=N6CTest16STRUCTE, item=0x0x412458 [2], size=12, array=2, isPtr=0
+[operator<<] name=data6, typeName=N6CTest16STRUCTE, item=0x0x412458 [2], size=12, array=2, isPtr=0
+serialize::STRUCT(ver=3,4) sizeof(CTest1::STRUCT)=12
+[operator&] name=data1, typeName=i, item=0x0x412458 [0], size=4, array=0, isPtr=0
+[operator&] name=data2, typeName=c, item=0x0x41245c [0], size=1, array=0, isPtr=0
+[operator&] name=data3, typeName=f, item=0x0x412460 [0], size=4, array=0, isPtr=0
+serialize::STRUCT(ver=3,4) sizeof(CTest1::STRUCT)=12
+[operator&] name=data1, typeName=i, item=0x0x412458 [0], size=4, array=0, isPtr=0
+[operator&] name=data2, typeName=c, item=0x0x41245c [0], size=1, array=0, isPtr=0
+[operator&] name=data3, typeName=f, item=0x0x412460 [0], size=4, array=0, isPtr=0
+[operator&] name=data7, typeName=N6CTest16STRUCTE, item=0x0x800103b8 [0], size=12, array=0, isPtr=1
+[operator<<] name=data7, typeName=N6CTest16STRUCTE, item=0x0x800103b8 [0], size=12, array=0, isPtr=1
+serialize::STRUCT(ver=3,4) sizeof(CTest1::STRUCT)=12
+[operator&] name=data1, typeName=i, item=0x0x800103b8 [0], size=4, array=0, isPtr=0
+[operator&] name=data2, typeName=c, item=0x0x800103bc [0], size=1, array=0, isPtr=0
+[operator&] name=data3, typeName=f, item=0x0x800103c0 [0], size=4, array=0, isPtr=0
+[operator&] name=data8, typeName=N6CTest16STRUCTE, item=0x0x0 [0], size=12, array=0, isPtr=1
+[operator<<] name=data8, typeName=N6CTest16STRUCTE, item=0x0x0 [0], size=12, array=0, isPtr=1
 save(ver=1,2)
 gatherer(ver=1,2)
 --------------------
 デシリアライズ：バイナリアーカイブ
+[operator>>] name=CTest1, typeName=19CSaveDataSerializer, item=0x0x0 [0], size=1409, array=0, isPtr=0
 CSaveDataSerializer::distributor(ver=0,0)
+[operator>>] name=CTest1, typeName=6CTest1, item=0x0x412040 [0], size=1080, array=0, isPtr=0
 beforeLoad(ver=0,0)
 serialize(ver=0,0)
+[operator&] name=data1, typeName=i, item=0x0x412040 [0], size=4, array=0, isPtr=0
+[operator&] name=data2, typeName=f, item=0x0x412044 [0], size=4, array=0, isPtr=0
+[operator&] name=data3, typeName=c, item=0x0x412048 [3], size=1, array=3, isPtr=0
+[operator&] name=data4, typeName=N6CTest16STRUCTE, item=0x0x41204c [0], size=12, array=0, isPtr=0
+[operator&] name=data5, typeName=c, item=0x0x412058 [1024], size=1, array=1024, isPtr=0
+[operator&] name=data6, typeName=N6CTest16STRUCTE, item=0x0x412458 [2], size=12, array=2, isPtr=0
+[operator&] name=data7, typeName=N6CTest16STRUCTE, item=0x0x800103b8 [0], size=12, array=0, isPtr=1
+[operator&] name=data8, typeName=N6CTest16STRUCTE, item=0x0x0 [0], size=12, array=0, isPtr=1
 load(ver=0,0)
 afterLoad(ver=0,0)
 distributor(ver=0,0)

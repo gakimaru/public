@@ -1,7 +1,8 @@
 #define TLS_IS_WINDOWS//【MS固有仕様】TLSの宣言をWindowsスタイルにする時はこのマクロを有効にする
-#define USE_WINDOWS_DEBUG_BREAK//【MS固有仕様】WindowのDebugBreakを使用
+#define USE_STRCPY_S//【MS固有仕様】strcpy_sを使用する時にこのマクロを有効にする
 #define USE_ALIGNED_MALLOC//【MS固有仕様】_aligned_mallocを使用する時はこのマクロを有効にする
 #define USE_FRIEND_WITH_NEW_OPERATOR//【MS固有仕様？】operator new()をクラス内でフレンド化する時はこのマクロを有効にする
+#define USE_WINDOWS_DEBUG_BREAK//【MS固有仕様】WindowのDebugBreakを使用
 
 //#define ENABLE_CONSTEXPR//【C++11用】constexprを有効にする時はこのマクロを有効にする
 //#define ENABLE_USER_DEFINED_LITERALS//【C++11用】ユーザー定義リテラルを有効にする時はこのマクロを有効にする
@@ -15,6 +16,7 @@
 #include <limits.h>//UCHAR_MAX用
 #include <typeinfo.h>//type_id用
 #include <map>//STL map用
+#include <vector>//STL vector用
 #include <atomic>//C++11アトミック操作
 #include <thread>//C++11スレッド
 #include <chrono>//C++11時間
@@ -2150,62 +2152,91 @@ public:
 //一時多態アロケータクラス：プールアロケータ用
 using CTempPolyPoolAllocator = CTempPolyAllocatorWithAdp<CPoolAllocAdp>;//C++11形式
 
-//--------------------
-//lib
-namespace serializer
+//--------------------------------------------------------------------------------
+//シリアライズ
+namespace serial
 {
+	//--------------------
 	//バージョンクラス
-	template<int MAJOR, int MINOR>
-	struct versionDefBase;
-	struct version
+	template<unsigned short MAJOR, unsigned short MINOR>
+	class CVersionDefBase;
+	class CVersion
 	{
-		static const int VER_FIGURE = 1000000;
-		int majorVer() const { return m_majorVer; };
-		int minorVer() const { return m_majorVer; };
-		int ver()const { return m_majorVer * VER_FIGURE + m_minorVer; };
-		template<int MAJOR, int MINOR>
-		version(versionDefBase<MAJOR, MINOR>&) :
-			m_majorVer(MAJOR),
-			m_minorVer(MINOR)
+	public:
+		//定数
+		static const unsigned int VER_FIGURE = 1000000;//合成バージョン計算用桁上げ数
+	public:
+		//アクセッサ
+		unsigned int getMajor() const { return m_majorVer; };//メジャーバージョン
+		unsigned int getMinor() const { return m_minorVer; };//マイナーバージョン
+		unsigned int getVer()const { return m_majorVer * VER_FIGURE + m_minorVer; };//合成バージョン
+	public:
+		//デフォルトコンストラクタ
+		CVersion() :
+			m_majorVer(0),
+			m_minorVer(0)
+		{}
+		//コンストラクタ
+		CVersion(const unsigned short major, const unsigned short minor) :
+			m_majorVer(major),
+			m_minorVer(minor)
+		{}
+		template<unsigned short MAJOR, unsigned short MINOR>
+		CVersion(CVersionDefBase<MAJOR, MINOR>&) :
+			CVersion(MAJOR, MINOR)
 		{}
 	private:
-		const int m_majorVer;
-		const int m_minorVer;
+		//フィールド
+		const unsigned short m_majorVer;//メジャーバージョン
+		const unsigned short m_minorVer;//マイナーバージョン
 	};
-	template<int MAJOR, int MINOR>
-	struct versionDefBase
+	//--------------------
+	//バージョンテンプレート基底クラス
+	template<unsigned short MAJOR, unsigned short MINOR>
+	class CVersionDefBase
 	{
-		static const int MAJOR_VER = MAJOR;
-		static const int MINOR_VER = MINOR;
-		static const int VER = MAJOR_VER * version::VER_FIGURE + MINOR_VER;
-		int majorVer() const { return MAJOR_VER; };
-		int minorVer() const { return MINOR_VER; };
-		int ver() const { return VER; };
+	public:
+		//定数
+		static const unsigned short MAJOR_VER = MAJOR;//メジャーバージョン
+		static const unsigned short MINOR_VER = MINOR;//マイナーバージョン
+		static const unsigned int VER = MAJOR_VER * CVersion::VER_FIGURE + MINOR_VER;//合成バージョン
+	public:
+		//アクセッサ
+		unsigned int getMajor() const { return MAJOR_VER; };//メジャーバージョン
+		unsigned int getMinor() const { return MINOR_VER; };//マイナーバージョン
+		unsigned int getVer() const { return VER; };//合成バージョン
 	};
+	//--------------------
+	//バージョンテンプレートクラス
 	template<class T>
-	struct versionDef : public versionDefBase<0, 0>{};
+	class CVersionDef : public CVersionDefBase<0, 0>{};//規定では0
 
-	struct ITEM_BASE
+	//--------------------
+	//データ項目基底クラス
+	class CItemBase
 	{
-		const crc32_t m_nameCrc;
-		const char* m_name;
-		const void* m_itemP;
-		const std::type_info& m_itemType;
-		const std::size_t m_itemSize;
-		const std::size_t m_arrNum;
-		template<typename T>
+	public:
+		//キャストオペレータ
+		operator crc32_t() const { return m_nameCrc; }
+		operator const char*() const { return m_name; }
+		operator const std::type_info& () const { return m_itemType; }
+	public:
+		//メソッド
+		template<typename T>//値取得
 		T& get(){ return *static_cast<T*>(const_cast<void*>(m_itemP)); }
-		template<typename T>
+		template<typename T>//値取得（配列要素）
 		T& get(const int index){ return static_cast<T*>(const_cast<void*>(m_itemP))[index]; }
-		template<typename T>
+		template<typename T>//constで値取得
 		const T& get() const { return *static_cast<const T*>(m_itemP); }
-		template<typename T>
+		template<typename T>//constで値取得（配列要素）
 		const T& get(const int index) const { return static_cast<const T*>(m_itemP)[index]; }
-		template<typename T>
+		template<typename T>//constで値取得
 		const T& getConst() const { return *static_cast<const T*>(m_itemP); }
-		template<typename T>
+		template<typename T>//constで値取得（配列要素）
 		const T& getConst(const int index) const { return static_cast<const T*>(m_itemP)[index]; }
-		ITEM_BASE(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num = 0) :
+	public:
+		//コンストラクタ
+		CItemBase(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num = 0) :
 			m_nameCrc(calcCRC32(name)),
 			m_name(name),
 			m_itemP(item_p),
@@ -2213,351 +2244,1260 @@ namespace serializer
 			m_itemSize(item_size),
 			m_arrNum(arr_num)
 		{}
+		//デストラクタ
+		~CItemBase()
+		{}
+	public://フィールドを公開して直接操作
+		//フィールド
+		const crc32_t m_nameCrc;//データ項目名CRC
+		const char* m_name;//データ項目名
+		const void* m_itemP;//データの参照ポインタ
+		const std::type_info& m_itemType;//データの型情報
+		const std::size_t m_itemSize;//データサイズ
+		const std::size_t m_arrNum;//データの配列サイズ
 	};
+	//--------------------
+	//データ項目テンプレートクラス
 	template<typename T>
-	struct ITEM : ITEM_BASE
+	class CItem : public CItemBase
 	{
-		ITEM(const char* name, const T& item, const std::size_t arr_num = 0) :
-			ITEM_BASE(name, &item, typeid(item), sizeof(item), arr_num)
+	public:
+		//コンストラクタ
+		CItem(const char* name, const T& item, const std::size_t arr_num) :
+			CItemBase(name, &item, typeid(T), sizeof(T), arr_num)
+		{}
+		CItem(const char* name, const std::size_t size) :
+			CItemBase(name, nullptr, typeid(T), size, 0)
+		{}
+		//デストラクタ
+		~CItem()
 		{}
 	};
+	//--------------------
+	//データ項目情報作成テンプレート関数
 	template<class T>
-	ITEM<T> makeItem(const char* name, const T& item)
+	CItem<T> pair(const char* name, const T& item)
 	{
-		ITEM<T> item_obj(name, item);
+		CItem<T> item_obj(name, item, 0);
 		return item_obj;
 	}
+	//--------------------
+	//データ項目情報作成テンプレート関数（配列用）
 	template<class T, std::size_t N>
-	ITEM<T> makeItem(const char* name, const T(&item)[N])
+	CItem<T> pair(const char* name, const T(&item)[N])
 	{
-		ITEM<T> item_obj(name, item[0], N);
+		CItem<T> item_obj(name, item[0], N);
+		return item_obj;
+	}
+	//--------------------
+	//データ項目情報作成テンプレート関数（バイナリ用）
+	template<class T>
+	CItem<char> pairBin(const char* name, const T& item)
+	{
+		const std::size_t size = sizeof(T);
+		const char* item_p = reinterpret_cast<const char*>(&item);
+		CItem<char> item_obj(name, *item_p, size);
+		return item_obj;
+	}
+	//--------------------
+	//データ項目情報作成テンプレート関数（初回用）
+	template<class T>
+	CItem<T> pair(const char* name, const std::size_t size)
+	{
+		CItem<T> item_obj(name, size);
+		return item_obj;
+	}
+	template<class T>
+	CItem<T> pair(const char* name)
+	{
+		CItem<T> item_obj(name, 0);
 		return item_obj;
 	}
 
-	template<class Arc, class T>
-	struct beforeLoad
-	{
-		void operator()(Arc& arc, T& obj)
-		{}
-	};
-	template<class Arc, class T>
-	struct serialize
-	{
-		void operator()(Arc& arc, const T& obj)
-		{}
-	};
-	template<class Arc, class T>
-	struct save
-	{
-		void operator()(Arc& arc, const T& obj)
-		{}
-	};
-	template<class Arc, class T>
-	struct load
-	{
-		void operator()(Arc& arc, const T& obj)
-		{}
-	};
-	template<class Arc, class T>
-	struct afterLoad
-	{
-		void operator()(Arc& arc, T& obj)
-		{}
-	};
-	template<class Arc, class T>
-	struct gatherer
-	{
-		void operator()(Arc& arc, const T& obj)
-		{}
-	};
-	template<class Arc, class T>
-	struct distributor
-	{
-		void operator()(Arc& arc, T& obj)
-		{}
-	};
-
-	class ArchiveBase
+	//--------------------
+	//アイテム入出力結果クラス
+	class CIOResult
 	{
 	public:
-		typedef unsigned char byte;
-		typedef std::map<crc32_t, const ITEM_BASE> itemList_t;
-
+		//型
+		struct Output{};//出力時指定用構造体
+		struct Input{};//入力時指定用構造体
+	public:
+		//コンストラクタ
+		CIOResult() :
+			m_isInput(false),
+			m_hasFatalError(false),
+			m_hasSrc(false),
+			m_hasDst(false),
+			m_srcSize(0),
+			m_dstSize(0),
+			m_copiedSize(0)
+		{}
+		//出力時用コンストラクタ
+		CIOResult(const Output&, const CItemBase& item) :
+			m_isInput(false),
+			m_hasFatalError(false),
+			m_hasSrc(true),
+			m_hasDst(false),
+			m_srcSize(item.m_itemSize),
+			m_dstSize(0),
+			m_copiedSize(0)
+		{}
+		//入力時用コンストラクタ
+		CIOResult(const Input&, const CItemBase& item) :
+			m_isInput(true),
+			m_hasFatalError(false),
+			m_hasSrc(false),
+			m_hasDst(true),
+			m_srcSize(0),
+			m_dstSize(item.m_itemSize),
+			m_copiedSize(0)
+		{}
+		//デストラクタ
+		~CIOResult()
+		{}
+	public://フィールドを公開して直接操作
+		//フィールド
+		bool m_isInput;//入力処理か？
+		bool m_hasFatalError;//致命的なエラーあり
+		bool m_hasSrc;//コピー元あり
+		bool m_hasDst;//コピー先あり
+		std::size_t m_srcSize;//コピー元サイズ
+		std::size_t m_dstSize;//コピー先サイズ
+		std::size_t m_copiedSize;//コピー済みサイズ
 	};
-	class OArchive : public ArchiveBase
+	
+	//--------------------
+	//ロード前処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct beforeLoad {
+		typedef beforeLoad<Arc, T> IS_UNDEFINED;//SFINAE:関数オブジェクトの未定義チェック用の型定義（自身と同じ型を定義）
+		void operator()(Arc& arc, T& obj, const CVersion& ver)
+		{}
+	};
+	//--------------------
+	//シリアライズ処理用関数オブジェクトテンプレートクラス
+	//※シリアライズとデシリアライズ兼用共通処理
+	//※特殊化によりユーザー処理を実装
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct serialize {
+		typedef serialize<Arc, T> IS_UNDEFINED;//SFINAE:関数オブジェクトの未定義チェック用の型定義（自身と同じ型を定義）
+		void operator()(Arc& arc, const T& obj, const CVersion& ver)
+		{}
+	};
+	//--------------------
+	//セーブ処理用関数オブジェクトテンプレートクラス
+	//※シリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct save	{
+		typedef save<Arc, T> IS_UNDEFINED;//SFINAE:関数オブジェクトの未定義チェック用の型定義（自身と同じ型を定義）
+		void operator()(Arc& arc, const T& obj, const CVersion& ver)
+		{}
+	};
+	//--------------------
+	//ロード処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct load	{
+		typedef load<Arc, T> IS_UNDEFINED;//SFINAE:関数オブジェクトの未定義チェック用の型定義（自身と同じ型を定義）
+		void operator()(Arc& arc, const T& obj, const CVersion& ver)
+		{}
+	};
+	//--------------------
+	//ロード後処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct afterLoad {
+		typedef afterLoad<Arc, T> IS_UNDEFINED;//SFINAE:関数オブジェクトの未定義チェック用の型定義（自身と同じ型を定義）
+		void operator()(Arc& arc, T& obj, const CVersion& ver)
+		{}
+	};
+	//--------------------
+	//データ収集処理用関数オブジェクトテンプレートクラス
+	//※シリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct gatherer	{
+		typedef gatherer<Arc, T> IS_UNDEFINED;//SFINAE:関数オブジェクトの未定義チェック用の型定義（自身と同じ型を定義）
+		void operator()(Arc& arc, const T& obj, const CVersion& ver)
+		{}
+	};
+	//--------------------
+	//データ分配処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct distributor {
+		typedef distributor<Arc, T> IS_UNDEFINED;//SFINAE:関数オブジェクトの未定義チェック用の型定義（自身と同じ型を定義）
+		void operator()(Arc& arc, T& obj, const CVersion& ver)
+		{}
+	};
+	//--------------------
+	//関数オブジェクト定義済みチェック関数
+	//※SFINAEにより、IS_UNDEFINED が定義されている型のオーバーロード関数が選ばれたら未定義とみなす
+	template<class F>
+	bool isDefinedFunctor(const typename  F::IS_UNDEFINED& o)
+	{
+		return false;//未定義
+	}
+	template<class F>
+	bool isDefinedFunctor(const F& o)
+	{
+		return true;//定義済み
+	}
+	
+	//--------------------
+	//アーカイブ形式基底クラス
+	class CArchiveStyleBase;
+	//--------------------
+	//入出力アーカイブ基底クラス
+	class CIOArchiveBase
 	{
 	public:
-		template<class T>
-		OArchive& operator&(const ITEM<T> item_obj)
+		//型
+		typedef unsigned char byte;//バッファ用
+		typedef std::vector<CItemBase> itemList_t;//データ項目リスト型
+		typedef std::map<crc32_t, const CItemBase*> itemSearch_t;//データ検索リスト型
+	public:
+		//アクセッサ
+		const byte* getBuffPtr() const { return m_buff; }//セーブデータバッファ
+		const std::size_t getBuffSize() const { return m_buffSize; }//セーブデータバッファのサイズ
+		const std::size_t getBuffPos() const { return m_buffPos; }//セーブデータバッファの処理位置
+	public:
+		//メソッド
+		//リストにデータ項目追加
+		void addItem(const CItemBase& item)
 		{
-			printf("[operator&] name=%s, typeName=%s, item=0x%p [%d]\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_arrNum);
-			assert(m_itemList.find(item_obj.m_nameCrc) == m_itemList.end());
-			m_itemList.emplace(item_obj.m_nameCrc, item_obj);
-			return *this;
+			//ワーク領域を設定（グローバル多態アロケータ）
+			//※関数を抜けると自動的に元に戻る
+			CTempPolyStackAllocator alloc(m_workBuff);
+
+			//データ項目を追加
+			assert(m_itemSearch->find(item) == m_itemSearch->end());
+			m_itemList->push_back(item);
+			const CItemBase& rec = m_itemList->at(m_itemList->size() - 1);
+			m_itemSearch->emplace(item.m_nameCrc, &rec);
 		}
-		template<class T>
-		OArchive& operator<<(const ITEM<T> item_obj)
+	private:
+		//データリスト作成
+		void createItemList()
 		{
-			printf("[operator<<] name=%s, typeName=%s, item=0x%p\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP);
-			serializer::versionDef<T> ver;
-			printf("T::ver=%d.%d\n", ver.majorVer(), ver.minorVer());
-			
-			itemList_t item_list_mem;
-			item_list_mem.swap(m_itemList);
+			//ワーク領域を設定（グローバル多態アロケータ）
+			//※関数を抜けると自動的に元に戻る
+			CTempPolyStackAllocator alloc(m_workBuff);
 
+			//データ項目リストを生成
+			m_itemList = new itemList_t;
+
+			//データ検索リストを生成
+			m_itemSearch = new itemSearch_t;
+		}
+		//データリスト破棄
+		void destroyItemList()
+		{
+			//ワーク領域を設定（グローバル多態アロケータ）
+			//※関数を抜けると自動的に元に戻る
+			CTempPolyStackAllocator alloc(m_workBuff);
+
+			//データ項目リストを破棄
+			if (m_itemList)
 			{
-				serialize<OArchive, T> functor;
-				functor(*this, item_obj.template getConst<T>());
+				delete m_itemList;
+				m_itemList = nullptr;
+			}
+			//データ検索リストを破棄
+			if (m_itemSearch)
+			{
+				delete m_itemSearch;
+				m_itemSearch = nullptr;
 			}
 
-			{
-				save<OArchive, T> functor;
-				functor(*this, item_obj.template getConst<T>());
-			}
-
-			{
-				gatherer<OArchive, T> functor;
-				functor(*this, item_obj.template getConst<T>());
-			}
-			
-			m_itemList.swap(item_list_mem);
-
-			return *this;
+			//ワークバッファ用スタックアロケータクリア
+			m_workBuff.clearN();
 		}
 	public:
-		OArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+		//コンストラクタ
+		CIOArchiveBase(CArchiveStyleBase& style, void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+			m_style(style),
+			m_nestLevel(0),
 			m_buff(reinterpret_cast<byte*>(buff)),
 			m_buffSize(buff_size),
 			m_buffPos(0),
-			m_workBuff(reinterpret_cast<byte*>(work_buff)),
-			m_workBuffSize(work_buff_size)
-		{}
-		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
-		OArchive(BUFF_T (&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			OArchive(buff, BUFF_SIZE, work_buff, WORK_SIZE)
-		{}
-	private:
-		byte* m_buff;
-		const std::size_t m_buffSize;
-		std::size_t m_buffPos;
-		byte* m_workBuff;
-		const std::size_t m_workBuffSize;
-		itemList_t m_itemList;
-	};
-	class IArchive : public ArchiveBase
-	{
-	public:
-		template<class T>
-		IArchive& operator&(const ITEM<T> item_obj)
+			m_workBuff(work_buff, work_buff_size),
+			m_itemList(nullptr),
+			m_itemSearch(nullptr)
 		{
-			printf("[operator&] name=%s, typeName=%s, item=0x%p [%d]\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_arrNum);
-			assert(m_itemList.find(item_obj.m_nameCrc) == m_itemList.end());
-			m_itemList.emplace(item_obj.m_nameCrc, item_obj);
-			return *this;
+			//データリスト作成
+			createItemList();
 		}
-		template<class T>
-		IArchive& operator>>(ITEM<T> item_obj)
-		{
-			printf("[operator>>] name=%s, typeName=%s, item=0x%p\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP);
-			serializer::versionDef<T> ver;
-			printf("T::ver=%d.%d\n", ver.majorVer(), ver.minorVer());
-			
-			itemList_t item_list_mem;
-			item_list_mem.swap(m_itemList);
-			
-			{
-				beforeLoad<IArchive, T> functor;
-				functor(*this, item_obj.template get<T>());
-			}
-			
-			{
-				serialize<IArchive, T> functor;
-				functor(*this, item_obj.template getConst<T>());
-			}
-
-			{
-				load<IArchive, T> functor;
-				functor(*this, item_obj.template get<T>());
-			}
-
-			for (auto ite : m_itemList)
-			{
-				ITEM_BASE& item = const_cast<ITEM_BASE&>(ite.second);
-				if (item.m_arrNum == 0)
-				{
-					if (item.m_itemType == typeid(int))
-						item.get<int>() = 123;
-					else if (item.m_itemType == typeid(float))
-						item.get<float>() = 1.23f;
-				}
-				else
-				{
-					for (std::size_t i = 0; i < item.m_arrNum; ++i)
-					{
-						if (item.m_itemType == typeid(char))
-							item.get<char>(i) = 123;
-					}
-				}
-			}
-
-			{
-				afterLoad<IArchive, T> functor;
-				functor(*this, item_obj.template get<T>());
-			}
-
-			{
-				distributor<IArchive, T> functor;
-				functor(*this, item_obj.template get<T>());
-			}
-			
-			m_itemList.swap(item_list_mem);
-			
-			return *this;
-		}
-	public:
-		IArchive(const void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			m_buff(reinterpret_cast<const byte*>(buff)),
+		//コンストラクタ
+		CIOArchiveBase(CIOArchiveBase& src, const std::size_t buff_size) :
+			m_style(src.m_style),
+			m_nestLevel(src.m_nestLevel + 1),
+			m_buff(src.m_buff + src.m_buffPos),
 			m_buffSize(buff_size),
 			m_buffPos(0),
-			m_workBuff(reinterpret_cast<byte*>(work_buff)),
-			m_workBuffSize(work_buff_size)
-			{}
+			m_workBuff(const_cast<IStackAllocator::byte*>(src.m_workBuff.getNowPtrN()), src.m_workBuff.getRemain()),
+			m_itemList(nullptr),
+			m_itemSearch(nullptr)
+		{
+			//データリスト作成
+			createItemList();
+		}
+		//デストラクタ
+		~CIOArchiveBase()
+		{
+			//データリスト破棄
+			destroyItemList();
+		}
+	protected:
+		//フィールド
+		CArchiveStyleBase& m_style;//アーカイブ形式
+		int m_nestLevel;//データのネストレベル
+		byte* m_buff;//セーブデータバッファ
+		const std::size_t m_buffSize;//セーブデータバッファのサイズ
+		std::size_t m_buffPos;//セーブデータバッファの処理位置
+		CStackAllocator m_workBuff;//ワークバッファ用スタックアロケータ
+		itemList_t* m_itemList;//データ項目リスト
+		itemSearch_t* m_itemSearch;//データ検索リスト
+	};
+	//--------------------
+	//アーカイブ形式基底クラス
+	class CArchiveStyleBase
+	{
+	public:
+		//メソッド
+		virtual bool outputSignature(CIOResult& result, CIOArchiveBase& arc) = 0;//シグネチャ出力
+		virtual bool inputSignature(CIOResult& result, CIOArchiveBase& arc) = 0;//シグネチャ入力（正しいデータかチェック）
+		virtual bool outputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) = 0;//ブロック開始情報出力
+		virtual bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) = 0;//ブロック開始情報入力
+		virtual bool outputVersion(CIOResult& result, CIOArchiveBase& arc, const CVersion& ver) = 0;//バージョン出力
+		virtual bool inputVersion(CIOResult& result, CIOArchiveBase& arc, CVersion& ver) = 0;//バージョン入力
+		virtual bool output(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) = 0;//出力
+		virtual bool input(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) = 0;//入力
+		virtual bool outputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) = 0;//ブロック終了情報出力
+		virtual bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) = 0;//ブロック終了情報入力
+		virtual bool outputTerminator(CIOResult& result, CIOArchiveBase& arc) = 0;//ターミネータ出力
+		virtual bool inputTerminator(CIOResult& result, CIOArchiveBase& arc) = 0;//ターミネータ入力（正しいデータかチェック）
+	public:
+		//コンストラクタ
+		CArchiveStyleBase()
+		{}
+		//デストラクタ
+		~CArchiveStyleBase()
+		{}
+	};
+	//--------------------
+	//入出力アーカイブダミークラス（なにもしない）
+	class CIOArchiveDummy
+	{
+	public:
+		//オペレータ
+		//「&」オペレータ
+		//※データ項目指定＆データ出力用処理
+		template<class T>
+		CIOArchiveDummy& operator&(const CItem<T> item_obj)
+		{
+			return *this;
+		}
+		//「<<」オペレータ
+		//※データ出力
+		template<class T>
+		CIOArchiveDummy& operator<<(const CItem<T> item_obj)
+		{
+			return *this;
+		}
+		//「>>」オペレータ
+		//※データ入力
+		template<class T>
+		CIOArchiveDummy& operator>>(CItem<T> item_obj)
+		{
+			return *this;
+		}
+	};
+	//--------------------
+	//出力アーカイブクラス
+	class COArchive : public CIOArchiveBase
+	{
+	public:
+		//オペレータ
+		//「&」オペレータ
+		//※データ項目指定＆データ出力用処理
+		template<class T>
+		COArchive& operator&(const CItem<T> item_obj)
+		{
+			//printf("[operator&] name=%s, typeName=%s, item=0x%p [%d]\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_arrNum);
+			
+			//データ項目を記録
+			addItem(item_obj);
+			
+			//専用シリアライズ処理があるかチェック
+			bool is_obj = false;
+
+			//シリアライズ処理（シリアライズ＆デシリアライズ兼用処理）存在確認
+			if (!is_obj)
+			{
+				serialize<CIOArchiveDummy, T> functor;
+				is_obj = isDefinedFunctor(functor);
+			}
+			
+			//セーブ処理（シリアライズ専用処理）存在確認
+			if (!is_obj)
+			{
+				save<CIOArchiveDummy, T> functor;
+				is_obj = isDefinedFunctor(functor);
+			}
+			
+			//出力
+			if (is_obj)
+			{
+				//オブジェクトなので operator<<() で出力
+				*this << item_obj;
+			}
+			else
+			{
+				//データをアーカイブに記録
+				CIOResult result(CIOResult::Output(), item_obj);
+				m_style.output(result, *this, item_obj);
+			}
+			
+			return *this;
+		}
+		//「<<」オペレータ
+		//※データ出力
+		template<class T>
+		COArchive& operator<<(const CItem<T> item_obj)
+		{
+			//printf("[operator<<] name=%s, typeName=%s, item=0x%p\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP);
+			
+			//ネストレベルが0ならシグネチャーを書き込み
+			if (m_nestLevel == 0)
+			{
+				CIOResult result;
+				m_style.outputSignature(result, *this);
+			}
+			
+			//ブロック開始情報書き込み
+			{
+				CIOResult result;
+				m_style.outputBeginBlock(result, *this, item_obj);
+			}
+			
+			//ブロック開始
+			std::size_t block_size = 0;
+			{
+				//新しいアーカイブオブジェクトを生成
+				COArchive new_arc(*this, m_buffSize - m_buffPos);
+				
+				//バージョン取得
+				CVersionDef<T> ver_def;
+				CVersion ver(ver_def);
+				
+				//バージョン書き込み
+				{
+					CIOResult result;
+					m_style.outputVersion(result, new_arc, ver);
+				}
+				
+				//シリアライズ処理（シリアライズ＆デシリアライズ兼用処理）呼び出し
+				{
+					serialize<COArchive, T> functor;
+					functor(new_arc, item_obj.template getConst<T>(), ver);
+				}
+				
+				//セーブ処理（シリアライズ専用処理）呼び出し
+				{
+					save<COArchive, T> functor;
+					functor(new_arc, item_obj.template getConst<T>(), ver);
+				}
+				
+				//データ収集処理（シリアライズ専用処理）呼び出し
+				{
+					gatherer<COArchive, T> functor;
+					functor(new_arc, item_obj.template getConst<T>(), ver);
+				}
+				
+				//ブロック終了
+				block_size = new_arc.m_buffPos;
+			}
+			
+			//ブロック終了情報書き込み
+			{
+				CIOResult result;
+				m_style.outputEndBlock(result, *this, item_obj, block_size);
+			}
+			
+			//ネストレベルが0ならターミネータを書き込み
+			if (m_nestLevel == 0)
+			{
+				CIOResult result;
+				m_style.outputTerminator(result, *this);
+			}
+			
+			return *this;
+		}
+	public:
+		//コンストラクタ
+		COArchive(CArchiveStyleBase& style, void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+			CIOArchiveBase(style, buff, buff_size, work_buff, work_buff_size)
+		{}
 		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
-		IArchive(const BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			IArchive(buff, BUFF_SIZE, work_buff, WORK_SIZE)
+		COArchive(CArchiveStyleBase& style, BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
+			CIOArchiveBase(style, buff, BUFF_SIZE, work_buff, WORK_SIZE)
+		{}
+		template<typename WORK_T, std::size_t WORK_SIZE>
+		COArchive(CArchiveStyleBase& style, void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
+			CIOArchiveBase(style, buff, buff_size, work_buff, WORK_SIZE)
+		{}
+		COArchive(COArchive& src, const std::size_t size) :
+			CIOArchiveBase(src, size)
+		{}
+		//デストラクタ
+		~COArchive()
+		{}
+	};
+	//--------------------
+	//入力アーカイブクラス
+	class CIArchive : public CIOArchiveBase
+	{
+	public:
+		//オペレータ
+		//「&」オペレータ
+		//※データ項目指定用処理
+		template<class T>
+		CIArchive& operator&(const CItem<T> item_obj)
+		{
+			//printf("[operator&] name=%s, typeName=%s, item=0x%p [%d]\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_arrNum);
+			//データ項目を記録
+			addItem(item_obj);
+			return *this;
+		}
+		
+		//「>>」オペレータ
+		//※データ入力
+		template<class T>
+		CIArchive& operator>>(CItem<T> item_obj)
+		{
+			//printf("[operator>>] name=%s, typeName=%s, item=0x%p\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP);
+			
+			//ネストレベルが0ならシグネチャーを読み込み
+			if (m_nestLevel == 0)
+			{
+				CIOResult result;
+				m_style.inputSignature(result, *this);
+			}
+			
+			//ブロック開始情報読み込み
+			{
+				CIOResult result;
+				m_style.inputBeginBlock(result, *this, item_obj);
+			}
+			
+			//ブロック開始
+			std::size_t block_size = 0;
+			{
+				//新しいアーカイブオブジェクトを生成
+				CIArchive new_arc(*this, m_buffSize - m_buffPos);
+				
+				//バージョン読み込み
+				CVersion ver;
+				{
+					CIOResult result;
+					m_style.inputVersion(result, new_arc, ver);
+				}
+				
+				//ロード前処理（デシリアライズ専用処理）呼び出し
+				{
+					beforeLoad<CIArchive, T> functor;
+					functor(new_arc, item_obj.template get<T>(), ver);
+				}
+				
+				//デシリアライズ処理（シリアライズ＆デシリアライズ兼用処理）呼び出し
+				{
+					serialize<CIArchive, T> functor;
+					functor(new_arc, item_obj.template getConst<T>(), ver);
+				}
+				
+				//ロード処理（デシリアライズ専用処理）呼び出し
+				{
+					load<CIArchive, T> functor;
+					functor(new_arc, item_obj.template get<T>(), ver);
+				}
+				
+				//実際のロード処理
+				for (auto item : *m_itemList)
+				{
+					CIOResult result(CIOResult::Input(), item);
+					m_style.input(result, new_arc, item);
+				}
+				
+				//ロード後処理（デシリアライズ専用処理）呼び出し
+				{
+					afterLoad<CIArchive, T> functor;
+					functor(new_arc, item_obj.template get<T>(), ver);
+				}
+				
+				//データ分配処理（デシリアライズ専用処理）呼び出し
+				{
+					distributor<CIArchive, T> functor;
+					functor(new_arc, item_obj.template get<T>(), ver);
+				}
+				
+				//ブロック終了
+				block_size = new_arc.m_buffPos;
+			}
+			
+			//ブロック終了情報読み込み
+			{
+				CIOResult result;
+				m_style.inputEndBlock(result, *this, item_obj, block_size);
+			}
+			
+			//ネストレベルが0ならターミネータを読み込み
+			if (m_nestLevel == 0)
+			{
+				CIOResult result;
+				m_style.inputTerminator(result, *this);
+			}
+			
+			return *this;
+		}
+	public:
+		//コンストラクタ
+		CIArchive(CArchiveStyleBase& style, const void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+			CIOArchiveBase(style, const_cast<void*>(buff), buff_size, work_buff, work_buff_size)
+		{}
+		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
+		CIArchive(CArchiveStyleBase& style, const BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
+			CIOArchiveBase(style, const_cast<BUFF_T*>(&buff[0]), BUFF_SIZE, work_buff, WORK_SIZE)
+		{}
+		template<typename WORK_T, std::size_t WORK_SIZE>
+		CIArchive(CArchiveStyleBase& style, const void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
+			CIOArchiveBase(style, const_cast<void*>(buff), buff_size, work_buff, WORK_SIZE)
+		{}
+		CIArchive(CIArchive& src, const std::size_t size) :
+			CIOArchiveBase(src, size)
+		{}
+		//デストラクタ
+		~CIArchive()
+		{}
+	};
+	//--------------------
+	//バイナリ形式アーカイブクラス
+	class CBinaryArchive : public CArchiveStyleBase
+	{
+	public:
+		//定数
+		static const char SIGNATURE[];//シグネチャ
+	public:
+		//メソッド
+		//シグネチャ出力
+		bool outputSignature(CIOResult& result, CIOArchiveBase& arc) override
+		{
+			return true;
+		}
+		//シグネチャ入力（正しいデータかチェック）
+		bool inputSignature(CIOResult& result, CIOArchiveBase& arc) override
+		{
+			return true;
+		}
+		//ブロック開始情報出力
+		bool outputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		{
+			return true;
+		}
+		//ブロック開始情報入力
+		bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		{
+			return true;
+		}
+		//バージョン出力
+		bool outputVersion(CIOResult& result, CIOArchiveBase& arc, const CVersion& ver) override
+		{
+			return true;
+		}
+		//バージョン入力
+		bool inputVersion(CIOResult& result, CIOArchiveBase& arc, CVersion& ver) override
+		{
+			return true;
+		}
+		//出力
+		bool output(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		{
+			return true;
+		}
+		//入力
+		bool input(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		{
+			return true;
+		}
+		//ブロック終了情報出力
+		bool outputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
+		{
+			return true;
+		}
+		//ブロック終了情報入力
+		bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
+		{
+			return true;
+		}
+		//ターミネータ出力
+		bool outputTerminator(CIOResult& result, CIOArchiveBase& arc) override
+		{
+			return true;
+		}
+		//ターミネータ入力（正しいデータかチェック）
+		bool inputTerminator(CIOResult& result, CIOArchiveBase& arc) override
+		{
+			return true;
+		}
+	public:
+		//コンストラクタ
+		CBinaryArchive():
+			CArchiveStyleBase()
+		{}
+		//デストラクタ
+		~CBinaryArchive()
+		{}
+	};
+	//静的変数インスタンス化
+	const char CBinaryArchive::SIGNATURE[] = "";//シグネチャ
+	//--------------------
+	//テキスト形式アーカイブクラス
+	class CTextArchive : public CArchiveStyleBase
+	{
+	public:
+		//メソッド
+		//シグネチャ出力
+		bool outputSignature(CIOResult& result, CIOArchiveBase& arc) override
+		{
+			return true;
+		}
+		//シグネチャ入力（正しいデータかチェック）
+		bool inputSignature(CIOResult& result, CIOArchiveBase& arc) override
+		{
+			return true;
+		}
+		//ブロック開始情報出力
+		bool outputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		{
+			return true;
+		}
+		//ブロック開始情報入力
+		bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		{
+			return true;
+		}
+		//バージョン出力
+		bool outputVersion(CIOResult& result, CIOArchiveBase& arc, const CVersion& ver) override
+		{
+			return true;
+		}
+		//バージョン入力
+		bool inputVersion(CIOResult& result, CIOArchiveBase& arc, CVersion& ver) override
+		{
+			return true;
+		}
+		//出力
+		bool output(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		{
+			return true;
+		}
+		//入力
+		bool input(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		{
+			return true;
+		}
+		//ブロック終了情報出力
+		bool outputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
+		{
+			return true;
+		}
+		//ブロック終了情報入力
+		bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
+		{
+			return true;
+		}
+		//ターミネータ出力
+		bool outputTerminator(CIOResult& result, CIOArchiveBase& arc) override
+		{
+			return true;
+		}
+		//ターミネータ入力（正しいデータかチェック）
+		bool inputTerminator(CIOResult& result, CIOArchiveBase& arc) override
+		{
+			return true;
+		}
+	public:
+		//コンストラクタ
+		CTextArchive():
+			CArchiveStyleBase()
+		{}
+		//デストラクタ
+		~CTextArchive()
+		{}
+	};
+	//--------------------
+	//バイナリ出力アーカイブクラス
+	class COBinaryArchive : public COArchive
+	{
+	public:
+		//コンストラクタ
+		COBinaryArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+			m_style(),
+			COArchive(m_style, buff, buff_size, work_buff, work_buff_size)
+		{}
+		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
+		COBinaryArchive(BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
+			m_style(),
+			COArchive(m_style, buff, BUFF_SIZE, work_buff, WORK_SIZE)
+		{}
+		template<typename WORK_T, std::size_t WORK_SIZE>
+		COBinaryArchive(void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
+			m_style(),
+			COArchive(m_style, buff, buff_size, work_buff, WORK_SIZE)
+		{}
+		//デストラクタ
+		~COBinaryArchive()
 		{}
 	private:
-		const byte* m_buff;
-		const std::size_t m_buffSize;
-		std::size_t m_buffPos;
-		byte* m_workBuff;
-		const std::size_t m_workBuffSize;
-		itemList_t m_itemList;
+		//フィールド
+		CBinaryArchive m_style;
+	};
+	//--------------------
+	//バイナリ入力アーカイブクラス
+	class CIBinaryArchive : public CIArchive
+	{
+	public:
+		//コンストラクタ
+		CIBinaryArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+			m_style(),
+			CIArchive(m_style, buff, buff_size, work_buff, work_buff_size)
+		{}
+		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
+		CIBinaryArchive(BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
+			m_style(),
+			CIArchive(m_style, buff, BUFF_SIZE, work_buff, WORK_SIZE)
+		{}
+		template<typename WORK_T, std::size_t WORK_SIZE>
+		CIBinaryArchive(void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
+			m_style(),
+			CIArchive(m_style, buff, buff_size, work_buff, WORK_SIZE)
+		{}
+		//デストラクタ
+		~CIBinaryArchive()
+		{}
+	private:
+		//フィールド
+		CBinaryArchive m_style;
+	};
+	//--------------------
+	//テキスト出力アーカイブクラス
+	class COTextArchive : public COArchive
+	{
+	public:
+		//コンストラクタ
+		COTextArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+			m_style(),
+			COArchive(m_style, buff, buff_size, work_buff, work_buff_size)
+		{}
+		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
+		COTextArchive(BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
+			m_style(),
+			COArchive(m_style, buff, BUFF_SIZE, work_buff, WORK_SIZE)
+		{}
+		template<typename WORK_T, std::size_t WORK_SIZE>
+		COTextArchive(void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
+			m_style(),
+			COArchive(m_style, buff, buff_size, work_buff, WORK_SIZE)
+		{}
+		//デストラクタ
+		~COTextArchive()
+		{}
+	private:
+		//フィールド
+		CTextArchive m_style;
+	};
+	//--------------------
+	//テキスト入力アーカイブクラス
+	class CITextArchive : public CIArchive
+	{
+	public:
+		//コンストラクタ
+		CITextArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+			m_style(),
+			CIArchive(m_style, buff, buff_size, work_buff, work_buff_size)
+		{}
+		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
+		CITextArchive(BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
+			m_style(),
+			CIArchive(m_style, buff, BUFF_SIZE, work_buff, WORK_SIZE)
+		{}
+		template<typename WORK_T, std::size_t WORK_SIZE>
+		CITextArchive(void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
+			m_style(),
+			CIArchive(m_style, buff, buff_size, work_buff, WORK_SIZE)
+		{}
+		//デストラクタ
+		~CITextArchive()
+		{}
+	private:
+		//フィールド
+		CTextArchive m_style;
 	};
 }
-
+//--------------------
+//データクラス用のバージョン定義マクロ
 #define SERIALIZE_VERSION_DEF(T, MAJOR, MINOR) \
-	namespace serializer \
+	namespace serial \
 	{ \
 		template<> \
-		struct versionDef<CTest1> : public versionDefBase<MAJOR, MINOR>{}; \
+		struct CVersionDef<T> : public CVersionDefBase<MAJOR, MINOR>{}; \
 	}
-
+//--------------------
+//データクラスのフレンド宣言用マクロ
 #define FRIEND_SERIALIZE(T) \
 	template<class Arc, class T> \
-	friend struct serializer::beforeLoad; \
+	friend struct serial::beforeLoad; \
 	template<class Arc, class T> \
-	friend struct serializer::serialize; \
+	friend struct serial::serialize; \
 	template<class Arc, class T> \
-	friend struct serializer::save; \
+	friend struct serial::save; \
 	template<class Arc, class T> \
-	friend struct serializer::load; \
+	friend struct serial::load; \
 	template<class Arc, class T> \
-	friend struct serializer::afterLoad; \
+	friend struct serial::afterLoad; \
 	template<class Arc, class T> \
-	friend struct serializer::gatherer; \
+	friend struct serial::gatherer; \
 	template<class Arc, class T> \
-	friend struct serializer::distributor;
+	friend struct serial::distributor;
 
-//user
+//--------------------------------------------------------------------------------
+//シリアライズテスト
+
+#include <bitset>//std::bitset
+
+//--------------------
+//テスト用クラス
 class CTest1
 {
+	//シリアライズ用のフレンド設定
 	FRIEND_SERIALIZE(CTest1);
+public:
+	//型
+	struct STRUCT
+	{
+		//FRIEND_SERIALIZE(STRUCT);
+		int m_a;
+		char m_b;
+		float m_c;
+		//コンストラクタ
+		STRUCT():
+			m_a(0),
+			m_b(0),
+			m_c(0.f)
+		{}
+	};
+public:
+	//アクセッサ
+	int getData1() const { return m_data1; }//データ1取得
+	void setData1(const int value){ m_data1 = value; }//データ1更新
+	float getData2() const { return m_data2; }//データ2取得
+	void setData2(const float value){ m_data2 = value; }//データ2更新
+	char getData3(const int index) const { return m_data3[index]; }//データ3取得
+	void setData3(const int index, const int value){ m_data3[index] = value; }//データ3更新
+	STRUCT& getData4(){ return m_data4; }//データ4取得
+	const STRUCT& getData4() const { return m_data4; }//データ4取得
+	bool getData5(const int index) const { return m_data5[index]; }//データ5取得
+	void setData5(const int index, const bool value){ m_data5[index] = value; }//データ5更新
+public:
+	//コンストラクタ
+	CTest1() :
+		m_data1(0),
+		m_data2(0.f),
+		m_data4(),
+		m_data5()
+	{
+		m_data3[0] = 0;
+		m_data3[1] = 0;
+		m_data5.reset();
+	}
 private:
-	int m_data1;
-	float m_data2;
-	char m_data3[3];
+	//フィールド
+	int m_data1;//データ1
+	float m_data2;//データ2
+	char m_data3[3];//データ3
+	STRUCT m_data4;//データ4
+	std::bitset<8192> m_data5;//フラグ用
 };
-//user
-SERIALIZE_VERSION_DEF(CTest1, 123, 456);
-namespace serializer
+//--------------------
+//セーブデータ作成用クラス
+//※空のクラス
+//※ギャザーラとディストリビュータのみ定義する
+class CSaveDataSerializer
+{};
+//--------------------
+//テスト用クラスのバージョンを設定
+SERIALIZE_VERSION_DEF(CTest1, 1, 2);
+SERIALIZE_VERSION_DEF(CTest1::STRUCT, 3, 4);
+SERIALIZE_VERSION_DEF(CSaveDataSerializer, 5, 6);
+
+//セーブデータインスタンス
+static CTest1 s_saveData;
+
+//セーブデータ初期化
+void initSaveData()
+{
+	//セーブデータ取得
+	CTest1& data = s_saveData;
+	//データを初期化
+	data.setData1(1);
+	data.setData2(2.34f);
+	data.setData3(0, 5);
+	data.setData3(1, 6);
+	data.setData3(2, 7);
+	data.getData4().m_a = 8;
+	data.getData4().m_b = 9;
+	data.getData4().m_c = 10;
+	data.setData5(0, true);
+	data.setData5(1, true);
+	data.setData5(8191, true);
+}
+
+//セーブデータ内容表示
+void printSaveData()
+{
+	//セーブデータ取得
+	CTest1& data = s_saveData;
+	//データ表示
+	printf("data1=%d\n", data.getData1());
+	printf("data2=%.2f\n", data.getData2());
+	printf("data3={%d, %d, %d}\n", data.getData3(0), data.getData3(1), data.getData3(2));
+	printf("data4:a=%d,b=%d,c=%d\n", data.getData4().m_a, data.getData4().m_b, data.getData4().m_c);
+	printf("data5:[0]=%d,[1]=%d,[2]=%d,[8190]=%d,[8191]=%d\n", data.getData5(0), data.getData5(1), data.getData5(2), data.getData5(8190), data.getData5(8191));
+}
+
+//--------------------
+//テスト用クラスのシリアライズ処理定義
+namespace serial
 {
 #if 1
+	//--------------------
+	//ロード前処理用関数オブジェクト
+	//※デシリアライズ専用処理
 	template<class Arc>
-	struct beforeLoad<Arc, CTest1>
-	{
-		void operator()(Arc& arc, CTest1& obj)
+	struct beforeLoad<Arc, CTest1> {
+		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
 		{
+			printf("beforeLoad(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
 #if 1
+	//--------------------
+	//シリアライズ処理用関数オブジェクト
+	//※シリアライズとデシリアライズ兼用共通処理
 	template<class Arc>
-	struct serialize<Arc, CTest1>
-	{
-		void operator()(Arc& arc, const CTest1& obj)
+	struct serialize<Arc, CTest1> {
+		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver)
 		{
-			printf("serialize\n");
-			printf("obj.m_data1=0x%p\n", &obj.m_data1);
-			printf("obj.m_data2=0x%p\n", &obj.m_data2);
-			printf("obj.m_data3=0x%p\n", &obj.m_data3);
-			arc & makeItem("data1", obj.m_data1);
-			arc & makeItem("data2", obj.m_data2);
-			arc & makeItem("data3", obj.m_data3);
+			printf("serialize(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			arc & pair("data1", obj.m_data1);
+			arc & pair("data2", obj.m_data2);
+			arc & pair("data3", obj.m_data3);
+			arc & pair("data4", obj.m_data4);
+			arc & pairBin("data5", obj.m_data5);
+		}
+	};
+	template<class Arc>
+	struct serialize<Arc, CTest1::STRUCT> {
+		void operator()(Arc& arc, const CTest1::STRUCT& obj, const CVersion& ver)
+		{
+			printf("serialize::STRUCT(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			arc & pair("data1", obj.m_a);
+			arc & pair("data2", obj.m_b);
+			arc & pair("data3", obj.m_c);
 		}
 	};
 #endif
 #if 1
+	//--------------------
+	//セーブ処理用関数オブジェクトクラス
+	//※シリアライズ専用処理
 	template<class Arc>
-	struct save<Arc, CTest1>
-	{
-		void operator()(Arc& arc, const CTest1& obj)
+	struct save<Arc, CTest1> {
+		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver)
 		{
+			printf("save(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
 #if 1
+	//--------------------
+	//ロード処理用関数オブジェクトクラス
+	//※デシリアライズ専用処理
 	template<class Arc>
-	struct load<Arc, CTest1>
-	{
-		void operator()(Arc& arc, CTest1& obj)
+	struct load<Arc, CTest1> {
+		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
 		{
+			printf("load(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
 #if 1
+	//--------------------
+	//ロード後処理用関数オブジェクトクラス
+	//※デシリアライズ専用処理
 	template<class Arc>
-	struct afterLoad<Arc, CTest1>
-	{
-		void operator()(Arc& arc, CTest1& obj)
+	struct afterLoad<Arc, CTest1> {
+		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
 		{
+			printf("afterLoad(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
 #if 1
+	//--------------------
+	//データ収集処理用関数オブジェクトクラス
+	//※シリアライズ専用処理
 	template<class Arc>
-	struct gatherer<Arc, CTest1>
-	{
-		void operator()(Arc& arc, const CTest1& obj)
+	struct gatherer<Arc, CTest1> {
+		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver)
 		{
+			printf("gatherer(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
 #if 1
+	//--------------------
+	//データ分配処理用関数オブジェクトクラス
+	//※デシリアライズ専用処理
 	template<class Arc>
-	struct distributor<Arc, CTest1>
-	{
-		void operator()(Arc& arc, CTest1& obj)
+	struct distributor<Arc, CTest1> {
+		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
 		{
+			printf("distributor(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
-}//namespace serializer
+#if 1
+	//--------------------
+	//データ収集処理用関数オブジェクトクラス
+	//※シリアライズ専用処理
+	template<class Arc>
+	struct gatherer<Arc, CSaveDataSerializer> {
+		void operator()(Arc& arc, const CSaveDataSerializer& obj, const CVersion& ver)
+		{
+			printf("CSaveDataSerializer::gatherer(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			//対象データ取得
+			CTest1& data = s_saveData;
+			//シリアライズ
+			arc << pair("CTest1", data);
+		}
+	};
+#endif
+#if 1
+	//--------------------
+	//データ分配処理用関数オブジェクトクラス
+	//※デシリアライズ専用処理
+	template<class Arc>
+	struct distributor<Arc, CSaveDataSerializer> {
+		void operator()(Arc& arc, CSaveDataSerializer& obj, const CVersion& ver)
+		{
+			printf("CSaveDataSerializer::distributor(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			//対象データ取得
+			CTest1& data = s_saveData;
+			//デシリアライズ
+			arc >> pair("CTest1", data);
+		}
+	};
+#endif
+}//namespace serial
 
+//--------------------
+//シリアライズテスト１：バイナリアーカイブ
+void serializeTest1(const char* file_path)
+{
+	printf("--------------------\n");
+	printf("シリアライズ：バイナリアーカイブ\n");
+	//セーブデータ初期化
+	initSaveData();
+	//セーブデータ表示
+	printSaveData();
+	//バッファ準備
+	char buff[16 * 1024];//セーブデータ用バッファ
+	char work[16 * 1024];//ワーク用バッファ
+	//シリアライズ
+	serial::COBinaryArchive oa(buff, work);//出力アーカイブ作成：テキストアーカイブ
+	oa << serial::pair<CSaveDataSerializer>("SaveData");//シリアライズ
+	//ファイルに書き出し
+#ifdef USE_STRCPY_S
+	FILE* fp = nullptr;
+	fopen_s(&fp, file_path, "wb");
+#else//USE_STRCPY_S
+	FILE* fp = fopen(file_path, "wb");
+#endif//USE_STRCPY_S
+	fwrite(buff, 1, oa.getBuffPos(), fp);
+	fclose(fp);
+	fp = NULL;
+}
+//--------------------
+//デシリアライズテスト１：バイナリアーカイブ
+void deserializeTest1(const char* file_path)
+{
+	printf("--------------------\n");
+	printf("デシリアライズ：バイナリアーカイブ\n");
+	//バッファ準備
+	char buff[16 * 1024];//セーブデータ用バッファ
+	char work[16 * 1024];//ワーク用バッファ
+	//ファイルから読み込み
+#ifdef USE_STRCPY_S
+	FILE* fp = nullptr;
+	fopen_s(&fp, file_path, "rb");
+#else//USE_STRCPY_S
+	FILE* fp = fopen(file_path, "rb");
+#endif//USE_STRCPY_S
+	fseek(fp, 0, SEEK_END);
+	long file_size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	fread(buff, 1, file_size, fp);
+	fclose(fp);
+	fp = NULL;
+	//デシリアライズ
+	serial::CIBinaryArchive ia(buff, file_size, work);
+	ia >> serial::pair<CSaveDataSerializer>("CTest1", file_size);
+	//セーブデータ表示
+	printSaveData();
+}
+//--------------------
+//シリアライズ＆デシリアライズテスト１：バイナリアーカイブ
+void test1()
+{
+	static const char* file_path = "test1.bin";
+	//シリアライズ
+	serializeTest1(file_path);
+	//デシリアライズ
+	deserializeTest1(file_path);
+}
+
+//--------------------
 //テスト
 int main(const int argc, const char* argv[])
 {
-	CTest1 obj;
-	printf("&obj=0x%p\n", &obj);
-	
-	char buff[1024];
-	char work[1024];
-	serializer::OArchive oa(buff, work);
-	oa << serializer::makeItem("CTest1", obj);
-	
-	serializer::IArchive ia(buff, work);
-	ia >> serializer::makeItem("CTest1", obj);
-	
+	test1();
+
 	return EXIT_SUCCESS;
 }
 

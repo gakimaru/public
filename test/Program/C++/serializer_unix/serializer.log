@@ -1,19 +1,25 @@
-&obj=0x0x28abe4
-[operator<<] name=CTest1, typeName=6CTest1, item=0x0x28abe4
-T::ver=123.456
-serialize
-obj.m_data1=0x0x28abe4
-obj.m_data2=0x0x28abe8
-obj.m_data3=0x0x28abec
-[operator&] name=data1, typeName=i, item=0x0x28abe4 [0]
-[operator&] name=data2, typeName=f, item=0x0x28abe8 [0]
-[operator&] name=data3, typeName=c, item=0x0x28abec [3]
-[operator>>] name=CTest1, typeName=6CTest1, item=0x0x28abe4
-T::ver=123.456
-serialize
-obj.m_data1=0x0x28abe4
-obj.m_data2=0x0x28abe8
-obj.m_data3=0x0x28abec
-[operator&] name=data1, typeName=i, item=0x0x28abe4 [0]
-[operator&] name=data2, typeName=f, item=0x0x28abe8 [0]
-[operator&] name=data3, typeName=c, item=0x0x28abec [3]
+--------------------
+シリアライズ：バイナリアーカイブ
+data1=1
+data2=2.34
+data3={5, 6, 7}
+data4:a=8,b=9,c=0
+data5:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
+CSaveDataSerializer::gatherer(ver=5,6)
+serialize(ver=1,2)
+serialize::STRUCT(ver=3,4)
+save(ver=1,2)
+gatherer(ver=1,2)
+--------------------
+デシリアライズ：バイナリアーカイブ
+CSaveDataSerializer::distributor(ver=0,0)
+beforeLoad(ver=0,0)
+serialize(ver=0,0)
+load(ver=0,0)
+afterLoad(ver=0,0)
+distributor(ver=0,0)
+data1=1
+data2=2.34
+data3={5, 6, 7}
+data4:a=8,b=9,c=0
+data5:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1

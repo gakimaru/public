@@ -1,61 +1,124 @@
---------------------
-シリアライズ：バイナリアーカイブ
-data1=1
-data2=2.34
-data3={5, 6, 7}
-data4a:a=8,b=9,c=10.0
-data4b:a=11,b=12,c=13.0
-data5a:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
-data5b:[0]=0,[1]=0,[2]=1,[8190]=1,[8191]=0
-data6:[0]={a=14,b=15,c=16.0},[1]={a=17,b=18,c=19.0}
-data7a(0x0x80010c00):a=20,b=21,c=22.0
-data7b(0x0x0):
-collector<CSaveDataSerializer>(ver=5,6)
-serialize<CTest1>(ver=1,2) sizeof(CTest1)=2116
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-save<CTest1>(ver=1,2)
-collector<CTest1>(ver=1,2)
-処理結果：エラーなし
---------------------
-デシリアライズ：バイナリアーカイブ
-distributor<CSaveDataSerializer>(ver=5,6)
-beforeLoad<CTest1>(ver=1,2)
-serialize<CTest1>(ver=1,2) sizeof(CTest1)=2116
-load<CTest1>(ver=1,2)
-serialize<CTest1>(ver=1,2) sizeof(CTest1)=2116
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize<CTest1>(ver=1,2) sizeof(CTest1)=2116
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize<CTest1>(ver=1,2) sizeof(CTest1)=2116
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize<CTest1>(ver=1,2) sizeof(CTest1)=2116
-afterLoad<CTest1>(ver=1,2)
-処理結果：エラーなし
-  getNumSmallerSizeItem()=0
-  getNumLargerSizeItem()=0
-  getNumSmallerArrItem()=0
-  getNumLargerArrItem()=0
-  getNumIsOnlyOnSaveData()=0
-  getNumIsOnlyOnMem()=0
-  getNumIsObjOnSaveDataOnly()=0
-  getNumIsObjOnMemOnly()=0
-  getNumIsArrOnSaveDataOnly()=0
-  getNumIsArrOnMemOnly()=0
-  getNumIsPtrOnSaveDataOnly()=0
-  getNumIsPtrOnMemOnly()=0
-  getNumIsNulOnSaveDataOnly()=0
-  getNumIsNulOnMemOnly()=0
-data1=1
-data2=2.34
-data3={5, 6, 7}
-data4a:a=8,b=9,c=10.0
-data4b:a=11,b=12,c=13.0
-data5a:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
-data5b:[0]=0,[1]=0,[2]=1,[8190]=1,[8191]=0
-data6:[0]={a=14,b=15,c=16.0},[1]={a=14,b=15,c=16.0}
-data7a(0x0x80010c00):a=20,b=21,c=22.0
-data7b(0x0x0):
+------------------------------------------------------------
+【テストデータ作成】
+------------------------------------------------------------
+【現在のデータを表示】
+--- インベントリ ---
+ID="r00000"(0x7bd6ae81), nmae="回復薬000", atk=0, def=0, recover=5, num=10
+ID="r00001"(0x0cd19e17), nmae="回復薬001", atk=0, def=0, recover=7, num=10
+ID="r00002"(0x95d8cfad), nmae="回復薬002", atk=0, def=0, recover=9, num=10
+ID="w00000"(0x2b1b3f32), nmae="武器000", atk=10, def=0, recover=0, num=1
+ID="w00001"(0x5c1c0fa4), nmae="武器001", atk=11, def=0, recover=0, num=1
+ID="w00002"(0xc5155e1e), nmae="武器002", atk=12, def=1, recover=0, num=1
+ID="w00003"(0xb2126e88), nmae="武器003", atk=13, def=1, recover=0, num=1
+ID="w00004"(0x2c76fb2b), nmae="武器004", atk=14, def=2, recover=0, num=1
+ID="s00000"(0xb08a7d24), nmae="盾000", atk=0, def=5, recover=0, num=1
+ID="s00001"(0xc78d4db2), nmae="盾001", atk=0, def=6, recover=0, num=1
+ID="s00002"(0x5e841c08), nmae="盾002", atk=0, def=7, recover=0, num=1
+ID="s00003"(0x29832c9e), nmae="盾003", atk=0, def=8, recover=0, num=1
+ID="s00004"(0xb7e7b93d), nmae="盾004", atk=0, def=9, recover=0, num=1
+--- アビリティ ---
+ID="a00000"(0xfe94deb4), nmae="特技000", atk=5, def=4
+ID="a00001"(0x8993ee22), nmae="特技001", atk=8, def=6
+ID="a00002"(0x109abf98), nmae="特技002", atk=11, def=8
+ID="a00003"(0x679d8f0e), nmae="特技003", atk=14, def=10
+ID="a00004"(0xf9f91aad), nmae="特技004", atk=17, def=12
+ID="a00005"(0x8efe2a3b), nmae="特技005", atk=20, def=14
+ID="a00006"(0x17f77b81), nmae="特技006", atk=23, def=16
+ID="a00007"(0x60f04b17), nmae="特技007", atk=26, def=18
+ID="a00008"(0xf04f5686), nmae="特技008", atk=29, def=20
+ID="a00009"(0x87486610), nmae="特技009", atk=32, def=22
+ID="a00010"(0xe78feff5), nmae="特技010", atk=35, def=24
+ID="a00011"(0x9088df63), nmae="特技011", atk=38, def=26
+ID="a00012"(0x09818ed9), nmae="特技012", atk=41, def=28
+ID="a00013"(0x7e86be4f), nmae="特技013", atk=44, def=30
+ID="a00014"(0xe0e22bec), nmae="特技014", atk=47, def=32
+ID="a00015"(0x97e51b7a), nmae="特技015", atk=50, def=34
+ID="a00016"(0x0eec4ac0), nmae="特技016", atk=53, def=36
+ID="a00017"(0x79eb7a56), nmae="特技017", atk=56, def=38
+ID="a00018"(0xe95467c7), nmae="特技018", atk=59, def=40
+ID="a00019"(0x9e535751), nmae="特技019", atk=62, def=42
+--- キャラ ---
+ID="c00030"(0x98712c7c), nmae="三郎", level=30, atk=55, def=3
+ID="c00010"(0xaa474efe), nmae="太郎", level=10, atk=15, def=20
+    [特技010]
+ID="c00020"(0x816a1d3d), nmae="次郎", level=20, atk=25, def=40
+--- 進行データ ---
+pahse=7
+flags=
+ 1 0 1 0 1 1 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+------------------------------------------------------------
+【シリアライズ】
+------------------------------------------------------------
+【セーブ】
+file="save_data.bin", size=8231
+------------------------------------------------------------
+【全データリセット】
+------------------------------------------------------------
+【現在のデータを表示】
+--- インベントリ ---
+--- アビリティ ---
+--- キャラ ---
+--- 進行データ ---
+pahse=0
+flags=
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+------------------------------------------------------------
+【ロード】
+file="save_data.bin", size=8231
+------------------------------------------------------------
+【デシリアライズ】
+------------------------------------------------------------
+【現在のデータを表示】
+--- インベントリ ---
+ID="r00000"(0x7bd6ae81), nmae="回復薬000", atk=0, def=0, recover=5, num=10
+ID="r00001"(0x0cd19e17), nmae="回復薬001", atk=0, def=0, recover=7, num=10
+ID="r00002"(0x95d8cfad), nmae="回復薬002", atk=0, def=0, recover=9, num=10
+ID="w00000"(0x2b1b3f32), nmae="武器000", atk=10, def=0, recover=0, num=1
+ID="w00001"(0x5c1c0fa4), nmae="武器001", atk=11, def=0, recover=0, num=1
+ID="w00002"(0xc5155e1e), nmae="武器002", atk=12, def=1, recover=0, num=1
+ID="w00003"(0xb2126e88), nmae="武器003", atk=13, def=1, recover=0, num=1
+ID="w00004"(0x2c76fb2b), nmae="武器004", atk=14, def=2, recover=0, num=1
+ID="s00000"(0xb08a7d24), nmae="盾000", atk=0, def=5, recover=0, num=1
+ID="s00001"(0xc78d4db2), nmae="盾001", atk=0, def=6, recover=0, num=1
+ID="s00002"(0x5e841c08), nmae="盾002", atk=0, def=7, recover=0, num=1
+ID="s00003"(0x29832c9e), nmae="盾003", atk=0, def=8, recover=0, num=1
+ID="s00004"(0xb7e7b93d), nmae="盾004", atk=0, def=9, recover=0, num=1
+--- アビリティ ---
+ID="a00000"(0xfe94deb4), nmae="特技000", atk=5, def=4
+ID="a00001"(0x8993ee22), nmae="特技001", atk=8, def=6
+ID="a00002"(0x109abf98), nmae="特技002", atk=11, def=8
+ID="a00003"(0x679d8f0e), nmae="特技003", atk=14, def=10
+ID="a00004"(0xf9f91aad), nmae="特技004", atk=17, def=12
+ID="a00005"(0x8efe2a3b), nmae="特技005", atk=20, def=14
+ID="a00006"(0x17f77b81), nmae="特技006", atk=23, def=16
+ID="a00007"(0x60f04b17), nmae="特技007", atk=26, def=18
+ID="a00008"(0xf04f5686), nmae="特技008", atk=29, def=20
+ID="a00009"(0x87486610), nmae="特技009", atk=32, def=22
+ID="a00010"(0xe78feff5), nmae="特技010", atk=35, def=24
+ID="a00011"(0x9088df63), nmae="特技011", atk=38, def=26
+ID="a00012"(0x09818ed9), nmae="特技012", atk=41, def=28
+ID="a00013"(0x7e86be4f), nmae="特技013", atk=44, def=30
+ID="a00014"(0xe0e22bec), nmae="特技014", atk=47, def=32
+ID="a00015"(0x97e51b7a), nmae="特技015", atk=50, def=34
+ID="a00016"(0x0eec4ac0), nmae="特技016", atk=53, def=36
+ID="a00017"(0x79eb7a56), nmae="特技017", atk=56, def=38
+ID="a00018"(0xe95467c7), nmae="特技018", atk=59, def=40
+ID="a00019"(0x9e535751), nmae="特技019", atk=62, def=42
+--- キャラ ---
+ID="c00030"(0x98712c7c), nmae="三郎", level=30, atk=55, def=3
+ID="c00010"(0xaa474efe), nmae="太郎", level=10, atk=15, def=20
+    [特技010]
+ID="c00020"(0x816a1d3d), nmae="次郎", level=20, atk=25, def=40
+--- 進行データ ---
+pahse=7
+flags=
+ 1 0 1 0 1 1 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1

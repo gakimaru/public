@@ -17,7 +17,6 @@
 #include <limits.h>//UCHAR_MAX—p
 #include <typeinfo.h>//type_id—p
 #include <map>//STL map—p
-#include <vector>//STL vector—p
 #include <atomic>//C++11ƒAƒgƒ~ƒbƒN‘€ì
 #include <thread>//C++11ƒXƒŒƒbƒh
 #include <chrono>//C++11ŠÔ
@@ -2158,6 +2157,10 @@ using CTempPolyPoolAllocator = CTempPolyAllocatorWithAdp<CPoolAllocAdp>;//C++11Œ
 namespace serial
 {
 	//--------------------
+	//ƒNƒ‰ƒXéŒ¾
+	class CItemBase;
+	
+	//--------------------
 	//ƒo[ƒWƒ‡ƒ“ƒNƒ‰ƒX
 	template<unsigned short MAJOR, unsigned short MINOR>
 	class CVersionDefBase;
@@ -2173,6 +2176,25 @@ namespace serial
 		unsigned int getVer()const { return m_ver; };//‡¬ƒo[ƒWƒ‡ƒ“
 		const unsigned int* getVerPtr()const { return &m_ver; };//‡¬ƒo[ƒWƒ‡ƒ“‚Ìƒ|ƒCƒ“ƒ^
 		std::size_t getVerSize()const { return sizeof(m_ver); };//‡¬ƒo[ƒWƒ‡ƒ“‚ÌƒTƒCƒY
+	public:
+		//ƒIƒyƒŒ[ƒ^
+		bool operator==(const CVersion& rhs) const { return m_ver == rhs.m_ver; }
+		bool operator!=(const CVersion& rhs) const { return m_ver != rhs.m_ver; }
+		bool operator<(const CVersion& rhs) const { return m_ver <= rhs.m_ver; }
+		bool operator<=(const CVersion& rhs) const { return m_ver < rhs.m_ver; }
+		bool operator>(const CVersion& rhs) const { return m_ver >= rhs.m_ver; }
+		bool operator>=(const CVersion& rhs) const { return m_ver > rhs.m_ver; }
+	public:
+		//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
+		operator unsigned int() const { return m_ver; }
+	public:
+		//ƒƒ\ƒbƒh
+		//ƒo[ƒWƒ‡ƒ“‚©‚çƒWƒƒ[ƒo[ƒWƒ‡ƒ“‚Æƒ}ƒCƒi[ƒo[ƒWƒ‡ƒ“‚ğZo
+		void calcFromVer()
+		{
+			*const_cast<unsigned short*>(&m_majorVer) = m_ver / VER_FIGURE;
+			*const_cast<unsigned short*>(&m_minorVer) = m_ver % VER_FIGURE;
+		}
 	public:
 		//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		CVersion() :
@@ -2245,7 +2267,7 @@ namespace serial
 	template<class Arc, class T>
 	struct beforeLoad {
 		typedef int IS_UNDEFINED;//SFINAE—p:ŠÖ”ƒIƒuƒWƒFƒNƒg‚Ì–¢’è‹`ƒ`ƒFƒbƒN—p‚ÌŒ^’è‹`
-		void operator()(Arc& arc, T& obj, const CVersion& ver)
+		void operator()(Arc& arc, T& obj, const CVersion& ver, const CVersion& now_ver)
 		{}
 	};
 	//--------------------
@@ -2256,7 +2278,7 @@ namespace serial
 	template<class Arc, class T>
 	struct serialize {
 		typedef int IS_UNDEFINED;//SFINAE—p:ŠÖ”ƒIƒuƒWƒFƒNƒg‚Ì–¢’è‹`ƒ`ƒFƒbƒN—p‚ÌŒ^’è‹`
-		void operator()(Arc& arc, const T& obj, const CVersion& ver)
+		void operator()(Arc& arc, const T& obj, const CVersion& ver, const CVersion& now_ver)
 		{}
 	};
 	//--------------------
@@ -2278,7 +2300,7 @@ namespace serial
 	template<class Arc, class T>
 	struct load	{
 		typedef int IS_UNDEFINED;//SFINAE—p:ŠÖ”ƒIƒuƒWƒFƒNƒg‚Ì–¢’è‹`ƒ`ƒFƒbƒN—p‚ÌŒ^’è‹`
-		void operator()(Arc& arc, const T& obj, const CVersion& ver)
+		void operator()(Arc& arc, const T& obj, const CVersion& ver, const CVersion& now_ver)
 		{}
 	};
 	//--------------------
@@ -2289,7 +2311,7 @@ namespace serial
 	template<class Arc, class T>
 	struct afterLoad {
 		typedef int IS_UNDEFINED;//SFINAE—p:ŠÖ”ƒIƒuƒWƒFƒNƒg‚Ì–¢’è‹`ƒ`ƒFƒbƒN—p‚ÌŒ^’è‹`
-		void operator()(Arc& arc, T& obj, const CVersion& ver)
+		void operator()(Arc& arc, T& obj, const CVersion& ver, const CVersion& now_ver)
 		{}
 	};
 	//--------------------
@@ -2298,7 +2320,7 @@ namespace serial
 	//¦“Áê‰»‚É‚æ‚èƒ†[ƒU[ˆ—‚ğÀ‘•
 	//¦•W€‚Å‚Í‰½‚à‚µ‚È‚¢
 	template<class Arc, class T>
-	struct gatherer	{
+	struct collector {
 		typedef int IS_UNDEFINED;//SFINAE—p:ŠÖ”ƒIƒuƒWƒFƒNƒg‚Ì–¢’è‹`ƒ`ƒFƒbƒN—p‚ÌŒ^’è‹`
 		void operator()(Arc& arc, const T& obj, const CVersion& ver)
 		{}
@@ -2311,7 +2333,7 @@ namespace serial
 	template<class Arc, class T>
 	struct distributor {
 		typedef int IS_UNDEFINED;//SFINAE—p:ŠÖ”ƒIƒuƒWƒFƒNƒg‚Ì–¢’è‹`ƒ`ƒFƒbƒN—p‚ÌŒ^’è‹`
-		void operator()(Arc& arc, T& obj, const CVersion& ver)
+		void operator()(Arc& arc, T& obj, const CVersion& ver, const CVersion& now_ver, const CItemBase& target_item)
 		{}
 	};
 	//--------------------
@@ -2335,43 +2357,65 @@ namespace serial
 	//¦‚¢‚¸‚ê‚©‚ÌŠÖ”ƒIƒuƒWƒFƒNƒg‚ª“o˜^‚³‚ê‚Ä‚¢‚ê‚ÎƒIƒuƒWƒFƒNƒgŒ^‚Æ‚İ‚È‚·
 	//¦ƒIƒuƒWƒFƒNƒgŒ^‚ÍƒVƒŠƒAƒ‰ƒCƒY‚ÌÛ‚Éƒf[ƒ^ƒuƒƒbƒN‚Æ‚µ‚Äˆµ‚¤
 	template<class T>
-	bool hasAyFunctor()
+	bool hasAnyFunctor()
 	{
+		assert((isDefinedFunctor<collector<CArchiveDummy, T> >(0)) == (isDefinedFunctor<distributor<CArchiveDummy, T> >(0)));
 		return isDefinedFunctor<beforeLoad<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<serialize<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<save<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<load<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<afterLoad<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<gatherer<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<collector<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<distributor<CArchiveDummy, T> >(0);
 	}
 
 	//--------------------
-	//Œ^î•ñ
-	enum typeInfoEnum : unsigned char
+	//•Û‘¶ó‘Ô
+	enum recInfoEnum : unsigned char
 	{
 		IS_OBJECT = 0x01,//ƒIƒuƒWƒFƒNƒgŒ^
 		IS_ARRAY = 0x02,//”z—ñŒ^
 		IS_PTR = 0x04,//ƒ|ƒCƒ“ƒ^Œ^
 		IS_NULL = 0x08,//ƒkƒ‹
+		HAS_VERSION = 0x10,//ƒo[ƒWƒ‡ƒ“î•ñ‚ ‚è
 	};
-	class CTypeInfo
+	class CRecInfo
 	{
 	public:
 		//Œ^
-		typedef unsigned char value_t;//Œ^î•ñŒ^
+		typedef unsigned char value_t;//•Û‘¶ó‘ÔŒ^
 	public:
 		//ƒAƒNƒZƒbƒT
-		bool isObject() const { return m_value & IS_OBJECT ? true : false; }//ƒIƒuƒWƒFƒNƒgŒ^‚©H
-		bool isArray() const { return m_value & IS_ARRAY ? true : false; }//”z—ñŒ^‚©H
-		bool isPtr() const { return m_value & IS_PTR ? true : false; }//ƒ|ƒCƒ“ƒ^Œ^‚©H
-		bool isNull() const { return m_value & IS_NULL ? true : false; }//ƒkƒ‹ƒ|ƒCƒ“ƒ^‚©Hiƒ|ƒCƒ“ƒ^Œ^‚Ì‚¾‚¯ˆµ‚í‚ê‚éj
+		bool isObj() const { return (m_value & IS_OBJECT) ? true : false; }//ƒIƒuƒWƒFƒNƒgŒ^‚©H
+		bool isArr() const { return (m_value & IS_ARRAY) ? true : false; }//”z—ñŒ^‚©H
+		bool isPtr() const { return (m_value & IS_PTR) ? true : false; }//ƒ|ƒCƒ“ƒ^Œ^‚©H
+		bool isNul() const { return (m_value & IS_NULL) ? true : false; }//ƒkƒ‹ƒ|ƒCƒ“ƒ^‚©Hiƒ|ƒCƒ“ƒ^Œ^‚Ì‚¾‚¯ˆµ‚í‚ê‚éj
+		bool hasVersion() const { return (m_value & HAS_VERSION) ? true : false; }//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
+		void setHasVersion() const { *const_cast<value_t*>(&m_value) = m_value | HAS_VERSION; }//ƒo[ƒWƒ‡ƒ“î•ñ‚ ‚è‚É‚·‚é
+		void resetHasVersion() const { *const_cast<value_t*>(&m_value) = m_value & ~HAS_VERSION; }//ƒo[ƒWƒ‡ƒ“î•ñ‚È‚µ‚É‚·‚é
+	public:
+		//ƒIƒyƒŒ[ƒ^
+		bool operator==(const CRecInfo& rhs) const { return m_value == rhs.m_value; }
+		bool operator!=(const CRecInfo& rhs) const { return m_value != rhs.m_value; }
+		//ƒRƒs[ƒIƒyƒŒ[ƒ^
+		CRecInfo& operator=(const CRecInfo& src)
+		{
+			*const_cast<value_t*>(&m_value) = src.m_value;
+			return *this;
+		}
+	public:
+		//ƒƒ\ƒbƒh
+		//ƒNƒŠƒA
+		void clear()
+		{
+			*const_cast<value_t*>(&m_value) = 0;
+		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CTypeInfo(const value_t info) :
+		CRecInfo(const value_t info) :
 			m_value(info)
 		{}
-		CTypeInfo(const bool is_object, const bool is_array, const bool is_ptr, const bool is_null) :
+		CRecInfo(const bool is_object, const bool is_array, const bool is_ptr, const bool is_null) :
 			m_value(
 				(is_object ? IS_OBJECT : 0) |
 				(is_array ? IS_ARRAY : 0) |
@@ -2380,11 +2424,11 @@ namespace serial
 				)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CTypeInfo()
+		~CRecInfo()
 		{}
-	private:
+	public://’¼ÚƒAƒNƒZƒX‹–‰Â
 		//ƒtƒB[ƒ‹ƒh
-		const value_t m_value;//Œ^î•ñ
+		const value_t m_value;//•Û‘¶ó‘Ô
 	};
 	//--------------------
 	//ƒf[ƒ^€–ÚŠî’êƒNƒ‰ƒX
@@ -2392,19 +2436,75 @@ namespace serial
 	{
 	public:
 		//ƒAƒNƒZƒbƒT
-		bool isObject() const { return m_info.isObject(); }//ƒIƒuƒWƒFƒNƒgŒ^‚©H
-		bool isArray() const { return m_info.isArray(); }//”z—ñŒ^‚©H
+		bool isObj() const { return m_info.isObj(); }//ƒIƒuƒWƒFƒNƒgŒ^‚©H
+		bool isArr() const { return m_info.isArr(); }//”z—ñŒ^‚©H
 		bool isPtr() const { return m_info.isPtr(); }//ƒ|ƒCƒ“ƒ^Œ^‚©H
-		bool isNull() const { return m_info.isNull(); }//ƒkƒ‹‚©H
-		std::size_t getElemNum() const { return m_arrNum == 0 ? 1 : m_arrNum; }//—v‘f”‚ğæ“¾
+		bool isNul() const { return m_info.isNul(); }//ƒkƒ‹‚©H
+		std::size_t getElemNum() const //—v‘f”‚ğæ“¾
+		{
+			return m_arrNum == 0 ?
+						1 :
+						m_arrNum;
+		}
+		std::size_t getMinimumElemNum() const //Å¬—v‘f”‚ğæ“¾
+		{
+			return	m_hasNowInfo ?
+						m_arrNum < m_nowArrNum ?
+							m_arrNum == 0 ?
+								1 :
+								m_arrNum :
+							m_nowArrNum == 0 ?
+								1 :
+								m_nowArrNum :
+						m_arrNum == 0 ?
+							 1 :
+							 m_arrNum;
+		}
+		bool nowIsObj() const { return m_hasNowInfo && m_nowInfo.isObj(); }//Œ»İ‚Ìƒf[ƒ^‚ÍƒIƒuƒWƒFƒNƒgŒ^‚©H
+		bool nowIsArr() const { return m_hasNowInfo && m_nowInfo.isArr(); }//Œ»İ‚Ìƒf[ƒ^‚Í”z—ñŒ^‚©H
+		bool nowIsPtr() const { return m_hasNowInfo && m_nowInfo.isPtr(); }//Œ»İ‚Ìƒf[ƒ^‚Íƒ|ƒCƒ“ƒ^Œ^‚©H
+		bool nowIsNul() const { return m_hasNowInfo && m_nowInfo.isNul(); }//Œ»İ‚Ìƒf[ƒ^‚Íƒkƒ‹‚©H
+		bool nowAndSaveDataIsSameRecInfo() const { return m_hasNowInfo && m_nowInfo == m_info; }//Œ»İ‚Ìƒf[ƒ^‚ÆƒZ[ƒuƒf[ƒ^‚Ì•Û‘¶î•ñ‚ªˆê’v‚·‚é‚©H
+		bool nowAndSaveDataIsdifferentRecInfo() const { return m_hasNowInfo && m_nowInfo != m_info; }//Œ»İ‚Ìƒf[ƒ^‚ÆƒZ[ƒuƒf[ƒ^‚Ì•Û‘¶î•ñ‚ªˆê’v‚µ‚È‚¢‚©H
+		bool nowAndSaveDataIsObj() const { return m_hasNowInfo && m_nowInfo.isObj() && m_info.isObj(); }//Œ»İ‚Ìƒf[ƒ^‚àƒZ[ƒuƒf[ƒ^‚àƒIƒuƒWƒFƒNƒgŒ^‚©H
+		bool nowAndSaveDataIsArr() const { return m_hasNowInfo && m_nowInfo.isArr() && m_info.isArr(); }//Œ»İ‚Ìƒf[ƒ^‚àƒZ[ƒuƒf[ƒ^‚à”z—ñŒ^‚©H
+		bool nowAndSaveDataIsPtr() const { return m_hasNowInfo && m_nowInfo.isPtr() && m_info.isPtr(); }//Œ»İ‚Ìƒf[ƒ^‚àƒZ[ƒuƒf[ƒ^‚àƒ|ƒCƒ“ƒ^Œ^‚©H
+		bool nowAndSaveDataIsNul() const { return m_hasNowInfo && m_nowInfo.isNul() && m_info.isNul(); }//Œ»İ‚Ìƒf[ƒ^‚àƒZ[ƒuƒf[ƒ^‚à‚Íƒkƒ‹‚©H
+		bool nowIsObjButSaveDataIsNot() const { return m_hasNowInfo && m_nowInfo.isObj() && !m_info.isObj(); }//Œ»İ‚Ìƒf[ƒ^‚ÍƒIƒuƒWƒFƒNƒgŒ^‚¾‚ªƒZ[ƒuƒf[ƒ^‚Í‚»‚¤‚Å‚Í‚È‚¢‚©H
+		bool nowIsArrButSaveDataIsNot() const { return m_hasNowInfo && m_nowInfo.isArr() && !m_info.isArr(); }//Œ»İ‚Ìƒf[ƒ^‚Í”z—ñŒ^‚¾‚ªƒZ[ƒuƒf[ƒ^‚Í‚»‚¤‚Å‚Í‚È‚¢‚©H
+		bool nowIsPtrButSaveDataIsNot() const { return m_hasNowInfo && m_nowInfo.isPtr() && !m_info.isPtr(); }//Œ»İ‚Ìƒf[ƒ^‚Íƒ|ƒCƒ“ƒ^Œ^‚¾‚ªƒZ[ƒuƒf[ƒ^‚Í‚»‚¤‚Å‚Í‚È‚¢‚©H
+		bool nowIsNulButSaveDataIsNot() const { return m_hasNowInfo && m_nowInfo.isNul() && !m_info.isNul(); }//Œ»İ‚Ìƒf[ƒ^‚Íƒkƒ‹‚¾‚ªƒZ[ƒuƒf[ƒ^‚Í‚»‚¤‚Å‚Í‚È‚¢‚©H
+		bool nowIsNotObjButSaveDataIs() const { return m_hasNowInfo && !m_nowInfo.isObj() && m_info.isObj(); }//Œ»İ‚Ìƒf[ƒ^‚ÍƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªƒZ[ƒuƒf[ƒ^‚Í‚»‚¤‚©H
+		bool nowIsNotArrButSaveDataIs() const { return m_hasNowInfo && !m_nowInfo.isArr() && m_info.isArr(); }//Œ»İ‚Ìƒf[ƒ^‚Í”z—ñŒ^‚Å‚Í‚È‚¢‚ªƒZ[ƒuƒf[ƒ^‚Í‚»‚¤‚©H
+		bool nowIsNotPtrButSaveDataIs() const { return m_hasNowInfo && !m_nowInfo.isPtr() && m_info.isPtr(); }//Œ»İ‚Ìƒf[ƒ^‚Íƒ|ƒCƒ“ƒ^Œ^‚Å‚Í‚È‚¢‚ªƒZ[ƒuƒf[ƒ^‚Í‚»‚¤‚©H
+		bool nowIsNotNulButSaveDataIs() const { return m_hasNowInfo && !m_nowInfo.isNul() && m_info.isNul(); }//Œ»İ‚Ìƒf[ƒ^‚Íƒkƒ‹‚Å‚Í‚È‚¢‚ªƒZ[ƒuƒf[ƒ^‚Í‚»‚¤‚©H
+		bool nowSizeIsSame() const { return !isObj() && m_hasNowInfo && m_nowItemSize == m_itemSize; }//Œ»İ‚ÌƒTƒCƒY‚Ì•û‚ÆƒZ[ƒuƒf[ƒ^‚ÌƒTƒCƒY‚ª“¯‚¶‚©H
+		bool nowSizeIsSamall() const { return !isObj() && m_hasNowInfo && m_nowItemSize < m_itemSize; }//Œ»İ‚ÌƒTƒCƒY‚Ì•û‚ªƒZ[ƒuƒf[ƒ^‚ÌƒTƒCƒY‚æ‚è¬‚³‚¢‚©H
+		bool nowSizeIsLarge() const { return !isObj() && m_hasNowInfo && m_nowItemSize > m_itemSize; }//Œ»İ‚ÌƒTƒCƒY‚Ì•û‚ªƒZ[ƒuƒf[ƒ^‚ÌƒTƒCƒY‚æ‚è‘å‚«‚¢‚©H
+		bool nowArrIsSame() const { return m_hasNowInfo && m_nowArrNum == m_arrNum; }//Œ»İ‚Ì”z—ñƒTƒCƒY‚ÆƒZ[ƒuƒf[ƒ^‚Ì”z—ñƒTƒCƒY‚ª“¯‚¶‚©H
+		bool nowArrIsSmall() const { return m_hasNowInfo && m_nowArrNum < m_arrNum; }//Œ»İ‚Ì”z—ñƒTƒCƒY‚Ì•û‚ªƒZ[ƒuƒf[ƒ^‚Ì”z—ñƒTƒCƒY‚æ‚è¬‚³‚¢‚©H
+		bool nowArrIsLarge() const { return m_hasNowInfo && m_nowArrNum > m_arrNum; }//Œ»İ‚Ì”z—ñƒTƒCƒY‚Ì•û‚ªƒZ[ƒuƒf[ƒ^‚Ì”z—ñƒTƒCƒY‚æ‚è‘å‚«‚¢‚©H
+		bool hasNowInfo() const { return m_hasNowInfo; }//Œ»İ‚Ìî•ñƒRƒs[Ï‚İæ“¾
+		bool isOnlyOnSaveData() const{ return m_isOnlyOnSaveData; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©H
+		void setIsOnlyOnSaveData() const { m_isOnlyOnSaveData = true; m_isOnlyOnMem = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©‚ğXV
+		void setIsOnlyOnSaveData(const bool enabled) const { if (enabled) setIsOnlyOnSaveData(); }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©‚ğXV
+		void resetIsOnlyOnSaveData() const { m_isOnlyOnSaveData = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©‚ğƒŠƒZƒbƒg
+		bool isOnlyOnMem() const { return m_isOnlyOnMem; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©H
+		void setIsOnlyOnMem() const { m_isOnlyOnMem = true; m_isOnlyOnSaveData = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©‚ğXV
+		void setIsOnlyOnMem(const bool enabled) const { if (enabled) setIsOnlyOnMem(); }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©‚ğXV
+		void resetIsOnlyOnMem() const { m_isOnlyOnMem = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©‚ğƒŠƒZƒbƒg
 		bool isAlready() const { return m_isAlready; }//ˆ—Ï‚İ‚©H
 		void setIsAlready() const { m_isAlready = true; }//ˆ—Ï‚İ‚É‚·‚é
 		void resetIsAlready() const { m_isAlready = false; }//ˆ—Ï‚İ‚ğ‰ğœ‚·‚é
 	public:
+		//ƒIƒyƒŒ[ƒ^
+		bool operator==(const CItemBase& rhs) const { return m_nameCrc == rhs.m_nameCrc; }//ƒf[ƒ^€–Ú–¼CRC‚Åˆê’v”»’è
+		bool operator!=(const CItemBase& rhs) const { return m_nameCrc != rhs.m_nameCrc; }//ƒf[ƒ^€–Ú–¼CRC‚Å•sˆê’v”»’è
+	public:
 		//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
 		operator crc32_t() const { return m_nameCrc; }
 		operator const char*() const { return m_name; }
-		operator const std::type_info& () const { return m_itemType; }
+		operator const std::type_info& () const { return *m_itemType; }
 	public:
 		//ƒƒ\ƒbƒh
 		template<typename T>//’læ“¾
@@ -2419,16 +2519,91 @@ namespace serial
 		const T& getConst() const { return *static_cast<const T*>(m_itemP); }
 		template<typename T>//const‚Å’læ“¾i”z—ñ—v‘fj
 		const T& getConst(const int index) const { return static_cast<const T*>(m_itemP)[index]; }
+		//“ü—Íî•ñ‚ğƒNƒŠƒA
+		void clearForInput()
+		{
+			//m_name = nullptr;//ƒf[ƒ^€–Ú–¼
+			*const_cast<crc32_t*>(&m_nameCrc) = 0;//ƒf[ƒ^€–Ú–¼CRC
+			//m_itemP;//ƒf[ƒ^‚ÌQÆƒ|ƒCƒ“ƒ^
+			//m_itemType;//ƒf[ƒ^‚ÌŒ^î•ñ
+			*const_cast<std::size_t*>(&m_itemSize) = 0;//ƒf[ƒ^ƒTƒCƒY
+			*const_cast<std::size_t*>(&m_arrNum) = 0;//ƒf[ƒ^‚Ì”z—ñƒTƒCƒY
+			const_cast<CRecInfo*>(&m_info)->clear();//•Û‘¶ó‘Ô
+			m_nowItemSize = 0;//Œ»İ‚Ìƒf[ƒ^ƒTƒCƒY
+			m_nowArrNum = 0;//Œ»İ‚Ìƒf[ƒ^‚Ì”z—ñƒTƒCƒY
+			m_nowInfo.clear();//Œ»İ‚Ì•Û‘¶ó‘Ô
+			m_hasNowInfo = false;//Œ»İ‚Ìî•ñƒRƒs[Ï‚İ
+			m_isOnlyOnSaveData = false;//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^
+			m_isOnlyOnMem = false;//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^
+			m_isAlready = false;//ˆ—Ï‚İ
+		}
+		//Œ»İ‚Ìî•ñ‚ğƒRƒs[
+		void copyFromOnMem(const CItemBase& src)
+		{
+			assert(m_nameCrc == src.m_nameCrc);
+			m_name = src.m_name;//ƒf[ƒ^€–Ú–¼
+			//*const_cast<crc32_t*>(&m_nameCrc) = src.m_nameCrc;//ƒf[ƒ^€–Ú–¼CRC
+			m_itemP = src.m_itemP;//ƒf[ƒ^‚ÌQÆƒ|ƒCƒ“ƒ^
+			m_itemType = src.m_itemType;//ƒf[ƒ^‚ÌŒ^î•ñ
+			m_nowItemSize = src.m_itemSize;//Œ»İ‚Ìƒf[ƒ^ƒTƒCƒY
+			m_nowArrNum = src.m_arrNum;//Œ»İ‚Ìƒf[ƒ^‚Ì”z—ñƒTƒCƒY
+			m_nowInfo = src.m_info;//Œ»İ‚Ì•Û‘¶ó‘Ô
+			m_hasNowInfo = true;//Œ»İ‚Ìî•ñƒRƒs[Ï‚İ
+			m_isOnlyOnSaveData = false;//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^
+			m_isOnlyOnMem = false;//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^
+			src.resetIsOnlyOnMem();//ƒRƒs[Œ³‚ÌuƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^v‚ğƒŠƒZƒbƒg
+		}
 	public:
+		//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		CItemBase(const CItemBase& src) :
+			m_name(src.m_name),
+			m_nameCrc(src.m_nameCrc),
+			m_itemP(src.m_itemP),
+			m_itemType(src.m_itemType),
+			m_itemSize(src.m_itemSize),
+			m_arrNum(src.m_arrNum),
+			m_info(src.m_info),
+			m_nowItemSize(src.m_nowItemSize),
+			m_nowArrNum(src.m_nowArrNum),
+			m_nowInfo(src.m_nowInfo),
+			m_hasNowInfo(src.m_hasNowInfo),
+			m_isOnlyOnSaveData(src.m_isOnlyOnSaveData),
+			m_isOnlyOnMem(src.m_isOnlyOnMem),
+			m_isAlready(src.m_isAlready)
+		{}
+		//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		CItemBase() :
+			m_name(nullptr),
+			m_nameCrc(0),
+			m_itemP(nullptr),
+			m_itemType(&typeid(void)),
+			m_itemSize(0),
+			m_arrNum(0),
+			m_info(false, false, false, false),
+			m_nowItemSize(0),
+			m_nowArrNum(0),
+			m_nowInfo(false, false, false, false),
+			m_hasNowInfo(false),
+			m_isOnlyOnSaveData(false),
+			m_isOnlyOnMem(false),
+			m_isAlready(false)
+		{}
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		CItemBase(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr) :
 			m_name(name),
 			m_nameCrc(calcCRC32(name)),
 			m_itemP(item_p),
-			m_itemType(item_type),
+			m_itemType(&item_type),
 			m_itemSize(item_size),
 			m_arrNum(arr_num),
-			m_info(is_object, arr_num > 0, is_ptr, item_p == nullptr)
+			m_info(is_object, arr_num > 0, is_ptr, item_p == nullptr),
+			m_nowItemSize(0),
+			m_nowArrNum(0),
+			m_nowInfo(false, false, false, false),
+			m_hasNowInfo(false),
+			m_isOnlyOnSaveData(false),
+			m_isOnlyOnMem(false),
+			m_isAlready(false)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
 		~CItemBase()
@@ -2438,10 +2613,16 @@ namespace serial
 		const char* m_name;//ƒf[ƒ^€–Ú–¼
 		const crc32_t m_nameCrc;//ƒf[ƒ^€–Ú–¼CRC
 		const void* m_itemP;//ƒf[ƒ^‚ÌQÆƒ|ƒCƒ“ƒ^
-		const std::type_info& m_itemType;//ƒf[ƒ^‚ÌŒ^î•ñ
+		const std::type_info* m_itemType;//ƒf[ƒ^‚ÌŒ^î•ñ
 		const std::size_t m_itemSize;//ƒf[ƒ^ƒTƒCƒY
 		const std::size_t m_arrNum;//ƒf[ƒ^‚Ì”z—ñƒTƒCƒY
-		const CTypeInfo m_info;//Œ^î•ñ
+		const CRecInfo m_info;//•Û‘¶ó‘Ô
+		std::size_t m_nowItemSize;//ƒf[ƒ^ƒTƒCƒY@¦Œ»İ‚ÌƒTƒCƒYiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
+		std::size_t m_nowArrNum;//ƒf[ƒ^‚Ì”z—ñƒTƒCƒY@¦Œ»İ‚ÌƒTƒCƒYiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
+		CRecInfo m_nowInfo;//•Û‘¶ó‘Ô@¦Œ»İ‚Ìó‘ÔiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
+		bool m_hasNowInfo;//Œ»İ‚Ìî•ñƒRƒs[Ï‚İ
+		mutable bool m_isOnlyOnSaveData;//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^
+		mutable bool m_isOnlyOnMem;//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^
 		mutable bool m_isAlready;//ˆ—Ï‚İ
 	};
 	//--------------------
@@ -2452,13 +2633,16 @@ namespace serial
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		CItem(const char* name, const T* item_p, const std::size_t arr_num, const bool is_ptr) :
-			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAyFunctor<T>(), is_ptr)
+			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr)
 		{}
 		CItem(const char* name, const std::size_t size) :
-			CItemBase(name, nullptr, typeid(T), size, 0, hasAyFunctor<T>(), false)
+			CItemBase(name, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false)
 		{}
 		CItem(const char* name) :
-			CItemBase(name, nullptr, typeid(T), 0, 0, hasAyFunctor<T>(), false)
+			CItemBase(name, nullptr, typeid(T), 0, 0, hasAnyFunctor<T>(), false)
+		{}
+		CItem(const CItemBase& src) :
+			CItemBase(src)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
 		~CItem()
@@ -2513,26 +2697,137 @@ namespace serial
 	public:
 		//ƒAƒNƒZƒbƒT
 		bool hasFatalError() const { return m_hasFatalError; }//’v–½“I‚ÈƒGƒ‰[‚ ‚è
+		void setHasFatalError(){ m_hasFatalError = true; }//’v–½“I‚ÈƒGƒ‰[‚ ‚è
+		void setHasFatalError(const bool enabled){ if (enabled) setHasFatalError(); }//’v–½“I‚ÈƒGƒ‰[‚ ‚è
+		int getNumSmallerSizeItem() const { return m_numSmallerSizeItem; }//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumLargerSizeItem() const { return m_numLargerSizeItem; }//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumSmallerArrItem() const { return m_numSmallerArrItem; }//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumLargerArrItem() const { return m_numLargerArrItem; }//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumIsOnlyOnSaveData() const { return m_numIsOnlyOnSaveData; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumIsOnlyOnMem() const { return m_numIsOnlyOnMem; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumIsObjOnSaveDataOnly() const { return m_numIsObjOnSaveDataOnly; }//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumIsObjOnMemOnly() const { return m_numIsObjOnMemOnly; }//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumIsArrOnSaveDataOnly() const { return m_numIsArrOnSaveDataOnly; }//Œ»İ”z—ñŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumIsArrOnMemOnly() const { return m_numIsArrOnMemOnly; }//Œ»İ”z—ñŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumIsPtrOnSaveDataOnly() const { return m_numIsPtrOnSaveDataOnly; }//Œ»İƒ|ƒCƒ“ƒ^Œ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumIsPtrOnMemOnly() const { return m_numIsPtrOnMemOnly; }//Œ»İƒ|ƒCƒ“ƒ^Œ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumIsNulOnSaveDataOnly() const { return m_numIsNulOnSaveDataOnly; }//Œ»İƒkƒ‹‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumIsNulOnMemOnly() const { return m_numIsNulOnMemOnly; }//Œ»İƒkƒ‹‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		void addNumSmallerSizeItem(){ ++m_numSmallerSizeItem; }//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumLargerSizeItem(){ ++m_numLargerSizeItem; }//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumSmallerArrItem(){ ++m_numSmallerArrItem; }//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumLargerArrItem(){ ++m_numLargerArrItem; }//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsOnlyOnSaveData(){ ++m_numIsOnlyOnSaveData; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsOnlyOnMem(){ ++m_numIsOnlyOnMem; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsObjOnSaveDataOnly(){ ++m_numIsObjOnSaveDataOnly; }//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsObjOnMemOnly(){ ++m_numIsObjOnMemOnly; }//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsArrOnSaveDataOnly(){ ++m_numIsArrOnSaveDataOnly; }///Œ»İ”z—ñŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsArrOnMemOnly(){ ++m_numIsArrOnMemOnly; }//Œ»İ”z—ñŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsPtrOnSaveDataOnly(){ ++m_numIsPtrOnSaveDataOnly; }//Œ»İƒ|ƒCƒ“ƒ^Œ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsPtrOnMemOnly(){ ++m_numIsPtrOnMemOnly; }//Œ»İƒ|ƒCƒ“ƒ^Œ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsNulOnSaveDataOnly(){ ++m_numIsNulOnSaveDataOnly; }//Œ»İƒkƒ‹‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsNulOnMemOnly(){ ++m_numIsNulOnMemOnly; }//Œ»İƒkƒ‹‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumSmallerSizeItem(const bool enabled){ if (enabled) addNumSmallerSizeItem(); }//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumLargerSizeItem(const bool enabled){ if (enabled) addNumLargerSizeItem(); }//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumSmallerArrItem(const bool enabled){ if (enabled) addNumSmallerArrItem(); }//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumLargerArrItem(const bool enabled){ if (enabled) addNumLargerArrItem(); }//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsOnlyOnSaveData(const bool enabled){ if (enabled) addNumIsOnlyOnSaveData(); }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsOnlyOnMem(const bool enabled){ if (enabled) addNumIsOnlyOnMem(); }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsObjOnSaveDataOnly(const bool enabled){ if (enabled) addNumIsObjOnSaveDataOnly(); }//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsObjOnMemOnly(const bool enabled){ if (enabled) addNumIsObjOnMemOnly(); }//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsArrOnSaveDataOnly(const bool enabled){ if (enabled) addNumIsArrOnSaveDataOnly(); }//Œ»İ”z—ñŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsArrOnMemOnly(const bool enabled){ if (enabled) addNumIsArrOnMemOnly(); }//Œ»İ”z—ñŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsPtrOnSaveDataOnly(const bool enabled){ if (enabled) addNumIsPtrOnSaveDataOnly(); }//Œ»İƒ|ƒCƒ“ƒ^Œ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsPtrOnMemOnly(const bool enabled){ if (enabled) addNumIsPtrOnMemOnly(); }//Œ»İƒ|ƒCƒ“ƒ^Œ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsNulOnSaveDataOnly(const bool enabled){ if (enabled) addNumIsNulOnSaveDataOnly(); }//Œ»İƒkƒ‹‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsNulOnMemOnly(const bool enabled){ if (enabled) addNumIsNulOnMemOnly(); }//Œ»İƒkƒ‹‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		std::size_t getCopiedSize() const { return m_copiedSize; }//ƒRƒs[Ï‚İƒTƒCƒY
 	public:
 		//ƒƒ\ƒbƒh
+		//ƒRƒs[Ï‚İƒTƒCƒY’Ç‰Á
+		std::size_t addCopiedSize(const std::size_t size)
+		{
+			m_copiedSize += size;
+			return m_copiedSize;
+		}
+		//ˆ—Œ‹‰Ê‚É‰ÁZ
 		void addResult(const CIOResult& src)
 		{
-			if (!m_hasFatalError)
-				m_hasFatalError = src.m_hasFatalError;
-			m_copiedSize += src.m_copiedSize;
+			setHasFatalError(src.m_hasFatalError);//’v–½“I‚ÈƒGƒ‰[‚ ‚è
+			m_numSmallerSizeItem += src.m_numSmallerSizeItem;//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numLargerSizeItem += src.m_numLargerSizeItem;//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numSmallerArrItem += src.m_numSmallerArrItem;//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numLargerArrItem += src.m_numLargerArrItem;//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numIsOnlyOnSaveData += src.m_numIsOnlyOnSaveData;//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”
+			m_numIsOnlyOnMem += src.m_numIsOnlyOnMem;//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”
+			m_numIsObjOnSaveDataOnly += src.m_numIsObjOnSaveDataOnly;//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numIsObjOnMemOnly += src.m_numIsObjOnMemOnly;//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numIsArrOnSaveDataOnly += src.m_numIsArrOnSaveDataOnly;//Œ»İ”z—ñŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numIsArrOnMemOnly += src.m_numIsArrOnMemOnly;//Œ»İ”z—ñŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numIsPtrOnSaveDataOnly += src.m_numIsPtrOnSaveDataOnly;//Œ»İƒ|ƒCƒ“ƒ^Œ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numIsPtrOnMemOnly += src.m_numIsPtrOnMemOnly;//Œ»İƒ|ƒCƒ“ƒ^Œ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numIsNulOnSaveDataOnly += src.m_numIsNulOnSaveDataOnly;//Œ»İƒkƒ‹‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numIsNulOnMemOnly += src.m_numIsNulOnMemOnly;//Œ»İƒkƒ‹‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			m_copiedSize += src.m_copiedSize;//ƒRƒs[Ï‚İƒTƒCƒY
+		}
+		//ˆ—Œ‹‰Ê‚ğŒvã
+		void addResult(const CItemBase& src)
+		{
+			addNumSmallerSizeItem(src.nowSizeIsSamall());//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumLargerSizeItem(src.nowSizeIsLarge());//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumSmallerArrItem(src.nowArrIsSmall());//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumLargerArrItem(src.nowArrIsLarge());//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumIsOnlyOnSaveData(src.isOnlyOnSaveData());//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”
+			addNumIsOnlyOnMem(src.isOnlyOnMem());//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”
+			addNumIsObjOnSaveDataOnly(src.nowIsNotObjButSaveDataIs());//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumIsObjOnMemOnly(src.nowIsObjButSaveDataIsNot());//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumIsArrOnSaveDataOnly(src.nowIsNotArrButSaveDataIs());//Œ»İ”z—ñŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumIsArrOnMemOnly(src.nowIsArrButSaveDataIsNot());//Œ»İ”z—ñŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumIsPtrOnSaveDataOnly(src.nowIsNotPtrButSaveDataIs());//Œ»İƒ|ƒCƒ“ƒ^Œ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumIsPtrOnMemOnly(src.nowIsPtrButSaveDataIsNot());//Œ»İƒ|ƒCƒ“ƒ^Œ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumIsNulOnSaveDataOnly(src.nowIsNotNulButSaveDataIs());//Œ»İƒkƒ‹‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumIsNulOnMemOnly(src.nowIsNulButSaveDataIsNot());//Œ»İƒkƒ‹‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
 		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		CIOResult() :
 			m_hasFatalError(false),
+			m_numSmallerSizeItem(0),
+			m_numLargerSizeItem(0),
+			m_numSmallerArrItem(0),
+			m_numLargerArrItem(0),
+			m_numIsOnlyOnSaveData(0),
+			m_numIsOnlyOnMem(0),
+			m_numIsObjOnSaveDataOnly(0),
+			m_numIsObjOnMemOnly(0),
+			m_numIsArrOnSaveDataOnly(0),
+			m_numIsArrOnMemOnly(0),
+			m_numIsPtrOnSaveDataOnly(0),
+			m_numIsPtrOnMemOnly(0),
+			m_numIsNulOnSaveDataOnly(0),
+			m_numIsNulOnMemOnly(0),
 			m_copiedSize(0)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
 		~CIOResult()
 		{}
-	public://ƒtƒB[ƒ‹ƒh‚ğŒöŠJ‚µ‚Ä’¼Ú‘€ì
+	private:
 		//ƒtƒB[ƒ‹ƒh
 		bool m_hasFatalError;//’v–½“I‚ÈƒGƒ‰[‚ ‚è
+		int m_numSmallerSizeItem;//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numLargerSizeItem;//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numSmallerArrItem;//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numLargerArrItem;//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numIsOnlyOnSaveData;//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”
+		int m_numIsOnlyOnMem;//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”
+		int m_numIsObjOnSaveDataOnly;//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numIsObjOnMemOnly;//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numIsArrOnSaveDataOnly;//Œ»İ”z—ñŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numIsArrOnMemOnly;//Œ»İ”z—ñŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numIsPtrOnSaveDataOnly;//Œ»İƒ|ƒCƒ“ƒ^Œ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numIsPtrOnMemOnly;//Œ»İƒ|ƒCƒ“ƒ^Œ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numIsNulOnSaveDataOnly;//Œ»İƒkƒ‹‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
+		int m_numIsNulOnMemOnly;//Œ»İƒkƒ‹‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”
 		std::size_t m_copiedSize;//ƒRƒs[Ï‚İƒTƒCƒY
 	};
 
@@ -2546,8 +2841,7 @@ namespace serial
 	public:
 		//Œ^
 		typedef unsigned char byte;//ƒoƒbƒtƒ@—p
-		typedef std::vector<CItemBase> itemList_t;//ƒf[ƒ^€–ÚƒŠƒXƒgŒ^
-		typedef std::map<crc32_t, const CItemBase*> itemSearch_t;//ƒf[ƒ^ŒŸõƒŠƒXƒgŒ^
+		typedef std::map<crc32_t, const CItemBase> itemList_t;//ƒf[ƒ^€–ÚƒŠƒXƒgŒ^
 	public:
 		//ƒAƒNƒZƒbƒT
 		CIOResult& getResult(){ return m_result; }//“üo—Íˆ—Œ‹‰Êæ“¾
@@ -2555,9 +2849,10 @@ namespace serial
 		bool hasFatalError() const { return m_result.hasFatalError(); }//’v–½“I‚ÈƒGƒ‰[‚ ‚è
 		const byte* getBuffPtr() const { return m_buff; }//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@
 		const std::size_t getBuffSize() const { return m_buffSize; }//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@‚ÌƒTƒCƒY
-		const std::size_t getBuffPos() const { return m_buffPos; }//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@‚Ìˆ—ˆÊ’u
+		const std::size_t getBuffPos() const { return m_buffPos; }//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@‚ÌŒ»İˆÊ’u
 		const std::size_t getBuffRemain() const { return m_buffSize - m_buffPos; }//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@‚Ìc—Ê
-		byte* getBuffNowPtr(){ return m_buff; }//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@‚ÌŒ»İˆÊ’u‚Ìƒ|ƒCƒ“ƒ^
+		byte* getBuffNowPtr(){ return m_buff + m_buffPos; }//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@‚ÌŒ»İˆÊ’u‚Ìƒ|ƒCƒ“ƒ^
+		bool buffIsFull() const { return m_buffPos >= m_buffSize; }//ƒoƒbƒtƒ@‚ÌŒ»İˆÊ’u‚ª––’[‚É“’B‚µ‚½‚©H
 	public:
 		//ƒƒ\ƒbƒh
 		//ˆ—Œ‹‰Ê‚ğ‡¬
@@ -2571,21 +2866,24 @@ namespace serial
 		{
 			const std::size_t remain = getBuffRemain();
 			written_size = remain > size ? size : remain;
-			memcpy(m_buff + m_buffPos, data, written_size);
+			if (data)//ƒf[ƒ^‚ªƒkƒ‹‚È‚çƒTƒCƒY•ª0‚Å–„‚ß‚é
+				memcpy(m_buff + m_buffPos, data, written_size);
+			else
+				memset(m_buff + m_buffPos, 0, written_size);
 			m_buffPos += written_size;
 			return written_size == size;
 		}
 		bool write(CIOResult& result, const void* data, const std::size_t size, std::size_t* written_size = nullptr)
 		{
-			if (result.m_hasFatalError)
+			if (result.hasFatalError())
 				return false;
 			std::size_t written_size_tmp = 0;
 			const bool result_now = write(data, size, written_size_tmp);
-			result.m_copiedSize += written_size_tmp;
+			result.addCopiedSize(written_size_tmp);
 			if (!result_now)
-				result.m_hasFatalError = true;
+				result.setHasFatalError();
 			if (written_size)
-				*written_size = written_size_tmp;
+				*written_size += written_size_tmp;
 			return result_now;
 		}
 		//ƒf[ƒ^“Ç‚İ‚İ
@@ -2594,9 +2892,67 @@ namespace serial
 		{
 			const std::size_t remain = getBuffRemain();
 			read_size = remain > size ? size : remain;
-			memcpy(data, m_buff + m_buffPos, read_size);
+			if (data)//data‚ªƒkƒ‹‚È‚çƒRƒs[‚µ‚È‚¢‚ªƒ|ƒCƒ“ƒ^‚Íi‚ß‚é
+				memcpy(data, m_buff + m_buffPos, read_size);
 			m_buffPos += read_size;
 			return read_size == size;
+		}
+		bool read(CIOResult& result, void* data, const std::size_t size, std::size_t* read_size = nullptr)
+		{
+			if (result.hasFatalError())
+				return false;
+			std::size_t read_size_tmp = 0;
+			const bool result_now = read(data, size, read_size_tmp);
+			if (!result_now)
+				result.setHasFatalError();
+			if (read_size)
+				*read_size += read_size_tmp;
+			return result_now;
+		}
+		//ƒTƒCƒY‚ÌˆÙ‚È‚éƒf[ƒ^“Ç‚İ‚İ
+		//¦—v‹ƒTƒCƒY‚ª‘S‚Ä‘‚«‚ß‚È‚©‚Á‚½‚ç false ‚ğ•Ô‚·
+		bool readResizing(void* data, const std::size_t dst_size, const std::size_t src_size, std::size_t& read_size)
+		{
+				const std::size_t remain = getBuffRemain();
+				read_size = remain > src_size ? src_size : remain;
+				if (data)//data‚ªƒkƒ‹‚È‚çƒRƒs[‚µ‚È‚¢‚ªƒ|ƒCƒ“ƒ^‚Íi‚ß‚é
+				{
+					if (dst_size < read_size)
+					{
+						//‘‚«‚İæ‚ÌƒTƒCƒY‚Ì•û‚ª¬‚³‚¢ê‡
+						//¦‘‚«‚İæ‚ÌƒTƒCƒY•ª‚¾‚¯ƒRƒs[‚·‚é
+						//¦ƒrƒbƒOƒGƒ“ƒfƒBƒAƒ“‘Î‰‚ª•K—v‚Èê‡AŒã‚ë‹l‚ß‚É‚·‚é•K—v‚ª‚ ‚é‚Ì‚Å’ˆÓ
+						memcpy(data, m_buff + m_buffPos, dst_size);
+					}
+					else if (dst_size > read_size)
+					{
+						//‘‚«‚İæ‚ÌƒTƒCƒY‚Ì•û‚ª‘å‚«‚¢ê‡
+						//¦ˆê’Uƒ[ƒƒNƒŠƒA‚µ‚Ä“Ç‚İ‚İƒTƒCƒY•ª‚ğƒRƒs[
+						//¦ƒrƒbƒOƒGƒ“ƒfƒBƒAƒ“‘Î‰‚ª•K—v‚Èê‡AŒã‚ë‹l‚ß‚É‚·‚é•K—v‚ª‚ ‚é‚Ì‚Å’ˆÓ
+						memset(data, 0, sizeof(dst_size));
+						memcpy(data, m_buff + m_buffPos, read_size);
+					}
+					else//if (dst_size == read_size)
+					{
+						//ƒTƒCƒY‚ªˆê’v‚·‚éê‡
+						//¦‚»‚Ì‚Ü‚ÜƒRƒs[‚·‚é‚¾‚¯
+						memcpy(data, m_buff + m_buffPos, read_size);
+					}
+				}
+				m_buffPos += read_size;
+				return read_size == src_size;
+			}
+		bool readResizing(CIOResult& result, void* data, const std::size_t dst_size, const std::size_t src_size, std::size_t* read_size = nullptr)
+		{
+			if (result.hasFatalError())
+				return false;
+			std::size_t read_size_tmp = 0;
+			const bool result_now = readResizing(data, dst_size, src_size, read_size_tmp);
+			if (!result_now)
+				result.setHasFatalError();
+			if (read_size)
+				*read_size += read_size_tmp;
+			return result_now;
 		}
 		//Œ»İˆÊ’u‚©‚çƒ|ƒCƒ“ƒ^‚ÌˆÊ’uˆÚ“®
 		//¦”ÍˆÍŠO‚Ö‚ÌˆÚ“®‚ª—v‹‚³‚ê‚½‚ç’[‚Ü‚ÅˆÚ“®‚µ‚Ä false ‚ğ•Ô‚·
@@ -2616,12 +2972,12 @@ namespace serial
 		}
 		bool seek(CIOResult& result, const int seek_)
 		{
-			if (result.m_hasFatalError)
+			if (result.hasFatalError())
 				return false;
 			int real_seek = 0;
 			const bool result_now = seek(seek_, real_seek);
 			if (!result_now)
-				result.m_hasFatalError = true;
+				result.setHasFatalError();
 			return result_now;
 		}
 	protected:
@@ -2633,10 +2989,17 @@ namespace serial
 			CTempPolyStackAllocator alloc(m_workBuff);
 
 			//ƒf[ƒ^€–Ú‚ğ’Ç‰Á
-			assert(m_itemSearch->find(item) == m_itemSearch->end());
-			m_itemList->push_back(item);
-			const CItemBase& rec = m_itemList->at(m_itemList->size() - 1);
-			m_itemSearch->emplace(item.m_nameCrc, &rec);
+			assert(m_itemList->find(item.m_nameCrc) == m_itemList->end());
+			m_itemList->emplace(item.m_nameCrc, item);
+		}
+	public:
+		//ƒŠƒXƒg‚©‚çƒf[ƒ^€–Ú‚ğŒŸõ
+		const CItemBase* findItem(const crc32_t name_crc) const
+		{
+			auto ite = m_itemList->find(name_crc);
+			if (ite == m_itemList->end())
+				return nullptr;
+			return &ite->second;
 		}
 	private:
 		//ƒf[ƒ^ƒŠƒXƒgì¬
@@ -2648,9 +3011,6 @@ namespace serial
 
 			//ƒf[ƒ^€–ÚƒŠƒXƒg‚ğ¶¬
 			m_itemList = new itemList_t;
-
-			//ƒf[ƒ^ŒŸõƒŠƒXƒg‚ğ¶¬
-			m_itemSearch = new itemSearch_t;
 		}
 		//ƒf[ƒ^ƒŠƒXƒg”jŠü
 		void destroyItemList()
@@ -2665,12 +3025,6 @@ namespace serial
 				delete m_itemList;
 				m_itemList = nullptr;
 			}
-			//ƒf[ƒ^ŒŸõƒŠƒXƒg‚ğ”jŠü
-			if (m_itemSearch)
-			{
-				delete m_itemSearch;
-				m_itemSearch = nullptr;
-			}
 
 			//ƒ[ƒNƒoƒbƒtƒ@—pƒXƒ^ƒbƒNƒAƒƒP[ƒ^ƒNƒŠƒA
 			m_workBuff.clearN();
@@ -2684,22 +3038,20 @@ namespace serial
 			m_buffSize(buff_size),
 			m_buffPos(0),
 			m_workBuff(work_buff, work_buff_size),
-			m_itemList(nullptr),
-			m_itemSearch(nullptr)
+			m_itemList(nullptr)
 		{
 			//ƒf[ƒ^ƒŠƒXƒgì¬
 			createItemList();
 		}
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CIOArchiveBase(CIOArchiveBase& src, const std::size_t buff_size) :
+		CIOArchiveBase(CIOArchiveBase& src) :
 			m_style(src.m_style),
 			m_nestLevel(src.m_nestLevel + 1),
-			m_buff(src.m_buff + src.m_buffPos),
-			m_buffSize(buff_size),
+			m_buff(src.getBuffNowPtr()),
+			m_buffSize(src.getBuffRemain()),
 			m_buffPos(0),
 			m_workBuff(const_cast<IStackAllocator::byte*>(src.m_workBuff.getNowPtrN()), src.m_workBuff.getRemain()),
-			m_itemList(nullptr),
-			m_itemSearch(nullptr)
+			m_itemList(nullptr)
 		{
 			//ƒf[ƒ^ƒŠƒXƒgì¬
 			createItemList();
@@ -2720,7 +3072,6 @@ namespace serial
 		std::size_t m_buffPos;//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@‚Ìˆ—ˆÊ’u
 		CStackAllocator m_workBuff;//ƒ[ƒNƒoƒbƒtƒ@—pƒXƒ^ƒbƒNƒAƒƒP[ƒ^
 		itemList_t* m_itemList;//ƒf[ƒ^€–ÚƒŠƒXƒg
-		itemSearch_t* m_itemSearch;//ƒf[ƒ^ŒŸõƒŠƒXƒg
 	};
 	//--------------------
 	//ƒA[ƒJƒCƒuŒ`®Šî’êƒNƒ‰ƒX
@@ -2731,15 +3082,17 @@ namespace serial
 		virtual bool outputSignature(CIOResult& result, CIOArchiveBase& arc) = 0;//ƒVƒOƒlƒ`ƒƒo—Í
 		virtual bool inputSignature(CIOResult& result, CIOArchiveBase& arc) = 0;//ƒVƒOƒlƒ`ƒƒ“ü—Íi³‚µ‚¢ƒf[ƒ^‚©ƒ`ƒFƒbƒNj
 		virtual bool outputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) = 0;//ƒuƒƒbƒNŠJnî•ño—Í
-		virtual bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) = 0;//ƒuƒƒbƒNŠJnî•ñ“ü—Í
+		virtual bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver) = 0;//ƒuƒƒbƒNŠJnî•ñ“ü—Í
 		virtual bool outputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) = 0;//ƒuƒƒbƒN‚Ì”z—ñ—v‘fŠJnî•ño—Í
-		virtual bool inputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) = 0;//ƒuƒƒbƒN‚Ì”z—ñ—v‘fŠJnî•ñ“ü—Í
+		virtual bool inputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num) = 0;//ƒuƒƒbƒN‚Ì”z—ñ—v‘fŠJnî•ñ“ü—Í
 		virtual bool output(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) = 0;//ƒf[ƒ^€–Úo—Í
-		virtual bool input(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) = 0;//ƒf[ƒ^€–Ú“ü—Í
-		virtual bool outputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const std::size_t elem_size) = 0;//ƒuƒƒbƒN‚Ì”z—ñ—v‘fI—¹î•ño—Í
-		virtual bool inputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const std::size_t elem_size) = 0;//ƒuƒƒbƒN‚Ì”z—ñ—v‘fI—¹î•ñ“ü—Í
+		virtual bool input(CIOResult& result, CIOArchiveBase& arc, CItemBase& item, const bool is_valid_item) = 0;//ƒf[ƒ^€–Ú“ü—Í
+		virtual bool outputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const short items_num, const std::size_t elem_size) = 0;//ƒuƒƒbƒN‚Ì”z—ñ—v‘fI—¹î•ño—Í
+		virtual bool inputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) = 0;//ƒuƒƒbƒN‚Ì”z—ñ—v‘fI—¹î•ñ“ü—Í
+		virtual bool inputSkipBlock(CIOResult& result, CIOArchiveBase& arc) = 0;//ƒIƒuƒWƒFƒNƒg‚ÌƒuƒƒbƒN‚ğƒXƒLƒbƒv
+		virtual bool inputBeginBlockTemp(CIOResult& result, CIOArchiveBase& arc, CItemBase& input_item, std::size_t& child_block_size) = 0;//ƒuƒƒbƒNŠJnî•ñ‰¼“Ç‚İ‚İ
 		virtual bool outputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) = 0;//ƒuƒƒbƒNI—¹î•ño—Í
-		virtual bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) = 0;//ƒuƒƒbƒNI—¹î•ñ“ü—Í
+		virtual bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) = 0;//ƒuƒƒbƒNI—¹î•ñ“ü—Í
 		virtual bool outputTerminator(CIOResult& result, CIOArchiveBase& arc) = 0;//ƒ^[ƒ~ƒl[ƒ^o—Í
 		virtual bool inputTerminator(CIOResult& result, CIOArchiveBase& arc) = 0;//ƒ^[ƒ~ƒl[ƒ^“ü—Íi³‚µ‚¢ƒf[ƒ^‚©ƒ`ƒFƒbƒNj
 	public:
@@ -2761,8 +3114,12 @@ namespace serial
 		template<class T>
 		COArchive& operator&(const CItem<T> item_obj)
 		{
-			//printf("[operator&] name=%s, typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNull=%d\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObject(), item_obj.isArray(), item_obj.isPtr(), item_obj.isNull());
-			
+			if (m_result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return *this;
+
+			//printf("[operator&] name=\"%s\"(0x%08x), typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNul=%d, isOnlyOnMem=%d, isOnlyOnSaveData=%d\n",
+			//	item_obj.m_name, item_obj.m_nameCrc, item_obj.m_itemType->name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObj(), item_obj.isArr(), item_obj.isPtr(), item_obj.isNul(), item_obj.isOnlyOnMem(), item_obj.isOnlyOnSaveData());
+
 			//’v–½“I‚ÈƒGƒ‰[‚ª‚ ‚Á‚½‚ç‘¦I—¹
 			if (m_result.hasFatalError())
 				return *this;
@@ -2772,7 +3129,7 @@ namespace serial
 			addItem(item_obj);
 			
 			//o—Í
-			if (item_obj.isObject())
+			if (item_obj.isObj())
 			{
 				//ƒIƒuƒWƒFƒNƒg‚È‚ç operator<<() ‚Åo—Í
 				*this << item_obj;
@@ -2793,7 +3150,11 @@ namespace serial
 		template<class T>
 		COArchive& operator<<(const CItem<T> item_obj)
 		{
-			//printf("[operator<<] name=%s, typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNull=%d\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObject(), item_obj.isArray(), item_obj.isPtr(), item_obj.isNull());
+			if (m_result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return *this;
+			
+			//printf("[operator<<] name=\"%s\"(0x%08x), typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNul=%d, isOnlyOnMem=%d, isOnlyOnSaveData=%d\n",
+			//	item_obj.m_name, item_obj.m_nameCrc, item_obj.m_itemType->name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObj(), item_obj.isArr(), item_obj.isPtr(), item_obj.isNul(), item_obj.isOnlyOnMem(), item_obj.isOnlyOnSaveData());
 
 			//’v–½“I‚ÈƒGƒ‰[‚ª‚ ‚Á‚½‚ç‘¦I—¹
 			if (m_result.hasFatalError())
@@ -2812,31 +3173,33 @@ namespace serial
 			//ƒuƒƒbƒNŠJnî•ñ‘‚«‚İ
 			m_style.outputBeginBlock(m_result, *this, item_obj, ver);
 			
-			if (!item_obj.isNull() && !m_result.hasFatalError())
+			if (!item_obj.isNul() && !m_result.hasFatalError())//ƒkƒ‹‚Å‚È‚¯‚ê‚Îˆ—‚·‚é
 			{
 				//ƒuƒƒbƒNŠJn
 				std::size_t block_size = 0;
+
 				{
 					//”z—ñ—v‘f—p‚ÌƒA[ƒJƒCƒuƒIƒuƒWƒFƒNƒg‚ğ¶¬
-					COArchive arc_block(*this, m_buffSize - m_buffPos);
+					COArchive arc_block(*this);
 
 					//”z—ñƒ‹[ƒv
-					std::size_t elem_num = item_obj.getElemNum();
+					const std::size_t elem_num = item_obj.getElemNum();
 					for (std::size_t index = 0; index < elem_num && !arc_block.hasFatalError(); ++index)
 					{
 						//”z—ñ—v‘fŠJnî•ñ‘‚«‚İ
 						m_style.outputBeginArrayElement(arc_block.getResult(), arc_block, item_obj, index);
 
 						//”z—ñ—v‘fŠJn
+						std::size_t items_num = 0;
 						std::size_t elem_size = 0;
 						{
 							//V‚µ‚¢ƒA[ƒJƒCƒuƒIƒuƒWƒFƒNƒg‚ğ¶¬
-							COArchive arc_elem(arc_block, arc_block.m_buffSize - arc_block.m_buffPos);
+							COArchive arc_elem(arc_block);
 
 							//ƒVƒŠƒAƒ‰ƒCƒYˆ—iƒVƒŠƒAƒ‰ƒCƒY•ƒfƒVƒŠƒAƒ‰ƒCƒYŒ“—pˆ—jŒÄ‚Ño‚µ
 							{
 								serialize<COArchive, T> functor;
-								functor(arc_elem, item_obj.template getConst<T>(), ver);
+								functor(arc_elem, item_obj.template getConst<T>(), ver, ver);
 							}
 
 							//ƒZ[ƒuˆ—iƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
@@ -2845,24 +3208,26 @@ namespace serial
 								functor(arc_elem, item_obj.template getConst<T>(), ver);
 							}
 
-							//ƒf[ƒ^ûWˆ—iƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
-							{
-								gatherer<COArchive, T> functor;
-								functor(arc_elem, item_obj.template getConst<T>(), ver);
-							}
-
 							//”z—ñ—v‘fI—¹
+							items_num = arc_elem.m_itemList->size();
 							elem_size = arc_elem.m_buffPos;
 							arc_block.addResult(arc_elem.getResult());
 						}
 
 						//”z—ñ—v‘fI—¹î•ñ‘‚«‚İ
-						m_style.outputEndArrayElement(arc_block.getResult(), arc_block, item_obj, index, elem_size);
+						m_style.outputEndArrayElement(arc_block.getResult(), arc_block, item_obj, index, items_num, elem_size);
+					}
+
+					//ƒf[ƒ^ûWˆ—iƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
+					{
+						collector<COArchive, T> functor;
+						functor(arc_block, item_obj.template getConst<T>(), ver);
 					}
 
 					//ƒuƒƒbƒNI—¹
 					block_size = arc_block.m_buffPos;
 					m_result.addResult(arc_block.getResult());
+
 				}
 
 				//ƒuƒƒbƒNI—¹î•ñ‘‚«‚İ
@@ -2893,8 +3258,8 @@ namespace serial
 		COArchive(CArchiveStyleBase& style, void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
 			CIOArchiveBase(style, buff, buff_size, work_buff, WORK_SIZE)
 		{}
-		COArchive(COArchive& src, const std::size_t size) :
-			CIOArchiveBase(src, size)
+		COArchive(COArchive& src) :
+			CIOArchiveBase(src)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
 		~COArchive()
@@ -2905,13 +3270,41 @@ namespace serial
 	class CIArchive : public CIOArchiveBase
 	{
 	public:
+		//ƒAƒNƒZƒbƒT
+		bool isMakeListMode() const { return m_isMakeListMode; }//ˆ—ƒŠƒXƒg‚ğ‹L˜^‚·‚é‚¾‚¯‚Ìƒ‚[ƒh‚©H
+		void setIsMakeListMode(){ m_isMakeListMode = true; }//ˆ—ƒŠƒXƒg‚ğ‹L˜^‚·‚é‚¾‚¯‚Ìƒ‚[ƒh‚ğƒZƒbƒg
+		void resetIsMakeListMode(){ m_isMakeListMode = false; }//ˆ—ƒŠƒXƒg‚ğ‹L˜^‚·‚é‚¾‚¯‚Ìƒ‚[ƒh‚ğ‰ğœ
+		CItemBase* getTargetObjItem(){ return m_targetObjItem; }//ƒIƒuƒWƒFƒNƒgˆ—‚Ì‘ÎÛƒf[ƒ^€–Ú‚ğƒZƒbƒg
+		const CItemBase* getTargetObjItem() const { return m_targetObjItem; }//ƒIƒuƒWƒFƒNƒgˆ—‚Ì‘ÎÛƒf[ƒ^€–Ú‚ğƒZƒbƒg
+		void setTargetObjItem(CItemBase& item){ m_targetObjItem = &item; m_isUsedTargetObjItem = false; }//ƒIƒuƒWƒFƒNƒgˆ—‚Ì‘ÎÛƒf[ƒ^€–Ú‚ğƒZƒbƒg
+		void resetTargetObjItem(){ m_targetObjItem = nullptr; }//ƒIƒuƒWƒFƒNƒgˆ—‚Ì‘ÎÛƒf[ƒ^€–Ú‚ğƒŠƒZƒbƒg
+		bool isUsedTargetObjItem() const { return m_isUsedTargetObjItem; }//ƒIƒuƒWƒFƒNƒgˆ—‚Ì‘ÎÛƒf[ƒ^€–Ú‚ğg—p‚µ‚½‚©H
+	public:
 		//ƒIƒyƒŒ[ƒ^
 		//u&vƒIƒyƒŒ[ƒ^
 		//¦ƒf[ƒ^€–Úw’è—pˆ—
 		template<class T>
 		CIArchive& operator&(const CItem<T> item_obj)
 		{
-			printf("[operator&] name=%s, typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNull=%d\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObject(), item_obj.isArray(), item_obj.isPtr(), item_obj.isNull());
+			if (m_result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return *this;
+
+			//ƒIƒuƒWƒFƒNƒgˆ—‘ÎÛƒf[ƒ^€–Ú‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚éê‡‚Í“Á•Êˆ—
+			if (m_targetObjItem)
+			{
+				if (*m_targetObjItem == item_obj)
+				{
+					*this >> item_obj;
+					m_isUsedTargetObjItem = true;//g—p‚µ‚½
+				}
+				return *this;
+			}
+
+			//printf("[operator&] name=\"%s\"(0x%08x), typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNul=%d, isOnlyOnMem=%d, isOnlyOnSaveData=%d\n",
+			//	item_obj.m_name, item_obj.m_nameCrc, item_obj.m_itemType->name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObj(), item_obj.isArr(), item_obj.isPtr(), item_obj.isNul(), item_obj.isOnlyOnMem(), item_obj.isOnlyOnSaveData());
+
+			//ˆê’UƒZ[ƒuƒf[ƒ^‚É‘¶İ‚µ‚È‚¢ƒf[ƒ^€–Ú‚Æ‚¢‚¤ˆµ‚¢‚É‚µ‚Ä‚¨‚­
+			item_obj.setIsOnlyOnMem();
 			
 			//ƒf[ƒ^€–Ú‚ğ‹L˜^
 			//¦‘S‚Ä‚Ì‹L˜^‚ªI‚í‚Á‚½ŒãAƒf[ƒ^‚ğ“Ç‚İ‚İ‚È‚ª‚çƒf[ƒ^€–Ú‚É‘‚«‚ñ‚Å‚¢‚­
@@ -2923,68 +3316,210 @@ namespace serial
 		//u>>vƒIƒyƒŒ[ƒ^
 		//¦ƒf[ƒ^“ü—Í
 		template<class T>
-		CIArchive& operator>>(CItem<T> item_obj)
+		CIArchive& operator>>(CItem<T> item_obj_now)
 		{
-			printf("[operator>>] name=%s, typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNull=%d\n", item_obj.m_name, item_obj.m_itemType.name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObject(), item_obj.isArray(), item_obj.isPtr(), item_obj.isNull());
+			if (m_result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return *this;
 			
+			//ƒIƒuƒWƒFƒNƒgˆ—‘ÎÛƒf[ƒ^€–Ú‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚éê‡‚Í“Á•Êˆ—
+			if (m_targetObjItem)
+			{
+				if (*m_targetObjItem != item_obj_now)//‘ÎÛƒf[ƒ^€–ÚˆÈŠO‚Íˆ—‚µ‚È‚¢
+					return *this;
+			}
+
+			//ˆ—ƒŠƒXƒg‚ğ‹L˜^‚·‚é‚¾‚¯‚Ìƒ‚[ƒh‚È‚çu•vƒIƒyƒŒ[ƒ^‚Éˆ—‚ğ‰ñ‚µ‚ÄI—¹
+			if (m_isMakeListMode)
+			{
+				return operator&(item_obj_now);
+			}
+
+			//printf("[operator>>] name=\"%s\"(0x%08x), typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNul=%d, isOnlyOnMem=%d, isOnlyOnSaveData=%d\n",
+			//	item_obj_now.m_name, item_obj_now.m_nameCrc, item_obj_now.m_itemType->name(), item_obj_now.m_itemP, item_obj_now.m_itemSize, item_obj_now.m_arrNum, item_obj_now.isObj(), item_obj_now.isArr(), item_obj_now.isPtr(), item_obj_now.isNul(), item_obj_now.isOnlyOnMem(), item_obj_now.isOnlyOnSaveData());
+			
+			//ƒpƒ‰ƒ[ƒ^ƒ`ƒFƒbƒN
+			//assert(!item_obj_now.isOnlyOnSaveData());
+			//¦ƒZ[ƒuƒf[ƒ^‚É‚µ‚©‘¶İ‚µ‚È‚¢ƒf[ƒ^‚Íˆ—•s‰Â
+			//¦”zMˆ—‚ğŠÔˆá‚¦‚ÄˆÈ“àŒÀ‚èA‚»‚Ì‚æ‚¤‚Èó‘Ô‚É‚Í‚È‚ç‚È‚¢‚Í‚¸
+
 			//ƒlƒXƒgƒŒƒxƒ‹‚ª0‚È‚çƒVƒOƒlƒ`ƒƒ[‚ğ“Ç‚İ‚İ
 			if (m_nestLevel == 0)
 			{
 				m_style.inputSignature(m_result, *this);
 			}
 			
+			//ƒo[ƒWƒ‡ƒ“æ“¾
+			CVersionDef<T> now_ver_def;
+			CVersion now_ver(now_ver_def);//Œ»İ‚Ìƒo[ƒWƒ‡ƒ“
+			CVersion ver;//“Ç‚İ‚İ—p‚Ìƒo[ƒWƒ‡ƒ“
 			//ƒuƒƒbƒNŠJnî•ñ“Ç‚İ‚İ
-			CVersion ver;
-			m_style.inputBeginBlock(m_result, *this, item_obj, ver);
-			
-			//ƒuƒƒbƒNŠJn
-			std::size_t block_size = 0;
+			CItem<T> item_obj(item_obj_now);
+			m_style.inputBeginBlock(m_result, *this, item_obj_now, now_ver, item_obj, ver);
+			//printf("  input:name=\"%s\"(0x%08x), typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNul=%d\n", item_obj.m_name, item_obj.m_nameCrc, item_obj.m_itemType->name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObj(), item_obj.isArr(), item_obj.isPtr(), item_obj.isNul());
+
+			if (!item_obj.isNul() && !m_result.hasFatalError())//yƒZ[ƒuƒf[ƒ^ã‚Ìz—v‘f‚ªƒkƒ‹‚Å‚È‚¯‚ê‚Îˆ—‚·‚é
 			{
-				//V‚µ‚¢ƒA[ƒJƒCƒuƒIƒuƒWƒFƒNƒg‚ğ¶¬
-				CIArchive arc_elem(*this, m_buffSize - m_buffPos);
-				
-				//ƒ[ƒh‘Oˆ—iƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
+				//ƒuƒƒbƒNŠJn
 				{
-					beforeLoad<CIArchive, T> functor;
-					functor(arc_elem, item_obj.template get<T>(), ver);
+					//V‚µ‚¢ƒA[ƒJƒCƒuƒIƒuƒWƒFƒNƒg‚ğ¶¬
+					CIArchive arc_block(*this);
+
+					//”z—ñƒ‹[ƒv
+					const std::size_t elem_num = item_obj.getElemNum();
+					for (std::size_t index = 0; index < elem_num && !arc_block.buffIsFull() && !arc_block.hasFatalError(); ++index)//yƒZ[ƒuƒf[ƒ^ã‚Ìz”z—ñ—v‘f”•ªƒf[ƒ^o—Í
+					{
+						const bool is_valid_element = (!item_obj.nowIsNul() && index < item_obj.getMinimumElemNum());//—LŒø‚È”z—ñ—v‘f‚©Hi—LŒø‚Å‚È‚¯‚ê‚Îˆ—‚¹‚¸“Ç‚İ‚Ş‚¾‚¯j
+
+						//”z—ñ—v‘fŠJnî•ñ“Ç‚İ‚İ
+						short items_num = 0;
+						m_style.inputBeginArrayElement(arc_block.getResult(), arc_block, item_obj, index, items_num);
+
+						//”z—ñ—v‘fŠJn
+						{
+							//V‚µ‚¢ƒA[ƒJƒCƒuƒIƒuƒWƒFƒNƒg‚ğ¶¬
+							CIArchive arc_elem(arc_block);
+
+							//ƒ[ƒh‘Oˆ—iƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
+							if (is_valid_element)
+							{
+								beforeLoad<CIArchive, T> functor;
+								functor(arc_elem, item_obj.template get<T>(), ver, now_ver);
+							}
+
+							//ˆ—ƒŠƒXƒg‚ğ‹L˜^‚·‚é‚¾‚¯‚Ìƒ‚[ƒh‚ÉƒZƒbƒg
+							arc_elem.setIsMakeListMode();
+
+							//ƒfƒVƒŠƒAƒ‰ƒCƒYˆ—iƒVƒŠƒAƒ‰ƒCƒY•ƒfƒVƒŠƒAƒ‰ƒCƒYŒ“—pˆ—jŒÄ‚Ño‚µ
+							//¦ƒf[ƒ^€–ÚƒŠƒXƒg‚ğ‹L˜^‚·‚é‚¾‚¯
+							if (is_valid_element)
+							{
+								serialize<CIArchive, T> functor;
+								functor(arc_elem, item_obj.template getConst<T>(), ver, now_ver);
+							}
+
+							//ƒ[ƒhˆ—iƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
+							//¦ƒf[ƒ^€–ÚƒŠƒXƒg‚ğ‹L˜^‚·‚é‚¾‚¯
+							if (is_valid_element)
+							{
+								load<CIArchive, T> functor;
+								functor(arc_elem, item_obj.template get<T>(), ver, now_ver);
+							}
+							
+							//ˆ—ƒŠƒXƒg‚ğ‹L˜^‚·‚é‚¾‚¯‚Ìƒ‚[ƒh‚ğ‰ğœ
+							arc_elem.resetIsMakeListMode();
+
+							//ÀÛ‚Ìƒ[ƒhˆ—
+							for (short item_idx = 0; item_idx < items_num && !arc_elem.buffIsFull(); ++item_idx)
+							{
+								CItemBase child_item;
+								m_style.input(arc_elem.getResult(), arc_elem, child_item, is_valid_element);
+								
+								//ƒIƒuƒWƒFƒNƒg‚Ìê‡‚Ìˆ—
+								if (child_item.isObj())
+								{
+									//ƒIƒuƒWƒFƒNƒgˆ—‘ÎÛƒf[ƒ^€–Ú‚ğƒZƒbƒg
+									arc_elem.setTargetObjItem(child_item);
+
+									//ƒfƒVƒŠƒAƒ‰ƒCƒYˆ—iƒVƒŠƒAƒ‰ƒCƒY•ƒfƒVƒŠƒAƒ‰ƒCƒYŒ“—pˆ—jŒÄ‚Ño‚µ
+									//¦‘ÎÛƒIƒuƒWƒFƒNƒgƒAƒCƒeƒ€‚ğˆ—‚·‚é
+									//if (!arc_elem.isUsedTargetObjItem())
+									{
+										serialize<CIArchive, T> functor;
+										functor(arc_elem, item_obj.template getConst<T>(), ver, now_ver);
+									}
+
+									//ƒ[ƒhˆ—iƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
+									//¦‘ÎÛƒIƒuƒWƒFƒNƒgƒAƒCƒeƒ€‚ğˆ—‚·‚é
+									if (!arc_elem.isUsedTargetObjItem())
+									{
+										load<CIArchive, T> functor;
+										functor(arc_elem, item_obj.template get<T>(), ver, now_ver);
+									}
+									
+									//ƒIƒuƒWƒFƒNƒgˆ—‘ÎÛƒf[ƒ^€–Ú‚ğƒŠƒZƒbƒg
+									arc_elem.resetTargetObjItem();
+
+									//–¢ˆ—‚Ì‚Ü‚Ü‚¾‚Á‚½‚çƒuƒƒbƒN‚ğƒXƒLƒbƒv‚·‚é
+									if (!arc_elem.isUsedTargetObjItem())
+									{
+										//ƒIƒuƒWƒFƒNƒg‚ÌƒuƒƒbƒN‚ğƒXƒLƒbƒv
+										m_style.inputSkipBlock(arc_elem.getResult(), arc_elem);
+										
+										//ˆ—Ï‚İ‚É‚·‚é
+										child_item.setIsAlready();
+									}
+								}
+							}
+
+							//ˆ—‚³‚ê‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚ğŒ‹‰Ê‚ÉŒvã
+							for (auto& pair : *arc_elem.m_itemList)
+							{
+								const CItemBase& child_item = pair.second;
+								
+								//ƒZ[ƒuƒf[ƒ^‚É‚È‚¢ƒf[ƒ^€–Ú‚Å‚ ‚ê‚ÎŒvã
+								if (child_item.isOnlyOnMem())
+									arc_elem.getResult().addResult(child_item);
+							}
+
+							//ƒ[ƒhŒãˆ—iƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
+							if (is_valid_element)
+							{
+								afterLoad<CIArchive, T> functor;
+								functor(arc_elem, item_obj.template get<T>(), ver, now_ver);
+							}
+
+							//”z—ñ—v‘fI—¹
+							arc_block.addResult(arc_elem.getResult());
+
+							//—v‘f‚ª“Ç‚İ‚ñ‚¾•ªˆ—ˆÊ’u‚ği‚ß‚é
+							arc_block.seek(arc_block.getResult(), arc_elem.getBuffPos());
+						}
+
+						//”z—ñ—v‘fI—¹î•ñ“Ç‚İ‚İ
+						m_style.inputEndArrayElement(arc_block.getResult(), arc_block, item_obj, index);
+
+						//”z—ñ‚ÌŸ‚Ì—v‘f‚É
+						if (item_obj.m_itemP)
+						{
+							*const_cast<void**>(&item_obj.m_itemP) = reinterpret_cast<T*>(const_cast<void*>(item_obj.m_itemP)) + 1;
+						}
+					}
+
+					//ƒf[ƒ^•ª”zˆ—iƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
+					//ƒ[ƒhˆ—
+					while (!arc_block.buffIsFull() && !arc_block.getResult().hasFatalError())
+					{
+						//ƒuƒƒbƒNI—¹”»’è
+						bool is_block_end;
+						m_style.inputEndBlock(arc_block.getResult(), arc_block, item_obj, is_block_end);
+						if (is_block_end)
+							break;//ƒuƒƒbƒN‚ÌI—¹‚ğŒŸo‚µ‚½‚çƒ‹[ƒv‚©‚ç”²‚¯‚é
+						
+						const std::size_t prev_pos = arc_block.m_buffPos;//ˆ—Às‘O‚ÌˆÊ’u‚ğ‹L‰¯
+						CItemBase child_item;
+						std::size_t child_block_size = 0;
+						m_style.inputBeginBlockTemp(m_result, arc_block, child_item, child_block_size);//ƒuƒƒbƒNŠJnî•ñ‚ğ‰¼“Ç‚İ‚µA•ª”zˆ—‚É‰ñ‚·
+						//•ª”zˆ—iƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
+						{
+							distributor<CIArchive, T> functor;
+							functor(arc_block, item_obj.template get<T>(), ver, now_ver, child_item);
+						}
+						//•ª”zˆ—ÀsŒ‹‰Êƒ`ƒFƒbƒN
+						if (arc_block.m_buffPos == prev_pos)//“Ç‚İ‚İ‚ªi‚ñ‚Å‚¢‚é‚©H
+						{
+							//“Ç‚İ‚İ‚ªi‚ñ‚Å‚¢‚È‚©‚Á‚½‚çƒuƒƒbƒN•ª‚Ì“Ç‚İ‚İ‚ği‚ß‚Ä–â‘è‚ğŒvã‚·‚é
+							arc_block.seek(arc_block.getResult(), child_block_size);
+							arc_block.getResult().addResult(child_item);//Œvã
+						}
+					}
+
+					//ƒuƒƒbƒNI—¹
+					m_result.addResult(arc_block.getResult());
+					
+					//—v‘f‚ª“Ç‚İ‚ñ‚¾•ªˆ—ˆÊ’u‚ği‚ß‚é
+					seek(m_result, arc_block.getBuffPos());
 				}
-				
-				//ƒfƒVƒŠƒAƒ‰ƒCƒYˆ—iƒVƒŠƒAƒ‰ƒCƒY•ƒfƒVƒŠƒAƒ‰ƒCƒYŒ“—pˆ—jŒÄ‚Ño‚µ
-				{
-					serialize<CIArchive, T> functor;
-					functor(arc_elem, item_obj.template getConst<T>(), ver);
-				}
-				
-				//ƒ[ƒhˆ—iƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
-				{
-					load<CIArchive, T> functor;
-					functor(arc_elem, item_obj.template get<T>(), ver);
-				}
-				
-				//ÀÛ‚Ìƒ[ƒhˆ—
-				for (auto item : *m_itemList)
-				{
-					m_style.input(m_result, arc_elem, item);
-				}
-				
-				//ƒ[ƒhŒãˆ—iƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
-				{
-					afterLoad<CIArchive, T> functor;
-					functor(arc_elem, item_obj.template get<T>(), ver);
-				}
-				
-				//ƒf[ƒ^•ª”zˆ—iƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
-				{
-					distributor<CIArchive, T> functor;
-					functor(arc_elem, item_obj.template get<T>(), ver);
-				}
-				
-				//ƒuƒƒbƒNI—¹
-				block_size = arc_elem.m_buffPos;
 			}
-			
-			//ƒuƒƒbƒNI—¹î•ñ“Ç‚İ‚İ
-			m_style.inputEndBlock(m_result, *this, item_obj, block_size);
 			
 			//ƒlƒXƒgƒŒƒxƒ‹‚ª0‚È‚çƒ^[ƒ~ƒl[ƒ^‚ğ“Ç‚İ‚İ
 			if (m_nestLevel == 0)
@@ -2997,22 +3532,40 @@ namespace serial
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		CIArchive(CArchiveStyleBase& style, const void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			CIOArchiveBase(style, const_cast<void*>(buff), buff_size, work_buff, work_buff_size)
+			CIOArchiveBase(style, const_cast<void*>(buff), buff_size, work_buff, work_buff_size),
+			m_isMakeListMode(false),
+			m_targetObjItem(nullptr),
+			m_isUsedTargetObjItem(false)
 		{}
 		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
 		CIArchive(CArchiveStyleBase& style, const BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			CIOArchiveBase(style, const_cast<BUFF_T*>(&buff[0]), BUFF_SIZE, work_buff, WORK_SIZE)
+			CIOArchiveBase(style, const_cast<BUFF_T*>(&buff[0]), BUFF_SIZE, work_buff, WORK_SIZE),
+			m_isMakeListMode(false),
+			m_targetObjItem(nullptr),
+			m_isUsedTargetObjItem(false)
 		{}
 		template<typename WORK_T, std::size_t WORK_SIZE>
 		CIArchive(CArchiveStyleBase& style, const void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
-			CIOArchiveBase(style, const_cast<void*>(buff), buff_size, work_buff, WORK_SIZE)
+			CIOArchiveBase(style, const_cast<void*>(buff), buff_size, work_buff, WORK_SIZE),
+			m_isMakeListMode(false),
+			m_targetObjItem(nullptr),
+			m_isUsedTargetObjItem(false)
 		{}
-		CIArchive(CIArchive& src, const std::size_t size) :
-			CIOArchiveBase(src, size)
+		CIArchive(CIArchive& src) :
+			CIOArchiveBase(src),
+			m_isMakeListMode(false),
+			m_targetObjItem(nullptr),
+			m_isUsedTargetObjItem(false)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
 		~CIArchive()
 		{}
+	private:
+		//ƒtƒB[ƒ‹ƒh
+		bool m_isMakeListMode;//ˆ—ƒŠƒXƒg‚ğ‹L˜^‚·‚é‚¾‚¯‚Ìƒ‚[ƒh‚©H
+		CItemBase* m_targetObjItem;//ƒIƒuƒWƒFƒNƒgˆ—‚Ì‘ÎÛƒf[ƒ^€–Ú‚ğƒŠƒZƒbƒg
+		bool m_isUsedTargetObjItem;//ƒIƒuƒWƒFƒNƒgˆ—‚Ì‘ÎÛƒf[ƒ^€–Ú‚ğg—p‚µ‚½‚©H
+
 	};
 	//--------------------
 	//ƒoƒCƒiƒŠŒ`®ƒA[ƒJƒCƒuƒNƒ‰ƒX
@@ -3024,129 +3577,295 @@ namespace serial
 		static const unsigned char SIGNATURE[SIGNATURE_SIZE];//ƒVƒOƒlƒ`ƒƒ
 		static const std::size_t TERMINATOR_SIZE = 16;//ƒ^[ƒ~ƒl[ƒ^ƒTƒCƒY
 		static const unsigned char TERMINATOR[TERMINATOR_SIZE];//ƒ^[ƒ~ƒl[ƒ^
-		static const unsigned char IS_DATA_BLOCK = 0x01;//ƒf[ƒ^ƒuƒƒbƒN¯•Êq
-		static const unsigned char IS_DATA_ITEM = 0x00;//ƒf[ƒ^€–Ú¯•Êq
-		static const unsigned char IS_ARRAY = 0x02;//”z—ñ¯•Êq
-		static const unsigned char IS_NO_ARRAY = 0x00;//”ñ”z—ñ¯•Êq
-		static const unsigned char IS_NULL = 0x04;//ƒkƒ‹
-		static const unsigned char IS_NOT_NULL = 0x00;//ƒkƒ‹‚¶‚á‚È‚¢
+		static const std::size_t BLOCK_TERM_SIZE = 2;//ƒuƒƒbƒNI’[ƒTƒCƒY
+		static const unsigned char BLOCK_TERM[BLOCK_TERM_SIZE];//ƒuƒƒbƒNI’[
+		static const std::size_t ELEM_TERM_SIZE = 2;//—v‘fI’[ƒTƒCƒY
+		static const unsigned char ELEM_TERM[ELEM_TERM_SIZE];//—v‘fI’[
 	public:
 		//ƒƒ\ƒbƒh
 		//ƒVƒOƒlƒ`ƒƒo—Í
 		bool outputSignature(CIOResult& result, CIOArchiveBase& arc) override
 		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
 			arc.write(result, SIGNATURE, SIGNATURE_SIZE);//ƒVƒOƒlƒ`ƒƒo—Í
-			return !result.m_hasFatalError;
+			return !result.hasFatalError();
 		}
 		//ƒVƒOƒlƒ`ƒƒ“ü—Íi³‚µ‚¢ƒf[ƒ^‚©ƒ`ƒFƒbƒNj
 		bool inputSignature(CIOResult& result, CIOArchiveBase& arc) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			char signature[SIGNATURE_SIZE];
+			arc.read(result, signature, SIGNATURE_SIZE);//ƒVƒOƒlƒ`ƒƒ“ü—Í
+			if (memcmp(signature, SIGNATURE, SIGNATURE_SIZE) != 0)//ƒVƒOƒlƒ`ƒƒƒ`ƒFƒbƒN
+				result.setHasFatalError();
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒNŠJnî•ño—Í
 		bool outputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) override
 		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
 			arc.write(result, &item.m_nameCrc, sizeof(item.m_nameCrc));//–¼‘OCRCo—Í
-			arc.write(result, &item.m_info, sizeof(item.m_info));//Œ^î•ño—Í
-			if (!item.isNull())//ƒkƒ‹‚Í‚±‚±‚Ü‚Å‚Ìî•ñ‚ÅI‚í‚è
+			item.m_info.setHasVersion();//ƒo[ƒWƒ‡ƒ“î•ñ‚ ‚è‚É‚·‚é
+			arc.write(result, &item.m_info.m_value, sizeof(item.m_info.m_value));//•Û‘¶ó‘Ôo—Í
+			arc.write(result, ver.getVerPtr(), ver.getVerSize());//ƒo[ƒWƒ‡ƒ“o—Í
+			if (!item.isNul())//ƒkƒ‹‚Í‚±‚±‚Ü‚Å‚Ìî•ñ‚ÅI‚í‚è
 			{
-				arc.write(result, ver.getVerPtr(), ver.getVerSize());//ƒo[ƒWƒ‡ƒ“o—Í
-				if (item.isArray())
+				if (item.isArr())//”z—ñ‚Í”z—ñ—v‘f”‚ào—Í
 					arc.write(result, &item.m_arrNum, sizeof(item.m_arrNum));//”z—ñ—v‘f”o—Í
 				arc.write(result, &item.m_itemSize, sizeof(item.m_itemSize));//ƒuƒƒbƒNƒTƒCƒY‰¼o—Í@¦ƒuƒƒbƒNI—¹‚É‘‚«Š·‚¦‚é
 			}
-			return !result.m_hasFatalError;
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒNŠJnî•ñ“ü—Í
-		bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) override
+		bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			input_item.clearForInput();//“ü—Íî•ñ‚ğˆê’UƒNƒŠƒA
+			arc.read(result, const_cast<crc32_t*>(&input_item.m_nameCrc), sizeof(input_item.m_nameCrc));//–¼‘OCRCo—Í
+			arc.read(result, const_cast<CRecInfo::value_t*>(&input_item.m_info.m_value), sizeof(input_item.m_info.m_value));//•Û‘¶ó‘Ôo—Í
+			if (input_item.m_info.hasVersion())//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
+			{
+				arc.read(result, const_cast<unsigned int*>(input_ver.getVerPtr()), input_ver.getVerSize());//ƒo[ƒWƒ‡ƒ““ü—Í
+				input_ver.calcFromVer();
+			}
+			if (!input_item.isNul())//ƒkƒ‹‚Í‚±‚±‚Ü‚Å‚Ìî•ñ‚ÅI‚í‚è
+			{
+				if (input_item.isArr())//”z—ñ‚Í”z—ñ—v‘f”‚à“ü—Í
+					arc.read(result, const_cast<std::size_t*>(&input_item.m_arrNum), sizeof(input_item.m_arrNum));//”z—ñ—v‘f”“ü—Í
+				arc.read(result, const_cast<std::size_t*>(&input_item.m_itemSize), sizeof(input_item.m_itemSize));//ƒuƒƒbƒNƒTƒCƒY“ü—Í
+			}
+			//–¼‘OCRC‚ğƒ`ƒFƒbƒN‚µ‚Äî•ñ‚ğ“‡
+			//¦ˆá‚Á‚Ä‚¢‚½‚ç’v–½“IƒGƒ‰[iƒZ[ƒuƒf[ƒ^‚ª“K‡‚µ‚Ä‚¢‚È‚¢j
+			if (item == input_item)
+			{
+				input_item.copyFromOnMem(item);//ƒZ[ƒuƒf[ƒ^‚Ìî•ñ‚ÉŒ»İ‚Ìî•ñ‚ğƒRƒs[i“‡j
+			}
+			else
+			{
+				item.setIsOnlyOnMem();//ƒZ[ƒuƒf[ƒ^‚É‘¶İ‚µ‚È‚¢ƒf[ƒ^€–Ú
+				input_item.setIsOnlyOnSaveData();//ƒZ[ƒuƒf[ƒ^‚É‚µ‚©‘¶İ‚µ‚È‚¢ƒf[ƒ^€–Ú
+				result.setHasFatalError();//’v–½“IƒGƒ‰[İ’è
+				result.addResult(item);//ƒGƒ‰[‚ğŒvã
+			}
+			input_item.setIsAlready();//ˆ—Ï‚İ‚É‚·‚é
+			result.addResult(input_item);//Œ‹‰Ê‚ğŒvã
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒN‚Ì”z—ñ—v‘fŠJnî•ño—Í
 		bool outputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
 		{
-			if (item.isArray())//”z—ñ‚Ì‚¾‚¯o—Í
-			{
-				arc.write(result, &item.m_itemSize, sizeof(item.m_itemSize));//”z—ñ—v‘fƒTƒCƒY‰¼o—Í@¦”z—ñ—v‘fI—¹‚É‘‚«Š·‚¦‚é
-			}
-			return !result.m_hasFatalError;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			short items_num = 0;
+			arc.write(result, &items_num, sizeof(items_num));//ƒf[ƒ^€–Ú”‰¼o—Í@¦”z—ñ—v‘fI—¹‚É‘‚«Š·‚¦‚é
+			arc.write(result, &item.m_itemSize, sizeof(item.m_itemSize));//”z—ñ—v‘fƒTƒCƒY‰¼o—Í@¦”z—ñ—v‘fI—¹‚É‘‚«Š·‚¦‚é
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒN‚Ì”z—ñ—v‘fŠJnî•ñ“ü—Í
-		bool inputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
+		bool inputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num) override
 		{
-			return true;
+			items_num = 0;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			std::size_t elem_size = 0;
+			arc.read(result, &items_num, sizeof(items_num));//ƒf[ƒ^€–Ú”“ü—Í
+			arc.read(result, &elem_size, sizeof(elem_size));//”z—ñ—v‘fƒTƒCƒY“ü—Í
+			return !result.hasFatalError();
 		}
 		//ƒf[ƒ^€–Úo—Í
 		bool output(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
 		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
 			arc.write(result, &item.m_nameCrc, sizeof(item.m_nameCrc));//–¼‘OCRCo—Í
-			arc.write(result, &item.m_info, sizeof(item.m_info));//Œ^î•ño—Í
-			if (!item.isNull())//ƒkƒ‹‚Í‚±‚±‚Ü‚Å‚Ìî•ñ‚ÅI‚í‚è
+			item.m_info.resetHasVersion();//ƒo[ƒWƒ‡ƒ“î•ñ‚È‚µ‚É‚·‚é
+			arc.write(result, &item.m_info.m_value, sizeof(item.m_info.m_value));//•Û‘¶ó‘Ôo—Í
+			if (!item.isNul())//ƒkƒ‹‚Í‚±‚±‚Ü‚Å‚Ìî•ñ‚ÅI‚í‚è
 			{
 				arc.write(result, &item.m_itemSize, sizeof(item.m_itemSize));//ƒf[ƒ^ƒTƒCƒYo—Í
-				if (item.isArray())
-				{
-					//”z—ñ
+				if (item.isArr())//”z—ñ‚©H
 					arc.write(result, &item.m_arrNum, sizeof(item.m_arrNum));//”z—ñ—v‘f”o—Í
-					unsigned char* p = reinterpret_cast<unsigned char*>(const_cast<void*>(item.m_itemP));
-					for (std::size_t i = 0; i < item.m_arrNum && !result.m_hasFatalError; ++i)//”z—ñ—v‘f”•ªƒf[ƒ^o—Í
-					{
-						arc.write(result, p, item.m_itemSize);//ƒf[ƒ^o—Í
-						p += item.m_itemSize;
-					}
-				}
-				else
+				unsigned char* p = reinterpret_cast<unsigned char*>(const_cast<void*>(item.m_itemP));
+				const std::size_t elem_num = item.getElemNum();
+				for (std::size_t index = 0; index < elem_num && !result.hasFatalError(); ++index)//”z—ñ—v‘f”•ªƒf[ƒ^o—Í
 				{
-					//”ñ”z—ñ
-					arc.write(result, item.m_itemP, item.m_itemSize);//ƒf[ƒ^o—Í
+					arc.write(result, p, item.m_itemSize);//ƒf[ƒ^o—Í
+					p += item.m_itemSize;
 				}
 			}
-			return !result.m_hasFatalError;
+			return !result.hasFatalError();
 		}
 		//ƒf[ƒ^€–Ú“ü—Í
-		bool input(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		bool input(CIOResult& result, CIOArchiveBase& arc, CItemBase& item, const bool is_valid_item) override
 		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			std::size_t item_size = 0;
+			arc.read(result, const_cast<crc32_t*>(&item.m_nameCrc), sizeof(item.m_nameCrc), &item_size);//–¼‘OCRC“ü—Í
+			arc.read(result, const_cast<CRecInfo::value_t*>(&item.m_info.m_value), sizeof(item.m_info.m_value), &item_size);//•Û‘¶ó‘Ô“ü—Í
+			const CItemBase* org_item = arc.findItem(item.m_nameCrc);//‘Î‰‚·‚éƒf[ƒ^€–Úî•ñ‚ğŒŸõ
+			if (org_item)//‘Î‰‚·‚éƒf[ƒ^€–Ú‚ªŒ©‚Â‚©‚Á‚½‚©H
+				item.copyFromOnMem(*org_item);//Œ»İ‚Ìî•ñ‚ğƒZ[ƒuƒf[ƒ^‚Ìî•ñ‚ÉƒRƒs[i“‡j
+			else
+				item.setIsOnlyOnSaveData();//‘Î‰‚·‚éƒf[ƒ^‚ª‚È‚¢FƒZ[ƒuƒf[ƒ^‚É‚µ‚©ƒf[ƒ^‚ª‘¶İ‚µ‚È‚¢
+			if (item.isObj())
+			{
+				//‘ÎÛ‚ªƒIƒuƒWƒFƒNƒg‚È‚ç‚±‚Ì“_‚Åƒ|ƒCƒ“ƒ^‚ğ–ß‚µ‚ÄI—¹
+				arc.seek(result, -static_cast<int>(item_size));
+				item_size = 0;
+				return !result.hasFatalError();
+			}
+			assert(!item.m_info.hasVersion());//ƒo[ƒWƒ‡ƒ“î•ñ‚È‚µ‚©H
+			//‘Î‰‚·‚éƒf[ƒ^€–Ú‚ğŒŸõ
+			if (!item.isNul())//yƒZ[ƒuƒf[ƒ^ã‚Ìzƒf[ƒ^‚ªƒkƒ‹‚Å‚È‚¯‚ê‚Îˆ—‚·‚é
+			{
+				arc.read(result, const_cast<std::size_t*>(&item.m_itemSize), sizeof(item.m_itemSize), &item_size);//ƒf[ƒ^ƒTƒCƒY“ü—Í
+				if (item.isArr())//”z—ñ‚©H
+					arc.read(result, const_cast<std::size_t*>(&item.m_arrNum), sizeof(item.m_arrNum), &item_size);//”z—ñ—v‘f”“ü—Í
+				unsigned char* p = reinterpret_cast<unsigned char*>(const_cast<void*>(item.m_itemP));
+				const std::size_t elem_num = item.getElemNum();
+				for (std::size_t index = 0; index < elem_num && !result.hasFatalError(); ++index)//yƒZ[ƒuƒf[ƒ^ã‚Ìz”z—ñ—v‘f”•ªƒf[ƒ^o—Í
+				{
+					const bool is_valid_elment =//—LŒø‚Èƒf[ƒ^‚©H
+						is_valid_item && //e‚Ìƒf[ƒ^‚ª—LŒø‚©H
+						!item.isOnlyOnSaveData() && //ƒZ[ƒuƒf[ƒ^‚É‚µ‚©‚È‚¢ƒf[ƒ^‚Å‚Í‚È‚¢‚©H
+						!item.nowIsNul() && //Œ»İ‚ÌiƒRƒs[æ‚Ìjƒf[ƒ^‚ªƒkƒ‹‚Å‚Í‚È‚¢‚©H
+						index < item.getMinimumElemNum();//Œ»İ‚ÌiƒRƒs[æ‚Ìj”z—ñ‚Ì”ÍˆÍ“à‚©H
+					void* p_tmp = is_valid_elment ? p : nullptr;//—LŒø‚Èƒf[ƒ^‚Å‚È‚¯‚ê‚Înullptr‚ğ“n‚µA‹ó“Ç‚İ‚İ‚·‚é
+					arc.readResizing(result, p_tmp, item.m_nowItemSize, item.m_itemSize, &item_size);//ƒf[ƒ^“ü—Í
+					if (p)
+						p += item.m_nowItemSize;
+				}
+			}
+			item.setIsAlready();//ˆ—Ï‚İ‚É‚·‚é
+			result.addResult(item);//Œ‹‰Ê‚ğŒvã
 			return true;
 		}
 		//ƒuƒƒbƒN‚Ì”z—ñ—v‘fI—¹î•ño—Í
-		bool outputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const std::size_t elem_size) override
+		bool outputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const short items_num, const std::size_t elem_size) override
 		{
-			if (item.isArray())//”z—ñ‚Ì‚¾‚¯o—Í
-			{
-				arc.seek(result, -static_cast<int>(sizeof(elem_size)));//”z—ñ—v‘fƒTƒCƒYî•ñ‚Ì•ªˆÊ’u‚ğ–ß‚·
-				arc.write(result, &elem_size, sizeof(elem_size));//”z—ñ—v‘fƒTƒCƒY‚ğXVio—Íj
-			}
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			arc.seek(result, -static_cast<int>(sizeof(elem_size)));//”z—ñ—v‘fƒTƒCƒYî•ñ‚Ì•ªˆÊ’u‚ğ–ß‚·
+			arc.seek(result, -static_cast<int>(sizeof(items_num)));//ƒf[ƒ^€–Ú”î•ñ‚Ì•ªˆÊ’u‚ğ–ß‚·
+			arc.write(result, &items_num, sizeof(items_num));//”z—ñ—v‘fƒTƒCƒY‚ğXVio—Íj
+			arc.write(result, &elem_size, sizeof(elem_size));//”z—ñ—v‘fƒTƒCƒY‚ğXVio—Íj
 			arc.seek(result, static_cast<int>(elem_size));//”z—ñ—v‘fƒTƒCƒY•ªˆÊ’u‚ği‚ß‚é
-			return !result.m_hasFatalError;
+			arc.write(result, ELEM_TERM, ELEM_TERM_SIZE);//—v‘fI’[o—Í
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒN‚Ì”z—ñ—v‘fI—¹î•ñ“ü—Í
-		bool inputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const std::size_t elem_size) override
+		bool inputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			char elem_term[ELEM_TERM_SIZE];
+			arc.read(result, elem_term, ELEM_TERM_SIZE);//—v‘fI’[“ü—Í
+			if (memcmp(elem_term, ELEM_TERM, ELEM_TERM_SIZE) != 0)//—v‘fI’[ƒ`ƒFƒbƒN
+				result.setHasFatalError();
+			return !result.hasFatalError();
+		}
+		//ƒIƒuƒWƒFƒNƒg‚ÌƒuƒƒbƒN‚ğƒXƒLƒbƒv
+		bool inputSkipBlock(CIOResult& result, CIOArchiveBase& arc) override
+		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			crc32_t name_crc = 0;
+			CRecInfo rec_info(false, false, false, false);
+			arc.read(result, &name_crc, sizeof(name_crc));//–¼‘OCRCo—Í
+			arc.read(result, const_cast<CRecInfo::value_t*>(&rec_info.m_value), sizeof(rec_info.m_value));//•Û‘¶ó‘Ôo—Í
+			if (rec_info.hasVersion())//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
+			{
+				CVersion input_ver_dummy;
+				arc.read(result, const_cast<unsigned int*>(input_ver_dummy.getVerPtr()), input_ver_dummy.getVerSize());//ƒo[ƒWƒ‡ƒ““ü—Í
+			}
+			if (!rec_info.isNul())//ƒkƒ‹‚Í‚±‚±‚Ü‚Å‚Ìî•ñ‚ÅI‚í‚è
+			{
+				if (rec_info.isArr())//”z—ñ‚Í”z—ñ—v‘f”‚à“ü—Í
+				{
+					std::size_t arr_num;
+					arc.read(result, &arr_num, sizeof(arr_num));//”z—ñ—v‘f”“ü—Í
+				}
+				std::size_t item_size;
+				arc.read(result, &item_size, sizeof(item_size));//ƒuƒƒbƒNƒTƒCƒY“ü—Í
+				arc.seek(result, static_cast<int>(item_size));//ƒuƒƒbƒNƒTƒCƒY•ªi‚ß‚é
+			}
+			return !result.hasFatalError();
+		}
+		//ƒuƒƒbƒNŠJnî•ñ‰¼“Ç‚İ‚İ
+		bool inputBeginBlockTemp(CIOResult& result, CIOArchiveBase& arc, CItemBase& input_item, std::size_t& child_block_size) override
+		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			std::size_t read_size = 0;//“Ç‚İ‚İƒTƒCƒY
+			input_item.clearForInput();//“ü—Íî•ñ‚ğˆê’UƒNƒŠƒA
+			arc.read(result, const_cast<crc32_t*>(&input_item.m_nameCrc), sizeof(input_item.m_nameCrc), &read_size);//–¼‘OCRCo—Í
+			arc.read(result, const_cast<CRecInfo::value_t*>(&input_item.m_info.m_value), sizeof(input_item.m_info.m_value), &read_size);//•Û‘¶ó‘Ôo—Í
+			if (input_item.m_info.hasVersion())//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
+			{
+				CVersion input_ver_dummy;
+				arc.read(result, const_cast<unsigned int*>(input_ver_dummy.getVerPtr()), input_ver_dummy.getVerSize(), &read_size);//ƒo[ƒWƒ‡ƒ““ü—Í
+			}
+			if (!input_item.isNul())//ƒkƒ‹‚Í‚±‚±‚Ü‚Å‚Ìî•ñ‚ÅI‚í‚è
+			{
+				if (input_item.isArr())//”z—ñ‚Í”z—ñ—v‘f”‚à“ü—Í
+					arc.read(result, const_cast<std::size_t*>(&input_item.m_arrNum), sizeof(input_item.m_arrNum), &read_size);//”z—ñ—v‘f”“ü—Í
+				arc.read(result, const_cast<std::size_t*>(&input_item.m_itemSize), sizeof(input_item.m_itemSize), &read_size);//ƒuƒƒbƒNƒTƒCƒY“ü—Í
+			}
+			child_block_size = read_size + input_item.m_itemSize;
+			arc.seek(result, -static_cast<int>(read_size));//“Ç‚İ‚ñ‚¾•ªŒ³‚ÌˆÊ’u‚É–ß‚·
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒNI—¹î•ño—Í
 		bool outputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
 		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
 			int real_seek = 0;
 			arc.seek(result, -static_cast<int>(sizeof(block_size)));//ƒuƒƒbƒNƒTƒCƒYî•ñ‚Ì•ªˆÊ’u‚ğ–ß‚·
 			arc.write(result, &block_size, sizeof(block_size));//ƒuƒƒbƒNƒTƒCƒY‚ğXVio—Íj
 			arc.seek(result, static_cast<int>(block_size));//ƒuƒƒbƒNƒTƒCƒY•ªˆÊ’u‚ği‚ß‚é
-			return !result.m_hasFatalError;
+			arc.write(result, BLOCK_TERM, BLOCK_TERM_SIZE);//ƒuƒƒbƒNI’[o—Í
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒNI—¹î•ñ“ü—Í
-		bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
+		//¦ƒuƒƒbƒNI—¹‚©‚Ç‚¤‚©‚©‚ğ”»’è‚µ‚Ä•Ô‚·
+		bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) override
 		{
-			return true;
+			is_block_end = true;//ƒuƒƒbƒNI—¹ˆµ‚¢
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			char block_term[BLOCK_TERM_SIZE];
+			std::size_t read_size = 0;
+			arc.read(result, block_term, BLOCK_TERM_SIZE, &read_size);//ƒuƒƒbƒNI’[“ü—Í
+			if (memcmp(block_term, BLOCK_TERM, BLOCK_TERM_SIZE) != 0)//ƒuƒƒbƒNI’[ƒ`ƒFƒbƒN
+			{
+				is_block_end = false;//ƒuƒƒbƒNI—¹‚Å‚Í‚È‚¢
+				arc.seek(result, -static_cast<int>(read_size));//“Ç‚İ‚İˆÊ’u‚ğ–ß‚·
+			}
+			return !result.hasFatalError();
 		}
 		//ƒ^[ƒ~ƒl[ƒ^o—Í
 		bool outputTerminator(CIOResult& result, CIOArchiveBase& arc) override
 		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
 			arc.write(result, TERMINATOR, TERMINATOR_SIZE);//ƒ^[ƒ~ƒl[ƒ^o—Í
-			return !result.m_hasFatalError;
+			return !result.hasFatalError();
 		}
 		//ƒ^[ƒ~ƒl[ƒ^“ü—Íi³‚µ‚¢ƒf[ƒ^‚©ƒ`ƒFƒbƒNj
 		bool inputTerminator(CIOResult& result, CIOArchiveBase& arc) override
 		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			char terminator[TERMINATOR_SIZE];
+			arc.read(result, terminator, TERMINATOR_SIZE);//ƒ^[ƒ~ƒl[ƒ^“ü—Í
+			if (memcmp(terminator, TERMINATOR, TERMINATOR_SIZE) != 0)//ƒ^[ƒ~ƒl[ƒ^ƒ`ƒFƒbƒN
+				result.setHasFatalError();
 			return true;
 		}
 	public:
@@ -3161,6 +3880,8 @@ namespace serial
 	//Ã“I•Ï”ƒCƒ“ƒXƒ^ƒ“ƒX‰»
 	const unsigned char CBinaryArchive::SIGNATURE[CBinaryArchive::SIGNATURE_SIZE] = { 0x00, 0xff, 's', 'e', 'r', 'i', 'a', 'l', ':', ':', 'C', 'B', 'i', 'n', 0xff, 0x00 };//ƒVƒOƒlƒ`ƒƒ
 	const unsigned char CBinaryArchive::TERMINATOR[CBinaryArchive::TERMINATOR_SIZE] = { 0xff, 0x00, 's', 'e', 'r', 'i', 'a', 'l', ':', ':', 'C', 'B', 'i', 'n', 0x00, 0xff };//ƒ^[ƒ~ƒl[ƒ^
+	const unsigned char CBinaryArchive::BLOCK_TERM[CBinaryArchive::BLOCK_TERM_SIZE] = { 0xfb, 0xff };//ƒuƒƒbƒNI’[
+	const unsigned char CBinaryArchive::ELEM_TERM[CBinaryArchive::ELEM_TERM_SIZE] = { 0xfe, 0xff };//—v‘fI’[
 	//--------------------
 	//ƒeƒLƒXƒgŒ`®ƒA[ƒJƒCƒuƒNƒ‰ƒX
 	class CTextArchive : public CArchiveStyleBase
@@ -3174,72 +3895,115 @@ namespace serial
 		//ƒVƒOƒlƒ`ƒƒo—Í
 		bool outputSignature(CIOResult& result, CIOArchiveBase& arc) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒVƒOƒlƒ`ƒƒ“ü—Íi³‚µ‚¢ƒf[ƒ^‚©ƒ`ƒFƒbƒNj
 		bool inputSignature(CIOResult& result, CIOArchiveBase& arc) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒNŠJnî•ño—Í
 		bool outputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒNŠJnî•ñ“ü—Í
-		bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) override
+		bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒN‚Ì”z—ñ—v‘fŠJnî•ño—Í
 		bool outputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒN‚Ì”z—ñ—v‘fŠJnî•ñ“ü—Í
-		bool inputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
+		bool inputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒf[ƒ^€–Úo—Í
 		bool output(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒf[ƒ^€–Ú“ü—Í
-		bool input(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		bool input(CIOResult& result, CIOArchiveBase& arc, CItemBase& item, const bool is_valid_item) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒN‚Ì”z—ñ—v‘fI—¹î•ño—Í
-		bool outputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const std::size_t elem_size) override
+		bool outputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const short items_num, const std::size_t elem_size) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒN‚Ì”z—ñ—v‘fI—¹î•ñ“ü—Í
-		bool inputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const std::size_t elem_size) override
+		bool inputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
+		}
+		//ƒIƒuƒWƒFƒNƒg‚ÌƒuƒƒbƒN‚ğƒXƒLƒbƒv
+		bool inputSkipBlock(CIOResult& result, CIOArchiveBase& arc) override
+		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
+		}
+		//ƒuƒƒbƒNŠJnî•ñ‰¼“Ç‚İ‚İ
+		bool inputBeginBlockTemp(CIOResult& result, CIOArchiveBase& arc, CItemBase& input_item, std::size_t& child_block_size) override
+		{
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒNI—¹î•ño—Í
 		bool outputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒNI—¹î•ñ“ü—Í
-		bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
+		bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) override
 		{
-			return true;
+			is_block_end = true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒ^[ƒ~ƒl[ƒ^o—Í
 		bool outputTerminator(CIOResult& result, CIOArchiveBase& arc) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 		//ƒ^[ƒ~ƒl[ƒ^“ü—Íi³‚µ‚¢ƒf[ƒ^‚©ƒ`ƒFƒbƒNj
 		bool inputTerminator(CIOResult& result, CIOArchiveBase& arc) override
 		{
-			return true;
+			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
+				return false;
+			return !result.hasFatalError();
 		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -3384,7 +4148,7 @@ namespace serial
 	template<class Arc, class T> \
 	friend struct serial::afterLoad; \
 	template<class Arc, class T> \
-	friend struct serial::gatherer; \
+	friend struct serial::collector; \
 	template<class Arc, class T> \
 	friend struct serial::distributor;
 
@@ -3443,17 +4207,28 @@ public:
 		m_data2(0.f),
 		m_data4a(),
 		m_data4b(),
-		m_data7a(nullptr),
+		m_data7a(),
 		m_data7b(nullptr)
 	{
 		m_data3[0] = 0;
 		m_data3[1] = 0;
+		m_data3[2] = 0;
 		m_data5a.reset();
 		m_data5b.reset();
 		m_data7a = new STRUCT();
+		//m_data7b = new STRUCT();
+	}
+	//ƒfƒXƒgƒ‰ƒNƒ^
+	~CTest1()
+	{
+		if (m_data7a)
+			delete m_data7a;
+		if (m_data7b)
+			delete m_data7b;
 	}
 private:
 	//ƒtƒB[ƒ‹ƒh
+	//int m_data0;
 	int m_data1;//ƒf[ƒ^1
 	float m_data2;//ƒf[ƒ^2
 	char m_data3[3];//ƒf[ƒ^3
@@ -3478,13 +4253,13 @@ SERIALIZE_VERSION_DEF(CTest1::STRUCT, 3, 4);
 SERIALIZE_VERSION_DEF(CSaveDataSerializer, 5, 6);
 
 //ƒZ[ƒuƒf[ƒ^ƒCƒ“ƒXƒ^ƒ“ƒX
-static CTest1 s_saveData;
+static CTest1* s_saveData = nullptr;
 
 //ƒZ[ƒuƒf[ƒ^‰Šú‰»
 void initSaveData()
 {
 	//ƒZ[ƒuƒf[ƒ^æ“¾
-	CTest1& data = s_saveData;
+	CTest1& data = *s_saveData;
 	//ƒf[ƒ^‚ğ‰Šú‰»
 	data.setData1(1);
 	data.setData2(2.34f);
@@ -3517,7 +4292,7 @@ void initSaveData()
 void printSaveData()
 {
 	//ƒZ[ƒuƒf[ƒ^æ“¾
-	CTest1& data = s_saveData;
+	CTest1& data = *s_saveData;
 	//ƒf[ƒ^•\¦
 	printf("data1=%d\n", data.getData1());
 	printf("data2=%.2f\n", data.getData2());
@@ -3541,7 +4316,7 @@ namespace serial
 	//¦ƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—
 	template<class Arc>
 	struct beforeLoad<Arc, CTest1> {
-		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
+		void operator()(Arc& arc, CTest1& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			printf("beforeLoad<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
@@ -3553,16 +4328,17 @@ namespace serial
 	//¦ƒVƒŠƒAƒ‰ƒCƒY‚ÆƒfƒVƒŠƒAƒ‰ƒCƒYŒ“—p‹¤’Êˆ—
 	template<class Arc>
 	struct serialize<Arc, CTest1> {
-		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver)
+		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			printf("serialize<CTest1>(ver=%d,%d) sizeof(CTest1)=%d\n", ver.getMajor(), ver.getMinor(), sizeof(CTest1));
+			//arc & pair("data0", obj.m_data0);
 			arc & pair("data1", obj.m_data1);
 			arc & pair("data2", obj.m_data2);
 			arc & pair("data3", obj.m_data3);
-			arc & pair("data4a", obj.m_data4a);
-			arc & pairBin("data4b", obj.m_data4b);
-			arc & pair("data5a", obj.m_data5a);
-			arc & pairBin("data5b", obj.m_data5b);
+			arc & pairBin("data4a", obj.m_data4a);
+			arc & pair("data4b", obj.m_data4b);
+			arc & pairBin("data5a", obj.m_data5a);
+			arc & pair("data5b", obj.m_data5b);
 			arc & pair("data6", obj.m_data6);
 			arc & pair("data7a", obj.m_data7a);
 			arc & pair("data7b", obj.m_data7b);
@@ -3572,7 +4348,7 @@ namespace serial
 #if 1
 	template<class Arc>
 	struct serialize<Arc, CTest1::STRUCT> {
-		void operator()(Arc& arc, const CTest1::STRUCT& obj, const CVersion& ver)
+		void operator()(Arc& arc, const CTest1::STRUCT& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			printf("serialize<CTest1::STRUCT>(ver=%d,%d) sizeof(CTest1::STRUCT)=%d\n", ver.getMajor(), ver.getMinor(), sizeof(CTest1::STRUCT));
 			arc & pair("data1", obj.m_a);
@@ -3587,7 +4363,7 @@ namespace serial
 	//¦–c‘å‚Èƒ[ƒNƒoƒbƒtƒ@‚ğ—v‚·‚é‚Ì‚Å’ˆÓ
 	template<class Arc, std::size_t N>
 	struct serialize<Arc, std::bitset<N> > {
-		void operator()(Arc& arc, const std::bitset<N>& obj, const CVersion& ver)
+		void operator()(Arc& arc, const std::bitset<N>& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			printf("serialize<std::bitset<N>>(ver=%d,%d) sizeof(std::bitset<N>)=%d\n", ver.getMajor(), ver.getMinor(), sizeof(std::bitset<N>));
 			for (int i = 0; i < N; ++i)
@@ -3622,7 +4398,7 @@ namespace serial
 	//¦ƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—
 	template<class Arc>
 	struct load<Arc, CTest1> {
-		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
+		void operator()(Arc& arc, CTest1& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			printf("load<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
@@ -3634,7 +4410,7 @@ namespace serial
 	//¦ƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—
 	template<class Arc>
 	struct afterLoad<Arc, CTest1> {
-		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
+		void operator()(Arc& arc, CTest1& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			printf("afterLoad<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
@@ -3645,10 +4421,10 @@ namespace serial
 	//ƒf[ƒ^ûWˆ——pŠÖ”ƒIƒuƒWƒFƒNƒgƒNƒ‰ƒX
 	//¦ƒVƒŠƒAƒ‰ƒCƒYê—pˆ—
 	template<class Arc>
-	struct gatherer<Arc, CTest1> {
+	struct collector<Arc, CTest1> {
 		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver)
 		{
-			printf("gatherer<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("collector<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
 	};
 #endif
@@ -3658,7 +4434,7 @@ namespace serial
 	//¦ƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—
 	template<class Arc>
 	struct distributor<Arc, CTest1> {
-		void operator()(Arc& arc, CTest1& obj, const CVersion& ver)
+		void operator()(Arc& arc, CTest1& obj, const CVersion& ver, const CVersion& now_ver, const CItemBase& target_item)
 		{
 			printf("distributor<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
@@ -3669,12 +4445,12 @@ namespace serial
 	//ƒf[ƒ^ûWˆ——pŠÖ”ƒIƒuƒWƒFƒNƒgƒNƒ‰ƒX
 	//¦ƒVƒŠƒAƒ‰ƒCƒYê—pˆ—
 	template<class Arc>
-	struct gatherer<Arc, CSaveDataSerializer> {
+	struct collector<Arc, CSaveDataSerializer> {
 		void operator()(Arc& arc, const CSaveDataSerializer& obj, const CVersion& ver)
 		{
-			printf("gatherer<CSaveDataSerializer>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
+			printf("collector<CSaveDataSerializer>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 			//‘ÎÛƒf[ƒ^æ“¾
-			CTest1& data = s_saveData;
+			CTest1& data = *s_saveData;
 			//ƒVƒŠƒAƒ‰ƒCƒY
 			arc << pair("CTest1", data);
 		}
@@ -3686,11 +4462,11 @@ namespace serial
 	//¦ƒfƒVƒŠƒAƒ‰ƒCƒYê—pˆ—
 	template<class Arc>
 	struct distributor<Arc, CSaveDataSerializer> {
-		void operator()(Arc& arc, CSaveDataSerializer& obj, const CVersion& ver)
+		void operator()(Arc& arc, CSaveDataSerializer& obj, const CVersion& ver, const CVersion& now_ver, const CItemBase& target_item)
 		{
 			printf("distributor<CSaveDataSerializer>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 			//‘ÎÛƒf[ƒ^æ“¾
-			CTest1& data = s_saveData;
+			CTest1& data = *s_saveData;
 			//ƒfƒVƒŠƒAƒ‰ƒCƒY
 			arc >> pair("CTest1", data);
 		}
@@ -3698,23 +4474,23 @@ namespace serial
 #endif
 }//namespace serial
 
-//ƒZ[ƒuƒf[ƒ^—pƒoƒbƒtƒ@
-static char s_saveBuff[1 * 1024 * 1024];
-//ƒ[ƒNƒoƒbƒtƒ@
-static char s_workBuff[8 * 1024 * 1024];
-
 //--------------------
 //ƒVƒŠƒAƒ‰ƒCƒYƒeƒXƒg‚PFƒoƒCƒiƒŠƒA[ƒJƒCƒu
 void serializeTest1(const char* file_path)
 {
 	printf("--------------------\n");
 	printf("ƒVƒŠƒAƒ‰ƒCƒYFƒoƒCƒiƒŠƒA[ƒJƒCƒu\n");
+	//ƒoƒbƒtƒ@‚Ì—pˆÓ
+	//char* save_buff = new char[1 * 1024 * 1024];//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@
+	//char* work_buff = new char[8 * 1024 * 1024];//ƒ[ƒNƒoƒbƒtƒ@
+	char save_buff[16 * 1024];//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@
+	char work_buff[16 * 1024];//ƒ[ƒNƒoƒbƒtƒ@
 	//ƒZ[ƒuƒf[ƒ^‰Šú‰»
 	initSaveData();
 	//ƒZ[ƒuƒf[ƒ^•\¦
 	printSaveData();
 	//ƒVƒŠƒAƒ‰ƒCƒY
-	serial::COBinaryArchive arc(s_saveBuff, s_workBuff);//o—ÍƒA[ƒJƒCƒuì¬FƒeƒLƒXƒgƒA[ƒJƒCƒu
+	serial::COBinaryArchive arc(save_buff, work_buff);//o—ÍƒA[ƒJƒCƒuì¬FƒeƒLƒXƒgƒA[ƒJƒCƒu
 	arc << serial::pair<CSaveDataSerializer>("SaveData");//ƒVƒŠƒAƒ‰ƒCƒY
 	printf("ˆ—Œ‹‰ÊF%s\n", arc.hasFatalError() ? "’v–½“I‚ÈƒGƒ‰[‚ ‚è" : "ƒGƒ‰[‚È‚µ");
 	//ƒtƒ@ƒCƒ‹‚É‘‚«o‚µ
@@ -3724,7 +4500,7 @@ void serializeTest1(const char* file_path)
 #else//USE_STRCPY_S
 	FILE* fp = fopen(file_path, "wb");
 #endif//USE_STRCPY_S
-	fwrite(s_saveBuff, 1, arc.getBuffPos(), fp);
+	fwrite(save_buff, 1, arc.getBuffPos(), fp);
 	fclose(fp);
 	fp = NULL;
 }
@@ -3734,6 +4510,11 @@ void deserializeTest1(const char* file_path)
 {
 	printf("--------------------\n");
 	printf("ƒfƒVƒŠƒAƒ‰ƒCƒYFƒoƒCƒiƒŠƒA[ƒJƒCƒu\n");
+	//ƒoƒbƒtƒ@‚Ì—pˆÓ
+	//char* save_buff = new char[1 * 1024 * 1024];//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@
+	//char* work_buff = new char[8 * 1024 * 1024];//ƒ[ƒNƒoƒbƒtƒ@
+	char save_buff[16 * 1024];//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@
+	char work_buff[16 * 1024];//ƒ[ƒNƒoƒbƒtƒ@
 	//ƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚İ
 #ifdef USE_STRCPY_S
 	FILE* fp = nullptr;
@@ -3741,16 +4522,33 @@ void deserializeTest1(const char* file_path)
 #else//USE_STRCPY_S
 	FILE* fp = fopen(file_path, "rb");
 #endif//USE_STRCPY_S
+	//ƒtƒ@ƒCƒ‹ƒTƒCƒY‚ğ‹‚ß‚é
 	fseek(fp, 0, SEEK_END);
-	long file_size = ftell(fp);
+	const std::size_t file_size = ftell(fp);
+	//ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ
 	fseek(fp, 0, SEEK_SET);
-	fread(s_saveBuff, 1, file_size, fp);
+	fread(save_buff, 1, file_size, fp);
 	fclose(fp);
 	fp = NULL;
 	//ƒfƒVƒŠƒAƒ‰ƒCƒY
-	serial::CIBinaryArchive arc(s_saveBuff, file_size, s_workBuff);
-	arc >> serial::pair<CSaveDataSerializer>("CTest1", file_size);
+	serial::CIBinaryArchive arc(save_buff, file_size, work_buff);
+	arc >> serial::pair<CSaveDataSerializer>("SaveData", file_size);
 	printf("ˆ—Œ‹‰ÊF%s\n", arc.hasFatalError() ? "’v–½“I‚ÈƒGƒ‰[‚ ‚è" : "ƒGƒ‰[‚È‚µ");
+	serial::CIOResult& result = arc.getResult();
+	printf("  getNumSmallerSizeItem()=%d\n", result.getNumSmallerSizeItem());//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumLargerSizeItem()=%d\n", result.getNumLargerSizeItem());//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumSmallerArrItem()=%d\n", result.getNumSmallerArrItem());//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumLargerArrItem()=%d\n", result.getNumLargerArrItem());//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumIsOnlyOnSaveData()=%d\n", result.getNumIsOnlyOnSaveData());//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumIsOnlyOnMem()=%d\n", result.getNumIsOnlyOnMem());//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumIsObjOnSaveDataOnly()=%d\n", result.getNumIsObjOnSaveDataOnly());//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumIsObjOnMemOnly()=%d\n", result.getNumIsObjOnMemOnly());//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumIsArrOnSaveDataOnly()=%d\n", result.getNumIsArrOnSaveDataOnly());//Œ»İ”z—ñŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumIsArrOnMemOnly()=%d\n", result.getNumIsArrOnMemOnly());//Œ»İ”z—ñŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumIsPtrOnSaveDataOnly()=%d\n", result.getNumIsPtrOnSaveDataOnly());//Œ»İƒ|ƒCƒ“ƒ^Œ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumIsPtrOnMemOnly()=%d\n", result.getNumIsPtrOnMemOnly());//Œ»İƒ|ƒCƒ“ƒ^Œ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumIsNulOnSaveDataOnly()=%d\n", result.getNumIsNulOnSaveDataOnly());//Œ»İƒkƒ‹‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumIsNulOnMemOnly()=%d\n", result.getNumIsNulOnMemOnly());//Œ»İƒkƒ‹‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
 	//ƒZ[ƒuƒf[ƒ^•\¦
 	printSaveData();
 }
@@ -3760,9 +4558,20 @@ void test1()
 {
 	static const char* file_path = "test1.bin";
 	//ƒVƒŠƒAƒ‰ƒCƒY
+	s_saveData = new CTest1();
 	serializeTest1(file_path);
+	delete s_saveData;
+	s_saveData = nullptr;
+
+	char* dummy = new char[10 * 1024];
+	
 	//ƒfƒVƒŠƒAƒ‰ƒCƒY
+	s_saveData = new CTest1();
 	deserializeTest1(file_path);
+	delete s_saveData;
+	s_saveData = nullptr;
+	
+	delete dummy;
 }
 
 //--------------------

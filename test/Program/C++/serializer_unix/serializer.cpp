@@ -2364,6 +2364,7 @@ namespace serial
 	//ロード前処理用関数オブジェクトテンプレートクラス
 	//※デシリアライズ専用処理
 	//※特殊化によりユーザー処理を実装
+	//※objのロードを開始する前に実行される
 	//※標準では何もしない
 	template<class Arc, class T>
 	struct beforeLoad {
@@ -2405,9 +2406,36 @@ namespace serial
 		{}
 	};
 	//--------------------
+	//セーブデータにはあったが、保存先の指定がなく、ロードできなかった項目の通知
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※見つかったら時点で知されるので、objが不完全な状態である点に注意
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct noticeUnconsciousItem {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, T& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unconcious_item)
+		{}
+	};
+	//--------------------
+	//保存先の指定があるが、セーブデータになくロードできなかった項目の通知
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※objのロードが一通り終わったあと、まとめて通知する
+	//※noticeUnconsciousItem の後、afterLoad より先に実行される
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct noticeUnloadedItem {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, T& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unloaded_item)
+		{}
+	};
+	//--------------------
 	//ロード後処理用関数オブジェクトテンプレートクラス
 	//※デシリアライズ専用処理
 	//※特殊化によりユーザー処理を実装
+	//※objのロードが一通り終わったあと実行される
+	//※noticeUnconsciousItem, noticeUnconsciousItem の後に実行される
 	//※標準では何もしない
 	template<class Arc, class T>
 	struct afterLoad {
@@ -2419,6 +2447,8 @@ namespace serial
 	//データ収集処理用関数オブジェクトテンプレートクラス
 	//※シリアライズ専用処理
 	//※特殊化によりユーザー処理を実装
+	//※処理の中で使えるのは operator<<() のみ
+	//　operator&() は禁止
 	//※標準では何もしない
 	template<class Arc, class T>
 	struct collector {
@@ -2430,6 +2460,13 @@ namespace serial
 	//データ分配処理用関数オブジェクトテンプレートクラス
 	//※デシリアライズ専用処理
 	//※特殊化によりユーザー処理を実装
+	//※処理の中で使えるのは operator>>() のみ
+	//　operator&() は禁止
+	//※収集処理で登録されたオブジェクトがセーブデータから見つかるごとに
+	//　何度も呼び出される
+	//※見つかったオブジェクトの情報（データ項目情報 = target_item）が渡される
+	//※基本オブジェクト（obj）は、配列だった場合、その先頭の要素が渡される
+	//※セーブデータ上の配列要素数と、ロードできた配列要素数（メモリ上の配列要素数）が渡される
 	//※標準では何もしない
 	template<class Arc, class T>
 	struct distributor {
@@ -2467,6 +2504,8 @@ namespace serial
 			isDefinedFunctor<serialize<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<save<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<load<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<noticeUnconsciousItem<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<noticeUnloadedItem<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<afterLoad<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<collector<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<distributor<CArchiveDummy, T> >(0);
@@ -2765,11 +2804,19 @@ namespace serial
 		return item_obj;
 	}
 	//--------------------
-	//データ項目情報作成テンプレート関数（配列用）
+	//データ項目情報作成テンプレート関数（配列自動判定用）
 	template<class T, std::size_t N>
 	CItem<T> pair(const char* name, const T(&item)[N])
 	{
 		CItem<T> item_obj(name, item, N, false);
+		return item_obj;
+	}
+	//--------------------
+	//データ項目情報作成テンプレート関数（ポインタを配列扱いにしたい場合に使用）
+	template<class T>
+	CItem<typename isPtr<T>::TYPE> pairArr(const char* name, const T& item, const std::size_t N)
+	{
+		CItem<typename isPtr<T>::TYPE> item_obj(name, isPtr<T>::TO_PTR(item), N, isPtr<T>::IS_PTR);
 		return item_obj;
 	}
 	//--------------------
@@ -3575,16 +3622,30 @@ namespace serial
 										child_item.setIsAlready();
 									}
 								}
+								
+								//ロードしたが保存先の指定がなかった項目
+								if (child_item.isOnlyOnSaveData())
+								{
+									//通知
+									noticeUnconsciousItem<CIArchive, T> functor;
+									functor(arc_elem, item_obj.template get<T>(), ver, now_ver, child_item);
+								}
 							}
 
-							//処理されなかったデータ項目を結果に計上
+							//処理されなかったデータ項目の処理
 							for (auto& pair : *arc_elem.m_itemList)
 							{
 								const CItemBase& child_item = pair.second;
-								
-								//セーブデータにないデータ項目であれば計上
+								//保存先の指定があるが、セーブデータになくロードできなかった項目
 								if (child_item.isOnlyOnMem())
+								{
+									//処理結果計上
 									arc_elem.getResult().addResult(child_item);
+									
+									//通知
+									noticeUnloadedItem<CIArchive, T> functor;
+									functor(arc_elem, item_obj.template get<T>(), ver, now_ver, child_item);
+								}
 							}
 
 							//ロード後処理（デシリアライズ専用処理）呼び出し
@@ -4275,6 +4336,10 @@ namespace serial
 	template<class Arc, class T> \
 	friend struct serial::load; \
 	template<class Arc, class T> \
+	friend struct serial::noticeUnconsciousItem; \
+	template<class Arc, class T> \
+	friend struct serial::noticeUnloadedItem; \
+	template<class Arc, class T> \
 	friend struct serial::afterLoad; \
 	template<class Arc, class T> \
 	friend struct serial::collector; \
@@ -4911,6 +4976,8 @@ struct CHARA_DATA
 	BASIC_DATA m_basic;//基本データ
 	const ITEM_DATA* m_weapon;//武器
 	const ITEM_DATA* m_shield;//盾
+	int m_param1[2];//ダミーパラメータ1
+	int m_param2[2];//ダミーパラメータ2
 	void setWeapon(const crc32_t weapon_id);//武器をセット
 	void setWeapon(const char* weapon_id){ setWeapon(calcCRC32(weapon_id)); }//武器をセット
 	void setShield(const crc32_t shield_id);//盾をセット
@@ -4922,7 +4989,7 @@ struct CHARA_DATA
 	CHARA_DATA()
 	{}
 	//コンストラクタ（テスト用に強引）
-	CHARA_DATA(const char* id, const char* name, const int level, const int atk, const int def, const char* weapon_id, const char* shield_id) :
+	CHARA_DATA(const char* id, const char* name, const int level, const int atk, const int def, const char* weapon_id, const char* shield_id, const int param1a, const int param1b, const int param2a, const int param2b) :
 		m_id(id),
 		m_name(name),
 		m_level(level),
@@ -4933,6 +5000,10 @@ struct CHARA_DATA
 	{
 		setWeapon(weapon_id);
 		setShield(shield_id);
+		m_param1[0] = param1a;
+		m_param1[1] = param1b;
+		m_param2[0] = param2a;
+		m_param2[1] = param2b;
 	}
 private:
 	crc32_t m_weaponId;//武器ID
@@ -5365,9 +5436,9 @@ void makeTestData()
 	//キャラデータ登録
 	{
 		CSingleton<CCharaList> chara_list;
-		CHARA_DATA chara1("c00010", "太郎", 10, 15, 20, "w00020", "s00020");
-		CHARA_DATA chara2("c00020", "次郎", 20, 25, 40, "w00050", "s00010");
-		CHARA_DATA chara3("c00030", "三郎", 30, 55, 3, "w00010", "s00030");
+		CHARA_DATA chara1("c00010", "太郎", 10, 15, 20, "w00020", "s00020", 111, 222, 333, 444);
+		CHARA_DATA chara2("c00020", "次郎", 20, 25, 40, "w00050", "s00010", 999, 888, 777, 666);
+		CHARA_DATA chara3("c00030", "三郎", 30, 55, 3, "w00010", "s00030", 123,456, 987, 654);
 		chara1.addAbility("a00030");
 		chara1.addAbility("a00020");
 		chara1.addAbility("a00010");
@@ -5424,6 +5495,8 @@ void printDataAll()
 		{
 			printf("ID=\"%s\"(0x%08x), nmae=\"%s\", level=%d, atk=%d, def=%d\n",
 				ite->m_id.c_str(), ite->m_id.getCRC(), ite->m_name.c_str(), ite->m_level, ite->m_basic.m_atk, ite->m_basic.m_def);
+			printf("    param1={%d, %d}, param2={%d, %d}\n",
+				ite->m_param1[0], ite->m_param1[1], ite->m_param2[0], ite->m_param2[1]);
 			if (ite->m_weapon)
 				printf("  weapon=%s\n", ite->m_weapon->m_name.c_str());
 			if (ite->m_shield)
@@ -5541,6 +5614,50 @@ namespace serial
 			arc & pair("basic", obj.m_basic);
 			arc & pair("weapon", obj.m_weaponId);
 			arc & pair("shield", obj.m_shieldId);
+		}
+	};
+	//--------------------
+	//シリアライズ専用処理：CHARA_DATA
+	template<class Arc>
+	struct save<Arc, CHARA_DATA> {
+		void operator()(Arc& arc, const CHARA_DATA& obj, const CVersion& ver)
+		{
+			arc & pair("param1", obj.m_param1);//セーブデータにしかないデータのシミュレーション用
+		}
+	};
+	//--------------------
+	//デシリアライズ専用処理：CHARA_DATA
+	template<class Arc>
+	struct load<Arc, CHARA_DATA> {
+		void operator()(Arc& arc, const CHARA_DATA& obj, const CVersion& ver, CVersion& now_ver)
+		{
+			arc & pair("param2", obj.m_param2);//セーブデータがないデータのシミュレーション用
+		}
+	};
+	//--------------------
+	//セーブデータにはあったが、保存先の指定がなく、ロードできなかった項目の通知
+	template<class Arc>
+	struct noticeUnconsciousItem<Arc, CHARA_DATA> {
+		void operator()(Arc& arc, CHARA_DATA& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unloaded_item)
+		{
+			if (unloaded_item == "param1")
+			{
+				obj.m_param1[0] = 12345;
+				obj.m_param1[1] = 67890;
+			}
+		}
+	};
+	//--------------------
+	//保存先の指定があるが、セーブデータになくロードできなかった項目の通知
+	template<class Arc>
+	struct noticeUnloadedItem<Arc, CHARA_DATA> {
+		void operator()(Arc& arc, CHARA_DATA& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unloaded_item)
+		{
+			if (unloaded_item == "param2")
+			{
+				obj.m_param2[0] = 98765;
+				obj.m_param2[1] = 43210;
+			}
 		}
 	};
 	//--------------------
@@ -5729,7 +5846,12 @@ std::size_t serialize(void* save_data_buff, const std::size_t save_data_buff_siz
 	serial::COBinaryArchive arc(save_data_buff, save_data_buff_size, work_buff, WORK_BUFF_SIZE);
 
 	//シリアライズ
-	arc << serial::pair("SaveData", CSaveData());
+	arc << serial::pair<CSaveData>("SaveData");
+
+	//シリアライズの結果を表示
+	serial::CIOResult result = arc.getResult();
+	printf("シリアライズ結果：\n");
+	printf("  致命的なエラー ... %s\n", result.hasFatalError() ? "あり" : "なし");
 
 	//セーブデータのサイズを返す
 	return arc.getBuffUsed();
@@ -5750,7 +5872,27 @@ void deserialize(void* save_data, const std::size_t save_data_size)
 	serial::CIBinaryArchive arc(save_data, save_data_size, work_buff, WORK_BUFF_SIZE);
 
 	//デシリアライズ
-	arc >> serial::pair("SaveData", CSaveData());
+	arc >> serial::pair<CSaveData>("SaveData");
+
+	//デシリアライズの結果を表示
+	serial::CIOResult result = arc.getResult();
+	printf("デシリアライズ結果：\n");
+	printf("  致命的なエラー ... %s\n", result.hasFatalError() ? "あり" : "なし");
+	printf("  以下、セーブデータの状態に対する現在のプログラムが変わっていた箇所の集計\n");
+	printf("  ・サイズが縮小された項目の数           = %d\n", result.getNumSmallerSizeItem());
+	printf("  ・サイズが拡大された項目の数           = %d\n", result.getNumLargerSizeItem());
+	printf("  ・配列サイズが縮小された項目の数       = %d\n", result.getNumSmallerArrItem());
+	printf("  ・配列サイズが拡大された項目の数       = %d\n", result.getNumLargerArrItem());
+	printf("  ・セーブデータ上にのみ存在した項目の数 = %d\n", result.getNumIsOnlyOnSaveData());
+	printf("  ・セーブデータ上になかった項目の数     = %d\n", result.getNumIsOnlyOnMem());
+	printf("  ・現在はオブジェクト型ではないが、セーブデータ上ではそうだった項目の数 = %d\n", result.getNumIsObjOnSaveDataOnly());
+	printf("  ・現在はオブジェクト型だが、セーブデータ上ではそうではなかった項目の数 = %d\n", result.getNumIsObjOnMemOnly());
+	printf("  ・現在は配列型ではないが、セーブデータ上ではそうだった項目の数         = %d\n", result.getNumIsArrOnSaveDataOnly());
+	printf("  ・現在は配列型だが、セーブデータ上ではそうではなかった項目の数         = %d\n", result.getNumIsArrOnMemOnly());
+	printf("  ・現在はポインタ型ではないが、セーブデータ上ではそうだった項目の数     = %d\n", result.getNumIsPtrOnSaveDataOnly());
+	printf("  ・現在はポインタ型だが、セーブデータ上ではそうではなかった項目の数     = %d\n", result.getNumIsPtrOnMemOnly());
+	printf("  ・現在はヌルではないが、セーブデータ上ではそうだった項目の数           = %d\n", result.getNumIsNulOnSaveDataOnly());
+	printf("  ・現在はヌルだが、セーブデータ上ではそうではなかった項目の数           = %d\n", result.getNumIsNulOnMemOnly());
 }
 
 //--------------------

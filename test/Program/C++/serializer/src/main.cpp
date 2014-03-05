@@ -3005,9 +3005,6 @@ namespace serial
 	};
 
 	//--------------------
-	//アーカイブ形式基底クラス
-	class CArchiveStyleBase;
-	//--------------------
 	//アーカイブ読み書き基底クラス
 	class CIOArchiveBase
 	{
@@ -3252,9 +3249,8 @@ namespace serial
 		}
 	public:
 		//コンストラクタ
-		CIOArchiveBase(CArchiveStyleBase& style, const stateEnum state, void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+		CIOArchiveBase(const stateEnum state, void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
 			m_parent(nullptr),
-			m_style(style),
 			m_state(state),
 			m_nestLevel(0),
 			m_buff(reinterpret_cast<byte*>(buff)),
@@ -3269,7 +3265,6 @@ namespace serial
 		//コンストラクタ
 		CIOArchiveBase(CIOArchiveBase& parent, const stateEnum state) :
 			m_parent(&parent),
-			m_style(parent.m_style),
 			m_state(state),
 			m_nestLevel(parent.m_nestLevel + 1),
 			m_buff(parent.getBuffNowPtr()),
@@ -3290,7 +3285,6 @@ namespace serial
 	protected:
 		//フィールド
 		CIOArchiveBase* m_parent;//親アーカイブオブジェクト
-		CArchiveStyleBase& m_style;//アーカイブ形式
 		stateEnum m_state;//ステート
 		CResult m_result;//処理結果
 		int m_nestLevel;//データのネストレベル
@@ -3305,60 +3299,9 @@ namespace serial
 	class CArchiveStyleBase
 	{
 	public:
-		//メソッド
-		//シグネチャ書き込み
-		virtual bool writeSignature(CIOArchiveBase& arc) = 0;
-		//シグネチャ読み込み
-		virtual bool readSignature(CIOArchiveBase& arc) = 0;
-		//ブロックヘッダー書き込み
-		virtual bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) = 0;
-		//ブロックヘッダー読み込み
-		//※読み込んだオブジェクトの型情報とバージョンを返す
-		virtual bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size) = 0;
-		//配列ブロックヘッダー書き込み
-		virtual bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num) = 0;
-		//配列ブロックヘッダー読み込み
-		virtual bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size) = 0;
-		//要素ヘッダー書き込み
-		virtual bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) = 0;
-		//要素ヘッダー読み込み
-		virtual bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size) = 0;
-		//データ項目書き込み
-		virtual bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item) = 0;
-		//データ項目読み込み
-		virtual bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid) = 0;
-		//要素フッター書き込み
-		virtual bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size) = 0;
-		//要素フッター読み込み
-		//※読み込みテストの結果、要素フッターでなければデータ項目の読み込みを継続する
-		virtual bool tryAndReadElemFooter(CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, bool& is_elem_end) = 0;
-		//要素読み込み終了
-		virtual bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc) = 0;
-		//配列ブロックフッター書き込み
-		virtual bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size) = 0;
-		//配列ブロックフッター読み込み
-		//※読み込みテストの結果、配列ブロックフッターでなければデータ項目の読み込みを継続する
-		virtual bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end) = 0;
-		//配列ブロック読み込み終了
-		virtual bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc) = 0;
-		//ブロックの読み込みをスキップ
-		virtual bool skipReadBlock(CIOArchiveBase& arc) = 0;
-		//ブロックフッター書き込み
-		virtual bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size) = 0;
-		//ブロックフッター読み込み
-		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
-		virtual bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) = 0;
-		//ブロック読み込み終了
-		virtual bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc) = 0;
-		//次のブロックヘッダー問い合わせ（先行読み込み）
-		//※処理を進めず、次の情報を読み取るのみ
-		//※（例えば、バイナリスタイルなら、読み込みバッファのポインタを進めない）
-		virtual bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& child_block_size, bool& is_found_next_block) = 0;
-		//ターミネータ書き込み
-		virtual bool writeTerminator(CIOArchiveBase& arc) = 0;
-		//ターミネータ読み込み
-		virtual bool readTerminator(CIOArchiveBase& arc) = 0;
-	public:
+		//自身を受け取るコンストラクタ必須
+		CArchiveStyleBase(const CArchiveStyleBase& src)
+		{}
 		//コンストラクタ
 		CArchiveStyleBase()
 		{}
@@ -3367,7 +3310,81 @@ namespace serial
 		{}
 	};
 	//--------------------
+	//アーカイブ形式プロトタイプ
+	//※必要なメソッドを定義しているサンプル
+	//※実際には使用しない
+	class CArchiveStyleProto : public CArchiveStyleBase
+	{
+	public:
+		//メソッド
+		//シグネチャ書き込み
+		bool writeSignature(CIOArchiveBase& arc){ return true; }
+		//シグネチャ読み込み
+		bool readSignature(CIOArchiveBase& arc){ return true; }
+		//ブロックヘッダー書き込み
+		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver){ return true; }
+		//ブロックヘッダー読み込み
+		//※読み込んだオブジェクトの型情報とバージョンを返す
+		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size){ return true; }
+		//配列ブロックヘッダー書き込み
+		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num){ return true; }
+		//配列ブロックヘッダー読み込み
+		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size){ return true; }
+		//要素ヘッダー書き込み
+		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index){ return true; }
+		//要素ヘッダー読み込み
+		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
+		//データ項目書き込み
+		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item){ return true; }
+		//データ項目読み込み
+		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid){ return true; }
+		//要素フッター書き込み
+		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
+		//要素フッター読み込み
+		//※読み込みテストの結果、要素フッターでなければデータ項目の読み込みを継続する
+		bool tryAndReadElemFooter(CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, bool& is_elem_end){ return true; }
+		//要素読み込み終了
+		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
+		//配列ブロックフッター書き込み
+		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size){ return true; }
+		//配列ブロックフッター読み込み
+		//※読み込みテストの結果、配列ブロックフッターでなければデータ項目の読み込みを継続する
+		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end){ return true; }
+		//配列ブロック読み込み終了
+		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
+		//ブロックの読み込みをスキップ
+		bool skipReadBlock(CIOArchiveBase& arc){ return true; }
+		//ブロックフッター書き込み
+		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size){ return true; }
+		//ブロックフッター読み込み
+		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
+		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end){ return true; }
+		//ブロック読み込み終了
+		bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
+		//次のブロックヘッダー問い合わせ（先行読み込み）
+		//※処理を進めず、次の情報を読み取るのみ
+		//※（例えば、バイナリスタイルなら、読み込みバッファのポインタを進めない）
+		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& child_block_size, bool& is_found_next_block){ return true; }
+		//ターミネータ書き込み
+		bool writeTerminator(CIOArchiveBase& arc){ return true; }
+		//ターミネータ読み込み
+		bool readTerminator(CIOArchiveBase& arc){ return true; }
+	public:
+		//自身を受け取るコンストラクタ必須
+		CArchiveStyleProto(const CArchiveStyleProto& src):
+			CArchiveStyleBase(src)
+		{}
+		//コンストラクタ
+		CArchiveStyleProto():
+			CArchiveStyleBase()
+		{}
+		//デストラクタ
+		~CArchiveStyleProto()
+		{}
+	};
+	//--------------------
 	//アーカイブ書き込みクラス
+	template<class ArcStyle>
 	class COArchive : public CIOArchiveBase
 	{
 	public:
@@ -3552,26 +3569,34 @@ namespace serial
 		}
 	public:
 		//コンストラクタ
-		COArchive(CArchiveStyleBase& style, void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			CIOArchiveBase(style, st_SERIALIZE, buff, buff_size, work_buff, work_buff_size)
+		COArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+			CIOArchiveBase(st_SERIALIZE, buff, buff_size, work_buff, work_buff_size),
+			m_style()
 		{}
 		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
-		COArchive(CArchiveStyleBase& style, BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			CIOArchiveBase(style, st_SERIALIZE, buff, BUFF_SIZE, work_buff, WORK_SIZE)
+		COArchive(BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
+			CIOArchiveBase(st_SERIALIZE, buff, BUFF_SIZE, work_buff, WORK_SIZE),
+			m_style()
 		{}
 		template<typename WORK_T, std::size_t WORK_SIZE>
-		COArchive(CArchiveStyleBase& style, void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
-			CIOArchiveBase(style, st_SERIALIZE, buff, buff_size, work_buff, WORK_SIZE)
+		COArchive(void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
+			CIOArchiveBase(st_SERIALIZE, buff, buff_size, work_buff, WORK_SIZE),
+			m_style()
 		{}
 		COArchive(COArchive& src, const stateEnum state) :
-			CIOArchiveBase(src, state)
+			CIOArchiveBase(src, state),
+			m_style(src.m_style)
 		{}
 		//デストラクタ
 		~COArchive()
 		{}
+	private:
+		//フィールド
+		ArcStyle m_style;//アーカイブ形式クラス
 	};
 	//--------------------
 	//アーカイブ読み込みクラス
+	template<class ArcStyle>
 	class CIArchive : public CIOArchiveBase
 	{
 	public:
@@ -3977,22 +4002,26 @@ namespace serial
 		}
 	public:
 		//コンストラクタ
-		CIArchive(CArchiveStyleBase& style, const void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			CIOArchiveBase(style, st_DESERIALIZE, const_cast<void*>(buff), buff_size, work_buff, work_buff_size),
+		CIArchive(const void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
+			CIOArchiveBase(st_DESERIALIZE, const_cast<void*>(buff), buff_size, work_buff, work_buff_size),
+			m_style(),
 			m_targetObjItem(nullptr)
 		{}
 		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
-		CIArchive(CArchiveStyleBase& style,  const BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			CIOArchiveBase(style, st_DESERIALIZE, const_cast<BUFF_T*>(&buff[0]), BUFF_SIZE, work_buff, WORK_SIZE),
+		CIArchive(const BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
+			CIOArchiveBase(st_DESERIALIZE, const_cast<BUFF_T*>(&buff[0]), BUFF_SIZE, work_buff, WORK_SIZE),
+			m_style(),
 			m_targetObjItem(nullptr)
 		{}
 		template<typename WORK_T, std::size_t WORK_SIZE>
-		CIArchive(CArchiveStyleBase& style, const void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
-			CIOArchiveBase(style, st_DESERIALIZE, const_cast<void*>(buff), buff_size, work_buff, WORK_SIZE),
+		CIArchive(const void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
+			CIOArchiveBase(st_DESERIALIZE, const_cast<void*>(buff), buff_size, work_buff, WORK_SIZE),
+			m_style(),
 			m_targetObjItem(nullptr)
 		{}
 		CIArchive(CIArchive& src, const stateEnum state) :
 			CIOArchiveBase(src, state),
+			m_style(src.m_style),
 			m_targetObjItem(nullptr)
 		{}
 		//デストラクタ
@@ -4000,6 +4029,7 @@ namespace serial
 		{}
 	private:
 		//フィールド
+		ArcStyle m_style;//アーカイブ形式クラス
 		CItemBase* m_targetObjItem;//オブジェクト処理の対象データ項目をリセット
 	};
 	//--------------------
@@ -4025,7 +4055,7 @@ namespace serial
 	public:
 		//メソッド
 		//シグネチャ書き込み
-		bool writeSignature(CIOArchiveBase& arc) override
+		bool writeSignature(CIOArchiveBase& arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4034,7 +4064,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//シグネチャ読み込み
-		bool readSignature(CIOArchiveBase& arc) override
+		bool readSignature(CIOArchiveBase& arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4046,7 +4076,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックヘッダー書き込み
-		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) override
+		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4062,7 +4092,7 @@ namespace serial
 		}
 		//ブロックヘッダー読み込み
 		//※読み込んだオブジェクトの型情報とバージョンを返す
-		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size) override
+		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4107,7 +4137,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロックヘッダー書き込み
-		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num) override
+		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4122,7 +4152,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロックヘッダー読み込み
-		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size) override
+		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4151,7 +4181,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素ヘッダー書き込み
-		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
+		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4164,7 +4194,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素ヘッダー読み込み
-		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size) override
+		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
 		{
 			CResult& result = arc.getResult();
 			items_num = 0;
@@ -4182,7 +4212,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目書き込み
-		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item) override
+		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4208,7 +4238,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目読み込み
-		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid) override
+		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4281,7 +4311,7 @@ namespace serial
 			return true;
 		}
 		//要素フッター書き込み
-		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size) override
+		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4302,7 +4332,7 @@ namespace serial
 		}
 		//要素フッター読み込み
 		//※読み込みテストの結果、要素フッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadElemFooter(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, bool& is_elem_end) override
+		bool tryAndReadElemFooter(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, bool& is_elem_end)
 		{
 			is_elem_end = true;//要素終了扱い
 			CResult& result = arc.getResult();
@@ -4319,7 +4349,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素読み込み終了
-		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc) override
+		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
 		{
 			parent_arc.addResult(child_arc.getResult());//親に処理結果を計上
 			CResult& result = child_arc.getResult();
@@ -4329,7 +4359,7 @@ namespace serial
 			return true;
 		}
 		//配列ブロックフッター書き込み
-		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size) override
+		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4353,7 +4383,7 @@ namespace serial
 		}
 		//配列ブロックフッター読み込み
 		//※読み込みテストの結果、配列ブロックフッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end) override
+		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end)
 		{
 			is_array_block_end = true;//配列ブロック終了扱い
 			CResult& result = arc.getResult();
@@ -4373,7 +4403,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロック読み込み終了
-		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc) override
+		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
 		{
 			parent_arc.addResult(child_arc.getResult());//親に処理結果を計上
 			CResult& result = child_arc.getResult();
@@ -4383,7 +4413,7 @@ namespace serial
 			return true;
 		}
 		//ブロックの読み込みをスキップ
-		bool skipReadBlock(CIOArchiveBase& arc) override
+		bool skipReadBlock(CIOArchiveBase& arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4413,7 +4443,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックフッター書き込み
-		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size) override
+		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4432,7 +4462,7 @@ namespace serial
 		}
 		//ブロックフッター読み込み
 		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
-		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) override
+		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end)
 		{
 			is_block_end = true;//ブロック終了扱い
 			CResult& result = arc.getResult();
@@ -4449,7 +4479,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロック読み込み終了
-		bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc) override
+		bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
 		{
 			parent_arc.addResult(child_arc.getResult());//親に処理結果を計上
 			CResult& result = child_arc.getResult();
@@ -4462,7 +4492,7 @@ namespace serial
 		//次のブロックヘッダー問い合わせ（先行読み込み）
 		//※処理を進めず、次の情報を読み取るのみ
 		//※（例えば、バイナリスタイルなら、読み込みバッファのポインタを進めない）
-		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& require_block_size, bool& is_found_next_block) override
+		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& require_block_size, bool& is_found_next_block)
 		{
 			is_found_next_block = false;//ブロック情報が見つかってないことにする
 			CResult& result = arc.getResult();
@@ -4506,7 +4536,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ書き込み
-		bool writeTerminator(CIOArchiveBase& arc) override
+		bool writeTerminator(CIOArchiveBase& arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4515,7 +4545,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ読み込み
-		bool readTerminator(CIOArchiveBase& arc) override
+		bool readTerminator(CIOArchiveBase& arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4527,6 +4557,10 @@ namespace serial
 			return true;
 		}
 	public:
+		//自身を受け取るコンストラクタ
+		CBinaryArchive(const CBinaryArchive& src) :
+			CArchiveStyleBase(src)
+		{}
 		//コンストラクタ
 		CBinaryArchive():
 			CArchiveStyleBase()
@@ -4557,7 +4591,7 @@ namespace serial
 	public:
 		//メソッド
 		//シグネチャ書き込み
-		bool writeSignature(CIOArchiveBase& arc) override
+		bool writeSignature(CIOArchiveBase& arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4565,7 +4599,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//シグネチャ読み込み
-		bool readSignature(CIOArchiveBase& arc) override
+		bool readSignature(CIOArchiveBase& arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4573,7 +4607,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックヘッダー書き込み
-		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) override
+		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4582,7 +4616,7 @@ namespace serial
 		}
 		//ブロックヘッダー読み込み
 		//※読み込んだオブジェクトの型情報とバージョンを返す
-		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size) override
+		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4590,7 +4624,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロックヘッダー書き込み
-		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num) override
+		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4598,7 +4632,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロックヘッダー読み込み
-		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size) override
+		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4606,7 +4640,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素ヘッダー書き込み
-		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
+		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4614,7 +4648,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素ヘッダー読み込み
-		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size) override
+		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4622,7 +4656,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目書き込み
-		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item) override
+		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4630,7 +4664,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目読み込み
-		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid) override
+		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4638,7 +4672,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素フッター書き込み
-		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size) override
+		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4647,7 +4681,7 @@ namespace serial
 		}
 		//要素フッター読み込み
 		//※読み込みテストの結果、要素フッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadElemFooter(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, bool& is_elem_end) override
+		bool tryAndReadElemFooter(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, bool& is_elem_end)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4655,7 +4689,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロックフッター書き込み
-		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size) override
+		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4664,7 +4698,7 @@ namespace serial
 		}
 		//配列ブロックフッター読み込み
 		//※読み込みテストの結果、配列ブロックフッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end) override
+		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4672,7 +4706,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素読み込み終了
-		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc) override
+		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4680,7 +4714,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックの読み込みをスキップ
-		bool skipReadBlock(CIOArchiveBase& arc) override
+		bool skipReadBlock(CIOArchiveBase& arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4688,7 +4722,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックフッター書き込み
-		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size) override
+		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4697,7 +4731,7 @@ namespace serial
 		}
 		//ブロックフッター読み込み
 		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
-		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) override
+		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4705,7 +4739,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロック読み込み終了
-		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc) override
+		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4714,7 +4748,7 @@ namespace serial
 		}
 		//ブロック読み込み終了
 		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
-		bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc) override
+		bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4724,7 +4758,7 @@ namespace serial
 		//次のブロックヘッダー問い合わせ（先行読み込み）
 		//※処理を進めず、次の情報を読み取るのみ
 		//※（例えば、バイナリスタイルなら、読み込みバッファのポインタを進めない）
-		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& child_block_size, bool& is_found_next_block) override
+		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& child_block_size, bool& is_found_next_block)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4732,7 +4766,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ書き込み
-		bool writeTerminator(CIOArchiveBase& arc) override
+		bool writeTerminator(CIOArchiveBase& arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4740,7 +4774,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ読み込み
-		bool readTerminator(CIOArchiveBase& arc) override
+		bool readTerminator(CIOArchiveBase& arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4748,6 +4782,10 @@ namespace serial
 			return !result.hasFatalError();
 		}
 	public:
+		//自身を受け取るコンストラクタ
+		CTextArchive(const CTextArchive& src) :
+			CArchiveStyleBase(src)
+		{}
 		//コンストラクタ
 		CTextArchive():
 			CArchiveStyleBase()
@@ -4761,111 +4799,87 @@ namespace serial
 	const char* CTextArchive::TERMINATOR = "}";//ターミネータ
 	//--------------------
 	//バイナリアーカイブ書き込みクラス
-	class COBinaryArchive : public COArchive
+	class COBinaryArchive : public COArchive<CBinaryArchive>
 	{
 	public:
 		//コンストラクタ
 		COBinaryArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			m_style(),
-			COArchive(m_style, buff, buff_size, work_buff, work_buff_size)
+			COArchive(buff, buff_size, work_buff, work_buff_size)
 		{}
 		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
 		COBinaryArchive(BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			m_style(),
-			COArchive(m_style, buff, BUFF_SIZE, work_buff, WORK_SIZE)
+			COArchive(buff, BUFF_SIZE, work_buff, WORK_SIZE)
 		{}
 		template<typename WORK_T, std::size_t WORK_SIZE>
 		COBinaryArchive(void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
-			m_style(),
-			COArchive(m_style, buff, buff_size, work_buff, WORK_SIZE)
+			COArchive(buff, buff_size, work_buff, WORK_SIZE)
 		{}
 		//デストラクタ
 		~COBinaryArchive()
 		{}
-	private:
-		//フィールド
-		CBinaryArchive m_style;
 	};
 	//--------------------
 	//バイナリアーカイブ読み込みクラス
-	class CIBinaryArchive : public CIArchive
+	class CIBinaryArchive : public CIArchive<CBinaryArchive>
 	{
 	public:
 		//コンストラクタ
 		CIBinaryArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			m_style(),
-			CIArchive(m_style, buff, buff_size, work_buff, work_buff_size)
+			CIArchive(buff, buff_size, work_buff, work_buff_size)
 		{}
 		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
 		CIBinaryArchive(BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			m_style(),
-			CIArchive(m_style, buff, BUFF_SIZE, work_buff, WORK_SIZE)
+			CIArchive(buff, BUFF_SIZE, work_buff, WORK_SIZE)
 		{}
 		template<typename WORK_T, std::size_t WORK_SIZE>
 		CIBinaryArchive(void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
-			m_style(),
-			CIArchive(m_style, buff, buff_size, work_buff, WORK_SIZE)
+			CIArchive(buff, buff_size, work_buff, WORK_SIZE)
 		{}
 		//デストラクタ
 		~CIBinaryArchive()
 		{}
-	private:
-		//フィールド
-		CBinaryArchive m_style;
 	};
 	//--------------------
 	//テキストアーカイブ書き込みクラス
-	class COTextArchive : public COArchive
+	class COTextArchive : public COArchive<CTextArchive>
 	{
 	public:
 		//コンストラクタ
 		COTextArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			m_style(),
-			COArchive(m_style, buff, buff_size, work_buff, work_buff_size)
+			COArchive(buff, buff_size, work_buff, work_buff_size)
 		{}
 		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
 		COTextArchive(BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			m_style(),
-			COArchive(m_style, buff, BUFF_SIZE, work_buff, WORK_SIZE)
+			COArchive(buff, BUFF_SIZE, work_buff, WORK_SIZE)
 		{}
 		template<typename WORK_T, std::size_t WORK_SIZE>
 		COTextArchive(void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
-			m_style(),
-			COArchive(m_style, buff, buff_size, work_buff, WORK_SIZE)
+			COArchive(buff, buff_size, work_buff, WORK_SIZE)
 		{}
 		//デストラクタ
 		~COTextArchive()
 		{}
-	private:
-		//フィールド
-		CTextArchive m_style;
 	};
 	//--------------------
 	//テキストアーカイブ読み込みクラス
-	class CITextArchive : public CIArchive
+	class CITextArchive : public CIArchive<CTextArchive>
 	{
 	public:
 		//コンストラクタ
 		CITextArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			m_style(),
-			CIArchive(m_style, buff, buff_size, work_buff, work_buff_size)
+			CIArchive(buff, buff_size, work_buff, work_buff_size)
 		{}
 		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
 		CITextArchive(BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			m_style(),
-			CIArchive(m_style, buff, BUFF_SIZE, work_buff, WORK_SIZE)
+			CIArchive(buff, BUFF_SIZE, work_buff, WORK_SIZE)
 		{}
 		template<typename WORK_T, std::size_t WORK_SIZE>
 		CITextArchive(void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
-			m_style(),
-			CIArchive(m_style, buff, buff_size, work_buff, WORK_SIZE)
+			CIArchive(buff, buff_size, work_buff, WORK_SIZE)
 		{}
 		//デストラクタ
 		~CITextArchive()
 		{}
-	private:
-		//フィールド
-		CTextArchive m_style;
 	};
 }
 //--------------------

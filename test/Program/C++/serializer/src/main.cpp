@@ -3250,22 +3250,40 @@ namespace serial
 	{
 	public:
 		//メソッド
-		virtual bool outputSignature(CIOResult& result, CIOArchiveBase& arc) = 0;//シグネチャ出力
-		virtual bool inputSignature(CIOResult& result, CIOArchiveBase& arc) = 0;//シグネチャ入力（正しいデータかチェック）
-		virtual bool outputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) = 0;//ブロック開始情報出力
-		virtual bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver) = 0;//ブロック開始情報入力
-		virtual bool outputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) = 0;//ブロックの配列要素開始情報出力
-		virtual bool inputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num) = 0;//ブロックの配列要素開始情報入力
-		virtual bool output(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) = 0;//データ項目出力
-		virtual bool input(CIOResult& result, CIOArchiveBase& arc, CItemBase& item, const bool is_valid_item) = 0;//データ項目入力
-		virtual bool outputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const short items_num, const std::size_t elem_size) = 0;//ブロックの配列要素終了情報出力
-		virtual bool inputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) = 0;//ブロックの配列要素終了情報入力
-		virtual bool inputSkipBlock(CIOResult& result, CIOArchiveBase& arc) = 0;//オブジェクトのブロックをスキップ
-		virtual bool inputBeginBlockTemp(CIOResult& result, CIOArchiveBase& arc, CItemBase& input_item, std::size_t& child_block_size) = 0;//ブロック開始情報仮読み込み
-		virtual bool outputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) = 0;//ブロック終了情報出力
-		virtual bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) = 0;//ブロック終了情報入力
-		virtual bool outputTerminator(CIOResult& result, CIOArchiveBase& arc) = 0;//ターミネータ出力
-		virtual bool inputTerminator(CIOResult& result, CIOArchiveBase& arc) = 0;//ターミネータ入力（正しいデータかチェック）
+		//シグネチャ書き込み
+		virtual bool writeSignature(CIOResult& result, CIOArchiveBase& arc) = 0;
+		//シグネチャ読み込み
+		virtual bool readSignature(CIOResult& result, CIOArchiveBase& arc) = 0;
+		//ブロックヘッダー書き込み
+		virtual bool writeBlockHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) = 0;
+		//ブロックヘッダー読み込み
+		//※読み込んだオブジェクトの型情報とバージョンを返す
+		virtual bool readBlockHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver) = 0;
+		//ブロックヘッダー読み込みテスト
+		virtual bool tryReadBlockHeader(CIOResult& result, CIOArchiveBase& arc, CItemBase& input_item, std::size_t& child_block_size) = 0;
+		//配列要素ヘッダー書き込み
+		virtual bool writeArrElemHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) = 0;
+		//配列要素ヘッダー読み込み
+		virtual bool readArrElemHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num) = 0;
+		//データ項目書き込み
+		virtual bool writeDataItem(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) = 0;
+		//データ項目読み込み
+		virtual bool readDataItem(CIOResult& result, CIOArchiveBase& arc, CItemBase& item, const bool is_valid_item) = 0;
+		//配列要素フッター書き込み
+		virtual bool writeArrElemFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const short items_num, const std::size_t elem_size) = 0;
+		//配列要素フッター読み込み
+		virtual bool readArrElemFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) = 0;
+		//ブロックの読み込みをスキップ
+		virtual bool readSkipBlock(CIOResult& result, CIOArchiveBase& arc) = 0;
+		//ブロックフッター書き込み
+		virtual bool writeBlockFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) = 0;
+		//ブロックフッター読み込み
+		//※読み込みテストの結果フッターでなければ次のデータ項目を読み込む
+		virtual bool readBlockFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) = 0;
+		//ターミネータ書き込み
+		virtual bool writeTerminator(CIOResult& result, CIOArchiveBase& arc) = 0;
+		//ターミネータ読み込み
+		virtual bool readTerminator(CIOResult& result, CIOArchiveBase& arc) = 0;
 	public:
 		//コンストラクタ
 		CArchiveStyleBase()
@@ -3308,7 +3326,7 @@ namespace serial
 			else
 			{
 				//データをアーカイブに記録
-				m_style.output(m_result, *this, item_obj);
+				m_style.writeDataItem(m_result, *this, item_obj);
 
 				//データ出力済み
 				item_obj.setIsAlready();
@@ -3327,27 +3345,29 @@ namespace serial
 			//printf("[operator<<] name=\"%s\"(0x%08x), typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNul=%d, isOnlyOnMem=%d, isOnlyOnSaveData=%d\n",
 			//	item_obj.m_name, item_obj.m_nameCrc, item_obj.m_itemType->name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObj(), item_obj.isArr(), item_obj.isPtr(), item_obj.isNul(), item_obj.isOnlyOnMem(), item_obj.isOnlyOnSaveData());
 
-			//オブジェクト（何かしらのシリアライズ関数オブジェクトを実装している）でなければダメ
+			//オブジェクトでなければダメ
+			//※何かしらのシリアライズ用関数オブジェクトを実装した型か？
 			assert(item_obj.isObj() == true);
 
 			//ネストレベルが0ならシグネチャーを書き込み
 			if (m_nestLevel == 0)
-				m_style.outputSignature(m_result, *this);
+				m_style.writeSignature(m_result, *this);
 			
 			//バージョン取得
 			CVersionDef<T> ver_def;
 			CVersion ver(ver_def);
 
 			//ブロック開始情報書き込み
-			m_style.outputBeginBlock(m_result, *this, item_obj, ver);
+			m_style.writeBlockHeader(m_result, *this, item_obj, ver);
 			
-			if (!item_obj.isNul() && !m_result.hasFatalError())//ヌルでなければ処理する
+			//ヌルでなければ処理する
+			if (!item_obj.isNul() && !m_result.hasFatalError())
 			{
 				//ブロック開始
-				std::size_t block_size = 0;
+				std::size_t block_size = 0;//ブロックのデータサイズ
 
 				{
-					//配列要素用のアーカイブオブジェクトを生成
+					//ブロック処理用の子アーカイブオブジェクトを生成
 					COArchive arc_block(*this);
 
 					//配列ループ
@@ -3355,13 +3375,13 @@ namespace serial
 					for (std::size_t index = 0; index < elem_num && !arc_block.hasFatalError(); ++index)
 					{
 						//配列要素開始情報書き込み
-						m_style.outputBeginArrayElement(arc_block.getResult(), arc_block, item_obj, index);
+						m_style.writeArrElemHeader(arc_block.getResult(), arc_block, item_obj, index);
 
 						//配列要素開始
-						std::size_t items_num = 0;
-						std::size_t elem_size = 0;
+						std::size_t items_num = 0;//データ項目数
+						std::size_t elem_size = 0;//この配列要素のデータサイズ
 						{
-							//新しいアーカイブオブジェクトを生成
+							//配列要素処理用の孫アーカイブオブジェクトを生成
 							COArchive arc_elem(arc_block);
 
 							//シリアライズ処理（シリアライズ＆デシリアライズ兼用処理）呼び出し
@@ -3377,13 +3397,15 @@ namespace serial
 							}
 
 							//配列要素終了
-							items_num = arc_elem.m_itemList->size();
-							elem_size = arc_elem.m_buffPos;
-							arc_block.addResult(arc_elem.getResult());
+							items_num = arc_elem.m_itemList->size();//データ項目数取得
+							elem_size = arc_elem.m_buffPos;//データサイズ取得
+							arc_block.addResult(arc_elem.getResult());//処理結果を計上
 						}
 
 						//配列要素終了情報書き込み
-						m_style.outputEndArrayElement(arc_block.getResult(), arc_block, item_obj, index, items_num, elem_size);
+						//※例えば、バイナリスタイルでは、配列要素のヘッダ部にデータ項目数とデータサイズを書き込み、
+						//　配列要素の最後までシークする
+						m_style.writeArrElemFooter(arc_block.getResult(), arc_block, item_obj, index, items_num, elem_size);
 					}
 
 					//データ収集処理（シリアライズ専用処理）呼び出し
@@ -3393,18 +3415,19 @@ namespace serial
 					}
 
 					//ブロック終了
-					block_size = arc_block.m_buffPos;
-					m_result.addResult(arc_block.getResult());
-
+					block_size = arc_block.m_buffPos;//ブロックサイズ取得
+					m_result.addResult(arc_block.getResult());//処理結果を計上
 				}
 
 				//ブロック終了情報書き込み
-				m_style.outputEndBlock(m_result, *this, item_obj, block_size);
+				//※例えば、バイナリスタイルでは、ブロックのヘッダ部にデータサイズを書き込み、
+				//　ブロックの最後までシークする
+				m_style.writeBlockFooter(m_result, *this, item_obj, block_size);
 			}
 
 			//ネストレベルが0ならターミネータを書き込み
 			if (m_nestLevel == 0)
-				m_style.outputTerminator(m_result, *this);
+				m_style.writeTerminator(m_result, *this);
 			
 			//データ出力済み
 			item_obj.setIsAlready();
@@ -3511,7 +3534,7 @@ namespace serial
 			//ネストレベルが0ならシグネチャーを読み込み
 			if (m_nestLevel == 0)
 			{
-				m_style.inputSignature(m_result, *this);
+				m_style.readSignature(m_result, *this);
 			}
 			
 			//バージョン取得
@@ -3520,8 +3543,8 @@ namespace serial
 			CVersion ver;//読み込み用のバージョン
 			//ブロック開始情報読み込み
 			CItem<T> item_obj(item_obj_now);
-			m_style.inputBeginBlock(m_result, *this, item_obj_now, now_ver, item_obj, ver);
-			//printf("  input:name=\"%s\"(0x%08x), typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNul=%d\n", item_obj.m_name, item_obj.m_nameCrc, item_obj.m_itemType->name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObj(), item_obj.isArr(), item_obj.isPtr(), item_obj.isNul());
+			m_style.readBlockHeader(m_result, *this, item_obj_now, now_ver, item_obj, ver);
+			//printf("  readDataItem:name=\"%s\"(0x%08x), typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNul=%d\n", item_obj.m_name, item_obj.m_nameCrc, item_obj.m_itemType->name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObj(), item_obj.isArr(), item_obj.isPtr(), item_obj.isNul());
 
 			if (!item_obj.isNul() && !m_result.hasFatalError())//【セーブデータ上の】要素がヌルでなければ処理する
 			{
@@ -3545,7 +3568,7 @@ namespace serial
 
 						//配列要素開始情報読み込み
 						short items_num = 0;
-						m_style.inputBeginArrayElement(arc_block.getResult(), arc_block, item_obj, index, items_num);
+						m_style.readArrElemHeader(arc_block.getResult(), arc_block, item_obj, index, items_num);
 
 						//配列要素開始
 						{
@@ -3585,7 +3608,7 @@ namespace serial
 							for (short item_idx = 0; item_idx < items_num && !arc_elem.buffIsFull(); ++item_idx)
 							{
 								CItemBase child_item;
-								m_style.input(arc_elem.getResult(), arc_elem, child_item, is_valid_element);
+								m_style.readDataItem(arc_elem.getResult(), arc_elem, child_item, is_valid_element);
 								
 								//オブジェクトの場合の処理
 								if (child_item.isObj())
@@ -3616,7 +3639,7 @@ namespace serial
 									if (!arc_elem.isUsedTargetObjItem())
 									{
 										//オブジェクトのブロックをスキップ
-										m_style.inputSkipBlock(arc_elem.getResult(), arc_elem);
+										m_style.readSkipBlock(arc_elem.getResult(), arc_elem);
 										
 										//処理済みにする
 										child_item.setIsAlready();
@@ -3663,7 +3686,7 @@ namespace serial
 						}
 
 						//配列要素終了情報読み込み
-						m_style.inputEndArrayElement(arc_block.getResult(), arc_block, item_obj, index);
+						m_style.readArrElemFooter(arc_block.getResult(), arc_block, item_obj, index);
 
 						//配列の次の要素に
 						if (item_obj.m_itemP)
@@ -3681,14 +3704,14 @@ namespace serial
 					{
 						//ブロック終了判定
 						bool is_block_end;
-						m_style.inputEndBlock(arc_block.getResult(), arc_block, item_obj, is_block_end);
+						m_style.readBlockFooter(arc_block.getResult(), arc_block, item_obj, is_block_end);
 						if (is_block_end)
 							break;//ブロックの終了を検出したらループから抜ける
 						
 						const std::size_t prev_pos = arc_block.m_buffPos;//処理実行前の位置を記憶
 						CItemBase child_item;
 						std::size_t child_block_size = 0;
-						m_style.inputBeginBlockTemp(m_result, arc_block, child_item, child_block_size);//ブロック開始情報を仮読みし、分配処理に回す
+						m_style.tryReadBlockHeader(m_result, arc_block, child_item, child_block_size);//ブロック開始情報を仮読みし、分配処理に回す
 						//分配処理（デシリアライズ専用処理）呼び出し
 						{
 							distributor<CIArchive, T> functor;
@@ -3714,7 +3737,7 @@ namespace serial
 			//ネストレベルが0ならターミネータを読み込み
 			if (m_nestLevel == 0)
 			{
-				m_style.inputTerminator(m_result, *this);
+				m_style.readTerminator(m_result, *this);
 			}
 			
 			return *this;
@@ -3774,7 +3797,7 @@ namespace serial
 	public:
 		//メソッド
 		//シグネチャ出力
-		bool outputSignature(CIOResult& result, CIOArchiveBase& arc) override
+		bool writeSignature(CIOResult& result, CIOArchiveBase& arc) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -3782,7 +3805,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//シグネチャ入力（正しいデータかチェック）
-		bool inputSignature(CIOResult& result, CIOArchiveBase& arc) override
+		bool readSignature(CIOResult& result, CIOArchiveBase& arc) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -3793,7 +3816,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロック開始情報出力
-		bool outputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) override
+		bool writeBlockHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -3810,7 +3833,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロック開始情報入力
-		bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver) override
+		bool readBlockHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -3845,8 +3868,32 @@ namespace serial
 			result.addResult(input_item);//結果を計上
 			return !result.hasFatalError();
 		}
+		//ブロック開始情報仮読み込み
+		bool tryReadBlockHeader(CIOResult& result, CIOArchiveBase& arc, CItemBase& input_item, std::size_t& child_block_size) override
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			std::size_t read_size = 0;//読み込みサイズ
+			input_item.clearForInput();//入力情報を一旦クリア
+			arc.read(result, const_cast<crc32_t*>(&input_item.m_nameCrc), sizeof(input_item.m_nameCrc), &read_size);//名前CRC出力
+			arc.read(result, const_cast<CRecInfo::value_t*>(&input_item.m_info.m_value), sizeof(input_item.m_info.m_value), &read_size);//保存状態出力
+			if (input_item.m_info.hasVersion())//バージョン情報があるか？
+			{
+				CVersion input_ver_dummy;
+				arc.read(result, const_cast<unsigned int*>(input_ver_dummy.getVerPtr()), input_ver_dummy.getVerSize(), &read_size);//バージョン入力
+			}
+			if (!input_item.isNul())//ヌル時はここまでの情報で終わり
+			{
+				if (input_item.isArr())//配列時は配列要素数も入力
+					arc.read(result, const_cast<std::size_t*>(&input_item.m_arrNum), sizeof(input_item.m_arrNum), &read_size);//配列要素数入力
+				arc.read(result, const_cast<std::size_t*>(&input_item.m_itemSize), sizeof(input_item.m_itemSize), &read_size);//ブロックサイズ入力
+			}
+			child_block_size = read_size + input_item.m_itemSize;
+			arc.seek(result, -static_cast<int>(read_size));//仮読みした分、バッファのカレントポインタを戻す
+			return !result.hasFatalError();
+		}
 		//ブロックの配列要素開始情報出力
-		bool outputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
+		bool writeArrElemHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -3856,7 +3903,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックの配列要素開始情報入力
-		bool inputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num) override
+		bool readArrElemHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num) override
 		{
 			items_num = 0;
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -3867,7 +3914,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目出力
-		bool output(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		bool writeDataItem(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -3890,7 +3937,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目入力
-		bool input(CIOResult& result, CIOArchiveBase& arc, CItemBase& item, const bool is_valid_item) override
+		bool readDataItem(CIOResult& result, CIOArchiveBase& arc, CItemBase& item, const bool is_valid_item) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -3936,7 +3983,7 @@ namespace serial
 			return true;
 		}
 		//ブロックの配列要素終了情報出力
-		bool outputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const short items_num, const std::size_t elem_size) override
+		bool writeArrElemFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const short items_num, const std::size_t elem_size) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -3949,7 +3996,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックの配列要素終了情報入力
-		bool inputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
+		bool readArrElemFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -3960,7 +4007,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//オブジェクトのブロックをスキップ
-		bool inputSkipBlock(CIOResult& result, CIOArchiveBase& arc) override
+		bool readSkipBlock(CIOResult& result, CIOArchiveBase& arc) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -3986,32 +4033,8 @@ namespace serial
 			}
 			return !result.hasFatalError();
 		}
-		//ブロック開始情報仮読み込み
-		bool inputBeginBlockTemp(CIOResult& result, CIOArchiveBase& arc, CItemBase& input_item, std::size_t& child_block_size) override
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			std::size_t read_size = 0;//読み込みサイズ
-			input_item.clearForInput();//入力情報を一旦クリア
-			arc.read(result, const_cast<crc32_t*>(&input_item.m_nameCrc), sizeof(input_item.m_nameCrc), &read_size);//名前CRC出力
-			arc.read(result, const_cast<CRecInfo::value_t*>(&input_item.m_info.m_value), sizeof(input_item.m_info.m_value), &read_size);//保存状態出力
-			if (input_item.m_info.hasVersion())//バージョン情報があるか？
-			{
-				CVersion input_ver_dummy;
-				arc.read(result, const_cast<unsigned int*>(input_ver_dummy.getVerPtr()), input_ver_dummy.getVerSize(), &read_size);//バージョン入力
-			}
-			if (!input_item.isNul())//ヌル時はここまでの情報で終わり
-			{
-				if (input_item.isArr())//配列時は配列要素数も入力
-					arc.read(result, const_cast<std::size_t*>(&input_item.m_arrNum), sizeof(input_item.m_arrNum), &read_size);//配列要素数入力
-				arc.read(result, const_cast<std::size_t*>(&input_item.m_itemSize), sizeof(input_item.m_itemSize), &read_size);//ブロックサイズ入力
-			}
-			child_block_size = read_size + input_item.m_itemSize;
-			arc.seek(result, -static_cast<int>(read_size));//仮読みした分、バッファのカレントポインタを戻す
-			return !result.hasFatalError();
-		}
 		//ブロック終了情報出力
-		bool outputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
+		bool writeBlockFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -4024,7 +4047,7 @@ namespace serial
 		}
 		//ブロック終了情報入力
 		//※ブロック終了かどうかかを判定して返す
-		bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) override
+		bool readBlockFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) override
 		{
 			is_block_end = true;//ブロック終了扱い
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4040,7 +4063,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ出力
-		bool outputTerminator(CIOResult& result, CIOArchiveBase& arc) override
+		bool writeTerminator(CIOResult& result, CIOArchiveBase& arc) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -4048,7 +4071,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ入力（正しいデータかチェック）
-		bool inputTerminator(CIOResult& result, CIOArchiveBase& arc) override
+		bool readTerminator(CIOResult& result, CIOArchiveBase& arc) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
@@ -4083,98 +4106,98 @@ namespace serial
 	public:
 		//メソッド
 		//シグネチャ出力
-		bool outputSignature(CIOResult& result, CIOArchiveBase& arc) override
+		bool writeSignature(CIOResult& result, CIOArchiveBase& arc) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			return !result.hasFatalError();
 		}
 		//シグネチャ入力（正しいデータかチェック）
-		bool inputSignature(CIOResult& result, CIOArchiveBase& arc) override
+		bool readSignature(CIOResult& result, CIOArchiveBase& arc) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			return !result.hasFatalError();
 		}
 		//ブロック開始情報出力
-		bool outputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) override
+		bool writeBlockHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			return !result.hasFatalError();
 		}
 		//ブロック開始情報入力
-		bool inputBeginBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver) override
+		bool readBlockHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			return !result.hasFatalError();
 		}
 		//ブロックの配列要素開始情報出力
-		bool outputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
+		bool writeArrElemHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			return !result.hasFatalError();
 		}
 		//ブロックの配列要素開始情報入力
-		bool inputBeginArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num) override
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			return !result.hasFatalError();
-		}
-		//データ項目出力
-		bool output(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			return !result.hasFatalError();
-		}
-		//データ項目入力
-		bool input(CIOResult& result, CIOArchiveBase& arc, CItemBase& item, const bool is_valid_item) override
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			return !result.hasFatalError();
-		}
-		//ブロックの配列要素終了情報出力
-		bool outputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const short items_num, const std::size_t elem_size) override
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			return !result.hasFatalError();
-		}
-		//ブロックの配列要素終了情報入力
-		bool inputEndArrayElement(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			return !result.hasFatalError();
-		}
-		//オブジェクトのブロックをスキップ
-		bool inputSkipBlock(CIOResult& result, CIOArchiveBase& arc) override
+		bool readArrElemHeader(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			return !result.hasFatalError();
 		}
 		//ブロック開始情報仮読み込み
-		bool inputBeginBlockTemp(CIOResult& result, CIOArchiveBase& arc, CItemBase& input_item, std::size_t& child_block_size) override
+		bool tryReadBlockHeader(CIOResult& result, CIOArchiveBase& arc, CItemBase& input_item, std::size_t& child_block_size) override
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			return !result.hasFatalError();
+		}
+		//データ項目出力
+		bool writeDataItem(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item) override
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			return !result.hasFatalError();
+		}
+		//データ項目入力
+		bool readDataItem(CIOResult& result, CIOArchiveBase& arc, CItemBase& item, const bool is_valid_item) override
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			return !result.hasFatalError();
+		}
+		//ブロックの配列要素終了情報出力
+		bool writeArrElemFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, const short items_num, const std::size_t elem_size) override
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			return !result.hasFatalError();
+		}
+		//ブロックの配列要素終了情報入力
+		bool readArrElemFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t index) override
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			return !result.hasFatalError();
+		}
+		//オブジェクトのブロックをスキップ
+		bool readSkipBlock(CIOResult& result, CIOArchiveBase& arc) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			return !result.hasFatalError();
 		}
 		//ブロック終了情報出力
-		bool outputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
+		bool writeBlockFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, const std::size_t block_size) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			return !result.hasFatalError();
 		}
 		//ブロック終了情報入力
-		bool inputEndBlock(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) override
+		bool readBlockFooter(CIOResult& result, CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end) override
 		{
 			is_block_end = true;
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4182,14 +4205,14 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ出力
-		bool outputTerminator(CIOResult& result, CIOArchiveBase& arc) override
+		bool writeTerminator(CIOResult& result, CIOArchiveBase& arc) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			return !result.hasFatalError();
 		}
 		//ターミネータ入力（正しいデータかチェック）
-		bool inputTerminator(CIOResult& result, CIOArchiveBase& arc) override
+		bool readTerminator(CIOResult& result, CIOArchiveBase& arc) override
 		{
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;

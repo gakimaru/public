@@ -6392,9 +6392,71 @@ void printDataAll()
 //テストデータ用シリアライズ
 
 //--------------------
-//セーブデータ用ダミークラス
+//セーブデータ用基本クラス
 class CSaveData{};
-SERIALIZE_VERSION_DEF(CSaveData, 1, 0);//バージョン
+
+//--------------------
+//セーブデータ用バージョンクラス
+class CSaveDataVersion
+{
+public:
+	//定数
+	static const int MAJOR_VER = 1;//メジャーバージョン
+	static const int MINOR_VER = 0;//マイナーバージョン
+public:
+	//アクセッサ
+	int getMajorVer() const { return MAJOR_VER; }//メジャーバージョン取得
+	int getMinorVer() const { return MINOR_VER; }//マイナーバージョン取得
+	int getLoadedMajorVer() const { return m_loadedMajorVer; }//セーブデータからロードしたメジャーバージョン取得
+	int getLoadedMinorVer() const { return m_loadedMinorVer; }//セーブデータからロードしたマイナーバージョン取得
+	bool hasSaved() const { return m_hasSaved; }//セーブしたか？
+	bool hasLoaded() const { return m_hasLoaded; }//ロードしたか？
+private:
+	void setHasSaved(){ m_hasSaved = true; }//セーブしたことにする
+	void setHasLoaded(){ m_hasLoaded = true; }//ロードしたことにする
+	void resetHasSaved(){ m_hasSaved = false; }//セーブしたことがある状態を解除
+	void resetHasLoaded(){ m_hasLoaded = false; }//ロードしたことがある状態を解除
+public:
+	//メソッド
+	//ロードしたバージョンを現在のバージョンに更新
+	void updateLoadedVer()
+	{
+		m_loadedMajorVer = MAJOR_VER;//セーブデータからロードしたメジャーバージョン取得
+		m_loadedMinorVer = MINOR_VER;//セーブデータからロードしたマイナーバージョン取得
+	}
+public:
+	//コンストラクタ
+	CSaveDataVersion() :
+		m_loadedMajorVer(0),
+		m_loadedMinorVer(0),
+		m_hasSaved(false),
+		m_hasLoaded(false)
+	{}
+	//デストラクタ
+	~CSaveDataVersion()
+	{}
+private:
+	//フィールド
+	int m_loadedMajorVer;//セーブデータからロードしたメジャーバージョン取得
+	int m_loadedMinorVer;//セーブデータからロードしたマイナーバージョン取得
+	bool m_hasSaved;//セーブしたか？
+	bool m_hasLoaded;//ロードしたか？
+	//シリアライズ用のフレンド設定
+	FRIEND_SERIALIZE(CSaveDataVersion);
+};
+//--------------------
+//セーブデータ用バージョンを表示
+void printSaveDataVer()
+{
+	printf("------------------------------------------------------------\n");
+	printf("【セーブデータバージョン】\n");
+	
+	CSingleton<CSaveDataVersion> save_data_version;
+	printf("現在のバージョン:                 %d.%d\n", save_data_version->getMajorVer(), save_data_version->getMinorVer());
+	printf("ロード済みorセーブ済みバージョン: %d.%d\n", save_data_version->getLoadedMajorVer(), save_data_version->getLoadedMinorVer());
+	printf("・セーブしたか？ = %s\n", save_data_version->hasSaved() ? "yes" : "no");
+	printf("・ロードしたか？ = %s\n", save_data_version->hasLoaded() ? "yes" : "no");
+}
 
 //--------------------
 //テスト用クラスのシリアライズ処理定義
@@ -6593,11 +6655,27 @@ namespace serial
 		}
 	};
 	//--------------------
+	//シリアライズ処理：CSaveDataVersion
+	template<class Arc>
+	struct serialize<Arc, CSaveDataVersion> {
+		void operator()(Arc& arc, const CSaveDataVersion& obj, const CVersion& ver, const CVersion& now_ver)
+		{
+			arc & pair("major", obj.m_loadedMajorVer);
+			arc & pair("minor", obj.m_loadedMinorVer);
+		}
+	};
+	//--------------------
 	//収集処理：CSaveData
 	template<class Arc>
 	struct collector<Arc, CSaveData> {
 		void operator()(Arc& arc, const CSaveData& obj, const CVersion& ver)
 		{
+			//セーブデータバージョンのバージョンを保存用に更新
+			CSingleton<CSaveDataVersion> save_data_version;
+			save_data_version->updateLoadedVer();
+			arc << pair("version", *save_data_version);//シリアライズ
+			save_data_version->setHasSaved();
+
 			//インベントリのデータを収集
 			CSingleton<CInventory> inventory;
 			for (auto item_data : *inventory)
@@ -6622,7 +6700,7 @@ namespace serial
 		}
 	};
 	//--------------------
-	//部分ロード対応処理
+	//部分ロード対応処理：CSaveData
 	crc32_t s_loadTarget;//ロード対象
 	void setLoadTarget(const crc32_t loada_target)//ロード対象をセット
 	{
@@ -6661,10 +6739,10 @@ namespace serial
 		return isPartLoad() && isLoadTarget(name);
 	}
 	//--------------------
-	//ロード前処理：CSaveData
+	//分配前処理：CSaveData
 	template<class Arc>
-	struct beforeLoad<Arc, CSaveData> {
-		void operator()(Arc& arc, CSaveData& obj, const CVersion& ver, const CVersion& now_ver)
+	struct beforeDistributor<Arc, CSaveData> {
+		void operator()(Arc& arc, CSaveData& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver)
 		{
 			if (isLoadTarget("item"))
 			{
@@ -6704,6 +6782,13 @@ namespace serial
 	struct distributor<Arc, CSaveData> {
 		void operator()(Arc& arc, CSaveData& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver, const CItemBase& target_item)
 		{
+			if (target_item == "version")
+			{
+				//セーブデータバージョン
+				CSingleton<CSaveDataVersion> save_data_version;
+				arc >> pair("version", *save_data_version);//デシリアライズ
+				save_data_version->setHasLoaded();
+			}
 			if (target_item == "item" && isLoadTarget(target_item))
 			{
 				//インベントリデータ復元
@@ -6922,18 +7007,24 @@ void test2serialize()
 	makeTestData(0);
 	//現在のデータを表示
 	printDataAll();
+	//セーブデータ用バージョンを表示
+	printSaveDataVer();
 	//ファイルパス＆アーカイブオブジェクト
 	const char* save_file_name_bin = "save_data.bin";
 	const char* save_file_name_txt = "save_data.txt";
 	//シリアライズ＆セーブ
 	serializeAndSave<serial::COBinaryArchive>(save_file_name_bin);//バイナリ
 	serializeAndSave<serial::COTextArchive>(save_file_name_txt);//テキスト
+	//セーブデータ用バージョンを表示
+	printSaveDataVer();
 	//全データリセット
 	resetAll();
 	//現在のデータを表示
 	printDataAll();
 	//ロード＆デシリアライズ
 	loadAndDeserialize<serial::CIBinaryArchive>(save_file_name_bin);
+	//セーブデータ用バージョンを表示
+	printSaveDataVer();
 	//現在のデータを表示
 	printDataAll();
 	//全データリセット

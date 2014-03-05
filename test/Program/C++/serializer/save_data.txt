@@ -1,8 +1,15 @@
 "serializer": {
  "SaveData": {
-   "crc": 0x3366f9bd, "itemType": "class CSaveData", "itemSize": 0, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+   "crc": 0x3366f9bd, "itemType": "class CSaveData", "itemSize": 0, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
      "obj": {
      },
+   "version": {
+     "crc": 0xbf1cd3c3, "itemType": "class CSaveDataVersion", "itemSize": 12, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+       "obj": {
+         { "crc": 0x3d34fd09, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 01000000, },
+         { "crc": 0xff897d3a, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
+       },
+   },
    "item": {
      "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
        "obj": {

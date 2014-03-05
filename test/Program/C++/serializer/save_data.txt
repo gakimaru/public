@@ -1,0 +1,902 @@
+"serial::CTextArchive": {
+ "SaveData": {"ver": 1.0, 
+       "obj": {
+         }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "item": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "ability": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+           }
+     }
+   "chara": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+             { "name": "level", "typeName": "char", "itemSize": 1, "arrNum": 0 }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "weapon", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+             { "name": "shield", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+             { "name": "param1", "typeName": "int", "itemSize": 4, "arrNum": 2 }
+           }
+     "charaAbility": {"ver": 0.0, 
+           "obj": {
+               { "name": "id", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+             }
+       }
+     }
+   "chara": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+             { "name": "level", "typeName": "char", "itemSize": 1, "arrNum": 0 }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "weapon", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+             { "name": "shield", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+             { "name": "param1", "typeName": "int", "itemSize": 4, "arrNum": 2 }
+           }
+     }
+   "chara": {"ver": 1.0, 
+         "obj": {
+         "id": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+                 }
+           }
+         "name": {"ver": 0.0, 
+               "obj": {
+                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
+                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
+                 }
+           }
+             { "name": "level", "typeName": "char", "itemSize": 1, "arrNum": 0 }
+         "basic": {"ver": 1.0, 
+               "obj": {
+                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+                 }
+           }
+             { "name": "weapon", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+             { "name": "shield", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+             { "name": "param1", "typeName": "int", "itemSize": 4, "arrNum": 2 }
+           }
+     "charaAbility": {"ver": 0.0, 
+           "obj": {
+               { "name": "id", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+             }
+       }
+     "charaAbility": {"ver": 0.0, 
+           "obj": {
+               { "name": "id", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+             }
+       }
+     "charaAbility": {"ver": 0.0, 
+           "obj": {
+               { "name": "id", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
+             }
+       }
+     }
+   "phase_and_flags": {"ver": 1.0, 
+         "obj": {
+             { "name": "phase", "typeName": "short", "itemSize": 2, "arrNum": 0 }
+         "flags": {"ver": 0.0, 
+               "obj": {
+                   { "name": "bitset", "typeName": "char", "itemSize": 1, "arrNum": 8 }
+                 }
+           }
+           }
+     }
+   }
+}

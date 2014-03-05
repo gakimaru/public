@@ -1,902 +1,783 @@
-"serial::CTextArchive": {
- "SaveData": {"ver": 1.0, 
+"serializer": {
+ "SaveData": {
+   "crc": 0x3366f9bd, "itemType": "class CSaveData", "itemSize": 0, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+     "obj": {
+     },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
        "obj": {
-         }
-   "item": {"ver": 1.0, 
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 72, 30, 30, 30, 31, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": c09fcd62, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 09, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 89, f1, 95, 9c, 96, f2, 30, 30, 31, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0500, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0a00, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 72, 30, 30, 30, 32, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 03cce049, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 09, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 89, f1, 95, 9c, 96, f2, 30, 30, 32, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0700, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0a00, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 72, 30, 30, 30, 33, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 42fdfb50, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 09, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 89, f1, 95, 9c, 96, f2, 30, 30, 33, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0900, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0a00, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 73, 30, 30, 30, 31, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 654c91a9, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 05, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 8f, 82, 30, 30, 31, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0500, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 73, 30, 30, 30, 32, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": a61fbc82, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 05, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 8f, 82, 30, 30, 32, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0600, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 73, 30, 30, 30, 33, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": e72ea79b, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 05, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 8f, 82, 30, 30, 33, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0700, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 73, 30, 30, 30, 34, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20b8e6d4, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 05, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 8f, 82, 30, 30, 34, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0800, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 73, 30, 30, 30, 35, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 6189fdcd, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 05, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 8f, 82, 30, 30, 35, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0900, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 77, 30, 30, 30, 31, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 730e0032, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 95, 90, 8a, ed, 30, 30, 31, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0a00, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 77, 30, 30, 30, 32, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": b05d2d19, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 95, 90, 8a, ed, 30, 30, 32, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0b00, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 77, 30, 30, 30, 33, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": f16c3600, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 95, 90, 8a, ed, 30, 30, 33, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0c00, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 77, 30, 30, 30, 34, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 36fa774f, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 95, 90, 8a, ed, 30, 30, 34, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0d00, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+       },
+   },
+   "item": {
+     "crc": 0x1f1b251e, "itemType": "struct ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 77, 30, 30, 30, 35, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 77cb6c56, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 95, 90, 8a, ed, 30, 30, 35, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0e00, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0200, },
+             },
+         },
+         { "crc": 0xf588f14d, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0000, },
+         { "crc": 0xdc43af6e, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0100, },
+       },
+   },
+   "ability": {
+     "crc": 0x35cfee3c, "itemType": "struct ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 61, 30, 30, 30, 31, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": f5ef8fe7, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 93, c1, 8b, 5a, 30, 30, 31, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0500, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0400, },
+             },
+         },
+       },
+   },
+   "ability": {
+     "crc": 0x35cfee3c, "itemType": "struct ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 61, 30, 30, 30, 32, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 36bca2cc, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 93, c1, 8b, 5a, 30, 30, 32, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0800, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0600, },
+             },
+         },
+       },
+   },
+   "ability": {
+     "crc": 0x35cfee3c, "itemType": "struct ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 61, 30, 30, 30, 33, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 778db9d5, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 93, c1, 8b, 5a, 30, 30, 33, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0b00, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0800, },
+             },
+         },
+       },
+   },
+   "ability": {
+     "crc": 0x35cfee3c, "itemType": "struct ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 61, 30, 30, 30, 34, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": b01bf89a, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 93, c1, 8b, 5a, 30, 30, 34, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0e00, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0a00, },
+             },
+         },
+       },
+   },
+   "ability": {
+     "crc": 0x35cfee3c, "itemType": "struct ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 61, 30, 30, 30, 35, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": f12ae383, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 93, c1, 8b, 5a, 30, 30, 35, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1100, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0c00, },
+             },
+         },
+       },
+   },
+   "ability": {
+     "crc": 0x35cfee3c, "itemType": "struct ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 61, 30, 30, 30, 36, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 3279cea8, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 93, c1, 8b, 5a, 30, 30, 36, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1400, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0e00, },
+             },
+         },
+       },
+   },
+   "ability": {
+     "crc": 0x35cfee3c, "itemType": "struct ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 61, 30, 30, 30, 37, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 7348d5b1, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 93, c1, 8b, 5a, 30, 30, 37, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1700, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1000, },
+             },
+         },
+       },
+   },
+   "ability": {
+     "crc": 0x35cfee3c, "itemType": "struct ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 61, 30, 30, 30, 38, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": bc544d36, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 93, c1, 8b, 5a, 30, 30, 38, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1a00, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1200, },
+             },
+         },
+       },
+   },
+   "ability": {
+     "crc": 0x35cfee3c, "itemType": "struct ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 61, 30, 30, 30, 39, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": fd65562f, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 93, c1, 8b, 5a, 30, 30, 39, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1d00, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1400, },
+             },
+         },
+       },
+   },
+   "ability": {
+     "crc": 0x35cfee3c, "itemType": "struct ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 61, 30, 30, 31, 30, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 83b456ff, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 07, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 93, c1, 8b, 5a, 30, 31, 30, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 2000, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1600, },
+             },
+         },
+       },
+   },
+   "chara": {
+     "crc": 0x888bcec1, "itemType": "struct CHARA_DATA", "itemSize": 92, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 63, 30, 30, 30, 33, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 7c2c7198, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 08, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 82, b3, 82, d4, 82, eb, 82, a4, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         { "crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1e, },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 3700, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0300, },
+             },
+         },
+         { "crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 730e0032, },
+         { "crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": e72ea79b, },
+         { "crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 7b000000, c8010000, ], },
+       },
+     "charaAbility": {
+       "crc": 0x5521230c, "itemType": "struct CHARA_ABILITY_DATA_FOR_SAVE", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
          "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
+           { "crc": 0xbf396750, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": f12ae383, },
+         },
+     },
+   },
+   "chara": {
+     "crc": 0x888bcec1, "itemType": "struct CHARA_DATA", "itemSize": 92, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 63, 30, 30, 30, 32, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 3d1d6a81, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 82, b6, 82, eb, 82, a4, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         { "crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14, },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1900, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 2800, },
+             },
+         },
+         { "crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 77cb6c56, },
+         { "crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 654c91a9, },
+         { "crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ e7030000, 78030000, ], },
+       },
+   },
+   "chara": {
+     "crc": 0x888bcec1, "itemType": "struct CHARA_DATA", "itemSize": 92, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         "id": {
+           "crc": 0xbf396750, "itemType": "class CStrWithCRC<8>", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 63, 30, 30, 30, 31, 30, 00, 00, ], },
+               { "crc": 0x7c6287fd, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": fe4e47aa, },
+             },
+         },
+         "name": {
+           "crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 06, },
+               { "crc": 0x5caea3f9, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 82, bd, 82, eb, 82, a4, 00, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, fe, 00, ], },
+             },
+         },
+         { "crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0a, },
+         "basic": {
+           "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+             "obj": {
+               { "crc": 0x27677c27, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0f00, },
+               { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1400, },
+             },
+         },
+         { "crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": b05d2d19, },
+         { "crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": a61fbc82, },
+         { "crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 6f000000, de000000, ], },
+       },
+     "charaAbility": {
+       "crc": 0x5521230c, "itemType": "struct CHARA_ABILITY_DATA_FOR_SAVE", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
          "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
+           { "crc": 0xbf396750, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 778db9d5, },
+         },
+     },
+     "charaAbility": {
+       "crc": 0x5521230c, "itemType": "struct CHARA_ABILITY_DATA_FOR_SAVE", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
          "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
+           { "crc": 0xbf396750, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 36bca2cc, },
+         },
+     },
+     "charaAbility": {
+       "crc": 0x5521230c, "itemType": "struct CHARA_ABILITY_DATA_FOR_SAVE", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
          "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "item": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "recover", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-             { "name": "num", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "ability": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-           }
-     }
-   "chara": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-             { "name": "level", "typeName": "char", "itemSize": 1, "arrNum": 0 }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "weapon", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-             { "name": "shield", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-             { "name": "param1", "typeName": "int", "itemSize": 4, "arrNum": 2 }
-           }
-     "charaAbility": {"ver": 0.0, 
-           "obj": {
-               { "name": "id", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-             }
-       }
-     }
-   "chara": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-             { "name": "level", "typeName": "char", "itemSize": 1, "arrNum": 0 }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "weapon", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-             { "name": "shield", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-             { "name": "param1", "typeName": "int", "itemSize": 4, "arrNum": 2 }
-           }
-     }
-   "chara": {"ver": 1.0, 
-         "obj": {
-         "id": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                   { "name": "crc", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-                 }
-           }
-         "name": {"ver": 0.0, 
-               "obj": {
-                   { "name": "len", "typeName": "unsigned char", "itemSize": 1, "arrNum": 0 }
-                   { "name": "str", "typeName": "char", "itemSize": 1, "arrNum": 32 }
-                 }
-           }
-             { "name": "level", "typeName": "char", "itemSize": 1, "arrNum": 0 }
-         "basic": {"ver": 1.0, 
-               "obj": {
-                   { "name": "atk", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                   { "name": "def", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-                 }
-           }
-             { "name": "weapon", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-             { "name": "shield", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-             { "name": "param1", "typeName": "int", "itemSize": 4, "arrNum": 2 }
-           }
-     "charaAbility": {"ver": 0.0, 
-           "obj": {
-               { "name": "id", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-             }
-       }
-     "charaAbility": {"ver": 0.0, 
-           "obj": {
-               { "name": "id", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-             }
-       }
-     "charaAbility": {"ver": 0.0, 
-           "obj": {
-               { "name": "id", "typeName": "unsigned int", "itemSize": 4, "arrNum": 0 }
-             }
-       }
-     }
-   "phase_and_flags": {"ver": 1.0, 
-         "obj": {
-             { "name": "phase", "typeName": "short", "itemSize": 2, "arrNum": 0 }
-         "flags": {"ver": 0.0, 
-               "obj": {
-                   { "name": "bitset", "typeName": "char", "itemSize": 1, "arrNum": 8 }
-                 }
-           }
-           }
-     }
-   }
-}
+           { "crc": 0xbf396750, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": f5ef8fe7, },
+         },
+     },
+   },
+   "phase_and_flags": {
+     "crc": 0x4659bc29, "itemType": "class CPhaseAndFlags", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
+       "obj": {
+         { "crc": 0xb1bdd6cb, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0700, },
+         "flags": {
+           "crc": 0x0b0541ba, "itemType": "class std::bitset<64>", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
+             "obj": {
+               { "crc": 0x9dd4d1cb, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 35, 00, 00, 00, 00, 00, 00, 80, ], },
+             },
+         },
+       },
+   },
+ },
+}/*serializer*/

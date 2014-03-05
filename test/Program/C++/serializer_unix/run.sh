@@ -1,3 +1,3 @@
-echo '$ ./call_point > serializer.log'
-./serializer | tee serializer.log
+echo '$ ./serializer > serializer.log'
+./serializer.exe > serializer.log
 cat serializer.log

@@ -2608,11 +2608,16 @@ namespace serial
 			//未実装
 			return 0;
 		}
-	protected:
+	public:
 		//デフォルトコンストラクタ
 		CToStrBase() :
 			m_toStrFuncP(toStr),
 			m_fromStrFuncP(fromStr)
+		{}
+		//コピーコンストラクタ
+		CToStrBase(const CToStrBase& src) :
+			m_toStrFuncP(src.m_toStrFuncP),
+			m_fromStrFuncP(src.m_fromStrFuncP)
 		{}
 		//コンストラクタ
 		CToStrBase(toStrFuncP to_func_p, fromStrFuncP from_func_p) :
@@ -2876,7 +2881,39 @@ namespace serial
 		~CToStr()
 		{}
 	};
-	
+	//--------------------
+	//データ文字列化クラス
+	template<>
+	class CToStr<double> : public CToStrBase
+	{
+	public:
+		//メソッド
+		//文字列へ変換関数型
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		{
+			const double value = *reinterpret_cast<const double*>(data_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "%llf", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "%llf", value);
+		#endif//USE_STRCPY_S
+		}
+		//文字列から変換関数型
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		{
+			//未実装
+			return 0;
+		}
+	public:
+		//コンストラクタ
+		CToStr() :
+			CToStrBase(toStr, fromStr)
+		{}
+		//デストラクタ
+		~CToStr()
+		{}
+	};
+
 	//--------------------
 	//保存状態
 	enum recInfoEnum : unsigned char
@@ -3100,8 +3137,7 @@ namespace serial
 			m_isOnlyOnSaveData(src.m_isOnlyOnSaveData),
 			m_isOnlyOnMem(src.m_isOnlyOnMem),
 			m_isAlready(src.m_isAlready),
-			m_toStrFuncP(src.m_toStrFuncP),
-			m_fromStrFuncP(src.m_fromStrFuncP)
+			m_toStr(src.m_toStr)
 		{}
 		//デフォルトコンストラクタ
 		CItemBase() :
@@ -3119,11 +3155,10 @@ namespace serial
 			m_isOnlyOnSaveData(false),
 			m_isOnlyOnMem(false),
 			m_isAlready(false),
-			m_toStrFuncP(CToStrBase::toStr),
-			m_fromStrFuncP(CToStrBase::fromStr)
+			m_toStr(CToStrBase())
 		{}
 		//コンストラクタ
-		CItemBase(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, toStrFuncP to_str_func_p, fromStrFuncP from_str_func_p) :
+		CItemBase(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, CToStrBase to_str) :
 			m_name(name),
 			m_nameCrc(calcCRC32(name)),
 			m_itemP(item_p),
@@ -3138,11 +3173,10 @@ namespace serial
 			m_isOnlyOnSaveData(false),
 			m_isOnlyOnMem(false),
 			m_isAlready(false),
-			m_toStrFuncP(to_str_func_p),
-			m_fromStrFuncP(from_str_func_p)
+			m_toStr(to_str)
 		{}
 		//コンストラクタ
-		CItemBase(const CItemBase& src, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, toStrFuncP to_str_func_p, fromStrFuncP from_str_func_p) :
+		CItemBase(const CItemBase& src, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, CToStrBase to_str) :
 			m_name(src.m_name),
 			m_nameCrc(src.m_nameCrc),
 			m_itemP(item_p),
@@ -3157,8 +3191,7 @@ namespace serial
 			m_isOnlyOnSaveData(false),
 			m_isOnlyOnMem(false),
 			m_isAlready(false),
-			m_toStrFuncP(to_str_func_p),
-			m_fromStrFuncP(from_str_func_p)
+			m_toStr(to_str)
 		{}
 		//デストラクタ
 		~CItemBase()
@@ -3179,8 +3212,7 @@ namespace serial
 		mutable bool m_isOnlyOnSaveData;//セーブデータ上にのみ存在するデータ
 		mutable bool m_isOnlyOnMem;//セーブデータ上にないデータ
 		mutable bool m_isAlready;//処理済み
-		toStrFuncP m_toStrFuncP;//文字列へ変換関数
-		fromStrFuncP m_fromStrFuncP;//文字列から変換関数
+		CToStrBase m_toStr;//文字列へ変換
 	};
 	//--------------------
 	//データ項目テンプレートクラス
@@ -3190,19 +3222,19 @@ namespace serial
 	public:
 		//コンストラクタ
 		CItem(const char* name, const T* item_p, const std::size_t arr_num, const bool is_ptr) :
-			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, CToStr<T>::toStr, CToStr<T>::fromStr)
+			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, CToStr<T>())
 		{}
 		CItem(const CItemBase& src, const T* item_p, const std::size_t arr_num, const bool is_ptr) :
-			CItemBase(src, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, CToStr<T>::toStr, CToStr<T>::fromStr)
+			CItemBase(src, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, CToStr<T>())
 		{}
 		CItem(const char* name, const std::size_t size) :
-			CItemBase(name, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, CToStr<T>::toStr, CToStr<T>::fromStr)
+			CItemBase(name, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, CToStr<T>())
 		{}
 		CItem(const CItemBase& src, const std::size_t size) :
-			CItemBase(src, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, CToStr<T>::toStr, CToStr<T>::fromStr)
+			CItemBase(src, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, CToStr<T>())
 		{}
 		CItem(const char* name) :
-			CItemBase(name, nullptr, typeid(T), 0, 0, hasAnyFunctor<T>(), false, CToStr<T>::toStr, CToStr<T>::fromStr)
+			CItemBase(name, nullptr, typeid(T), 0, 0, hasAnyFunctor<T>(), false, CToStr<T>())
 		{}
 		CItem(const CItemBase& src) :
 			CItemBase(src)
@@ -5384,7 +5416,7 @@ namespace serial
 						//	++p;
 						//}
 						//arc.print(result, ", ");
-						arc.printWithFunc(result, child_item.m_toStrFuncP, p, child_item.m_itemSize);
+						arc.printWithFunc(result, child_item.m_toStr.m_toStrFuncP, p, child_item.m_itemSize);
 						arc.print(result, ",");
 						p += child_item.m_itemSize;
 					}

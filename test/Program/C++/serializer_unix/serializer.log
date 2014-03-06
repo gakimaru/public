@@ -13,6 +13,7 @@ data7b(0x0x0)
 data8a(0x0x80010c18)=26
 data8b(0x0x0)
 collector<CSaveDataSerializer>(ver=5,6)
+arc.is_read=0, arc.is_write=1
 serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
 serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
 serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
@@ -36,6 +37,7 @@ data7b(0x0x0)
 data8a(0x0x80010c18)=26
 data8b(0x0x0)
 collector<CSaveDataSerializer>(ver=5,6)
+arc.is_read=0, arc.is_write=1
 serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
 serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
 serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
@@ -48,20 +50,26 @@ collector<CTest1>(ver=1,2)
 デシリアライズ：バイナリアーカイブ
 distributor<CSaveDataSerializer>(ver=5,6)
 beforeLoad<CTest1>(ver=1,2)
+arc.is_read=1, arc.is_write=0
 serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
 load<CTest1>(ver=1,2)
-serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-load<CTest1>(ver=1,2)
-serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
-load<CTest1>(ver=1,2)
-serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-load<CTest1>(ver=1,2)
+arc.is_read=1, arc.is_write=0
 serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
 serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
 load<CTest1>(ver=1,2)
+arc.is_read=1, arc.is_write=0
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+load<CTest1>(ver=1,2)
+arc.is_read=1, arc.is_write=0
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+load<CTest1>(ver=1,2)
+arc.is_read=1, arc.is_write=0
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+load<CTest1>(ver=1,2)
+arc.is_read=1, arc.is_write=0
 serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
 load<CTest1>(ver=1,2)
 afterLoad<CTest1>(ver=1,2)
@@ -234,11 +242,11 @@ ID="a00008"(0xf04f5686), nmae="特技008", atk=29, def=20
 ID="a00009"(0x87486610), nmae="特技009", atk=32, def=22
 --- キャラ ---
 ID="c00030"(0x98712c7c), nmae="さぶろう", level=30, atk=55, def=3
-    param1={12345, 67890}, param2={98765, 43210}
+    param1={123, 456}, param2={98765, 43210}
 ID="c00020"(0x816a1d3d), nmae="じろう", level=20, atk=25, def=40
-    param1={12345, 67890}, param2={98765, 43210}
+    param1={999, 888}, param2={98765, 43210}
 ID="c00010"(0xaa474efe), nmae="たろう", level=10, atk=15, def=20
-    param1={12345, 67890}, param2={98765, 43210}
+    param1={111, 222}, param2={98765, 43210}
 --- 進行データ ---
 pahse=7
 flags=
@@ -380,11 +388,11 @@ ID="a00018"(0xe95467c7), nmae="特技018", atk=59, def=40
 ID="a00019"(0x9e535751), nmae="特技019", atk=62, def=42
 --- キャラ ---
 ID="c00030"(0x98712c7c), nmae="さぶろう", level=30, atk=55, def=3
-    param1={12345, 67890}, param2={98765, 43210}
+    param1={123, 456}, param2={98765, 43210}
 ID="c00020"(0x816a1d3d), nmae="じろう", level=20, atk=25, def=40
-    param1={12345, 67890}, param2={98765, 43210}
+    param1={999, 888}, param2={98765, 43210}
 ID="c00010"(0xaa474efe), nmae="たろう", level=10, atk=15, def=20
-    param1={12345, 67890}, param2={98765, 43210}
+    param1={111, 222}, param2={98765, 43210}
 --- 進行データ ---
 pahse=4
 flags=

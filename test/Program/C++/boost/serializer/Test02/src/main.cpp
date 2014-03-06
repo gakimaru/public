@@ -18,7 +18,7 @@
 #include <boost/serialization/deque.hpp>//std::deque用
 
 //#define USE_SPLIT_MEMBER//serialize()関数をload()関数とsave()関数に分けて使う場合、このマクロを有効化する
-//#define USE_NON_INTRUSIVE_TYPE//非侵入型をつかってシリアライズするならこのマクロを有効化する
+#define USE_NON_INTRUSIVE_TYPE//非侵入型をつかってシリアライズするならこのマクロを有効化する
 
 #ifdef USE_SPLIT_MEMBER
 #include <boost/serialization/split_member.hpp>//BOOST_SERIALIZATION_SPLIT_MEMBER用

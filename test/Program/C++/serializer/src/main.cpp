@@ -2269,10 +2269,10 @@ namespace serial
 		//オペレータ
 		bool operator==(const CVersion& rhs) const { return m_ver == rhs.m_ver; }
 		bool operator!=(const CVersion& rhs) const { return m_ver != rhs.m_ver; }
-		bool operator<(const CVersion& rhs) const { return m_ver <= rhs.m_ver; }
-		bool operator<=(const CVersion& rhs) const { return m_ver < rhs.m_ver; }
-		bool operator>(const CVersion& rhs) const { return m_ver >= rhs.m_ver; }
-		bool operator>=(const CVersion& rhs) const { return m_ver > rhs.m_ver; }
+		bool operator<(const CVersion& rhs) const { return m_ver < rhs.m_ver; }
+		bool operator<=(const CVersion& rhs) const { return m_ver <= rhs.m_ver; }
+		bool operator>(const CVersion& rhs) const { return m_ver > rhs.m_ver; }
+		bool operator>=(const CVersion& rhs) const { return m_ver >= rhs.m_ver; }
 	public:
 		//キャストオペレータ
 		operator unsigned int() const { return m_ver; }
@@ -2411,7 +2411,7 @@ namespace serial
 	//※デシリアライズ専用処理
 	//※特殊化によりユーザー処理を実装
 	//※objのロードが一通り終わったあと実行される
-	//※noticeUnconsciousItem, noticeUnconsciousItem の後に実行される
+	//※noticeUnrecognizedItem, noticeUnloadedItem の後に実行される
 	//※標準では何もしない
 	template<class Arc, class T>
 	struct afterLoad {
@@ -2424,11 +2424,12 @@ namespace serial
 	//※デシリアライズ専用処理
 	//※特殊化によりユーザー処理を実装
 	//※見つかったら時点で知されるので、objが不完全な状態である点に注意
+	//※委譲データ項目 delegate_item にデータ項目をセットして返すとリトライしてそこに読み込む
 	//※標準では何もしない
 	template<class Arc, class T>
-	struct noticeUnconsciousItem {
+	struct noticeUnrecognizedItem {
 		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, T& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unconcious_item)
+		void operator()(Arc& arc, T& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unrecognized_item, CItemBase& delegate_item)
 		{}
 	};
 	//--------------------
@@ -2436,7 +2437,7 @@ namespace serial
 	//※デシリアライズ専用処理
 	//※特殊化によりユーザー処理を実装
 	//※objのロードが一通り終わったあと、まとめて通知する
-	//※noticeUnconsciousItem の後、afterLoad より先に実行される
+	//※noticeUnrecognizedItem の後、afterLoad より先に実行される
 	//※標準では何もしない
 	template<class Arc, class T>
 	struct noticeUnloadedItem {
@@ -2526,7 +2527,7 @@ namespace serial
 			isDefinedFunctor<load<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<beforeLoad<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<afterLoad<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<noticeUnconsciousItem<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<noticeUnrecognizedItem<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<noticeUnloadedItem<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<collector<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<distributor<CArchiveDummy, T> >(0) ||
@@ -2683,6 +2684,13 @@ namespace serial
 		bool operator==(const char* name) const { return m_nameCrc == calcCRC32(name); }//データ項目名CRCで一致判定
 		bool operator!=(const char* name) const { return m_nameCrc != calcCRC32(name); }//データ項目名CRCで不一致判定
 	public:
+		//コピーオペレータ
+		CItemBase& operator=(const CItemBase& rhs)
+		{
+			memcpy(this, &rhs, sizeof(*this));
+			return *this;
+		}
+	public:
 		//キャストオペレータ
 		operator crc32_t() const { return m_nameCrc; }
 		operator const char*() const { return m_name; }
@@ -2787,6 +2795,23 @@ namespace serial
 			m_isOnlyOnMem(false),
 			m_isAlready(false)
 		{}
+		//コンストラクタ
+		CItemBase(const CItemBase& src, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr) :
+			m_name(src.m_name),
+			m_nameCrc(src.m_nameCrc),
+			m_itemP(item_p),
+			m_itemType(&item_type),
+			m_itemSize(item_size),
+			m_arrNum(arr_num),
+			m_info(is_object, arr_num > 0, is_ptr, item_p == nullptr),
+			m_nowItemSize(0),
+			m_nowArrNum(0),
+			m_nowInfo(false, false, false, false),
+			m_hasNowInfo(false),
+			m_isOnlyOnSaveData(false),
+			m_isOnlyOnMem(false),
+			m_isAlready(false)
+		{}
 		//デストラクタ
 		~CItemBase()
 		{}
@@ -2817,8 +2842,14 @@ namespace serial
 		CItem(const char* name, const T* item_p, const std::size_t arr_num, const bool is_ptr) :
 			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr)
 		{}
+		CItem(const CItemBase& src, const T* item_p, const std::size_t arr_num, const bool is_ptr) :
+			CItemBase(src, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr)
+		{}
 		CItem(const char* name, const std::size_t size) :
 			CItemBase(name, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false)
+		{}
+		CItem(const CItemBase& src, const std::size_t size) :
+			CItemBase(src, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false)
 		{}
 		CItem(const char* name) :
 			CItemBase(name, nullptr, typeid(T), 0, 0, hasAnyFunctor<T>(), false)
@@ -2839,6 +2870,12 @@ namespace serial
 		CItem<typename isPtr<T>::TYPE> item_obj(name, isPtr<T>::TO_PTR(item), 0, isPtr<T>::IS_PTR);
 		return item_obj;
 	}
+	template<class T>
+	CItem<typename isPtr<T>::TYPE> pair(const CItemBase& src, const T& item)
+	{
+		CItem<typename isPtr<T>::TYPE> item_obj(src, isPtr<T>::TO_PTR(item), 0, isPtr<T>::IS_PTR);
+		return item_obj;
+	}
 	//--------------------
 	//データ項目情報作成テンプレート関数（配列自動判定用）
 	template<class T, std::size_t N>
@@ -2847,12 +2884,24 @@ namespace serial
 		CItem<T> item_obj(name, item, N, false);
 		return item_obj;
 	}
+	template<class T, std::size_t N>
+	CItem<T> pair(const CItemBase& src, const T(&item)[N])
+	{
+		CItem<T> item_obj(src, item, N, false);
+		return item_obj;
+	}
 	//--------------------
 	//データ項目情報作成テンプレート関数（ポインタを配列扱いにしたい場合に使用）
 	template<class T>
 	CItem<typename isPtr<T>::TYPE> pairArr(const char* name, const T& item, const std::size_t N)
 	{
 		CItem<typename isPtr<T>::TYPE> item_obj(name, isPtr<T>::TO_PTR(item), N, isPtr<T>::IS_PTR);
+		return item_obj;
+	}
+	template<class T>
+	CItem<typename isPtr<T>::TYPE> pairArr(const CItemBase& src, const T& item, const std::size_t N)
+	{
+		CItem<typename isPtr<T>::TYPE> item_obj(src, isPtr<T>::TO_PTR(item), N, isPtr<T>::IS_PTR);
 		return item_obj;
 	}
 	//--------------------
@@ -2865,6 +2914,14 @@ namespace serial
 		const std::size_t arra_num = sizeof(T);
 		const char* item_p = reinterpret_cast<const char*>(&item);
 		CItem<char> item_obj(name, item_p, arra_num, false);
+		return item_obj;
+	}
+	template<class T>
+	CItem<char> pairBin(const CItemBase& src, const T& item)
+	{
+		const std::size_t arra_num = sizeof(T);
+		const char* item_p = reinterpret_cast<const char*>(&item);
+		CItem<char> item_obj(src.m_nameCrc, item_p, arra_num, false);
 		return item_obj;
 	}
 	//--------------------
@@ -3037,6 +3094,8 @@ namespace serial
 		typedef std::map<crc32_t, const CItemBase> itemList_t;//データ項目リスト型
 	public:
 		//定数
+		static const bool is_read = false;//読み込みクラスか？
+		static const bool is_write = false;//書き込みクラスか？
 		//ステート
 		enum stateEnum : int
 		{
@@ -3376,36 +3435,46 @@ namespace serial
 	{
 	public:
 		//メソッド
+		//--------------------
+		//アーカイブ出力用
 		//シグネチャ書き込み
 		bool writeSignature(CIOArchiveBase& arc){ return true; }
-		//シグネチャ読み込み
-		bool readSignature(CIOArchiveBase& arc){ return true; }
 		//ブロックヘッダー書き込み
 		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver){ return true; }
+		//配列ブロックヘッダー書き込み
+		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num){ return true; }
+		//要素ヘッダー書き込み
+		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index){ return true; }
+		//データ項目書き込み
+		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item){ return true; }
+		//要素フッター書き込み
+		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
+		//配列ブロックフッター書き込み
+		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size){ return true; }
+		//ブロックフッター書き込み
+		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size){ return true; }
+		//ターミネータ書き込み
+		bool writeTerminator(CIOArchiveBase& arc){ return true; }
+		//--------------------
+		//アーカイブ入力用
+		//パース
+		bool parse(CIOArchiveBase& arc){ return true; }
+		//シグネチャ読み込み
+		bool readSignature(CIOArchiveBase& arc){ return true; }
 		//ブロックヘッダー読み込み
 		//※読み込んだオブジェクトの型情報とバージョンを返す
 		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size){ return true; }
-		//配列ブロックヘッダー書き込み
-		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num){ return true; }
 		//配列ブロックヘッダー読み込み
 		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size){ return true; }
-		//要素ヘッダー書き込み
-		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index){ return true; }
 		//要素ヘッダー読み込み
 		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
-		//データ項目書き込み
-		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item){ return true; }
 		//データ項目読み込み
-		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid){ return true; }
-		//要素フッター書き込み
-		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
+		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid, const bool is_required_retry, const CItemBase& delegate_item){ return true; }
 		//要素フッター読み込み
 		//※読み込みテストの結果、要素フッターでなければデータ項目の読み込みを継続する
 		bool tryAndReadElemFooter(CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, bool& is_elem_end){ return true; }
 		//要素読み込み終了
 		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
-		//配列ブロックフッター書き込み
-		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size){ return true; }
 		//配列ブロックフッター読み込み
 		//※読み込みテストの結果、配列ブロックフッターでなければデータ項目の読み込みを継続する
 		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end){ return true; }
@@ -3413,8 +3482,6 @@ namespace serial
 		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
 		//ブロックの読み込みをスキップ
 		bool skipReadBlock(CIOArchiveBase& arc){ return true; }
-		//ブロックフッター書き込み
-		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size){ return true; }
 		//ブロックフッター読み込み
 		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
 		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end){ return true; }
@@ -3424,8 +3491,6 @@ namespace serial
 		//※処理を進めず、次の情報を読み取るのみ
 		//※（例えば、バイナリスタイルなら、読み込みバッファのポインタを進めない）
 		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& child_block_size, bool& is_found_next_block){ return true; }
-		//ターミネータ書き込み
-		bool writeTerminator(CIOArchiveBase& arc){ return true; }
 		//ターミネータ読み込み
 		bool readTerminator(CIOArchiveBase& arc){ return true; }
 	public:
@@ -3447,6 +3512,9 @@ namespace serial
 	template<class ArcStyle>
 	class COArchive : public CIOArchiveBase
 	{
+	public:
+		//定数
+		static const bool is_write = true;//書き込みクラスか？
 	public:
 		//オペレータ
 		//「&」オペレータ
@@ -3514,8 +3582,12 @@ namespace serial
 
 			//ネストレベルが0ならシグネチャーを書き込み
 			if (m_nestLevel == 0)
-				m_style.writeSignature(arc);
-			
+			{
+				m_style.writeSignature(arc);//シグネチャー書き込み
+				if (arc.hasFatalError())//致命的なエラーを検出したら即終了
+					return *this;
+			}
+
 			//バージョン取得
 			CVersionDef<T> ver_def;
 			CVersion ver(ver_def);
@@ -3617,12 +3689,16 @@ namespace serial
 
 			//ネストレベルが0ならターミネータを書き込み
 			if (m_nestLevel == 0)
-				m_style.writeTerminator(arc);
-			
-			//データ書き込み済み
+			{
+				m_style.writeTerminator(arc);//ターミネータ書き込み
+				if (arc.hasFatalError())//致命的なエラーを検出したら即終了
+					return *this;
+			}
+
+			//データ書き込み済みにする
 			item_obj.setIsAlready();
 
-			//処理結果に現在のバッファ位置をセットする
+			//処理結果にセーブデータサイズをセットする
 			m_result.setSaveDataSize(getBuffUsed());
 
 			return *this;
@@ -3659,6 +3735,9 @@ namespace serial
 	template<class ArcStyle>
 	class CIArchive : public CIOArchiveBase
 	{
+	public:
+		//定数
+		static const bool is_read = true;//読み込みクラスか？
 	public:
 		//アクセッサ
 		CItemBase* getTargetObjItem(){ return m_targetObjItem; }//オブジェクト処理の対象データ項目をセット
@@ -3765,9 +3844,21 @@ namespace serial
 			//※セーブデータにしか存在しないデータは処理不可
 			//※配信処理を間違えて以内限り、そのような状態にはならないはず
 
+			//ネストレベルが0ならパース
+			if (m_nestLevel == 0)
+			{
+				m_style.parse(arc);//パース
+				if (arc.hasFatalError())//致命的なエラーを検出したら即終了
+					return *this;
+			}
+			
 			//ネストレベルが0ならシグネチャーを読み込み
 			if (m_nestLevel == 0)
-				m_style.readSignature(arc);
+			{
+				m_style.readSignature(arc);//シグネチャー読み込み
+				if (arc.hasFatalError())//致命的なエラーを検出したら即終了
+					return *this;
+			}
 			
 			//バージョン取得
 			CVersionDef<T> now_ver_def;
@@ -3889,64 +3980,87 @@ namespace serial
 									if (is_elem_end)
 										break;//要素の終了を検出したらループから抜ける
 
-									CItemBase child_item;
-									m_style.readDataItem(arc, item_obj, child_item, is_valid_element);
-
-									//オブジェクトの場合の処理
-									if (child_item.isObj())
+									bool is_init = true;//初回処理
+									bool is_required_retry = false;//リトライ処理要求
+									bool is_already_retry = false;//リトライ処理済み
+									CItemBase delegate_item_for_retry;//リトライ用の委譲項目
+									while (is_init || (is_required_retry && !is_already_retry))//リトライは一回だけ有効
 									{
-										//オブジェクトのロードフェーズに変更
-										arc.setState(st_DESERIALIZE_PHASE_LOAD_OBJECT);
+										is_init = false;//初回処理終了
+										if (is_required_retry)//リトライ時
+											is_already_retry = true;//リトライ済みにする（リトライは一回だけ）
 
-										//オブジェクト処理対象データ項目をセット
-										arc.setTargetObjItem(child_item);
+										//要素の読み込み
+										CItemBase child_item;
+										m_style.readDataItem(arc, item_obj, child_item, is_valid_element, is_required_retry, delegate_item_for_retry);
+
+										//ロードしたが保存先の指定がなかった項目の処理
+										//※既にリトライしている場合は実行しない
+										if (child_item.isOnlyOnSaveData() && !is_already_retry)
+										{
+											//通知フェーズに変更
+											arc.setState(st_DESERIALIZE_PHASE_NOTICE);
+
+											//通知
+											if (is_valid_element)
+											{
+												noticeUnrecognizedItem<CIArchive, T> functor;
+												functor(arc, item_obj.template get<T>(), ver, now_ver, child_item, delegate_item_for_retry);
+												if (child_item == delegate_item_for_retry && delegate_item_for_retry.m_itemP)
+												{
+													//委譲項目が設定されたのでリトライ
+													is_required_retry = true;
+												}
+											}
+
+											//データのロードフェーズに戻す
+											arc.setState(st_DESERIALIZE_PHASE_LOAD_DATA);
+
+											//リトライ
+											//※オブジェクトの処理に入る前にリトライを実行
+											if (is_required_retry)
+												continue;
+										}
+
+										//オブジェクトの場合の処理
+										if (child_item.isObj())
+										{
+											//オブジェクトのロードフェーズに変更
+											arc.setState(st_DESERIALIZE_PHASE_LOAD_OBJECT);
+
+											//オブジェクト処理対象データ項目をセット
+											arc.setTargetObjItem(child_item);
 										
-										//デシリアライズ処理（シリアライズ＆デシリアライズ兼用処理）呼び出し
-										//※対象オブジェクトアイテムを処理する
-										{
-											serialize<CIArchive, T> functor;
-											functor(arc, item_obj.template getConst<T>(), ver, now_ver);
-										}
+											//デシリアライズ処理（シリアライズ＆デシリアライズ兼用処理）呼び出し
+											//※対象オブジェクトアイテムを処理する
+											{
+												serialize<CIArchive, T> functor;
+												functor(arc, item_obj.template getConst<T>(), ver, now_ver);
+											}
 
-										//ロード処理（デシリアライズ専用処理）呼び出し
-										//※対象オブジェクトアイテムを処理する
-										{
-											load<CIArchive, T> functor;
-											functor(arc, item_obj.template get<T>(), ver, now_ver);
-										}
+											//ロード処理（デシリアライズ専用処理）呼び出し
+											//※対象オブジェクトアイテムを処理する
+											{
+												load<CIArchive, T> functor;
+												functor(arc, item_obj.template get<T>(), ver, now_ver);
+											}
 
-										//オブジェクト処理対象データ項目をリセット
-										arc.resetTargetObjItem();
+											//オブジェクト処理対象データ項目をリセット
+											arc.resetTargetObjItem();
 
-										//未処理のままだったらブロックをスキップする
-										if (arc.getState() != st_DESERIALIZE_PHASE_LOAD_OBJECT_END)
-										{
-											//オブジェクトのブロックをスキップ
-											m_style.skipReadBlock(arc);
+											//未処理のままだったらブロックをスキップする
+											if (arc.getState() != st_DESERIALIZE_PHASE_LOAD_OBJECT_END)
+											{
+												//オブジェクトのブロックをスキップ
+												m_style.skipReadBlock(arc);
 
-											//処理済みにする
-											child_item.setIsAlready();
-										}
+												//処理済みにする
+												child_item.setIsAlready();
+											}
 										
-										//データのロードフェーズに戻す
-										arc.setState(st_DESERIALIZE_PHASE_LOAD_DATA);
-									}
-
-									//ロードしたが保存先の指定がなかった項目
-									if (child_item.isOnlyOnSaveData())
-									{
-										//通知フェーズに変更
-										arc.setState(st_DESERIALIZE_PHASE_NOTICE);
-										
-										//通知
-										if (is_valid_element)
-										{
-											noticeUnconsciousItem<CIArchive, T> functor;
-											functor(arc, item_obj.template get<T>(), ver, now_ver, child_item);
+											//データのロードフェーズに戻す
+											arc.setState(st_DESERIALIZE_PHASE_LOAD_DATA);
 										}
-
-										//データのロードフェーズに戻す
-										arc.setState(st_DESERIALIZE_PHASE_LOAD_DATA);
 									}
 								}
 
@@ -4086,9 +4200,13 @@ namespace serial
 			
 			//ネストレベルが0ならターミネータを読み込み
 			if (m_nestLevel == 0)
-				m_style.readTerminator(arc);
+			{
+				m_style.readTerminator(arc);//ターミネータ読み込み
+				if (arc.hasFatalError())//致命的なエラーを検出したら即終了
+					return *this;
+			}
 
-			//処理結果に現在のバッファ位置をセットする
+			//処理結果にセーブデータサイズをセットする
 			m_result.setSaveDataSize(getBuffUsed());
 
 			return *this;
@@ -4147,6 +4265,15 @@ namespace serial
 		static const unsigned char ITEM_END[CBinaryArchive::END_MARK_SIZE];//データ項目終端
 	public:
 		//メソッド
+		//パース
+		bool parse(CIOArchiveBase& arc)
+		{
+			CResult& result = arc.getResult();
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			//何もしない
+			return !result.hasFatalError();
+		}
 		//シグネチャ書き込み
 		bool writeSignature(CIOArchiveBase& arc)
 		{
@@ -4331,12 +4458,18 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目読み込み
-		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid)
+		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid, const bool is_required_retry, const CItemBase& delegate_item)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
-			std::size_t read_size = 0;
+			if (is_required_retry)//リトライ要求
+			{
+				//記憶している位置に戻す
+				arc.seek(result, -static_cast<int>(m_readSizeForPrevDataItem));//【リトライ用】前回のデータ読み込みサイズ
+			}
+			m_readSizeForPrevDataItem = 0;//【リトライ用】前回のデータ読み込みサイズをリセット
+			std::size_t read_size = 0;//この処理中で計上する読み込みサイズ
 			char begin_mark[BEGIN_MARK_SIZE];//データ項目／ブロック始端読み込みバッファ
 			arc.read(result, begin_mark, BEGIN_MARK_SIZE, &read_size);//データ項目／ブロック始端読み込み
 			bool is_block_begin = false;
@@ -4352,7 +4485,11 @@ namespace serial
 			}
 			arc.read(result, const_cast<crc32_t*>(&child_item.m_nameCrc), sizeof(child_item.m_nameCrc), &read_size);//名前CRC読み込み
 			arc.read(result, const_cast<CRecInfo::value_t*>(&child_item.m_info.m_value), sizeof(child_item.m_info.m_value), &read_size);//保存状態読み込み
-			const CItemBase* child_item_now = arc.findItem(child_item.m_nameCrc);//対応するデータ項目情報を検索
+			const CItemBase* child_item_now = nullptr;
+			if (is_required_retry && child_item == delegate_item && delegate_item.m_itemP)//リトライ時に委譲データ項目があればそれを優先的に使用
+				child_item_now = &delegate_item;//委譲データ項目
+			else
+				child_item_now = arc.findItem(child_item);//対応するデータ項目情報を検索
 			if (child_item_now)//対応するデータ項目が見つかったか？
 				child_item.copyFromOnMem(*child_item_now);//現在の情報をセーブデータの情報にコピー（統合）
 			else
@@ -4372,11 +4509,11 @@ namespace serial
 			}
 			//通常データの読み込み処理
 			assert(!child_item.m_info.hasVersion());//オブジェクトでもないのにバージョン情報があればNG
-			arc.read(result, const_cast<std::size_t*>(&child_item.m_itemSize), sizeof(child_item.m_itemSize));//データサイズ読み込み
+			arc.read(result, const_cast<std::size_t*>(&child_item.m_itemSize), sizeof(child_item.m_itemSize), &read_size);//データサイズ読み込み
 			if (!child_item.isNul())//【セーブデータ上の】データがヌルでなければ処理する
 			{
 				if (child_item.isArr())//配列か？
-					arc.read(result, const_cast<std::size_t*>(&child_item.m_arrNum), sizeof(child_item.m_arrNum));//配列要素数読み込み
+					arc.read(result, const_cast<std::size_t*>(&child_item.m_arrNum), sizeof(child_item.m_arrNum), &read_size);//配列要素数読み込み
 				unsigned char* p = reinterpret_cast<unsigned char*>(const_cast<void*>(child_item.m_itemP));
 				const std::size_t elem_num = child_item.getElemNum();
 				for (std::size_t index = 0; index < elem_num && !result.hasFatalError(); ++index)//【セーブデータ上の】配列要素数分データ書き込み
@@ -4387,13 +4524,13 @@ namespace serial
 						!child_item.nowIsNul() && //現在の（コピー先の）データがヌルではないか？
 						index < child_item.getNowElemNum();//現在の（コピー先の）配列の範囲内か？
 					void* p_tmp = element_is_valid ? p : nullptr;//有効なデータでなければnullptrを渡し、空読み込みする
-					arc.readResizing(result, p_tmp, child_item.m_nowItemSize, child_item.m_itemSize);//データ読み込み
+					arc.readResizing(result, p_tmp, child_item.m_nowItemSize, child_item.m_itemSize, &read_size);//データ読み込み
 					if (p)
 						p += child_item.m_nowItemSize;//次の要素
 				}
 			}
 			char end_mark[END_MARK_SIZE];//データ項目終端読み込みバッファ
-			arc.read(result, end_mark, END_MARK_SIZE);//データ項目終端読み込み
+			arc.read(result, end_mark, END_MARK_SIZE, &read_size);//データ項目終端読み込み
 			if (memcmp(end_mark, ITEM_END, END_MARK_SIZE) != 0)//データ項目始端チェック
 			{
 				result.setHasFatalError();
@@ -4401,6 +4538,7 @@ namespace serial
 			}
 			child_item.setIsAlready();//処理済みにする
 			result.addResult(child_item);//結果を計上
+			m_readSizeForPrevDataItem = read_size;//【リトライ用】前回のデータ読み込みサイズを記憶
 			return true;
 		}
 		//要素フッター書き込み
@@ -4653,15 +4791,20 @@ namespace serial
 		//自身を受け取るコンストラクタ
 		//※処理階層が深くなるごとにコピーが行われる
 		CBinaryArchive(const CBinaryArchive& src) :
-			CArchiveStyleBase(src)
+			CArchiveStyleBase(src),
+			m_readSizeForPrevDataItem(0)
 		{}
 		//コンストラクタ
 		CBinaryArchive():
-			CArchiveStyleBase()
+			CArchiveStyleBase(),
+			m_readSizeForPrevDataItem(0)
 		{}
 		//デストラクタ
 		~CBinaryArchive()
 		{}
+		private:
+			//フィールド
+			std::size_t m_readSizeForPrevDataItem;//【リトライ用】前回のデータ読み込みサイズ
 	};
 	//静的変数インスタンス化
 	const unsigned char CBinaryArchive::SIGNATURE[CBinaryArchive::SIGNATURE_SIZE] = { 0x00, 0xff, 's', 'e', 'r', 'i', 'a', 'l', ':', ':', 'C', 'B', 'i', 'n', 0xff, 0x00 };//シグネチャ
@@ -4680,6 +4823,15 @@ namespace serial
 	{
 	public:
 		//メソッド
+		//パース
+		bool parse(CIOArchiveBase& arc)
+		{
+			CResult& result = arc.getResult();
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			//未実装
+			return !result.hasFatalError();
+		}
 		//シグネチャ書き込み
 		bool writeSignature(CIOArchiveBase& arc)
 		{
@@ -4814,7 +4966,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目読み込み
-		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, CItemBase& child_item, const bool item_is_valid)
+		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, const bool item_is_valid, const bool is_required_retry, const CItemBase& delegate_item)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -4981,7 +5133,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//バイナリアーカイブ書き込みクラス
+	//バイナリ形式アーカイブ書き込みクラス
 	class COBinaryArchive : public COArchive<CBinaryArchive>
 	{
 	public:
@@ -5002,7 +5154,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//バイナリアーカイブ読み込みクラス
+	//バイナリ形式アーカイブ読み込みクラス
 	class CIBinaryArchive : public CIArchive<CBinaryArchive>
 	{
 	public:
@@ -5023,7 +5175,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//テキストアーカイブ書き込みクラス
+	//テキスト形式アーカイブ書き込みクラス
 	class COTextArchive : public COArchive<CTextArchive>
 	{
 	public:
@@ -5044,7 +5196,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//テキストアーカイブ読み込みクラス
+	//テキスト形式アーカイブ読み込みクラス
 	class CITextArchive : public CIArchive<CTextArchive>
 	{
 	public:
@@ -5070,9 +5222,9 @@ namespace serial
 #define SERIALIZE_VERSION_DEF(T, MAJOR, MINOR) \
 namespace serial \
 	{ \
-	template<> \
-struct CVersionDef<T> : public CVersionDefBase<MAJOR, MINOR>{}; \
-}
+		template<> \
+		struct CVersionDef<T> : public CVersionDefBase<MAJOR, MINOR>{}; \
+	}
 //--------------------
 //データクラスのフレンド宣言用マクロ
 #define FRIEND_SERIALIZE(T) \
@@ -5087,7 +5239,7 @@ struct CVersionDef<T> : public CVersionDefBase<MAJOR, MINOR>{}; \
 	template<class Arc, class T> \
 	friend struct serial::afterLoad; \
 	template<class Arc, class T> \
-	friend struct serial::noticeUnconsciousItem; \
+	friend struct serial::noticeUnrecognizedItem; \
 	template<class Arc, class T> \
 	friend struct serial::noticeUnloadedItem; \
 	template<class Arc, class T> \
@@ -5322,11 +5474,12 @@ namespace serial
 	struct serialize<Arc, CTest1> {
 		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver, const CVersion& now_ver)
 		{
+			printf("arc.is_read=%d, arc.is_write=%d\n", arc.is_read, arc.is_write);
 			printf("serialize<CTest1>(ver=%d,%d) sizeof(CTest1)=%d\n", ver.getMajor(), ver.getMinor(), sizeof(CTest1));
 			//arc & pair("data0", obj.m_data0);
-			arc & pair("data1", obj.m_data1);
-			arc & pair("data2", obj.m_data2);
-			arc & pair("data3", obj.m_data3);
+			arc & pair("data1", obj.m_data1)
+			    & pair("data2", obj.m_data2)
+			    & pair("data3", obj.m_data3);
 			arc & pairBin("data4a", obj.m_data4a);
 			arc & pair("data4b", obj.m_data4b);
 			arc & pairBin("data5a", obj.m_data5a);
@@ -5392,7 +5545,7 @@ namespace serial
 	//※デシリアライズ専用処理
 	template<class Arc>
 	struct load<Arc, CTest1> {
-		void operator()(Arc& arc, CTest1& obj, const CVersion& ver, const CVersion& now_ver)
+		void operator()(Arc& arc, const CTest1& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			printf("load<CTest1>(ver=%d,%d)\n", ver.getMajor(), ver.getMinor());
 		}
@@ -6396,7 +6549,7 @@ void printDataAll()
 class CSaveData{};
 
 //--------------------
-//セーブデータ用バージョンクラス
+//セーブデータバージョン管理クラス
 class CSaveDataVersion
 {
 public:
@@ -6561,13 +6714,14 @@ namespace serial
 	//--------------------
 	//セーブデータにはあったが、保存先の指定がなく、ロードできなかった項目の通知
 	template<class Arc>
-	struct noticeUnconsciousItem<Arc, CHARA_DATA> {
-		void operator()(Arc& arc, CHARA_DATA& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unloaded_item)
+	struct noticeUnrecognizedItem<Arc, CHARA_DATA> {
+		void operator()(Arc& arc, CHARA_DATA& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unrecognized_item, CItemBase& delegate_item)
 		{
-			if (unloaded_item == "param1")
+			if (unrecognized_item == "param1")
 			{
-				obj.m_param1[0] = 12345;
-				obj.m_param1[1] = 67890;
+				delegate_item = pair(unrecognized_item, obj.m_param1);//委譲データ項目に新しい保存先を指定してリトライ
+				//obj.m_param1[0] = 12345;
+				//obj.m_param1[1] = 67890;
 			}
 		}
 	};
@@ -7013,8 +7167,8 @@ void test2serialize()
 	const char* save_file_name_bin = "save_data.bin";
 	const char* save_file_name_txt = "save_data.txt";
 	//シリアライズ＆セーブ
-	serializeAndSave<serial::COBinaryArchive>(save_file_name_bin);//バイナリ
-	serializeAndSave<serial::COTextArchive>(save_file_name_txt);//テキスト
+	serializeAndSave<serial::COBinaryArchive>(save_file_name_bin);//バイナリ形式を使用
+	serializeAndSave<serial::COTextArchive>(save_file_name_txt);//テキスト形式を使用
 	//セーブデータ用バージョンを表示
 	printSaveDataVer();
 	//全データリセット

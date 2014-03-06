@@ -2560,6 +2560,324 @@ namespace serial
 	}
 
 	//--------------------
+	//データ文字列化基底クラス
+	typedef std::size_t(*toStrFuncP)(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size);//文字列へ変換関数型
+	typedef std::size_t(*fromStrFuncP)(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max);//文字列から変換関数型
+	class CToStrBase
+	{
+	public:
+		//メソッド
+		//文字列へ変換関数型
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		{
+			std::size_t used = 0;
+			std::size_t remain = str_max;
+			char* write_p = str;
+			if (remain > 1)
+			{
+				*(write_p++) = '\"';
+				++used;
+				--remain;
+			}
+			const unsigned char* read_p = reinterpret_cast<const unsigned char*>(data_p);
+			for (unsigned int i = 0; i < data_size && remain > 2; ++i)
+			{
+				const unsigned char c = *(read_p++);
+				const unsigned char hi = c >> 4;
+				const unsigned char lo = c & 0xf;
+				*(write_p++) = hi >= 10 ? 'a' + hi : '0' + hi;
+				*(write_p++) = lo >= 10 ? 'a' + lo : '0' + lo;
+				used += 2;
+				remain -= 2;
+			}
+			if (remain > 1)
+			{
+				*(write_p++) = '\"';
+				++used;
+				--remain;
+			}
+			if (remain > 1)
+			{
+				*(write_p) = '\0';
+			}
+			return used;
+		}
+		//文字列から変換関数型
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		{
+			//未実装
+			return 0;
+		}
+	protected:
+		//デフォルトコンストラクタ
+		CToStrBase() :
+			m_toStrFuncP(toStr),
+			m_fromStrFuncP(fromStr)
+		{}
+		//コンストラクタ
+		CToStrBase(toStrFuncP to_func_p, fromStrFuncP from_func_p) :
+			m_toStrFuncP(to_func_p),
+			m_fromStrFuncP(from_func_p)
+		{}
+		//デストラクタ
+		~CToStrBase()
+		{}
+	public:
+		//フィールド
+		toStrFuncP m_toStrFuncP;//文字列へ変換関数
+		fromStrFuncP m_fromStrFuncP;//文字列から変換関数
+	};
+	//--------------------
+	//データ文字列化クラス
+	template<typename T>
+	class CToStr : public CToStrBase
+	{
+	public:
+		//コンストラクタ
+		CToStr() :
+			CToStrBase()
+		{}
+		//デストラクタ
+		~CToStr()
+		{}
+	};
+	//--------------------
+	//データ文字列化クラス
+	template<>
+	class CToStr<int> : public CToStrBase
+	{
+	public:
+		//メソッド
+		//文字列へ変換関数型
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		{
+			const int value = *reinterpret_cast<const int*>(data_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "%d", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "%d", value);
+		#endif//USE_STRCPY_S
+		}
+		//文字列から変換関数型
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		{
+			//未実装
+			return 0;
+		}
+	public:
+		//コンストラクタ
+		CToStr() :
+			CToStrBase(toStr, fromStr)
+		{}
+		//デストラクタ
+		~CToStr()
+		{}
+	};
+	//--------------------
+	//データ文字列化クラス
+	template<>
+	class CToStr<unsigned int> : public CToStrBase
+	{
+	public:
+		//メソッド
+		//文字列へ変換関数型
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		{
+			const unsigned int value = *reinterpret_cast<const unsigned int*>(data_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "0x%08x", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "0x%08x", value);
+		#endif//USE_STRCPY_S
+		}
+		//文字列から変換関数型
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		{
+			//未実装
+			return 0;
+		}
+	public:
+		//コンストラクタ
+		CToStr() :
+			CToStrBase(toStr, fromStr)
+		{}
+		//デストラクタ
+		~CToStr()
+		{}
+	};
+	//--------------------
+	//データ文字列化クラス
+	template<>
+	class CToStr<short> : public CToStrBase
+	{
+	public:
+		//メソッド
+		//文字列へ変換関数型
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		{
+			const short value = *reinterpret_cast<const short*>(data_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "%d", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "%d", value);
+		#endif//USE_STRCPY_S
+		}
+		//文字列から変換関数型
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		{
+			//未実装
+			return 0;
+		}
+	public:
+		//コンストラクタ
+		CToStr() :
+			CToStrBase(toStr, fromStr)
+		{}
+		//デストラクタ
+		~CToStr()
+		{}
+	};
+	//--------------------
+	//データ文字列化クラス
+	template<>
+	class CToStr<unsigned short> : public CToStrBase
+	{
+	public:
+		//メソッド
+		//文字列へ変換関数型
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		{
+			const unsigned short value = *reinterpret_cast<const unsigned short*>(data_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "0x%04x", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "0x%04x", value);
+		#endif//USE_STRCPY_S
+		}
+		//文字列から変換関数型
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		{
+			//未実装
+			return 0;
+		}
+	public:
+		//コンストラクタ
+		CToStr() :
+			CToStrBase(toStr, fromStr)
+		{}
+		//デストラクタ
+		~CToStr()
+		{}
+	};
+	//--------------------
+	//データ文字列化クラス
+	template<>
+	class CToStr<char> : public CToStrBase
+	{
+	public:
+		//メソッド
+		//文字列へ変換関数型
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		{
+			const char value = *reinterpret_cast<const char*>(data_p);
+			if (value >= 0x20 && value <= 0x7e)
+			{
+			#ifdef USE_STRCPY_S
+				return sprintf_s(str, str_max, "\'%c\'", value);
+			#else//USE_STRCPY_S
+				return sprintf(str, "\'%c\'", value);
+			#endif//USE_STRCPY_S
+			}
+			else
+			{
+			#ifdef USE_STRCPY_S
+				return sprintf_s(str, str_max, "0x%02x", value & 0xff);
+			#else//USE_STRCPY_S
+				return sprintf(str, "0x%02x", value & 0xff);
+			#endif//USE_STRCPY_S
+			}
+		}
+		//文字列から変換関数型
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		{
+			//未実装
+			return 0;
+		}
+	public:
+		//コンストラクタ
+		CToStr() :
+			CToStrBase(toStr, fromStr)
+		{}
+		//デストラクタ
+		~CToStr()
+		{}
+	};
+	//--------------------
+	//データ文字列化クラス
+	template<>
+	class CToStr<unsigned char> : public CToStrBase
+	{
+	public:
+		//メソッド
+		//文字列へ変換関数型
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		{
+			const unsigned char value = *reinterpret_cast<const unsigned char*>(data_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "0x%02x", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "0x%02x", value);
+		#endif//USE_STRCPY_S
+		}
+		//文字列から変換関数型
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		{
+			//未実装
+			return 0;
+		}
+	public:
+		//コンストラクタ
+		CToStr() :
+			CToStrBase(toStr, fromStr)
+		{}
+		//デストラクタ
+		~CToStr()
+		{}
+	};
+	//--------------------
+	//データ文字列化クラス
+	template<>
+	class CToStr<float> : public CToStrBase
+	{
+	public:
+		//メソッド
+		//文字列へ変換関数型
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		{
+			const float value = *reinterpret_cast<const float*>(data_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "%f", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "%f", value);
+		#endif//USE_STRCPY_S
+		}
+		//文字列から変換関数型
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		{
+			//未実装
+			return 0;
+		}
+	public:
+		//コンストラクタ
+		CToStr() :
+			CToStrBase(toStr, fromStr)
+		{}
+		//デストラクタ
+		~CToStr()
+		{}
+	};
+	
+	//--------------------
 	//保存状態
 	enum recInfoEnum : unsigned char
 	{
@@ -2781,7 +3099,9 @@ namespace serial
 			m_hasNowInfo(src.m_hasNowInfo),
 			m_isOnlyOnSaveData(src.m_isOnlyOnSaveData),
 			m_isOnlyOnMem(src.m_isOnlyOnMem),
-			m_isAlready(src.m_isAlready)
+			m_isAlready(src.m_isAlready),
+			m_toStrFuncP(src.m_toStrFuncP),
+			m_fromStrFuncP(src.m_fromStrFuncP)
 		{}
 		//デフォルトコンストラクタ
 		CItemBase() :
@@ -2798,10 +3118,12 @@ namespace serial
 			m_hasNowInfo(false),
 			m_isOnlyOnSaveData(false),
 			m_isOnlyOnMem(false),
-			m_isAlready(false)
+			m_isAlready(false),
+			m_toStrFuncP(CToStrBase::toStr),
+			m_fromStrFuncP(CToStrBase::fromStr)
 		{}
 		//コンストラクタ
-		CItemBase(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr) :
+		CItemBase(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, toStrFuncP to_str_func_p, fromStrFuncP from_str_func_p) :
 			m_name(name),
 			m_nameCrc(calcCRC32(name)),
 			m_itemP(item_p),
@@ -2815,10 +3137,12 @@ namespace serial
 			m_hasNowInfo(false),
 			m_isOnlyOnSaveData(false),
 			m_isOnlyOnMem(false),
-			m_isAlready(false)
+			m_isAlready(false),
+			m_toStrFuncP(to_str_func_p),
+			m_fromStrFuncP(from_str_func_p)
 		{}
 		//コンストラクタ
-		CItemBase(const CItemBase& src, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr) :
+		CItemBase(const CItemBase& src, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, toStrFuncP to_str_func_p, fromStrFuncP from_str_func_p) :
 			m_name(src.m_name),
 			m_nameCrc(src.m_nameCrc),
 			m_itemP(item_p),
@@ -2832,7 +3156,9 @@ namespace serial
 			m_hasNowInfo(false),
 			m_isOnlyOnSaveData(false),
 			m_isOnlyOnMem(false),
-			m_isAlready(false)
+			m_isAlready(false),
+			m_toStrFuncP(to_str_func_p),
+			m_fromStrFuncP(from_str_func_p)
 		{}
 		//デストラクタ
 		~CItemBase()
@@ -2853,6 +3179,8 @@ namespace serial
 		mutable bool m_isOnlyOnSaveData;//セーブデータ上にのみ存在するデータ
 		mutable bool m_isOnlyOnMem;//セーブデータ上にないデータ
 		mutable bool m_isAlready;//処理済み
+		toStrFuncP m_toStrFuncP;//文字列へ変換関数
+		fromStrFuncP m_fromStrFuncP;//文字列から変換関数
 	};
 	//--------------------
 	//データ項目テンプレートクラス
@@ -2862,19 +3190,19 @@ namespace serial
 	public:
 		//コンストラクタ
 		CItem(const char* name, const T* item_p, const std::size_t arr_num, const bool is_ptr) :
-			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr)
+			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, CToStr<T>::toStr, CToStr<T>::fromStr)
 		{}
 		CItem(const CItemBase& src, const T* item_p, const std::size_t arr_num, const bool is_ptr) :
-			CItemBase(src, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr)
+			CItemBase(src, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, CToStr<T>::toStr, CToStr<T>::fromStr)
 		{}
 		CItem(const char* name, const std::size_t size) :
-			CItemBase(name, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false)
+			CItemBase(name, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, CToStr<T>::toStr, CToStr<T>::fromStr)
 		{}
 		CItem(const CItemBase& src, const std::size_t size) :
-			CItemBase(src, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false)
+			CItemBase(src, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, CToStr<T>::toStr, CToStr<T>::fromStr)
 		{}
 		CItem(const char* name) :
-			CItemBase(name, nullptr, typeid(T), 0, 0, hasAnyFunctor<T>(), false)
+			CItemBase(name, nullptr, typeid(T), 0, 0, hasAnyFunctor<T>(), false, CToStr<T>::toStr, CToStr<T>::fromStr)
 		{}
 		CItem(const CItemBase& src) :
 			CItemBase(src)
@@ -3214,6 +3542,16 @@ namespace serial
 			const std::size_t ret = vsprintf(reinterpret_cast<char*>(m_buff + m_buffPos), fmt, args);
 		#endif//USE_STRCPY_S
 			va_end(args);
+			m_buffPos += ret;
+			return ret;
+		}
+		//バッファへの文字列書き込み
+		std::size_t printWithFunc(CResult& result, toStrFuncP to_str_func, const void* data_p, const std::size_t data_size)
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			const std::size_t remain = getBuffRemain();
+			const std::size_t ret = to_str_func(reinterpret_cast<char*>(m_buff + m_buffPos), remain, data_p, data_size);
 			m_buffPos += ret;
 			return ret;
 		}
@@ -5017,7 +5355,7 @@ namespace serial
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			arc.printIndent(result, 0);
-			arc.print(result, "{ ");
+			arc.print(result, "\"%s\": {", child_item.m_name);
 			arc.print(result, "\"crc\": 0x%08x, ", child_item.m_nameCrc);
 			arc.print(result, "\"itemType\": \"%s\", ", child_item.m_itemType->name());
 			arc.print(result, "\"itemSize\": %d, ", child_item.m_itemSize);
@@ -5040,12 +5378,15 @@ namespace serial
 						arc.print(result, "[ ");
 					for (std::size_t index = 0; index < elem_num && !result.hasFatalError(); ++index)//配列要素数分データ書き込み
 					{
-						for (std::size_t pos = 0; pos < child_item.m_itemSize && !result.hasFatalError(); ++pos)//データ長分データ書き込み
-						{
-							arc.print(result, "%02x", *p);
-							++p;
-						}
-						arc.print(result, ", ");
+						//for (std::size_t pos = 0; pos < child_item.m_itemSize && !result.hasFatalError(); ++pos)//データ長分データ書き込み
+						//{
+						//	arc.print(result, "%02x", *p);
+						//	++p;
+						//}
+						//arc.print(result, ", ");
+						arc.printWithFunc(result, child_item.m_toStrFuncP, p, child_item.m_itemSize);
+						arc.print(result, ",");
+						p += child_item.m_itemSize;
 					}
 					if (child_item.isArr())
 						arc.print(result, "], ");

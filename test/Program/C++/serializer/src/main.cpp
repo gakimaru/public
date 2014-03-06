@@ -2429,7 +2429,7 @@ namespace serial
 	template<class Arc, class T>
 	struct noticeUnrecognizedItem {
 		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, T& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unrecognized_item, CItemBase& delegate_item)
+		void operator()(Arc& arc, T& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unrecognized_item)
 		{}
 	};
 	//--------------------
@@ -2708,13 +2708,6 @@ namespace serial
 		bool operator==(const char* name) const { return m_nameCrc == calcCRC32(name); }//データ項目名CRCで一致判定
 		bool operator!=(const char* name) const { return m_nameCrc != calcCRC32(name); }//データ項目名CRCで不一致判定
 	public:
-		//コピーオペレータ
-		CItemBase& operator=(const CItemBase& rhs)
-		{
-			memcpy(this, &rhs, sizeof(*this));
-			return *this;
-		}
-	public:
 		//キャストオペレータ
 		operator crc32_t() const { return m_nameCrc; }
 		operator const char*() const { return m_name; }
@@ -2766,6 +2759,11 @@ namespace serial
 			m_isOnlyOnSaveData = false;//セーブデータ上にのみ存在するデータ
 			m_isOnlyOnMem = false;//セーブデータ上にないデータ
 			src.resetIsOnlyOnMem();//コピー元の「セーブデータ上にないデータ」をリセット
+		}
+		//強制的に全情報をコピー
+		void copyForce(const CItemBase& src)
+		{
+			memcpy(this, &src, sizeof(*this));
 		}
 	public:
 		//コピーコンストラクタ
@@ -3141,7 +3139,8 @@ namespace serial
 			st_DESERIALIZE_PHASE_LOAD_DATA,//デシリアライズ：データのロードフェーズ
 			st_DESERIALIZE_PHASE_LOAD_OBJECT,//デシリアライズ：オブジェクトのロードフェーズ
 			st_DESERIALIZE_PHASE_LOAD_OBJECT_END,//デシリアライズ：オブジェクトのロードフェーズ終了
-			st_DESERIALIZE_PHASE_NOTICE,//デシリアライズ：ロードできなかったデータ項目の通知フェーズ
+			st_DESERIALIZE_PHASE_NOTICE_UNRECOGNIZED,//デシリアライズ：認識できなかったデータ項目の通知フェーズ
+			st_DESERIALIZE_PHASE_NOTICE_UNLOADED,//デシリアライズ：ロードできなかったデータ項目の通知フェーズ
 			st_DESERIALIZE_PHASE_AFTEER_LOAD,//デシリアライズ：ロード後処理フェーズ
 			st_DESERIALIZE_PHASE_BEFORE_DISTRIBUTE,//デシリアライズ：分配前フェーズ
 			st_DESERIALIZE_PHASE_DISTRIBUTE,//デシリアライズ：分配フェーズ
@@ -3792,7 +3791,8 @@ namespace serial
 			//※ロード前処理やロード後処理、通知処理、分配処理で operator&() を使っている時など
 			assert(arc.getState() == st_DESERIALIZE_PHASE_MAKE_LIST ||
 				arc.getState() == st_DESERIALIZE_PHASE_LOAD_OBJECT ||
-				arc.getState() == st_DESERIALIZE_PHASE_LOAD_OBJECT_END);
+				arc.getState() == st_DESERIALIZE_PHASE_LOAD_OBJECT_END ||
+				arc.getState() == st_DESERIALIZE_PHASE_NOTICE_UNRECOGNIZED);
 
 			//オブジェクト処理モード終了時はなにもしない
 			if (arc.getState() == st_DESERIALIZE_PHASE_LOAD_OBJECT_END)
@@ -3806,6 +3806,15 @@ namespace serial
 				{
 					arc >> item_obj;//オブジェクト読み込み
 					arc.setState(st_DESERIALIZE_PHASE_LOAD_OBJECT_END);//オブジェクト処理モード終了
+				}
+				return *this;
+			}
+			//認識できなかったオブジェクトの通知モード時は委譲データ項目をセットして終了する
+			else if (arc.getState() == st_DESERIALIZE_PHASE_NOTICE_UNRECOGNIZED)
+			{
+				if (m_targetObjItemDelegate)
+				{
+					m_targetObjItemDelegate->copyForce(item_obj);
 				}
 				return *this;
 			}
@@ -4028,16 +4037,25 @@ namespace serial
 										if (child_item.isOnlyOnSaveData() && !is_already_retry)
 										{
 											//通知フェーズに変更
-											arc.setState(st_DESERIALIZE_PHASE_NOTICE);
+											arc.setState(st_DESERIALIZE_PHASE_NOTICE_UNRECOGNIZED);
 
 											//通知
 											if (is_valid_element)
 											{
+												//委譲データ項目の受け取り用にインスタンスをセット
+												arc.setTargetObjItemDelegate(&delegate_child_item_for_retry);
+
+												//通知処理呼び出し
 												noticeUnrecognizedItem<CIArchive, T> functor;
-												functor(arc, item_obj.template get<T>(), ver, now_ver, child_item, delegate_child_item_for_retry);
+												functor(arc, item_obj.template get<T>(), ver, now_ver, child_item);
+												
+												//委譲データ項目の受け取り終了
+												arc.resetTargetObjItemDelegate();
+												
+												//委譲データ項目の受け取り状態を判定
 												if (delegate_child_item_for_retry.m_nameCrc != 0 && delegate_child_item_for_retry.m_itemP)
 												{
-													//委譲項目が設定されたのでリトライ
+													//委譲データ項目が設定されたのでリトライ
 													delegate_child_item_now = &delegate_child_item_for_retry;
 													is_required_retry = true;
 												}
@@ -4061,10 +4079,19 @@ namespace serial
 											//オブジェクト処理対象データ項目をセット
 											arc.setTargetObjItem(child_item);
 											arc.setTargetObjItemDelegate(delegate_child_item_now);
-										
+
+											//通知処理呼び出し
+											//※委譲データ項目がセットされている時のみ
+											//if (arc.getState() != st_DESERIALIZE_PHASE_LOAD_OBJECT_END)
+											if (delegate_child_item_now)
+											{
+												noticeUnrecognizedItem<CIArchive, T> functor;
+												functor(arc, item_obj.template get<T>(), ver, now_ver, child_item);
+											}
+											
 											//デシリアライズ処理（シリアライズ＆デシリアライズ兼用処理）呼び出し
 											//※対象オブジェクトアイテムを処理する
-											//if (arc.getState() != st_DESERIALIZE_PHASE_LOAD_OBJECT_END)
+											if (arc.getState() != st_DESERIALIZE_PHASE_LOAD_OBJECT_END)
 											{
 												serialize<CIArchive, T> functor;
 												functor(arc, item_obj.template getConst<T>(), ver, now_ver);
@@ -4081,6 +4108,7 @@ namespace serial
 											//オブジェクト処理対象データ項目をリセット
 											arc.resetTargetObjItem();
 											arc.resetTargetObjItemDelegate();
+											delegate_child_item_now = nullptr;
 
 											//未処理のままだったらブロックをスキップする
 											if (arc.getState() != st_DESERIALIZE_PHASE_LOAD_OBJECT_END)
@@ -4096,6 +4124,8 @@ namespace serial
 											arc.setState(st_DESERIALIZE_PHASE_LOAD_DATA);
 										}
 									}
+									//リトライ用の委譲項目リセット
+									delegate_child_item_now = nullptr;
 								}
 
 								//処理されなかったデータ項目の処理
@@ -4106,12 +4136,12 @@ namespace serial
 									if (child_item.isOnlyOnMem())
 									{
 										//通知フェーズに変更
-										arc.setState(st_DESERIALIZE_PHASE_NOTICE);
+										arc.setState(st_DESERIALIZE_PHASE_NOTICE_UNLOADED);
 
 										//処理結果計上
 										arc.getResult().addResult(child_item);
 
-										//通知
+										//通知処理呼び出し
 										if (is_valid_element)
 										{
 											noticeUnloadedItem<CIArchive, T> functor;
@@ -4375,6 +4405,7 @@ namespace serial
 			if (delegate_item)
 			{
 				input_item.copyFromOnMem(*delegate_item);//セーブデータの情報に現在の情報をコピー（統合）
+				input_item.setIsOnlyOnSaveData();//セーブデータ上のみのデータ扱いにする（集計のため）
 			}
 			else
 			{
@@ -4539,7 +4570,7 @@ namespace serial
 				*const_cast<crc32_t*>(&child_item.m_nameCrc) = delegate_child_item_now->m_nameCrc;//名前のCRC
 			}
 			else
-				child_item_now = arc.findItem(child_item);//対応するデータ項目情報を検索
+				child_item_now = arc.findItem(child_item.m_nameCrc);//対応するデータ項目情報を検索
 			if (child_item_now)//対応するデータ項目が見つかったか？
 				child_item.copyFromOnMem(*child_item_now);//現在の情報をセーブデータの情報にコピー（統合）
 			else
@@ -6746,9 +6777,11 @@ namespace serial
 			arc & pair("id", obj.m_id);
 			arc & pair("name", obj.m_name);
 			arc & pair("level", obj.m_level);
-			arc & pair("basic", obj.m_basic);
+			//arc & pair("basic", obj.m_basic);//セーブデータにしかないオブジェクトのシミュレーション
 			arc & pair("weapon", obj.m_weaponId);
 			arc & pair("shield", obj.m_shieldId);
+			//arc & pair("param1", obj.m_param1);//セーブデータにしかないデータのシミュレーション
+			//arc & pair("param2", obj.m_param1);//セーブデータがないデータのシミュレーション
 		}
 	};
 	//--------------------
@@ -6757,7 +6790,8 @@ namespace serial
 	struct save<Arc, CHARA_DATA> {
 		void operator()(Arc& arc, const CHARA_DATA& obj, const CVersion& ver)
 		{
-			arc & pair("param1", obj.m_param1);//セーブデータにしかないデータのシミュレーション用
+			arc & pair("param1", obj.m_param1);//セーブデータにしかないデータのシミュレーション
+			arc & pair("basic", obj.m_basic);//セーブデータにしかないオブジェクトのシミュレーション
 		}
 	};
 	//--------------------
@@ -6766,22 +6800,23 @@ namespace serial
 	struct load<Arc, CHARA_DATA> {
 		void operator()(Arc& arc, const CHARA_DATA& obj, const CVersion& ver, CVersion& now_ver)
 		{
-			arc & pair("param2", obj.m_param2);//セーブデータがないデータのシミュレーション用
+			arc & pair("param2", obj.m_param2);//セーブデータがないデータのシミュレーション
 		}
 	};
 	//--------------------
 	//セーブデータにはあったが、保存先の指定がなく、ロードできなかった項目の通知
 	template<class Arc>
 	struct noticeUnrecognizedItem<Arc, CHARA_DATA> {
-		void operator()(Arc& arc, CHARA_DATA& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unrecognized_item, CItemBase& delegate_item)
+		void operator()(Arc& arc, CHARA_DATA& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unrecognized_item)
 		{
 			if (unrecognized_item == "param1")
 			{
-				delegate_item = pair("param1", obj.m_param1);//委譲データ項目に新しい保存先を指定してリトライ
-				//obj.m_param1[0] = 12345;
-				//obj.m_param1[1] = 67890;
+				arc & pair("param1", obj.m_param1);//セーブデータにしかないデータのシミュレーション
 			}
-			//※リトライ対象がオブジェクトの場合、シリアライズかロードに定義されているオブジェクトじゃないと処理できないので注意
+			else if (unrecognized_item == "basic")
+			{
+				arc & pair("basic", obj.m_basic);//セーブデータにしかないデータのシミュレーション
+			}
 		}
 	};
 	//--------------------

@@ -676,6 +676,9 @@
              },
          },
          { "crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1e, },
+         { "crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
+         { "crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
+         { "crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 7b000000, c8010000, ], },
          "basic": {
            "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
              "obj": {
@@ -683,9 +686,6 @@
                { "crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0300, },
              },
          },
-         { "crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
-         { "crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
-         { "crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 7b000000, c8010000, ], },
        },
    },
    "chara": {
@@ -707,6 +707,9 @@
              },
          },
          { "crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14, },
+         { "crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
+         { "crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
+         { "crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ e7030000, 78030000, ], },
          "basic": {
            "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
              "obj": {
@@ -714,9 +717,6 @@
                { "crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 2800, },
              },
          },
-         { "crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
-         { "crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
-         { "crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ e7030000, 78030000, ], },
        },
    },
    "chara": {
@@ -738,6 +738,9 @@
              },
          },
          { "crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0a, },
+         { "crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
+         { "crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
+         { "crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 6f000000, de000000, ], },
          "basic": {
            "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
              "obj": {
@@ -745,9 +748,6 @@
                { "crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1400, },
              },
          },
-         { "crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
-         { "crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 00000000, },
-         { "crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 6f000000, de000000, ], },
        },
    },
    "phase_and_flags": {

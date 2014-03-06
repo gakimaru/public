@@ -676,6 +676,9 @@
              },
          },
          { "crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1e, },
+         { "crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 730e0032, },
+         { "crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": e72ea79b, },
+         { "crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 7b000000, c8010000, ], },
          "basic": {
            "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
              "obj": {
@@ -683,9 +686,6 @@
                { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0300, },
              },
          },
-         { "crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 730e0032, },
-         { "crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": e72ea79b, },
-         { "crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 7b000000, c8010000, ], },
        },
      "charaAbility": {
        "crc": 0x5521230c, "itemType": "struct CHARA_ABILITY_DATA_FOR_SAVE", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
@@ -713,6 +713,9 @@
              },
          },
          { "crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14, },
+         { "crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 77cb6c56, },
+         { "crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 654c91a9, },
+         { "crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ e7030000, 78030000, ], },
          "basic": {
            "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
              "obj": {
@@ -720,9 +723,6 @@
                { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 2800, },
              },
          },
-         { "crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 77cb6c56, },
-         { "crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 654c91a9, },
-         { "crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ e7030000, 78030000, ], },
        },
    },
    "chara": {
@@ -744,6 +744,9 @@
              },
          },
          { "crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0a, },
+         { "crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": b05d2d19, },
+         { "crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": a61fbc82, },
+         { "crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 6f000000, de000000, ], },
          "basic": {
            "crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
              "obj": {
@@ -751,9 +754,6 @@
                { "crc": 0x0cc4e161, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1400, },
              },
          },
-         { "crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": b05d2d19, },
-         { "crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": a61fbc82, },
-         { "crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 6f000000, de000000, ], },
        },
      "charaAbility": {
        "crc": 0x5521230c, "itemType": "struct CHARA_ABILITY_DATA_FOR_SAVE", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 

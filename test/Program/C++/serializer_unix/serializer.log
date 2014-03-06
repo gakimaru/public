@@ -56,22 +56,17 @@ load<CTest1>(ver=1,2)
 arc.is_read=1, arc.is_write=0
 serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
 serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-load<CTest1>(ver=1,2)
 arc.is_read=1, arc.is_write=0
 serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
-load<CTest1>(ver=1,2)
 arc.is_read=1, arc.is_write=0
 serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
 serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
 serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-load<CTest1>(ver=1,2)
 arc.is_read=1, arc.is_write=0
 serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
 serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
-load<CTest1>(ver=1,2)
 arc.is_read=1, arc.is_write=0
 serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
-load<CTest1>(ver=1,2)
 afterLoad<CTest1>(ver=1,2)
 処理結果：エラーなし
   getNumSmallerSizeItem()=0

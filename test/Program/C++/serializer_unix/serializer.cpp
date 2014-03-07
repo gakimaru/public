@@ -2241,10 +2241,6 @@ namespace serial
 //#define IS_BIG_ENDIAN//ビッグエンディアン
 
 	//--------------------
-	//クラス宣言
-	class CItemBase;
-	
-	//--------------------
 	//バージョンクラス
 	template<unsigned short MAJOR, unsigned short MINOR>
 	class CVersionDefBase;
@@ -2345,25 +2341,17 @@ namespace serial
 	class CVersionDef : public CVersionDefBase<0, 0>{};//規定では0
 
 	//--------------------
-	//ポインタ型チェック用クラス
-	//※テンプレートの部分特殊化を利用
-	template<class T>
-	struct isPtr
-	{
-		static const bool IS_PTR = false;//ポインタ型か？ = 非ポインタ型
-		typedef T TYPE;//通常型（非ポインタ型）変換用の型
-		typedef T* PTR_TYPE;//ポインタ型変換用の型
-		static const T* TO_PTR(const T& var){ return reinterpret_cast<const T*>(&var); }//ポインタに変換
-	};
-	template<class T>
-	struct isPtr<T*>
-	{
-		static const bool IS_PTR = true;//ポインタ型か？ = ポインタ型
-		typedef T TYPE;//通常型（非ポインタ型）変換用の型
-		typedef T* PTR_TYPE;//ポインタ型変換用の型
-		static const T* TO_PTR(const T* var){ return var; }//ポインタに変換
-	};
+	//データクラス用のバージョン定義マクロ
+	#define SERIALIZE_VERSION_DEF(T, MAJOR, MINOR) \
+		namespace serial \
+		{ \
+			template<> \
+			struct CVersionDef<T> : public CVersionDefBase<MAJOR, MINOR>{}; \
+		}
 
+	//--------------------
+	//クラス宣言
+	class CItemBase;
 	//--------------------
 	//シリアライズ処理用関数オブジェクトテンプレートクラス
 	//※シリアライズとデシリアライズ兼用共通処理
@@ -2561,6 +2549,35 @@ namespace serial
 			//isDefinedFunctor<fatalSerializeErrorOccurred<CArchiveDummy, T> >(0);//これは数えない
 			//isDefinedFunctor<fatalDeserializeErrorOccurred<CArchiveDummy, T> >(0);////これは数えない
 	}
+	//--------------------
+	//データクラスのフレンド宣言用マクロ
+	#define FRIEND_SERIALIZE(T) \
+		template<class Arc, class T> \
+		friend struct serial::serialize; \
+		template<class Arc, class T> \
+		friend struct serial::save; \
+		template<class Arc, class T> \
+		friend struct serial::load; \
+		template<class Arc, class T> \
+		friend struct serial::beforeLoad; \
+		template<class Arc, class T> \
+		friend struct serial::afterLoad; \
+		template<class Arc, class T> \
+		friend struct serial::noticeUnrecognizedItem; \
+		template<class Arc, class T> \
+		friend struct serial::noticeUnloadedItem; \
+		template<class Arc, class T> \
+		friend struct serial::collector; \
+		template<class Arc, class T> \
+		friend struct serial::distributor; \
+		template<class Arc, class T> \
+		friend struct serial::beforeDistribute; \
+		template<class Arc, class T> \
+		friend struct serial::afterDistribute; \
+		template<class Arc, class T> \
+		friend struct serial::fatalSerializeErrorOccurred; \
+		template<class Arc, class T> \
+		friend struct fatalDeserializeErrorOccurred;
 
 	//--------------------
 	//汎用データ型指定用構造体
@@ -3374,6 +3391,27 @@ namespace serial
 		//デストラクタ
 		~CTypeCtrl()
 		{}
+	};
+
+
+	//--------------------
+	//ポインタ型チェック用クラス
+	//※テンプレートの部分特殊化を利用
+	template<class T>
+	struct isPtr
+	{
+		static const bool IS_PTR = false;//ポインタ型か？ = 非ポインタ型
+		typedef T TYPE;//通常型（非ポインタ型）変換用の型
+		typedef T* PTR_TYPE;//ポインタ型変換用の型
+		static const T* TO_PTR(const T& var){ return reinterpret_cast<const T*>(&var); }//ポインタに変換
+	};
+	template<class T>
+	struct isPtr<T*>
+	{
+		static const bool IS_PTR = true;//ポインタ型か？ = ポインタ型
+		typedef T TYPE;//通常型（非ポインタ型）変換用の型
+		typedef T* PTR_TYPE;//ポインタ型変換用の型
+		static const T* TO_PTR(const T* var){ return var; }//ポインタに変換
 	};
 
 	//--------------------
@@ -4251,120 +4289,6 @@ namespace serial
 		itemList_t* m_itemList;//データ項目リスト
 	};
 	//--------------------
-	//アーカイブ形式基底クラス
-	class CArchiveStyleBase
-	{
-	public:
-		//コンストラクタ
-		CArchiveStyleBase()
-		{}
-		//親を受け取るコンストラクタ
-		//※処理階層が深くなるごとにコピーが行われる
-		CArchiveStyleBase(CArchiveStyleBase& parent)
-		{}
-		//デストラクタ
-		~CArchiveStyleBase()
-		{}
-	};
-	//--------------------
-	//アーカイブ形式プロトタイプ（アーカイブ書き込み用）
-	//※必要なメソッドを定義しているだけのサンプル
-	//※実際には使用しない
-	class COArchiveStyleProto : public CArchiveStyleBase
-	{
-	public:
-		//メソッド
-		//シグネチャ書き込み
-		bool writeSignature(CIOArchiveBase& arc){ return true; }
-		//ブロックヘッダー書き込み
-		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver){ return true; }
-		//配列ブロックヘッダー書き込み
-		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num){ return true; }
-		//要素ヘッダー書き込み
-		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index){ return true; }
-		//データ項目書き込み
-		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item){ return true; }
-		//要素フッター書き込み
-		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
-		//配列ブロックフッター書き込み
-		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size){ return true; }
-		//ブロックフッター書き込み
-		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size){ return true; }
-		//ターミネータ書き込み
-		bool writeTerminator(CIOArchiveBase& arc){ return true; }
-	public:
-		//コンストラクタ
-		COArchiveStyleProto() :
-			CArchiveStyleBase()
-		{}
-		//親を受け取るコンストラクタ
-		//※処理階層が深くなるごとにコピーが行われる
-		COArchiveStyleProto(COArchiveStyleProto& parent) :
-			CArchiveStyleBase(parent)
-		{}
-		//デストラクタ
-		~COArchiveStyleProto()
-		{}
-	};
-	//--------------------
-	//アーカイブ形式プロトタイプ（アーカイブ読み込み用）
-	//※必要なメソッドを定義しているだけのサンプル
-	//※実際には使用しない
-	class CIArchiveStyleProto : public CArchiveStyleBase
-	{
-	public:
-		//メソッド
-		//パース
-		bool parse(CIOArchiveBase& arc){ return true; }
-		//シグネチャ読み込み
-		bool readSignature(CIOArchiveBase& arc){ return true; }
-		//ブロックヘッダー読み込み
-		//※読み込んだオブジェクトの型情報とバージョンを返す
-		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CItemBase* delegate_item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size){ return true; }
-		//配列ブロックヘッダー読み込み
-		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size){ return true; }
-		//要素ヘッダー読み込み
-		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
-		//データ項目読み込み
-		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase* delegate_child_item_now, CItemBase& child_item, const bool item_is_valid, const bool is_required_retry){ return true; }
-		//要素フッター読み込み
-		//※読み込みテストの結果、要素フッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadElemFooter(CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, bool& is_elem_end){ return true; }
-		//要素読み込み終了
-		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
-		//配列ブロックフッター読み込み
-		//※読み込みテストの結果、配列ブロックフッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end){ return true; }
-		//配列ブロック読み込み終了
-		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
-		//ブロックの読み込みをスキップ
-		bool skipReadBlock(CIOArchiveBase& arc){ return true; }
-		//ブロックフッター読み込み
-		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
-		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end){ return true; }
-		//ブロック読み込み終了
-		bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
-		//次のブロックヘッダー問い合わせ（先行読み込み）
-		//※処理を進めず、次の情報を読み取るのみ
-		//※（例えば、バイナリスタイルなら、読み込みバッファのポインタを進めない）
-		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& child_block_size, bool& is_found_next_block){ return true; }
-		//ターミネータ読み込み
-		bool readTerminator(CIOArchiveBase& arc){ return true; }
-	public:
-		//コンストラクタ
-		CIArchiveStyleProto() :
-			CArchiveStyleBase()
-		{}
-		//親を受け取るコンストラクタ
-		//※処理階層が深くなるごとにコピーが行われる
-		CIArchiveStyleProto(CIArchiveStyleProto& parent) :
-			CArchiveStyleBase(parent)
-		{}
-		//デストラクタ
-		~CIArchiveStyleProto()
-		{}
-	};
-	//--------------------
 	//アーカイブ書き込みクラス
 	template<class A>
 	class COArchive : public CIOArchiveBase
@@ -5178,6 +5102,120 @@ namespace serial
 		arcStyle_t m_style;//アーカイブスタイルオブジェクト
 		CItemBase* m_targetObjItem;//オブジェクト処理の対象データ項目
 		CItemBase* m_targetObjItemDelegate;//オブジェクト処理の対象データ項目の委譲データ項目
+	};
+	//--------------------
+	//アーカイブ形式基底クラス
+	class CArchiveStyleBase
+	{
+	public:
+		//コンストラクタ
+		CArchiveStyleBase()
+		{}
+		//親を受け取るコンストラクタ
+		//※処理階層が深くなるごとにコピーが行われる
+		CArchiveStyleBase(CArchiveStyleBase& parent)
+		{}
+		//デストラクタ
+		~CArchiveStyleBase()
+		{}
+	};
+	//--------------------
+	//アーカイブ形式プロトタイプ（アーカイブ書き込み用）
+	//※必要なメソッドを定義しているだけのサンプル（クラス追加のための参考用）
+	//※実際には使用しない
+	class COArchiveStyleProto : public CArchiveStyleBase
+	{
+	public:
+		//メソッド
+		//シグネチャ書き込み
+		bool writeSignature(CIOArchiveBase& arc){ return true; }
+		//ブロックヘッダー書き込み
+		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver){ return true; }
+		//配列ブロックヘッダー書き込み
+		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num){ return true; }
+		//要素ヘッダー書き込み
+		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index){ return true; }
+		//データ項目書き込み
+		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item){ return true; }
+		//要素フッター書き込み
+		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
+		//配列ブロックフッター書き込み
+		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size){ return true; }
+		//ブロックフッター書き込み
+		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size){ return true; }
+		//ターミネータ書き込み
+		bool writeTerminator(CIOArchiveBase& arc){ return true; }
+	public:
+		//コンストラクタ
+		COArchiveStyleProto() :
+			CArchiveStyleBase()
+		{}
+		//親を受け取るコンストラクタ
+		//※処理階層が深くなるごとにコピーが行われる
+		COArchiveStyleProto(COArchiveStyleProto& parent) :
+			CArchiveStyleBase(parent)
+		{}
+		//デストラクタ
+		~COArchiveStyleProto()
+		{}
+	};
+	//--------------------
+	//アーカイブ形式プロトタイプ（アーカイブ読み込み用）
+	//※必要なメソッドを定義しているだけのサンプル（クラス追加のための参考用）
+	//※実際には使用しない
+	class CIArchiveStyleProto : public CArchiveStyleBase
+	{
+	public:
+		//メソッド
+		//パース
+		bool parse(CIOArchiveBase& arc){ return true; }
+		//シグネチャ読み込み
+		bool readSignature(CIOArchiveBase& arc){ return true; }
+		//ブロックヘッダー読み込み
+		//※読み込んだオブジェクトの型情報とバージョンを返す
+		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CItemBase* delegate_item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size){ return true; }
+		//配列ブロックヘッダー読み込み
+		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size){ return true; }
+		//要素ヘッダー読み込み
+		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
+		//データ項目読み込み
+		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase* delegate_child_item_now, CItemBase& child_item, const bool item_is_valid, const bool is_required_retry){ return true; }
+		//要素フッター読み込み
+		//※読み込みテストの結果、要素フッターでなければデータ項目の読み込みを継続する
+		bool tryAndReadElemFooter(CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, bool& is_elem_end){ return true; }
+		//要素読み込み終了
+		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
+		//配列ブロックフッター読み込み
+		//※読み込みテストの結果、配列ブロックフッターでなければデータ項目の読み込みを継続する
+		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end){ return true; }
+		//配列ブロック読み込み終了
+		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
+		//ブロックの読み込みをスキップ
+		bool skipReadBlock(CIOArchiveBase& arc){ return true; }
+		//ブロックフッター読み込み
+		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
+		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end){ return true; }
+		//ブロック読み込み終了
+		bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
+		//次のブロックヘッダー問い合わせ（先行読み込み）
+		//※処理を進めず、次の情報を読み取るのみ
+		//※（例えば、バイナリスタイルなら、読み込みバッファのポインタを進めない）
+		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& child_block_size, bool& is_found_next_block){ return true; }
+		//ターミネータ読み込み
+		bool readTerminator(CIOArchiveBase& arc){ return true; }
+	public:
+		//コンストラクタ
+		CIArchiveStyleProto() :
+			CArchiveStyleBase()
+		{}
+		//親を受け取るコンストラクタ
+		//※処理階層が深くなるごとにコピーが行われる
+		CIArchiveStyleProto(CIArchiveStyleProto& parent) :
+			CArchiveStyleBase(parent)
+		{}
+		//デストラクタ
+		~CIArchiveStyleProto()
+		{}
 	};
 	//--------------------
 	//バイナリ形式アーカイブクラス（共通）
@@ -6260,43 +6298,6 @@ namespace serial
 	//テキスト形式アーカイブ読み込みクラス
 	using CITextArchive = CIArchive<CIArchiveStyleText>;
 }
-//--------------------
-//データクラス用のバージョン定義マクロ
-#define SERIALIZE_VERSION_DEF(T, MAJOR, MINOR) \
-namespace serial \
-	{ \
-		template<> \
-		struct CVersionDef<T> : public CVersionDefBase<MAJOR, MINOR>{}; \
-	}
-//--------------------
-//データクラスのフレンド宣言用マクロ
-#define FRIEND_SERIALIZE(T) \
-	template<class Arc, class T> \
-	friend struct serial::serialize; \
-	template<class Arc, class T> \
-	friend struct serial::save; \
-	template<class Arc, class T> \
-	friend struct serial::load; \
-	template<class Arc, class T> \
-	friend struct serial::beforeLoad; \
-	template<class Arc, class T> \
-	friend struct serial::afterLoad; \
-	template<class Arc, class T> \
-	friend struct serial::noticeUnrecognizedItem; \
-	template<class Arc, class T> \
-	friend struct serial::noticeUnloadedItem; \
-	template<class Arc, class T> \
-	friend struct serial::collector; \
-	template<class Arc, class T> \
-	friend struct serial::distributor; \
-	template<class Arc, class T> \
-	friend struct serial::beforeDistribute; \
-	template<class Arc, class T> \
-	friend struct serial::afterDistribute; \
-	template<class Arc, class T> \
-	friend struct serial::fatalSerializeErrorOccurred; \
-	template<class Arc, class T> \
-	friend struct fatalDeserializeErrorOccurred;
 
 //--------------------------------------------------------------------------------
 //シリアライズテスト１

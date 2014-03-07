@@ -2350,236 +2350,6 @@ namespace serial
 		}
 
 	//--------------------
-	//クラス宣言
-	class CItemBase;
-	//--------------------
-	//シリアライズ処理用関数オブジェクトテンプレートクラス
-	//※シリアライズとデシリアライズ兼用共通処理
-	//※特殊化によりユーザー処理を実装
-	//※標準では何もしない
-	template<class Arc, class T>
-	struct serialize {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, const T& obj, const CVersion& ver, const CVersion& now_ver)
-		{}
-	};
-	//--------------------
-	//セーブ処理用関数オブジェクトテンプレートクラス
-	//※シリアライズ専用処理
-	//※特殊化によりユーザー処理を実装
-	//※標準では何もしない
-	template<class Arc, class T>
-	struct save	{
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, const T& obj, const CVersion& ver)
-		{}
-	};
-	//--------------------
-	//ロード処理用関数オブジェクトテンプレートクラス
-	//※デシリアライズ専用処理
-	//※特殊化によりユーザー処理を実装
-	//※標準では何もしない
-	template<class Arc, class T>
-	struct load	{
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, const T& obj, const CVersion& ver, const CVersion& now_ver)
-		{}
-	};
-	//--------------------
-	//ロード前処理用関数オブジェクトテンプレートクラス
-	//※デシリアライズ専用処理
-	//※特殊化によりユーザー処理を実装
-	//※objのロードを開始する前に実行される
-	//※標準では何もしない
-	template<class Arc, class T>
-	struct beforeLoad {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, T& obj, const CVersion& ver, const CVersion& now_ver)
-		{}
-	};
-	//--------------------
-	//ロード後処理用関数オブジェクトテンプレートクラス
-	//※デシリアライズ専用処理
-	//※特殊化によりユーザー処理を実装
-	//※objのロードが一通り終わったあと実行される
-	//※noticeUnrecognizedItem, noticeUnloadedItem の後に実行される
-	//※標準では何もしない
-	template<class Arc, class T>
-	struct afterLoad {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, T& obj, const CVersion& ver, const CVersion& now_ver)
-		{}
-	};
-	//--------------------
-	//セーブデータにはあったが、保存先の指定がなく、ロードできなかった項目の通知
-	//※デシリアライズ専用処理
-	//※特殊化によりユーザー処理を実装
-	//※見つかったら時点で知されるので、objが不完全な状態である点に注意
-	//※委譲データ項目 delegate_item にデータ項目をセットして返すとリトライしてそこに読み込む
-	//※標準では何もしない
-	template<class Arc, class T>
-	struct noticeUnrecognizedItem {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, T& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unrecognized_item)
-		{}
-	};
-	//--------------------
-	//保存先の指定があるが、セーブデータになくロードできなかった項目の通知
-	//※デシリアライズ専用処理
-	//※特殊化によりユーザー処理を実装
-	//※objのロードが一通り終わったあと、まとめて通知する
-	//※noticeUnrecognizedItem の後、afterLoad より先に実行される
-	//※標準では何もしない
-	template<class Arc, class T>
-	struct noticeUnloadedItem {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, T& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unloaded_item)
-		{}
-	};
-	//--------------------
-	//データ収集処理用関数オブジェクトテンプレートクラス
-	//※シリアライズ専用処理
-	//※特殊化によりユーザー処理を実装
-	//※処理の中で使えるのは operator<<() のみ
-	//　operator&() は禁止
-	//※標準では何もしない
-	template<class Arc, class T>
-	struct collector {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, const T& obj, const CVersion& ver)
-		{}
-	};
-	//--------------------
-	//データ分配処理用関数オブジェクトテンプレートクラス
-	//※デシリアライズ専用処理
-	//※特殊化によりユーザー処理を実装
-	//※処理の中で使えるのは operator>>() のみ
-	//　operator&() は禁止
-	//※収集処理で登録されたオブジェクトがセーブデータから見つかるごとに
-	//　何度も呼び出される
-	//※見つかったオブジェクトの情報（データ項目情報 = target_item）が渡される
-	//※基本オブジェクト（obj）は、配列だった場合、その先頭の要素が渡される
-	//※セーブデータ上の配列要素数と、ロードできた配列要素数（メモリ上の配列要素数）が渡される
-	//※標準では何もしない
-	template<class Arc, class T>
-	struct distributor {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, T& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver, const CItemBase& target_item)
-		{}
-	};
-	//--------------------
-	//データ分配前処理用関数オブジェクトテンプレートクラス
-	//※デシリアライズ専用処理
-	//※特殊化によりユーザー処理を実装
-	template<class Arc, class T>
-	struct beforeDistribute {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, T& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver)
-		{}
-	};
-	//--------------------
-	//データ分配後処理用関数オブジェクトテンプレートクラス
-	//※デシリアライズ専用処理
-	//※特殊化によりユーザー処理を実装
-	template<class Arc, class T>
-	struct afterDistribute {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, T& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver)
-		{}
-	};
-	//--------------------
-	//シリアライズ時に致命的エラー発生時処理用関数オブジェクトテンプレートクラス
-	//※シリアライズ専用処理
-	//※エラーが発生したタイミングではなく、最後に呼び出される
-	//※特殊化によりユーザー処理を実装
-	template<class Arc, class T>
-	struct fatalSerializeErrorOccurred {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, const T& obj, const CVersion& ver)
-		{}
-	};
-	//--------------------
-	//デシリアライズ時に致命的エラー発生時処理用関数オブジェクトテンプレートクラス
-	//※デシリアライズ専用処理
-	//※エラーが発生したタイミングではなく、最後に呼び出される
-	//※特殊化によりユーザー処理を実装
-	template<class Arc, class T>
-	struct fatalDeserializeErrorOccurred {
-		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
-		void operator()(Arc& arc, const T& obj, const CVersion& ver, const CVersion& now_ver)
-		{}
-	};
-	//--------------------
-	//関数オブジェクト定義済みチェック関数
-	//※SFINAEにより、IS_UNDEFINED が定義されている型のオーバーロード関数が選ばれたら未定義とみなす
-	template<class F>
-	bool isDefinedFunctor(const typename F::IS_UNDEFINED)
-	{
-		return false;//未定義
-	}
-	template<class F>
-	bool isDefinedFunctor(...)
-	{
-		return true;//定義済み
-	}
-	//--------------------
-	//アーカイブダミークラス
-	class CArchiveDummy{};
-	//--------------------
-	//オブジェクト型か？
-	//※いずれかの関数オブジェクトが登録されていればオブジェクト型とみなす
-	//※オブジェクト型はシリアライズの際にデータブロックとして扱う
-	template<class T>
-	bool hasAnyFunctor()
-	{
-		//ここでチェック：収集処理と分配処理は必ずワンセットで定義する必要あり
-		assert((isDefinedFunctor<collector<CArchiveDummy, T> >(0)) == (isDefinedFunctor<distributor<CArchiveDummy, T> >(0)));
-		//関数オブジェクトのどれか一つでも定義されているかチェック
-		return isDefinedFunctor<serialize<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<save<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<load<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<beforeLoad<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<afterLoad<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<noticeUnrecognizedItem<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<noticeUnloadedItem<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<collector<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<distributor<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<beforeDistribute<CArchiveDummy, T> >(0) ||
-			isDefinedFunctor<afterDistribute<CArchiveDummy, T> >(0);
-			//isDefinedFunctor<fatalSerializeErrorOccurred<CArchiveDummy, T> >(0);//これは数えない
-			//isDefinedFunctor<fatalDeserializeErrorOccurred<CArchiveDummy, T> >(0);////これは数えない
-	}
-	//--------------------
-	//データクラスのフレンド宣言用マクロ
-	#define FRIEND_SERIALIZE(T) \
-		template<class Arc, class T> \
-		friend struct serial::serialize; \
-		template<class Arc, class T> \
-		friend struct serial::save; \
-		template<class Arc, class T> \
-		friend struct serial::load; \
-		template<class Arc, class T> \
-		friend struct serial::beforeLoad; \
-		template<class Arc, class T> \
-		friend struct serial::afterLoad; \
-		template<class Arc, class T> \
-		friend struct serial::noticeUnrecognizedItem; \
-		template<class Arc, class T> \
-		friend struct serial::noticeUnloadedItem; \
-		template<class Arc, class T> \
-		friend struct serial::collector; \
-		template<class Arc, class T> \
-		friend struct serial::distributor; \
-		template<class Arc, class T> \
-		friend struct serial::beforeDistribute; \
-		template<class Arc, class T> \
-		friend struct serial::afterDistribute; \
-		template<class Arc, class T> \
-		friend struct serial::fatalSerializeErrorOccurred; \
-		template<class Arc, class T> \
-		friend struct fatalDeserializeErrorOccurred;
-
-	//--------------------
 	//汎用データ型指定用構造体
 	struct str_t{};//文字列型
 	struct bin_t{};//バイナリ型
@@ -3393,6 +3163,235 @@ namespace serial
 		{}
 	};
 
+	//--------------------
+	//クラス宣言
+	class CItemBase;
+	//--------------------
+	//シリアライズ処理用関数オブジェクトテンプレートクラス
+	//※シリアライズとデシリアライズ兼用共通処理
+	//※特殊化によりユーザー処理を実装
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct serialize {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, const T& obj, const CVersion& ver, const CVersion& now_ver)
+		{}
+	};
+	//--------------------
+	//セーブ処理用関数オブジェクトテンプレートクラス
+	//※シリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct save	{
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, const T& obj, const CVersion& ver)
+		{}
+	};
+	//--------------------
+	//ロード処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct load	{
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, const T& obj, const CVersion& ver, const CVersion& now_ver)
+		{}
+	};
+	//--------------------
+	//ロード前処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※objのロードを開始する前に実行される
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct beforeLoad {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, T& obj, const CVersion& ver, const CVersion& now_ver)
+		{}
+	};
+	//--------------------
+	//ロード後処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※objのロードが一通り終わったあと実行される
+	//※noticeUnrecognizedItem, noticeUnloadedItem の後に実行される
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct afterLoad {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, T& obj, const CVersion& ver, const CVersion& now_ver)
+		{}
+	};
+	//--------------------
+	//セーブデータにはあったが、保存先の指定がなく、ロードできなかった項目の通知
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※見つかったら時点で知されるので、objが不完全な状態である点に注意
+	//※委譲データ項目 delegate_item にデータ項目をセットして返すとリトライしてそこに読み込む
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct noticeUnrecognizedItem {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, T& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unrecognized_item)
+		{}
+	};
+	//--------------------
+	//保存先の指定があるが、セーブデータになくロードできなかった項目の通知
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※objのロードが一通り終わったあと、まとめて通知する
+	//※noticeUnrecognizedItem の後、afterLoad より先に実行される
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct noticeUnloadedItem {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, T& obj, CVersion& ver, const CVersion& now_ver, const CItemBase& unloaded_item)
+		{}
+	};
+	//--------------------
+	//データ収集処理用関数オブジェクトテンプレートクラス
+	//※シリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※処理の中で使えるのは operator<<() のみ
+	//　operator&() は禁止
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct collector {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, const T& obj, const CVersion& ver)
+		{}
+	};
+	//--------------------
+	//データ分配処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	//※処理の中で使えるのは operator>>() のみ
+	//　operator&() は禁止
+	//※収集処理で登録されたオブジェクトがセーブデータから見つかるごとに
+	//　何度も呼び出される
+	//※見つかったオブジェクトの情報（データ項目情報 = target_item）が渡される
+	//※基本オブジェクト（obj）は、配列だった場合、その先頭の要素が渡される
+	//※セーブデータ上の配列要素数と、ロードできた配列要素数（メモリ上の配列要素数）が渡される
+	//※標準では何もしない
+	template<class Arc, class T>
+	struct distributor {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, T& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver, const CItemBase& target_item)
+		{}
+	};
+	//--------------------
+	//データ分配前処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	template<class Arc, class T>
+	struct beforeDistribute {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, T& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver)
+		{}
+	};
+	//--------------------
+	//データ分配後処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※特殊化によりユーザー処理を実装
+	template<class Arc, class T>
+	struct afterDistribute {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, T& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver)
+		{}
+	};
+	//--------------------
+	//シリアライズ時に致命的エラー発生時処理用関数オブジェクトテンプレートクラス
+	//※シリアライズ専用処理
+	//※エラーが発生したタイミングではなく、最後に呼び出される
+	//※特殊化によりユーザー処理を実装
+	template<class Arc, class T>
+	struct fatalSerializeErrorOccurred {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, const T& obj, const CVersion& ver)
+		{}
+	};
+	//--------------------
+	//デシリアライズ時に致命的エラー発生時処理用関数オブジェクトテンプレートクラス
+	//※デシリアライズ専用処理
+	//※エラーが発生したタイミングではなく、最後に呼び出される
+	//※特殊化によりユーザー処理を実装
+	template<class Arc, class T>
+	struct fatalDeserializeErrorOccurred {
+		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
+		void operator()(Arc& arc, const T& obj, const CVersion& ver, const CVersion& now_ver)
+		{}
+	};
+	//--------------------
+	//関数オブジェクト定義済みチェック関数
+	//※SFINAEにより、IS_UNDEFINED が定義されている型のオーバーロード関数が選ばれたら未定義とみなす
+	template<class F>
+	bool isDefinedFunctor(const typename F::IS_UNDEFINED)
+	{
+		return false;//未定義
+	}
+	template<class F>
+	bool isDefinedFunctor(...)
+	{
+		return true;//定義済み
+	}
+	//--------------------
+	//アーカイブダミークラス
+	class CArchiveDummy{};
+	//--------------------
+	//オブジェクト型か？
+	//※いずれかの関数オブジェクトが登録されていればオブジェクト型とみなす
+	//※オブジェクト型はシリアライズの際にデータブロックとして扱う
+	template<class T>
+	bool hasAnyFunctor()
+	{
+		//ここでチェック：収集処理と分配処理は必ずワンセットで定義する必要あり
+		assert((isDefinedFunctor<collector<CArchiveDummy, T> >(0)) == (isDefinedFunctor<distributor<CArchiveDummy, T> >(0)));
+		//関数オブジェクトのどれか一つでも定義されているかチェック
+		return isDefinedFunctor<serialize<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<save<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<load<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<beforeLoad<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<afterLoad<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<noticeUnrecognizedItem<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<noticeUnloadedItem<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<collector<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<distributor<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<beforeDistribute<CArchiveDummy, T> >(0) ||
+			isDefinedFunctor<afterDistribute<CArchiveDummy, T> >(0);
+		//isDefinedFunctor<fatalSerializeErrorOccurred<CArchiveDummy, T> >(0);//これは数えない
+		//isDefinedFunctor<fatalDeserializeErrorOccurred<CArchiveDummy, T> >(0);////これは数えない
+	}
+	//--------------------
+	//データクラスのフレンド宣言用マクロ
+	#define FRIEND_SERIALIZE(T) \
+		template<class Arc, class T> \
+		friend struct serial::serialize; \
+		template<class Arc, class T> \
+		friend struct serial::save; \
+		template<class Arc, class T> \
+		friend struct serial::load; \
+		template<class Arc, class T> \
+		friend struct serial::beforeLoad; \
+		template<class Arc, class T> \
+		friend struct serial::afterLoad; \
+		template<class Arc, class T> \
+		friend struct serial::noticeUnrecognizedItem; \
+		template<class Arc, class T> \
+		friend struct serial::noticeUnloadedItem; \
+		template<class Arc, class T> \
+		friend struct serial::collector; \
+		template<class Arc, class T> \
+		friend struct serial::distributor; \
+		template<class Arc, class T> \
+		friend struct serial::beforeDistribute; \
+		template<class Arc, class T> \
+		friend struct serial::afterDistribute; \
+		template<class Arc, class T> \
+		friend struct serial::fatalSerializeErrorOccurred; \
+		template<class Arc, class T> \
+		friend struct fatalDeserializeErrorOccurred;
 
 	//--------------------
 	//ポインタ型チェック用クラス
@@ -3413,37 +3412,38 @@ namespace serial
 		typedef T* PTR_TYPE;//ポインタ型変換用の型
 		static const T* TO_PTR(const T* var){ return var; }//ポインタに変換
 	};
-
 	//--------------------
-	//保存状態
-	enum recInfoEnum : unsigned char
+	//データ項目属性
+	enum itemAttrEnum : unsigned char
 	{
 		IS_OBJECT = 0x01,//オブジェクト型
 		IS_ARRAY = 0x02,//配列型
 		IS_PTR = 0x04,//ポインタ型
 		IS_NULL = 0x08,//ヌル
-		HAS_VERSION = 0x10,//バージョン情報あり
+		IS_VLEN = 0x10,//可変長か？
+		HAS_VERSION = 0x20,//バージョン情報あり
 	};
-	class CRecInfo
+	class CItemAttr
 	{
 	public:
 		//型
-		typedef unsigned char value_t;//保存状態型
+		typedef unsigned char value_t;//属性型
 	public:
 		//アクセッサ
 		bool isObj() const { return (m_value & IS_OBJECT) ? true : false; }//オブジェクト型か？
 		bool isArr() const { return (m_value & IS_ARRAY) ? true : false; }//配列型か？
 		bool isPtr() const { return (m_value & IS_PTR) ? true : false; }//ポインタ型か？
 		bool isNul() const { return (m_value & IS_NULL) ? true : false; }//ヌルポインタか？（ポインタ型の時だけ扱われる）
+		bool isVLen() const { return (m_value & IS_VLEN) ? true : false; }//可変長か？（主に文字列ポインタの時に扱われる）
 		bool hasVersion() const { return (m_value & HAS_VERSION) ? true : false; }//バージョン情報があるか？
 		void setHasVersion() const { *const_cast<value_t*>(&m_value) = m_value | HAS_VERSION; }//バージョン情報ありにする
 		void resetHasVersion() const { *const_cast<value_t*>(&m_value) = m_value & ~HAS_VERSION; }//バージョン情報なしにする
 	public:
 		//オペレータ
-		bool operator==(const CRecInfo& rhs) const { return m_value == rhs.m_value; }
-		bool operator!=(const CRecInfo& rhs) const { return m_value != rhs.m_value; }
+		bool operator==(const CItemAttr& rhs) const { return m_value == rhs.m_value; }
+		bool operator!=(const CItemAttr& rhs) const { return m_value != rhs.m_value; }
 		//コピーオペレータ
-		CRecInfo& operator=(const CRecInfo& src)
+		CItemAttr& operator=(const CItemAttr& src)
 		{
 			*const_cast<value_t*>(&m_value) = src.m_value;
 			return *this;
@@ -3457,34 +3457,36 @@ namespace serial
 		}
 	public:
 		//コンストラクタ
-		CRecInfo(const value_t info) :
+		CItemAttr(const value_t info) :
 			m_value(info)
 		{}
-		CRecInfo(const bool is_object, const bool is_array, const bool is_ptr, const bool is_null) :
+		CItemAttr(const bool is_object, const bool is_array, const bool is_ptr, const bool is_null, const bool is_vlen) :
 			m_value(
 				(is_object ? IS_OBJECT : 0) |
 				(is_array ? IS_ARRAY : 0) |
 				(is_ptr ? IS_PTR : 0) |
-				(is_ptr && is_null ? IS_NULL : 0)
+				(is_ptr && is_null ? IS_NULL : 0) |
+				(is_vlen ? IS_VLEN : 0)
 				)
 		{}
 		//デストラクタ
-		~CRecInfo()
+		~CItemAttr()
 		{}
 	public://直接アクセス許可
 		//フィールド
-		const value_t m_value;//保存状態
+		const value_t m_value;//属性
 	};
 	//--------------------
-	//データ項目基底クラス
+	//データ項目情報基底クラス
 	class CItemBase
 	{
 	public:
 		//アクセッサ
-		bool isObj() const { return m_info.isObj(); }//オブジェクト型か？
-		bool isArr() const { return m_info.isArr(); }//配列型か？
-		bool isPtr() const { return m_info.isPtr(); }//ポインタ型か？
-		bool isNul() const { return m_info.isNul(); }//ヌルか？
+		bool isObj() const { return m_attr.isObj(); }//オブジェクト型か？
+		bool isArr() const { return m_attr.isArr(); }//配列型か？
+		bool isPtr() const { return m_attr.isPtr(); }//ポインタ型か？
+		bool isNul() const { return m_attr.isNul(); }//ヌルか？
+		bool isVLen() const { return m_attr.isVLen(); }//可変長か？
 		//【参考用】（セーブデータ上の）配列要素数を取得
 		//※アーカイブ形式によっては正しくない可能性がある
 		std::size_t getElemNum() const
@@ -3518,27 +3520,28 @@ namespace serial
 							 1 :
 							 m_arrNum;
 		}
-		bool nowIsObj() const { return m_hasNowInfo && m_nowInfo.isObj(); }//現在のデータはオブジェクト型か？
-		bool nowIsArr() const { return m_hasNowInfo && m_nowInfo.isArr(); }//現在のデータは配列型か？
-		bool nowIsPtr() const { return m_hasNowInfo && m_nowInfo.isPtr(); }//現在のデータはポインタ型か？
-		bool nowIsNul() const { return m_hasNowInfo && m_nowInfo.isNul(); }//現在のデータはヌルか？
-		bool nowAndSaveDataIsSameRecInfo() const { return m_hasNowInfo && m_nowInfo == m_info; }//現在のデータとセーブデータの保存情報が一致するか？
-		bool nowAndSaveDataIsdifferentRecInfo() const { return m_hasNowInfo && m_nowInfo != m_info; }//現在のデータとセーブデータの保存情報が一致しないか？
-		bool nowAndSaveDataIsObj() const { return m_hasNowInfo && m_nowInfo.isObj() && m_info.isObj(); }//現在のデータもセーブデータもオブジェクト型か？
-		bool nowAndSaveDataIsArr() const { return m_hasNowInfo && m_nowInfo.isArr() && m_info.isArr(); }//現在のデータもセーブデータも配列型か？
-		bool nowAndSaveDataIsPtr() const { return m_hasNowInfo && m_nowInfo.isPtr() && m_info.isPtr(); }//現在のデータもセーブデータもポインタ型か？
-		bool nowAndSaveDataIsNul() const { return m_hasNowInfo && m_nowInfo.isNul() && m_info.isNul(); }//現在のデータもセーブデータもはヌルか？
-		bool nowIsObjButSaveDataIsNot() const { return m_hasNowInfo && m_nowInfo.isObj() && !m_info.isObj(); }//現在のデータはオブジェクト型だがセーブデータはそうではないか？
-		bool nowIsArrButSaveDataIsNot() const { return m_hasNowInfo && m_nowInfo.isArr() && !m_info.isArr(); }//現在のデータは配列型だがセーブデータはそうではないか？
-		bool nowIsPtrButSaveDataIsNot() const { return m_hasNowInfo && m_nowInfo.isPtr() && !m_info.isPtr(); }//現在のデータはポインタ型だがセーブデータはそうではないか？
-		bool nowIsNulButSaveDataIsNot() const { return m_hasNowInfo && m_nowInfo.isNul() && !m_info.isNul(); }//現在のデータはヌルだがセーブデータはそうではないか？
-		bool nowIsNotObjButSaveDataIs() const { return m_hasNowInfo && !m_nowInfo.isObj() && m_info.isObj(); }//現在のデータはオブジェクト型ではないがセーブデータはそうか？
-		bool nowIsNotArrButSaveDataIs() const { return m_hasNowInfo && !m_nowInfo.isArr() && m_info.isArr(); }//現在のデータは配列型ではないがセーブデータはそうか？
-		bool nowIsNotPtrButSaveDataIs() const { return m_hasNowInfo && !m_nowInfo.isPtr() && m_info.isPtr(); }//現在のデータはポインタ型ではないがセーブデータはそうか？
-		bool nowIsNotNulButSaveDataIs() const { return m_hasNowInfo && !m_nowInfo.isNul() && m_info.isNul(); }//現在のデータはヌルではないがセーブデータはそうか？
-		bool nowSizeIsSame() const { return !isObj() && m_hasNowInfo && m_nowItemSize == m_itemSize; }//現在のサイズの方とセーブデータのサイズが同じか？
-		bool nowSizeIsSamall() const { return !isObj() && m_hasNowInfo && m_nowItemSize < m_itemSize; }//現在のサイズの方がセーブデータのサイズより小さいか？
-		bool nowSizeIsLarge() const { return !isObj() && m_hasNowInfo && m_nowItemSize > m_itemSize; }//現在のサイズの方がセーブデータのサイズより大きいか？
+		bool nowIsObj() const { return m_hasNowInfo && m_nowAttr.isObj(); }//現在のデータはオブジェクト型か？
+		bool nowIsArr() const { return m_hasNowInfo && m_nowAttr.isArr(); }//現在のデータは配列型か？
+		bool nowIsPtr() const { return m_hasNowInfo && m_nowAttr.isPtr(); }//現在のデータはポインタ型か？
+		bool nowIsNul() const { return m_hasNowInfo && m_nowAttr.isNul(); }//現在のデータはヌルか？
+		bool nowIsVLen() const { return m_hasNowInfo && m_nowAttr.isVLen(); }//現在のデータは可変長か？
+		bool nowAndSaveDataIsSameAttr() const { return m_hasNowInfo && m_nowAttr == m_attr; }//現在のデータとセーブデータの属性が一致するか？
+		bool nowAndSaveDataIsDifferentAttr() const { return m_hasNowInfo && m_nowAttr != m_attr; }//現在のデータとセーブデータの属性が一致しないか？
+		bool nowAndSaveDataIsObj() const { return m_hasNowInfo && m_nowAttr.isObj() && m_attr.isObj(); }//現在のデータもセーブデータもオブジェクト型か？
+		bool nowAndSaveDataIsArr() const { return m_hasNowInfo && m_nowAttr.isArr() && m_attr.isArr(); }//現在のデータもセーブデータも配列型か？
+		bool nowAndSaveDataIsPtr() const { return m_hasNowInfo && m_nowAttr.isPtr() && m_attr.isPtr(); }//現在のデータもセーブデータもポインタ型か？
+		bool nowAndSaveDataIsNul() const { return m_hasNowInfo && m_nowAttr.isNul() && m_attr.isNul(); }//現在のデータもセーブデータもはヌルか？
+		bool nowIsObjButSaveDataIsNot() const { return m_hasNowInfo && m_nowAttr.isObj() && !m_attr.isObj(); }//現在のデータはオブジェクト型だがセーブデータはそうではないか？
+		bool nowIsArrButSaveDataIsNot() const { return m_hasNowInfo && m_nowAttr.isArr() && !m_attr.isArr(); }//現在のデータは配列型だがセーブデータはそうではないか？
+		bool nowIsPtrButSaveDataIsNot() const { return m_hasNowInfo && m_nowAttr.isPtr() && !m_attr.isPtr(); }//現在のデータはポインタ型だがセーブデータはそうではないか？
+		bool nowIsNulButSaveDataIsNot() const { return m_hasNowInfo && m_nowAttr.isNul() && !m_attr.isNul(); }//現在のデータはヌルだがセーブデータはそうではないか？
+		bool nowIsNotObjButSaveDataIs() const { return m_hasNowInfo && !m_nowAttr.isObj() && m_attr.isObj(); }//現在のデータはオブジェクト型ではないがセーブデータはそうか？
+		bool nowIsNotArrButSaveDataIs() const { return m_hasNowInfo && !m_nowAttr.isArr() && m_attr.isArr(); }//現在のデータは配列型ではないがセーブデータはそうか？
+		bool nowIsNotPtrButSaveDataIs() const { return m_hasNowInfo && !m_nowAttr.isPtr() && m_attr.isPtr(); }//現在のデータはポインタ型ではないがセーブデータはそうか？
+		bool nowIsNotNulButSaveDataIs() const { return m_hasNowInfo && !m_nowAttr.isNul() && m_attr.isNul(); }//現在のデータはヌルではないがセーブデータはそうか？
+		bool nowSizeIsSame() const { return !isObj() && !isVLen() && m_hasNowInfo && m_nowItemSize == m_itemSize; }//現在のサイズの方とセーブデータのサイズが同じか？
+		bool nowSizeIsSamall() const { return !isObj() && !isVLen() && m_hasNowInfo && m_nowItemSize < m_itemSize; }//現在のサイズの方がセーブデータのサイズより小さいか？
+		bool nowSizeIsLarge() const { return !isObj() && !isVLen() && m_hasNowInfo && m_nowItemSize > m_itemSize; }//現在のサイズの方がセーブデータのサイズより大きいか？
 		bool nowArrIsSame() const { return m_hasNowInfo && m_nowArrNum == m_arrNum; }//現在の配列サイズとセーブデータの配列サイズが同じか？
 		bool nowArrIsSmall() const { return m_hasNowInfo && m_nowArrNum < m_arrNum; }//現在の配列サイズの方がセーブデータの配列サイズより小さいか？
 		bool nowArrIsLarge() const { return m_hasNowInfo && m_nowArrNum > m_arrNum; }//現在の配列サイズの方がセーブデータの配列サイズより大きいか？
@@ -3590,10 +3593,10 @@ namespace serial
 			//m_itemType;//データの型情報
 			*const_cast<std::size_t*>(&m_itemSize) = 0;//データサイズ
 			*const_cast<std::size_t*>(&m_arrNum) = 0;//データの配列サイズ
-			const_cast<CRecInfo*>(&m_info)->clear();//保存状態
+			const_cast<CItemAttr*>(&m_attr)->clear();//属性
 			m_nowItemSize = 0;//現在のデータサイズ
 			m_nowArrNum = 0;//現在のデータの配列サイズ
-			m_nowInfo.clear();//現在の保存状態
+			m_nowAttr.clear();//現在の属性
 			m_hasNowInfo = false;//現在の情報コピー済み
 			m_isOnlyOnSaveData = false;//セーブデータ上にのみ存在するデータ
 			m_isOnlyOnMem = false;//セーブデータ上にないデータ
@@ -3609,7 +3612,7 @@ namespace serial
 			m_itemType = src.m_itemType;//データの型情報
 			m_nowItemSize = src.m_itemSize;//現在のデータサイズ
 			m_nowArrNum = src.m_arrNum;//現在のデータの配列サイズ
-			m_nowInfo = src.m_info;//現在の保存状態
+			m_nowAttr = src.m_attr;//現在の属性
 			m_nowTypeCtrl = src.m_typeCtrl;//型操作
 			m_hasNowInfo = true;//現在の情報コピー済み
 			m_isOnlyOnSaveData = false;//セーブデータ上にのみ存在するデータ
@@ -3630,11 +3633,11 @@ namespace serial
 			m_itemType(src.m_itemType),
 			m_itemSize(src.m_itemSize),
 			m_arrNum(src.m_arrNum),
-			m_info(src.m_info),
+			m_attr(src.m_attr),
 			m_typeCtrl(src.m_typeCtrl),
 			m_nowItemSize(src.m_nowItemSize),
 			m_nowArrNum(src.m_nowArrNum),
-			m_nowInfo(src.m_nowInfo),
+			m_nowAttr(src.m_nowAttr),
 			m_nowTypeCtrl(src.m_nowTypeCtrl),
 			m_hasNowInfo(src.m_hasNowInfo),
 			m_isOnlyOnSaveData(src.m_isOnlyOnSaveData),
@@ -3649,11 +3652,11 @@ namespace serial
 			m_itemType(&typeid(void)),
 			m_itemSize(0),
 			m_arrNum(0),
-			m_info(false, false, false, false),
+			m_attr(false, false, false, false, false),
 			m_typeCtrl(CTypeCtrlBase()),
 			m_nowItemSize(0),
 			m_nowArrNum(0),
-			m_nowInfo(false, false, false, false),
+			m_nowAttr(false, false, false, false, false),
 			m_nowTypeCtrl(CTypeCtrlBase()),
 			m_hasNowInfo(false),
 			m_isOnlyOnSaveData(false),
@@ -3661,18 +3664,18 @@ namespace serial
 			m_isAlready(false)
 		{}
 		//コンストラクタ
-		CItemBase(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, CTypeCtrlBase type_ctrl) :
+		CItemBase(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, const bool is_vlen, CTypeCtrlBase type_ctrl) :
 			m_name(name),
 			m_nameCrc(calcCRC32(name)),
 			m_itemP(item_p),
 			m_itemType(&item_type),
 			m_itemSize(item_size),
 			m_arrNum(arr_num),
-			m_info(is_object, arr_num > 0, is_ptr, item_p == nullptr),
+			m_attr(is_object, arr_num > 0, is_ptr, item_p == nullptr, is_vlen),
 			m_typeCtrl(type_ctrl),
 			m_nowItemSize(0),
 			m_nowArrNum(0),
-			m_nowInfo(false, false, false, false),
+			m_nowAttr(false, false, false, false, false),
 			m_nowTypeCtrl(CTypeCtrlBase()),
 			m_hasNowInfo(false),
 			m_isOnlyOnSaveData(false),
@@ -3680,18 +3683,18 @@ namespace serial
 			m_isAlready(false)
 		{}
 		//コンストラクタ
-		CItemBase(const CItemBase& src, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, CTypeCtrlBase type_ctrl) :
+		CItemBase(const CItemBase& src, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, const bool is_vlen, CTypeCtrlBase type_ctrl) :
 			m_name(src.m_name),
 			m_nameCrc(src.m_nameCrc),
 			m_itemP(item_p),
 			m_itemType(&item_type),
 			m_itemSize(item_size),
 			m_arrNum(arr_num),
-			m_info(is_object, arr_num > 0, is_ptr, item_p == nullptr),
+			m_attr(is_object, arr_num > 0, is_ptr, item_p == nullptr, is_vlen),
 			m_typeCtrl(type_ctrl),
 			m_nowItemSize(0),
 			m_nowArrNum(0),
-			m_nowInfo(false, false, false, false),
+			m_nowAttr(false, false, false, false, false),
 			m_nowTypeCtrl(CTypeCtrlBase()),
 			m_hasNowInfo(false),
 			m_isOnlyOnSaveData(false),
@@ -3709,11 +3712,11 @@ namespace serial
 		const std::type_info* m_itemType;//データの型情報
 		const std::size_t m_itemSize;//データサイズ
 		const std::size_t m_arrNum;//データの配列サイズ
-		const CRecInfo m_info;//保存状態
+		const CItemAttr m_attr;//属性
 		CTypeCtrlBase m_typeCtrl;//型操作
 		std::size_t m_nowItemSize;//データサイズ　※現在のサイズ（デシリアライズ処理用）
 		std::size_t m_nowArrNum;//データの配列サイズ　※現在のサイズ（デシリアライズ処理用）
-		CRecInfo m_nowInfo;//保存状態　※現在の状態（デシリアライズ処理用）
+		CItemAttr m_nowAttr;//属性　※現在の状態（デシリアライズ処理用）
 		CTypeCtrlBase m_nowTypeCtrl;//型操作　※現在の状態（デシリアライズ処理用）
 		bool m_hasNowInfo;//現在の情報コピー済み
 		mutable bool m_isOnlyOnSaveData;//セーブデータ上にのみ存在するデータ
@@ -3721,23 +3724,23 @@ namespace serial
 		mutable bool m_isAlready;//処理済み
 	};
 	//--------------------
-	//データ項目テンプレートクラス
+	//データ項目情報テンプレートクラス
 	template<typename T>
 	class CItem : public CItemBase
 	{
 	public:
 		//コンストラクタ
-		CItem(const char* name, const T* item_p, const std::size_t arr_num, const bool is_ptr) :
-			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, CTypeCtrl<T>())
+		CItem(const char* name, const T* item_p, const std::size_t arr_num, const bool is_ptr, const bool is_vlen) :
+			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, is_vlen, CTypeCtrl<T>())
 		{}
-		CItem(const char* name, const std::size_t size, const T* item_p, const bool is_ptr) :
-			CItemBase(name, item_p, typeid(T), size, 0, hasAnyFunctor<T>(), is_ptr, CTypeCtrl<T>())
+		CItem(const char* name, const std::size_t size, const T* item_p, const bool is_ptr, const bool is_vlen) :
+			CItemBase(name, item_p, typeid(T), size, 0, hasAnyFunctor<T>(), is_ptr, is_vlen, CTypeCtrl<T>())
 		{}
 		CItem(const char* name, const std::size_t size) :
-			CItemBase(name, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, CTypeCtrl<T>())
+			CItemBase(name, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, false, CTypeCtrl<T>())
 		{}
 		CItem(const char* name) :
-			CItemBase(name, nullptr, typeid(T), 0, 0, hasAnyFunctor<T>(), false, CTypeCtrl<T>())
+			CItemBase(name, nullptr, typeid(T), 0, 0, hasAnyFunctor<T>(), false, false, CTypeCtrl<T>())
 		{}
 		CItem(const CItemBase& src) :
 			CItemBase(src)
@@ -3746,13 +3749,12 @@ namespace serial
 		~CItem()
 		{}
 	};
-	
 	//--------------------
 	//データ項目情報作成テンプレート関数
 	template<class T>
 	CItem<typename isPtr<T>::TYPE> pair(const char* name, const T& item)
 	{
-		CItem<typename isPtr<T>::TYPE> item_obj(name, isPtr<T>::TO_PTR(item), 0, isPtr<T>::IS_PTR);
+		CItem<typename isPtr<T>::TYPE> item_obj(name, isPtr<T>::TO_PTR(item), 0, isPtr<T>::IS_PTR, false);
 		return item_obj;
 	}
 	//--------------------
@@ -3760,7 +3762,7 @@ namespace serial
 	template<class T, std::size_t N>
 	CItem<T> pair(const char* name, const T(&item)[N])
 	{
-		CItem<T> item_obj(name, item, N, false);
+		CItem<T> item_obj(name, item, N, false, false);
 		return item_obj;
 	}
 	//--------------------
@@ -3768,7 +3770,7 @@ namespace serial
 	template<class T>
 	CItem<typename isPtr<T>::TYPE> pairArray(const char* name, const T& item, const std::size_t N)
 	{
-		CItem<typename isPtr<T>::TYPE> item_obj(name, isPtr<T>::TO_PTR(item), N, isPtr<T>::IS_PTR);
+		CItem<typename isPtr<T>::TYPE> item_obj(name, isPtr<T>::TO_PTR(item), N, isPtr<T>::IS_PTR, false);
 		return item_obj;
 	}
 	//--------------------
@@ -3781,7 +3783,7 @@ namespace serial
 	{
 		const std::size_t item_size = sizeof(T);
 		const bin_t* item_p = reinterpret_cast<const bin_t*>(&item);
-		CItem<bin_t> item_obj(name, item_size, item_p, false);
+		CItem<bin_t> item_obj(name, item_size, item_p, false, false);
 		return item_obj;
 	}
 #else//charの配列扱いにする場合
@@ -3790,7 +3792,7 @@ namespace serial
 	{
 		const std::size_t arra_num = sizeof(T);
 		const char* item_p = reinterpret_cast<const char*>(&item);
-		CItem<char> item_obj(name, item_p, arra_num, false);
+		CItem<char> item_obj(name, item_p, arra_num, false, false);
 		return item_obj;
 	}
 #endif
@@ -3803,7 +3805,7 @@ namespace serial
 	{
 		const std::size_t item_size = sizeof(char)* N;
 		const str_t* item_p = reinterpret_cast<const str_t*>(&item);
-		CItem<str_t> item_obj(name, item_size, item_p, false);
+		CItem<str_t> item_obj(name, item_size, item_p, false, true);
 		return item_obj;
 	}
 	//※ポインタ用
@@ -3811,7 +3813,7 @@ namespace serial
 	{
 		const std::size_t item_size = max_size;//アーカイブ読み込み用のサイズ（アーカイブ書き込み時は実際の文字列長+1に更新する／ヌルなら0）
 		const str_t* item_p = reinterpret_cast<const str_t*>(item);
-		CItem<str_t> item_obj(name, item_size, item_p, true);
+		CItem<str_t> item_obj(name, item_size, item_p, true, true);
 		return item_obj;
 	}
 	//--------------------
@@ -3828,7 +3830,7 @@ namespace serial
 		CItem<T> item_obj(name, 0);
 		return item_obj;
 	}
-
+	
 	//--------------------
 	//処理結果クラス
 	class CResult
@@ -3976,54 +3978,22 @@ namespace serial
 
 	//--------------------
 	//アーカイブ読み書き基底クラス
+	typedef unsigned char byte;//バッファ用
 	class CIOArchiveBase
 	{
+		friend class CIOArchiveHelper;
+		friend class COArchiveHelper;
+		friend class CIArchiveHelper;
 	public:
 		//型
-		typedef unsigned char byte;//バッファ用
 		typedef std::map<crc32_t, const CItemBase> itemList_t;//データ項目リスト型
 	public:
-		//定数
-		static const bool is_read = false;//読み込みクラスか？
-		static const bool is_write = false;//書き込みクラスか？
-		//ステート
-		enum stateEnum : int
-		{
-			st_SERIALIZE,//シリアライズ中
-			st_SERIALIZE_PHASE_BLOCK,//シリアライズ：ブロック処理フェーズ
-			st_SERIALIZE_PHASE_ARRAY,//シリアライズ：配列ブロック処理フェーズ
-			st_SERIALIZE_PHASE_ELEMENT,//シリアライズ：要素処理フェーズ
-			st_SERIALIZE_PHASE_SAVE_DATA,//シリアライズ：データのセーブフェーズ
-			st_SERIALIZE_PHASE_COLLECT,//シリアライズ：収集フェーズ
-			st_SERIALIZE_PHASE_COLLECT_END,//シリアライズ：収集フェーズ終了
-			st_SERIALIZE_END,//シリアライズ終了
-
-			st_DESERIALIZE,//デシリアライズ中
-			st_DESERIALIZE_PHASE_BLOCK,//シリアライズ：ブロック処理フェーズ
-			st_DESERIALIZE_PHASE_ARRAY,//シリアライズ：配列ブロック処理フェーズ
-			st_DESERIALIZE_PHASE_ELEMENT,//シリアライズ：要素処理フェーズ
-			st_DESERIALIZE_PHASE_BEFORE_LOAD,//デシリアライズ：ロード前処理フェーズ
-			st_DESERIALIZE_PHASE_MAKE_LIST,//デシリアライズ：対象データ項目リスト作成フェーズ
-			st_DESERIALIZE_PHASE_LOAD_DATA,//デシリアライズ：データのロードフェーズ
-			st_DESERIALIZE_PHASE_LOAD_OBJECT,//デシリアライズ：オブジェクトのロードフェーズ
-			st_DESERIALIZE_PHASE_LOAD_OBJECT_END,//デシリアライズ：オブジェクトのロードフェーズ終了
-			st_DESERIALIZE_PHASE_NOTICE_UNRECOGNIZED,//デシリアライズ：認識できなかったデータ項目の通知フェーズ
-			st_DESERIALIZE_PHASE_NOTICE_UNLOADED,//デシリアライズ：ロードできなかったデータ項目の通知フェーズ
-			st_DESERIALIZE_PHASE_AFTEER_LOAD,//デシリアライズ：ロード後処理フェーズ
-			st_DESERIALIZE_PHASE_BEFORE_DISTRIBUTE,//デシリアライズ：分配前フェーズ
-			st_DESERIALIZE_PHASE_DISTRIBUTE,//デシリアライズ：分配フェーズ
-			st_DESERIALIZE_PHASE_DISTRIBUTE_OBJECT,//デシリアライズ：オブジェクトの分配フェーズ
-			st_DESERIALIZE_PHASE_DISTRIBUTE_OBJECT_END,//デシリアライズ：オブジェクトの分配フェーズ終了
-			st_DESERIALIZE_PHASE_AFTER_DISTRIBUTE,//デシリアライズ：分配後フェーズ
-			st_DESERIALIZE_END,//デシリアライズ終了
-		};
-	public:
 		//アクセッサ
-		stateEnum getState() const { return m_state; }//ステートを取得
-		stateEnum setState(const stateEnum state){ stateEnum prev = m_state; m_state = state; return prev; }//ステートを変更　※変更前のステートを返す
 		CResult& getResult(){ return m_result; }//処理結果を取得
 		const CResult& getResult() const { return m_result; }//処理結果を取得
 		bool hasFatalError() const { return m_result.hasFatalError(); }//致命的なエラーありか？
+		std::size_t getSaveDataSize() const { return m_result.getSaveDataSize(); }//セーブデータサイズ取得
+	protected:
 		const byte* getBuffPtr() const { return m_buff; }//セーブデータバッファの先頭ポインタを取得
 		const std::size_t getBuffSize() const { return m_buffSize; }//セーブデータバッファのサイズを取得
 		const std::size_t getBuffUsed() const { return m_buffPos; }//セーブデータバッファの使用量を取得
@@ -4032,169 +4002,13 @@ namespace serial
 		byte* getBuffNowPtr(){ return m_buff + m_buffPos; }//セーブデータバッファの現在位置のポインタを取得
 		bool buffIsFull() const { return m_buffPos >= m_buffSize; }//バッファの現在位置が末端に到達したか？
 		std::size_t getItemListNum() const { return m_itemList->size(); }//データ項目リスト
-	public:
+	protected:
 		//メソッド
 		//処理結果を合成
 		void addResult(const CResult& src)
 		{
 			m_result.addResult(src);
 		}
-		//バッファへのデータ書き込み
-		//※要求サイズが全て書き込めなかったら false を返す
-		bool write(const void* data, const std::size_t size, std::size_t& written_size)
-		{
-			const std::size_t remain = getBuffRemain();
-			written_size = remain > size ? size : remain;
-			if (data)//データがヌルならサイズ分0で埋める
-				memcpy(m_buff + m_buffPos, data, written_size);
-			else//データコピー
-				memset(m_buff + m_buffPos, 0, written_size);
-			m_buffPos += written_size;
-			return written_size == size;
-		}
-		//※処理結果オブジェクト使用版
-		bool write(CResult& result, const void* data, const std::size_t size, std::size_t* written_size = nullptr)
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			//データ書き込み
-			std::size_t written_size_tmp = 0;
-			const bool result_now = write(data, size, written_size_tmp);
-			//処理結果記録
-			result.addCopiedSize(written_size_tmp);
-			if (!result_now)
-				result.setHasFatalError();
-			if (written_size)
-				*written_size += written_size_tmp;
-			return result_now;
-		}
-		//バッファへの文字列書き込み
-		std::size_t print(CResult& result, const char* fmt, ...)
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			const std::size_t remain = getBuffRemain();
-			va_list args;
-			va_start(args, fmt);
-		#ifdef USE_STRCPY_S
-			const std::size_t ret = vsprintf_s(reinterpret_cast<char*>(m_buff + m_buffPos), remain, fmt, args);
-		#else//USE_STRCPY_S
-			const std::size_t ret = vsprintf(reinterpret_cast<char*>(m_buff + m_buffPos), fmt, args);
-		#endif//USE_STRCPY_S
-			va_end(args);
-			m_buffPos += ret;
-			return ret;
-		}
-		//バッファへの文字列書き込み
-		std::size_t printWithFunc(CResult& result, toStrFuncP to_str_func, const void* data_p, const std::size_t data_size)
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			const std::size_t remain = getBuffRemain();
-			const std::size_t ret = to_str_func(reinterpret_cast<char*>(m_buff + m_buffPos), remain, data_p, data_size);
-			m_buffPos += ret;
-			return ret;
-		}
-		//バッファへのインデント書き込み
-		void printIndent(CResult& result, const int add)
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return;
-			const int remain = static_cast<int>(getBuffRemain());
-			int space_len = (static_cast<int>(m_nestLevel) + add ) * 2 + 1;
-			space_len = space_len > 0 ? space_len : 0;
-			space_len = space_len < remain ? space_len : remain;
-			if (space_len >= 1)
-			{
-				memset(m_buff + m_buffPos, ' ', space_len);
-				m_buffPos += space_len;
-				*(m_buff + m_buffPos) = '\0';
-			}
-		}
-		//バッファからのデータ読み込み
-		//※要求サイズが全て書き込めなかったら false を返す
-		bool read(void* data, const std::size_t size, std::size_t& read_size)
-		{
-			const std::size_t remain = getBuffRemain();
-			read_size = remain > size ? size : remain;
-			if (data)//dataがヌルならコピーしないがポインタは進める
-				memcpy(data, m_buff + m_buffPos, read_size);
-			m_buffPos += read_size;
-			return read_size == size;
-		}
-		//※処理結果オブジェクト使用版
-		bool read(CResult& result, void* data, const std::size_t size, std::size_t* read_size = nullptr)
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			//データ読み込み
-			std::size_t read_size_tmp = 0;
-			const bool result_now = read(data, size, read_size_tmp);
-			//処理結果記録
-			if (!result_now)
-				result.setHasFatalError();
-			if (read_size)
-				*read_size += read_size_tmp;
-			return result_now;
-		}
-		//バッファからのデータ読み込み
-		//※要求サイズが全て書き込めなかったら false を返す
-		bool readWithFunc(fromMemFuncP from_mem_func, void* data, const std::size_t dst_size, const std::size_t src_size, std::size_t& read_size)
-		{
-			const std::size_t remain = getBuffRemain();
-			read_size = remain > src_size ? src_size : remain;
-			if (data)//dataがヌルならコピーしないがポインタは進める
-			{
-				from_mem_func(m_buff + m_buffPos, read_size, data, dst_size);
-			}
-			m_buffPos += read_size;
-			return read_size == src_size;
-		}
-		//※処理結果オブジェクト使用版
-		bool readWithFunc(CResult& result, fromMemFuncP from_mem_func, void* data, const std::size_t dst_size, const std::size_t src_size, std::size_t* read_size = nullptr)
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			//データ読み込み
-			std::size_t read_size_tmp = 0;
-			const bool result_now = readWithFunc(from_mem_func, data, dst_size, src_size, read_size_tmp);
-			//処理結果記録
-			if (!result_now)
-				result.setHasFatalError();
-			if (read_size)
-				*read_size += read_size_tmp;
-			return result_now;
-		}
-		//バッファのカレントポインタを移動
-		//※範囲外への移動が要求されたら端まで移動して false を返す
-		bool seek(const int seek_, int& real_seek)
-		{
-			const int used = static_cast<int>(m_buffPos);
-			const int remain = static_cast<int>(getBuffRemain());
-			real_seek = seek_ < 0 ?
-				used > (-seek_) ?
-					seek_ :
-					-used :
-				remain > seek_ ?
-					seek_ :
-					remain;
-			m_buffPos = static_cast<std::size_t>(used + real_seek);
-			return real_seek == seek_;
-		}
-		//※処理結果オブジェクト使用版
-		bool seek(CResult& result, const int seek_)
-		{
-			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
-				return false;
-			int real_seek = 0;
-			//カレントポインタ移動
-			const bool result_now = seek(seek_, real_seek);
-			//処理結果記録
-			if (!result_now)
-				result.setHasFatalError();
-			return result_now;
-		}
-	protected:
 		//リストにデータ項目追加
 		void addItem(const CItemBase& item)
 		{
@@ -4206,7 +4020,6 @@ namespace serial
 			assert(m_itemList->find(item.m_nameCrc) == m_itemList->end());
 			m_itemList->emplace(item.m_nameCrc, item);
 		}
-	public:
 		//リストからデータ項目を検索
 		const CItemBase* findItem(const crc32_t name_crc) const
 		{
@@ -4243,10 +4056,9 @@ namespace serial
 			//ワークバッファ用スタックアロケータクリア
 			m_workBuff.clearN();
 		}
-	public:
+	protected:
 		//コンストラクタ
-		CIOArchiveBase(const stateEnum state, void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			m_state(state),
+		CIOArchiveBase(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
 			m_nestLevel(0),
 			m_buff(reinterpret_cast<byte*>(buff)),
 			m_buffSize(buff_size),
@@ -4259,8 +4071,7 @@ namespace serial
 		}
 		//親を受け取るコンストラクタ
 		//※処理階層が深くなるごとにコピーが行われる
-		CIOArchiveBase(CIOArchiveBase& parent, const stateEnum state) :
-			m_state(state),
+		CIOArchiveBase(CIOArchiveBase& parent) :
 			m_nestLevel(parent.m_nestLevel + 1),
 			m_buff(parent.getBuffNowPtr()),
 			m_buffSize(parent.getBuffRemain()),
@@ -4279,7 +4090,6 @@ namespace serial
 		}
 	protected:
 		//フィールド
-		stateEnum m_state;//ステート
 		CResult m_result;//処理結果
 		int m_nestLevel;//データのネストレベル
 		byte* m_buff;//セーブデータバッファ
@@ -4290,15 +4100,34 @@ namespace serial
 	};
 	//--------------------
 	//アーカイブ書き込みクラス
-	template<class A>
+	template<class STYLE>
 	class COArchive : public CIOArchiveBase
 	{
 	public:
-		//型
-		typedef A arcStyle_t;//アーカイブ形式型
-	public:
 		//定数
+		static const bool is_read = false;//読み込みクラスか？
 		static const bool is_write = true;//書き込みクラスか？
+	public:
+		//型
+		typedef STYLE arcStyle_t;//アーカイブ形式型
+	private:
+		//定数
+		//ステート
+		enum stateEnum : int
+		{
+			st_SERIALIZE,//シリアライズ中
+			st_SERIALIZE_PHASE_BLOCK,//シリアライズ：ブロック処理フェーズ
+			st_SERIALIZE_PHASE_ARRAY,//シリアライズ：配列ブロック処理フェーズ
+			st_SERIALIZE_PHASE_ELEMENT,//シリアライズ：要素処理フェーズ
+			st_SERIALIZE_PHASE_SAVE_DATA,//シリアライズ：データのセーブフェーズ
+			st_SERIALIZE_PHASE_COLLECT,//シリアライズ：収集フェーズ
+			st_SERIALIZE_PHASE_COLLECT_END,//シリアライズ：収集フェーズ終了
+			st_SERIALIZE_END,//シリアライズ終了
+		};
+	private:
+		//アクセッサ
+		stateEnum getState() const { return m_state; }//ステートを取得
+		stateEnum setState(const stateEnum state){ stateEnum prev = m_state; m_state = state; return prev; }//ステートを変更　※変更前のステートを返す
 	public:
 		//オペレータ
 		//「&」オペレータ
@@ -4504,28 +4333,32 @@ namespace serial
 	public:
 		//コンストラクタ
 		COArchive(void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			CIOArchiveBase(st_SERIALIZE, buff, buff_size, work_buff, work_buff_size),
+			CIOArchiveBase(buff, buff_size, work_buff, work_buff_size),
 			m_parent(nullptr),
-			m_style()
+			m_style(),
+			m_state(st_SERIALIZE)
 		{}
 		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
 		COArchive(BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			CIOArchiveBase(st_SERIALIZE, buff, BUFF_SIZE, work_buff, WORK_SIZE),
+			CIOArchiveBase(buff, BUFF_SIZE, work_buff, WORK_SIZE),
 			m_parent(nullptr),
-			m_style()
+			m_style(),
+			m_state(st_SERIALIZE)
 		{}
 		template<typename WORK_T, std::size_t WORK_SIZE>
 		COArchive(void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
-			CIOArchiveBase(st_SERIALIZE, buff, buff_size, work_buff, WORK_SIZE),
+			CIOArchiveBase(buff, buff_size, work_buff, WORK_SIZE),
 			m_parent(nullptr),
-			m_style()
+			m_style(),
+			m_state(st_SERIALIZE)
 		{}
 		//親を受け取るコンストラクタ
 		//※処理階層が深くなるごとにコピーが行われる
 		COArchive(COArchive& parent, const stateEnum state) :
-			CIOArchiveBase(parent, state),
+			CIOArchiveBase(parent),
 			m_parent(&parent),
-			m_style(parent.m_style)
+			m_style(parent.m_style),
+			m_state(state)
 		{}
 		//デストラクタ
 		~COArchive()
@@ -4534,20 +4367,48 @@ namespace serial
 		//フィールド
 		COArchive* m_parent;//親アーカイブオブジェクト
 		arcStyle_t m_style;//アーカイブスタイルオブジェクト
+		stateEnum m_state;//ステート
 	};
 	//--------------------
 	//アーカイブ読み込みクラス
-	template<class A>
+	template<class STYLE>
 	class CIArchive : public CIOArchiveBase
 	{
 	public:
-		//型
-		typedef A arcStyle_t;//アーカイブ形式型
-	public:
 		//定数
 		static const bool is_read = true;//読み込みクラスか？
+		static const bool is_write = false;//書き込みクラスか？
 	public:
+		//型
+		typedef STYLE arcStyle_t;//アーカイブ形式型
+	private:
+		//定数
+		//ステート
+		enum stateEnum : int
+		{
+			st_DESERIALIZE,//デシリアライズ中
+			st_DESERIALIZE_PHASE_BLOCK,//シリアライズ：ブロック処理フェーズ
+			st_DESERIALIZE_PHASE_ARRAY,//シリアライズ：配列ブロック処理フェーズ
+			st_DESERIALIZE_PHASE_ELEMENT,//シリアライズ：要素処理フェーズ
+			st_DESERIALIZE_PHASE_BEFORE_LOAD,//デシリアライズ：ロード前処理フェーズ
+			st_DESERIALIZE_PHASE_MAKE_LIST,//デシリアライズ：対象データ項目リスト作成フェーズ
+			st_DESERIALIZE_PHASE_LOAD_DATA,//デシリアライズ：データのロードフェーズ
+			st_DESERIALIZE_PHASE_LOAD_OBJECT,//デシリアライズ：オブジェクトのロードフェーズ
+			st_DESERIALIZE_PHASE_LOAD_OBJECT_END,//デシリアライズ：オブジェクトのロードフェーズ終了
+			st_DESERIALIZE_PHASE_NOTICE_UNRECOGNIZED,//デシリアライズ：認識できなかったデータ項目の通知フェーズ
+			st_DESERIALIZE_PHASE_NOTICE_UNLOADED,//デシリアライズ：ロードできなかったデータ項目の通知フェーズ
+			st_DESERIALIZE_PHASE_AFTEER_LOAD,//デシリアライズ：ロード後処理フェーズ
+			st_DESERIALIZE_PHASE_BEFORE_DISTRIBUTE,//デシリアライズ：分配前フェーズ
+			st_DESERIALIZE_PHASE_DISTRIBUTE,//デシリアライズ：分配フェーズ
+			st_DESERIALIZE_PHASE_DISTRIBUTE_OBJECT,//デシリアライズ：オブジェクトの分配フェーズ
+			st_DESERIALIZE_PHASE_DISTRIBUTE_OBJECT_END,//デシリアライズ：オブジェクトの分配フェーズ終了
+			st_DESERIALIZE_PHASE_AFTER_DISTRIBUTE,//デシリアライズ：分配後フェーズ
+			st_DESERIALIZE_END,//デシリアライズ終了
+		};
+	private:
 		//アクセッサ
+		stateEnum getState() const { return m_state; }//ステートを取得
+		stateEnum setState(const stateEnum state){ stateEnum prev = m_state; m_state = state; return prev; }//ステートを変更　※変更前のステートを返す
 		CItemBase* getTargetObjItem(){ return m_targetObjItem; }//オブジェクト処理の対象データ項目をセット
 		const CItemBase* getTargetObjItem() const { return m_targetObjItem; }//オブジェクト処理の対象データ項目をセット
 		void setTargetObjItem(CItemBase& item){ m_targetObjItem = &item; }//オブジェクト処理の対象データ項目をセット
@@ -5062,34 +4923,38 @@ namespace serial
 	public:
 		//コンストラクタ
 		CIArchive(const void* buff, const std::size_t buff_size, void* work_buff, std::size_t work_buff_size) :
-			CIOArchiveBase(st_DESERIALIZE, const_cast<void*>(buff), buff_size, work_buff, work_buff_size),
+			CIOArchiveBase(const_cast<void*>(buff), buff_size, work_buff, work_buff_size),
 			m_style(),
+			m_state(st_DESERIALIZE),
 			m_parent(nullptr),
 			m_targetObjItem(nullptr),
 			m_targetObjItemDelegate(nullptr)
 		{}
 		template<typename BUFF_T, std::size_t BUFF_SIZE, typename WORK_T, std::size_t WORK_SIZE>
 		CIArchive(const BUFF_T(&buff)[BUFF_SIZE], WORK_T(&work_buff)[WORK_SIZE]) :
-			CIOArchiveBase(st_DESERIALIZE, const_cast<BUFF_T*>(&buff[0]), BUFF_SIZE, work_buff, WORK_SIZE),
+			CIOArchiveBase(const_cast<BUFF_T*>(&buff[0]), BUFF_SIZE, work_buff, WORK_SIZE),
 			m_style(),
+			m_state(st_DESERIALIZE),
 			m_parent(nullptr),
 			m_targetObjItem(nullptr),
 			m_targetObjItemDelegate(nullptr)
 		{}
 		template<typename WORK_T, std::size_t WORK_SIZE>
 		CIArchive(const void* buff, const std::size_t buff_size, WORK_T(&work_buff)[WORK_SIZE]) :
-			CIOArchiveBase(st_DESERIALIZE, const_cast<void*>(buff), buff_size, work_buff, WORK_SIZE),
+			CIOArchiveBase(const_cast<void*>(buff), buff_size, work_buff, WORK_SIZE),
 			m_parent(nullptr),
 			m_style(),
+			m_state(st_DESERIALIZE),
 			m_targetObjItem(nullptr),
 			m_targetObjItemDelegate(nullptr)
 		{}
 		//親を受け取るコンストラクタ
 		//※処理階層が深くなるごとにコピーが行われる
 		CIArchive(CIArchive& parent, const stateEnum state) :
-			CIOArchiveBase(parent, state),
+			CIOArchiveBase(parent),
 			m_parent(&parent),
 			m_style(parent.m_style),
+			m_state(state),
 			m_targetObjItem(nullptr),
 			m_targetObjItemDelegate(nullptr)
 		{}
@@ -5100,8 +4965,232 @@ namespace serial
 		//フィールド
 		CIArchive* m_parent;//親アーカイブオブジェクト
 		arcStyle_t m_style;//アーカイブスタイルオブジェクト
+		stateEnum m_state;//ステート
 		CItemBase* m_targetObjItem;//オブジェクト処理の対象データ項目
 		CItemBase* m_targetObjItemDelegate;//オブジェクト処理の対象データ項目の委譲データ項目
+	};
+	//--------------------
+	//アーカイブ読み書き基本操作ヘルパークラス
+	class CIOArchiveHelper
+	{
+	public:
+		CResult& getResult(){ return m_arc.getResult(); }//処理結果を取得
+		const CResult& getResult() const { return m_arc.getResult(); }//処理結果を取得
+		bool hasFatalError() const { return m_arc.hasFatalError(); }//致命的なエラーありか？
+		const byte* getBuffPtr() const { return m_arc.getBuffPtr(); }//セーブデータバッファの先頭ポインタを取得
+		const std::size_t getBuffSize() const { return m_arc.getBuffSize(); }//セーブデータバッファのサイズを取得
+		const std::size_t getBuffUsed() const { return m_arc.getBuffUsed(); }//セーブデータバッファの使用量を取得
+		const std::size_t getBuffPos() const { return m_arc.getBuffPos(); }//セーブデータバッファの現在位置を取得
+		const std::size_t getBuffRemain() const { return m_arc.getBuffRemain(); }//セーブデータバッファの残量を取得
+		byte* getBuffNowPtr(){ return m_arc.getBuffNowPtr(); }//セーブデータバッファの現在位置のポインタを取得
+		bool buffIsFull() const { return m_arc.buffIsFull(); }//バッファの現在位置が末端に到達したか？
+		std::size_t getItemListNum() const { return m_arc.getItemListNum(); }//データ項目リスト
+	public:
+		//メソッド
+		//処理結果を合成
+		void addResult(const CResult& src){ m_arc.addResult(src); }
+		//リストからデータ項目を検索
+		const CItemBase* findItem(const crc32_t name_crc) const	{ return m_arc.findItem(name_crc); }
+		//バッファのカレントポインタを移動
+		//※範囲外への移動が要求されたら端まで移動して false を返す
+		bool seek(const int seek_, int& real_seek)
+		{
+			const int used = static_cast<int>(m_arc.m_buffPos);
+			const int remain = static_cast<int>(m_arc.getBuffRemain());
+			real_seek = seek_ < 0 ?
+				used >(-seek_) ?
+			seek_ :
+				  -used :
+				  remain > seek_ ?
+			  seek_ :
+					remain;
+			m_arc.m_buffPos = static_cast<std::size_t>(used + real_seek);
+			return real_seek == seek_;
+		}
+		//※処理結果オブジェクト使用版
+		bool seek(CResult& result, const int seek_)
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			int real_seek = 0;
+			//カレントポインタ移動
+			const bool result_now = seek(seek_, real_seek);
+			//処理結果記録
+			if (!result_now)
+				result.setHasFatalError();
+			return result_now;
+		}
+	protected:
+		//コンストラクタ
+		CIOArchiveHelper(CIOArchiveBase& arc) :
+			m_arc(arc)
+		{}
+		//デストラクタ
+		~CIOArchiveHelper()
+		{}
+	protected:
+		//フィールド
+		CIOArchiveBase& m_arc;//アーカイブオブジェクト（セーブデータイメージバッファ）
+	};
+	//--------------------
+	//アーカイブ書き込み基本操作ヘルパークラス
+	class COArchiveHelper : public CIOArchiveHelper
+	{
+		template<class STYLE>
+		friend class COArchive;
+	public:
+		//メソッド
+		//バッファへのデータ書き込み
+		//※要求サイズが全て書き込めなかったら false を返す
+		bool write(const void* data, const std::size_t size, std::size_t& written_size)
+		{
+			const std::size_t remain = m_arc.getBuffRemain();
+			written_size = remain > size ? size : remain;
+			if (data)//データがヌルならサイズ分0で埋める
+				memcpy(m_arc.m_buff + m_arc.m_buffPos, data, written_size);
+			else//データコピー
+				memset(m_arc.m_buff + m_arc.m_buffPos, 0, written_size);
+			m_arc.m_buffPos += written_size;
+			return written_size == size;
+		}
+		//※処理結果オブジェクト使用版
+		bool write(CResult& result, const void* data, const std::size_t size, std::size_t* written_size = nullptr)
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			//データ書き込み
+			std::size_t written_size_tmp = 0;
+			const bool result_now = write(data, size, written_size_tmp);
+			//処理結果記録
+			result.addCopiedSize(written_size_tmp);
+			if (!result_now)
+				result.setHasFatalError();
+			if (written_size)
+				*written_size += written_size_tmp;
+			return result_now;
+		}
+		//バッファへの文字列書き込み
+		std::size_t print(CResult& result, const char* fmt, ...)
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			const std::size_t remain = m_arc.getBuffRemain();
+			va_list args;
+			va_start(args, fmt);
+#ifdef USE_STRCPY_S
+			const std::size_t ret = vsprintf_s(reinterpret_cast<char*>(m_arc.m_buff + m_arc.m_buffPos), remain, fmt, args);
+#else//USE_STRCPY_S
+			const std::size_t ret = vsprintf(reinterpret_cast<char*>(m_arc.m_buff + m_arc.m_buffPos), fmt, args);
+#endif//USE_STRCPY_S
+			va_end(args);
+			m_arc.m_buffPos += ret;
+			return ret;
+		}
+		//バッファへの文字列書き込み
+		std::size_t printWithFunc(CResult& result, toStrFuncP to_str_func, const void* data_p, const std::size_t data_size)
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			const std::size_t remain = m_arc.getBuffRemain();
+			const std::size_t ret = to_str_func(reinterpret_cast<char*>(m_arc.m_buff + m_arc.m_buffPos), remain, data_p, data_size);
+			m_arc.m_buffPos += ret;
+			return ret;
+		}
+		//バッファへのインデント書き込み
+		void printIndent(CResult& result, const int add)
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return;
+			const int remain = static_cast<int>(m_arc.getBuffRemain());
+			int space_len = (static_cast<int>(m_arc.m_nestLevel) + add) * 2 + 1;
+			space_len = space_len > 0 ? space_len : 0;
+			space_len = space_len < remain ? space_len : remain;
+			if (space_len >= 1)
+			{
+				memset(m_arc.m_buff + m_arc.m_buffPos, ' ', space_len);
+				m_arc.m_buffPos += space_len;
+				*(m_arc.m_buff + m_arc.m_buffPos) = '\0';
+			}
+		}
+	public:
+		//コンストラクタ
+		COArchiveHelper(CIOArchiveBase& arc) :
+			CIOArchiveHelper(arc)
+		{}
+		//デストラクタ
+		~COArchiveHelper()
+		{}
+	};
+	//--------------------
+	//アーカイブ読み込み基本操作ヘルパークラス
+	class CIArchiveHelper : public CIOArchiveHelper
+	{
+		template<class STYLE>
+		friend class CIArchive;
+	public:
+		//メソッド
+		//バッファからのデータ読み込み
+		//※要求サイズが全て書き込めなかったら false を返す
+		bool read(void* data, const std::size_t size, std::size_t& read_size)
+		{
+			const std::size_t remain = m_arc.getBuffRemain();
+			read_size = remain > size ? size : remain;
+			if (data)//dataがヌルならコピーしないがポインタは進める
+				memcpy(data, m_arc.m_buff + m_arc.m_buffPos, read_size);
+			m_arc.m_buffPos += read_size;
+			return read_size == size;
+		}
+		//※処理結果オブジェクト使用版
+		bool read(CResult& result, void* data, const std::size_t size, std::size_t* read_size = nullptr)
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			//データ読み込み
+			std::size_t read_size_tmp = 0;
+			const bool result_now = read(data, size, read_size_tmp);
+			//処理結果記録
+			if (!result_now)
+				result.setHasFatalError();
+			if (read_size)
+				*read_size += read_size_tmp;
+			return result_now;
+		}
+		//バッファからのデータ読み込み
+		//※要求サイズが全て書き込めなかったら false を返す
+		bool readWithFunc(fromMemFuncP from_mem_func, void* data, const std::size_t dst_size, const std::size_t src_size, std::size_t& read_size)
+		{
+			const std::size_t remain = m_arc.getBuffRemain();
+			read_size = remain > src_size ? src_size : remain;
+			if (data)//dataがヌルならコピーしないがポインタは進める
+			{
+				from_mem_func(m_arc.m_buff + m_arc.m_buffPos, read_size, data, dst_size);
+			}
+			m_arc.m_buffPos += read_size;
+			return read_size == src_size;
+		}
+		//※処理結果オブジェクト使用版
+		bool readWithFunc(CResult& result, fromMemFuncP from_mem_func, void* data, const std::size_t dst_size, const std::size_t src_size, std::size_t* read_size = nullptr)
+		{
+			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
+				return false;
+			//データ読み込み
+			std::size_t read_size_tmp = 0;
+			const bool result_now = readWithFunc(from_mem_func, data, dst_size, src_size, read_size_tmp);
+			//処理結果記録
+			if (!result_now)
+				result.setHasFatalError();
+			if (read_size)
+				*read_size += read_size_tmp;
+			return result_now;
+		}
+	public:
+		//コンストラクタ
+		CIArchiveHelper(CIOArchiveBase& arc) :
+			CIOArchiveHelper(arc)
+		{}
+		//デストラクタ
+		~CIArchiveHelper()
+		{}
 	};
 	//--------------------
 	//アーカイブ形式基底クラス
@@ -5128,23 +5217,23 @@ namespace serial
 	public:
 		//メソッド
 		//シグネチャ書き込み
-		bool writeSignature(CIOArchiveBase& arc){ return true; }
+		bool writeSignature(COArchiveHelper arc){ return true; }
 		//ブロックヘッダー書き込み
-		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver){ return true; }
+		bool writeBlockHeader(COArchiveHelper arc, const CItemBase& item, const CVersion& ver){ return true; }
 		//配列ブロックヘッダー書き込み
-		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num){ return true; }
+		bool writeArrayHeader(COArchiveHelper arc, const CItemBase& item, const std::size_t array_elem_num){ return true; }
 		//要素ヘッダー書き込み
-		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index){ return true; }
+		bool writeElemHeader(COArchiveHelper arc, const CItemBase& item, const std::size_t index){ return true; }
 		//データ項目書き込み
-		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item){ return true; }
+		bool writeDataItem(COArchiveHelper arc, const CItemBase& item, const CItemBase& child_item){ return true; }
 		//要素フッター書き込み
-		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
+		bool writeElemFooter(COArchiveHelper parent_arc, COArchiveHelper child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
 		//配列ブロックフッター書き込み
-		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size){ return true; }
+		bool writeArrayFooter(COArchiveHelper parent_arc, COArchiveHelper child_arc, const CItemBase& item, std::size_t& array_block_size){ return true; }
 		//ブロックフッター書き込み
-		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size){ return true; }
+		bool writeBlockFooter(COArchiveHelper parent_arc, COArchiveHelper child_arc, const CItemBase& item, std::size_t& block_size){ return true; }
 		//ターミネータ書き込み
-		bool writeTerminator(CIOArchiveBase& arc){ return true; }
+		bool writeTerminator(COArchiveHelper arc){ return true; }
 	public:
 		//コンストラクタ
 		COArchiveStyleProto() :
@@ -5168,41 +5257,41 @@ namespace serial
 	public:
 		//メソッド
 		//パース
-		bool parse(CIOArchiveBase& arc){ return true; }
+		bool parse(CIArchiveHelper arc){ return true; }
 		//シグネチャ読み込み
-		bool readSignature(CIOArchiveBase& arc){ return true; }
+		bool readSignature(CIArchiveHelper arc){ return true; }
 		//ブロックヘッダー読み込み
 		//※読み込んだオブジェクトの型情報とバージョンを返す
-		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CItemBase* delegate_item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size){ return true; }
+		bool readBlockHeader(CIArchiveHelper arc, const CItemBase& item, const CItemBase* delegate_item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size){ return true; }
 		//配列ブロックヘッダー読み込み
-		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size){ return true; }
+		bool readArrayHeader(CIArchiveHelper arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size){ return true; }
 		//要素ヘッダー読み込み
-		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
+		bool readElemHeader(CIArchiveHelper arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size){ return true; }
 		//データ項目読み込み
-		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase* delegate_child_item_now, CItemBase& child_item, const bool item_is_valid, const bool is_required_retry){ return true; }
+		bool readDataItem(CIArchiveHelper arc, const CItemBase& item, const CItemBase* delegate_child_item_now, CItemBase& child_item, const bool item_is_valid, const bool is_required_retry){ return true; }
 		//要素フッター読み込み
 		//※読み込みテストの結果、要素フッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadElemFooter(CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, bool& is_elem_end){ return true; }
+		bool tryAndReadElemFooter(CIArchiveHelper child_arc, const CItemBase& item, const std::size_t index, bool& is_elem_end){ return true; }
 		//要素読み込み終了
-		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
+		bool finishReadElem(CIArchiveHelper parent_arc, CIArchiveHelper child_arc){ return true; }
 		//配列ブロックフッター読み込み
 		//※読み込みテストの結果、配列ブロックフッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end){ return true; }
+		bool tryAndReadArrayFooter(CIArchiveHelper arc, const CItemBase& item, bool& is_array_block_end){ return true; }
 		//配列ブロック読み込み終了
-		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
+		bool finishReadArray(CIArchiveHelper parent_arc, CIArchiveHelper child_arc){ return true; }
 		//ブロックの読み込みをスキップ
-		bool skipReadBlock(CIOArchiveBase& arc){ return true; }
+		bool skipReadBlock(CIArchiveHelper arc){ return true; }
 		//ブロックフッター読み込み
 		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
-		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end){ return true; }
+		bool tryAndReadBlockFooter(CIArchiveHelper arc, const CItemBase& item, bool& is_block_end){ return true; }
 		//ブロック読み込み終了
-		bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc){ return true; }
+		bool finishReadBlock(CIArchiveHelper parent_arc, CIArchiveHelper child_arc){ return true; }
 		//次のブロックヘッダー問い合わせ（先行読み込み）
 		//※処理を進めず、次の情報を読み取るのみ
 		//※（例えば、バイナリスタイルなら、読み込みバッファのポインタを進めない）
-		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& child_block_size, bool& is_found_next_block){ return true; }
+		bool requireNextBlockHeader(CIArchiveHelper arc, CItemBase& require_item, std::size_t& child_block_size, bool& is_found_next_block){ return true; }
 		//ターミネータ読み込み
-		bool readTerminator(CIOArchiveBase& arc){ return true; }
+		bool readTerminator(CIArchiveHelper arc){ return true; }
 	public:
 		//コンストラクタ
 		CIArchiveStyleProto() :
@@ -5270,7 +5359,7 @@ namespace serial
 	public:
 		//メソッド
 		//シグネチャ書き込み
-		bool writeSignature(CIOArchiveBase& arc)
+		bool writeSignature(COArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5279,22 +5368,22 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックヘッダー書き込み
-		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver)
+		bool writeBlockHeader(COArchiveHelper arc, const CItemBase& item, const CVersion& ver)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			arc.write(result, BLOCK_BEGIN, BEGIN_MARK_SIZE);//ブロック始端書き込み
 			arc.write(result, &item.m_nameCrc, sizeof(item.m_nameCrc));//名前CRC書き込み
-			item.m_info.setHasVersion();//バージョン情報ありにする
-			arc.write(result, &item.m_info.m_value, sizeof(item.m_info.m_value));//保存状態書き込み
+			item.m_attr.setHasVersion();//バージョン情報ありにする
+			arc.write(result, &item.m_attr.m_value, sizeof(item.m_attr.m_value));//属性書き込み
 			arc.write(result, ver.getVerPtr(), ver.getVerSize());//バージョン書き込み
 			const std::size_t block_size = 0;
 			arc.write(result, &block_size, sizeof(block_size));//ブロックサイズ仮書き込み　※ブロック終了時に書き換える
 			return !result.hasFatalError();
 		}
 		//配列ブロックヘッダー書き込み
-		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num)
+		bool writeArrayHeader(COArchiveHelper arc, const CItemBase& item, const std::size_t array_elem_num)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5309,7 +5398,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素ヘッダー書き込み
-		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index)
+		bool writeElemHeader(COArchiveHelper arc, const CItemBase& item, const std::size_t index)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5322,15 +5411,15 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目書き込み
-		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item)
+		bool writeDataItem(COArchiveHelper arc, const CItemBase& item, const CItemBase& child_item)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			arc.write(result, ITEM_BEGIN, BEGIN_MARK_SIZE);//データ項目始端書き込み
 			arc.write(result, &child_item.m_nameCrc, sizeof(child_item.m_nameCrc));//名前CRC書き込み
-			child_item.m_info.resetHasVersion();//バージョン情報なしにする
-			arc.write(result, &child_item.m_info.m_value, sizeof(child_item.m_info.m_value));//保存状態書き込み
+			child_item.m_attr.resetHasVersion();//バージョン情報なしにする
+			arc.write(result, &child_item.m_attr.m_value, sizeof(child_item.m_attr.m_value));//属性書き込み
 			arc.write(result, &child_item.m_itemSize, sizeof(child_item.m_itemSize));//データサイズ書き込み
 			if (!child_item.isNul())//ヌル時はここまでの情報で終わり
 			{
@@ -5348,7 +5437,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素フッター書き込み
-		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
+		bool writeElemFooter(COArchiveHelper parent_arc, COArchiveHelper child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5368,7 +5457,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロックフッター書き込み
-		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size)
+		bool writeArrayFooter(COArchiveHelper parent_arc, COArchiveHelper child_arc, const CItemBase& item, std::size_t& array_block_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5391,7 +5480,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックフッター書き込み
-		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size)
+		bool writeBlockFooter(COArchiveHelper parent_arc, COArchiveHelper child_arc, const CItemBase& item, std::size_t& block_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5409,7 +5498,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ書き込み
-		bool writeTerminator(CIOArchiveBase& arc)
+		bool writeTerminator(COArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5438,7 +5527,7 @@ namespace serial
 	public:
 		//メソッド
 		//パース
-		bool parse(CIOArchiveBase& arc)
+		bool parse(CIArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5447,7 +5536,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//シグネチャ読み込み
-		bool readSignature(CIOArchiveBase& arc)
+		bool readSignature(CIArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5460,7 +5549,7 @@ namespace serial
 		}
 		//ブロックヘッダー読み込み
 		//※読み込んだオブジェクトの型情報とバージョンを返す
-		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CItemBase* delegate_item, const CVersion& ve, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size)
+		bool readBlockHeader(CIArchiveHelper arc, const CItemBase& item, const CItemBase* delegate_item, const CVersion& ve, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5474,8 +5563,8 @@ namespace serial
 			}
 			input_item.clearForLoad();//読み込み情報を一旦クリア
 			arc.read(result, const_cast<crc32_t*>(&input_item.m_nameCrc), sizeof(input_item.m_nameCrc));//名前CRC読み込み
-			arc.read(result, const_cast<CRecInfo::value_t*>(&input_item.m_info.m_value), sizeof(input_item.m_info.m_value));//保存状態読み込み
-			if (input_item.m_info.hasVersion())//バージョン情報があるか？
+			arc.read(result, const_cast<CItemAttr::value_t*>(&input_item.m_attr.m_value), sizeof(input_item.m_attr.m_value));//属性読み込み
+			if (input_item.m_attr.hasVersion())//バージョン情報があるか？
 			{
 				arc.read(result, const_cast<unsigned int*>(input_ver.getVerPtr()), input_ver.getVerSize());//バージョン読み込み
 				input_ver.calcFromVer();
@@ -5506,7 +5595,7 @@ namespace serial
 			}
 			//ヌルの時はこの時点で処理済みにする
 			//※ヌルじゃない時は配列読み込みが済んだら処理済みにする
-			if (input_item.m_info.isNul())
+			if (input_item.m_attr.isNul())
 			{
 				item.setIsAlready();//処理済みにする
 				result.addResult(input_item);//結果を計上
@@ -5514,7 +5603,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロックヘッダー読み込み
-		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size)
+		bool readArrayHeader(CIArchiveHelper arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5543,7 +5632,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素ヘッダー読み込み
-		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
+		bool readElemHeader(CIArchiveHelper arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
 		{
 			CResult& result = arc.getResult();
 			items_num = 0;
@@ -5561,7 +5650,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目読み込み
-		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase* delegate_child_item_now, CItemBase& child_item, const bool item_is_valid, const bool is_required_retry)
+		bool readDataItem(CIArchiveHelper arc, const CItemBase& item, const CItemBase* delegate_child_item_now, CItemBase& child_item, const bool item_is_valid, const bool is_required_retry)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5587,7 +5676,7 @@ namespace serial
 				}
 			}
 			arc.read(result, const_cast<crc32_t*>(&child_item.m_nameCrc), sizeof(child_item.m_nameCrc), &read_size);//名前CRC読み込み
-			arc.read(result, const_cast<CRecInfo::value_t*>(&child_item.m_info.m_value), sizeof(child_item.m_info.m_value), &read_size);//保存状態読み込み
+			arc.read(result, const_cast<CItemAttr::value_t*>(&child_item.m_attr.m_value), sizeof(child_item.m_attr.m_value), &read_size);//属性読み込み
 			const CItemBase* child_item_now = nullptr;
 			if (delegate_child_item_now)//委譲データ項目があればそれを優先的に使用
 			{
@@ -5616,7 +5705,7 @@ namespace serial
 				return !result.hasFatalError();
 			}
 			//通常データの読み込み処理
-			assert(!child_item.m_info.hasVersion());//オブジェクトでもないのにバージョン情報があればNG
+			assert(!child_item.m_attr.hasVersion());//オブジェクトでもないのにバージョン情報があればNG
 			arc.read(result, const_cast<std::size_t*>(&child_item.m_itemSize), sizeof(child_item.m_itemSize), &read_size);//データサイズ読み込み
 			if (!child_item.isNul())//【セーブデータ上の】データがヌルでなければ処理する
 			{
@@ -5651,7 +5740,7 @@ namespace serial
 		}
 		//要素フッター読み込み
 		//※読み込みテストの結果、要素フッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadElemFooter(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, bool& is_elem_end)
+		bool tryAndReadElemFooter(CIArchiveHelper arc, const CItemBase& item, const std::size_t index, bool& is_elem_end)
 		{
 			is_elem_end = true;//要素終了扱い
 			CResult& result = arc.getResult();
@@ -5668,7 +5757,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素読み込み終了
-		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
+		bool finishReadElem(CIArchiveHelper parent_arc, CIArchiveHelper child_arc)
 		{
 			parent_arc.addResult(child_arc.getResult());//親に処理結果を計上
 			CResult& result = child_arc.getResult();
@@ -5679,7 +5768,7 @@ namespace serial
 		}
 		//配列ブロックフッター読み込み
 		//※読み込みテストの結果、配列ブロックフッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end)
+		bool tryAndReadArrayFooter(CIArchiveHelper arc, const CItemBase& item, bool& is_array_block_end)
 		{
 			is_array_block_end = true;//配列ブロック終了扱い
 			CResult& result = arc.getResult();
@@ -5699,7 +5788,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロック読み込み終了
-		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
+		bool finishReadArray(CIArchiveHelper parent_arc, CIArchiveHelper child_arc)
 		{
 			parent_arc.addResult(child_arc.getResult());//親に処理結果を計上
 			CResult& result = child_arc.getResult();
@@ -5709,7 +5798,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックの読み込みをスキップ
-		bool skipReadBlock(CIOArchiveBase& arc)
+		bool skipReadBlock(CIArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5722,15 +5811,15 @@ namespace serial
 				return false;
 			}
 			crc32_t name_crc = 0;
-			CRecInfo rec_info(false, false, false, false);
+			CItemAttr attr(false, false, false, false, false);
 			arc.read(result, &name_crc, sizeof(name_crc));//名前CRC読み込み
-			arc.read(result, const_cast<CRecInfo::value_t*>(&rec_info.m_value), sizeof(rec_info.m_value));//保存状態書き込み
-			if (rec_info.hasVersion())//バージョン情報があるか？
+			arc.read(result, const_cast<CItemAttr::value_t*>(&attr.m_value), sizeof(attr.m_value));//属性書き込み
+			if (attr.hasVersion())//バージョン情報があるか？
 			{
 				CVersion input_ver_dummy;
 				arc.read(result, const_cast<unsigned int*>(input_ver_dummy.getVerPtr()), input_ver_dummy.getVerSize());//バージョン読み込み
 			}
-			if (!rec_info.isNul())//ヌル時はここまでの情報で終わり
+			if (!attr.isNul())//ヌル時はここまでの情報で終わり
 			{
 				std::size_t item_size;
 				arc.read(result, &item_size, sizeof(item_size));//ブロックサイズ読み込み
@@ -5748,7 +5837,7 @@ namespace serial
 		}
 		//ブロックフッター読み込み
 		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
-		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end)
+		bool tryAndReadBlockFooter(CIArchiveHelper arc, const CItemBase& item, bool& is_block_end)
 		{
 			is_block_end = true;//ブロック終了扱い
 			CResult& result = arc.getResult();
@@ -5765,7 +5854,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロック読み込み終了
-		bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
+		bool finishReadBlock(CIArchiveHelper parent_arc, CIArchiveHelper child_arc)
 		{
 			parent_arc.addResult(child_arc.getResult());//親に処理結果を計上
 			CResult& result = child_arc.getResult();
@@ -5778,7 +5867,7 @@ namespace serial
 		//次のブロックヘッダー問い合わせ（先行読み込み）
 		//※処理を進めず、次の情報を読み取るのみ
 		//※（例えば、バイナリスタイルなら、読み込みバッファのポインタを進めない）
-		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& require_block_size, bool& is_found_next_block)
+		bool requireNextBlockHeader(CIArchiveHelper arc, CItemBase& require_item, std::size_t& require_block_size, bool& is_found_next_block)
 		{
 			is_found_next_block = false;//ブロック情報が見つかってないことにする
 			CResult& result = arc.getResult();
@@ -5795,8 +5884,8 @@ namespace serial
 			}
 			is_found_next_block = true;//見つかった
 			arc.read(result, const_cast<crc32_t*>(&require_item.m_nameCrc), sizeof(require_item.m_nameCrc), &read_size);//名前CRC書き込み
-			arc.read(result, const_cast<CRecInfo::value_t*>(&require_item.m_info.m_value), sizeof(require_item.m_info.m_value), &read_size);//保存状態書き込み
-			if (require_item.m_info.hasVersion())//バージョン情報があるか？
+			arc.read(result, const_cast<CItemAttr::value_t*>(&require_item.m_attr.m_value), sizeof(require_item.m_attr.m_value), &read_size);//属性書き込み
+			if (require_item.m_attr.hasVersion())//バージョン情報があるか？
 			{
 				CVersion input_ver_dummy;
 				arc.read(result, const_cast<unsigned int*>(input_ver_dummy.getVerPtr()), input_ver_dummy.getVerSize(), &read_size);//バージョン読み込み
@@ -5822,7 +5911,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ読み込み
-		bool readTerminator(CIOArchiveBase& arc)
+		bool readTerminator(CIArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5888,7 +5977,7 @@ namespace serial
 	public:
 		//メソッド
 		//シグネチャ書き込み
-		bool writeSignature(CIOArchiveBase& arc)
+		bool writeSignature(COArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5899,7 +5988,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックヘッダー書き込み
-		bool writeBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CVersion& ver)
+		bool writeBlockHeader(COArchiveHelper arc, const CItemBase& item, const CVersion& ver)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5917,13 +6006,14 @@ namespace serial
 			arc.print(result, "\"isArr\": %d, ", item.isArr());
 			arc.print(result, "\"isPtr\": %d, ", item.isPtr());
 			arc.print(result, "\"isNul\": %d, ", item.isNul());
-			arc.print(result, "\"hasVersion\": %d, ", item.m_info.hasVersion());
+			arc.print(result, "\"isVLen\": %d, ", item.isVLen());
+			arc.print(result, "\"hasVersion\": %d, ", item.m_attr.hasVersion());
 			arc.print(result, "\"ver\": \"%d.%d\"", ver.getMajor(), ver.getMinor());
 			m_arrayBlockIndex = 0;
 			return !result.hasFatalError();
 		}
 		//配列ブロックヘッダー書き込み
-		bool writeArrayHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t array_elem_num)
+		bool writeArrayHeader(COArchiveHelper arc, const CItemBase& item, const std::size_t array_elem_num)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5945,7 +6035,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素ヘッダー書き込み
-		bool writeElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index)
+		bool writeElemHeader(COArchiveHelper arc, const CItemBase& item, const std::size_t index)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5960,7 +6050,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目書き込み
-		bool writeDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase& child_item)
+		bool writeDataItem(COArchiveHelper arc, const CItemBase& item, const CItemBase& child_item)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -5978,7 +6068,8 @@ namespace serial
 			arc.print(result, "\"isArr\": %d, ", child_item.isArr());
 			arc.print(result, "\"isPtr\": %d, ", child_item.isPtr());
 			arc.print(result, "\"isNul\": %d, ", child_item.isNul());
-			arc.print(result, "\"hasVersion\": %d, ", child_item.m_info.hasVersion());
+			arc.print(result, "\"isVLen\": %d, ", child_item.isVLen());
+			arc.print(result, "\"hasVersion\": %d, ", child_item.m_attr.hasVersion());
 			if (child_item.isArr())
 				arc.print(result, "\"arrNum\": %d, ", child_item.m_arrNum);
 			arc.print(result, "\"data\": ");
@@ -6008,7 +6099,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素フッター書き込み
-		bool writeElemFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
+		bool writeElemFooter(COArchiveHelper parent_arc, COArchiveHelper child_arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6025,7 +6116,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロックフッター書き込み
-		bool writeArrayFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& array_block_size)
+		bool writeArrayFooter(COArchiveHelper parent_arc, COArchiveHelper child_arc, const CItemBase& item, std::size_t& array_block_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6045,7 +6136,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックフッター書き込み
-		bool writeBlockFooter(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc, const CItemBase& item, std::size_t& block_size)
+		bool writeBlockFooter(COArchiveHelper parent_arc, COArchiveHelper child_arc, const CItemBase& item, std::size_t& block_size)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6062,7 +6153,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ書き込み
-		bool writeTerminator(CIOArchiveBase& arc)
+		bool writeTerminator(COArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6130,7 +6221,7 @@ namespace serial
 	public:
 		//メソッド
 		//パース
-		bool parse(CIOArchiveBase& arc)
+		bool parse(CIArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6139,7 +6230,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//シグネチャ読み込み
-		bool readSignature(CIOArchiveBase& arc)
+		bool readSignature(CIArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6149,7 +6240,7 @@ namespace serial
 		}
 		//ブロックヘッダー読み込み
 		//※読み込んだオブジェクトの型情報とバージョンを返す
-		bool readBlockHeader(CIOArchiveBase& arc, const CItemBase& item, const CItemBase* delegate_item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size)
+		bool readBlockHeader(CIArchiveHelper arc, const CItemBase& item, const CItemBase* delegate_item, const CVersion& ver, CItemBase& input_item, CVersion& input_ver, std::size_t& block_size)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6158,7 +6249,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロックヘッダー読み込み
-		bool readArrayHeader(CIOArchiveBase& arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size)
+		bool readArrayHeader(CIArchiveHelper arc, const CItemBase& item, std::size_t& array_elem_num, std::size_t& array_block_size)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6167,7 +6258,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素ヘッダー読み込み
-		bool readElemHeader(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
+		bool readElemHeader(CIArchiveHelper arc, const CItemBase& item, const std::size_t index, short& items_num, std::size_t& elem_size)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6176,7 +6267,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//データ項目読み込み
-		bool readDataItem(CIOArchiveBase& arc, const CItemBase& item, const CItemBase* delegate_child_item_now, const bool item_is_valid, const bool is_required_retry)
+		bool readDataItem(CIArchiveHelper arc, const CItemBase& item, const CItemBase* delegate_child_item_now, const bool item_is_valid, const bool is_required_retry)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6186,7 +6277,7 @@ namespace serial
 		}
 		//要素フッター読み込み
 		//※読み込みテストの結果、要素フッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadElemFooter(CIOArchiveBase& arc, const CItemBase& item, const std::size_t index, bool& is_elem_end)
+		bool tryAndReadElemFooter(CIArchiveHelper arc, const CItemBase& item, const std::size_t index, bool& is_elem_end)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6195,7 +6286,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//要素読み込み終了
-		bool finishReadElem(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
+		bool finishReadElem(CIArchiveHelper parent_arc, CIArchiveHelper child_arc)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6205,7 +6296,7 @@ namespace serial
 		}
 		//配列ブロックフッター読み込み
 		//※読み込みテストの結果、配列ブロックフッターでなければデータ項目の読み込みを継続する
-		bool tryAndReadArrayFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_array_block_end)
+		bool tryAndReadArrayFooter(CIArchiveHelper arc, const CItemBase& item, bool& is_array_block_end)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6214,7 +6305,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//配列ブロック読み込み終了
-		bool finishReadArray(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
+		bool finishReadArray(CIArchiveHelper parent_arc, CIArchiveHelper child_arc)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6223,7 +6314,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロックの読み込みをスキップ
-		bool skipReadBlock(CIOArchiveBase& arc)
+		bool skipReadBlock(CIArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6233,7 +6324,7 @@ namespace serial
 		}
 		//ブロックフッター読み込み
 		//※読み込みテストの結果、ブロックフッターでなければデータ項目（オブジェクト）の読み込みを継続する
-		bool tryAndReadBlockFooter(CIOArchiveBase& arc, const CItemBase& item, bool& is_block_end)
+		bool tryAndReadBlockFooter(CIArchiveHelper arc, const CItemBase& item, bool& is_block_end)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6242,7 +6333,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ブロック読み込み終了
-		bool finishReadBlock(CIOArchiveBase& parent_arc, CIOArchiveBase& child_arc)
+		bool finishReadBlock(CIArchiveHelper parent_arc, CIArchiveHelper child_arc)
 		{
 			CResult& result = child_arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6254,7 +6345,7 @@ namespace serial
 		//次のブロックヘッダー問い合わせ（先行読み込み）
 		//※処理を進めず、次の情報を読み取るのみ
 		//※（例えば、バイナリスタイルなら、読み込みバッファのポインタを進めない）
-		bool requireNextBlockHeader(CIOArchiveBase& arc, CItemBase& require_item, std::size_t& require_block_size, bool& is_found_next_block)
+		bool requireNextBlockHeader(CIArchiveHelper arc, CItemBase& require_item, std::size_t& require_block_size, bool& is_found_next_block)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6263,7 +6354,7 @@ namespace serial
 			return !result.hasFatalError();
 		}
 		//ターミネータ読み込み
-		bool readTerminator(CIOArchiveBase& arc)
+		bool readTerminator(CIArchiveHelper arc)
 		{
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
@@ -6695,7 +6786,7 @@ void serializeTest1bin(const char* file_path)
 #else//USE_STRCPY_S
 	FILE* fp = fopen(file_path, "wb");
 #endif//USE_STRCPY_S
-	fwrite(save_buff, 1, arc.getBuffPos(), fp);
+	fwrite(save_buff, 1, arc.getSaveDataSize(), fp);
 	fclose(fp);
 	fp = NULL;
 }
@@ -6725,7 +6816,7 @@ void serializeTest1txt(const char* file_path)
 #else//USE_STRCPY_S
 	FILE* fp = fopen(file_path, "wb");
 #endif//USE_STRCPY_S
-	fwrite(save_buff, 1, arc.getBuffPos(), fp);
+	fwrite(save_buff, 1, arc.getSaveDataSize(), fp);
 	fclose(fp);
 	fp = NULL;
 }
@@ -6919,8 +7010,8 @@ using name_t = CStr<32>;
 //基本データ構造体
 struct BASIC_DATA
 {
-	char m_atk;//攻撃力
-	long m_def;//守備力
+	short m_atk;//攻撃力
+	short m_def;//守備力
 	//デフォルトコンストラクタ
 	BASIC_DATA()
 	{}

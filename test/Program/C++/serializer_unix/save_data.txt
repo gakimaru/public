@@ -1,766 +1,455 @@
 "serializer": {
- "SaveData": {
-   "crc": 0x3366f9bd, "itemType": "9CSaveData", "itemSize": 0, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-     "obj": {
-     },
-   "version": {
-     "crc": 0xbf1cd3c3, "itemType": "16CSaveDataVersion", "itemSize": 12, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-       "obj": {
-         "major": {"crc": 0x3d34fd09, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-         "minor": {"crc": 0xff897d3a, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'r','0','0','0','0','0',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x7bd6ae81,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe5,0x9b,0x9e,0xe5,0xbe,0xa9,0xe8,0x96,0xac,'0','0','0',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 5,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'r','0','0','0','0','1',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0cd19e17,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe5,0x9b,0x9e,0xe5,0xbe,0xa9,0xe8,0x96,0xac,'0','0','1',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 7,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'r','0','0','0','0','2',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x95d8cfad,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe5,0x9b,0x9e,0xe5,0xbe,0xa9,0xe8,0x96,0xac,'0','0','2',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 9,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'w','0','0','0','0','0',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x2b1b3f32,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe6,0xad,0xa6,0xe5,0x99,0xa8,'0','0','0',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'w','0','0','0','0','1',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x5c1c0fa4,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe6,0xad,0xa6,0xe5,0x99,0xa8,'0','0','1',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 11,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'w','0','0','0','0','2',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xc5155e1e,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe6,0xad,0xa6,0xe5,0x99,0xa8,'0','0','2',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 12,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'w','0','0','0','0','3',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xb2126e88,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe6,0xad,0xa6,0xe5,0x99,0xa8,'0','0','3',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 13,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'w','0','0','0','0','4',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x2c76fb2b,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe6,0xad,0xa6,0xe5,0x99,0xa8,'0','0','4',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 2,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 's','0','0','0','0','0',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xb08a7d24,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x9b,0xbe,'0','0','0',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 5,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 's','0','0','0','0','1',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xc78d4db2,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x9b,0xbe,'0','0','1',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 6,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 's','0','0','0','0','2',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x5e841c08,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x9b,0xbe,'0','0','2',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 7,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 's','0','0','0','0','3',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x29832c9e,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x9b,0xbe,'0','0','3',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 8,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-       },
-   },
-   "item": {
-     "crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 's','0','0','0','0','4',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xb7e7b93d,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x9b,0xbe,'0','0','4',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 9,},
-             },
-         },
-         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0,},
-         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1,},
-       },
-   },
-   "ability": {
-     "crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'a','0','0','0','0','0',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xfe94deb4,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x89,0xb9,0xe6,0x8a,0x80,'0','0','0',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 5,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 4,},
-             },
-         },
-       },
-   },
-   "ability": {
-     "crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'a','0','0','0','0','1',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x8993ee22,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x89,0xb9,0xe6,0x8a,0x80,'0','0','1',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 8,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 6,},
-             },
-         },
-       },
-   },
-   "ability": {
-     "crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'a','0','0','0','0','2',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x109abf98,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x89,0xb9,0xe6,0x8a,0x80,'0','0','2',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 11,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 8,},
-             },
-         },
-       },
-   },
-   "ability": {
-     "crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'a','0','0','0','0','3',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x679d8f0e,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x89,0xb9,0xe6,0x8a,0x80,'0','0','3',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10,},
-             },
-         },
-       },
-   },
-   "ability": {
-     "crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'a','0','0','0','0','4',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xf9f91aad,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x89,0xb9,0xe6,0x8a,0x80,'0','0','4',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 17,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 12,},
-             },
-         },
-       },
-   },
-   "ability": {
-     "crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'a','0','0','0','0','5',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x8efe2a3b,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x89,0xb9,0xe6,0x8a,0x80,'0','0','5',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14,},
-             },
-         },
-       },
-   },
-   "ability": {
-     "crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'a','0','0','0','0','6',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x17f77b81,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x89,0xb9,0xe6,0x8a,0x80,'0','0','6',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 23,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 16,},
-             },
-         },
-       },
-   },
-   "ability": {
-     "crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'a','0','0','0','0','7',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x60f04b17,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x89,0xb9,0xe6,0x8a,0x80,'0','0','7',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 26,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 18,},
-             },
-         },
-       },
-   },
-   "ability": {
-     "crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'a','0','0','0','0','8',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xf04f5686,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x89,0xb9,0xe6,0x8a,0x80,'0','0','8',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 29,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20,},
-             },
-         },
-       },
-   },
-   "ability": {
-     "crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 56, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'a','0','0','0','0','9',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x87486610,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe7,0x89,0xb9,0xe6,0x8a,0x80,'0','0','9',0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 32,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 22,},
-             },
-         },
-       },
-   },
-   "chara": {
-     "crc": 0x888bcec1, "itemType": "10CHARA_DATA", "itemSize": 92, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'c','0','0','0','3','0',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x98712c7c,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe3,0x81,0x95,0xe3,0x81,0xb6,0xe3,0x82,0x8d,0xe3,0x81,0x86,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "level": {"crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x1e,},
-         "weapon": {"crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000,},
-         "shield": {"crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000,},
-         "param1": {"crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 123,456,], },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 55,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 3,},
-             },
-         },
-       },
-   },
-   "chara": {
-     "crc": 0x888bcec1, "itemType": "10CHARA_DATA", "itemSize": 92, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'c','0','0','0','2','0',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x816a1d3d,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe3,0x81,0x98,0xe3,0x82,0x8d,0xe3,0x81,0x86,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "level": {"crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x14,},
-         "weapon": {"crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000,},
-         "shield": {"crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000,},
-         "param1": {"crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 999,888,], },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 25,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 40,},
-             },
-         },
-       },
-   },
-   "chara": {
-     "crc": 0x888bcec1, "itemType": "10CHARA_DATA", "itemSize": 92, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "id": {
-           "crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ 'c','0','0','0','1','0',0x00,0x00,], },
-               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xaa474efe,},
-             },
-         },
-         "name": {
-           "crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09,},
-               "str": {"crc": 0x5caea3f9, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 32, "data": [ 0xe3,0x81,0x9f,0xe3,0x82,0x8d,0xe3,0x81,0x86,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,], },
-             },
-         },
-         "level": {"crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0a,},
-         "weapon": {"crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000,},
-         "shield": {"crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000,},
-         "param1": {"crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 111,222,], },
-         "basic": {
-           "crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-             "obj": {
-               "atk": {"crc": 0x27677c27, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 15,},
-               "def": {"crc": 0x0cc4e161, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20,},
-             },
-         },
-       },
-   },
-   "phase_and_flags": {
-     "crc": 0x4659bc29, "itemType": "14CPhaseAndFlags", "itemSize": 12, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 1.0, 
-       "obj": {
-         "phase": {"crc": 0xb1bdd6cb, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 7,},
-         "flags": {
-           "crc": 0x0b0541ba, "itemType": "St6bitsetILj64EE", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": 0.0, 
-             "obj": {
-               "bitset": {"crc": 0x9dd4d1cb, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 8, "data": [ '5',0x00,0x00,0x00,0x00,0x00,0x00,0x80,], },
-             },
-         },
-       },
-   },
- },
-}/*serializer*/
+ "SaveData": {"crc": 0x3366f9bd, "itemType": "9CSaveData", "itemSize": 0, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+     "elem": {},
+   "version": {"crc": 0xbf1cd3c3, "itemType": "16CSaveDataVersion", "itemSize": 12, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+       "elem": {
+         "major": {"crc": 0x3d34fd09, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1},
+         "minor": {"crc": 0xff897d3a, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "r00000"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x7bd6ae81}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "回復薬000"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "hasVersion": 0, "data": null},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 5},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "r00001"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0cd19e17}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "回復薬001"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "hasVersion": 0, "data": null},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 7},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "r00002"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x95d8cfad}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "回復薬002"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "hasVersion": 0, "data": null},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 9},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00000"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x2b1b3f32}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器000"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "hasVersion": 0, "data": null},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00001"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x5c1c0fa4}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器001"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 9, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+1"},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 11},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00002"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xc5155e1e}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器002"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 9, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+2"},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 12},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00003"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xb2126e88}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器003"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 9, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+3"},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 13},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00004"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x2c76fb2b}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器004"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 9, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+4"},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 2}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00000"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xb08a7d24}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾000"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "hasVersion": 0, "data": null},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 5}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00001"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xc78d4db2}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾001"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 14, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:B"},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 6}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00002"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x5e841c08}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾002"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 14, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:C"},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 7}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00003"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x29832c9e}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾003"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 14, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:D"},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 8}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+   "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 84, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00004"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xb7e7b93d}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾004"}}}
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 14, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:E"},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 9}}},
+         "recover": {"crc": 0xf588f14d, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
+         "num": {"crc": 0xdc43af6e, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 1}}},
+   "ability": {"crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00000"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xfe94deb4}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技000"}}},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 5},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 4}}}}},
+   "ability": {"crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00001"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x8993ee22}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技001"}}},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 8},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 6}}}}},
+   "ability": {"crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00002"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x109abf98}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技002"}}},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 11},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 8}}}}},
+   "ability": {"crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00003"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x679d8f0e}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技003"}}},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10}}}}},
+   "ability": {"crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00004"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xf9f91aad}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技004"}}},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 17},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 12}}}}},
+   "ability": {"crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00005"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x8efe2a3b}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技005"}}},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14}}}}},
+   "ability": {"crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00006"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x17f77b81}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技006"}}},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 23},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 16}}}}},
+   "ability": {"crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00007"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x60f04b17}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技007"}}},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 26},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 18}}}}},
+   "ability": {"crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00008"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xf04f5686}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技008"}}},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 29},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20}}}}},
+   "ability": {"crc": 0x35cfee3c, "itemType": "12ABILITY_DATA", "itemSize": 60, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00009"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x87486610}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技009"}}},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 32},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 22}}}}},
+   "chara": {"crc": 0x888bcec1, "itemType": "10CHARA_DATA", "itemSize": 96, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "c00030"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x98712c7c}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "さぶろう"}}}
+         "level": {"crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 30},
+         "weapon": {"crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
+         "shield": {"crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
+         "param1": {"crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 123,456]},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 55},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 3}}}}},
+   "chara": {"crc": 0x888bcec1, "itemType": "10CHARA_DATA", "itemSize": 96, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "c00020"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x816a1d3d}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "じろう"}}}
+         "level": {"crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20},
+         "weapon": {"crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
+         "shield": {"crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
+         "param1": {"crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 999,888]},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 25},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 40}}}}},
+   "chara": {"crc": 0x888bcec1, "itemType": "10CHARA_DATA", "itemSize": 96, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "c00010"},
+               "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xaa474efe}}},
+         "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "たろう"}}}
+         "level": {"crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10},
+         "weapon": {"crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
+         "shield": {"crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
+         "param1": {"crc": 0x171c2e4f, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 111,222]},
+         "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+             "elem": {
+               "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 15},
+               "def": {"crc": 0x0cc4e161, "itemType": "l", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20}}}}},
+   "phase_and_flags": {"crc": 0x4659bc29, "itemType": "14CPhaseAndFlags", "itemSize": 12, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
+       "elem": {
+         "phase": {"crc": 0xb1bdd6cb, "itemType": "s", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 7}
+         "flags": {"crc": 0x0b0541ba, "itemType": "St6bitsetILj64EE", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
+             "elem": {
+               "bitset": {"crc": 0x9dd4d1cb, "itemType": "N6serial5bin_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x35,0x00,0x00,0x00,0x00,0x00,0x00,0x80}}}}}}
+}

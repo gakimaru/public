@@ -2237,6 +2237,9 @@ using CTempPolyPoolAllocator = CTempPolyAllocatorWithAdp<CPoolAllocAdp>;//C++11Œ
 //ƒVƒŠƒAƒ‰ƒCƒY
 namespace serial
 {
+#define IS_LITTLE_ENDIAN//ƒŠƒgƒ‹ƒGƒ“ƒfƒBƒAƒ“
+//#define IS_BIG_ENDIAN//ƒrƒbƒOƒGƒ“ƒfƒBƒAƒ“
+
 	//--------------------
 	//ƒNƒ‰ƒXéŒ¾
 	class CItemBase;
@@ -2560,357 +2563,816 @@ namespace serial
 	}
 
 	//--------------------
-	//ƒf[ƒ^•¶š—ñ‰»Šî’êƒNƒ‰ƒX
-	typedef std::size_t(*toStrFuncP)(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size);//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
-	typedef std::size_t(*fromStrFuncP)(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max);//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
-	class CToStrBase
+	//”Ä—pƒf[ƒ^Œ^w’è—p\‘¢‘Ì
+	struct str_t{};//•¶š—ñŒ^
+	struct bin_t{};//ƒoƒCƒiƒŠŒ^
+	//--------------------
+	//Œ^‘€ìŠî’êƒNƒ‰ƒX
+	typedef std::size_t(*toMemFuncP)(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size);//ƒƒ‚ƒŠ‚ÖƒRƒs[ŠÖ”Œ^
+	typedef std::size_t(*fromMemFuncP)(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size);//ƒƒ‚ƒŠ‚©‚çƒRƒs[ŠÖ”Œ^
+	typedef std::size_t(*toStrFuncP)(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size);//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
+	typedef std::size_t(*fromStrFuncP)(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max);//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
+	class CTypeCtrlBase
 	{
 	public:
 		//ƒƒ\ƒbƒh
-		//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
-		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
+		{
+			if (mem_size < value_size)
+			{
+				//‘‚«‚İæ‚ÌƒTƒCƒY‚Ì•û‚ª¬‚³‚¢ê‡
+				//¦‘‚«‚İæ‚ÌƒTƒCƒY•ª‚¾‚¯ƒRƒs[‚·‚é
+				memcpy(mem, value_p, mem_size);
+			}
+			else if (mem_size > value_size)
+			{
+				//‘‚«‚İæ‚ÌƒTƒCƒY‚Ì•û‚ª‘å‚«‚¢ê‡
+				//¦Œã•û‚ğƒ[ƒƒNƒŠƒA
+				memcpy(mem, value_p, value_size);
+				memset(reinterpret_cast<char*>(mem)+value_size, 0, mem_size - value_size);
+			}
+			else//if (mem_size == value_size)
+			{
+				//ƒTƒCƒY‚ªˆê’v‚·‚éê‡
+				//¦‚»‚Ì‚Ü‚ÜƒRƒs[‚·‚é‚¾‚¯
+				memcpy(mem, value_p, mem_size);
+			}
+			return mem_size;
+		}
+		//¦ƒGƒ“ƒfƒBƒAƒ“’²®”Å
+		static std::size_t toMemAndAdjust(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
+		{
+			if (mem_size < value_size)
+			{
+				//‘‚«‚İæ‚ÌƒTƒCƒY‚Ì•û‚ª¬‚³‚¢ê‡
+			#ifdef IS_BIG_ENDIAN
+				//¦‘‚«‚İæ‚ÌƒTƒCƒY•ª‚¾‚¯Œã•û‚ğƒRƒs[‚·‚é
+				memcpy(mem, reinterpret_cast<const char*>(value_p)+(value_size - mem_size), mem_size);
+			#else//IS_BIG_ENDIAN
+				//¦‘‚«‚İæ‚ÌƒTƒCƒY•ª‚¾‚¯‘O•û‚ğƒRƒs[‚·‚é
+				memcpy(mem, value_p, mem_size);
+			#endif//IS_BIG_ENDIAN
+			}
+			else if (mem_size > value_size)
+			{
+				//‘‚«‚İæ‚ÌƒTƒCƒY‚Ì•û‚ª‘å‚«‚¢ê‡
+			#ifdef IS_BIG_ENDIAN
+				//¦Œã‹l‚ß‚Å‘O•û‚ğƒ[ƒƒNƒŠƒA
+				memcpy(reinterpret_cast<char*>(mem)+value_size, value_p, value_size);
+				memset(mem, 0, mem_size - value_size);
+			#else//IS_BIG_ENDIAN
+				//¦‘O‹l‚ß‚ÅŒã•û‚ğƒ[ƒƒNƒŠƒA
+				memcpy(mem, value_p, value_size);
+				memset(reinterpret_cast<char*>(mem)+value_size, 0, mem_size - value_size);
+			#endif//IS_BIG_ENDIAN
+			}
+			else//if (mem_size == value_size)
+			{
+				//ƒTƒCƒY‚ªˆê’v‚·‚éê‡
+				//¦‚»‚Ì‚Ü‚ÜƒRƒs[‚·‚é‚¾‚¯
+				memcpy(mem, value_p, mem_size);
+			}
+			return mem_size;
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return toMem(value_p, value_size, mem, mem_size);
+		}
+		//¦ƒGƒ“ƒfƒBƒAƒ“’²®”Å
+		static std::size_t fromMemAndAdjust(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return toMemAndAdjust(value_p, value_size, mem, mem_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
 		{
 			std::size_t used = 0;
 			std::size_t remain = str_max;
 			char* write_p = str;
-			if (remain > 1)
-			{
-				*(write_p++) = '\"';
-				++used;
-				--remain;
-			}
-			const unsigned char* read_p = reinterpret_cast<const unsigned char*>(data_p);
-			for (unsigned int i = 0; i < data_size && remain > 2; ++i)
+			const unsigned char* read_p = reinterpret_cast<const unsigned char*>(value_p);
+			for (unsigned int i = 0; i < value_size && remain > 5 + 1; ++i)
 			{
 				const unsigned char c = *(read_p++);
 				const unsigned char hi = c >> 4;
 				const unsigned char lo = c & 0xf;
+				if (i != 0)
+				{
+					*(write_p++) = ',';
+					++used;
+					--remain;
+				}
+				*(write_p++) = '0';
+				*(write_p++) = 'x';
 				*(write_p++) = hi >= 10 ? 'a' + hi : '0' + hi;
 				*(write_p++) = lo >= 10 ? 'a' + lo : '0' + lo;
-				used += 2;
-				remain -= 2;
+				used += 4;
+				remain -= 4;
 			}
 			if (remain > 1)
-			{
-				*(write_p++) = '\"';
-				++used;
-				--remain;
-			}
-			if (remain > 1)
-			{
 				*(write_p) = '\0';
-			}
 			return used;
 		}
-		//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
-		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
 		{
 			//–¢À‘•
 			return 0;
 		}
 	public:
 		//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStrBase() :
+		CTypeCtrlBase() :
+			m_toMemFuncP(toMem),
+			m_fromMemFuncP(fromMem),
 			m_toStrFuncP(toStr),
 			m_fromStrFuncP(fromStr)
 		{}
 		//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStrBase(const CToStrBase& src) :
+		CTypeCtrlBase(const CTypeCtrlBase& src) :
+			m_toMemFuncP(src.m_toMemFuncP),
+			m_fromMemFuncP(src.m_fromMemFuncP),
 			m_toStrFuncP(src.m_toStrFuncP),
 			m_fromStrFuncP(src.m_fromStrFuncP)
 		{}
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStrBase(toStrFuncP to_func_p, fromStrFuncP from_func_p) :
+		CTypeCtrlBase(toMemFuncP to_mem_func_p, fromMemFuncP from_mem_func_p, toStrFuncP to_func_p, fromStrFuncP from_func_p) :
+			m_toMemFuncP(to_mem_func_p),
+			m_fromMemFuncP(from_mem_func_p),
 			m_toStrFuncP(to_func_p),
 			m_fromStrFuncP(from_func_p)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CToStrBase()
+		~CTypeCtrlBase()
 		{}
 	public:
 		//ƒtƒB[ƒ‹ƒh
+		toMemFuncP m_toMemFuncP;//ƒƒ‚ƒŠ‚ÖƒRƒs[ŠÖ”
+		fromMemFuncP m_fromMemFuncP;//ƒƒ‚ƒŠ‚©‚çƒRƒs[ŠÖ”
 		toStrFuncP m_toStrFuncP;//•¶š—ñ‚Ö•ÏŠ·ŠÖ”
 		fromStrFuncP m_fromStrFuncP;//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”
 	};
 	//--------------------
-	//ƒf[ƒ^•¶š—ñ‰»ƒNƒ‰ƒX
+	//Œ^‘€ì‰»ƒNƒ‰ƒX
 	template<typename T>
-	class CToStr : public CToStrBase
+	class CTypeCtrl : public CTypeCtrlBase
 	{
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStr() :
-			CToStrBase()
+		CTypeCtrl() :
+			CTypeCtrlBase()
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CToStr()
+		~CTypeCtrl()
 		{}
 	};
 	//--------------------
-	//ƒf[ƒ^•¶š—ñ‰»ƒNƒ‰ƒX
+	//Œ^‘€ìƒNƒ‰ƒX
 	template<>
-	class CToStr<int> : public CToStrBase
+	class CTypeCtrl<int> : public CTypeCtrlBase
 	{
 	public:
 		//ƒƒ\ƒbƒh
-		//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
-		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
 		{
-			const int value = *reinterpret_cast<const int*>(data_p);
+			return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const int value = *reinterpret_cast<const int*>(value_p);
 		#ifdef USE_STRCPY_S
 			return sprintf_s(str, str_max, "%d", value);
 		#else//USE_STRCPY_S
 			return sprintf(str, "%d", value);
 		#endif//USE_STRCPY_S
 		}
-		//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
-		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t data_size_max)
 		{
 			//–¢À‘•
 			return 0;
 		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStr() :
-			CToStrBase(toStr, fromStr)
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CToStr()
+		~CTypeCtrl()
 		{}
 	};
 	//--------------------
-	//ƒf[ƒ^•¶š—ñ‰»ƒNƒ‰ƒX
+	//Œ^‘€ìƒNƒ‰ƒX
 	template<>
-	class CToStr<unsigned int> : public CToStrBase
+	class CTypeCtrl<unsigned int> : public CTypeCtrlBase
 	{
 	public:
 		//ƒƒ\ƒbƒh
-		//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
-		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
 		{
-			const unsigned int value = *reinterpret_cast<const unsigned int*>(data_p);
+			return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const unsigned int value = *reinterpret_cast<const unsigned int*>(value_p);
 		#ifdef USE_STRCPY_S
 			return sprintf_s(str, str_max, "0x%08x", value);
 		#else//USE_STRCPY_S
 			return sprintf(str, "0x%08x", value);
 		#endif//USE_STRCPY_S
 		}
-		//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
-		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
 		{
 			//–¢À‘•
 			return 0;
 		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStr() :
-			CToStrBase(toStr, fromStr)
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CToStr()
+		~CTypeCtrl()
 		{}
 	};
 	//--------------------
-	//ƒf[ƒ^•¶š—ñ‰»ƒNƒ‰ƒX
+	//Œ^‘€ìƒNƒ‰ƒX
 	template<>
-	class CToStr<short> : public CToStrBase
+	class CTypeCtrl<long> : public CTypeCtrlBase
 	{
 	public:
 		//ƒƒ\ƒbƒh
-		//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
-		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
 		{
-			const short value = *reinterpret_cast<const short*>(data_p);
+			return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const long value = *reinterpret_cast<const long*>(value_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "%ld", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "%ld", value);
+		#endif//USE_STRCPY_S
+		}
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t data_size_max)
+		{
+			//–¢À‘•
+			return 0;
+		}
+	public:
+		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
+		{}
+		//ƒfƒXƒgƒ‰ƒNƒ^
+		~CTypeCtrl()
+		{}
+	};
+	//--------------------
+	//Œ^‘€ìƒNƒ‰ƒX
+	template<>
+	class CTypeCtrl<unsigned long> : public CTypeCtrlBase
+	{
+	public:
+		//ƒƒ\ƒbƒh
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const unsigned long value = *reinterpret_cast<const unsigned long*>(value_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "0x%08lx", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "0x%08lx", value);
+		#endif//USE_STRCPY_S
+		}
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
+		{
+			//–¢À‘•
+			return 0;
+		}
+	public:
+		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
+		{}
+		//ƒfƒXƒgƒ‰ƒNƒ^
+		~CTypeCtrl()
+		{}
+	};
+	//--------------------
+	//Œ^‘€ìƒNƒ‰ƒX
+	template<>
+	class CTypeCtrl<long long> : public CTypeCtrlBase
+	{
+	public:
+		//ƒƒ\ƒbƒh
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const long long value = *reinterpret_cast<const long long*>(value_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "%lld", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "%lld", value);
+		#endif//USE_STRCPY_S
+		}
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t data_size_max)
+		{
+			//–¢À‘•
+			return 0;
+		}
+	public:
+		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
+		{}
+		//ƒfƒXƒgƒ‰ƒNƒ^
+		~CTypeCtrl()
+		{}
+	};
+	//--------------------
+	//Œ^‘€ìƒNƒ‰ƒX
+	template<>
+	class CTypeCtrl<unsigned long long> : public CTypeCtrlBase
+	{
+	public:
+		//ƒƒ\ƒbƒh
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const unsigned long long value = *reinterpret_cast<const unsigned long long*>(value_p);
+		#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "0x%016llx", value);
+		#else//USE_STRCPY_S
+			return sprintf(str, "0x%016llx", value);
+		#endif//USE_STRCPY_S
+		}
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
+		{
+			//–¢À‘•
+			return 0;
+		}
+	public:
+		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
+		{}
+		//ƒfƒXƒgƒ‰ƒNƒ^
+		~CTypeCtrl()
+		{}
+	};
+	//--------------------
+	//Œ^‘€ìƒNƒ‰ƒX
+	template<>
+	class CTypeCtrl<short> : public CTypeCtrlBase
+	{
+	public:
+		//ƒƒ\ƒbƒh
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const short value = *reinterpret_cast<const short*>(value_p);
 		#ifdef USE_STRCPY_S
 			return sprintf_s(str, str_max, "%d", value);
 		#else//USE_STRCPY_S
 			return sprintf(str, "%d", value);
 		#endif//USE_STRCPY_S
 		}
-		//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
-		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
 		{
 			//–¢À‘•
 			return 0;
 		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStr() :
-			CToStrBase(toStr, fromStr)
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CToStr()
+		~CTypeCtrl()
 		{}
 	};
 	//--------------------
-	//ƒf[ƒ^•¶š—ñ‰»ƒNƒ‰ƒX
+	//Œ^‘€ìƒNƒ‰ƒX
 	template<>
-	class CToStr<unsigned short> : public CToStrBase
+	class CTypeCtrl<unsigned short> : public CTypeCtrlBase
 	{
 	public:
 		//ƒƒ\ƒbƒh
-		//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
-		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
 		{
-			const unsigned short value = *reinterpret_cast<const unsigned short*>(data_p);
+			return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const unsigned short value = *reinterpret_cast<const unsigned short*>(value_p);
 		#ifdef USE_STRCPY_S
 			return sprintf_s(str, str_max, "0x%04x", value);
 		#else//USE_STRCPY_S
 			return sprintf(str, "0x%04x", value);
 		#endif//USE_STRCPY_S
 		}
-		//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
-		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
 		{
 			//–¢À‘•
 			return 0;
 		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStr() :
-			CToStrBase(toStr, fromStr)
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CToStr()
+		~CTypeCtrl()
 		{}
 	};
 	//--------------------
-	//ƒf[ƒ^•¶š—ñ‰»ƒNƒ‰ƒX
+	//Œ^‘€ìƒNƒ‰ƒX
 	template<>
-	class CToStr<char> : public CToStrBase
+	class CTypeCtrl<char> : public CTypeCtrlBase
 	{
 	public:
 		//ƒƒ\ƒbƒh
-		//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
-		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
 		{
-			const char value = *reinterpret_cast<const char*>(data_p);
-			if (value >= 0x20 && value <= 0x7e)
-			{
-			#ifdef USE_STRCPY_S
-				return sprintf_s(str, str_max, "\'%c\'", value);
-			#else//USE_STRCPY_S
-				return sprintf(str, "\'%c\'", value);
-			#endif//USE_STRCPY_S
-			}
-			else
-			{
-			#ifdef USE_STRCPY_S
-				return sprintf_s(str, str_max, "0x%02x", value & 0xff);
-			#else//USE_STRCPY_S
-				return sprintf(str, "0x%02x", value & 0xff);
-			#endif//USE_STRCPY_S
-			}
+			return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
 		}
-		//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
-		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const char value = *reinterpret_cast<const char*>(value_p);
+			#ifdef USE_STRCPY_S
+			return sprintf_s(str, str_max, "%d", value);
+			#else//USE_STRCPY_S
+			return sprintf(str, "%d", value);
+			#endif//USE_STRCPY_S
+		}
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
 		{
 			//–¢À‘•
 			return 0;
 		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStr() :
-			CToStrBase(toStr, fromStr)
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CToStr()
+		~CTypeCtrl()
 		{}
 	};
 	//--------------------
-	//ƒf[ƒ^•¶š—ñ‰»ƒNƒ‰ƒX
+	//Œ^‘€ìƒNƒ‰ƒX
 	template<>
-	class CToStr<unsigned char> : public CToStrBase
+	class CTypeCtrl<unsigned char> : public CTypeCtrlBase
 	{
 	public:
 		//ƒƒ\ƒbƒh
-		//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
-		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
 		{
-			const unsigned char value = *reinterpret_cast<const unsigned char*>(data_p);
+			return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const unsigned char value = *reinterpret_cast<const unsigned char*>(value_p);
 		#ifdef USE_STRCPY_S
 			return sprintf_s(str, str_max, "0x%02x", value);
 		#else//USE_STRCPY_S
 			return sprintf(str, "0x%02x", value);
 		#endif//USE_STRCPY_S
 		}
-		//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
-		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
 		{
 			//–¢À‘•
 			return 0;
 		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStr() :
-			CToStrBase(toStr, fromStr)
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CToStr()
+		~CTypeCtrl()
 		{}
 	};
 	//--------------------
-	//ƒf[ƒ^•¶š—ñ‰»ƒNƒ‰ƒX
+	//Œ^‘€ìƒNƒ‰ƒX
 	template<>
-	class CToStr<float> : public CToStrBase
+	class CTypeCtrl<float> : public CTypeCtrlBase
 	{
 	public:
 		//ƒƒ\ƒbƒh
-		//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
-		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
 		{
-			const float value = *reinterpret_cast<const float*>(data_p);
+			//return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+			return CTypeCtrlBase::toMem(mem, mem_size, value_p, value_size);//ƒGƒ“ƒfƒBƒAƒ“’²®‚È‚µ‚ÅƒRƒs[
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			if (mem_size == sizeof(double))
+			{
+				//doubleŒ^‚Æ—\‘ª
+				double value_from;
+				CTypeCtrlBase::fromMem(mem, mem_size, &value_from, sizeof(value_from));
+				const float value_to = static_cast<float>(value_from);
+				CTypeCtrlBase::toMem(value_p, value_size, &value_to, sizeof(value_to));
+			}
+			else if (mem_size == sizeof(float))
+			{
+				//return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+				return CTypeCtrlBase::fromMem(mem, mem_size, value_p, value_size);//ƒGƒ“ƒfƒBƒAƒ“’²®‚È‚µ‚ÅƒRƒs[
+			}
+			else
+			{
+				//®”Œ^‚Æ—\‘ª
+				long long value_from;
+				CTypeCtrlBase::fromMem(mem, mem_size, &value_from, sizeof(value_from));
+				const float value_to = static_cast<float>(value_from);
+				CTypeCtrlBase::toMem(value_p, value_size, &value_to, sizeof(value_to));
+			}
+			return mem_size;
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const float value = *reinterpret_cast<const float*>(value_p);
 		#ifdef USE_STRCPY_S
 			return sprintf_s(str, str_max, "%f", value);
 		#else//USE_STRCPY_S
 			return sprintf(str, "%f", value);
 		#endif//USE_STRCPY_S
 		}
-		//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
-		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
 		{
 			//–¢À‘•
 			return 0;
 		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStr() :
-			CToStrBase(toStr, fromStr)
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CToStr()
+		~CTypeCtrl()
 		{}
 	};
 	//--------------------
-	//ƒf[ƒ^•¶š—ñ‰»ƒNƒ‰ƒX
+	//Œ^‘€ìƒNƒ‰ƒX
 	template<>
-	class CToStr<double> : public CToStrBase
+	class CTypeCtrl<double> : public CTypeCtrlBase
 	{
 	public:
 		//ƒƒ\ƒbƒh
-		//•¶š—ñ‚Ö•ÏŠ·ŠÖ”Œ^
-		static std::size_t toStr(char* str, const std::size_t str_max, const void* data_p, const std::size_t data_size)
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
 		{
-			const double value = *reinterpret_cast<const double*>(data_p);
+			//return CTypeCtrlBase::toMemAndAdjust(mem, mem_size, value_p, value_size);
+			return CTypeCtrlBase::toMem(mem, mem_size, value_p, value_size);//ƒGƒ“ƒfƒBƒAƒ“’²®‚È‚µ‚ÅƒRƒs[
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			if (mem_size == sizeof(float))
+			{
+				//floatŒ^‚Æ—\‘ª
+				float value_from;
+				CTypeCtrlBase::fromMem(mem, mem_size, &value_from, sizeof(value_from));
+				const double value_to = static_cast<float>(value_from);
+				CTypeCtrlBase::toMem(value_p, value_size, &value_to, sizeof(value_to));
+			}
+			else if (mem_size == sizeof(double))
+			{
+				//return CTypeCtrlBase::fromMemAndAdjust(mem, mem_size, value_p, value_size);
+				return CTypeCtrlBase::fromMem(mem, mem_size, value_p, value_size);//ƒGƒ“ƒfƒBƒAƒ“’²®‚È‚µ‚ÅƒRƒs[
+			}
+			else
+			{
+				//®”Œ^‚Æ—\‘ª
+				long long value_from;
+				CTypeCtrlBase::fromMem(mem, mem_size, &value_from, sizeof(value_from));
+				const double value_to = static_cast<double>(value_from);
+				CTypeCtrlBase::toMem(value_p, value_size, &value_to, sizeof(value_to));
+			}
+			return mem_size;
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			const double value = *reinterpret_cast<const double*>(value_p);
 		#ifdef USE_STRCPY_S
 			return sprintf_s(str, str_max, "%llf", value);
 		#else//USE_STRCPY_S
 			return sprintf(str, "%llf", value);
 		#endif//USE_STRCPY_S
 		}
-		//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”Œ^
-		static std::size_t fromStr(const char* str, const std::size_t str_size, void* data_p, const std::size_t data_size_max)
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
 		{
 			//–¢À‘•
 			return 0;
 		}
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CToStr() :
-			CToStrBase(toStr, fromStr)
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
-		~CToStr()
+		~CTypeCtrl()
+		{}
+	};
+	//--------------------
+	//Œ^‘€ìƒNƒ‰ƒX
+	template<>
+	class CTypeCtrl<bin_t> : public CTypeCtrlBase
+	{
+	public:
+		//ƒƒ\ƒbƒh
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::toMem(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMem(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::toStr(str, str_max, value_p, value_size);
+		}
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
+		{
+			//–¢À‘•
+			return 0;
+		}
+	public:
+		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
+		{}
+		//ƒfƒXƒgƒ‰ƒNƒ^
+		~CTypeCtrl()
+		{}
+	};
+	//--------------------
+	//Œ^‘€ìƒNƒ‰ƒX
+	template<>
+	class CTypeCtrl<str_t> : public CTypeCtrlBase
+	{
+	public:
+		//ƒƒ\ƒbƒh
+		//ƒƒ‚ƒŠ‚ÖƒRƒs[
+		static std::size_t toMem(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::toMem(mem, mem_size, value_p, value_size);
+		}
+		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
+		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
+		{
+			return CTypeCtrlBase::fromMem(mem, mem_size, value_p, value_size);
+		}
+		//•¶š—ñ‚Ö•ÏŠ·
+		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
+		{
+			std::size_t used = 0;
+			std::size_t remain = str_max;
+			char* write_p = str;
+			if (remain > 1 + 1)
+			{
+				*(write_p++) = '\"';
+				++used;
+				--remain;
+			}
+			const unsigned char* read_p = reinterpret_cast<const unsigned char*>(value_p);
+			for (unsigned int i = 0; i < value_size && remain > 1 + 1; ++i)
+			{
+				const unsigned char c = *(read_p++);
+				if (c == '\0')
+					break;
+				*(write_p++) = c;
+				++used;
+				++remain;
+			}
+			if (remain > 1 + 1)
+			{
+				*(write_p++) = '\"';
+				++used;
+				--remain;
+			}
+			if (remain > 1)
+				*(write_p) = '\0';
+			return used;
+		}
+		//•¶š—ñ‚©‚ç•ÏŠ·
+		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
+		{
+			//–¢À‘•
+			return 0;
+		}
+	public:
+		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		CTypeCtrl() :
+			CTypeCtrlBase(toMem, fromMem, toStr, fromStr)
+		{}
+		//ƒfƒXƒgƒ‰ƒNƒ^
+		~CTypeCtrl()
 		{}
 	};
 
@@ -3110,6 +3572,7 @@ namespace serial
 			m_nowItemSize = src.m_itemSize;//Œ»İ‚Ìƒf[ƒ^ƒTƒCƒY
 			m_nowArrNum = src.m_arrNum;//Œ»İ‚Ìƒf[ƒ^‚Ì”z—ñƒTƒCƒY
 			m_nowInfo = src.m_info;//Œ»İ‚Ì•Û‘¶ó‘Ô
+			m_nowTypeCtrl = src.m_typeCtrl;//Œ^‘€ì
 			m_hasNowInfo = true;//Œ»İ‚Ìî•ñƒRƒs[Ï‚İ
 			m_isOnlyOnSaveData = false;//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^
 			m_isOnlyOnMem = false;//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^
@@ -3130,14 +3593,15 @@ namespace serial
 			m_itemSize(src.m_itemSize),
 			m_arrNum(src.m_arrNum),
 			m_info(src.m_info),
+			m_typeCtrl(src.m_typeCtrl),
 			m_nowItemSize(src.m_nowItemSize),
 			m_nowArrNum(src.m_nowArrNum),
 			m_nowInfo(src.m_nowInfo),
+			m_nowTypeCtrl(src.m_nowTypeCtrl),
 			m_hasNowInfo(src.m_hasNowInfo),
 			m_isOnlyOnSaveData(src.m_isOnlyOnSaveData),
 			m_isOnlyOnMem(src.m_isOnlyOnMem),
-			m_isAlready(src.m_isAlready),
-			m_toStr(src.m_toStr)
+			m_isAlready(src.m_isAlready)
 		{}
 		//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		CItemBase() :
@@ -3148,17 +3612,18 @@ namespace serial
 			m_itemSize(0),
 			m_arrNum(0),
 			m_info(false, false, false, false),
+			m_typeCtrl(CTypeCtrlBase()),
 			m_nowItemSize(0),
 			m_nowArrNum(0),
 			m_nowInfo(false, false, false, false),
+			m_nowTypeCtrl(CTypeCtrlBase()),
 			m_hasNowInfo(false),
 			m_isOnlyOnSaveData(false),
 			m_isOnlyOnMem(false),
-			m_isAlready(false),
-			m_toStr(CToStrBase())
+			m_isAlready(false)
 		{}
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CItemBase(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, CToStrBase to_str) :
+		CItemBase(const char* name, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, CTypeCtrlBase type_ctrl) :
 			m_name(name),
 			m_nameCrc(calcCRC32(name)),
 			m_itemP(item_p),
@@ -3166,17 +3631,18 @@ namespace serial
 			m_itemSize(item_size),
 			m_arrNum(arr_num),
 			m_info(is_object, arr_num > 0, is_ptr, item_p == nullptr),
+			m_typeCtrl(type_ctrl),
 			m_nowItemSize(0),
 			m_nowArrNum(0),
 			m_nowInfo(false, false, false, false),
+			m_nowTypeCtrl(CTypeCtrlBase()),
 			m_hasNowInfo(false),
 			m_isOnlyOnSaveData(false),
 			m_isOnlyOnMem(false),
-			m_isAlready(false),
-			m_toStr(to_str)
+			m_isAlready(false)
 		{}
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-		CItemBase(const CItemBase& src, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, CToStrBase to_str) :
+		CItemBase(const CItemBase& src, const void* item_p, const std::type_info& item_type, const std::size_t item_size, const std::size_t arr_num, const bool is_object, const bool is_ptr, CTypeCtrlBase type_ctrl) :
 			m_name(src.m_name),
 			m_nameCrc(src.m_nameCrc),
 			m_itemP(item_p),
@@ -3184,14 +3650,15 @@ namespace serial
 			m_itemSize(item_size),
 			m_arrNum(arr_num),
 			m_info(is_object, arr_num > 0, is_ptr, item_p == nullptr),
+			m_typeCtrl(type_ctrl),
 			m_nowItemSize(0),
 			m_nowArrNum(0),
 			m_nowInfo(false, false, false, false),
+			m_nowTypeCtrl(CTypeCtrlBase()),
 			m_hasNowInfo(false),
 			m_isOnlyOnSaveData(false),
 			m_isOnlyOnMem(false),
-			m_isAlready(false),
-			m_toStr(to_str)
+			m_isAlready(false)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
 		~CItemBase()
@@ -3205,14 +3672,15 @@ namespace serial
 		const std::size_t m_itemSize;//ƒf[ƒ^ƒTƒCƒY
 		const std::size_t m_arrNum;//ƒf[ƒ^‚Ì”z—ñƒTƒCƒY
 		const CRecInfo m_info;//•Û‘¶ó‘Ô
+		CTypeCtrlBase m_typeCtrl;//Œ^‘€ì
 		std::size_t m_nowItemSize;//ƒf[ƒ^ƒTƒCƒY@¦Œ»İ‚ÌƒTƒCƒYiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
 		std::size_t m_nowArrNum;//ƒf[ƒ^‚Ì”z—ñƒTƒCƒY@¦Œ»İ‚ÌƒTƒCƒYiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
 		CRecInfo m_nowInfo;//•Û‘¶ó‘Ô@¦Œ»İ‚Ìó‘ÔiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
+		CTypeCtrlBase m_nowTypeCtrl;//Œ^‘€ì@¦Œ»İ‚Ìó‘ÔiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
 		bool m_hasNowInfo;//Œ»İ‚Ìî•ñƒRƒs[Ï‚İ
 		mutable bool m_isOnlyOnSaveData;//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^
 		mutable bool m_isOnlyOnMem;//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^
 		mutable bool m_isAlready;//ˆ—Ï‚İ
-		CToStrBase m_toStr;//•¶š—ñ‚Ö•ÏŠ·
 	};
 	//--------------------
 	//ƒf[ƒ^€–Úƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒX
@@ -3222,19 +3690,16 @@ namespace serial
 	public:
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		CItem(const char* name, const T* item_p, const std::size_t arr_num, const bool is_ptr) :
-			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, CToStr<T>())
+			CItemBase(name, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, CTypeCtrl<T>())
 		{}
-		CItem(const CItemBase& src, const T* item_p, const std::size_t arr_num, const bool is_ptr) :
-			CItemBase(src, item_p, typeid(T), sizeof(T), arr_num, hasAnyFunctor<T>(), is_ptr, CToStr<T>())
+		CItem(const char* name, const std::size_t size, const T* item_p, const bool is_ptr) :
+			CItemBase(name, item_p, typeid(T), size, 0, hasAnyFunctor<T>(), is_ptr, CTypeCtrl<T>())
 		{}
 		CItem(const char* name, const std::size_t size) :
-			CItemBase(name, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, CToStr<T>())
-		{}
-		CItem(const CItemBase& src, const std::size_t size) :
-			CItemBase(src, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, CToStr<T>())
+			CItemBase(name, nullptr, typeid(T), size, 0, hasAnyFunctor<T>(), false, CTypeCtrl<T>())
 		{}
 		CItem(const char* name) :
-			CItemBase(name, nullptr, typeid(T), 0, 0, hasAnyFunctor<T>(), false, CToStr<T>())
+			CItemBase(name, nullptr, typeid(T), 0, 0, hasAnyFunctor<T>(), false, CTypeCtrl<T>())
 		{}
 		CItem(const CItemBase& src) :
 			CItemBase(src)
@@ -3252,24 +3717,12 @@ namespace serial
 		CItem<typename isPtr<T>::TYPE> item_obj(name, isPtr<T>::TO_PTR(item), 0, isPtr<T>::IS_PTR);
 		return item_obj;
 	}
-	template<class T>
-	CItem<typename isPtr<T>::TYPE> pair(const CItemBase& src, const T& item)
-	{
-		CItem<typename isPtr<T>::TYPE> item_obj(src, isPtr<T>::TO_PTR(item), 0, isPtr<T>::IS_PTR);
-		return item_obj;
-	}
 	//--------------------
 	//ƒf[ƒ^€–Úî•ñì¬ƒeƒ“ƒvƒŒ[ƒgŠÖ”i”z—ñ©“®”»’è—pj
 	template<class T, std::size_t N>
 	CItem<T> pair(const char* name, const T(&item)[N])
 	{
 		CItem<T> item_obj(name, item, N, false);
-		return item_obj;
-	}
-	template<class T, std::size_t N>
-	CItem<T> pair(const CItemBase& src, const T(&item)[N])
-	{
-		CItem<T> item_obj(src, item, N, false);
 		return item_obj;
 	}
 	//--------------------
@@ -3280,16 +3733,20 @@ namespace serial
 		CItem<typename isPtr<T>::TYPE> item_obj(name, isPtr<T>::TO_PTR(item), N, isPtr<T>::IS_PTR);
 		return item_obj;
 	}
-	template<class T>
-	CItem<typename isPtr<T>::TYPE> pairArr(const CItemBase& src, const T& item, const std::size_t N)
-	{
-		CItem<typename isPtr<T>::TYPE> item_obj(src, isPtr<T>::TO_PTR(item), N, isPtr<T>::IS_PTR);
-		return item_obj;
-	}
 	//--------------------
 	//ƒf[ƒ^€–Úî•ñì¬ƒeƒ“ƒvƒŒ[ƒgŠÖ”iƒoƒCƒiƒŠ—pj
 	//¦operator&()ê—p
 	//¦operator<<() / operator>>() ‚É‚Íg—p‹Ö~
+#if 1//ƒoƒCƒiƒŠŒ^ˆµ‚¢‚É‚·‚éê‡
+	template<class T>
+	CItem<bin_t> pairBin(const char* name, const T& item)
+	{
+		const std::size_t item_size = sizeof(T);
+		const bin_t* item_p = reinterpret_cast<const bin_t*>(&item);
+		CItem<bin_t> item_obj(name, item_size, item_p, false);
+		return item_obj;
+	}
+#else//char‚Ì”z—ñˆµ‚¢‚É‚·‚éê‡
 	template<class T>
 	CItem<char> pairBin(const char* name, const T& item)
 	{
@@ -3298,12 +3755,26 @@ namespace serial
 		CItem<char> item_obj(name, item_p, arra_num, false);
 		return item_obj;
 	}
-	template<class T>
-	CItem<char> pairBin(const CItemBase& src, const T& item)
+#endif
+	//--------------------
+	//ƒf[ƒ^€–Úî•ñì¬ƒeƒ“ƒvƒŒ[ƒgŠÖ”i•¶š—ñ—pj
+	//¦operator&()ê—p
+	//¦operator<<() / operator>>() ‚É‚Íg—p‹Ö~
+	template<std::size_t N>
+	CItem<str_t> pairStr(const char* name, const char (&item)[N])
 	{
-		const std::size_t arra_num = sizeof(T);
-		const char* item_p = reinterpret_cast<const char*>(&item);
-		CItem<char> item_obj(src.m_nameCrc, item_p, arra_num, false);
+		const std::size_t item_size = sizeof(char)* N;
+		const str_t* item_p = reinterpret_cast<const str_t*>(&item);
+		CItem<str_t> item_obj(name, item_size, item_p, false);
+		return item_obj;
+	}
+	//¦ƒ|ƒCƒ“ƒ^—p
+	template<class Arc>
+	CItem<str_t> pairStr(const char* name, char* item, Arc& arc, const std::size_t max_size)
+	{
+		const std::size_t item_size = arc.is_read ? max_size : item ? strlen(item) : 0;
+		const str_t* item_p = reinterpret_cast<const str_t*>(item);
+		CItem<str_t> item_obj(name, item_size, item_p, true);
 		return item_obj;
 	}
 	//--------------------
@@ -3629,49 +4100,27 @@ namespace serial
 				*read_size += read_size_tmp;
 			return result_now;
 		}
-		//ƒTƒCƒY‚ÌˆÙ‚È‚éƒf[ƒ^“Ç‚İ‚İ
-		//ƒoƒbƒtƒ@‚©‚ç“Ç‚İ‚Şƒf[ƒ^‚Ì’·‚³‚ÆA‚»‚ê‚ğ•Û‘¶‚·‚éæi•Ï”j‚Ìƒf[ƒ^’·‚ªˆá‚¤ê‡‚É—p‚¢‚é
+		//ƒoƒbƒtƒ@‚©‚ç‚Ìƒf[ƒ^“Ç‚İ‚İ
 		//¦—v‹ƒTƒCƒY‚ª‘S‚Ä‘‚«‚ß‚È‚©‚Á‚½‚ç false ‚ğ•Ô‚·
-		//¦yŒ»ózƒŠƒgƒ‹ƒ“ƒfƒBƒAƒ“ê—pˆ—
-		bool readResizing(void* data, const std::size_t dst_size, const std::size_t src_size, std::size_t& read_size)
+		bool readWithFunc(fromMemFuncP from_mem_func, void* data, const std::size_t dst_size, const std::size_t src_size, std::size_t& read_size)
 		{
 			const std::size_t remain = getBuffRemain();
 			read_size = remain > src_size ? src_size : remain;
 			if (data)//data‚ªƒkƒ‹‚È‚çƒRƒs[‚µ‚È‚¢‚ªƒ|ƒCƒ“ƒ^‚Íi‚ß‚é
 			{
-				if (dst_size < read_size)
-				{
-					//‘‚«‚İæ‚ÌƒTƒCƒY‚Ì•û‚ª¬‚³‚¢ê‡
-					//¦‘‚«‚İæ‚ÌƒTƒCƒY•ª‚¾‚¯ƒRƒs[‚·‚é
-					//¦ƒrƒbƒOƒGƒ“ƒfƒBƒAƒ“‘Î‰‚ª•K—v‚Èê‡AŒã‚ë‹l‚ß‚É‚·‚é•K—v‚ª‚ ‚é‚Ì‚Å’ˆÓ
-					memcpy(data, m_buff + m_buffPos, dst_size);
-				}
-				else if (dst_size > read_size)
-				{
-					//‘‚«‚İæ‚ÌƒTƒCƒY‚Ì•û‚ª‘å‚«‚¢ê‡
-					//¦ˆê’Uƒ[ƒƒNƒŠƒA‚µ‚Ä“Ç‚İ‚İƒTƒCƒY•ª‚ğƒRƒs[
-					//¦ƒrƒbƒOƒGƒ“ƒfƒBƒAƒ“‘Î‰‚ª•K—v‚Èê‡AŒã‚ë‹l‚ß‚É‚·‚é•K—v‚ª‚ ‚é‚Ì‚Å’ˆÓ
-					memset(data, 0, sizeof(dst_size));
-					memcpy(data, m_buff + m_buffPos, read_size);
-				}
-				else//if (dst_size == read_size)
-				{
-					//ƒTƒCƒY‚ªˆê’v‚·‚éê‡
-					//¦‚»‚Ì‚Ü‚ÜƒRƒs[‚·‚é‚¾‚¯
-					memcpy(data, m_buff + m_buffPos, read_size);
-				}
+				from_mem_func(m_buff + m_buffPos, read_size, data, dst_size);
 			}
 			m_buffPos += read_size;
 			return read_size == src_size;
 		}
 		//¦ˆ—Œ‹‰ÊƒIƒuƒWƒFƒNƒgg—p”Å
-		bool readResizing(CResult& result, void* data, const std::size_t dst_size, const std::size_t src_size, std::size_t* read_size = nullptr)
+		bool readWithFunc(CResult& result, fromMemFuncP from_mem_func, void* data, const std::size_t dst_size, const std::size_t src_size, std::size_t* read_size = nullptr)
 		{
 			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
 				return false;
 			//ƒf[ƒ^“Ç‚İ‚İ
 			std::size_t read_size_tmp = 0;
-			const bool result_now = readResizing(data, dst_size, src_size, read_size_tmp);
+			const bool result_now = readWithFunc(from_mem_func, data, dst_size, src_size, read_size_tmp);
 			//ˆ—Œ‹‰Ê‹L˜^
 			if (!result_now)
 				result.setHasFatalError();
@@ -3941,7 +4390,7 @@ namespace serial
 			else
 			{
 				//ƒf[ƒ^‚ğƒA[ƒJƒCƒu‚É‹L˜^
-				m_style.writeDataItem(arc, item_obj, item_obj);
+				arc.m_style.writeDataItem(arc, item_obj, item_obj);
 
 				//ƒf[ƒ^‘‚«‚İÏ‚İ
 				item_obj.setIsAlready();
@@ -3975,14 +4424,14 @@ namespace serial
 
 			//ƒlƒXƒgƒŒƒxƒ‹‚ª0‚È‚çƒVƒOƒlƒ`ƒƒ[‚ğ‘‚«‚İ
 			if (m_nestLevel == 0)
-				m_style.writeSignature(arc);//ƒVƒOƒlƒ`ƒƒ[‘‚«‚İ
+				arc.m_style.writeSignature(arc);//ƒVƒOƒlƒ`ƒƒ[‘‚«‚İ
 	
 			//ƒo[ƒWƒ‡ƒ“æ“¾
 			CVersionDef<T> ver_def;
 			CVersion ver(ver_def);
 
 			//ƒuƒƒbƒNŠJnî•ñ‘‚«‚İ
-			m_style.writeBlockHeader(arc, item_obj, ver);
+			arc.m_style.writeBlockHeader(arc, item_obj, ver);
 			
 			//ƒkƒ‹‚Å‚È‚¯‚ê‚Îˆ—‚·‚é
 			if (!item_obj.isNul() && !arc.hasFatalError())
@@ -3999,7 +4448,7 @@ namespace serial
 					const std::size_t array_elem_num = item_obj.m_arrNum;
 					
 					//”z—ñƒuƒƒbƒNŠJnî•ñ‘‚«‚İ
-					m_style.writeArrayHeader(arc, item_obj, array_elem_num);
+					arc.m_style.writeArrayHeader(arc, item_obj, array_elem_num);
 
 					//”z—ñƒuƒƒbƒNŠJn
 					std::size_t array_block_size = 0;//”z—ñƒuƒƒbƒN‚ÌƒTƒCƒY
@@ -4014,7 +4463,7 @@ namespace serial
 						for (std::size_t index = 0; index < loop_elem_num && !arc.hasFatalError(); ++index)
 						{
 							//—v‘fŠJnî•ñ‘‚«‚İ
-							m_style.writeElemHeader(arc, item_obj, index);
+							arc.m_style.writeElemHeader(arc, item_obj, index);
 
 							//—v‘fŠJn
 							short items_num = 0;//ƒf[ƒ^€–Ú”
@@ -4042,20 +4491,20 @@ namespace serial
 								//—v‘fI—¹î•ñ‘‚«‚İ
 								//¦—á‚¦‚ÎAƒoƒCƒiƒŠƒXƒ^ƒCƒ‹‚Å‚ÍA—v‘f‚Ìƒwƒbƒ_•”‚Éƒf[ƒ^€–Ú”‚Æƒf[ƒ^ƒTƒCƒY‚ğ‘‚«‚İA
 								//@—v‘f‚ÌÅŒã‚Ü‚ÅƒV[ƒN‚·‚é
-								m_style.writeElemFooter(parent_arc, arc, item_obj, index, items_num, elem_size);
+								arc.m_style.writeElemFooter(parent_arc, arc, item_obj, index, items_num, elem_size);
 
 								//—v‘fI—¹
-								//m_style.finishWriteElem(parent_arc, arc, items_num, elem_size);
+								//arc.m_style.finishWriteElem(parent_arc, arc, items_num, elem_size);
 							}
 						}
 
 						//”z—ñƒuƒƒbƒNI—¹î•ñ‘‚«‚İ
 						//¦—á‚¦‚ÎAƒoƒCƒiƒŠƒXƒ^ƒCƒ‹‚Å‚ÍA”z—ñƒuƒƒbƒN‚Ìƒwƒbƒ_•”‚É”z—ñ—v‘f”‚Æƒf[ƒ^ƒTƒCƒY‚ğ‘‚«‚İA
 						//@—v‘f‚ÌÅŒã‚Ü‚ÅƒV[ƒN‚·‚é
-						m_style.writeArrayFooter(parent_arc, arc, item_obj, array_block_size);
+						arc.m_style.writeArrayFooter(parent_arc, arc, item_obj, array_block_size);
 
 						//”z—ñƒuƒƒbƒNI—¹
-						//m_style.finishWriteArray(parent_arc, arc, array_block_size);
+						//arc.m_style.finishWriteArray(parent_arc, arc, array_block_size);
 					}
 
 					//ƒf[ƒ^ûWˆ—iƒVƒŠƒAƒ‰ƒCƒYê—pˆ—jŒÄ‚Ño‚µ
@@ -4069,16 +4518,16 @@ namespace serial
 					//ƒuƒƒbƒNI—¹î•ñ‘‚«‚İ
 					//¦—á‚¦‚ÎAƒoƒCƒiƒŠƒXƒ^ƒCƒ‹‚Å‚ÍAƒuƒƒbƒN‚Ìƒwƒbƒ_•”‚Éƒf[ƒ^ƒTƒCƒY‚ğ‘‚«‚İA
 					//@ƒuƒƒbƒN‚ÌÅŒã‚Ü‚ÅƒV[ƒN‚·‚é
-					m_style.writeBlockFooter(parent_arc, arc, item_obj, block_size);
+					arc.m_style.writeBlockFooter(parent_arc, arc, item_obj, block_size);
 
 					//ƒuƒƒbƒNI—¹
-					//m_style.finishWriteBlock(parent_arc, arc, block_size);
+					//arc.m_style.finishWriteBlock(parent_arc, arc, block_size);
 				}
 			}
 
 			//ƒlƒXƒgƒŒƒxƒ‹‚ª0‚È‚çƒ^[ƒ~ƒl[ƒ^‚ğ‘‚«‚İ
 			if (m_nestLevel == 0)
-				m_style.writeTerminator(arc);//ƒ^[ƒ~ƒl[ƒ^‘‚«‚İ
+				arc.m_style.writeTerminator(arc);//ƒ^[ƒ~ƒl[ƒ^‘‚«‚İ
 	
 			//ƒf[ƒ^‘‚«‚İÏ‚İ‚É‚·‚é
 			item_obj.setIsAlready();
@@ -4261,11 +4710,11 @@ namespace serial
 
 			//ƒlƒXƒgƒŒƒxƒ‹‚ª0‚È‚çƒp[ƒX
 			if (m_nestLevel == 0)
-				m_style.parse(arc);//ƒp[ƒX
+				arc.m_style.parse(arc);//ƒp[ƒX
 			
 			//ƒlƒXƒgƒŒƒxƒ‹‚ª0‚È‚çƒVƒOƒlƒ`ƒƒ[‚ğ“Ç‚İ‚İ
 			if (m_nestLevel == 0)
-				m_style.readSignature(arc);//ƒVƒOƒlƒ`ƒƒ[“Ç‚İ‚İ
+				arc.m_style.readSignature(arc);//ƒVƒOƒlƒ`ƒƒ[“Ç‚İ‚İ
 			
 			//ƒo[ƒWƒ‡ƒ“æ“¾
 			CVersionDef<T> now_ver_def;
@@ -4274,7 +4723,7 @@ namespace serial
 			//ƒuƒƒbƒNŠJnî•ñ“Ç‚İ‚İ
 			std::size_t block_size = 0;
 			CItem<T> item_obj(item_obj_now);
-			m_style.readBlockHeader(arc, item_obj_now, delebate_item, now_ver, item_obj, ver, block_size);
+			arc.m_style.readBlockHeader(arc, item_obj_now, delebate_item, now_ver, item_obj, ver, block_size);
 			//printf("  readDataItem:name=\"%s\"(0x%08x), typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNul=%d\n", item_obj.m_name, item_obj.m_nameCrc, item_obj.m_itemType->name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObj(), item_obj.isArr(), item_obj.isPtr(), item_obj.isNul());
 
 			if (!item_obj.isNul() && !arc.hasFatalError())//yƒZ[ƒuƒf[ƒ^ã‚Ìz—v‘f‚ªƒkƒ‹‚Å‚È‚¯‚ê‚Îˆ—‚·‚é
@@ -4289,7 +4738,7 @@ namespace serial
 					//”z—ñƒuƒƒbƒNŠJnî•ñ“Ç‚İ‚İ
 					std::size_t array_elem_num = 0;//”z—ñ—v‘f”
 					std::size_t array_block_size = 0;//”z—ñƒuƒƒbƒNƒTƒCƒY
-					m_style.readArrayHeader(arc, item_obj, array_elem_num, array_block_size);
+					arc.m_style.readArrayHeader(arc, item_obj, array_elem_num, array_block_size);
 					
 					//WŒv€”õ
 					const std::size_t elem_num = item_obj.getElemNum();//—v‘f”i”z—ñ—v‘f‚Å‚Í‚È‚­A”ñ”z—ñ‚È‚ç1j
@@ -4320,7 +4769,7 @@ namespace serial
 							{
 								//”z—ñƒuƒƒbƒNI—¹”»’è
 								bool is_array_block_end = true;
-								m_style.tryAndReadArrayFooter(arc, item_obj, is_array_block_end);
+								arc.m_style.tryAndReadArrayFooter(arc, item_obj, is_array_block_end);
 								if (is_array_block_end)
 									break;//”z—ñƒuƒƒbƒN‚ÌI—¹‚ğŒŸo‚µ‚½‚çƒ‹[ƒv‚©‚ç”²‚¯‚é
 							}
@@ -4336,7 +4785,7 @@ namespace serial
 							//—v‘fŠJnî•ñ“Ç‚İ‚İ
 							std::size_t elem_size = 0;
 							short items_num = 0;
-							m_style.readElemHeader(arc, item_obj, index, items_num, elem_size);
+							arc.m_style.readElemHeader(arc, item_obj, index, items_num, elem_size);
 
 							//—v‘fŠJn
 							{
@@ -4383,7 +4832,7 @@ namespace serial
 								{
 									//—v‘fI—¹î•ñ“Ç‚İ‚İ
 									bool is_elem_end = true;
-									m_style.tryAndReadElemFooter(arc, item_obj, index, is_elem_end);
+									arc.m_style.tryAndReadElemFooter(arc, item_obj, index, is_elem_end);
 									if (is_elem_end)
 										break;//—v‘f‚ÌI—¹‚ğŒŸo‚µ‚½‚çƒ‹[ƒv‚©‚ç”²‚¯‚é
 
@@ -4400,7 +4849,7 @@ namespace serial
 
 										//—v‘f‚Ì“Ç‚İ‚İ
 										CItemBase child_item;
-										m_style.readDataItem(arc, item_obj, delegate_child_item_now, child_item, is_valid_element, is_required_retry);
+										arc.m_style.readDataItem(arc, item_obj, delegate_child_item_now, child_item, is_valid_element, is_required_retry);
 
 										//ƒ[ƒh‚µ‚½‚ª•Û‘¶æ‚Ìw’è‚ª‚È‚©‚Á‚½€–Ú‚Ìˆ—
 										//¦Šù‚ÉƒŠƒgƒ‰ƒC‚µ‚Ä‚¢‚éê‡‚ÍÀs‚µ‚È‚¢
@@ -4484,7 +4933,7 @@ namespace serial
 											if (arc.getState() != st_DESERIALIZE_PHASE_LOAD_OBJECT_END)
 											{
 												//ƒIƒuƒWƒFƒNƒg‚ÌƒuƒƒbƒN‚ğƒXƒLƒbƒv
-												m_style.skipReadBlock(arc);
+												arc.m_style.skipReadBlock(arc);
 
 												//ˆ—Ï‚İ‚É‚·‚é
 												child_item.setIsAlready();
@@ -4531,7 +4980,7 @@ namespace serial
 								}
 
 								//—v‘fI—¹
-								m_style.finishReadElem(parent_arc, arc);
+								arc.m_style.finishReadElem(parent_arc, arc);
 							}
 
 							//ƒf[ƒ^“Ç‚İ‚İæ‚Ìƒ|ƒCƒ“ƒ^‚ğ”z—ñ‚ÌŸ‚Ì—v‘f‚ÉXV
@@ -4545,7 +4994,7 @@ namespace serial
 						item_obj.m_itemP = item_p_top;
 
 						//—v‘fI—¹
-						m_style.finishReadArray(parent_arc, arc);
+						arc.m_style.finishReadArray(parent_arc, arc);
 					}
 					
 					//•ª”z‘OƒtƒF[ƒY‚É•ÏX
@@ -4565,7 +5014,7 @@ namespace serial
 					{
 						//ƒuƒƒbƒNI—¹”»’è
 						bool is_block_end = true;
-						m_style.tryAndReadBlockFooter(arc, item_obj, is_block_end);
+						arc.m_style.tryAndReadBlockFooter(arc, item_obj, is_block_end);
 						if (is_block_end)
 							break;//ƒuƒƒbƒN‚ÌI—¹‚ğŒŸo‚µ‚½‚çƒ‹[ƒv‚©‚ç”²‚¯‚é
 
@@ -4579,7 +5028,7 @@ namespace serial
 							CItemBase require_item;
 							std::size_t require_block_size = 0;
 							bool is_found_next_block = false;
-							m_style.requireNextBlockHeader(arc, require_item, require_block_size, is_found_next_block);
+							arc.m_style.requireNextBlockHeader(arc, require_item, require_block_size, is_found_next_block);
 							if (!is_found_next_block)
 								break;//ƒuƒƒbƒN‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½ê‡‚àƒ‹[ƒv‚©‚ç”²‚¯‚éi‚ ‚è‚¦‚È‚¢Hj
 
@@ -4602,14 +5051,14 @@ namespace serial
 							if (arc.getState() != st_DESERIALIZE_PHASE_DISTRIBUTE_OBJECT_END)
 							{
 								//ƒIƒuƒWƒFƒNƒg‚ÌƒuƒƒbƒN‚ğƒXƒLƒbƒv
-								m_style.skipReadBlock(arc);
+								arc.m_style.skipReadBlock(arc);
 
 								//ˆ—Ï‚İ‚É‚·‚é
 								require_item.setIsAlready();
 							}
 
 							//ƒIƒuƒWƒFƒNƒgƒuƒƒbƒNI—¹
-							m_style.finishReadBlock(parent_arc, arc);
+							arc.m_style.finishReadBlock(parent_arc, arc);
 						}
 					}
 
@@ -4623,13 +5072,13 @@ namespace serial
 					}
 
 					//—v‘fI—¹
-					m_style.finishReadBlock(parent_arc, arc);
+					arc.m_style.finishReadBlock(parent_arc, arc);
 				}
 			}
 			
 			//ƒlƒXƒgƒŒƒxƒ‹‚ª0‚È‚çƒ^[ƒ~ƒl[ƒ^‚ğ“Ç‚İ‚İ
 			if (m_nestLevel == 0)
-				m_style.readTerminator(arc);//ƒ^[ƒ~ƒl[ƒ^“Ç‚İ‚İ
+				arc.m_style.readTerminator(arc);//ƒ^[ƒ~ƒl[ƒ^“Ç‚İ‚İ
 	
 			//ˆ—Œ‹‰Ê‚ÉƒZ[ƒuƒf[ƒ^ƒTƒCƒY‚ğƒZƒbƒg‚·‚é
 			m_result.setSaveDataSize(getBuffUsed());
@@ -4975,7 +5424,7 @@ namespace serial
 						!child_item.nowIsNul() && //Œ»İ‚ÌiƒRƒs[æ‚Ìjƒf[ƒ^‚ªƒkƒ‹‚Å‚Í‚È‚¢‚©H
 						index < child_item.getNowElemNum();//Œ»İ‚ÌiƒRƒs[æ‚Ìj”z—ñ‚Ì”ÍˆÍ“à‚©H
 					void* p_tmp = element_is_valid ? p : nullptr;//—LŒø‚Èƒf[ƒ^‚Å‚È‚¯‚ê‚Înullptr‚ğ“n‚µA‹ó“Ç‚İ‚İ‚·‚é
-					arc.readResizing(result, p_tmp, child_item.m_nowItemSize, child_item.m_itemSize, &read_size);//ƒf[ƒ^“Ç‚İ‚İ
+					arc.readWithFunc(result, child_item.m_nowTypeCtrl.m_fromMemFuncP, p_tmp, child_item.m_nowItemSize, child_item.m_itemSize, &read_size);//ƒf[ƒ^“Ç‚İ‚İ
 					if (p)
 						p += child_item.m_nowItemSize;//Ÿ‚Ì—v‘f
 				}
@@ -5249,7 +5698,7 @@ namespace serial
 	public:
 		//©g‚ğó‚¯æ‚éƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		//¦ˆ—ŠK‘w‚ª[‚­‚È‚é‚²‚Æ‚ÉƒRƒs[‚ªs‚í‚ê‚é
-		CBinaryArchive(const CBinaryArchive& src) :
+		CBinaryArchive(CBinaryArchive& src) :
 			CArchiveStyleBase(src),
 			m_readSizeForPrevDataItem(0)
 		{}
@@ -5261,9 +5710,9 @@ namespace serial
 		//ƒfƒXƒgƒ‰ƒNƒ^
 		~CBinaryArchive()
 		{}
-		private:
-			//ƒtƒB[ƒ‹ƒh
-			std::size_t m_readSizeForPrevDataItem;//yƒŠƒgƒ‰ƒC—pz‘O‰ñ‚Ìƒf[ƒ^“Ç‚İ‚İƒTƒCƒY
+	private:
+		//ƒtƒB[ƒ‹ƒh
+		std::size_t m_readSizeForPrevDataItem;//yƒŠƒgƒ‰ƒC—pz‘O‰ñ‚Ìƒf[ƒ^“Ç‚İ‚İƒTƒCƒY
 	};
 	//Ã“I•Ï”ƒCƒ“ƒXƒ^ƒ“ƒX‰»
 	const unsigned char CBinaryArchive::SIGNATURE[CBinaryArchive::SIGNATURE_SIZE] = { 0x00, 0xff, 's', 'e', 'r', 'i', 'a', 'l', ':', ':', 'C', 'B', 'i', 'n', 0xff, 0x00 };//ƒVƒOƒlƒ`ƒƒ
@@ -5281,6 +5730,17 @@ namespace serial
 	class CTextArchive : public CArchiveStyleBase
 	{
 	public:
+		//’è”
+		enum PROCESS
+		{
+			PROCESS_UNKNOWN = 0,
+			PROCESS_TOP,
+			PROCESS_BLOCK,
+			PROCESS_ARRAY_BLOCK,
+			PROCESS_ELEM,
+			PROCESS_ITEM,
+		};
+	public:
 		//ƒƒ\ƒbƒh
 		//ƒp[ƒX
 		bool parse(CIOArchiveBase& arc)
@@ -5297,7 +5757,9 @@ namespace serial
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
 				return false;
-			arc.print(result, "\"serializer\": {\n");
+			m_process = PROCESS_TOP;
+			arc.print(result, "\"serializer\": {");
+			m_blockIndex = 0;
 			return !result.hasFatalError();
 		}
 		//ƒVƒOƒlƒ`ƒƒ“Ç‚İ‚İ
@@ -5315,9 +5777,12 @@ namespace serial
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
 				return false;
+			if (m_blockIndex != 0 || m_process == PROCESS_ARRAY_BLOCK)
+				arc.print(result, ",");
+			arc.print(result, "\n");
+			m_process = PROCESS_BLOCK;
 			arc.printIndent(result, 0);
-			arc.print(result, "\"%s\": {\n", item.m_name);
-			arc.printIndent(result, 1);
+			arc.print(result, "\"%s\": {", item.m_name);
 			arc.print(result, "\"crc\": 0x%08x, ", item.m_nameCrc);
 			arc.print(result, "\"itemType\": \"%s\", ", item.m_itemType->name());
 			arc.print(result, "\"itemSize\": %d, ", item.m_itemSize);
@@ -5326,7 +5791,8 @@ namespace serial
 			arc.print(result, "\"isPtr\": %d, ", item.isPtr());
 			arc.print(result, "\"isNul\": %d, ", item.isNul());
 			arc.print(result, "\"hasVersion\": %d, ", item.m_info.hasVersion());
-			arc.print(result, "\"ver\": %d.%d, \n", ver.getMajor(), ver.getMinor());
+			arc.print(result, "\"ver\": \"%d.%d\"", ver.getMajor(), ver.getMinor());
+			m_arrayBlockIndex = 0;
 			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒNƒwƒbƒ_[“Ç‚İ‚İ
@@ -5347,8 +5813,17 @@ namespace serial
 				return false;
 			if (item.isArr())
 			{
+				arc.print(result, ",");
+				arc.print(result, "\n");
+				m_process = PROCESS_ARRAY_BLOCK;
 				arc.printIndent(result, 0);
-				arc.print(result, "\"arrayNum\": %d, [\n", array_elem_num);
+				arc.print(result, "\"arrayNum\": %d, \"array\": [", array_elem_num);
+				m_elemIndex = 0;
+			}
+			else
+			{
+				m_process = PROCESS_ARRAY_BLOCK;
+				m_elemIndex = -1;
 			}
 			return !result.hasFatalError();
 		}
@@ -5367,8 +5842,13 @@ namespace serial
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
 				return false;
+			if (!item.isArr() || (item.isArr() && m_elemIndex != 0))
+				arc.print(result, ",");
+			arc.print(result, "\n");
+			m_process = PROCESS_ELEM;
 			arc.printIndent(result, 0);
-			arc.print(result, "\"obj\": {\n");
+			arc.print(result, "\"elem\": {");
+			m_itemIndex = 0;
 			return !result.hasFatalError();
 		}
 		//—v‘fƒwƒbƒ_[“Ç‚İ‚İ
@@ -5386,6 +5866,10 @@ namespace serial
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
 				return false;
+			if (m_itemIndex != 0)
+				arc.print(result, ",");
+			arc.print(result, "\n");
+			m_process = PROCESS_ITEM;
 			arc.printIndent(result, 0);
 			arc.print(result, "\"%s\": {", child_item.m_name);
 			arc.print(result, "\"crc\": 0x%08x, ", child_item.m_nameCrc);
@@ -5401,7 +5885,7 @@ namespace serial
 			arc.print(result, "\"data\": ");
 			{
 				if (child_item.isNul())
-					arc.print(result, "null,");
+					arc.print(result, "null");
 				else
 				{
 					unsigned char* p = reinterpret_cast<unsigned char*>(const_cast<void*>(child_item.m_itemP));
@@ -5410,21 +5894,18 @@ namespace serial
 						arc.print(result, "[ ");
 					for (std::size_t index = 0; index < elem_num && !result.hasFatalError(); ++index)//”z—ñ—v‘f”•ªƒf[ƒ^‘‚«‚İ
 					{
-						//for (std::size_t pos = 0; pos < child_item.m_itemSize && !result.hasFatalError(); ++pos)//ƒf[ƒ^’·•ªƒf[ƒ^‘‚«‚İ
-						//{
-						//	arc.print(result, "%02x", *p);
-						//	++p;
-						//}
-						//arc.print(result, ", ");
-						arc.printWithFunc(result, child_item.m_toStr.m_toStrFuncP, p, child_item.m_itemSize);
-						arc.print(result, ",");
+						if (index != 0)
+							arc.print(result, ",");
+						arc.printWithFunc(result, child_item.m_typeCtrl.m_toStrFuncP, p, child_item.m_itemSize);
 						p += child_item.m_itemSize;
 					}
 					if (child_item.isArr())
-						arc.print(result, "], ");
+						arc.print(result, "]");
 				}
 			}
-			arc.print(result, "},\n");
+			arc.print(result, "}");
+			++m_itemIndex;
+			m_process = m_parentProcess;
 			return !result.hasFatalError();
 		}
 		//ƒf[ƒ^€–Ú“Ç‚İ‚İ
@@ -5445,10 +5926,12 @@ namespace serial
 				parent_arc.addResult(result);//e‚Éˆ—Œ‹‰Ê‚ğŒvã
 				return false;
 			}
-			child_arc.printIndent(result, -1);
-			child_arc.print(result, "},\n");
+			child_arc.print(result, "}");
 			parent_arc.seek(result, child_arc.getBuffUsed());
 			parent_arc.addResult(result);//e‚Éˆ—Œ‹‰Ê‚ğŒvã
+			if (m_parent)
+				++m_parent->m_elemIndex;
+			m_process = m_parentProcess;
 			return !result.hasFatalError();
 		}
 		//—v‘fƒtƒbƒ^[“Ç‚İ‚İ
@@ -5481,11 +5964,13 @@ namespace serial
 			}
 			if (item.isArr())
 			{
-				child_arc.printIndent(result, -1);
-				child_arc.print(result, "],\n");
+				child_arc.print(result, "]");
 			}
 			parent_arc.seek(result, child_arc.getBuffUsed());
 			parent_arc.addResult(result);//e‚Éˆ—Œ‹‰Ê‚ğŒvã
+			if (m_parent)
+				++m_parent->m_arrayBlockIndex;
+			m_process = m_parentProcess;
 			return !result.hasFatalError();
 		}
 		//”z—ñƒuƒƒbƒNƒtƒbƒ^[“Ç‚İ‚İ
@@ -5525,10 +6010,12 @@ namespace serial
 				parent_arc.addResult(result);//e‚Éˆ—Œ‹‰Ê‚ğŒvã
 				return false;
 			}
-			child_arc.printIndent(result, -1);
-			child_arc.print(result, "},\n");
+			child_arc.print(result, "}");
 			parent_arc.seek(result, child_arc.getBuffUsed());
 			parent_arc.addResult(result);//e‚Éˆ—Œ‹‰Ê‚ğŒvã
+			if (m_parent)
+				++m_parent->m_blockIndex;
+			m_process = m_parentProcess;
 			return !result.hasFatalError();
 		}
 		//ƒuƒƒbƒNƒtƒbƒ^[“Ç‚İ‚İ
@@ -5568,7 +6055,8 @@ namespace serial
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//’v–½“I‚ÈƒGƒ‰[‚ªo‚Ä‚¢‚é‚Í‘¦I—¹‚·‚é
 				return false;
-			arc.print(result, "}/*serializer*/\n");
+			arc.print(result, "\n");
+			arc.print(result, "}\n");
 			return !result.hasFatalError();
 		}
 		//ƒ^[ƒ~ƒl[ƒ^“Ç‚İ‚İ
@@ -5583,16 +6071,54 @@ namespace serial
 	public:
 		//©g‚ğó‚¯æ‚éƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		//¦ˆ—ŠK‘w‚ª[‚­‚È‚é‚²‚Æ‚ÉƒRƒs[‚ªs‚í‚ê‚é
-		CTextArchive(const CTextArchive& src) :
-			CArchiveStyleBase(src)
+		CTextArchive(CTextArchive& src) :
+			CArchiveStyleBase(src),
+			m_parent(&src),
+			m_nestLevel(src.m_nestLevel + 1),
+			m_process(src.m_process),
+			m_blockIndex(0),
+			m_arrayBlockIndex(0),
+			m_elemIndex(0),
+			m_itemIndex(0),
+			m_parentProcess(src.m_process),
+			m_parentBlockIndex(src.m_blockIndex),
+			m_parentArrayBlockIndex(src.m_arrayBlockIndex),
+			m_parentElemIndex(src.m_elemIndex),
+			m_parentItemIndex(src.m_itemIndex)
 		{}
 		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		CTextArchive():
-			CArchiveStyleBase()
+			CArchiveStyleBase(),
+			m_parent(nullptr),
+			m_nestLevel(0),
+			m_process(PROCESS_UNKNOWN),
+			m_blockIndex(0),
+			m_arrayBlockIndex(0),
+			m_elemIndex(0),
+			m_itemIndex(0),
+			m_parentProcess(PROCESS_UNKNOWN),
+			m_parentBlockIndex(0),
+			m_parentArrayBlockIndex(0),
+			m_parentElemIndex(0),
+			m_parentItemIndex(0)
 		{}
 		//ƒfƒXƒgƒ‰ƒNƒ^
 		~CTextArchive()
 		{}
+	private:
+		//ƒtƒB[ƒ‹ƒh
+		CTextArchive* m_parent;//eƒIƒuƒWƒFƒNƒg
+		int m_nestLevel;//ƒf[ƒ^‚ÌƒlƒXƒgƒŒƒxƒ‹
+		PROCESS m_process;//ˆ—ó‘Ô
+		int m_blockIndex;//ƒuƒƒbƒNƒCƒ“ƒfƒbƒNƒX
+		int m_arrayBlockIndex;//”z—ñƒuƒƒbƒNƒCƒ“ƒfƒbƒNƒX
+		int m_elemIndex;//—v‘fƒCƒ“ƒfƒbƒNƒX
+		int m_itemIndex;//ƒf[ƒ^€–ÚƒCƒ“ƒfƒbƒNƒX
+		PROCESS m_parentProcess;//e‚Ìˆ—ó‘Ô
+		int m_parentBlockIndex;//e‚ÌƒuƒƒbƒNƒCƒ“ƒfƒbƒNƒX
+		int m_parentArrayBlockIndex;//e‚Ì”z—ñƒuƒƒbƒNƒCƒ“ƒfƒbƒNƒX
+		int m_parentElemIndex;//e‚Ì—v‘fƒCƒ“ƒfƒbƒNƒX
+		int m_parentItemIndex;//e‚Ìƒf[ƒ^€–ÚƒCƒ“ƒfƒbƒNƒX
 	};
 	//--------------------
 	//ƒoƒCƒiƒŠŒ`®ƒA[ƒJƒCƒu‘‚«‚İƒNƒ‰ƒX
@@ -6333,10 +6859,15 @@ using name_t = CStr<32>;
 //Šî–{ƒf[ƒ^\‘¢‘Ì
 struct BASIC_DATA
 {
-	short m_atk;//UŒ‚—Í
-	short m_def;//ç”õ—Í
+	char m_atk;//UŒ‚—Í
+	long m_def;//ç”õ—Í
 	//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	BASIC_DATA()
+	{}
+	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	BASIC_DATA(const BASIC_DATA& src) :
+		m_atk(src.m_atk),
+		m_def(src.m_def)
 	{}
 	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	BASIC_DATA(const int atk, const int def) :
@@ -6354,12 +6885,17 @@ struct ITEM_DATA
 	crc32_t getKey() const { return m_id.getCRC(); }//ƒL[‚ğæ“¾
 	ID_t m_id;//ID
 	name_t m_name;//–¼‘O
+	char* m_title;//Ì†@¦‰Â•Ï’·•¶š—ñiƒ|ƒCƒ“ƒ^j‚ÌƒeƒXƒg—p
+	char m_titleBuff[16];//Ì†—pƒoƒbƒtƒ@
 	BASIC_DATA m_basic;//Šî–{ƒf[ƒ^
 	short m_recover;//‰ñ•œ—Í
 	short m_num;//ƒf[ƒ^ŒÂ”
 	//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	ITEM_DATA()
-	{}
+	{
+		m_title = m_titleBuff;
+		m_titleBuff[0] = '\0';
+	}
 	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^iƒeƒXƒg—p‚É‹­ˆøj
 	ITEM_DATA(const char* id, const char* name, const int atk, const int def, const int recover, const int num) :
 		m_id(id),
@@ -6367,7 +6903,30 @@ struct ITEM_DATA
 		m_basic(atk, def),
 		m_recover(recover),
 		m_num(num)
-	{}
+	{
+		m_title = m_titleBuff;
+		m_title[0] = '\0';
+	}
+	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	ITEM_DATA(const ITEM_DATA& src):
+		m_id(src.m_id),
+		m_name(src.m_name),
+		m_basic(src.m_basic),
+		m_recover(src.m_recover),
+		m_num(src.m_num)
+	{
+		if (src.m_title)
+		{
+			m_title = m_titleBuff;
+		#ifdef USE_STRCPY_S
+			strcpy_s(m_title, sizeof(m_titleBuff), src.m_title);
+		#else//USE_STRCPY_S
+			strcpy(m_title, src.m_title);
+		#endif//USE_STRCPY_S
+		}
+		else
+			m_title = nullptr;
+	}
 };
 //\‘¢‘Ìƒo[ƒWƒ‡ƒ“
 SERIALIZE_VERSION_DEF(ITEM_DATA, 1, 0);
@@ -6830,6 +7389,16 @@ void makeTestData(const int pattern)
 			sprintf(name, "•Ší%03d", i);
 		#endif//USE_STRCPY_S
 			ITEM_DATA item(id, name, 10 + i, i / 2, 0, 1);
+			if (item.m_title && i > 0)
+			{
+			#ifdef USE_STRCPY_S
+				sprintf_s(item.m_title, sizeof(item.m_titleBuff), "«”\:+%d", i);
+			#else//USE_STRCPY_S
+				sprintf(item.m_title, "«”\:+%d", i);
+			#endif//USE_STRCPY_S
+			}
+			else
+				item.m_title = nullptr;
 			inventory->regist(item);
 		}
 		for (int i = 0; i < 5 + pattern * 10; i += (1 + pattern))
@@ -6844,6 +7413,16 @@ void makeTestData(const int pattern)
 			sprintf(name, "‚%03d", i);
 		#endif//USE_STRCPY_S
 			ITEM_DATA item(id, name, 0, 5 + i, 0, 1);
+			if (item.m_title && i > 0)
+			{
+			#ifdef USE_STRCPY_S
+				sprintf_s(item.m_title, sizeof(item.m_titleBuff), "ƒOƒŒ[ƒh:%c", 'A' + i);
+			#else//USE_STRCPY_S
+				sprintf(item.m_title, "ƒOƒŒ[ƒh:%c", 'A' + i);
+			#endif//USE_STRCPY_S
+			}
+			else
+				item.m_title = nullptr;
 			inventory->regist(item);
 		}
 		for (int i = pattern; i < 3 + pattern * 3; ++i)
@@ -6858,6 +7437,7 @@ void makeTestData(const int pattern)
 			sprintf(name, "‰ñ•œ–ò%03d", i);
 		#endif//USE_STRCPY_S
 			ITEM_DATA item(id, name, 0, 0, 5 + i * 2, 10);
+			item.m_title = nullptr;
 			inventory->regist(item);
 		}
 		inventory->sort();
@@ -6950,8 +7530,10 @@ void printDataAll()
 		CSingleton<CInventory> inventory;
 		for (auto& ite : *inventory)
 		{
-			printf("ID=\"%s\"(0x%08x), nmae=\"%s\", atk=%d, def=%d, recover=%d, num=%d\n",
+			printf("ID=\"%s\"(0x%08x), name=\"%s\", atk=%d, def=%d, recover=%d, num=%d\n",
 				ite->m_id.c_str(), ite->m_id.getCRC(), ite->m_name.c_str(), ite->m_basic.m_atk, ite->m_basic.m_def, ite->m_recover, ite->m_num);
+			if (ite->m_title)
+				printf("                              title=\"%s\"\n", ite->m_title);
 		}
 	}
 	//ƒAƒrƒŠƒeƒBƒf[ƒ^•\¦
@@ -6960,7 +7542,7 @@ void printDataAll()
 		CSingleton<CAbilityList> ability_list;
 		for (auto& ite : *ability_list)
 		{
-			printf("ID=\"%s\"(0x%08x), nmae=\"%s\", atk=%d, def=%d\n",
+			printf("ID=\"%s\"(0x%08x), name=\"%s\", atk=%d, def=%d\n",
 				ite->m_id.c_str(), ite->m_id.getCRC(), ite->m_name.c_str(), ite->m_basic.m_atk, ite->m_basic.m_def);
 		}
 	}
@@ -6970,20 +7552,20 @@ void printDataAll()
 		CSingleton<CCharaList> chara_list;
 		for (auto& ite : *chara_list)
 		{
-			printf("ID=\"%s\"(0x%08x), nmae=\"%s\", level=%d, atk=%d, def=%d\n",
+			printf("ID=\"%s\"(0x%08x), name=\"%s\", level=%d, atk=%d, def=%d\n",
 				ite->m_id.c_str(), ite->m_id.getCRC(), ite->m_name.c_str(), ite->m_level, ite->m_basic.m_atk, ite->m_basic.m_def);
-			printf("    param1={%d, %d}, param2={%d, %d}\n",
+			printf("                              param1={%d, %d}, param2={%d, %d}\n",
 				ite->m_param1[0], ite->m_param1[1], ite->m_param2[0], ite->m_param2[1]);
 			if (ite->m_weapon)
-				printf("  weapon=%s\n", ite->m_weapon->m_name.c_str());
+				printf("                              weapon=%s\n", ite->m_weapon->m_name.c_str());
 			if (ite->m_shield)
-				printf("  shield=%s\n", ite->m_shield->m_name.c_str());
+				printf("                              shield=%s\n", ite->m_shield->m_name.c_str());
 			for (int i = 0;; ++i)
 			{
 				const ABILITY_DATA* ability = ite->getAbility(i);
 				if (!ability)
 					break;
-				printf("    [%s]\n", ability->m_name.c_str());
+				printf("                              [%s]\n", ability->m_name.c_str());
 			}
 		}
 	}
@@ -7093,7 +7675,7 @@ namespace serial
 		void operator()(Arc& arc, const CStr<S>& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			arc & pair("len", obj.m_len);
-			arc & pair("str", obj.m_str);
+			arc & pairStr("str", obj.m_str);
 		}
 	};
 	//--------------------
@@ -7125,9 +7707,20 @@ namespace serial
 		{
 			arc & pair("id", obj.m_id);
 			arc & pair("name", obj.m_name);
+			arc & pairStr("title", obj.m_title, arc, sizeof(obj.m_titleBuff));//‰Â•Ï’·•¶š—ñiƒ|ƒCƒ“ƒ^j‚ÌƒeƒXƒg
 			arc & pair("basic", obj.m_basic);
 			arc & pair("recover", obj.m_recover);
 			arc & pair("num", obj.m_num);
+		}
+	};
+	//--------------------
+	//ƒ[ƒhŒãˆ—FITEM_DATA
+	template<class Arc>
+	struct afterLoad<Arc, ITEM_DATA> {
+		void operator()(Arc& arc, ITEM_DATA& obj, const CVersion& ver, const CVersion& now_ver)
+		{
+			if (obj.m_title[0] == '\0')
+				obj.m_title = nullptr;
 		}
 	};
 	//--------------------

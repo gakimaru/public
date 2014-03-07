@@ -23,15 +23,15 @@
                "data2": {"crc": 0xcec37d1c, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 15},
                "data3": {"crc": 0xb9c44d8a, "itemType": "float", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 16.000000}},
              "elem": {
-               "data1": {"crc": 0x57ca2ca6, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 14},
-               "data2": {"crc": 0xcec37d1c, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 15},
-               "data3": {"crc": 0xb9c44d8a, "itemType": "float", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 16.000000}}]},
+               "data1": {"crc": 0x57ca2ca6, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 17},
+               "data2": {"crc": 0xcec37d1c, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 18},
+               "data3": {"crc": 0xb9c44d8a, "itemType": "float", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 19.000000}}]},
          "data7a": {"crc": 0x810fd534, "itemType": "struct CTest1::STRUCT", "itemSize": 12, "isObj": 1, "isArr": 0, "isPtr": 1, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "3.4",
              "elem": {
                "data1": {"crc": 0x57ca2ca6, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 20},
                "data2": {"crc": 0xcec37d1c, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 21},
                "data3": {"crc": 0xb9c44d8a, "itemType": "float", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 22.000000}}},
-         "data7b": {"crc": 0x1806848e, "itemType": "struct CTest1::STRUCT", "itemSize": 12, "isObj": 1, "isArr": 0, "isPtr": 1, "isNul": 1, "isVLen": 0, "hasVersion": 0, "ver": "3.4",
+         "data7b": {"crc": 0x1806848e, "itemType": "struct CTest1::STRUCT", "itemSize": 12, "isObj": 1, "isArr": 0, "isPtr": 1, "isNul": 1, "isVLen": 0, "hasVersion": 0, "ver": "3.4"},
          "data8a": {"crc": 0x0697c9fb, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 26},
          "data8b": {"crc": 0x9f9e9841, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "isVLen": 0, "hasVersion": 0, "data": null}}}}
 }

@@ -4219,17 +4219,17 @@ namespace serial
 			//ブロック開始情報書き込み
 			arc.m_style.writeBlockHeader(arc, item_obj, ver);
 			
-			//ヌルでなければ処理する
-			if (!item_obj.isNul() && !arc.hasFatalError())
+			//ブロック開始
+			std::size_t block_size = 0;//ブロックのサイズ
+			
 			{
-				//ブロック開始
-				std::size_t block_size = 0;//ブロックのサイズ
+				//ブロック処理用の子アーカイブオブジェクトを生成
+				COArchive& parent_arc = arc;
+				COArchive arc(parent_arc, st_SERIALIZE_PHASE_BLOCK);
 
+				//ヌルでなければ処理する
+				if (!item_obj.isNul() && !arc.hasFatalError())
 				{
-					//ブロック処理用の子アーカイブオブジェクトを生成
-					COArchive& parent_arc = arc;
-					COArchive arc(parent_arc, st_SERIALIZE_PHASE_BLOCK);
-
 					//配列要素数取得
 					const std::size_t array_elem_num = item_obj.m_arrNum;
 					
@@ -4243,7 +4243,11 @@ namespace serial
 						//配列ブロック処理用の孫アーカイブオブジェクトを生成
 						COArchive& parent_arc = arc;
 						COArchive arc(parent_arc, st_SERIALIZE_PHASE_ARRAY);
-						
+
+						//データ書き込み先の先頭ポインタ（配列の先頭）を記憶
+						//※配列ループ処理中に item_obj.m_itemP を書き換えるので、元に戻せるようにしておく
+						const void* item_p_top = item_obj.m_itemP;
+
 						//要素ループ
 						const std::size_t loop_elem_num = item_obj.getElemNum();//配列の要素数もしくは（配列じゃなければ）1を返す
 						for (std::size_t index = 0; index < loop_elem_num && !arc.hasFatalError(); ++index)
@@ -4281,8 +4285,17 @@ namespace serial
 
 								//要素終了
 								//arc.m_style.finishWriteElem(parent_arc, arc, items_num, elem_size);
+
+								//データ書き込み先のポインタを配列の次の要素に更新
+								if (item_obj.m_itemP)
+								{
+									*const_cast<void**>(&item_obj.m_itemP) = reinterpret_cast<T*>(const_cast<void*>(item_obj.m_itemP)) + 1;
+								}
 							}
 						}
+
+						//配列の先頭ポインタ（元のポインタ）に戻す
+						*const_cast<const void**>(&item_obj.m_itemP) = item_p_top;
 
 						//配列ブロック終了情報書き込み
 						//※例えば、バイナリスタイルでは、配列ブロックのヘッダ部に配列要素数とデータサイズを書き込み、
@@ -4292,23 +4305,23 @@ namespace serial
 						//配列ブロック終了
 						//arc.m_style.finishWriteArray(parent_arc, arc, array_block_size);
 					}
-
-					//データ収集処理（シリアライズ専用処理）呼び出し
-					arc.setState(st_SERIALIZE_PHASE_COLLECT);
-					{
-						collector<COArchive, T> functor;
-						functor(arc, item_obj.template getConst<T>(), ver);
-					}
-					arc.setState(st_SERIALIZE_PHASE_COLLECT_END);
-
-					//ブロック終了情報書き込み
-					//※例えば、バイナリスタイルでは、ブロックのヘッダ部にデータサイズを書き込み、
-					//　ブロックの最後までシークする
-					arc.m_style.writeBlockFooter(parent_arc, arc, item_obj, block_size);
-
-					//ブロック終了
-					//arc.m_style.finishWriteBlock(parent_arc, arc, block_size);
 				}
+
+				//データ収集処理（シリアライズ専用処理）呼び出し
+				arc.setState(st_SERIALIZE_PHASE_COLLECT);
+				{
+					collector<COArchive, T> functor;
+					functor(arc, item_obj.template getConst<T>(), ver);
+				}
+				arc.setState(st_SERIALIZE_PHASE_COLLECT_END);
+
+				//ブロック終了情報書き込み
+				//※例えば、バイナリスタイルでは、ブロックのヘッダ部にデータサイズを書き込み、
+				//　ブロックの最後までシークする
+				arc.m_style.writeBlockFooter(parent_arc, arc, item_obj, block_size);
+
+				//ブロック終了
+				//arc.m_style.finishWriteBlock(parent_arc, arc, block_size);
 			}
 
 			//ネストレベルが0ならターミネータを書き込み
@@ -4554,23 +4567,23 @@ namespace serial
 			arc.m_style.readBlockHeader(arc, item_obj_now, delebate_item, now_ver, item_obj, ver, block_size);
 			//printf("  readDataItem:name=\"%s\"(0x%08x), typeName=%s, item=0x%p, size=%d, arrNum=%d, isObj=%d, isArr=%d, isPtr=%d, isNul=%d\n", item_obj.m_name, item_obj.m_nameCrc, item_obj.m_itemType->name(), item_obj.m_itemP, item_obj.m_itemSize, item_obj.m_arrNum, item_obj.isObj(), item_obj.isArr(), item_obj.isPtr(), item_obj.isNul());
 
-			if (!item_obj.isNul() && !arc.hasFatalError())//【セーブデータ上の】要素がヌルでなければ処理する
+			//ブロック開始
 			{
-				//ブロック開始
+				//ブロック処理用の子アーカイブオブジェクトを生成
+				CIArchive& parent_arc = arc;
+				CIArchive arc(parent_arc, st_DESERIALIZE_PHASE_BLOCK);
 				
+				//集計準備
+				const std::size_t elem_num = item_obj.getElemNum();//要素数（配列要素ではなく、非配列なら1）
+				std::size_t elem_num_loaded = 0;//実際に読み込んだ要素数（配列要素ではなく、非配列なら1）
+				
+				if (!item_obj.isNul() && !arc.hasFatalError())//【セーブデータ上の】要素がヌルでなければ処理する
 				{
-					//ブロック処理用の子アーカイブオブジェクトを生成
-					CIArchive& parent_arc = arc;
-					CIArchive arc(parent_arc, st_DESERIALIZE_PHASE_BLOCK);
 
 					//配列ブロック開始情報読み込み
 					std::size_t array_elem_num = 0;//配列要素数
 					std::size_t array_block_size = 0;//配列ブロックサイズ
 					arc.m_style.readArrayHeader(arc, item_obj, array_elem_num, array_block_size);
-					
-					//集計準備
-					const std::size_t elem_num = item_obj.getElemNum();//要素数（配列要素ではなく、非配列なら1）
-					std::size_t elem_num_loaded = 0;//実際に読み込んだ要素数（配列要素ではなく、非配列なら1）
 
 					//配列ブロック開始
 					{
@@ -4695,10 +4708,10 @@ namespace serial
 												//通知処理呼び出し
 												noticeUnrecognizedItem<CIArchive, T> functor;
 												functor(arc, item_obj.template get<T>(), ver, now_ver, child_item);
-												
+
 												//委譲データ項目の受け取り終了
 												arc.resetTargetObjItemDelegate();
-												
+
 												//委譲データ項目の受け取り状態を判定
 												if (delegate_child_item_for_retry.m_nameCrc != 0 && delegate_child_item_for_retry.m_itemP)
 												{
@@ -4735,7 +4748,7 @@ namespace serial
 												noticeUnrecognizedItem<CIArchive, T> functor;
 												functor(arc, item_obj.template get<T>(), ver, now_ver, child_item);
 											}
-											
+
 											//デシリアライズ処理（シリアライズ＆デシリアライズ兼用処理）呼び出し
 											//※対象オブジェクトアイテムを処理する
 											if (arc.getState() != st_DESERIALIZE_PHASE_LOAD_OBJECT_END)
@@ -4766,7 +4779,7 @@ namespace serial
 												//処理済みにする
 												child_item.setIsAlready();
 											}
-										
+
 											//データのロードフェーズに戻す
 											arc.setState(st_DESERIALIZE_PHASE_LOAD_DATA);
 										}
@@ -4821,87 +4834,87 @@ namespace serial
 						//配列の先頭ポインタ（元のポインタ）に戻す
 						item_obj.m_itemP = item_p_top;
 
-						//要素終了
+						//配列ブロック終了
 						arc.m_style.finishReadArray(parent_arc, arc);
 					}
-					
-					//分配前フェーズに変更
-					arc.setState(st_DESERIALIZE_PHASE_BEFORE_DISTRIBUTE);
-
-					//分配前処理（デシリアライズ専用処理）呼び出し
-					{
-						beforeDistribute<CIArchive, T> functor;
-						functor(arc, item_obj.template get<T>(), elem_num, elem_num_loaded, ver, now_ver);
-					}
-
-					//分配フェーズに変更
-					arc.setState(st_DESERIALIZE_PHASE_DISTRIBUTE);
-
-					//分配処理（デシリアライズ専用処理）呼び出し
-					while (!arc.hasFatalError())
-					{
-						//ブロック終了判定
-						bool is_block_end = true;
-						arc.m_style.tryAndReadBlockFooter(arc, item_obj, is_block_end);
-						if (is_block_end)
-							break;//ブロックの終了を検出したらループから抜ける
-
-						//オブジェクトブロック開始
-						{
-							//オブジェクトブロック処理用の子アーカイブオブジェクトを生成
-							CIArchive& parent_arc = arc;
-							CIArchive arc(parent_arc, st_DESERIALIZE_PHASE_DISTRIBUTE);
-
-							//ブロック開始情報を仮読みし、分配処理に回す
-							CItemBase require_item;
-							std::size_t require_block_size = 0;
-							bool is_found_next_block = false;
-							arc.m_style.requireNextBlockHeader(arc, require_item, require_block_size, is_found_next_block);
-							if (!is_found_next_block)
-								break;//ブロックが見つからなかった場合もループから抜ける（ありえない？）
-
-							//オブジェクト分配処理フェーズに変更
-							arc.setState(st_DESERIALIZE_PHASE_DISTRIBUTE_OBJECT);
-
-							//オブジェクト処理対象データ項目をセット
-							arc.setTargetObjItem(require_item);
-
-							//分配処理（デシリアライズ専用処理）呼び出し
-							{
-								distributor<CIArchive, T> functor;
-								functor(arc, item_obj.template get<T>(), elem_num, elem_num_loaded, ver, now_ver, require_item);
-							}
-
-							//オブジェクト処理対象データ項目をリセット
-							arc.resetTargetObjItem();
-
-							//未処理のままだったらブロックをスキップする
-							if (arc.getState() != st_DESERIALIZE_PHASE_DISTRIBUTE_OBJECT_END)
-							{
-								//オブジェクトのブロックをスキップ
-								arc.m_style.skipReadBlock(arc);
-
-								//処理済みにする
-								require_item.setIsAlready();
-							}
-
-							//オブジェクトブロック終了
-							arc.m_style.finishReadBlock(parent_arc, arc);
-						}
-					}
-
-					//分配後フェーズに変更
-					arc.setState(st_DESERIALIZE_PHASE_AFTER_DISTRIBUTE);
-
-					//分配後処理（デシリアライズ専用処理）呼び出し
-					{
-						afterDistribute<CIArchive, T> functor;
-						functor(arc, item_obj.template get<T>(), elem_num, elem_num_loaded, ver, now_ver);
-					}
-
-					//要素終了
-					arc.m_style.finishReadBlock(parent_arc, arc);
 				}
+					
+				//分配前フェーズに変更
+				arc.setState(st_DESERIALIZE_PHASE_BEFORE_DISTRIBUTE);
+
+				//分配前処理（デシリアライズ専用処理）呼び出し
+				{
+					beforeDistribute<CIArchive, T> functor;
+					functor(arc, item_obj.template get<T>(), elem_num, elem_num_loaded, ver, now_ver);
+				}
+
+				//分配フェーズに変更
+				arc.setState(st_DESERIALIZE_PHASE_DISTRIBUTE);
+
+				//分配処理（デシリアライズ専用処理）呼び出し
+				while (!arc.hasFatalError())
+				{
+					//ブロック終了判定
+					bool is_block_end = true;
+					arc.m_style.tryAndReadBlockFooter(arc, item_obj, is_block_end);
+					if (is_block_end)
+						break;//ブロックの終了を検出したらループから抜ける
+
+					//オブジェクトブロック開始
+					{
+						//オブジェクトブロック処理用の子アーカイブオブジェクトを生成
+						CIArchive& parent_arc = arc;
+						CIArchive arc(parent_arc, st_DESERIALIZE_PHASE_DISTRIBUTE);
+
+						//ブロック開始情報を仮読みし、分配処理に回す
+						CItemBase require_item;
+						std::size_t require_block_size = 0;
+						bool is_found_next_block = false;
+						arc.m_style.requireNextBlockHeader(arc, require_item, require_block_size, is_found_next_block);
+						if (!is_found_next_block)
+							break;//ブロックが見つからなかった場合もループから抜ける（ありえない？）
+
+						//オブジェクト分配処理フェーズに変更
+						arc.setState(st_DESERIALIZE_PHASE_DISTRIBUTE_OBJECT);
+
+						//オブジェクト処理対象データ項目をセット
+						arc.setTargetObjItem(require_item);
+
+						//分配処理（デシリアライズ専用処理）呼び出し
+						{
+							distributor<CIArchive, T> functor;
+							functor(arc, item_obj.template get<T>(), elem_num, elem_num_loaded, ver, now_ver, require_item);
+						}
+
+						//オブジェクト処理対象データ項目をリセット
+						arc.resetTargetObjItem();
+
+						//未処理のままだったらブロックをスキップする
+						if (arc.getState() != st_DESERIALIZE_PHASE_DISTRIBUTE_OBJECT_END)
+						{
+							//オブジェクトのブロックをスキップ
+							arc.m_style.skipReadBlock(arc);
+
+							//処理済みにする
+							require_item.setIsAlready();
+						}
+
+						//オブジェクトブロック終了
+						arc.m_style.finishReadBlock(parent_arc, arc);
+					}
+				}
+
+				//分配後フェーズに変更
+				arc.setState(st_DESERIALIZE_PHASE_AFTER_DISTRIBUTE);
+
+				//分配後処理（デシリアライズ専用処理）呼び出し
+				{
+					afterDistribute<CIArchive, T> functor;
+					functor(arc, item_obj.template get<T>(), elem_num, elem_num_loaded, ver, now_ver);
+				}
+
+				//ブロック終了
+				arc.m_style.finishReadBlock(parent_arc, arc);
 			}
 			
 			//ネストレベルが0ならターミネータを読み込み
@@ -5077,11 +5090,11 @@ namespace serial
 			const std::size_t remain = m_arc.getBuffRemain();
 			va_list args;
 			va_start(args, fmt);
-#ifdef USE_STRCPY_S
+		#ifdef USE_STRCPY_S
 			const std::size_t ret = vsprintf_s(reinterpret_cast<char*>(m_arc.m_buff + m_arc.m_buffPos), remain, fmt, args);
-#else//USE_STRCPY_S
+		#else//USE_STRCPY_S
 			const std::size_t ret = vsprintf(reinterpret_cast<char*>(m_arc.m_buff + m_arc.m_buffPos), fmt, args);
-#endif//USE_STRCPY_S
+		#endif//USE_STRCPY_S
 			va_end(args);
 			m_arc.m_buffPos += ret;
 			return ret;

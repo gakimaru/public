@@ -403,7 +403,7 @@
          "level": {"crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 30},
          "weapon": {"crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x32000e73},
          "shield": {"crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x9ba72ee7},
-         "param1": {"crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 123,456]},
+         "param1": {"crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [123,456]},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 55},
@@ -425,7 +425,7 @@
          "level": {"crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20},
          "weapon": {"crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x566ccb77},
          "shield": {"crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xa9914c65},
-         "param1": {"crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 999,888]},
+         "param1": {"crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [999,888]},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 25},
@@ -444,7 +444,7 @@
          "level": {"crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10},
          "weapon": {"crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x192d5db0},
          "shield": {"crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x82bc1fa6},
-         "param1": {"crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [ 111,222]},
+         "param1": {"crc": 0x171c2e4f, "itemType": "int", "itemSize": 4, "isObj": 0, "isArr": 1, "isPtr": 0, "isNul": 0, "hasVersion": 0, "arrNum": 2, "data": [111,222]},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 15},

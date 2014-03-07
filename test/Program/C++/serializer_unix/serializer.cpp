@@ -4395,8 +4395,8 @@ namespace serial
 			//※収集処理で operator&() を使っている時など
 			assert(arc.getState() == st_SERIALIZE_PHASE_SAVE_DATA);
 
-			//文字列ポインタ型専用処理
-			if (typeid(T) == typeid(serial::str_t) && item_obj.isPtr())
+			//文字列型専用処理
+			if (typeid(T) == typeid(serial::str_t))
 			{
 				if (item_obj.m_itemP)
 				{

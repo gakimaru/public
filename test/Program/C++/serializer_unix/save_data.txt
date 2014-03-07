@@ -10,12 +10,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "r00000"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "r00000"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x7bd6ae81}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "回復薬000"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 13, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "回復薬000"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "hasVersion": 0, "data": null},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -28,12 +28,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "r00001"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "r00001"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0cd19e17}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "回復薬001"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 13, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "回復薬001"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "hasVersion": 0, "data": null},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -46,12 +46,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "r00002"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "r00002"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x95d8cfad}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "回復薬002"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 13, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "回復薬002"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "hasVersion": 0, "data": null},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -64,12 +64,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00000"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00000"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x2b1b3f32}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器000"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器000"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "hasVersion": 0, "data": null},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -82,12 +82,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00001"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00001"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x5c1c0fa4}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器001"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器001"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+1"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -100,12 +100,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00002"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00002"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xc5155e1e}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器002"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器002"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+2"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -118,12 +118,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00003"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00003"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xb2126e88}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器003"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器003"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+3"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -136,12 +136,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00004"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "w00004"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x2c76fb2b}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器004"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器004"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+4"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -154,12 +154,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00000"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00000"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xb08a7d24}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾000"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾000"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "hasVersion": 0, "data": null},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -172,12 +172,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00001"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00001"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xc78d4db2}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾001"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾001"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 15, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:B"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -190,12 +190,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00002"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00002"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x5e841c08}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾002"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾002"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 15, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:C"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -208,12 +208,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00003"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00003"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x29832c9e}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾003"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾003"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 15, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:D"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -226,12 +226,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00004"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "s00004"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xb7e7b93d}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾004"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾004"}}}
          "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 15, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:E"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -244,12 +244,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00000"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00000"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xfe94deb4}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技000"}}},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技000"}}},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 5},
@@ -259,12 +259,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00001"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00001"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x8993ee22}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技001"}}},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技001"}}},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 8},
@@ -274,12 +274,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00002"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00002"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x109abf98}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技002"}}},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技002"}}},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 11},
@@ -289,12 +289,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00003"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00003"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x679d8f0e}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技003"}}},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技003"}}},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14},
@@ -304,12 +304,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00004"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00004"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xf9f91aad}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技004"}}},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技004"}}},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 17},
@@ -319,12 +319,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00005"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00005"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x8efe2a3b}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技005"}}},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技005"}}},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20},
@@ -334,12 +334,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00006"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00006"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x17f77b81}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技006"}}},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技006"}}},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 23},
@@ -349,12 +349,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00007"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00007"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x60f04b17}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技007"}}},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技007"}}},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 26},
@@ -364,12 +364,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00008"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00008"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xf04f5686}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技008"}}},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技008"}}},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 29},
@@ -379,12 +379,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00009"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "a00009"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x87486610}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技009"}}},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "特技009"}}},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 32},
@@ -394,12 +394,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "c00030"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "c00030"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x98712c7c}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x0c},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "さぶろう"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 13, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "さぶろう"}}}
          "level": {"crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 30},
          "weapon": {"crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
          "shield": {"crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
@@ -413,12 +413,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "c00020"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "c00020"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x816a1d3d}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "じろう"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "じろう"}}}
          "level": {"crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 20},
          "weapon": {"crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
          "shield": {"crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
@@ -432,12 +432,12 @@
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "c00010"},
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "c00010"},
                "crc": {"crc": 0x7c6287fd, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0xaa474efe}}},
          "name": {"crc": 0x5e237e06, "itemType": "4CStrILj32EE", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "たろう"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "たろう"}}}
          "level": {"crc": 0x9aeacc13, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 10},
          "weapon": {"crc": 0x6933a7e6, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},
          "shield": {"crc": 0x1e93d2e8, "itemType": "j", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x00000000},

@@ -3728,7 +3728,7 @@ namespace serial
 	//--------------------
 	//データ項目情報作成テンプレート関数（ポインタを配列扱いにしたい場合に使用）
 	template<class T>
-	CItem<typename isPtr<T>::TYPE> pairArr(const char* name, const T& item, const std::size_t N)
+	CItem<typename isPtr<T>::TYPE> pairArray(const char* name, const T& item, const std::size_t N)
 	{
 		CItem<typename isPtr<T>::TYPE> item_obj(name, isPtr<T>::TO_PTR(item), N, isPtr<T>::IS_PTR);
 		return item_obj;
@@ -3769,10 +3769,9 @@ namespace serial
 		return item_obj;
 	}
 	//※ポインタ用
-	template<class Arc>
-	CItem<str_t> pairStr(const char* name, char* item, Arc& arc, const std::size_t max_size)
+	CItem<str_t> pairStr(const char* name, char* item, const std::size_t max_size)
 	{
-		const std::size_t item_size = arc.is_read ? max_size : item ? strlen(item) : 0;
+		const std::size_t item_size = max_size;//アーカイブ読み込み用のサイズ（アーカイブ書き込み時は実際の文字列長+1に更新する／ヌルなら0）
 		const str_t* item_p = reinterpret_cast<const str_t*>(item);
 		CItem<str_t> item_obj(name, item_size, item_p, true);
 		return item_obj;
@@ -4395,6 +4394,21 @@ namespace serial
 			//st_SERIALIZE_PHASE_SAVE_DATA 時以外にこの処理に来るのはプログラムに間違いがある
 			//※収集処理で operator&() を使っている時など
 			assert(arc.getState() == st_SERIALIZE_PHASE_SAVE_DATA);
+
+			//文字列ポインタ型専用処理
+			if (typeid(T) == typeid(serial::str_t) && item_obj.isPtr())
+			{
+				if (item_obj.m_itemP)
+				{
+					//文字列長を格納し直す
+					*const_cast<std::size_t*>(&item_obj.m_itemSize) = strlen(reinterpret_cast<const char*>(item_obj.m_itemP)) + 1;
+				}
+				else
+				{
+					//ヌル時は0に
+					*const_cast<std::size_t*>(&item_obj.m_itemSize) = 0;
+				}
+			}
 
 			//データ項目を記録
 			//※重複チェックのため
@@ -7752,7 +7766,8 @@ namespace serial
 		{
 			arc & pair("id", obj.m_id);
 			arc & pair("name", obj.m_name);
-			arc & pairStr("title", obj.m_title, arc, sizeof(obj.m_titleBuff));//可変長文字列（ポインタ）のテスト
+			arc & pairStr("title", obj.m_title, sizeof(obj.m_titleBuff));//可変長文字列（ポインタ）のテスト
+			//arc & pairArray("title", obj.m_title, sizeof(obj.m_titleBuff));//配列として扱うことも可
 			arc & pair("basic", obj.m_basic);
 			arc & pair("recover", obj.m_recover);
 			arc & pair("num", obj.m_num);

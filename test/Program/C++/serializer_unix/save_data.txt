@@ -88,7 +88,7 @@
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
                "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器001"}}}
-         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 9, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+1"},
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+1"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 11},
@@ -106,7 +106,7 @@
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
                "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器002"}}}
-         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 9, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+2"},
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+2"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 12},
@@ -124,7 +124,7 @@
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
                "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器003"}}}
-         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 9, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+3"},
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+3"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 13},
@@ -142,7 +142,7 @@
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x09},
                "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "武器004"}}}
-         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 9, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+4"},
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "性能:+4"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 14},
@@ -178,7 +178,7 @@
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
                "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾001"}}}
-         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 14, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:B"},
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 15, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:B"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
@@ -196,7 +196,7 @@
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
                "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾002"}}}
-         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 14, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:C"},
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 15, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:C"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
@@ -214,7 +214,7 @@
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
                "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾003"}}}
-         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 14, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:D"},
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 15, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:D"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},
@@ -232,7 +232,7 @@
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "h", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0x06},
                "str": {"crc": 0x5caea3f9, "itemType": "N6serial5str_tE", "itemSize": 32, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": "盾004"}}}
-         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 14, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:E"},
+         "title": {"crc": 0x2b36786b, "itemType": "N6serial5str_tE", "itemSize": 15, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "hasVersion": 0, "data": "グレード:E"},
          "basic": {"crc": 0x90797553, "itemType": "10BASIC_DATA", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
                "atk": {"crc": 0x27677c27, "itemType": "c", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "hasVersion": 0, "data": 0},

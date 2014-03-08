@@ -1,4 +1,4 @@
-"serializer": {
+{"serializer": {
  "SaveData": {"crc": 0x3366f9bd, "itemType": "class CSaveData", "itemSize": 0, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
      "elem": {},
    "version": {"crc": 0xbf1cd3c3, "itemType": "class CSaveDataVersion", "itemSize": 12, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
@@ -15,7 +15,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "回復薬001"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "回復薬001"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "isVLen": 1, "hasVersion": 0, "data": null},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -33,7 +33,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "回復薬002"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "回復薬002"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "isVLen": 1, "hasVersion": 0, "data": null},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -51,7 +51,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x09},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "回復薬003"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 10, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "回復薬003"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "isVLen": 1, "hasVersion": 0, "data": null},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -69,7 +69,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x05},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 6, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "盾001"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 6, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "盾001"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "isVLen": 1, "hasVersion": 0, "data": null},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -87,7 +87,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x05},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 6, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "盾002"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 6, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "盾002"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 11, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "グレード:B"},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -105,7 +105,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x05},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 6, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "盾003"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 6, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "盾003"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 11, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "グレード:C"},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -123,7 +123,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x05},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 6, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "盾004"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 6, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "盾004"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 11, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "グレード:D"},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -141,7 +141,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x05},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 6, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "盾005"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 6, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "盾005"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 11, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "グレード:E"},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -159,7 +159,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x07},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "武器001"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "武器001"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 0, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 1, "isVLen": 1, "hasVersion": 0, "data": null},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -177,7 +177,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x07},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "武器002"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "武器002"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "性能:+1"},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -195,7 +195,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x07},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "武器003"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "武器003"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "性能:+2"},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -213,7 +213,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x07},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "武器004"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "武器004"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "性能:+3"},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -231,7 +231,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x07},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "武器005"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "武器005"}}},
          "title": {"crc": 0x2b36786b, "itemType": "struct serial::str_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 1, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "性能:+4"},
          "basic": {"crc": 0x90797553, "itemType": "struct BASIC_DATA", "itemSize": 4, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
              "elem": {
@@ -399,7 +399,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x08},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 9, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "さぶろう"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 9, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "さぶろう"}}},
          "level": {"crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 30},
          "weapon": {"crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x32000e73},
          "shield": {"crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x9ba72ee7},
@@ -421,7 +421,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "じろう"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "じろう"}}},
          "level": {"crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 20},
          "weapon": {"crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x566ccb77},
          "shield": {"crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0xa9914c65},
@@ -440,7 +440,7 @@
          "name": {"crc": 0x5e237e06, "itemType": "class CStr<32>", "itemSize": 33, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
                "len": {"crc": 0x0c0c38eb, "itemType": "unsigned char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x06},
-               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "たろう"}}}
+               "str": {"crc": 0x5caea3f9, "itemType": "struct serial::str_t", "itemSize": 7, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 1, "hasVersion": 0, "data": "たろう"}}},
          "level": {"crc": 0x9aeacc13, "itemType": "char", "itemSize": 1, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 10},
          "weapon": {"crc": 0x6933a7e6, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x192d5db0},
          "shield": {"crc": 0x1e93d2e8, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x82bc1fa6},
@@ -460,8 +460,8 @@
            "id": {"crc": 0xbf396750, "itemType": "unsigned int", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0xe78feff5}}}},
    "phase_and_flags": {"crc": 0x4659bc29, "itemType": "class CPhaseAndFlags", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
        "elem": {
-         "phase": {"crc": 0xb1bdd6cb, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 7}
+         "phase": {"crc": 0xb1bdd6cb, "itemType": "short", "itemSize": 2, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 7},
          "flags": {"crc": 0x0b0541ba, "itemType": "class std::bitset<64>", "itemSize": 8, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
              "elem": {
-               "bitset": {"crc": 0x9dd4d1cb, "itemType": "struct serial::bin_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0x35,0x00,0x00,0x00,0x00,0x00,0x00,0x80}}}}}}
-}
+               "bitset": {"crc": 0x9dd4d1cb, "itemType": "struct serial::bin_t", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": [0x35,0x00,0x00,0x00,0x00,0x00,0x00,0x80]}}}}}}
+}, "terminator": "ok"}

@@ -2438,8 +2438,14 @@ namespace serial
 			std::size_t used = 0;
 			std::size_t remain = str_max;
 			char* write_p = str;
+			if (remain > 3)
+			{
+				*(write_p++) = '[';
+				++used;
+				--remain;
+			}
 			const unsigned char* read_p = reinterpret_cast<const unsigned char*>(value_p);
-			for (unsigned int i = 0; i < value_size && remain > 5 + 1; ++i)
+			for (unsigned int i = 0; i < value_size && remain > 5 + 2; ++i)
 			{
 				const unsigned char c = *(read_p++);
 				const unsigned char hi = c >> 4;
@@ -2456,6 +2462,12 @@ namespace serial
 				*(write_p++) = lo >= 10 ? 'a' + lo : '0' + lo;
 				used += 4;
 				remain -= 4;
+			}
+			if (remain > 2)
+			{
+				*(write_p++) = ']';
+				++used;
+				--remain;
 			}
 			if (remain > 1)
 				*(write_p) = '\0';
@@ -3324,7 +3336,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//関数オブジェクト定義済みチェック関数
+	//ユーザー定義処理クラス定義済みチェック関数
 	//※SFINAEにより、IS_UNDEFINED が定義されている型のオーバーロード関数が選ばれたら未定義とみなす
 	template<class F>
 	bool isDefinedFunctor(const typename F::IS_UNDEFINED)
@@ -4507,7 +4519,7 @@ namespace serial
 			//st_DESERIALIZE, st_DESERIALIZE_PHASE_MAKE_LIST, st_DESERIALIZE_PHASE_LOAD_DATA,
 			//st_DESERIALIZE_PHASE_LOAD_OBJECT,st_DESERIALIZE_PHASE_LOAD_OBJECT_END 時以外に
 			//この処理に来るのはプログラムに間違いがある
-			//※ロード前処理やロード後処理、通知処理、分配処理で operator&() を使っている時など
+			//※ロード処理（ロード前後処理含む）、通知処理で operator>>() を使っている時など
 			assert(arc.getState() == st_DESERIALIZE ||
 				arc.getState() == st_DESERIALIZE_PHASE_MAKE_LIST ||
 				arc.getState() == st_DESERIALIZE_PHASE_LOAD_OBJECT ||
@@ -5996,7 +6008,7 @@ namespace serial
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			m_process = PROCESS_TOP;
-			arc.print(result, "\"serializer\": {");
+			arc.print(result, "{\"serializer\": {");
 			m_blockIndex = 0;
 			return !result.hasFatalError();
 		}
@@ -6006,8 +6018,10 @@ namespace serial
 			CResult& result = arc.getResult();
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
-			if (m_blockIndex != 0 || m_process == PROCESS_ARRAY_BLOCK)
+			if (m_blockIndex != 0 || m_process == PROCESS_ARRAY_BLOCK || (m_process == PROCESS_ELEM && m_itemIndex != 0))
 				arc.print(result, ",");
+			if (m_process == PROCESS_ELEM)
+				++m_itemIndex;
 			arc.print(result, "\n");
 			m_process = PROCESS_BLOCK;
 			arc.printIndent(result, 0);
@@ -6058,7 +6072,14 @@ namespace serial
 			arc.print(result, "\n");
 			m_process = PROCESS_ELEM;
 			arc.printIndent(result, 0);
-			arc.print(result, "\"elem\": {");
+			if (item.isArr())
+			{
+				arc.print(result, "{");
+			}
+			else
+			{
+				arc.print(result, "\"elem\": {");
+			}
 			m_itemIndex = 0;
 			return !result.hasFatalError();
 		}
@@ -6172,7 +6193,7 @@ namespace serial
 			if (result.hasFatalError())//致命的なエラーが出ている時は即時終了する
 				return false;
 			arc.print(result, "\n");
-			arc.print(result, "}\n");
+			arc.print(result, "}, \"terminator\": \"ok\"}\n");
 			return !result.hasFatalError();
 		}
 	public:

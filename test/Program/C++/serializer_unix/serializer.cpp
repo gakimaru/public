@@ -16,6 +16,7 @@
 #include <stdint.h>//uintptr_t用
 #include <limits.h>//UCHAR_MAX用
 #include <typeinfo.h>//type_id用
+#include <time.h>//time_t, tm用
 #include <map>//STL map用
 #include <iterator>//std::iterator用
 #include <vector>//STL vector用
@@ -2458,8 +2459,8 @@ namespace serial
 				}
 				*(write_p++) = '0';
 				*(write_p++) = 'x';
-				*(write_p++) = hi >= 10 ? 'a' + hi : '0' + hi;
-				*(write_p++) = lo >= 10 ? 'a' + lo : '0' + lo;
+				*(write_p++) = hi >= 10 ? 'a' + hi - 10 : '0' + hi;
+				*(write_p++) = lo >= 10 ? 'a' + lo - 10 : '0' + lo;
 				used += 4;
 				remain -= 4;
 			}
@@ -5375,8 +5376,8 @@ namespace serial
 	const unsigned char CArchiveStyleBinaryBase::ARRAY_END[CArchiveStyleBinaryBase::END_MARK_SIZE] = { 0xff, 0xfa };//配列終端
 	const unsigned char CArchiveStyleBinaryBase::ELEM_BEGIN[CArchiveStyleBinaryBase::BEGIN_MARK_SIZE] = { 0xfe, 0xff };//要素始端
 	const unsigned char CArchiveStyleBinaryBase::ELEM_END[CArchiveStyleBinaryBase::END_MARK_SIZE] = { 0xff, 0xfe };//要素終端
-	const unsigned char CArchiveStyleBinaryBase::ITEM_BEGIN[CArchiveStyleBinaryBase::BEGIN_MARK_SIZE] = { 0xf1, 0xff };//データ項目始端
-	const unsigned char CArchiveStyleBinaryBase::ITEM_END[CArchiveStyleBinaryBase::END_MARK_SIZE] = { 0xff, 0xf1 };//データ項目終端
+	const unsigned char CArchiveStyleBinaryBase::ITEM_BEGIN[CArchiveStyleBinaryBase::BEGIN_MARK_SIZE] = { 0xfd, 0xff };//データ項目始端
+	const unsigned char CArchiveStyleBinaryBase::ITEM_END[CArchiveStyleBinaryBase::END_MARK_SIZE] = { 0xff, 0xfd };//データ項目終端
 	//--------------------
 	//バイナリ形式アーカイブクラス（アーカイブ書き込み用）
 	class COArchiveStyleBinary : public CArchiveStyleBinaryBase
@@ -5449,7 +5450,7 @@ namespace serial
 			if (!child_item.isNul())//ヌル時はここまでの情報で終わり
 			{
 				if (child_item.isArr())//配列か？
-					arc.write(result, &child_item.m_arrNum, sizeof(child_item.m_arrNum));//列要素数書き込み
+					arc.write(result, &child_item.m_arrNum, sizeof(child_item.m_arrNum));//配列要素数書き込み
 				unsigned char* p = reinterpret_cast<unsigned char*>(const_cast<void*>(child_item.m_itemP));
 				const std::size_t elem_num = child_item.getElemNum();
 				for (std::size_t index = 0; index < elem_num && !result.hasFatalError(); ++index)//配列要素数分データ書き込み
@@ -7791,15 +7792,32 @@ public:
 	int getMinorVer() const { return MINOR_VER; }//マイナーバージョン取得
 	int getLoadedMajorVer() const { return m_loadedMajorVer; }//セーブデータからロードしたメジャーバージョン取得
 	int getLoadedMinorVer() const { return m_loadedMinorVer; }//セーブデータからロードしたマイナーバージョン取得
+	std::chrono::system_clock::time_point getSaveTime() const { return m_saveTime; };//セーブ日時取得
 	bool hasSaved() const { return m_hasSaved; }//セーブしたか？
 	bool hasLoaded() const { return m_hasLoaded; }//ロードしたか？
 private:
 	void setHasSaved(){ m_hasSaved = true; }//セーブしたことにする
 	void setHasLoaded(){ m_hasLoaded = true; }//ロードしたことにする
+	void updateSaveTime(){ m_saveTime = std::chrono::system_clock::now(); }//セーブ日時を更新する
 	void resetHasSaved(){ m_hasSaved = false; }//セーブしたことがある状態を解除
 	void resetHasLoaded(){ m_hasLoaded = false; }//ロードしたことがある状態を解除
 public:
 	//メソッド
+	//セーブ日時の文字列取得
+	void getSaveTimeStr(char* buff, std::size_t buff_size) const
+	{
+		const time_t save_time = std::chrono::system_clock::to_time_t(m_saveTime);
+	#ifdef USE_STRCPY_S
+		struct tm save_time_tm;
+		localtime_s(&save_time_tm, &save_time);
+		const struct tm* save_time_tm_p = &save_time_tm;
+	#else//USE_STRCPY_S
+		const struct tm* save_time_tm_p = localtime(&save_time);
+	#endif//USE_STRCPY_S
+		strftime(buff, buff_size, "%Y/%m/%d(%a) %H:%M:%S", save_time_tm_p);
+	}
+	template<std::size_t N>
+	void getSaveTimeStr(char(&buff)[N]){ getSaveTimeStr(buff, N); }
 	//ロードしたバージョンを現在のバージョンに更新
 	void updateLoadedVer()
 	{
@@ -7811,6 +7829,7 @@ public:
 	CSaveDataVersion() :
 		m_loadedMajorVer(0),
 		m_loadedMinorVer(0),
+		m_saveTime(std::chrono::system_clock::now()),
 		m_hasSaved(false),
 		m_hasLoaded(false)
 	{}
@@ -7821,6 +7840,7 @@ private:
 	//フィールド
 	int m_loadedMajorVer;//セーブデータからロードしたメジャーバージョン取得
 	int m_loadedMinorVer;//セーブデータからロードしたマイナーバージョン取得
+	std::chrono::system_clock::time_point m_saveTime;//セーブ日時
 	bool m_hasSaved;//セーブしたか？
 	bool m_hasLoaded;//ロードしたか？
 	//シリアライズ用のフレンド設定
@@ -7834,8 +7854,11 @@ void printSaveDataVer()
 	printf("【セーブデータバージョン】\n");
 	
 	CSingleton<CSaveDataVersion> save_data_version;
+	char time_buff[80];
+	save_data_version->getSaveTimeStr(time_buff);
 	printf("現在のバージョン:                 %d.%d\n", save_data_version->getMajorVer(), save_data_version->getMinorVer());
 	printf("ロード済みorセーブ済みバージョン: %d.%d\n", save_data_version->getLoadedMajorVer(), save_data_version->getLoadedMinorVer());
+	printf("セーブ日時:                       %s\n", time_buff);
 	printf("・セーブしたか？ = %s\n", save_data_version->hasSaved() ? "yes" : "no");
 	printf("・ロードしたか？ = %s\n", save_data_version->hasLoaded() ? "yes" : "no");
 }
@@ -8064,6 +8087,7 @@ namespace serial
 		{
 			arc & pair("major", obj.m_loadedMajorVer);
 			arc & pair("minor", obj.m_loadedMinorVer);
+			arc & pair("saveTime", obj.m_saveTime);
 		}
 	};
 	//--------------------

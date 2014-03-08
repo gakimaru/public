@@ -1,10 +1,11 @@
 {"serializer": {
  "SaveData": {"crc": 0x3366f9bd, "itemType": "9CSaveData", "itemSize": 0, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
      "elem": {},
-   "version": {"crc": 0xbf1cd3c3, "itemType": "16CSaveDataVersion", "itemSize": 12, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
+   "version": {"crc": 0xbf1cd3c3, "itemType": "16CSaveDataVersion", "itemSize": 24, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",
        "elem": {
          "major": {"crc": 0x3d34fd09, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 1},
-         "minor": {"crc": 0xff897d3a, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0}}},
+         "minor": {"crc": 0xff897d3a, "itemType": "i", "itemSize": 4, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": 0},
+         "saveTime": {"crc": 0x0877f0cd, "itemType": "NSt6chrono10time_pointINS_3_V212system_clockENS_8durationIxSt5ratioILx1ELx1000000000EEEEEE", "itemSize": 8, "isObj": 0, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "data": [0x20,0xce,0x7b,0xcd,0xa6,0x5f,0x59,0x13]}}},
    "item": {"crc": 0x1f1b251e, "itemType": "9ITEM_DATA", "itemSize": 80, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "1.0",
        "elem": {
          "id": {"crc": 0xbf396750, "itemType": "11CStrWithCRCILj8EE", "itemSize": 16, "isObj": 1, "isArr": 0, "isPtr": 0, "isNul": 0, "isVLen": 0, "hasVersion": 0, "ver": "0.0",

@@ -3822,9 +3822,9 @@ namespace serial
 		return item_obj;
 	}
 	//※ポインタ用
-	CItem<str_t> pairStr(const char* name, char* item, const std::size_t max_size)
+	CItem<str_t> pairStr(const char* name, char* item)
 	{
-		const std::size_t item_size = max_size;//アーカイブ読み込み用のサイズ（アーカイブ書き込み時は実際の文字列長+1に更新する／ヌルなら0）
+		const std::size_t item_size = 0;//アーカイブ読み込み用のサイズ（アーカイブ書き込み時は実際の文字列長+1に更新する／ヌルなら0）
 		const str_t* item_p = reinterpret_cast<const str_t*>(item);
 		CItem<str_t> item_obj(name, item_size, item_p, true, true);
 		return item_obj;
@@ -7072,10 +7072,24 @@ struct ITEM_DATA
 	ID_t m_id;//ID
 	name_t m_name;//名前
 	char* m_title;//称号　※可変長文字列（ポインタ）のテスト用
-	char m_titleBuff[16];//称号用バッファ
 	BASIC_DATA m_basic;//基本データ
 	short m_recover;//回復力
 	short m_num;//データ個数
+	//称号をセット
+	void setTitle(const char* title)
+	{
+		if (!title)
+			m_title = nullptr;
+		else
+		{
+			m_title = m_titleBuff;
+		#ifdef USE_STRCPY_S
+			strcpy_s(m_title, sizeof(m_titleBuff), title);
+		#else//USE_STRCPY_S
+			strcpy(m_title, title);
+		#endif//USE_STRCPY_S
+		}
+	}
 	//デフォルトコンストラクタ
 	ITEM_DATA()
 	{
@@ -7113,6 +7127,8 @@ struct ITEM_DATA
 		else
 			m_title = nullptr;
 	}
+private:
+	char m_titleBuff[16];//称号用バッファ
 };
 //構造体バージョン
 SERIALIZE_VERSION_DEF(ITEM_DATA, 1, 0);
@@ -7185,7 +7201,7 @@ struct CHARA_DATA
 private:
 	crc32_t m_weaponId;//武器ID
 	crc32_t m_shieldId;//盾ID
-	CHARA_ABILITY_DATA* m_abilities;//アビリティ
+	CHARA_ABILITY_DATA* m_abilities;//キャラ習得アビリティ
 	//シリアライズ用のフレンド設定
 	FRIEND_SERIALIZE(CHARA_DATA);
 };
@@ -7193,7 +7209,7 @@ private:
 SERIALIZE_VERSION_DEF(CHARA_DATA, 1, 0);
 
 //--------------------
-//キャラ保有アビリティデータ構造体
+//キャラ習得アビリティデータ構造体
 struct CHARA_ABILITY_DATA
 {
 	CHARA_ABILITY_DATA* m_next;//連結リスト
@@ -7206,7 +7222,7 @@ struct CHARA_ABILITY_DATA_FOR_SAVE
 	crc32_t m_abilityId;//アビリティID
 };
 //--------------------
-//キャラ保有アビリティデータバッファ
+//キャラ習得アビリティデータバッファ
 class CCharaAbilityBuff
 {
 public:
@@ -7224,7 +7240,7 @@ private:
 
 //--------------------
 //コレクションクラス
-template<class T, std::size_t D, std::size_t B1, std::size_t B2>
+template<class T, std::size_t N, std::size_t BUFF1, std::size_t BUFF2>
 class CCollection
 {
 private:
@@ -7235,9 +7251,9 @@ private:
 	typedef typename table_t::const_iterator const_iterator;//イテレータ型
 public:
 	//定数
-	static const std::size_t DATA_NUM_MAX = D;//最大データ数
-	static const std::size_t SEARCH_BUFF_SIZE = B1;//検索テーブルのバッファサイズ
-	static const std::size_t TABLE_BUFF_SIZE = B2;//整列テーブルバッファサイズ
+	static const std::size_t DATA_NUM_MAX = N;//最大データ数
+	static const std::size_t SEARCH_BUFF_SIZE = BUFF1;//検索テーブルのバッファサイズ
+	static const std::size_t TABLE_BUFF_SIZE = BUFF2;//整列テーブルバッファサイズ
 public:
 	//アクセッサ
 	iterator begin(){ return m_table->begin(); }//開始イテレータ
@@ -7392,6 +7408,10 @@ private:
 };
 //--------------------
 //インベントリクラス
+#if 1
+using CInventory = CCollection<ITEM_DATA, 100, 8 * 1024, 8 * 1024>;
+#else
+//コレクションに独自処理を追加する場合は継承を用いる
 typedef CCollection<ITEM_DATA, 100, 8 * 1024, 8 * 1024> CInventoryBase;
 class CInventory : public CInventoryBase
 {
@@ -7404,6 +7424,7 @@ public:
 	~CInventory()
 	{}
 };
+#endif
 //構造体バージョン
 SERIALIZE_VERSION_DEF(CInventory, 1, 0);
 //--------------------
@@ -7486,7 +7507,7 @@ void CHARA_DATA::attachItems()
 	setWeapon(m_weaponId);//武器
 	setShield(m_shieldId);//盾
 }
-//アビリティを追加
+//キャラ習得アビリティを追加
 void CHARA_DATA::addAbility(const crc32_t ability_id)
 {
 	CSingleton<CAbilityList> chara_ability_list;
@@ -7507,7 +7528,7 @@ void CHARA_DATA::addAbility(const crc32_t ability_id)
 	else
 		m_abilities = new_chara_ability;
 }
-//アビリティを取得
+//キャラ習得アビリティを取得
 ABILITY_DATA* CHARA_DATA::getAbility(const int index)
 {
 	CHARA_ABILITY_DATA* chara_ability = m_abilities;
@@ -7577,14 +7598,16 @@ void makeTestData(const int pattern)
 			ITEM_DATA item(id, name, 10 + i, i / 2, 0, 1);
 			if (item.m_title && i > 0)
 			{
+				char buf[16];
 			#ifdef USE_STRCPY_S
-				sprintf_s(item.m_title, sizeof(item.m_titleBuff), "性能:+%d", i);
+				sprintf_s(buf, sizeof(buf), "性能:+%d", i);
 			#else//USE_STRCPY_S
-				sprintf(item.m_title, "性能:+%d", i);
+				sprintf(buf, "性能:+%d", i);
 			#endif//USE_STRCPY_S
+				item.setTitle(buf);
 			}
 			else
-				item.m_title = nullptr;
+				item.setTitle(nullptr);
 			inventory->regist(item);
 		}
 		for (int i = 0; i < 5 + pattern * 10; i += (1 + pattern))
@@ -7601,14 +7624,16 @@ void makeTestData(const int pattern)
 			ITEM_DATA item(id, name, 0, 5 + i, 0, 1);
 			if (item.m_title && i > 0)
 			{
+				char buf[16];
 			#ifdef USE_STRCPY_S
-				sprintf_s(item.m_title, sizeof(item.m_titleBuff), "グレード:%c", 'A' + i);
+				sprintf_s(buf, sizeof(buf), "グレード:%c", 'A' + i);
 			#else//USE_STRCPY_S
-				sprintf(item.m_title, "グレード:%c", 'A' + i);
+				sprintf(buf, "グレード:%c", 'A' + i);
 			#endif//USE_STRCPY_S
+				item.setTitle(buf);
 			}
 			else
-				item.m_title = nullptr;
+				item.setTitle(nullptr);
 			inventory->regist(item);
 		}
 		for (int i = pattern; i < 3 + pattern * 3; ++i)
@@ -7623,7 +7648,7 @@ void makeTestData(const int pattern)
 			sprintf(name, "回復薬%03d", i);
 		#endif//USE_STRCPY_S
 			ITEM_DATA item(id, name, 0, 0, 5 + i * 2, 10);
-			item.m_title = nullptr;
+			item.setTitle(nullptr);
 			inventory->regist(item);
 		}
 		inventory->sort();
@@ -7659,6 +7684,8 @@ void makeTestData(const int pattern)
 			chara1.addAbility("a00030");
 			chara1.addAbility("a00010");
 			chara3.addAbility("a00050");
+			chara3.addAbility("a00010");
+			chara3.addAbility("a00040");
 			chara4.addAbility("a00020");
 			chara_list->regist(chara1);
 			chara_list->regist(chara2);
@@ -7673,6 +7700,7 @@ void makeTestData(const int pattern)
 			CHARA_DATA chara3("c00030", "さぶろう", 30, 55, 3, "w00010", "s00030", 123, 456, 987, 654);
 			chara1.addAbility("a00030");
 			chara1.addAbility("a00020");
+			chara1.addAbility("a00050");
 			chara1.addAbility("a00010");
 			chara3.addAbility("a00050");
 			chara_list->regist(chara1);
@@ -7915,8 +7943,8 @@ namespace serial
 		{
 			arc & pair("id", obj.m_id);
 			arc & pair("name", obj.m_name);
-			arc & pairStr("title", obj.m_title, sizeof(obj.m_titleBuff));//可変長文字列（ポインタ）のテスト
-			//arc & pairArray("title", obj.m_title, sizeof(obj.m_titleBuff));//配列として扱うことも可
+			arc & pairStr("title", obj.m_title);//可変長文字列（ポインタ）のテスト
+			//arc & pairArray("title", obj.m_title, obj.getTitleBuffSize());//配列として扱うことも可
 			arc & pair("basic", obj.m_basic);
 			arc & pair("recover", obj.m_recover);
 			arc & pair("num", obj.m_num);
@@ -8202,7 +8230,7 @@ namespace serial
 			}
 			if (isLoadTarget("ability") || isLoadTarget("chara"))
 			{
-				//キャラ保有アビリティデータクリア
+				//キャラ習得アビリティデータクリア
 				CSingleton<CCharaAbilityBuff> chara_ability_list;
 				chara_ability_list.destroy();
 			}
@@ -8293,7 +8321,7 @@ namespace serial
 			//キャラデータクリア
 			CSingleton<CCharaList> chara_list;
 			chara_list.destroy();
-			//キャラ保有アビリティデータクリア
+			//キャラ習得アビリティデータクリア
 			CSingleton<CCharaAbilityBuff> chara_ability_list;
 			chara_ability_list.destroy();
 			//フェーズ＆進行データクリア

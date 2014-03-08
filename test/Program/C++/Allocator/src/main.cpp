@@ -770,6 +770,7 @@ class CSingleton
 public:
 	//オペレータ（シングルトン本体のプロキシー）
 	T* operator->(){ return m_singleton; }
+	T& operator*(){ return *m_singleton; }
 public:
 	//メソッド
 	//シングルトンインスタンスの明示的な破棄

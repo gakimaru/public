@@ -1,0 +1,437 @@
+--------------------
+シリアライズ：バイナリアーカイブ
+data1=1
+data2=2.34
+data3={5, 6, 7}
+data4a:a=8,b=9,c=10.0
+data4b:a=11,b=12,c=13.0
+data5a:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
+data5b:[0]=0,[1]=0,[2]=1,[8190]=1,[8191]=0
+data6:[0]={a=14,b=15,c=16.0},[1]={a=17,b=18,c=19.0}
+data7a(0x0x80010c08):a=20,b=21,c=22.0
+data7b(0x0x0)
+data8a(0x0x80010c18)=26
+data8b(0x0x0)
+collector<CSaveDataSerializer>(ver=5,6)
+arc.is_read=0, arc.is_write=1
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+save<CTest1>(ver=1,2)
+collector<CTest1>(ver=1,2)
+処理結果：エラーなし
+--------------------
+シリアライズ：テキストアーカイブ
+data1=1
+data2=2.34
+data3={5, 6, 7}
+data4a:a=8,b=9,c=10.0
+data4b:a=11,b=12,c=13.0
+data5a:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
+data5b:[0]=0,[1]=0,[2]=1,[8190]=1,[8191]=0
+data6:[0]={a=14,b=15,c=16.0},[1]={a=17,b=18,c=19.0}
+data7a(0x0x80010c08):a=20,b=21,c=22.0
+data7b(0x0x0)
+data8a(0x0x80010c18)=26
+data8b(0x0x0)
+collector<CSaveDataSerializer>(ver=5,6)
+arc.is_read=0, arc.is_write=1
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+save<CTest1>(ver=1,2)
+collector<CTest1>(ver=1,2)
+処理結果：エラーなし
+--------------------
+デシリアライズ：バイナリアーカイブ
+distributor<CSaveDataSerializer>(ver=5,6)
+beforeLoad<CTest1>(ver=1,2)
+arc.is_read=1, arc.is_write=0
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+load<CTest1>(ver=1,2)
+arc.is_read=1, arc.is_write=0
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+arc.is_read=1, arc.is_write=0
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+arc.is_read=1, arc.is_write=0
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+arc.is_read=1, arc.is_write=0
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+serialize<CTest1::STRUCT>(ver=3,4) sizeof(CTest1::STRUCT)=12
+arc.is_read=1, arc.is_write=0
+serialize<CTest1>(ver=1,2) sizeof(CTest1)=2124
+afterLoad<CTest1>(ver=1,2)
+処理結果：エラーなし
+  getNumSmallerSizeItem()=0
+  getNumLargerSizeItem()=0
+  getNumSmallerArrItem()=0
+  getNumLargerArrItem()=0
+  getNumIsOnlyOnSaveData()=0
+  getNumIsOnlyOnMem()=0
+  getNumIsObjOnSaveDataOnly()=0
+  getNumIsObjOnMemOnly()=0
+  getNumIsArrOnSaveDataOnly()=0
+  getNumIsArrOnMemOnly()=0
+  getNumIsPtrOnSaveDataOnly()=0
+  getNumIsPtrOnMemOnly()=0
+  getNumIsNulOnSaveDataOnly()=0
+  getNumIsNulOnMemOnly()=0
+data1=1
+data2=2.34
+data3={5, 6, 7}
+data4a:a=8,b=9,c=10.0
+data4b:a=11,b=12,c=13.0
+data5a:[0]=1,[1]=1,[2]=0,[8190]=0,[8191]=1
+data5b:[0]=0,[1]=0,[2]=1,[8190]=1,[8191]=0
+data6:[0]={a=14,b=15,c=16.0},[1]={a=17,b=18,c=19.0}
+data7a(0x0x80010c08):a=20,b=21,c=22.0
+data7b(0x0x0)
+data8a(0x0x80010c18)=26
+data8b(0x0x0)
+------------------------------------------------------------
+【全データリセット】
+------------------------------------------------------------
+【テストデータ作成】(pattern=0)
+------------------------------------------------------------
+【現在のデータを表示】
+--- インベントリ ---
+ID="r00000"(0x7bd6ae81), name="回復薬000", atk=0, def=0, recover=5, num=10
+ID="r00001"(0x0cd19e17), name="回復薬001", atk=0, def=0, recover=7, num=10
+ID="r00002"(0x95d8cfad), name="回復薬002", atk=0, def=0, recover=9, num=10
+ID="w00000"(0x2b1b3f32), name="武器000", atk=10, def=0, recover=0, num=1
+ID="w00001"(0x5c1c0fa4), name="武器001", atk=11, def=0, recover=0, num=1
+                              title="性能:+1"
+ID="w00002"(0xc5155e1e), name="武器002", atk=12, def=1, recover=0, num=1
+                              title="性能:+2"
+ID="w00003"(0xb2126e88), name="武器003", atk=13, def=1, recover=0, num=1
+                              title="性能:+3"
+ID="w00004"(0x2c76fb2b), name="武器004", atk=14, def=2, recover=0, num=1
+                              title="性能:+4"
+ID="s00000"(0xb08a7d24), name="盾000", atk=0, def=5, recover=0, num=1
+ID="s00001"(0xc78d4db2), name="盾001", atk=0, def=6, recover=0, num=1
+                              title="グレード:B"
+ID="s00002"(0x5e841c08), name="盾002", atk=0, def=7, recover=0, num=1
+                              title="グレード:C"
+ID="s00003"(0x29832c9e), name="盾003", atk=0, def=8, recover=0, num=1
+                              title="グレード:D"
+ID="s00004"(0xb7e7b93d), name="盾004", atk=0, def=9, recover=0, num=1
+                              title="グレード:E"
+--- アビリティ ---
+ID="a00000"(0xfe94deb4), name="特技000", atk=5, def=4
+ID="a00001"(0x8993ee22), name="特技001", atk=8, def=6
+ID="a00002"(0x109abf98), name="特技002", atk=11, def=8
+ID="a00003"(0x679d8f0e), name="特技003", atk=14, def=10
+ID="a00004"(0xf9f91aad), name="特技004", atk=17, def=12
+ID="a00005"(0x8efe2a3b), name="特技005", atk=20, def=14
+ID="a00006"(0x17f77b81), name="特技006", atk=23, def=16
+ID="a00007"(0x60f04b17), name="特技007", atk=26, def=18
+ID="a00008"(0xf04f5686), name="特技008", atk=29, def=20
+ID="a00009"(0x87486610), name="特技009", atk=32, def=22
+--- キャラ ---
+ID="c00030"(0x98712c7c), name="さぶろう", level=30, atk=55, def=3
+                              param1={123, 456}, param2={987, 654}
+ID="c00020"(0x816a1d3d), name="じろう", level=20, atk=25, def=40
+                              param1={999, 888}, param2={777, 666}
+ID="c00010"(0xaa474efe), name="たろう", level=10, atk=15, def=20
+                              param1={111, 222}, param2={333, 444}
+--- 進行データ ---
+pahse=7
+flags=
+ 1 0 1 0 1 1 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+------------------------------------------------------------
+【セーブデータバージョン】
+現在のバージョン:                 1.0
+ロード済みorセーブ済みバージョン: 0.0
+セーブ日時:                       2014/03/09(Sun) 06:58:16
+・セーブしたか？ = no
+・ロードしたか？ = no
+------------------------------------------------------------
+【シリアライズ】
+シリアライズ結果：
+  致命的なエラー ... なし
+------------------------------------------------------------
+【ファイル書き込み】
+file="save_data.bin", size=6982
+------------------------------------------------------------
+【シリアライズ】
+シリアライズ結果：
+  致命的なエラー ... なし
+------------------------------------------------------------
+【ファイル書き込み】
+file="save_data.txt", size=60915
+------------------------------------------------------------
+【セーブデータバージョン】
+現在のバージョン:                 1.0
+ロード済みorセーブ済みバージョン: 1.0
+セーブ日時:                       2014/03/09(Sun) 06:58:16
+・セーブしたか？ = yes
+・ロードしたか？ = no
+------------------------------------------------------------
+【全データリセット】
+------------------------------------------------------------
+【現在のデータを表示】
+--- インベントリ ---
+--- アビリティ ---
+--- キャラ ---
+--- 進行データ ---
+pahse=0
+flags=
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+------------------------------------------------------------
+【ファイル読み込み】
+file="save_data.bin", size=6982
+------------------------------------------------------------
+【デシリアライズ】
+デシリアライズ結果：
+  致命的なエラー ... なし
+  以下、検出された相違の集計
+  ・サイズが縮小された項目の数           = 0
+  ・サイズが拡大された項目の数           = 0
+  ・配列要素数が縮小された項目の数       = 0
+  ・配列要素数が拡大された項目の数       = 0
+  ・セーブデータ上にのみ存在した項目の数 = 6
+  ・セーブデータ上になかった項目の数     = 3
+  ・現在はオブジェクト型ではないが、セーブデータ上ではそうだった項目の数 = 0
+  ・現在はオブジェクト型だが、セーブデータ上ではそうではなかった項目の数 = 0
+  ・現在は配列型ではないが、セーブデータ上ではそうだった項目の数         = 0
+  ・現在は配列型だが、セーブデータ上ではそうではなかった項目の数         = 0
+  ・現在はポインタ型ではないが、セーブデータ上ではそうだった項目の数     = 0
+  ・現在はポインタ型だが、セーブデータ上ではそうではなかった項目の数     = 0
+  ・現在はヌルではないが、セーブデータ上ではそうだった項目の数           = 5
+  ・現在はヌルだが、セーブデータ上ではそうではなかった項目の数           = 0
+------------------------------------------------------------
+【セーブデータバージョン】
+現在のバージョン:                 1.0
+ロード済みorセーブ済みバージョン: 1.0
+セーブ日時:                       2014/03/09(Sun) 06:58:16
+・セーブしたか？ = yes
+・ロードしたか？ = yes
+------------------------------------------------------------
+【現在のデータを表示】
+--- インベントリ ---
+ID="r00000"(0x7bd6ae81), name="回復薬000", atk=0, def=0, recover=5, num=10
+ID="r00001"(0x0cd19e17), name="回復薬001", atk=0, def=0, recover=7, num=10
+ID="r00002"(0x95d8cfad), name="回復薬002", atk=0, def=0, recover=9, num=10
+ID="w00000"(0x2b1b3f32), name="武器000", atk=10, def=0, recover=0, num=1
+ID="w00001"(0x5c1c0fa4), name="武器001", atk=11, def=0, recover=0, num=1
+ID="w00002"(0xc5155e1e), name="武器002", atk=12, def=1, recover=0, num=1
+ID="w00003"(0xb2126e88), name="武器003", atk=13, def=1, recover=0, num=1
+ID="w00004"(0x2c76fb2b), name="武器004", atk=14, def=2, recover=0, num=1
+ID="s00000"(0xb08a7d24), name="盾000", atk=0, def=5, recover=0, num=1
+ID="s00001"(0xc78d4db2), name="盾001", atk=0, def=6, recover=0, num=1
+ID="s00002"(0x5e841c08), name="盾002", atk=0, def=7, recover=0, num=1
+ID="s00003"(0x29832c9e), name="盾003", atk=0, def=8, recover=0, num=1
+ID="s00004"(0xb7e7b93d), name="盾004", atk=0, def=9, recover=0, num=1
+--- アビリティ ---
+ID="a00000"(0xfe94deb4), name="特技000", atk=5, def=4
+ID="a00001"(0x8993ee22), name="特技001", atk=8, def=6
+ID="a00002"(0x109abf98), name="特技002", atk=11, def=8
+ID="a00003"(0x679d8f0e), name="特技003", atk=14, def=10
+ID="a00004"(0xf9f91aad), name="特技004", atk=17, def=12
+ID="a00005"(0x8efe2a3b), name="特技005", atk=20, def=14
+ID="a00006"(0x17f77b81), name="特技006", atk=23, def=16
+ID="a00007"(0x60f04b17), name="特技007", atk=26, def=18
+ID="a00008"(0xf04f5686), name="特技008", atk=29, def=20
+ID="a00009"(0x87486610), name="特技009", atk=32, def=22
+--- キャラ ---
+ID="c00030"(0x98712c7c), name="さぶろう", level=30, atk=55, def=3
+                              param1={123, 456}, param2={98765, 43210}
+ID="c00020"(0x816a1d3d), name="じろう", level=20, atk=25, def=40
+                              param1={999, 888}, param2={98765, 43210}
+ID="c00010"(0xaa474efe), name="たろう", level=10, atk=15, def=20
+                              param1={111, 222}, param2={98765, 43210}
+--- 進行データ ---
+pahse=7
+flags=
+ 1 0 1 0 1 1 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+------------------------------------------------------------
+【全データリセット】
+------------------------------------------------------------
+【テストデータ作成】(pattern=1)
+------------------------------------------------------------
+【現在のデータを表示】
+--- インベントリ ---
+ID="r00001"(0x0cd19e17), name="回復薬001", atk=0, def=0, recover=7, num=10
+ID="r00002"(0x95d8cfad), name="回復薬002", atk=0, def=0, recover=9, num=10
+ID="r00003"(0xe2dfff3b), name="回復薬003", atk=0, def=0, recover=11, num=10
+ID="r00004"(0x7cbb6a98), name="回復薬004", atk=0, def=0, recover=13, num=10
+ID="r00005"(0x0bbc5a0e), name="回復薬005", atk=0, def=0, recover=15, num=10
+ID="w00000"(0x2b1b3f32), name="武器000", atk=10, def=0, recover=0, num=1
+ID="w00002"(0xc5155e1e), name="武器002", atk=12, def=1, recover=0, num=1
+                              title="性能:+2"
+ID="w00004"(0x2c76fb2b), name="武器004", atk=14, def=2, recover=0, num=1
+                              title="性能:+4"
+ID="w00006"(0xc2789a07), name="武器006", atk=16, def=3, recover=0, num=1
+                              title="性能:+6"
+ID="w00008"(0x25c0b700), name="武器008", atk=18, def=4, recover=0, num=1
+                              title="性能:+8"
+ID="w00010"(0x32000e73), name="武器010", atk=20, def=5, recover=0, num=1
+                              title="性能:+10"
+ID="w00012"(0xdc0e6f5f), name="武器012", atk=22, def=6, recover=0, num=1
+                              title="性能:+12"
+ID="w00014"(0x356dca6a), name="武器014", atk=24, def=7, recover=0, num=1
+                              title="性能:+14"
+ID="s00000"(0xb08a7d24), name="盾000", atk=0, def=5, recover=0, num=1
+ID="s00002"(0x5e841c08), name="盾002", atk=0, def=7, recover=0, num=1
+                              title="グレード:C"
+ID="s00004"(0xb7e7b93d), name="盾004", atk=0, def=9, recover=0, num=1
+                              title="グレード:E"
+ID="s00006"(0x59e9d811), name="盾006", atk=0, def=11, recover=0, num=1
+                              title="グレード:G"
+ID="s00008"(0xbe51f516), name="盾008", atk=0, def=13, recover=0, num=1
+                              title="グレード:I"
+ID="s00010"(0xa9914c65), name="盾010", atk=0, def=15, recover=0, num=1
+                              title="グレード:K"
+ID="s00012"(0x479f2d49), name="盾012", atk=0, def=17, recover=0, num=1
+                              title="グレード:M"
+ID="s00014"(0xaefc887c), name="盾014", atk=0, def=19, recover=0, num=1
+                              title="グレード:O"
+--- アビリティ ---
+ID="a00001"(0x8993ee22), name="特技001", atk=8, def=6
+ID="a00002"(0x109abf98), name="特技002", atk=11, def=8
+ID="a00003"(0x679d8f0e), name="特技003", atk=14, def=10
+ID="a00004"(0xf9f91aad), name="特技004", atk=17, def=12
+ID="a00005"(0x8efe2a3b), name="特技005", atk=20, def=14
+ID="a00006"(0x17f77b81), name="特技006", atk=23, def=16
+ID="a00007"(0x60f04b17), name="特技007", atk=26, def=18
+ID="a00008"(0xf04f5686), name="特技008", atk=29, def=20
+ID="a00009"(0x87486610), name="特技009", atk=32, def=22
+ID="a00010"(0xe78feff5), name="特技010", atk=35, def=24
+ID="a00011"(0x9088df63), name="特技011", atk=38, def=26
+ID="a00012"(0x09818ed9), name="特技012", atk=41, def=28
+ID="a00013"(0x7e86be4f), name="特技013", atk=44, def=30
+ID="a00014"(0xe0e22bec), name="特技014", atk=47, def=32
+ID="a00015"(0x97e51b7a), name="特技015", atk=50, def=34
+ID="a00016"(0x0eec4ac0), name="特技016", atk=53, def=36
+ID="a00017"(0x79eb7a56), name="特技017", atk=56, def=38
+ID="a00018"(0xe95467c7), name="特技018", atk=59, def=40
+ID="a00019"(0x9e535751), name="特技019", atk=62, def=42
+--- キャラ ---
+ID="c00010"(0xaa474efe), name="たろう", level=11, atk=15, def=20
+                              param1={111, 222}, param2={333, 444}
+                              [特技010]
+ID="c00020"(0x816a1d3d), name="じろう", level=21, atk=25, def=40
+                              param1={999, 888}, param2={777, 666}
+                              shield=盾010
+ID="c00040"(0xd730babb), name="しろう", level=41, atk=55, def=3
+                              param1={123, 456}, param2={987, 654}
+ID="c00030"(0x98712c7c), name="さぶろう", level=31, atk=55, def=3
+                              param1={123, 456}, param2={987, 654}
+                              [特技010]
+--- 進行データ ---
+pahse=4
+flags=
+ 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+------------------------------------------------------------
+【ファイル読み込み】
+file="save_data.bin", size=6982
+------------------------------------------------------------
+【デシリアライズ】
+デシリアライズ結果：
+  致命的なエラー ... なし
+  以下、検出された相違の集計
+  ・サイズが縮小された項目の数           = 0
+  ・サイズが拡大された項目の数           = 0
+  ・配列要素数が縮小された項目の数       = 0
+  ・配列要素数が拡大された項目の数       = 0
+  ・セーブデータ上にのみ存在した項目の数 = 6
+  ・セーブデータ上になかった項目の数     = 3
+  ・現在はオブジェクト型ではないが、セーブデータ上ではそうだった項目の数 = 0
+  ・現在はオブジェクト型だが、セーブデータ上ではそうではなかった項目の数 = 0
+  ・現在は配列型ではないが、セーブデータ上ではそうだった項目の数         = 0
+  ・現在は配列型だが、セーブデータ上ではそうではなかった項目の数         = 0
+  ・現在はポインタ型ではないが、セーブデータ上ではそうだった項目の数     = 0
+  ・現在はポインタ型だが、セーブデータ上ではそうではなかった項目の数     = 0
+  ・現在はヌルではないが、セーブデータ上ではそうだった項目の数           = 0
+  ・現在はヌルだが、セーブデータ上ではそうではなかった項目の数           = 0
+------------------------------------------------------------
+【現在のデータを表示】
+--- インベントリ ---
+ID="r00001"(0x0cd19e17), name="回復薬001", atk=0, def=0, recover=7, num=10
+ID="r00002"(0x95d8cfad), name="回復薬002", atk=0, def=0, recover=9, num=10
+ID="r00003"(0xe2dfff3b), name="回復薬003", atk=0, def=0, recover=11, num=10
+ID="r00004"(0x7cbb6a98), name="回復薬004", atk=0, def=0, recover=13, num=10
+ID="r00005"(0x0bbc5a0e), name="回復薬005", atk=0, def=0, recover=15, num=10
+ID="w00000"(0x2b1b3f32), name="武器000", atk=10, def=0, recover=0, num=1
+ID="w00002"(0xc5155e1e), name="武器002", atk=12, def=1, recover=0, num=1
+                              title="性能:+2"
+ID="w00004"(0x2c76fb2b), name="武器004", atk=14, def=2, recover=0, num=1
+                              title="性能:+4"
+ID="w00006"(0xc2789a07), name="武器006", atk=16, def=3, recover=0, num=1
+                              title="性能:+6"
+ID="w00008"(0x25c0b700), name="武器008", atk=18, def=4, recover=0, num=1
+                              title="性能:+8"
+ID="w00010"(0x32000e73), name="武器010", atk=20, def=5, recover=0, num=1
+                              title="性能:+10"
+ID="w00012"(0xdc0e6f5f), name="武器012", atk=22, def=6, recover=0, num=1
+                              title="性能:+12"
+ID="w00014"(0x356dca6a), name="武器014", atk=24, def=7, recover=0, num=1
+                              title="性能:+14"
+ID="s00000"(0xb08a7d24), name="盾000", atk=0, def=5, recover=0, num=1
+ID="s00002"(0x5e841c08), name="盾002", atk=0, def=7, recover=0, num=1
+                              title="グレード:C"
+ID="s00004"(0xb7e7b93d), name="盾004", atk=0, def=9, recover=0, num=1
+                              title="グレード:E"
+ID="s00006"(0x59e9d811), name="盾006", atk=0, def=11, recover=0, num=1
+                              title="グレード:G"
+ID="s00008"(0xbe51f516), name="盾008", atk=0, def=13, recover=0, num=1
+                              title="グレード:I"
+ID="s00010"(0xa9914c65), name="盾010", atk=0, def=15, recover=0, num=1
+                              title="グレード:K"
+ID="s00012"(0x479f2d49), name="盾012", atk=0, def=17, recover=0, num=1
+                              title="グレード:M"
+ID="s00014"(0xaefc887c), name="盾014", atk=0, def=19, recover=0, num=1
+                              title="グレード:O"
+--- アビリティ ---
+ID="a00001"(0x8993ee22), name="特技001", atk=8, def=6
+ID="a00002"(0x109abf98), name="特技002", atk=11, def=8
+ID="a00003"(0x679d8f0e), name="特技003", atk=14, def=10
+ID="a00004"(0xf9f91aad), name="特技004", atk=17, def=12
+ID="a00005"(0x8efe2a3b), name="特技005", atk=20, def=14
+ID="a00006"(0x17f77b81), name="特技006", atk=23, def=16
+ID="a00007"(0x60f04b17), name="特技007", atk=26, def=18
+ID="a00008"(0xf04f5686), name="特技008", atk=29, def=20
+ID="a00009"(0x87486610), name="特技009", atk=32, def=22
+ID="a00010"(0xe78feff5), name="特技010", atk=35, def=24
+ID="a00011"(0x9088df63), name="特技011", atk=38, def=26
+ID="a00012"(0x09818ed9), name="特技012", atk=41, def=28
+ID="a00013"(0x7e86be4f), name="特技013", atk=44, def=30
+ID="a00014"(0xe0e22bec), name="特技014", atk=47, def=32
+ID="a00015"(0x97e51b7a), name="特技015", atk=50, def=34
+ID="a00016"(0x0eec4ac0), name="特技016", atk=53, def=36
+ID="a00017"(0x79eb7a56), name="特技017", atk=56, def=38
+ID="a00018"(0xe95467c7), name="特技018", atk=59, def=40
+ID="a00019"(0x9e535751), name="特技019", atk=62, def=42
+--- キャラ ---
+ID="c00030"(0x98712c7c), name="さぶろう", level=30, atk=55, def=3
+                              param1={123, 456}, param2={98765, 43210}
+ID="c00020"(0x816a1d3d), name="じろう", level=20, atk=25, def=40
+                              param1={999, 888}, param2={98765, 43210}
+ID="c00010"(0xaa474efe), name="たろう", level=10, atk=15, def=20
+                              param1={111, 222}, param2={98765, 43210}
+--- 進行データ ---
+pahse=4
+flags=
+ 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0

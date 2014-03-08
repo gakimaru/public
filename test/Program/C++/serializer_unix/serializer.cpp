@@ -11,20 +11,23 @@
 #include <stdlib.h>
 
 #include <memory.h>//memcpy用
+#include <string.h>//strcpy用
 #include <assert.h>//assert用
 #include <cstddef>//std::size_t用
-#include <stdint.h>//uintptr_t用
-#include <limits.h>//UCHAR_MAX用
+#include <stdarg.h>//va_list用
 #include <typeinfo.h>//type_id用
 #include <time.h>//time_t, tm用
 #include <map>//STL map用
-#include <iterator>//std::iterator用
-#include <vector>//STL vector用
-#include <algorithm>//STL sort用
+
+#include <stdint.h>//uintptr_t用
+#include <limits.h>//UCHAR_MAX用
 #include <atomic>//C++11アトミック操作
 #include <thread>//C++11スレッド
 #include <chrono>//C++11時間
-#include <stdarg.h>//va_list用
+
+#include <vector>//STL vector用
+#include <iterator>//std::iterator用
+#include <algorithm>//STL sort用
 
 #ifdef USE_ALIGNED_MALLOC
 #include <malloc.h>//malloc,_aligned_malloc用
@@ -2238,6 +2241,7 @@ using CTempPolyPoolAllocator = CTempPolyAllocatorWithAdp<CPoolAllocAdp>;//C++11�
 //シリアライズ
 namespace serial
 {
+//デシリアライズ時に、サイズが変更されたデータ項目を読み込む時の処理方法を設定する
 #define IS_LITTLE_ENDIAN//リトルエンディアン
 //#define IS_BIG_ENDIAN//ビッグエンディアン
 
@@ -2310,8 +2314,9 @@ namespace serial
 			m_minorVer(minor),
 			m_ver(major * VER_FIGURE + minor)
 		{}
+		//テンプレートコンストラクタ
 		template<unsigned short MAJOR, unsigned short MINOR>
-		CVersion(CVersionDefBase<MAJOR, MINOR>&) :
+		CVersion(CVersionDefBase<MAJOR, MINOR>) :
 			CVersion(MAJOR, MINOR)
 		{}
 	private:
@@ -2339,7 +2344,7 @@ namespace serial
 	//--------------------
 	//バージョンテンプレートクラス
 	template<class T>
-	class CVersionDef : public CVersionDefBase<0, 0>{};//規定では0
+	class CVersionDef : public CVersionDefBase<0, 0>{};//規定では0.0
 
 	//--------------------
 	//データクラス用のバージョン定義マクロ
@@ -2391,29 +2396,19 @@ namespace serial
 		//※エンディアン調整版
 		static std::size_t toMemAndAdjust(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
 		{
+		#ifdef IS_BIG_ENDIAN
 			if (mem_size < value_size)
 			{
 				//書き込み先のサイズの方が小さい場合
-			#ifdef IS_BIG_ENDIAN
 				//※書き込み先のサイズ分だけ後方をコピーする
 				memcpy(mem, reinterpret_cast<const char*>(value_p)+(value_size - mem_size), mem_size);
-			#else//IS_BIG_ENDIAN
-				//※書き込み先のサイズ分だけ前方をコピーする
-				memcpy(mem, value_p, mem_size);
-			#endif//IS_BIG_ENDIAN
 			}
 			else if (mem_size > value_size)
 			{
 				//書き込み先のサイズの方が大きい場合
-			#ifdef IS_BIG_ENDIAN
 				//※後詰めで前方をゼロクリア
 				memcpy(reinterpret_cast<char*>(mem)+value_size, value_p, value_size);
 				memset(mem, 0, mem_size - value_size);
-			#else//IS_BIG_ENDIAN
-				//※前詰めで後方をゼロクリア
-				memcpy(mem, value_p, value_size);
-				memset(reinterpret_cast<char*>(mem)+value_size, 0, mem_size - value_size);
-			#endif//IS_BIG_ENDIAN
 			}
 			else//if (mem_size == value_size)
 			{
@@ -2422,6 +2417,9 @@ namespace serial
 				memcpy(mem, value_p, mem_size);
 			}
 			return mem_size;
+		#else//IS_BIG_ENDIAN
+			return toMem(mem, mem_size, value_p, value_size);
+		#endif//IS_BIG_ENDIAN
 		}
 		//メモリからコピー
 		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
@@ -2513,7 +2511,7 @@ namespace serial
 		fromStrFuncP m_fromStrFuncP;//文字列から変換関数
 	};
 	//--------------------
-	//型操作化クラス
+	//型操作テンプレートクラス
 	template<typename T>
 	class CTypeCtrl : public CTypeCtrlBase
 	{
@@ -2527,7 +2525,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：int型に特殊化
 	template<>
 	class CTypeCtrl<int> : public CTypeCtrlBase
 	{
@@ -2569,7 +2567,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：unsigned int型に特殊化
 	template<>
 	class CTypeCtrl<unsigned int> : public CTypeCtrlBase
 	{
@@ -2611,7 +2609,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：long型に特殊化
 	template<>
 	class CTypeCtrl<long> : public CTypeCtrlBase
 	{
@@ -2653,7 +2651,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：unsigned long型に特殊化
 	template<>
 	class CTypeCtrl<unsigned long> : public CTypeCtrlBase
 	{
@@ -2695,7 +2693,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：long long型に特殊化
 	template<>
 	class CTypeCtrl<long long> : public CTypeCtrlBase
 	{
@@ -2737,7 +2735,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：unsigned long long型に特殊化
 	template<>
 	class CTypeCtrl<unsigned long long> : public CTypeCtrlBase
 	{
@@ -2779,7 +2777,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：short型に特殊化
 	template<>
 	class CTypeCtrl<short> : public CTypeCtrlBase
 	{
@@ -2821,7 +2819,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：unsigned short型に特殊化
 	template<>
 	class CTypeCtrl<unsigned short> : public CTypeCtrlBase
 	{
@@ -2863,7 +2861,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：char型に特殊化
 	template<>
 	class CTypeCtrl<char> : public CTypeCtrlBase
 	{
@@ -2883,11 +2881,11 @@ namespace serial
 		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
 		{
 			const char value = *reinterpret_cast<const char*>(value_p);
-			#ifdef USE_STRCPY_S
+		#ifdef USE_STRCPY_S
 			return sprintf_s(str, str_max, "%d", value);
-			#else//USE_STRCPY_S
+		#else//USE_STRCPY_S
 			return sprintf(str, "%d", value);
-			#endif//USE_STRCPY_S
+		#endif//USE_STRCPY_S
 		}
 		//文字列から変換
 		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
@@ -2905,7 +2903,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：unsigned char型に特殊化
 	template<>
 	class CTypeCtrl<unsigned char> : public CTypeCtrlBase
 	{
@@ -2947,7 +2945,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：float型に特殊化
 	template<>
 	class CTypeCtrl<float> : public CTypeCtrlBase
 	{
@@ -3011,7 +3009,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：double型に特殊化
 	template<>
 	class CTypeCtrl<double> : public CTypeCtrlBase
 	{
@@ -3075,7 +3073,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：バイナリ型（bin_t型）に特殊化
 	template<>
 	class CTypeCtrl<bin_t> : public CTypeCtrlBase
 	{
@@ -3112,7 +3110,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//型操作クラス
+	//型操作テンプレートクラス：文字列型（str_t型）に特殊化
 	template<>
 	class CTypeCtrl<str_t> : public CTypeCtrlBase
 	{
@@ -3177,10 +3175,7 @@ namespace serial
 	};
 
 	//--------------------
-	//クラス宣言
-	class CItemBase;
-	//--------------------
-	//シリアライズ処理用関数オブジェクトテンプレートクラス
+	//シリアライズ／デシリアライズ共通処理用関数オブジェクトテンプレートクラス
 	//※シリアライズとデシリアライズ兼用共通処理
 	//※特殊化によりユーザー処理を実装
 	//※標準では何もしない
@@ -3244,6 +3239,7 @@ namespace serial
 	//※見つかったら時点で知されるので、objが不完全な状態である点に注意
 	//※委譲データ項目 delegate_item にデータ項目をセットして返すとリトライしてそこに読み込む
 	//※標準では何もしない
+	class CItemBase;
 	template<class Arc, class T>
 	struct noticeUnrecognizedItem {
 		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
@@ -3257,6 +3253,7 @@ namespace serial
 	//※objのロードが一通り終わったあと、まとめて通知する
 	//※noticeUnrecognizedItem の後、afterLoad より先に実行される
 	//※標準では何もしない
+	class CItemBase;
 	template<class Arc, class T>
 	struct noticeUnloadedItem {
 		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
@@ -3288,6 +3285,7 @@ namespace serial
 	//※基本オブジェクト（obj）は、配列だった場合、その先頭の要素が渡される
 	//※セーブデータ上の配列要素数と、ロードできた配列要素数（メモリ上の配列要素数）が渡される
 	//※標準では何もしない
+	class CItemBase;
 	template<class Arc, class T>
 	struct distributor {
 		typedef int IS_UNDEFINED;//SFINAE用:関数オブジェクトの未定義チェック用の型定義
@@ -3337,7 +3335,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//ユーザー定義処理クラス定義済みチェック関数
+	//ユーザー定義処理用特殊化テンプレートクラス定義済みチェック関数
 	//※SFINAEにより、IS_UNDEFINED が定義されている型のオーバーロード関数が選ばれたら未定義とみなす
 	template<class F>
 	bool isDefinedFunctor(const typename F::IS_UNDEFINED)
@@ -3350,12 +3348,10 @@ namespace serial
 		return true;//定義済み
 	}
 	//--------------------
-	//アーカイブダミークラス
-	class CArchiveDummy{};
-	//--------------------
 	//オブジェクト型か？
 	//※いずれかの関数オブジェクトが登録されていればオブジェクト型とみなす
 	//※オブジェクト型はシリアライズの際にデータブロックとして扱う
+	class CArchiveDummy{};//アーカイブダミークラス
 	template<class T>
 	bool hasAnyFunctor()
 	{
@@ -3373,12 +3369,12 @@ namespace serial
 			isDefinedFunctor<distributor<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<beforeDistribute<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<afterDistribute<CArchiveDummy, T> >(0);
-		//isDefinedFunctor<fatalSerializeErrorOccurred<CArchiveDummy, T> >(0);//これは数えない
-		//isDefinedFunctor<fatalDeserializeErrorOccurred<CArchiveDummy, T> >(0);////これは数えない
+			//isDefinedFunctor<fatalSerializeErrorOccurred<CArchiveDummy, T> >(0);//これは数えない
+			//isDefinedFunctor<fatalDeserializeErrorOccurred<CArchiveDummy, T> >(0);//これは数えない
 	}
 	//--------------------
-	//データクラスのフレンド宣言用マクロ
-	#define FRIEND_SERIALIZE(T) \
+	//データクラスのフレンド化マクロ
+	#define FRIEND_SERIALIZE() \
 		template<class Arc, class T> \
 		friend struct serial::serialize; \
 		template<class Arc, class T> \
@@ -3415,7 +3411,9 @@ namespace serial
 		static const bool IS_PTR = false;//ポインタ型か？ = 非ポインタ型
 		typedef T TYPE;//通常型（非ポインタ型）変換用の型
 		typedef T* PTR_TYPE;//ポインタ型変換用の型
+		static const T& TO_VALUE(const T& var){ return var; }//値に変換
 		static const T* TO_PTR(const T& var){ return reinterpret_cast<const T*>(&var); }//ポインタに変換
+		static bool isNull(const T& var){ return false; }//ヌルか？
 	};
 	template<class T>
 	struct isPtr<T*>
@@ -3423,7 +3421,9 @@ namespace serial
 		static const bool IS_PTR = true;//ポインタ型か？ = ポインタ型
 		typedef T TYPE;//通常型（非ポインタ型）変換用の型
 		typedef T* PTR_TYPE;//ポインタ型変換用の型
+		static const T& TO_VALUE(const T* var){ return *var; }//値に変換
 		static const T* TO_PTR(const T* var){ return var; }//ポインタに変換
+		static bool isNull(const T* var){ return var == nullptr; }//ヌルか？
 	};
 	//--------------------
 	//データ項目属性
@@ -3434,7 +3434,7 @@ namespace serial
 		IS_PTR = 0x04,//ポインタ型
 		IS_NULL = 0x08,//ヌル
 		IS_VLEN = 0x10,//可変長か？
-		HAS_VERSION = 0x20,//バージョン情報あり
+		HAS_VER = 0x20,//バージョン情報あり
 	};
 	class CItemAttr
 	{
@@ -3448,9 +3448,9 @@ namespace serial
 		bool isPtr() const { return (m_value & IS_PTR) ? true : false; }//ポインタ型か？
 		bool isNul() const { return (m_value & IS_NULL) ? true : false; }//ヌルポインタか？（ポインタ型の時だけ扱われる）
 		bool isVLen() const { return (m_value & IS_VLEN) ? true : false; }//可変長か？（主に文字列ポインタの時に扱われる）
-		bool hasVersion() const { return (m_value & HAS_VERSION) ? true : false; }//バージョン情報があるか？
-		void setHasVersion() const { *const_cast<value_t*>(&m_value) = m_value | HAS_VERSION; }//バージョン情報ありにする
-		void resetHasVersion() const { *const_cast<value_t*>(&m_value) = m_value & ~HAS_VERSION; }//バージョン情報なしにする
+		bool hasVer() const { return (m_value & HAS_VER) ? true : false; }//バージョン情報があるか？
+		void setHasVer() const { *const_cast<value_t*>(&m_value) = m_value | HAS_VER; }//バージョン情報ありにする
+		void resetHasVer() const { *const_cast<value_t*>(&m_value) = m_value & ~HAS_VER; }//バージョン情報なしにする
 	public:
 		//オペレータ
 		bool operator==(const CItemAttr& rhs) const { return m_value == rhs.m_value; }
@@ -3504,7 +3504,7 @@ namespace serial
 		//※アーカイブ形式によっては正しくない可能性がある
 		std::size_t getElemNum() const
 		{
-			return m_arrNum == 0 ?
+			return	m_arrNum == 0 ?
 						1 :
 						m_arrNum;
 		}
@@ -3555,18 +3555,18 @@ namespace serial
 		bool nowSizeIsSame() const { return !isObj() && !isVLen() && m_hasNowInfo && m_nowItemSize == m_itemSize; }//現在のサイズの方とセーブデータのサイズが同じか？
 		bool nowSizeIsSamall() const { return !isObj() && !isVLen() && m_hasNowInfo && m_nowItemSize < m_itemSize; }//現在のサイズの方がセーブデータのサイズより小さいか？
 		bool nowSizeIsLarge() const { return !isObj() && !isVLen() && m_hasNowInfo && m_nowItemSize > m_itemSize; }//現在のサイズの方がセーブデータのサイズより大きいか？
-		bool nowArrIsSame() const { return m_hasNowInfo && m_nowArrNum == m_arrNum; }//現在の配列サイズとセーブデータの配列サイズが同じか？
-		bool nowArrIsSmall() const { return m_hasNowInfo && m_nowArrNum < m_arrNum; }//現在の配列サイズの方がセーブデータの配列サイズより小さいか？
-		bool nowArrIsLarge() const { return m_hasNowInfo && m_nowArrNum > m_arrNum; }//現在の配列サイズの方がセーブデータの配列サイズより大きいか？
+		bool nowArrIsSame() const { return m_hasNowInfo && m_nowArrNum == m_arrNum; }//現在の配列要素数とセーブデータの配列要素数が同じか？
+		bool nowArrIsSmall() const { return m_hasNowInfo && m_nowArrNum < m_arrNum; }//現在の配列要素数の方がセーブデータの配列要素数より小さいか？
+		bool nowArrIsLarge() const { return m_hasNowInfo && m_nowArrNum > m_arrNum; }//現在の配列要素数の方がセーブデータの配列要素数より大きいか？
 		bool hasNowInfo() const { return m_hasNowInfo; }//現在の情報コピー済み取得
 		bool isOnlyOnSaveData() const{ return m_isOnlyOnSaveData; }//セーブデータ上にのみ存在するデータか？
-		void setIsOnlyOnSaveData() const { m_isOnlyOnSaveData = true; m_isOnlyOnMem = false; }//セーブデータ上にのみ存在するデータかを更新
-		void setIsOnlyOnSaveData(const bool enabled) const { if (enabled) setIsOnlyOnSaveData(); }//セーブデータ上にのみ存在するデータかを更新
-		void resetIsOnlyOnSaveData() const { m_isOnlyOnSaveData = false; }//セーブデータ上にのみ存在するデータかをリセット
+		void setIsOnlyOnSaveData() const { m_isOnlyOnSaveData = true; m_isOnlyOnMem = false; }//セーブデータ上にのみ存在するデータか？を更新
+		void setIsOnlyOnSaveData(const bool enabled) const { if (enabled) setIsOnlyOnSaveData(); }//セーブデータ上にのみ存在するデータか？を更新
+		void resetIsOnlyOnSaveData() const { m_isOnlyOnSaveData = false; }//セーブデータ上にのみ存在するデータか？をリセット
 		bool isOnlyOnMem() const { return m_isOnlyOnMem; }//セーブデータ上にないデータか？
-		void setIsOnlyOnMem() const { m_isOnlyOnMem = true; m_isOnlyOnSaveData = false; }//セーブデータ上にないデータかを更新
-		void setIsOnlyOnMem(const bool enabled) const { if (enabled) setIsOnlyOnMem(); }//セーブデータ上にないデータかを更新
-		void resetIsOnlyOnMem() const { m_isOnlyOnMem = false; }//セーブデータ上にないデータかをリセット
+		void setIsOnlyOnMem() const { m_isOnlyOnMem = true; m_isOnlyOnSaveData = false; }//セーブデータ上にないデータか？を更新
+		void setIsOnlyOnMem(const bool enabled) const { if (enabled) setIsOnlyOnMem(); }//セーブデータ上にないデータか？を更新
+		void resetIsOnlyOnMem() const { m_isOnlyOnMem = false; }//セーブデータ上にないデータか？をリセット
 		bool isAlready() const { return m_isAlready; }//処理済みか？
 		void setIsAlready() const { m_isAlready = true; }//処理済みにする
 		void resetIsAlready() const { m_isAlready = false; }//処理済みを解除する
@@ -3605,10 +3605,10 @@ namespace serial
 			//m_itemP;//データの参照ポインタ
 			//m_itemType;//データの型情報
 			*const_cast<std::size_t*>(&m_itemSize) = 0;//データサイズ
-			*const_cast<std::size_t*>(&m_arrNum) = 0;//データの配列サイズ
+			*const_cast<std::size_t*>(&m_arrNum) = 0;//データの配列要素数
 			const_cast<CItemAttr*>(&m_attr)->clear();//属性
 			m_nowItemSize = 0;//現在のデータサイズ
-			m_nowArrNum = 0;//現在のデータの配列サイズ
+			m_nowArrNum = 0;//現在のデータの配列要素数
 			m_nowAttr.clear();//現在の属性
 			m_hasNowInfo = false;//現在の情報コピー済み
 			m_isOnlyOnSaveData = false;//セーブデータ上にのみ存在するデータ
@@ -3618,13 +3618,13 @@ namespace serial
 		//現在の情報をコピー
 		void copyFromOnMem(const CItemBase& src)
 		{
-			//assert(m_nameCrc == src.m_nameCrc);//全てをコピーする
+			//assert(m_nameCrc == src.m_nameCrc);//CRCチェック⇒しない
 			m_name = src.m_name;//データ項目名
-			*const_cast<crc32_t*>(&m_nameCrc) = src.m_nameCrc;//データ項目名CRC
+			*const_cast<crc32_t*>(&m_nameCrc) = src.m_nameCrc;//データ項目名CRC ※委譲対応のためCRCも更新
 			m_itemP = src.m_itemP;//データの参照ポインタ
 			m_itemType = src.m_itemType;//データの型情報
 			m_nowItemSize = src.m_itemSize;//現在のデータサイズ
-			m_nowArrNum = src.m_arrNum;//現在のデータの配列サイズ
+			m_nowArrNum = src.m_arrNum;//現在のデータの配列要素数
 			m_nowAttr = src.m_attr;//現在の属性
 			m_nowTypeCtrl = src.m_typeCtrl;//型操作
 			m_hasNowInfo = true;//現在の情報コピー済み
@@ -3724,11 +3724,11 @@ namespace serial
 		const void* m_itemP;//データの参照ポインタ
 		const std::type_info* m_itemType;//データの型情報
 		const std::size_t m_itemSize;//データサイズ
-		const std::size_t m_arrNum;//データの配列サイズ
+		const std::size_t m_arrNum;//データの配列要素数
 		const CItemAttr m_attr;//属性
 		CTypeCtrlBase m_typeCtrl;//型操作
 		std::size_t m_nowItemSize;//データサイズ　※現在のサイズ（デシリアライズ処理用）
-		std::size_t m_nowArrNum;//データの配列サイズ　※現在のサイズ（デシリアライズ処理用）
+		std::size_t m_nowArrNum;//データの配列要素数　※現在のサイズ（デシリアライズ処理用）
 		CItemAttr m_nowAttr;//属性　※現在の状態（デシリアライズ処理用）
 		CTypeCtrlBase m_nowTypeCtrl;//型操作　※現在の状態（デシリアライズ処理用）
 		bool m_hasNowInfo;//現在の情報コピー済み
@@ -3855,8 +3855,8 @@ namespace serial
 		void setHasFatalError(const bool enabled){ if (enabled) setHasFatalError(); }//致命的なエラーあり
 		int getNumSmallerSizeItem() const { return m_numSmallerSizeItem; }//サイズが縮小されたデータ項目の数を取得
 		int getNumLargerSizeItem() const { return m_numLargerSizeItem; }//サイズが拡大されたデータ項目の数を取得
-		int getNumSmallerArrItem() const { return m_numSmallerArrItem; }//配列サイズが縮小されたデータ項目の数を取得
-		int getNumLargerArrItem() const { return m_numLargerArrItem; }//配列サイズが拡大されたデータ項目の数を取得
+		int getNumSmallerArrItem() const { return m_numSmallerArrItem; }//配列要素数が縮小されたデータ項目の数を取得
+		int getNumLargerArrItem() const { return m_numLargerArrItem; }//配列要素数が拡大されたデータ項目の数を取得
 		int getNumIsOnlyOnSaveData() const { return m_numIsOnlyOnSaveData; }//セーブデータ上にのみ存在するデータ項目の数を取得
 		int getNumIsOnlyOnMem() const { return m_numIsOnlyOnMem; }//セーブデータ上にないデータ項目の数を取得
 		int getNumIsObjOnSaveDataOnly() const { return m_numIsObjOnSaveDataOnly; }//現在オブジェクト型ではないが、セーブデータ上ではそうだったデータ項目の数を取得
@@ -3869,13 +3869,13 @@ namespace serial
 		int getNumIsNulOnMemOnly() const { return m_numIsNulOnMemOnly; }//現在ヌルだが、セーブデータ上ではそうではなかったデータ項目の数を取得
 		void addNumSmallerSizeItem(){ ++m_numSmallerSizeItem; }//サイズが縮小されたデータ項目の数をカウントアップ
 		void addNumLargerSizeItem(){ ++m_numLargerSizeItem; }//サイズが拡大されたデータ項目の数をカウントアップ
-		void addNumSmallerArrItem(){ ++m_numSmallerArrItem; }//配列サイズが縮小されたデータ項目の数をカウントアップ
-		void addNumLargerArrItem(){ ++m_numLargerArrItem; }//配列サイズが拡大されたデータ項目の数をカウントアップ
+		void addNumSmallerArrItem(){ ++m_numSmallerArrItem; }//配列要素数が縮小されたデータ項目の数をカウントアップ
+		void addNumLargerArrItem(){ ++m_numLargerArrItem; }//配列要素数が拡大されたデータ項目の数をカウントアップ
 		void addNumIsOnlyOnSaveData(){ ++m_numIsOnlyOnSaveData; }//セーブデータ上にのみ存在するデータ項目の数をカウントアップ
 		void addNumIsOnlyOnMem(){ ++m_numIsOnlyOnMem; }//セーブデータ上にないデータ項目の数をカウントアップ
 		void addNumIsObjOnSaveDataOnly(){ ++m_numIsObjOnSaveDataOnly; }//現在オブジェクト型ではないが、セーブデータ上ではそうだったデータ項目の数をカウントアップ
 		void addNumIsObjOnMemOnly(){ ++m_numIsObjOnMemOnly; }//現在オブジェクト型だが、セーブデータ上ではそうではなかったデータ項目の数をカウントアップ
-		void addNumIsArrOnSaveDataOnly(){ ++m_numIsArrOnSaveDataOnly; }///現在配列型ではないが、セーブデータ上ではそうだったデータ項目の数をカウントアップ
+		void addNumIsArrOnSaveDataOnly(){ ++m_numIsArrOnSaveDataOnly; }//現在配列型ではないが、セーブデータ上ではそうだったデータ項目の数をカウントアップ
 		void addNumIsArrOnMemOnly(){ ++m_numIsArrOnMemOnly; }//現在配列型だが、セーブデータ上ではそうではなかったデータ項目の数をカウントアップ
 		void addNumIsPtrOnSaveDataOnly(){ ++m_numIsPtrOnSaveDataOnly; }//現在ポインタ型ではないが、セーブデータ上ではそうだったデータ項目の数をカウントアップ
 		void addNumIsPtrOnMemOnly(){ ++m_numIsPtrOnMemOnly; }//現在ポインタ型だが、セーブデータ上ではそうではなかったデータ項目の数をカウントアップ
@@ -3883,8 +3883,8 @@ namespace serial
 		void addNumIsNulOnMemOnly(){ ++m_numIsNulOnMemOnly; }//現在ヌルだが、セーブデータ上ではそうではなかったデータ項目の数をカウントアップ
 		void addNumSmallerSizeItem(const bool enabled){ if (enabled) addNumSmallerSizeItem(); }//サイズが縮小されたデータ項目の数をカウントアップ
 		void addNumLargerSizeItem(const bool enabled){ if (enabled) addNumLargerSizeItem(); }//サイズが拡大されたデータ項目の数をカウントアップ
-		void addNumSmallerArrItem(const bool enabled){ if (enabled) addNumSmallerArrItem(); }//配列サイズが縮小されたデータ項目の数をカウントアップ
-		void addNumLargerArrItem(const bool enabled){ if (enabled) addNumLargerArrItem(); }//配列サイズが拡大されたデータ項目の数をカウントアップ
+		void addNumSmallerArrItem(const bool enabled){ if (enabled) addNumSmallerArrItem(); }//配列要素数が縮小されたデータ項目の数をカウントアップ
+		void addNumLargerArrItem(const bool enabled){ if (enabled) addNumLargerArrItem(); }//配列要素数が拡大されたデータ項目の数をカウントアップ
 		void addNumIsOnlyOnSaveData(const bool enabled){ if (enabled) addNumIsOnlyOnSaveData(); }//セーブデータ上にのみ存在するデータ項目の数をカウントアップ
 		void addNumIsOnlyOnMem(const bool enabled){ if (enabled) addNumIsOnlyOnMem(); }//セーブデータ上にないデータ項目の数をカウントアップ
 		void addNumIsObjOnSaveDataOnly(const bool enabled){ if (enabled) addNumIsObjOnSaveDataOnly(); }//現在オブジェクト型ではないが、セーブデータ上ではそうだったデータ項目の数をカウントアップ
@@ -3912,8 +3912,8 @@ namespace serial
 			setHasFatalError(src.m_hasFatalError);//致命的なエラーあり
 			m_numSmallerSizeItem += src.m_numSmallerSizeItem;//サイズが縮小されたデータ項目の数
 			m_numLargerSizeItem += src.m_numLargerSizeItem;//サイズが拡大されたデータ項目の数
-			m_numSmallerArrItem += src.m_numSmallerArrItem;//配列サイズが縮小されたデータ項目の数
-			m_numLargerArrItem += src.m_numLargerArrItem;//配列サイズが拡大されたデータ項目の数
+			m_numSmallerArrItem += src.m_numSmallerArrItem;//配列要素数が縮小されたデータ項目の数
+			m_numLargerArrItem += src.m_numLargerArrItem;//配列要素数が拡大されたデータ項目の数
 			m_numIsOnlyOnSaveData += src.m_numIsOnlyOnSaveData;//セーブデータ上にのみ存在するデータ項目の数
 			m_numIsOnlyOnMem += src.m_numIsOnlyOnMem;//セーブデータ上にないデータ項目の数
 			m_numIsObjOnSaveDataOnly += src.m_numIsObjOnSaveDataOnly;//現在オブジェクト型ではないが、セーブデータ上ではそうだったデータ項目の数
@@ -3931,8 +3931,8 @@ namespace serial
 		{
 			addNumSmallerSizeItem(src.nowSizeIsSamall());//サイズが縮小されたデータ項目の数
 			addNumLargerSizeItem(src.nowSizeIsLarge());//サイズが拡大されたデータ項目の数
-			addNumSmallerArrItem(src.nowArrIsSmall());//配列サイズが縮小されたデータ項目の数
-			addNumLargerArrItem(src.nowArrIsLarge());//配列サイズが拡大されたデータ項目の数
+			addNumSmallerArrItem(src.nowArrIsSmall());//配列要素数が縮小されたデータ項目の数
+			addNumLargerArrItem(src.nowArrIsLarge());//配列要素数が拡大されたデータ項目の数
 			addNumIsOnlyOnSaveData(src.isOnlyOnSaveData());//セーブデータ上にのみ存在するデータ項目の数
 			addNumIsOnlyOnMem(src.isOnlyOnMem());//セーブデータ上にないデータ項目の数
 			addNumIsObjOnSaveDataOnly(src.nowIsNotObjButSaveDataIs());//現在オブジェクト型ではないが、セーブデータ上ではそうだったデータ項目の数
@@ -3973,8 +3973,8 @@ namespace serial
 		bool m_hasFatalError;//致命的なエラーあり
 		short m_numSmallerSizeItem;//サイズが縮小されたデータ項目の数
 		short m_numLargerSizeItem;//サイズが拡大されたデータ項目の数
-		short m_numSmallerArrItem;//配列サイズが縮小されたデータ項目の数
-		short m_numLargerArrItem;//配列サイズが拡大されたデータ項目の数
+		short m_numSmallerArrItem;//配列要素数が縮小されたデータ項目の数
+		short m_numLargerArrItem;//配列要素数が拡大されたデータ項目の数
 		short m_numIsOnlyOnSaveData;//セーブデータ上にのみ存在するデータ項目の数
 		short m_numIsOnlyOnMem;//セーブデータ上にないデータ項目の数
 		short m_numIsObjOnSaveDataOnly;//現在オブジェクト型ではないが、セーブデータ上ではそうだったデータ項目の数
@@ -4006,6 +4006,7 @@ namespace serial
 		const CResult& getResult() const { return m_result; }//処理結果を取得
 		bool hasFatalError() const { return m_result.hasFatalError(); }//致命的なエラーありか？
 		std::size_t getSaveDataSize() const { return m_result.getSaveDataSize(); }//セーブデータサイズ取得
+		const void* getSaveData() const { return m_buff; }//セーブデータバッファの先頭ポインタを取得
 	protected:
 		const byte* getBuffPtr() const { return m_buff; }//セーブデータバッファの先頭ポインタを取得
 		const std::size_t getBuffSize() const { return m_buffSize; }//セーブデータバッファのサイズを取得
@@ -4030,7 +4031,7 @@ namespace serial
 			CTempPolyStackAllocator alloc(m_workBuff);
 
 			//データ項目を追加
-			assert(m_itemList->find(item.m_nameCrc) == m_itemList->end());
+			assert(m_itemList->find(item.m_nameCrc) == m_itemList->end());//重複チェック
 			m_itemList->emplace(item.m_nameCrc, item);
 		}
 		//リストからデータ項目を検索
@@ -4296,9 +4297,6 @@ namespace serial
 								//　要素の最後までシークする
 								arc.m_style.writeElemFooter(parent_arc, arc, item_obj, index, items_num, elem_size);
 
-								//要素終了
-								//arc.m_style.finishWriteElem(parent_arc, arc, items_num, elem_size);
-
 								//データ書き込み先のポインタを配列の次の要素に更新
 								if (item_obj.m_itemP)
 								{
@@ -4314,9 +4312,6 @@ namespace serial
 						//※例えば、バイナリスタイルでは、配列ブロックのヘッダ部に配列要素数とデータサイズを書き込み、
 						//　要素の最後までシークする
 						arc.m_style.writeArrayFooter(parent_arc, arc, item_obj, array_block_size);
-
-						//配列ブロック終了
-						//arc.m_style.finishWriteArray(parent_arc, arc, array_block_size);
 					}
 				}
 
@@ -4332,9 +4327,6 @@ namespace serial
 				//※例えば、バイナリスタイルでは、ブロックのヘッダ部にデータサイズを書き込み、
 				//　ブロックの最後までシークする
 				arc.m_style.writeBlockFooter(parent_arc, arc, item_obj, block_size);
-
-				//ブロック終了
-				//arc.m_style.finishWriteBlock(parent_arc, arc, block_size);
 			}
 
 			//ネストレベルが0ならターミネータを書き込み
@@ -5016,7 +5008,7 @@ namespace serial
 		//処理結果を合成
 		void addResult(const CResult& src){ m_arc.addResult(src); }
 		//リストからデータ項目を検索
-		const CItemBase* findItem(const crc32_t name_crc) const	{ return m_arc.findItem(name_crc); }
+		const CItemBase* findItem(const crc32_t name_crc) const { return m_arc.findItem(name_crc); }
 		//バッファのカレントポインタを移動
 		//※範囲外への移動が要求されたら端まで移動して false を返す
 		bool seek(const int seek_, int& real_seek)
@@ -5401,7 +5393,7 @@ namespace serial
 				return false;
 			arc.write(result, BLOCK_BEGIN, BEGIN_MARK_SIZE);//ブロック始端書き込み
 			arc.write(result, &item.m_nameCrc, sizeof(item.m_nameCrc));//名前CRC書き込み
-			item.m_attr.setHasVersion();//バージョン情報ありにする
+			item.m_attr.setHasVer();//バージョン情報ありにする
 			arc.write(result, &item.m_attr.m_value, sizeof(item.m_attr.m_value));//属性書き込み
 			arc.write(result, ver.getVerPtr(), ver.getVerSize());//バージョン書き込み
 			const std::size_t block_size = 0;
@@ -5444,7 +5436,7 @@ namespace serial
 				return false;
 			arc.write(result, ITEM_BEGIN, BEGIN_MARK_SIZE);//データ項目始端書き込み
 			arc.write(result, &child_item.m_nameCrc, sizeof(child_item.m_nameCrc));//名前CRC書き込み
-			child_item.m_attr.resetHasVersion();//バージョン情報なしにする
+			child_item.m_attr.resetHasVer();//バージョン情報なしにする
 			arc.write(result, &child_item.m_attr.m_value, sizeof(child_item.m_attr.m_value));//属性書き込み
 			arc.write(result, &child_item.m_itemSize, sizeof(child_item.m_itemSize));//データサイズ書き込み
 			if (!child_item.isNul())//ヌル時はここまでの情報で終わり
@@ -5590,7 +5582,7 @@ namespace serial
 			input_item.clearForLoad();//読み込み情報を一旦クリア
 			arc.read(result, const_cast<crc32_t*>(&input_item.m_nameCrc), sizeof(input_item.m_nameCrc));//名前CRC読み込み
 			arc.read(result, const_cast<CItemAttr::value_t*>(&input_item.m_attr.m_value), sizeof(input_item.m_attr.m_value));//属性読み込み
-			if (input_item.m_attr.hasVersion())//バージョン情報があるか？
+			if (input_item.m_attr.hasVer())//バージョン情報があるか？
 			{
 				arc.read(result, const_cast<unsigned int*>(input_ver.getVerPtr()), input_ver.getVerSize());//バージョン読み込み
 				input_ver.calcFromVer();
@@ -5731,7 +5723,7 @@ namespace serial
 				return !result.hasFatalError();
 			}
 			//通常データの読み込み処理
-			assert(!child_item.m_attr.hasVersion());//オブジェクトでもないのにバージョン情報があればNG
+			assert(!child_item.m_attr.hasVer());//オブジェクトでもないのにバージョン情報があればNG
 			arc.read(result, const_cast<std::size_t*>(&child_item.m_itemSize), sizeof(child_item.m_itemSize), &read_size);//データサイズ読み込み
 			if (!child_item.isNul())//【セーブデータ上の】データがヌルでなければ処理する
 			{
@@ -5840,7 +5832,7 @@ namespace serial
 			CItemAttr attr(false, false, false, false, false);
 			arc.read(result, &name_crc, sizeof(name_crc));//名前CRC読み込み
 			arc.read(result, const_cast<CItemAttr::value_t*>(&attr.m_value), sizeof(attr.m_value));//属性書き込み
-			if (attr.hasVersion())//バージョン情報があるか？
+			if (attr.hasVer())//バージョン情報があるか？
 			{
 				CVersion input_ver_dummy;
 				arc.read(result, const_cast<unsigned int*>(input_ver_dummy.getVerPtr()), input_ver_dummy.getVerSize());//バージョン読み込み
@@ -5911,7 +5903,7 @@ namespace serial
 			is_found_next_block = true;//見つかった
 			arc.read(result, const_cast<crc32_t*>(&require_item.m_nameCrc), sizeof(require_item.m_nameCrc), &read_size);//名前CRC書き込み
 			arc.read(result, const_cast<CItemAttr::value_t*>(&require_item.m_attr.m_value), sizeof(require_item.m_attr.m_value), &read_size);//属性書き込み
-			if (require_item.m_attr.hasVersion())//バージョン情報があるか？
+			if (require_item.m_attr.hasVer())//バージョン情報があるか？
 			{
 				CVersion input_ver_dummy;
 				arc.read(result, const_cast<unsigned int*>(input_ver_dummy.getVerPtr()), input_ver_dummy.getVerSize(), &read_size);//バージョン読み込み
@@ -6035,7 +6027,7 @@ namespace serial
 			arc.print(result, "\"isPtr\": %d, ", item.isPtr());
 			arc.print(result, "\"isNul\": %d, ", item.isNul());
 			arc.print(result, "\"isVLen\": %d, ", item.isVLen());
-			arc.print(result, "\"hasVersion\": %d, ", item.m_attr.hasVersion());
+			arc.print(result, "\"hasVer\": %d, ", item.m_attr.hasVer());
 			arc.print(result, "\"ver\": \"%d.%d\"", ver.getMajor(), ver.getMinor());
 			m_arrayBlockIndex = 0;
 			return !result.hasFatalError();
@@ -6104,7 +6096,7 @@ namespace serial
 			arc.print(result, "\"isPtr\": %d, ", child_item.isPtr());
 			arc.print(result, "\"isNul\": %d, ", child_item.isNul());
 			arc.print(result, "\"isVLen\": %d, ", child_item.isVLen());
-			arc.print(result, "\"hasVersion\": %d, ", child_item.m_attr.hasVersion());
+			arc.print(result, "\"hasVer\": %d, ", child_item.m_attr.hasVer());
 			if (child_item.isArr())
 				arc.print(result, "\"arrNum\": %d, ", child_item.m_arrNum);
 			arc.print(result, "\"data\": ");
@@ -6435,7 +6427,7 @@ namespace serial
 class CTest1
 {
 	//シリアライズ用のフレンド設定
-	FRIEND_SERIALIZE(CTest1);
+	FRIEND_SERIALIZE();
 public:
 	//型
 	struct STRUCT
@@ -6888,8 +6880,8 @@ void deserializeTest1bin(const char* file_path)
 	serial::CResult& result = arc.getResult();
 	printf("  getNumSmallerSizeItem()=%d\n", result.getNumSmallerSizeItem());//サイズが縮小されたデータ項目の数を取得
 	printf("  getNumLargerSizeItem()=%d\n", result.getNumLargerSizeItem());//サイズが拡大されたデータ項目の数を取得
-	printf("  getNumSmallerArrItem()=%d\n", result.getNumSmallerArrItem());//配列サイズが縮小されたデータ項目の数を取得
-	printf("  getNumLargerArrItem()=%d\n", result.getNumLargerArrItem());//配列サイズが拡大されたデータ項目の数を取得
+	printf("  getNumSmallerArrItem()=%d\n", result.getNumSmallerArrItem());//配列要素数が縮小されたデータ項目の数を取得
+	printf("  getNumLargerArrItem()=%d\n", result.getNumLargerArrItem());//配列要素数が拡大されたデータ項目の数を取得
 	printf("  getNumIsOnlyOnSaveData()=%d\n", result.getNumIsOnlyOnSaveData());//セーブデータ上にのみ存在するデータ項目の数を取得
 	printf("  getNumIsOnlyOnMem()=%d\n", result.getNumIsOnlyOnMem());//セーブデータ上にないデータ項目の数を取得
 	printf("  getNumIsObjOnSaveDataOnly()=%d\n", result.getNumIsObjOnSaveDataOnly());//現在オブジェクト型ではないが、セーブデータ上ではそうだったデータ項目の数を取得
@@ -6931,7 +6923,6 @@ void test1()
 //シリアライズテスト２
 
 //--------------------
-//基本型
 //短い文字列型
 template <std::size_t S>
 class CStr
@@ -6975,7 +6966,7 @@ public:
 	}
 	//コピーコンストラクタ
 	template <std::size_t SS>
-	CStr(const CStr<S>& src) :
+	CStr(const CStr<SS>& src) :
 		m_len(src.m_len < MAX_SIZE ? src.m_len : MAX_SIZE)
 	{
 		memcpy(m_str, src.m_str, m_len);
@@ -6991,8 +6982,9 @@ protected:
 	unsigned char m_len;//文字列長
 	char m_str[BUFF_SIZE];//文字列
 	//シリアライズ用のフレンド設定
-	FRIEND_SERIALIZE(str);
+	FRIEND_SERIALIZE();
 };
+//--------------------
 //CRC付き文字列型
 template <std::size_t S>
 class CStrWithCRC : public CStr<S>
@@ -7033,7 +7025,7 @@ private:
 	//フィールド
 	crc32_t m_crc;//CRC
 	//シリアライズ用のフレンド設定
-	FRIEND_SERIALIZE(strWithCRC);
+	FRIEND_SERIALIZE();
 };
 
 //--------------------
@@ -7074,7 +7066,7 @@ struct ITEM_DATA
 	char* m_title;//称号　※可変長文字列（ポインタ）のテスト用
 	BASIC_DATA m_basic;//基本データ
 	short m_recover;//回復力
-	short m_num;//データ個数
+	short m_num;//アイテム個数
 	//称号をセット
 	void setTitle(const char* title)
 	{
@@ -7096,7 +7088,7 @@ struct ITEM_DATA
 		m_title = m_titleBuff;
 		m_titleBuff[0] = '\0';
 	}
-	//コンストラクタ（テスト用に強引）
+	//コンストラクタ
 	ITEM_DATA(const char* id, const char* name, const int atk, const int def, const int recover, const int num) :
 		m_id(id),
 		m_name(name),
@@ -7144,7 +7136,7 @@ struct ABILITY_DATA
 	//デフォルトコンストラクタ
 	ABILITY_DATA()
 	{}
-	//コンストラクタ（テスト用に強引）
+	//コンストラクタ
 	ABILITY_DATA(const char* id, const char* name, const int atk, const int def) :
 		m_id(id),
 		m_name(name),
@@ -7156,7 +7148,6 @@ SERIALIZE_VERSION_DEF(ABILITY_DATA, 1, 0);
 
 //--------------------
 //キャラデータ構造体
-struct ABILITY_DATA;
 struct CHARA_ABILITY_DATA;
 struct CHARA_DATA
 {
@@ -7181,7 +7172,7 @@ struct CHARA_DATA
 	//デフォルトコンストラクタ
 	CHARA_DATA()
 	{}
-	//コンストラクタ（テスト用に強引）
+	//コンストラクタ
 	CHARA_DATA(const char* id, const char* name, const int level, const int atk, const int def, const char* weapon_id, const char* shield_id, const int param1a, const int param1b, const int param2a, const int param2b) :
 		m_id(id),
 		m_name(name),
@@ -7203,7 +7194,7 @@ private:
 	crc32_t m_shieldId;//盾ID
 	CHARA_ABILITY_DATA* m_abilities;//キャラ習得アビリティ
 	//シリアライズ用のフレンド設定
-	FRIEND_SERIALIZE(CHARA_DATA);
+	FRIEND_SERIALIZE();
 };
 //構造体バージョン
 SERIALIZE_VERSION_DEF(CHARA_DATA, 1, 0);
@@ -7215,27 +7206,12 @@ struct CHARA_ABILITY_DATA
 	CHARA_ABILITY_DATA* m_next;//連結リスト
 	ABILITY_DATA* m_ability;//アビリティ
 };
-//※セーブ用構造体
+//--------------------
+//キャラ習得アビリティデータ構造体；シリアライズ用
 struct CHARA_ABILITY_DATA_FOR_SAVE
 {
 	//crc32_t m_charaId;//キャラID
 	crc32_t m_abilityId;//アビリティID
-};
-//--------------------
-//キャラ習得アビリティデータバッファ
-class CCharaAbilityBuff
-{
-public:
-	//メソッド
-	CHARA_ABILITY_DATA* assign(){ return m_itemPool.createData(); }
-	void release(CHARA_ABILITY_DATA* data){ m_itemPool.destroyData(data); }
-public:
-	//コンストラクタ
-	CCharaAbilityBuff()
-	{}
-private:
-	//フィールド
-	CPoolAllocatorWithType<CHARA_ABILITY_DATA, 100> m_itemPool;//データ用のバッファ
 };
 
 //--------------------
@@ -7276,33 +7252,33 @@ public:
 		return find(calcCRC32(id));
 	}
 	//登録
-	T* regist(const T& item)
+	T* regist(const T& data)
 	{
 		//プールアロケータから割り当て
-		T* reg_item = m_itemPool.createData(item);
-		if (!reg_item)
+		T* reg_data = m_pool.createData(data);
+		if (!reg_data)
 			return nullptr;//規定の個数が割り当て済みなら失敗
 		{
 			//検索テーブルバッファを多態アロケータにセット
 			CTempPolyStackAllocator allocator(m_searchBuff);
 
 			//検索テーブルに登録
-			m_search->emplace(reg_item->getKey(), reg_item);
+			m_search->emplace(reg_data->getKey(), reg_data);
 		}
 		{
 			//整列テーブルバッファを多態アロケータにセット
 			CTempPolyStackAllocator allocator(m_tableBuff);
 			
 			//整列テーブルにも追加
-			m_table->push_back(reg_item);
+			m_table->push_back(reg_data);
 		}
-		return reg_item;
+		return reg_data;
 	}
 	//破棄
 	void unregist(const crc32_t key)
 	{
-		T* item = find(key);
-		if (!item)
+		T* data = find(key);
+		if (!data)
 			return;
 		{
 			//検索テーブルバッファを多態アロケータにセット
@@ -7312,7 +7288,7 @@ public:
 			m_search->erase(key);
 		}
 		//プールアロケータから解放
-		//m_itemPool.destroy(item);
+		m_pool.destroy(data);
 	}
 private:
 	//整列テーブルを生成
@@ -7400,7 +7376,7 @@ public:
 	}
 private:
 	//フィールド
-	CPoolAllocatorWithType<T, DATA_NUM_MAX> m_itemPool;//データ用のバッファ
+	CPoolAllocatorWithType<T, DATA_NUM_MAX> m_pool;//データ用のバッファ
 	CStackAllocatorWithBuff<SEARCH_BUFF_SIZE> m_searchBuff;//検索テーブルバッファ
 	search_t* m_search;//検索テーブル
 	CStackAllocatorWithBuff<TABLE_BUFF_SIZE> m_tableBuff;//整列テーブルバッファ
@@ -7424,19 +7400,101 @@ public:
 	~CInventory()
 	{}
 };
-#endif
 //構造体バージョン
 SERIALIZE_VERSION_DEF(CInventory, 1, 0);
+#endif
 //--------------------
-//アビリティリクラス
+//アビリティリストクラス
 using CAbilityList = CCollection<ABILITY_DATA, 40, 8 * 1024, 8 * 1024>;
-//構造体バージョン
-SERIALIZE_VERSION_DEF(CAbilityList, 1, 0);
 //--------------------
 //キャラリストクラス
 using CCharaList = CCollection<CHARA_DATA, 10, 8 * 1024, 8 * 1024>;
-//構造体バージョン
-SERIALIZE_VERSION_DEF(CCharaList, 1, 0);
+//--------------------
+//キャラ習得アビリティデータバッファクラス
+class CCharaAbilityBuff
+{
+public:
+	//メソッド
+	CHARA_ABILITY_DATA* assign(){ return m_pool.createData(); }
+	void release(CHARA_ABILITY_DATA* data){ m_pool.destroyData(data); }
+public:
+	//コンストラクタ
+	CCharaAbilityBuff()
+	{}
+private:
+	//フィールド
+	CPoolAllocatorWithType<CHARA_ABILITY_DATA, 100> m_pool;//データ用のバッファ
+};
+
+//--------------------
+//キャラデータ構造体：メソッド実装
+//武器をセット
+void CHARA_DATA::setWeapon(const crc32_t weapon_id)
+{
+	CSingleton<CInventory> inventory;
+	ITEM_DATA* item = inventory->find(weapon_id);//イベントリから検索
+	if (!item)
+	{
+		//対象アイテムがないので持っていないことにする
+		m_weaponId = 0;
+		m_weapon = nullptr;
+		return;
+	}
+	m_weaponId = weapon_id;
+	m_weapon = item;
+}
+//盾をセット
+void CHARA_DATA::setShield(const crc32_t shield_id)
+{
+	CSingleton<CInventory> inventory;
+	ITEM_DATA* item = inventory->find(shield_id);//イベントリから検索
+	if (!item)
+	{
+		//対象アイテムがないので持っていないことにする
+		m_shieldId = 0;
+		m_shield = nullptr;
+		return;
+	}
+	m_shieldId = shield_id;
+	m_shield = item;
+}
+//アイテムを参照し直す
+void CHARA_DATA::attachItems()
+{
+	setWeapon(m_weaponId);//武器
+	setShield(m_shieldId);//盾
+}
+//キャラ習得アビリティを追加
+void CHARA_DATA::addAbility(const crc32_t ability_id)
+{
+	CSingleton<CAbilityList> chara_ability_list;
+	ABILITY_DATA* ability = chara_ability_list->find(ability_id);//アビリティリストから検索
+	if (!ability)//アビリティがなければ終了
+		return;
+	//キャラ習得アビリティのバッファを割り当て
+	CSingleton<CCharaAbilityBuff> chara_ability_buff;
+	CHARA_ABILITY_DATA* new_chara_ability = chara_ability_buff->assign();
+	if (!new_chara_ability)//バッファが足りなければ失敗
+		return;
+	//バッファにアビリティをセットして連結リストの最後に連結
+	new_chara_ability->m_next = nullptr;
+	new_chara_ability->m_ability = ability;
+	CHARA_ABILITY_DATA* chara_ability = m_abilities;
+	while (chara_ability && chara_ability->m_next)
+		chara_ability = chara_ability->m_next;
+	if (chara_ability)
+		chara_ability->m_next = new_chara_ability;
+	else
+		m_abilities = new_chara_ability;
+}
+//キャラ習得アビリティを取得
+ABILITY_DATA* CHARA_DATA::getAbility(const int index)
+{
+	CHARA_ABILITY_DATA* chara_ability = m_abilities;
+	for (int i = 0; i < index && chara_ability; ++i)
+		chara_ability = chara_ability->m_next;
+	return chara_ability == nullptr ? nullptr : chara_ability->m_ability;
+}
 
 //--------------------
 //進行＆フラグデータ
@@ -7464,78 +7522,10 @@ private:
 	short m_phase;//進行フェーズ
 	flag_t m_flags;//フラグ
 	//シリアライズ用のフレンド設定
-	FRIEND_SERIALIZE(CPhaseAndFlags);
+	FRIEND_SERIALIZE();
 };
 //構造体バージョン
 SERIALIZE_VERSION_DEF(CPhaseAndFlags, 1, 0);
-
-//--------------------
-//キャラデータ：メソッド実装
-//武器をセット
-void CHARA_DATA::setWeapon(const crc32_t weapon_id)
-{
-	CSingleton<CInventory> inventory;
-	ITEM_DATA* item = inventory->find(weapon_id);
-	if (!item)
-	{
-		//対象アイテムがないので持っていないことにする
-		m_weaponId = 0;
-		m_weapon = nullptr;
-		return;
-	}
-	m_weaponId = weapon_id;
-	m_weapon = item;
-}
-//盾をセット
-void CHARA_DATA::setShield(const crc32_t shield_id)
-{
-	CSingleton<CInventory> inventory;
-	ITEM_DATA* item = inventory->find(shield_id);
-	if (!item)
-	{
-		//対象アイテムがないので持っていないことにする
-		m_shieldId = 0;
-		m_shield = nullptr;
-		return;
-	}
-	m_shieldId = shield_id;
-	m_shield = item;
-}
-//アイテムを参照し直す
-void CHARA_DATA::attachItems()
-{
-	setWeapon(m_weaponId);//武器
-	setShield(m_shieldId);//盾
-}
-//キャラ習得アビリティを追加
-void CHARA_DATA::addAbility(const crc32_t ability_id)
-{
-	CSingleton<CAbilityList> chara_ability_list;
-	ABILITY_DATA* ability = chara_ability_list->find(ability_id);
-	if (!ability)
-		return;
-	CSingleton<CCharaAbilityBuff> chara_ability_buff;
-	CHARA_ABILITY_DATA* new_chara_ability = chara_ability_buff->assign();
-	if (!new_chara_ability)
-		return;
-	new_chara_ability->m_next = nullptr;
-	new_chara_ability->m_ability = ability;
-	CHARA_ABILITY_DATA* chara_ability = m_abilities;
-	while (chara_ability && chara_ability->m_next)
-		chara_ability = chara_ability->m_next;
-	if (chara_ability)
-		chara_ability->m_next = new_chara_ability;
-	else
-		m_abilities = new_chara_ability;
-}
-//キャラ習得アビリティを取得
-ABILITY_DATA* CHARA_DATA::getAbility(const int index)
-{
-	CHARA_ABILITY_DATA* chara_ability = m_abilities;
-	for (int i = 0; i < index && chara_ability; ++i)
-		chara_ability = chara_ability->m_next;
-	return chara_ability == nullptr ? nullptr : chara_ability->m_ability;
-}
 
 //--------------------------------------------------------------------------------
 //テストデータ用データ確認処理
@@ -7584,6 +7574,7 @@ void makeTestData(const int pattern)
 	//インベントリデータ登録
 	{
 		CSingleton<CInventory> inventory;
+		//武器登録
 		for (int i = 0; i < 5 + pattern * 10; i += (1 + pattern))
 		{
 			char id[8];
@@ -7610,6 +7601,7 @@ void makeTestData(const int pattern)
 				item.setTitle(nullptr);
 			inventory->regist(item);
 		}
+		//盾登録
 		for (int i = 0; i < 5 + pattern * 10; i += (1 + pattern))
 		{
 			char id[8];
@@ -7636,6 +7628,7 @@ void makeTestData(const int pattern)
 				item.setTitle(nullptr);
 			inventory->regist(item);
 		}
+		//回復薬登録
 		for (int i = pattern; i < 3 + pattern * 3; ++i)
 		{
 			char id[8];
@@ -7799,13 +7792,39 @@ void printDataAll()
 	}
 }
 
+//--------------------
+//データ操作テスト
+void testDataControl()
+{
+	//全データリセット
+	resetAll();
+	//現在のデータを表示
+	printDataAll();
+	//テストデータ作成(pattern=0)
+	makeTestData(0);
+	//現在のデータを表示
+	printDataAll();
+	//全データリセット
+	resetAll();
+	//テストデータ作成(pattern=1)
+	makeTestData(1);
+	//現在のデータを表示
+	printDataAll();
+}
+
 //--------------------------------------------------------------------------------
 //テストデータ用シリアライズ
 
+#define SIMULATE_ILLEGAL_DATA//データ不整合をチェックするならこのマクロを有効化する（CHARA_DATAの不整合処理を有効化する）
+#define USE_SAVEDATA_VERSION//セーブデータバージョンクラスを使用するならこのマクロを有効化する
+
 //--------------------
-//セーブデータ用基本クラス
+//セーブデータ統括用クラス
+//※中身が空のクラスでよい
+//※これに対するコレクターとディストリビュータを定義して使用する
 class CSaveData{};
 
+#ifdef USE_SAVEDATA_VERSION
 //--------------------
 //セーブデータバージョン管理クラス
 class CSaveDataVersion
@@ -7872,7 +7891,7 @@ private:
 	bool m_hasSaved;//セーブしたか？
 	bool m_hasLoaded;//ロードしたか？
 	//シリアライズ用のフレンド設定
-	FRIEND_SERIALIZE(CSaveDataVersion);
+	FRIEND_SERIALIZE();
 };
 //--------------------
 //セーブデータ用バージョンを表示
@@ -7890,6 +7909,7 @@ void printSaveDataVer()
 	printf("・セーブしたか？ = %s\n", save_data_version->hasSaved() ? "yes" : "no");
 	printf("・ロードしたか？ = %s\n", save_data_version->hasLoaded() ? "yes" : "no");
 }
+#endif//USE_SAVEDATA_VERSION
 
 //--------------------
 //テスト用クラスのシリアライズ処理定義
@@ -7901,7 +7921,7 @@ namespace serial
 	struct serialize<Arc, std::bitset<N> > {
 		void operator()(Arc& arc, const std::bitset<N>& obj, const CVersion& ver, const CVersion& now_ver)
 		{
-			arc & pairBin("bitset", obj);
+			arc & pairBin("bitset", obj);//オブジェクト全体をバイトデータとして扱う
 		}
 	};
 	//--------------------
@@ -7911,7 +7931,7 @@ namespace serial
 		void operator()(Arc& arc, const CStr<S>& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			arc & pair("len", obj.m_len);
-			arc & pairStr("str", obj.m_str);
+			arc & pairStr("str", obj.m_str);//文字列データとして扱う
 		}
 	};
 	//--------------------
@@ -7920,8 +7940,8 @@ namespace serial
 	struct serialize<Arc, CStrWithCRC<S> > {
 		void operator()(Arc& arc, const CStrWithCRC<S>& obj, const CVersion& ver, const CVersion& now_ver)
 		{
-			serialize<Arc, typename CStrWithCRC<S>::CParent> parent;
-			parent(arc, obj, ver, now_ver);//親クラスのシリアライズを呼び出し
+			serialize<Arc, typename CStrWithCRC<S>::CParent> parent_functor;
+			parent_functor(arc, obj, ver, now_ver);//親クラスのシリアライズを直接呼び出し
 			arc & pair("crc", obj.m_crc);
 		}
 	};
@@ -7943,7 +7963,7 @@ namespace serial
 		{
 			arc & pair("id", obj.m_id);
 			arc & pair("name", obj.m_name);
-			arc & pairStr("title", obj.m_title);//可変長文字列（ポインタ）のテスト
+			arc & pairStr("title", obj.m_title);//可変長文字列（ポインタ）
 			//arc & pairArray("title", obj.m_title, obj.getTitleBuffSize());//配列として扱うことも可
 			arc & pair("basic", obj.m_basic);
 			arc & pair("recover", obj.m_recover);
@@ -7956,7 +7976,7 @@ namespace serial
 	struct afterLoad<Arc, ITEM_DATA> {
 		void operator()(Arc& arc, ITEM_DATA& obj, const CVersion& ver, const CVersion& now_ver)
 		{
-			if (obj.m_title[0] == '\0')//復元されなかったタイトルはnullptrにする
+			if (obj.m_title && obj.m_title[0] == '\0')//空文字列の称号はnullptrにする
 				obj.m_title = nullptr;
 		}
 	};
@@ -7977,6 +7997,7 @@ namespace serial
 	struct serialize<Arc, CHARA_DATA> {
 		void operator()(Arc& arc, const CHARA_DATA& obj, const CVersion& ver, const CVersion& now_ver)
 		{
+		#ifdef SIMULATE_ILLEGAL_DATA
 			arc & pair("id", obj.m_id);
 			arc & pair("name", obj.m_name);
 			arc & pair("level", obj.m_level);
@@ -7984,9 +8005,24 @@ namespace serial
 			arc & pair("weapon", obj.m_weaponId);
 			arc & pair("shield", obj.m_shieldId);
 			//arc & pair("param1", obj.m_param1);//セーブデータにしかないデータのシミュレーション
-			//arc & pair("param2", obj.m_param1);//セーブデータがないデータのシミュレーション
+			//arc & pair("param2", obj.m_param2);//セーブデータがないデータのシミュレーション
+		#else//SIMULATE_ILLEGAL_DATA
+			arc & pair("id", obj.m_id);
+			arc & pair("name", obj.m_name);
+			arc & pair("level", obj.m_level);
+			arc & pair("basic", obj.m_basic);
+			arc & pair("weapon", obj.m_weaponId);
+			arc & pair("shield", obj.m_shieldId);
+			arc & pair("param1", obj.m_param1);
+			arc & pair("param2", obj.m_param2);
+		#endif//SIMULATE_ILLEGAL_DATA
+			//下記の項目はセーブデータに記録しない
+			//obj.m_weapon//ITEM_DATA*
+			//obj.m_shield//ITEM_DATA*
+			//obj.m_abilities//CHARA_ABILITY_DATA*
 		}
 	};
+#ifdef SIMULATE_ILLEGAL_DATA
 	//--------------------
 	//シリアライズ専用処理：CHARA_DATA
 	template<class Arc>
@@ -8035,6 +8071,7 @@ namespace serial
 			}
 		}
 	};
+#endif//SIMULATE_ILLEGAL_DATA
 	//--------------------
 	//ロード後処理：CHARA_DATA
 	template<class Arc>
@@ -8042,8 +8079,8 @@ namespace serial
 		void operator()(Arc& arc, CHARA_DATA& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			CSingleton<CInventory> inventory;
-			obj.m_weapon = inventory->find(obj.m_weaponId);//武器のポインタを復元
-			obj.m_shield = inventory->find(obj.m_shieldId);//盾のポインタを復元
+			obj.m_weapon = inventory->find(obj.m_weaponId);//武器の参照（ポインタ）を割り当て
+			obj.m_shield = inventory->find(obj.m_shieldId);//盾の参照（ポインタ）を割り当て
 			obj.m_abilities = nullptr;//アビリティは一旦nullptrにしておく
 		}
 	};
@@ -8054,14 +8091,14 @@ namespace serial
 		void operator()(Arc& arc, const CHARA_DATA& obj, const CVersion& ver)
 		{
 			CHARA_ABILITY_DATA* chara_ability = obj.m_abilities;
-			while (chara_ability)
+			while (chara_ability)//全ての連結リストをたどって処理
 			{
 				//アビリティ情報取得
 				ABILITY_DATA* ability_data = chara_ability->m_ability;
 				//セーブ用アビリティ情報作成
 				//※一時的にローカル変数に記録した情報をセーブする
 				CHARA_ABILITY_DATA_FOR_SAVE chara_ability_data_for_save;
-				//chara_ability_data_for_save.m_charaId = obj.m_id.getKey();//アビリティID
+				//chara_ability_data_for_save.m_charaId = obj.m_id.getKey();//キャラID
 				chara_ability_data_for_save.m_abilityId = ability_data->getKey();//アビリティID
 				//シリアライズ
 				arc << pair("charaAbility", chara_ability_data_for_save);
@@ -8076,7 +8113,7 @@ namespace serial
 	struct distributor<Arc, CHARA_DATA> {
 		void operator()(Arc& arc, CHARA_DATA& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver, const CItemBase& target_item)
 		{
-			if (target_item == "charaAbility")
+			if (target_item == "charaAbility")//キャラ習得アビリティのデータか判定
 			{
 				//セーブ用アビリティ情報復元
 				//※一時的にローカル変数に展開して実際のデータに反映させる
@@ -8107,6 +8144,7 @@ namespace serial
 			arc & pair("flags", obj.m_flags);
 		}
 	};
+#ifdef USE_SAVEDATA_VERSION
 	//--------------------
 	//シリアライズ処理：CSaveDataVersion
 	template<class Arc>
@@ -8118,17 +8156,20 @@ namespace serial
 			arc & pair("saveTime", obj.m_saveTime);
 		}
 	};
+#endif//USE_SAVEDATA_VERSION
 	//--------------------
 	//収集処理：CSaveData
 	template<class Arc>
 	struct collector<Arc, CSaveData> {
 		void operator()(Arc& arc, const CSaveData& obj, const CVersion& ver)
 		{
+		#ifdef USE_SAVEDATA_VERSION
 			//セーブデータバージョンのバージョンを保存用に更新
 			CSingleton<CSaveDataVersion> save_data_version;
 			save_data_version->updateLoadedVer();
 			arc << pair("version", *save_data_version);//シリアライズ
 			save_data_version->setHasSaved();
+		#endif//USE_SAVEDATA_VERSION
 
 			//インベントリのデータを収集
 			CSingleton<CInventory> inventory;
@@ -8196,11 +8237,11 @@ namespace serial
 	{
 		return s_loadTarget != 0;
 	}
-	bool isPartLoad(const crc32_t name_crc)//部分ロードか？
+	bool isPartLoad(const crc32_t name_crc)//部分ロードか？かつ、その対象項目か？
 	{
 		return isPartLoad() && isLoadTarget(name_crc);
 	}
-	bool isPartLoad(const char* name)//部分ロードか？
+	bool isPartLoad(const char* name)//部分ロードか？かつ、その対象項目か？
 	{
 		return isPartLoad() && isLoadTarget(name);
 	}
@@ -8210,31 +8251,31 @@ namespace serial
 	struct beforeDistribute<Arc, CSaveData> {
 		void operator()(Arc& arc, CSaveData& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver)
 		{
-			if (isLoadTarget("item"))
+			if (isLoadTarget("item"))//全体ロードもしくは部分ロードの対象なら実行
 			{
 				//インベントリデータクリア
 				CSingleton<CInventory> inventory;
 				inventory.destroy();
 			}
-			if (isLoadTarget("ability"))
+			if (isLoadTarget("ability"))//全体ロードもしくは部分ロードの対象なら実行
 			{
 				//アビリティデータクリア
 				CSingleton<CAbilityList> ability_list;
 				ability_list.destroy();
 			}
-			if (isLoadTarget("chara"))
+			if (isLoadTarget("chara"))//全体ロードもしくは部分ロードの対象なら実行
 			{
 				//キャラデータクリア
 				CSingleton<CCharaList> chara_list;
 				chara_list.destroy();
 			}
-			if (isLoadTarget("ability") || isLoadTarget("chara"))
+			if (isLoadTarget("ability") || isLoadTarget("chara"))//全体ロードもしくは部分ロードの対象なら実行
 			{
 				//キャラ習得アビリティデータクリア
 				CSingleton<CCharaAbilityBuff> chara_ability_list;
 				chara_ability_list.destroy();
 			}
-			if (isLoadTarget("phase_and_flags"))
+			if (isLoadTarget("phase_and_flags"))//全体ロードもしくは部分ロードの対象なら実行
 			{
 				//フェーズ＆進行データクリア
 				CSingleton<CPhaseAndFlags> phase_and_flags;
@@ -8248,42 +8289,45 @@ namespace serial
 	struct distributor<Arc, CSaveData> {
 		void operator()(Arc& arc, CSaveData& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver, const CItemBase& target_item)
 		{
-			if (target_item == "version")
+		#ifdef USE_SAVEDATA_VERSION
+			if (target_item == "version")//対象項目なら実行
 			{
 				//セーブデータバージョン
 				CSingleton<CSaveDataVersion> save_data_version;
 				arc >> pair("version", *save_data_version);//デシリアライズ
 				save_data_version->setHasLoaded();
 			}
-			else if (target_item == "item" && isLoadTarget(target_item))
+			else
+		#endif//USE_SAVEDATA_VERSION
+			if (target_item == "item" && isLoadTarget(target_item))//対象項目かつロード対象なら実行
 			{
 				//インベントリデータ復元
 				CSingleton<CInventory> inventory;
 				ITEM_DATA item_data;
 				arc >> pair("item", item_data);//デシリアライズ
-				inventory->regist(item_data);
+				inventory->regist(item_data);//インベントリに登録
 			}
-			else if (target_item == "ability" && isLoadTarget(target_item))
+			else if (target_item == "ability" && isLoadTarget(target_item))//対象項目かつロード対象なら実行
 			{
 				//アビリティデータ復元
 				CSingleton<CAbilityList> ability_list;
 				ABILITY_DATA ability_data;
-				arc >> pair("ability", ability_data);
-				ability_list->regist(ability_data);
+				arc >> pair("ability", ability_data);//デシリアライズ
+				ability_list->regist(ability_data);//アビリティリストに登録
 			}
-			else if (target_item == "chara" && isLoadTarget(target_item))
+			else if (target_item == "chara" && isLoadTarget(target_item))//対象項目かつロード対象なら実行
 			{
 				//キャラデータ復元
 				CSingleton<CCharaList> chara_list;
 				CHARA_DATA chara_data;
-				arc >> pair("chara", chara_data);
-				chara_list->regist(chara_data);
+				arc >> pair("chara", chara_data);//デシリアライズ
+				chara_list->regist(chara_data);//キャラリストに登録
 			}
-			else if (target_item == "phase_and_flags" && isLoadTarget(target_item))
+			else if (target_item == "phase_and_flags" && isLoadTarget(target_item))//対象項目かつロード対象なら実行
 			{
-				//フェーズ＆進行データ復縁
+				//フェーズ＆進行データ復元
 				CSingleton<CPhaseAndFlags> phase_and_flags;
-				arc >> pair("phase_and_flags", *phase_and_flags);
+				arc >> pair("phase_and_flags", *phase_and_flags);//デシリアライズ
 			}
 		}
 	};
@@ -8348,7 +8392,7 @@ std::size_t serialize(void* save_data_buff, const std::size_t save_data_buff_siz
 	Arc arc(save_data_buff, save_data_buff_size, work_buff, WORK_BUFF_SIZE);
 
 	//シリアライズ
-	arc << serial::pair<CSaveData>("SaveData");
+	arc << serial::pair<CSaveData>("SaveData");//CSaveDataクラスのシリアライズを実行
 
 	//シリアライズの結果を表示
 	serial::CResult result = arc.getResult();
@@ -8371,21 +8415,21 @@ void deserialize(void* save_data, const std::size_t save_data_size)
 	const std::size_t WORK_BUFF_SIZE = 1 * 1024 * 1024;
 	void* work_buff = new char[WORK_BUFF_SIZE];
 
-	//シリアライズ用アーカイブオブジェクト生成
+	//デシリアライズ用アーカイブオブジェクト生成
 	Arc arc(save_data, save_data_size, work_buff, WORK_BUFF_SIZE);
 
 	//デシリアライズ
-	arc >> serial::pair<CSaveData>("SaveData");
+	arc >> serial::pair<CSaveData>("SaveData");//CSaveDataクラスのデシリアライズを実行
 
 	//デシリアライズの結果を表示
 	serial::CResult result = arc.getResult();
 	printf("デシリアライズ結果：\n");
 	printf("  致命的なエラー ... %s\n", result.hasFatalError() ? "発生！" : "なし");
-	printf("  以下、セーブデータの状態に対する現在のプログラムが変わっていた箇所の集計\n");
+	printf("  以下、検出された相違の集計\n");
 	printf("  ・サイズが縮小された項目の数           = %d\n", result.getNumSmallerSizeItem());
 	printf("  ・サイズが拡大された項目の数           = %d\n", result.getNumLargerSizeItem());
-	printf("  ・配列サイズが縮小された項目の数       = %d\n", result.getNumSmallerArrItem());
-	printf("  ・配列サイズが拡大された項目の数       = %d\n", result.getNumLargerArrItem());
+	printf("  ・配列要素数が縮小された項目の数       = %d\n", result.getNumSmallerArrItem());
+	printf("  ・配列要素数が拡大された項目の数       = %d\n", result.getNumLargerArrItem());
 	printf("  ・セーブデータ上にのみ存在した項目の数 = %d\n", result.getNumIsOnlyOnSaveData());
 	printf("  ・セーブデータ上になかった項目の数     = %d\n", result.getNumIsOnlyOnMem());
 	printf("  ・現在はオブジェクト型ではないが、セーブデータ上ではそうだった項目の数 = %d\n", result.getNumIsObjOnSaveDataOnly());
@@ -8399,11 +8443,11 @@ void deserialize(void* save_data, const std::size_t save_data_size)
 }
 
 //--------------------
-//セーブ
-void save(const char* file_path, const void* file_image, const std::size_t file_image_size)
+//ファイル書き込み
+void writeFile(const char* file_path, const void* file_image, const std::size_t file_image_size)
 {
 	printf("------------------------------------------------------------\n");
-	printf("【セーブ】\n");
+	printf("【ファイル書き込み】\n");
 	printf("file=\"%s\", size=%d\n", file_path, file_image_size);
 	if (file_image_size == 0)
 	{
@@ -8411,6 +8455,7 @@ void save(const char* file_path, const void* file_image, const std::size_t file_
 		return;
 	}
 
+	//ファイルに保存
 	FILE* fp;
 #ifdef USE_STRCPY_S
 	fopen_s(&fp, file_path, "wb");
@@ -8430,14 +8475,14 @@ std::size_t getFileSize(FILE* fp)
 	fseek(fp, 0, SEEK_SET);
 	return file_size;
 }
-
 //--------------------
-//ロード
-std::size_t load(const char* file_path, void* file_image_buff, const std::size_t file_image_buff_size_max)
+//ファイル読み込み
+std::size_t readFile(const char* file_path, void* file_image_buff, const std::size_t file_image_buff_size_max)
 {
 	printf("------------------------------------------------------------\n");
-	printf("【ロード】\n");
+	printf("【ファイル読み込み】\n");
 
+	//ファイルの内容をまとめて読み込み
 	FILE* fp;
 #ifdef USE_STRCPY_S
 	fopen_s(&fp, file_path, "rb");
@@ -8455,9 +8500,9 @@ std::size_t load(const char* file_path, void* file_image_buff, const std::size_t
 }
 
 //--------------------
-//シリアライズ＆セーブ
+//セーブ
 template<class Arc>
-void serializeAndSave(const char* file_path)
+void save(const char* file_path)
 {
 	//セーブデータ用バッファ準備
 	const std::size_t SAVE_DATA_BUFF_SIZE = 1 * 1024 * 1024;
@@ -8466,21 +8511,21 @@ void serializeAndSave(const char* file_path)
 	//シリアライズ
 	const std::size_t save_data_size = serialize<Arc>(save_data_buff, SAVE_DATA_BUFF_SIZE);
 
-	//セーブ
-	save(file_path, save_data_buff, save_data_size);
+	//ファイル書き込み
+	writeFile(file_path, save_data_buff, save_data_size);
 }
 
 //--------------------
-//ロード＆デシリアライズ
+//ロード
 template<class Arc>
-void loadAndDeserialize(const char* file_path)
+void load(const char* file_path)
 {
 	//セーブデータ用バッファ準備
 	const std::size_t SAVE_DATA_BUFF_SIZE = 1 * 1024 * 1024;
 	void* save_data_buff = new char[SAVE_DATA_BUFF_SIZE];
 
-	//ロード
-	const std::size_t save_data_size = load(file_path, save_data_buff, SAVE_DATA_BUFF_SIZE);
+	//ファイル読み込み
+	const std::size_t save_data_size = readFile(file_path, save_data_buff, SAVE_DATA_BUFF_SIZE);
 
 	//デシリアライズ
 	deserialize<Arc>(save_data_buff, save_data_size);
@@ -8490,58 +8535,73 @@ void loadAndDeserialize(const char* file_path)
 //テスト実行
 
 //--------------------
-//シリアライズ
-void test2serialize()
+//シリアライズ＆デシリアライズテスト
+void testDataSerialize()
 {
+	//-----
+	//セーブデータファイルパス
+	const char* save_file_name_bin = "save_data.bin";//バイナリ形式用
+	const char* save_file_name_txt = "save_data.txt";//テキスト形式用
+
+	//-----
+	//データを作成してセーブ
+
 	//全データリセット
 	resetAll();
-	//テストデータ作成(pattern=1)
+	//テストデータ作成(pattern=0)
 	makeTestData(0);
 	//現在のデータを表示
 	printDataAll();
+#ifdef USE_SAVEDATA_VERSION
 	//セーブデータ用バージョンを表示
 	printSaveDataVer();
-	//ファイルパス＆アーカイブオブジェクト
-	const char* save_file_name_bin = "save_data.bin";
-	const char* save_file_name_txt = "save_data.txt";
-	//シリアライズ＆セーブ
-	serializeAndSave<serial::COBinaryArchive>(save_file_name_bin);//バイナリ形式を使用
-	serializeAndSave<serial::COTextArchive>(save_file_name_txt);//テキスト形式を使用
+#endif//USE_SAVEDATA_VERSION
+	//セーブ（シリアライズ＆ファイル書き込み）
+	save<serial::COBinaryArchive>(save_file_name_bin);//バイナリ形式を使用
+	save<serial::COTextArchive>(save_file_name_txt);//テキスト形式を使用
+#ifdef USE_SAVEDATA_VERSION
 	//セーブデータ用バージョンを表示
 	printSaveDataVer();
+#endif//USE_SAVEDATA_VERSION
+
+	//-----
+	//データをリセットしロード
+
 	//全データリセット
 	resetAll();
 	//現在のデータを表示
 	printDataAll();
-	//ロード＆デシリアライズ
-	loadAndDeserialize<serial::CIBinaryArchive>(save_file_name_bin);
+	//ロード
+	load<serial::CIBinaryArchive>(save_file_name_bin);
+#ifdef USE_SAVEDATA_VERSION
 	//セーブデータ用バージョンを表示
 	printSaveDataVer();
+#endif//USE_SAVEDATA_VERSION
 	//現在のデータを表示
 	printDataAll();
+
+	//-----
+	//部分ロードのテストのために、セーブデータと異なるデータを作成
+
 	//全データリセット
 	resetAll();
 	//テストデータ作成(pattern=1)
 	makeTestData(1);
 	//現在のデータを表示
 	printDataAll();
+
+	//-----
+	//部分ロード処理
+
 	//部分ロード指定
 	//serial::setLoadTarget("phase_and_flags");
 	serial::setLoadTarget("chara");
-	//ロード＆デシリアライズ
-	loadAndDeserialize<serial::CIBinaryArchive>(save_file_name_bin);
+	//ロード（ファイル読み込み＆デシリアライズ）
+	load<serial::CIBinaryArchive>(save_file_name_bin);
 	//現在のデータを表示
 	printDataAll();
 	//部分ロード指定解除
 	serial::resetLoadTarget();
-}
-
-//--------------------
-//テスト
-void test2()
-{
-	//シリアライズ
-	test2serialize();
 }
 
 //--------------------------------------------------------------------------------
@@ -8549,7 +8609,8 @@ void test2()
 int main(const int argc, const char* argv[])
 {
 	test1();
-	test2();
+	//testDataControl();
+	testDataSerialize();
 	return EXIT_SUCCESS;
 }
 

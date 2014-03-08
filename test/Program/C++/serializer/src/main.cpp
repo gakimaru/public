@@ -11,20 +11,23 @@
 #include <stdlib.h>
 
 #include <memory.h>//memcpy—p
+#include <string.h>//strcpy—p
 #include <assert.h>//assert—p
 #include <cstddef>//std::size_t—p
-#include <stdint.h>//uintptr_t—p
-#include <limits.h>//UCHAR_MAX—p
+#include <stdarg.h>//va_list—p
 #include <typeinfo.h>//type_id—p
 #include <time.h>//time_t, tm—p
 #include <map>//STL map—p
-#include <iterator>//std::iterator—p
-#include <vector>//STL vector—p
-#include <algorithm>//STL sort—p
+
+#include <stdint.h>//uintptr_t—p
+#include <limits.h>//UCHAR_MAX—p
 #include <atomic>//C++11ƒAƒgƒ~ƒbƒN‘€ì
 #include <thread>//C++11ƒXƒŒƒbƒh
 #include <chrono>//C++11ŠÔ
-#include <stdarg.h>//va_list—p
+
+#include <vector>//STL vector—p
+#include <iterator>//std::iterator—p
+#include <algorithm>//STL sort—p
 
 #ifdef USE_ALIGNED_MALLOC
 #include <malloc.h>//malloc,_aligned_malloc—p
@@ -2238,6 +2241,7 @@ using CTempPolyPoolAllocator = CTempPolyAllocatorWithAdp<CPoolAllocAdp>;//C++11Œ
 //ƒVƒŠƒAƒ‰ƒCƒY
 namespace serial
 {
+//ƒfƒVƒŠƒAƒ‰ƒCƒY‚ÉAƒTƒCƒY‚ª•ÏX‚³‚ê‚½ƒf[ƒ^€–Ú‚ğ“Ç‚İ‚Ş‚Ìˆ—•û–@‚ğİ’è‚·‚é
 #define IS_LITTLE_ENDIAN//ƒŠƒgƒ‹ƒGƒ“ƒfƒBƒAƒ“
 //#define IS_BIG_ENDIAN//ƒrƒbƒOƒGƒ“ƒfƒBƒAƒ“
 
@@ -2310,8 +2314,9 @@ namespace serial
 			m_minorVer(minor),
 			m_ver(major * VER_FIGURE + minor)
 		{}
+		//ƒeƒ“ƒvƒŒ[ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		template<unsigned short MAJOR, unsigned short MINOR>
-		CVersion(CVersionDefBase<MAJOR, MINOR>&) :
+		CVersion(CVersionDefBase<MAJOR, MINOR>) :
 			CVersion(MAJOR, MINOR)
 		{}
 	private:
@@ -2339,7 +2344,7 @@ namespace serial
 	//--------------------
 	//ƒo[ƒWƒ‡ƒ“ƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒX
 	template<class T>
-	class CVersionDef : public CVersionDefBase<0, 0>{};//‹K’è‚Å‚Í0
+	class CVersionDef : public CVersionDefBase<0, 0>{};//‹K’è‚Å‚Í0.0
 
 	//--------------------
 	//ƒf[ƒ^ƒNƒ‰ƒX—p‚Ìƒo[ƒWƒ‡ƒ“’è‹`ƒ}ƒNƒ
@@ -2391,29 +2396,19 @@ namespace serial
 		//¦ƒGƒ“ƒfƒBƒAƒ“’²®”Å
 		static std::size_t toMemAndAdjust(void* mem, const std::size_t mem_size, const void* value_p, const std::size_t value_size)
 		{
+		#ifdef IS_BIG_ENDIAN
 			if (mem_size < value_size)
 			{
 				//‘‚«‚İæ‚ÌƒTƒCƒY‚Ì•û‚ª¬‚³‚¢ê‡
-			#ifdef IS_BIG_ENDIAN
 				//¦‘‚«‚İæ‚ÌƒTƒCƒY•ª‚¾‚¯Œã•û‚ğƒRƒs[‚·‚é
 				memcpy(mem, reinterpret_cast<const char*>(value_p)+(value_size - mem_size), mem_size);
-			#else//IS_BIG_ENDIAN
-				//¦‘‚«‚İæ‚ÌƒTƒCƒY•ª‚¾‚¯‘O•û‚ğƒRƒs[‚·‚é
-				memcpy(mem, value_p, mem_size);
-			#endif//IS_BIG_ENDIAN
 			}
 			else if (mem_size > value_size)
 			{
 				//‘‚«‚İæ‚ÌƒTƒCƒY‚Ì•û‚ª‘å‚«‚¢ê‡
-			#ifdef IS_BIG_ENDIAN
 				//¦Œã‹l‚ß‚Å‘O•û‚ğƒ[ƒƒNƒŠƒA
 				memcpy(reinterpret_cast<char*>(mem)+value_size, value_p, value_size);
 				memset(mem, 0, mem_size - value_size);
-			#else//IS_BIG_ENDIAN
-				//¦‘O‹l‚ß‚ÅŒã•û‚ğƒ[ƒƒNƒŠƒA
-				memcpy(mem, value_p, value_size);
-				memset(reinterpret_cast<char*>(mem)+value_size, 0, mem_size - value_size);
-			#endif//IS_BIG_ENDIAN
 			}
 			else//if (mem_size == value_size)
 			{
@@ -2422,6 +2417,9 @@ namespace serial
 				memcpy(mem, value_p, mem_size);
 			}
 			return mem_size;
+		#else//IS_BIG_ENDIAN
+			return toMem(mem, mem_size, value_p, value_size);
+		#endif//IS_BIG_ENDIAN
 		}
 		//ƒƒ‚ƒŠ‚©‚çƒRƒs[
 		static std::size_t fromMem(const void* mem, const std::size_t mem_size, void* value_p, const std::size_t value_size)
@@ -2513,7 +2511,7 @@ namespace serial
 		fromStrFuncP m_fromStrFuncP;//•¶š—ñ‚©‚ç•ÏŠ·ŠÖ”
 	};
 	//--------------------
-	//Œ^‘€ì‰»ƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒX
 	template<typename T>
 	class CTypeCtrl : public CTypeCtrlBase
 	{
@@ -2527,7 +2525,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFintŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<int> : public CTypeCtrlBase
 	{
@@ -2569,7 +2567,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFunsigned intŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<unsigned int> : public CTypeCtrlBase
 	{
@@ -2611,7 +2609,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFlongŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<long> : public CTypeCtrlBase
 	{
@@ -2653,7 +2651,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFunsigned longŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<unsigned long> : public CTypeCtrlBase
 	{
@@ -2695,7 +2693,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFlong longŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<long long> : public CTypeCtrlBase
 	{
@@ -2737,7 +2735,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFunsigned long longŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<unsigned long long> : public CTypeCtrlBase
 	{
@@ -2779,7 +2777,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFshortŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<short> : public CTypeCtrlBase
 	{
@@ -2821,7 +2819,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFunsigned shortŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<unsigned short> : public CTypeCtrlBase
 	{
@@ -2863,7 +2861,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFcharŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<char> : public CTypeCtrlBase
 	{
@@ -2883,11 +2881,11 @@ namespace serial
 		static std::size_t toStr(char* str, const std::size_t str_max, const void* value_p, const std::size_t value_size)
 		{
 			const char value = *reinterpret_cast<const char*>(value_p);
-			#ifdef USE_STRCPY_S
+		#ifdef USE_STRCPY_S
 			return sprintf_s(str, str_max, "%d", value);
-			#else//USE_STRCPY_S
+		#else//USE_STRCPY_S
 			return sprintf(str, "%d", value);
-			#endif//USE_STRCPY_S
+		#endif//USE_STRCPY_S
 		}
 		//•¶š—ñ‚©‚ç•ÏŠ·
 		static std::size_t fromStr(const char* str, const std::size_t str_size, void* value_p, const std::size_t value_size_max)
@@ -2905,7 +2903,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFunsigned charŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<unsigned char> : public CTypeCtrlBase
 	{
@@ -2947,7 +2945,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFfloatŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<float> : public CTypeCtrlBase
 	{
@@ -3011,7 +3009,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFdoubleŒ^‚É“Áê‰»
 	template<>
 	class CTypeCtrl<double> : public CTypeCtrlBase
 	{
@@ -3075,7 +3073,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXFƒoƒCƒiƒŠŒ^ibin_tŒ^j‚É“Áê‰»
 	template<>
 	class CTypeCtrl<bin_t> : public CTypeCtrlBase
 	{
@@ -3112,7 +3110,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//Œ^‘€ìƒNƒ‰ƒX
+	//Œ^‘€ìƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒXF•¶š—ñŒ^istr_tŒ^j‚É“Áê‰»
 	template<>
 	class CTypeCtrl<str_t> : public CTypeCtrlBase
 	{
@@ -3177,10 +3175,7 @@ namespace serial
 	};
 
 	//--------------------
-	//ƒNƒ‰ƒXéŒ¾
-	class CItemBase;
-	//--------------------
-	//ƒVƒŠƒAƒ‰ƒCƒYˆ——pŠÖ”ƒIƒuƒWƒFƒNƒgƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒX
+	//ƒVƒŠƒAƒ‰ƒCƒY^ƒfƒVƒŠƒAƒ‰ƒCƒY‹¤’Êˆ——pŠÖ”ƒIƒuƒWƒFƒNƒgƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒX
 	//¦ƒVƒŠƒAƒ‰ƒCƒY‚ÆƒfƒVƒŠƒAƒ‰ƒCƒYŒ“—p‹¤’Êˆ—
 	//¦“Áê‰»‚É‚æ‚èƒ†[ƒU[ˆ—‚ğÀ‘•
 	//¦•W€‚Å‚Í‰½‚à‚µ‚È‚¢
@@ -3244,6 +3239,7 @@ namespace serial
 	//¦Œ©‚Â‚©‚Á‚½‚ç“_‚Å’m‚³‚ê‚é‚Ì‚ÅAobj‚ª•sŠ®‘S‚Èó‘Ô‚Å‚ ‚é“_‚É’ˆÓ
 	//¦ˆÏ÷ƒf[ƒ^€–Ú delegate_item ‚Éƒf[ƒ^€–Ú‚ğƒZƒbƒg‚µ‚Ä•Ô‚·‚ÆƒŠƒgƒ‰ƒC‚µ‚Ä‚»‚±‚É“Ç‚İ‚Ş
 	//¦•W€‚Å‚Í‰½‚à‚µ‚È‚¢
+	class CItemBase;
 	template<class Arc, class T>
 	struct noticeUnrecognizedItem {
 		typedef int IS_UNDEFINED;//SFINAE—p:ŠÖ”ƒIƒuƒWƒFƒNƒg‚Ì–¢’è‹`ƒ`ƒFƒbƒN—p‚ÌŒ^’è‹`
@@ -3257,6 +3253,7 @@ namespace serial
 	//¦obj‚Ìƒ[ƒh‚ªˆê’Ê‚èI‚í‚Á‚½‚ ‚ÆA‚Ü‚Æ‚ß‚Ä’Ê’m‚·‚é
 	//¦noticeUnrecognizedItem ‚ÌŒãAafterLoad ‚æ‚èæ‚ÉÀs‚³‚ê‚é
 	//¦•W€‚Å‚Í‰½‚à‚µ‚È‚¢
+	class CItemBase;
 	template<class Arc, class T>
 	struct noticeUnloadedItem {
 		typedef int IS_UNDEFINED;//SFINAE—p:ŠÖ”ƒIƒuƒWƒFƒNƒg‚Ì–¢’è‹`ƒ`ƒFƒbƒN—p‚ÌŒ^’è‹`
@@ -3288,6 +3285,7 @@ namespace serial
 	//¦Šî–{ƒIƒuƒWƒFƒNƒgiobjj‚ÍA”z—ñ‚¾‚Á‚½ê‡A‚»‚Ìæ“ª‚Ì—v‘f‚ª“n‚³‚ê‚é
 	//¦ƒZ[ƒuƒf[ƒ^ã‚Ì”z—ñ—v‘f”‚ÆAƒ[ƒh‚Å‚«‚½”z—ñ—v‘f”iƒƒ‚ƒŠã‚Ì”z—ñ—v‘f”j‚ª“n‚³‚ê‚é
 	//¦•W€‚Å‚Í‰½‚à‚µ‚È‚¢
+	class CItemBase;
 	template<class Arc, class T>
 	struct distributor {
 		typedef int IS_UNDEFINED;//SFINAE—p:ŠÖ”ƒIƒuƒWƒFƒNƒg‚Ì–¢’è‹`ƒ`ƒFƒbƒN—p‚ÌŒ^’è‹`
@@ -3337,7 +3335,7 @@ namespace serial
 		{}
 	};
 	//--------------------
-	//ƒ†[ƒU[’è‹`ˆ—ƒNƒ‰ƒX’è‹`Ï‚İƒ`ƒFƒbƒNŠÖ”
+	//ƒ†[ƒU[’è‹`ˆ——p“Áê‰»ƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒX’è‹`Ï‚İƒ`ƒFƒbƒNŠÖ”
 	//¦SFINAE‚É‚æ‚èAIS_UNDEFINED ‚ª’è‹`‚³‚ê‚Ä‚¢‚éŒ^‚ÌƒI[ƒo[ƒ[ƒhŠÖ”‚ª‘I‚Î‚ê‚½‚ç–¢’è‹`‚Æ‚İ‚È‚·
 	template<class F>
 	bool isDefinedFunctor(const typename F::IS_UNDEFINED)
@@ -3350,12 +3348,10 @@ namespace serial
 		return true;//’è‹`Ï‚İ
 	}
 	//--------------------
-	//ƒA[ƒJƒCƒuƒ_ƒ~[ƒNƒ‰ƒX
-	class CArchiveDummy{};
-	//--------------------
 	//ƒIƒuƒWƒFƒNƒgŒ^‚©H
 	//¦‚¢‚¸‚ê‚©‚ÌŠÖ”ƒIƒuƒWƒFƒNƒg‚ª“o˜^‚³‚ê‚Ä‚¢‚ê‚ÎƒIƒuƒWƒFƒNƒgŒ^‚Æ‚İ‚È‚·
 	//¦ƒIƒuƒWƒFƒNƒgŒ^‚ÍƒVƒŠƒAƒ‰ƒCƒY‚ÌÛ‚Éƒf[ƒ^ƒuƒƒbƒN‚Æ‚µ‚Äˆµ‚¤
+	class CArchiveDummy{};//ƒA[ƒJƒCƒuƒ_ƒ~[ƒNƒ‰ƒX
 	template<class T>
 	bool hasAnyFunctor()
 	{
@@ -3373,12 +3369,12 @@ namespace serial
 			isDefinedFunctor<distributor<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<beforeDistribute<CArchiveDummy, T> >(0) ||
 			isDefinedFunctor<afterDistribute<CArchiveDummy, T> >(0);
-		//isDefinedFunctor<fatalSerializeErrorOccurred<CArchiveDummy, T> >(0);//‚±‚ê‚Í”‚¦‚È‚¢
-		//isDefinedFunctor<fatalDeserializeErrorOccurred<CArchiveDummy, T> >(0);////‚±‚ê‚Í”‚¦‚È‚¢
+			//isDefinedFunctor<fatalSerializeErrorOccurred<CArchiveDummy, T> >(0);//‚±‚ê‚Í”‚¦‚È‚¢
+			//isDefinedFunctor<fatalDeserializeErrorOccurred<CArchiveDummy, T> >(0);//‚±‚ê‚Í”‚¦‚È‚¢
 	}
 	//--------------------
-	//ƒf[ƒ^ƒNƒ‰ƒX‚ÌƒtƒŒƒ“ƒhéŒ¾—pƒ}ƒNƒ
-	#define FRIEND_SERIALIZE(T) \
+	//ƒf[ƒ^ƒNƒ‰ƒX‚ÌƒtƒŒƒ“ƒh‰»ƒ}ƒNƒ
+	#define FRIEND_SERIALIZE() \
 		template<class Arc, class T> \
 		friend struct serial::serialize; \
 		template<class Arc, class T> \
@@ -3415,7 +3411,9 @@ namespace serial
 		static const bool IS_PTR = false;//ƒ|ƒCƒ“ƒ^Œ^‚©H = ”ñƒ|ƒCƒ“ƒ^Œ^
 		typedef T TYPE;//’ÊíŒ^i”ñƒ|ƒCƒ“ƒ^Œ^j•ÏŠ·—p‚ÌŒ^
 		typedef T* PTR_TYPE;//ƒ|ƒCƒ“ƒ^Œ^•ÏŠ·—p‚ÌŒ^
+		static const T& TO_VALUE(const T& var){ return var; }//’l‚É•ÏŠ·
 		static const T* TO_PTR(const T& var){ return reinterpret_cast<const T*>(&var); }//ƒ|ƒCƒ“ƒ^‚É•ÏŠ·
+		static bool isNull(const T& var){ return false; }//ƒkƒ‹‚©H
 	};
 	template<class T>
 	struct isPtr<T*>
@@ -3423,7 +3421,9 @@ namespace serial
 		static const bool IS_PTR = true;//ƒ|ƒCƒ“ƒ^Œ^‚©H = ƒ|ƒCƒ“ƒ^Œ^
 		typedef T TYPE;//’ÊíŒ^i”ñƒ|ƒCƒ“ƒ^Œ^j•ÏŠ·—p‚ÌŒ^
 		typedef T* PTR_TYPE;//ƒ|ƒCƒ“ƒ^Œ^•ÏŠ·—p‚ÌŒ^
+		static const T& TO_VALUE(const T* var){ return *var; }//’l‚É•ÏŠ·
 		static const T* TO_PTR(const T* var){ return var; }//ƒ|ƒCƒ“ƒ^‚É•ÏŠ·
+		static bool isNull(const T* var){ return var == nullptr; }//ƒkƒ‹‚©H
 	};
 	//--------------------
 	//ƒf[ƒ^€–Ú‘®«
@@ -3434,7 +3434,7 @@ namespace serial
 		IS_PTR = 0x04,//ƒ|ƒCƒ“ƒ^Œ^
 		IS_NULL = 0x08,//ƒkƒ‹
 		IS_VLEN = 0x10,//‰Â•Ï’·‚©H
-		HAS_VERSION = 0x20,//ƒo[ƒWƒ‡ƒ“î•ñ‚ ‚è
+		HAS_VER = 0x20,//ƒo[ƒWƒ‡ƒ“î•ñ‚ ‚è
 	};
 	class CItemAttr
 	{
@@ -3448,9 +3448,9 @@ namespace serial
 		bool isPtr() const { return (m_value & IS_PTR) ? true : false; }//ƒ|ƒCƒ“ƒ^Œ^‚©H
 		bool isNul() const { return (m_value & IS_NULL) ? true : false; }//ƒkƒ‹ƒ|ƒCƒ“ƒ^‚©Hiƒ|ƒCƒ“ƒ^Œ^‚Ì‚¾‚¯ˆµ‚í‚ê‚éj
 		bool isVLen() const { return (m_value & IS_VLEN) ? true : false; }//‰Â•Ï’·‚©Hiå‚É•¶š—ñƒ|ƒCƒ“ƒ^‚Ì‚Éˆµ‚í‚ê‚éj
-		bool hasVersion() const { return (m_value & HAS_VERSION) ? true : false; }//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
-		void setHasVersion() const { *const_cast<value_t*>(&m_value) = m_value | HAS_VERSION; }//ƒo[ƒWƒ‡ƒ“î•ñ‚ ‚è‚É‚·‚é
-		void resetHasVersion() const { *const_cast<value_t*>(&m_value) = m_value & ~HAS_VERSION; }//ƒo[ƒWƒ‡ƒ“î•ñ‚È‚µ‚É‚·‚é
+		bool hasVer() const { return (m_value & HAS_VER) ? true : false; }//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
+		void setHasVer() const { *const_cast<value_t*>(&m_value) = m_value | HAS_VER; }//ƒo[ƒWƒ‡ƒ“î•ñ‚ ‚è‚É‚·‚é
+		void resetHasVer() const { *const_cast<value_t*>(&m_value) = m_value & ~HAS_VER; }//ƒo[ƒWƒ‡ƒ“î•ñ‚È‚µ‚É‚·‚é
 	public:
 		//ƒIƒyƒŒ[ƒ^
 		bool operator==(const CItemAttr& rhs) const { return m_value == rhs.m_value; }
@@ -3504,7 +3504,7 @@ namespace serial
 		//¦ƒA[ƒJƒCƒuŒ`®‚É‚æ‚Á‚Ä‚Í³‚µ‚­‚È‚¢‰Â”\«‚ª‚ ‚é
 		std::size_t getElemNum() const
 		{
-			return m_arrNum == 0 ?
+			return	m_arrNum == 0 ?
 						1 :
 						m_arrNum;
 		}
@@ -3555,18 +3555,18 @@ namespace serial
 		bool nowSizeIsSame() const { return !isObj() && !isVLen() && m_hasNowInfo && m_nowItemSize == m_itemSize; }//Œ»İ‚ÌƒTƒCƒY‚Ì•û‚ÆƒZ[ƒuƒf[ƒ^‚ÌƒTƒCƒY‚ª“¯‚¶‚©H
 		bool nowSizeIsSamall() const { return !isObj() && !isVLen() && m_hasNowInfo && m_nowItemSize < m_itemSize; }//Œ»İ‚ÌƒTƒCƒY‚Ì•û‚ªƒZ[ƒuƒf[ƒ^‚ÌƒTƒCƒY‚æ‚è¬‚³‚¢‚©H
 		bool nowSizeIsLarge() const { return !isObj() && !isVLen() && m_hasNowInfo && m_nowItemSize > m_itemSize; }//Œ»İ‚ÌƒTƒCƒY‚Ì•û‚ªƒZ[ƒuƒf[ƒ^‚ÌƒTƒCƒY‚æ‚è‘å‚«‚¢‚©H
-		bool nowArrIsSame() const { return m_hasNowInfo && m_nowArrNum == m_arrNum; }//Œ»İ‚Ì”z—ñƒTƒCƒY‚ÆƒZ[ƒuƒf[ƒ^‚Ì”z—ñƒTƒCƒY‚ª“¯‚¶‚©H
-		bool nowArrIsSmall() const { return m_hasNowInfo && m_nowArrNum < m_arrNum; }//Œ»İ‚Ì”z—ñƒTƒCƒY‚Ì•û‚ªƒZ[ƒuƒf[ƒ^‚Ì”z—ñƒTƒCƒY‚æ‚è¬‚³‚¢‚©H
-		bool nowArrIsLarge() const { return m_hasNowInfo && m_nowArrNum > m_arrNum; }//Œ»İ‚Ì”z—ñƒTƒCƒY‚Ì•û‚ªƒZ[ƒuƒf[ƒ^‚Ì”z—ñƒTƒCƒY‚æ‚è‘å‚«‚¢‚©H
+		bool nowArrIsSame() const { return m_hasNowInfo && m_nowArrNum == m_arrNum; }//Œ»İ‚Ì”z—ñ—v‘f”‚ÆƒZ[ƒuƒf[ƒ^‚Ì”z—ñ—v‘f”‚ª“¯‚¶‚©H
+		bool nowArrIsSmall() const { return m_hasNowInfo && m_nowArrNum < m_arrNum; }//Œ»İ‚Ì”z—ñ—v‘f”‚Ì•û‚ªƒZ[ƒuƒf[ƒ^‚Ì”z—ñ—v‘f”‚æ‚è¬‚³‚¢‚©H
+		bool nowArrIsLarge() const { return m_hasNowInfo && m_nowArrNum > m_arrNum; }//Œ»İ‚Ì”z—ñ—v‘f”‚Ì•û‚ªƒZ[ƒuƒf[ƒ^‚Ì”z—ñ—v‘f”‚æ‚è‘å‚«‚¢‚©H
 		bool hasNowInfo() const { return m_hasNowInfo; }//Œ»İ‚Ìî•ñƒRƒs[Ï‚İæ“¾
 		bool isOnlyOnSaveData() const{ return m_isOnlyOnSaveData; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©H
-		void setIsOnlyOnSaveData() const { m_isOnlyOnSaveData = true; m_isOnlyOnMem = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©‚ğXV
-		void setIsOnlyOnSaveData(const bool enabled) const { if (enabled) setIsOnlyOnSaveData(); }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©‚ğXV
-		void resetIsOnlyOnSaveData() const { m_isOnlyOnSaveData = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©‚ğƒŠƒZƒbƒg
+		void setIsOnlyOnSaveData() const { m_isOnlyOnSaveData = true; m_isOnlyOnMem = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©H‚ğXV
+		void setIsOnlyOnSaveData(const bool enabled) const { if (enabled) setIsOnlyOnSaveData(); }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©H‚ğXV
+		void resetIsOnlyOnSaveData() const { m_isOnlyOnSaveData = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^‚©H‚ğƒŠƒZƒbƒg
 		bool isOnlyOnMem() const { return m_isOnlyOnMem; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©H
-		void setIsOnlyOnMem() const { m_isOnlyOnMem = true; m_isOnlyOnSaveData = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©‚ğXV
-		void setIsOnlyOnMem(const bool enabled) const { if (enabled) setIsOnlyOnMem(); }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©‚ğXV
-		void resetIsOnlyOnMem() const { m_isOnlyOnMem = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©‚ğƒŠƒZƒbƒg
+		void setIsOnlyOnMem() const { m_isOnlyOnMem = true; m_isOnlyOnSaveData = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©H‚ğXV
+		void setIsOnlyOnMem(const bool enabled) const { if (enabled) setIsOnlyOnMem(); }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©H‚ğXV
+		void resetIsOnlyOnMem() const { m_isOnlyOnMem = false; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^‚©H‚ğƒŠƒZƒbƒg
 		bool isAlready() const { return m_isAlready; }//ˆ—Ï‚İ‚©H
 		void setIsAlready() const { m_isAlready = true; }//ˆ—Ï‚İ‚É‚·‚é
 		void resetIsAlready() const { m_isAlready = false; }//ˆ—Ï‚İ‚ğ‰ğœ‚·‚é
@@ -3605,10 +3605,10 @@ namespace serial
 			//m_itemP;//ƒf[ƒ^‚ÌQÆƒ|ƒCƒ“ƒ^
 			//m_itemType;//ƒf[ƒ^‚ÌŒ^î•ñ
 			*const_cast<std::size_t*>(&m_itemSize) = 0;//ƒf[ƒ^ƒTƒCƒY
-			*const_cast<std::size_t*>(&m_arrNum) = 0;//ƒf[ƒ^‚Ì”z—ñƒTƒCƒY
+			*const_cast<std::size_t*>(&m_arrNum) = 0;//ƒf[ƒ^‚Ì”z—ñ—v‘f”
 			const_cast<CItemAttr*>(&m_attr)->clear();//‘®«
 			m_nowItemSize = 0;//Œ»İ‚Ìƒf[ƒ^ƒTƒCƒY
-			m_nowArrNum = 0;//Œ»İ‚Ìƒf[ƒ^‚Ì”z—ñƒTƒCƒY
+			m_nowArrNum = 0;//Œ»İ‚Ìƒf[ƒ^‚Ì”z—ñ—v‘f”
 			m_nowAttr.clear();//Œ»İ‚Ì‘®«
 			m_hasNowInfo = false;//Œ»İ‚Ìî•ñƒRƒs[Ï‚İ
 			m_isOnlyOnSaveData = false;//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^
@@ -3618,13 +3618,13 @@ namespace serial
 		//Œ»İ‚Ìî•ñ‚ğƒRƒs[
 		void copyFromOnMem(const CItemBase& src)
 		{
-			//assert(m_nameCrc == src.m_nameCrc);//‘S‚Ä‚ğƒRƒs[‚·‚é
+			//assert(m_nameCrc == src.m_nameCrc);//CRCƒ`ƒFƒbƒNË‚µ‚È‚¢
 			m_name = src.m_name;//ƒf[ƒ^€–Ú–¼
-			*const_cast<crc32_t*>(&m_nameCrc) = src.m_nameCrc;//ƒf[ƒ^€–Ú–¼CRC
+			*const_cast<crc32_t*>(&m_nameCrc) = src.m_nameCrc;//ƒf[ƒ^€–Ú–¼CRC ¦ˆÏ÷‘Î‰‚Ì‚½‚ßCRC‚àXV
 			m_itemP = src.m_itemP;//ƒf[ƒ^‚ÌQÆƒ|ƒCƒ“ƒ^
 			m_itemType = src.m_itemType;//ƒf[ƒ^‚ÌŒ^î•ñ
 			m_nowItemSize = src.m_itemSize;//Œ»İ‚Ìƒf[ƒ^ƒTƒCƒY
-			m_nowArrNum = src.m_arrNum;//Œ»İ‚Ìƒf[ƒ^‚Ì”z—ñƒTƒCƒY
+			m_nowArrNum = src.m_arrNum;//Œ»İ‚Ìƒf[ƒ^‚Ì”z—ñ—v‘f”
 			m_nowAttr = src.m_attr;//Œ»İ‚Ì‘®«
 			m_nowTypeCtrl = src.m_typeCtrl;//Œ^‘€ì
 			m_hasNowInfo = true;//Œ»İ‚Ìî•ñƒRƒs[Ï‚İ
@@ -3724,11 +3724,11 @@ namespace serial
 		const void* m_itemP;//ƒf[ƒ^‚ÌQÆƒ|ƒCƒ“ƒ^
 		const std::type_info* m_itemType;//ƒf[ƒ^‚ÌŒ^î•ñ
 		const std::size_t m_itemSize;//ƒf[ƒ^ƒTƒCƒY
-		const std::size_t m_arrNum;//ƒf[ƒ^‚Ì”z—ñƒTƒCƒY
+		const std::size_t m_arrNum;//ƒf[ƒ^‚Ì”z—ñ—v‘f”
 		const CItemAttr m_attr;//‘®«
 		CTypeCtrlBase m_typeCtrl;//Œ^‘€ì
 		std::size_t m_nowItemSize;//ƒf[ƒ^ƒTƒCƒY@¦Œ»İ‚ÌƒTƒCƒYiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
-		std::size_t m_nowArrNum;//ƒf[ƒ^‚Ì”z—ñƒTƒCƒY@¦Œ»İ‚ÌƒTƒCƒYiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
+		std::size_t m_nowArrNum;//ƒf[ƒ^‚Ì”z—ñ—v‘f”@¦Œ»İ‚ÌƒTƒCƒYiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
 		CItemAttr m_nowAttr;//‘®«@¦Œ»İ‚Ìó‘ÔiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
 		CTypeCtrlBase m_nowTypeCtrl;//Œ^‘€ì@¦Œ»İ‚Ìó‘ÔiƒfƒVƒŠƒAƒ‰ƒCƒYˆ——pj
 		bool m_hasNowInfo;//Œ»İ‚Ìî•ñƒRƒs[Ï‚İ
@@ -3855,8 +3855,8 @@ namespace serial
 		void setHasFatalError(const bool enabled){ if (enabled) setHasFatalError(); }//’v–½“I‚ÈƒGƒ‰[‚ ‚è
 		int getNumSmallerSizeItem() const { return m_numSmallerSizeItem; }//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
 		int getNumLargerSizeItem() const { return m_numLargerSizeItem; }//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
-		int getNumSmallerArrItem() const { return m_numSmallerArrItem; }//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
-		int getNumLargerArrItem() const { return m_numLargerArrItem; }//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumSmallerArrItem() const { return m_numSmallerArrItem; }//”z—ñ—v‘f”‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+		int getNumLargerArrItem() const { return m_numLargerArrItem; }//”z—ñ—v‘f”‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
 		int getNumIsOnlyOnSaveData() const { return m_numIsOnlyOnSaveData; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
 		int getNumIsOnlyOnMem() const { return m_numIsOnlyOnMem; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
 		int getNumIsObjOnSaveDataOnly() const { return m_numIsObjOnSaveDataOnly; }//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
@@ -3869,13 +3869,13 @@ namespace serial
 		int getNumIsNulOnMemOnly() const { return m_numIsNulOnMemOnly; }//Œ»İƒkƒ‹‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
 		void addNumSmallerSizeItem(){ ++m_numSmallerSizeItem; }//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumLargerSizeItem(){ ++m_numLargerSizeItem; }//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
-		void addNumSmallerArrItem(){ ++m_numSmallerArrItem; }//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
-		void addNumLargerArrItem(){ ++m_numLargerArrItem; }//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumSmallerArrItem(){ ++m_numSmallerArrItem; }//”z—ñ—v‘f”‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumLargerArrItem(){ ++m_numLargerArrItem; }//”z—ñ—v‘f”‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumIsOnlyOnSaveData(){ ++m_numIsOnlyOnSaveData; }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumIsOnlyOnMem(){ ++m_numIsOnlyOnMem; }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumIsObjOnSaveDataOnly(){ ++m_numIsObjOnSaveDataOnly; }//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumIsObjOnMemOnly(){ ++m_numIsObjOnMemOnly; }//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
-		void addNumIsArrOnSaveDataOnly(){ ++m_numIsArrOnSaveDataOnly; }///Œ»İ”z—ñŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumIsArrOnSaveDataOnly(){ ++m_numIsArrOnSaveDataOnly; }//Œ»İ”z—ñŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumIsArrOnMemOnly(){ ++m_numIsArrOnMemOnly; }//Œ»İ”z—ñŒ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumIsPtrOnSaveDataOnly(){ ++m_numIsPtrOnSaveDataOnly; }//Œ»İƒ|ƒCƒ“ƒ^Œ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumIsPtrOnMemOnly(){ ++m_numIsPtrOnMemOnly; }//Œ»İƒ|ƒCƒ“ƒ^Œ^‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
@@ -3883,8 +3883,8 @@ namespace serial
 		void addNumIsNulOnMemOnly(){ ++m_numIsNulOnMemOnly; }//Œ»İƒkƒ‹‚¾‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚Å‚Í‚È‚©‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumSmallerSizeItem(const bool enabled){ if (enabled) addNumSmallerSizeItem(); }//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumLargerSizeItem(const bool enabled){ if (enabled) addNumLargerSizeItem(); }//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
-		void addNumSmallerArrItem(const bool enabled){ if (enabled) addNumSmallerArrItem(); }//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
-		void addNumLargerArrItem(const bool enabled){ if (enabled) addNumLargerArrItem(); }//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumSmallerArrItem(const bool enabled){ if (enabled) addNumSmallerArrItem(); }//”z—ñ—v‘f”‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+		void addNumLargerArrItem(const bool enabled){ if (enabled) addNumLargerArrItem(); }//”z—ñ—v‘f”‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumIsOnlyOnSaveData(const bool enabled){ if (enabled) addNumIsOnlyOnSaveData(); }//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumIsOnlyOnMem(const bool enabled){ if (enabled) addNumIsOnlyOnMem(); }//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
 		void addNumIsObjOnSaveDataOnly(const bool enabled){ if (enabled) addNumIsObjOnSaveDataOnly(); }//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğƒJƒEƒ“ƒgƒAƒbƒv
@@ -3912,8 +3912,8 @@ namespace serial
 			setHasFatalError(src.m_hasFatalError);//’v–½“I‚ÈƒGƒ‰[‚ ‚è
 			m_numSmallerSizeItem += src.m_numSmallerSizeItem;//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
 			m_numLargerSizeItem += src.m_numLargerSizeItem;//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
-			m_numSmallerArrItem += src.m_numSmallerArrItem;//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
-			m_numLargerArrItem += src.m_numLargerArrItem;//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numSmallerArrItem += src.m_numSmallerArrItem;//”z—ñ—v‘f”‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			m_numLargerArrItem += src.m_numLargerArrItem;//”z—ñ—v‘f”‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
 			m_numIsOnlyOnSaveData += src.m_numIsOnlyOnSaveData;//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”
 			m_numIsOnlyOnMem += src.m_numIsOnlyOnMem;//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”
 			m_numIsObjOnSaveDataOnly += src.m_numIsObjOnSaveDataOnly;//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
@@ -3931,8 +3931,8 @@ namespace serial
 		{
 			addNumSmallerSizeItem(src.nowSizeIsSamall());//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
 			addNumLargerSizeItem(src.nowSizeIsLarge());//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
-			addNumSmallerArrItem(src.nowArrIsSmall());//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
-			addNumLargerArrItem(src.nowArrIsLarge());//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumSmallerArrItem(src.nowArrIsSmall());//”z—ñ—v‘f”‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+			addNumLargerArrItem(src.nowArrIsLarge());//”z—ñ—v‘f”‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
 			addNumIsOnlyOnSaveData(src.isOnlyOnSaveData());//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”
 			addNumIsOnlyOnMem(src.isOnlyOnMem());//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”
 			addNumIsObjOnSaveDataOnly(src.nowIsNotObjButSaveDataIs());//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
@@ -3973,8 +3973,8 @@ namespace serial
 		bool m_hasFatalError;//’v–½“I‚ÈƒGƒ‰[‚ ‚è
 		short m_numSmallerSizeItem;//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
 		short m_numLargerSizeItem;//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
-		short m_numSmallerArrItem;//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
-		short m_numLargerArrItem;//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+		short m_numSmallerArrItem;//”z—ñ—v‘f”‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
+		short m_numLargerArrItem;//”z—ñ—v‘f”‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”
 		short m_numIsOnlyOnSaveData;//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”
 		short m_numIsOnlyOnMem;//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”
 		short m_numIsObjOnSaveDataOnly;//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”
@@ -4006,6 +4006,7 @@ namespace serial
 		const CResult& getResult() const { return m_result; }//ˆ—Œ‹‰Ê‚ğæ“¾
 		bool hasFatalError() const { return m_result.hasFatalError(); }//’v–½“I‚ÈƒGƒ‰[‚ ‚è‚©H
 		std::size_t getSaveDataSize() const { return m_result.getSaveDataSize(); }//ƒZ[ƒuƒf[ƒ^ƒTƒCƒYæ“¾
+		const void* getSaveData() const { return m_buff; }//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@‚Ìæ“ªƒ|ƒCƒ“ƒ^‚ğæ“¾
 	protected:
 		const byte* getBuffPtr() const { return m_buff; }//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@‚Ìæ“ªƒ|ƒCƒ“ƒ^‚ğæ“¾
 		const std::size_t getBuffSize() const { return m_buffSize; }//ƒZ[ƒuƒf[ƒ^ƒoƒbƒtƒ@‚ÌƒTƒCƒY‚ğæ“¾
@@ -4030,7 +4031,7 @@ namespace serial
 			CTempPolyStackAllocator alloc(m_workBuff);
 
 			//ƒf[ƒ^€–Ú‚ğ’Ç‰Á
-			assert(m_itemList->find(item.m_nameCrc) == m_itemList->end());
+			assert(m_itemList->find(item.m_nameCrc) == m_itemList->end());//d•¡ƒ`ƒFƒbƒN
 			m_itemList->emplace(item.m_nameCrc, item);
 		}
 		//ƒŠƒXƒg‚©‚çƒf[ƒ^€–Ú‚ğŒŸõ
@@ -4296,9 +4297,6 @@ namespace serial
 								//@—v‘f‚ÌÅŒã‚Ü‚ÅƒV[ƒN‚·‚é
 								arc.m_style.writeElemFooter(parent_arc, arc, item_obj, index, items_num, elem_size);
 
-								//—v‘fI—¹
-								//arc.m_style.finishWriteElem(parent_arc, arc, items_num, elem_size);
-
 								//ƒf[ƒ^‘‚«‚İæ‚Ìƒ|ƒCƒ“ƒ^‚ğ”z—ñ‚ÌŸ‚Ì—v‘f‚ÉXV
 								if (item_obj.m_itemP)
 								{
@@ -4314,9 +4312,6 @@ namespace serial
 						//¦—á‚¦‚ÎAƒoƒCƒiƒŠƒXƒ^ƒCƒ‹‚Å‚ÍA”z—ñƒuƒƒbƒN‚Ìƒwƒbƒ_•”‚É”z—ñ—v‘f”‚Æƒf[ƒ^ƒTƒCƒY‚ğ‘‚«‚İA
 						//@—v‘f‚ÌÅŒã‚Ü‚ÅƒV[ƒN‚·‚é
 						arc.m_style.writeArrayFooter(parent_arc, arc, item_obj, array_block_size);
-
-						//”z—ñƒuƒƒbƒNI—¹
-						//arc.m_style.finishWriteArray(parent_arc, arc, array_block_size);
 					}
 				}
 
@@ -4332,9 +4327,6 @@ namespace serial
 				//¦—á‚¦‚ÎAƒoƒCƒiƒŠƒXƒ^ƒCƒ‹‚Å‚ÍAƒuƒƒbƒN‚Ìƒwƒbƒ_•”‚Éƒf[ƒ^ƒTƒCƒY‚ğ‘‚«‚İA
 				//@ƒuƒƒbƒN‚ÌÅŒã‚Ü‚ÅƒV[ƒN‚·‚é
 				arc.m_style.writeBlockFooter(parent_arc, arc, item_obj, block_size);
-
-				//ƒuƒƒbƒNI—¹
-				//arc.m_style.finishWriteBlock(parent_arc, arc, block_size);
 			}
 
 			//ƒlƒXƒgƒŒƒxƒ‹‚ª0‚È‚çƒ^[ƒ~ƒl[ƒ^‚ğ‘‚«‚İ
@@ -5016,7 +5008,7 @@ namespace serial
 		//ˆ—Œ‹‰Ê‚ğ‡¬
 		void addResult(const CResult& src){ m_arc.addResult(src); }
 		//ƒŠƒXƒg‚©‚çƒf[ƒ^€–Ú‚ğŒŸõ
-		const CItemBase* findItem(const crc32_t name_crc) const	{ return m_arc.findItem(name_crc); }
+		const CItemBase* findItem(const crc32_t name_crc) const { return m_arc.findItem(name_crc); }
 		//ƒoƒbƒtƒ@‚ÌƒJƒŒƒ“ƒgƒ|ƒCƒ“ƒ^‚ğˆÚ“®
 		//¦”ÍˆÍŠO‚Ö‚ÌˆÚ“®‚ª—v‹‚³‚ê‚½‚ç’[‚Ü‚ÅˆÚ“®‚µ‚Ä false ‚ğ•Ô‚·
 		bool seek(const int seek_, int& real_seek)
@@ -5401,7 +5393,7 @@ namespace serial
 				return false;
 			arc.write(result, BLOCK_BEGIN, BEGIN_MARK_SIZE);//ƒuƒƒbƒNn’[‘‚«‚İ
 			arc.write(result, &item.m_nameCrc, sizeof(item.m_nameCrc));//–¼‘OCRC‘‚«‚İ
-			item.m_attr.setHasVersion();//ƒo[ƒWƒ‡ƒ“î•ñ‚ ‚è‚É‚·‚é
+			item.m_attr.setHasVer();//ƒo[ƒWƒ‡ƒ“î•ñ‚ ‚è‚É‚·‚é
 			arc.write(result, &item.m_attr.m_value, sizeof(item.m_attr.m_value));//‘®«‘‚«‚İ
 			arc.write(result, ver.getVerPtr(), ver.getVerSize());//ƒo[ƒWƒ‡ƒ“‘‚«‚İ
 			const std::size_t block_size = 0;
@@ -5444,7 +5436,7 @@ namespace serial
 				return false;
 			arc.write(result, ITEM_BEGIN, BEGIN_MARK_SIZE);//ƒf[ƒ^€–Ún’[‘‚«‚İ
 			arc.write(result, &child_item.m_nameCrc, sizeof(child_item.m_nameCrc));//–¼‘OCRC‘‚«‚İ
-			child_item.m_attr.resetHasVersion();//ƒo[ƒWƒ‡ƒ“î•ñ‚È‚µ‚É‚·‚é
+			child_item.m_attr.resetHasVer();//ƒo[ƒWƒ‡ƒ“î•ñ‚È‚µ‚É‚·‚é
 			arc.write(result, &child_item.m_attr.m_value, sizeof(child_item.m_attr.m_value));//‘®«‘‚«‚İ
 			arc.write(result, &child_item.m_itemSize, sizeof(child_item.m_itemSize));//ƒf[ƒ^ƒTƒCƒY‘‚«‚İ
 			if (!child_item.isNul())//ƒkƒ‹‚Í‚±‚±‚Ü‚Å‚Ìî•ñ‚ÅI‚í‚è
@@ -5590,7 +5582,7 @@ namespace serial
 			input_item.clearForLoad();//“Ç‚İ‚İî•ñ‚ğˆê’UƒNƒŠƒA
 			arc.read(result, const_cast<crc32_t*>(&input_item.m_nameCrc), sizeof(input_item.m_nameCrc));//–¼‘OCRC“Ç‚İ‚İ
 			arc.read(result, const_cast<CItemAttr::value_t*>(&input_item.m_attr.m_value), sizeof(input_item.m_attr.m_value));//‘®«“Ç‚İ‚İ
-			if (input_item.m_attr.hasVersion())//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
+			if (input_item.m_attr.hasVer())//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
 			{
 				arc.read(result, const_cast<unsigned int*>(input_ver.getVerPtr()), input_ver.getVerSize());//ƒo[ƒWƒ‡ƒ““Ç‚İ‚İ
 				input_ver.calcFromVer();
@@ -5731,7 +5723,7 @@ namespace serial
 				return !result.hasFatalError();
 			}
 			//’Êíƒf[ƒ^‚Ì“Ç‚İ‚İˆ—
-			assert(!child_item.m_attr.hasVersion());//ƒIƒuƒWƒFƒNƒg‚Å‚à‚È‚¢‚Ì‚Éƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚ê‚ÎNG
+			assert(!child_item.m_attr.hasVer());//ƒIƒuƒWƒFƒNƒg‚Å‚à‚È‚¢‚Ì‚Éƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚ê‚ÎNG
 			arc.read(result, const_cast<std::size_t*>(&child_item.m_itemSize), sizeof(child_item.m_itemSize), &read_size);//ƒf[ƒ^ƒTƒCƒY“Ç‚İ‚İ
 			if (!child_item.isNul())//yƒZ[ƒuƒf[ƒ^ã‚Ìzƒf[ƒ^‚ªƒkƒ‹‚Å‚È‚¯‚ê‚Îˆ—‚·‚é
 			{
@@ -5840,7 +5832,7 @@ namespace serial
 			CItemAttr attr(false, false, false, false, false);
 			arc.read(result, &name_crc, sizeof(name_crc));//–¼‘OCRC“Ç‚İ‚İ
 			arc.read(result, const_cast<CItemAttr::value_t*>(&attr.m_value), sizeof(attr.m_value));//‘®«‘‚«‚İ
-			if (attr.hasVersion())//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
+			if (attr.hasVer())//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
 			{
 				CVersion input_ver_dummy;
 				arc.read(result, const_cast<unsigned int*>(input_ver_dummy.getVerPtr()), input_ver_dummy.getVerSize());//ƒo[ƒWƒ‡ƒ““Ç‚İ‚İ
@@ -5911,7 +5903,7 @@ namespace serial
 			is_found_next_block = true;//Œ©‚Â‚©‚Á‚½
 			arc.read(result, const_cast<crc32_t*>(&require_item.m_nameCrc), sizeof(require_item.m_nameCrc), &read_size);//–¼‘OCRC‘‚«‚İ
 			arc.read(result, const_cast<CItemAttr::value_t*>(&require_item.m_attr.m_value), sizeof(require_item.m_attr.m_value), &read_size);//‘®«‘‚«‚İ
-			if (require_item.m_attr.hasVersion())//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
+			if (require_item.m_attr.hasVer())//ƒo[ƒWƒ‡ƒ“î•ñ‚ª‚ ‚é‚©H
 			{
 				CVersion input_ver_dummy;
 				arc.read(result, const_cast<unsigned int*>(input_ver_dummy.getVerPtr()), input_ver_dummy.getVerSize(), &read_size);//ƒo[ƒWƒ‡ƒ““Ç‚İ‚İ
@@ -6035,7 +6027,7 @@ namespace serial
 			arc.print(result, "\"isPtr\": %d, ", item.isPtr());
 			arc.print(result, "\"isNul\": %d, ", item.isNul());
 			arc.print(result, "\"isVLen\": %d, ", item.isVLen());
-			arc.print(result, "\"hasVersion\": %d, ", item.m_attr.hasVersion());
+			arc.print(result, "\"hasVer\": %d, ", item.m_attr.hasVer());
 			arc.print(result, "\"ver\": \"%d.%d\"", ver.getMajor(), ver.getMinor());
 			m_arrayBlockIndex = 0;
 			return !result.hasFatalError();
@@ -6104,7 +6096,7 @@ namespace serial
 			arc.print(result, "\"isPtr\": %d, ", child_item.isPtr());
 			arc.print(result, "\"isNul\": %d, ", child_item.isNul());
 			arc.print(result, "\"isVLen\": %d, ", child_item.isVLen());
-			arc.print(result, "\"hasVersion\": %d, ", child_item.m_attr.hasVersion());
+			arc.print(result, "\"hasVer\": %d, ", child_item.m_attr.hasVer());
 			if (child_item.isArr())
 				arc.print(result, "\"arrNum\": %d, ", child_item.m_arrNum);
 			arc.print(result, "\"data\": ");
@@ -6435,7 +6427,7 @@ namespace serial
 class CTest1
 {
 	//ƒVƒŠƒAƒ‰ƒCƒY—p‚ÌƒtƒŒƒ“ƒhİ’è
-	FRIEND_SERIALIZE(CTest1);
+	FRIEND_SERIALIZE();
 public:
 	//Œ^
 	struct STRUCT
@@ -6888,8 +6880,8 @@ void deserializeTest1bin(const char* file_path)
 	serial::CResult& result = arc.getResult();
 	printf("  getNumSmallerSizeItem()=%d\n", result.getNumSmallerSizeItem());//ƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
 	printf("  getNumLargerSizeItem()=%d\n", result.getNumLargerSizeItem());//ƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
-	printf("  getNumSmallerArrItem()=%d\n", result.getNumSmallerArrItem());//”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
-	printf("  getNumLargerArrItem()=%d\n", result.getNumLargerArrItem());//”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumSmallerArrItem()=%d\n", result.getNumSmallerArrItem());//”z—ñ—v‘f”‚ªk¬‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
+	printf("  getNumLargerArrItem()=%d\n", result.getNumLargerArrItem());//”z—ñ—v‘f”‚ªŠg‘å‚³‚ê‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
 	printf("  getNumIsOnlyOnSaveData()=%d\n", result.getNumIsOnlyOnSaveData());//ƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚·‚éƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
 	printf("  getNumIsOnlyOnMem()=%d\n", result.getNumIsOnlyOnMem());//ƒZ[ƒuƒf[ƒ^ã‚É‚È‚¢ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
 	printf("  getNumIsObjOnSaveDataOnly()=%d\n", result.getNumIsObjOnSaveDataOnly());//Œ»İƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½ƒf[ƒ^€–Ú‚Ì”‚ğæ“¾
@@ -6931,7 +6923,6 @@ void test1()
 //ƒVƒŠƒAƒ‰ƒCƒYƒeƒXƒg‚Q
 
 //--------------------
-//Šî–{Œ^
 //’Z‚¢•¶š—ñŒ^
 template <std::size_t S>
 class CStr
@@ -6975,7 +6966,7 @@ public:
 	}
 	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	template <std::size_t SS>
-	CStr(const CStr<S>& src) :
+	CStr(const CStr<SS>& src) :
 		m_len(src.m_len < MAX_SIZE ? src.m_len : MAX_SIZE)
 	{
 		memcpy(m_str, src.m_str, m_len);
@@ -6991,8 +6982,9 @@ protected:
 	unsigned char m_len;//•¶š—ñ’·
 	char m_str[BUFF_SIZE];//•¶š—ñ
 	//ƒVƒŠƒAƒ‰ƒCƒY—p‚ÌƒtƒŒƒ“ƒhİ’è
-	FRIEND_SERIALIZE(str);
+	FRIEND_SERIALIZE();
 };
+//--------------------
 //CRC•t‚«•¶š—ñŒ^
 template <std::size_t S>
 class CStrWithCRC : public CStr<S>
@@ -7033,7 +7025,7 @@ private:
 	//ƒtƒB[ƒ‹ƒh
 	crc32_t m_crc;//CRC
 	//ƒVƒŠƒAƒ‰ƒCƒY—p‚ÌƒtƒŒƒ“ƒhİ’è
-	FRIEND_SERIALIZE(strWithCRC);
+	FRIEND_SERIALIZE();
 };
 
 //--------------------
@@ -7074,7 +7066,7 @@ struct ITEM_DATA
 	char* m_title;//Ì†@¦‰Â•Ï’·•¶š—ñiƒ|ƒCƒ“ƒ^j‚ÌƒeƒXƒg—p
 	BASIC_DATA m_basic;//Šî–{ƒf[ƒ^
 	short m_recover;//‰ñ•œ—Í
-	short m_num;//ƒf[ƒ^ŒÂ”
+	short m_num;//ƒAƒCƒeƒ€ŒÂ”
 	//Ì†‚ğƒZƒbƒg
 	void setTitle(const char* title)
 	{
@@ -7096,7 +7088,7 @@ struct ITEM_DATA
 		m_title = m_titleBuff;
 		m_titleBuff[0] = '\0';
 	}
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^iƒeƒXƒg—p‚É‹­ˆøj
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	ITEM_DATA(const char* id, const char* name, const int atk, const int def, const int recover, const int num) :
 		m_id(id),
 		m_name(name),
@@ -7144,7 +7136,7 @@ struct ABILITY_DATA
 	//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	ABILITY_DATA()
 	{}
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^iƒeƒXƒg—p‚É‹­ˆøj
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	ABILITY_DATA(const char* id, const char* name, const int atk, const int def) :
 		m_id(id),
 		m_name(name),
@@ -7156,7 +7148,6 @@ SERIALIZE_VERSION_DEF(ABILITY_DATA, 1, 0);
 
 //--------------------
 //ƒLƒƒƒ‰ƒf[ƒ^\‘¢‘Ì
-struct ABILITY_DATA;
 struct CHARA_ABILITY_DATA;
 struct CHARA_DATA
 {
@@ -7181,7 +7172,7 @@ struct CHARA_DATA
 	//ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	CHARA_DATA()
 	{}
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^iƒeƒXƒg—p‚É‹­ˆøj
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	CHARA_DATA(const char* id, const char* name, const int level, const int atk, const int def, const char* weapon_id, const char* shield_id, const int param1a, const int param1b, const int param2a, const int param2b) :
 		m_id(id),
 		m_name(name),
@@ -7203,7 +7194,7 @@ private:
 	crc32_t m_shieldId;//‚ID
 	CHARA_ABILITY_DATA* m_abilities;//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒB
 	//ƒVƒŠƒAƒ‰ƒCƒY—p‚ÌƒtƒŒƒ“ƒhİ’è
-	FRIEND_SERIALIZE(CHARA_DATA);
+	FRIEND_SERIALIZE();
 };
 //\‘¢‘Ìƒo[ƒWƒ‡ƒ“
 SERIALIZE_VERSION_DEF(CHARA_DATA, 1, 0);
@@ -7215,27 +7206,12 @@ struct CHARA_ABILITY_DATA
 	CHARA_ABILITY_DATA* m_next;//˜AŒ‹ƒŠƒXƒg
 	ABILITY_DATA* m_ability;//ƒAƒrƒŠƒeƒB
 };
-//¦ƒZ[ƒu—p\‘¢‘Ì
+//--------------------
+//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒBƒf[ƒ^\‘¢‘ÌGƒVƒŠƒAƒ‰ƒCƒY—p
 struct CHARA_ABILITY_DATA_FOR_SAVE
 {
 	//crc32_t m_charaId;//ƒLƒƒƒ‰ID
 	crc32_t m_abilityId;//ƒAƒrƒŠƒeƒBID
-};
-//--------------------
-//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒBƒf[ƒ^ƒoƒbƒtƒ@
-class CCharaAbilityBuff
-{
-public:
-	//ƒƒ\ƒbƒh
-	CHARA_ABILITY_DATA* assign(){ return m_itemPool.createData(); }
-	void release(CHARA_ABILITY_DATA* data){ m_itemPool.destroyData(data); }
-public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	CCharaAbilityBuff()
-	{}
-private:
-	//ƒtƒB[ƒ‹ƒh
-	CPoolAllocatorWithType<CHARA_ABILITY_DATA, 100> m_itemPool;//ƒf[ƒ^—p‚Ìƒoƒbƒtƒ@
 };
 
 //--------------------
@@ -7276,33 +7252,33 @@ public:
 		return find(calcCRC32(id));
 	}
 	//“o˜^
-	T* regist(const T& item)
+	T* regist(const T& data)
 	{
 		//ƒv[ƒ‹ƒAƒƒP[ƒ^‚©‚çŠ„‚è“–‚Ä
-		T* reg_item = m_itemPool.createData(item);
-		if (!reg_item)
+		T* reg_data = m_pool.createData(data);
+		if (!reg_data)
 			return nullptr;//‹K’è‚ÌŒÂ”‚ªŠ„‚è“–‚ÄÏ‚İ‚È‚ç¸”s
 		{
 			//ŒŸõƒe[ƒuƒ‹ƒoƒbƒtƒ@‚ğ‘½‘ÔƒAƒƒP[ƒ^‚ÉƒZƒbƒg
 			CTempPolyStackAllocator allocator(m_searchBuff);
 
 			//ŒŸõƒe[ƒuƒ‹‚É“o˜^
-			m_search->emplace(reg_item->getKey(), reg_item);
+			m_search->emplace(reg_data->getKey(), reg_data);
 		}
 		{
 			//®—ñƒe[ƒuƒ‹ƒoƒbƒtƒ@‚ğ‘½‘ÔƒAƒƒP[ƒ^‚ÉƒZƒbƒg
 			CTempPolyStackAllocator allocator(m_tableBuff);
 			
 			//®—ñƒe[ƒuƒ‹‚É‚à’Ç‰Á
-			m_table->push_back(reg_item);
+			m_table->push_back(reg_data);
 		}
-		return reg_item;
+		return reg_data;
 	}
 	//”jŠü
 	void unregist(const crc32_t key)
 	{
-		T* item = find(key);
-		if (!item)
+		T* data = find(key);
+		if (!data)
 			return;
 		{
 			//ŒŸõƒe[ƒuƒ‹ƒoƒbƒtƒ@‚ğ‘½‘ÔƒAƒƒP[ƒ^‚ÉƒZƒbƒg
@@ -7312,7 +7288,7 @@ public:
 			m_search->erase(key);
 		}
 		//ƒv[ƒ‹ƒAƒƒP[ƒ^‚©‚ç‰ğ•ú
-		//m_itemPool.destroy(item);
+		m_pool.destroy(data);
 	}
 private:
 	//®—ñƒe[ƒuƒ‹‚ğ¶¬
@@ -7400,7 +7376,7 @@ public:
 	}
 private:
 	//ƒtƒB[ƒ‹ƒh
-	CPoolAllocatorWithType<T, DATA_NUM_MAX> m_itemPool;//ƒf[ƒ^—p‚Ìƒoƒbƒtƒ@
+	CPoolAllocatorWithType<T, DATA_NUM_MAX> m_pool;//ƒf[ƒ^—p‚Ìƒoƒbƒtƒ@
 	CStackAllocatorWithBuff<SEARCH_BUFF_SIZE> m_searchBuff;//ŒŸõƒe[ƒuƒ‹ƒoƒbƒtƒ@
 	search_t* m_search;//ŒŸõƒe[ƒuƒ‹
 	CStackAllocatorWithBuff<TABLE_BUFF_SIZE> m_tableBuff;//®—ñƒe[ƒuƒ‹ƒoƒbƒtƒ@
@@ -7424,19 +7400,101 @@ public:
 	~CInventory()
 	{}
 };
-#endif
 //\‘¢‘Ìƒo[ƒWƒ‡ƒ“
 SERIALIZE_VERSION_DEF(CInventory, 1, 0);
+#endif
 //--------------------
-//ƒAƒrƒŠƒeƒBƒŠƒNƒ‰ƒX
+//ƒAƒrƒŠƒeƒBƒŠƒXƒgƒNƒ‰ƒX
 using CAbilityList = CCollection<ABILITY_DATA, 40, 8 * 1024, 8 * 1024>;
-//\‘¢‘Ìƒo[ƒWƒ‡ƒ“
-SERIALIZE_VERSION_DEF(CAbilityList, 1, 0);
 //--------------------
 //ƒLƒƒƒ‰ƒŠƒXƒgƒNƒ‰ƒX
 using CCharaList = CCollection<CHARA_DATA, 10, 8 * 1024, 8 * 1024>;
-//\‘¢‘Ìƒo[ƒWƒ‡ƒ“
-SERIALIZE_VERSION_DEF(CCharaList, 1, 0);
+//--------------------
+//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒBƒf[ƒ^ƒoƒbƒtƒ@ƒNƒ‰ƒX
+class CCharaAbilityBuff
+{
+public:
+	//ƒƒ\ƒbƒh
+	CHARA_ABILITY_DATA* assign(){ return m_pool.createData(); }
+	void release(CHARA_ABILITY_DATA* data){ m_pool.destroyData(data); }
+public:
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	CCharaAbilityBuff()
+	{}
+private:
+	//ƒtƒB[ƒ‹ƒh
+	CPoolAllocatorWithType<CHARA_ABILITY_DATA, 100> m_pool;//ƒf[ƒ^—p‚Ìƒoƒbƒtƒ@
+};
+
+//--------------------
+//ƒLƒƒƒ‰ƒf[ƒ^\‘¢‘ÌFƒƒ\ƒbƒhÀ‘•
+//•Ší‚ğƒZƒbƒg
+void CHARA_DATA::setWeapon(const crc32_t weapon_id)
+{
+	CSingleton<CInventory> inventory;
+	ITEM_DATA* item = inventory->find(weapon_id);//ƒCƒxƒ“ƒgƒŠ‚©‚çŒŸõ
+	if (!item)
+	{
+		//‘ÎÛƒAƒCƒeƒ€‚ª‚È‚¢‚Ì‚Å‚Á‚Ä‚¢‚È‚¢‚±‚Æ‚É‚·‚é
+		m_weaponId = 0;
+		m_weapon = nullptr;
+		return;
+	}
+	m_weaponId = weapon_id;
+	m_weapon = item;
+}
+//‚‚ğƒZƒbƒg
+void CHARA_DATA::setShield(const crc32_t shield_id)
+{
+	CSingleton<CInventory> inventory;
+	ITEM_DATA* item = inventory->find(shield_id);//ƒCƒxƒ“ƒgƒŠ‚©‚çŒŸõ
+	if (!item)
+	{
+		//‘ÎÛƒAƒCƒeƒ€‚ª‚È‚¢‚Ì‚Å‚Á‚Ä‚¢‚È‚¢‚±‚Æ‚É‚·‚é
+		m_shieldId = 0;
+		m_shield = nullptr;
+		return;
+	}
+	m_shieldId = shield_id;
+	m_shield = item;
+}
+//ƒAƒCƒeƒ€‚ğQÆ‚µ’¼‚·
+void CHARA_DATA::attachItems()
+{
+	setWeapon(m_weaponId);//•Ší
+	setShield(m_shieldId);//‚
+}
+//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒB‚ğ’Ç‰Á
+void CHARA_DATA::addAbility(const crc32_t ability_id)
+{
+	CSingleton<CAbilityList> chara_ability_list;
+	ABILITY_DATA* ability = chara_ability_list->find(ability_id);//ƒAƒrƒŠƒeƒBƒŠƒXƒg‚©‚çŒŸõ
+	if (!ability)//ƒAƒrƒŠƒeƒB‚ª‚È‚¯‚ê‚ÎI—¹
+		return;
+	//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒB‚Ìƒoƒbƒtƒ@‚ğŠ„‚è“–‚Ä
+	CSingleton<CCharaAbilityBuff> chara_ability_buff;
+	CHARA_ABILITY_DATA* new_chara_ability = chara_ability_buff->assign();
+	if (!new_chara_ability)//ƒoƒbƒtƒ@‚ª‘«‚è‚È‚¯‚ê‚Î¸”s
+		return;
+	//ƒoƒbƒtƒ@‚ÉƒAƒrƒŠƒeƒB‚ğƒZƒbƒg‚µ‚Ä˜AŒ‹ƒŠƒXƒg‚ÌÅŒã‚É˜AŒ‹
+	new_chara_ability->m_next = nullptr;
+	new_chara_ability->m_ability = ability;
+	CHARA_ABILITY_DATA* chara_ability = m_abilities;
+	while (chara_ability && chara_ability->m_next)
+		chara_ability = chara_ability->m_next;
+	if (chara_ability)
+		chara_ability->m_next = new_chara_ability;
+	else
+		m_abilities = new_chara_ability;
+}
+//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒB‚ğæ“¾
+ABILITY_DATA* CHARA_DATA::getAbility(const int index)
+{
+	CHARA_ABILITY_DATA* chara_ability = m_abilities;
+	for (int i = 0; i < index && chara_ability; ++i)
+		chara_ability = chara_ability->m_next;
+	return chara_ability == nullptr ? nullptr : chara_ability->m_ability;
+}
 
 //--------------------
 //is•ƒtƒ‰ƒOƒf[ƒ^
@@ -7464,78 +7522,10 @@ private:
 	short m_phase;//isƒtƒF[ƒY
 	flag_t m_flags;//ƒtƒ‰ƒO
 	//ƒVƒŠƒAƒ‰ƒCƒY—p‚ÌƒtƒŒƒ“ƒhİ’è
-	FRIEND_SERIALIZE(CPhaseAndFlags);
+	FRIEND_SERIALIZE();
 };
 //\‘¢‘Ìƒo[ƒWƒ‡ƒ“
 SERIALIZE_VERSION_DEF(CPhaseAndFlags, 1, 0);
-
-//--------------------
-//ƒLƒƒƒ‰ƒf[ƒ^Fƒƒ\ƒbƒhÀ‘•
-//•Ší‚ğƒZƒbƒg
-void CHARA_DATA::setWeapon(const crc32_t weapon_id)
-{
-	CSingleton<CInventory> inventory;
-	ITEM_DATA* item = inventory->find(weapon_id);
-	if (!item)
-	{
-		//‘ÎÛƒAƒCƒeƒ€‚ª‚È‚¢‚Ì‚Å‚Á‚Ä‚¢‚È‚¢‚±‚Æ‚É‚·‚é
-		m_weaponId = 0;
-		m_weapon = nullptr;
-		return;
-	}
-	m_weaponId = weapon_id;
-	m_weapon = item;
-}
-//‚‚ğƒZƒbƒg
-void CHARA_DATA::setShield(const crc32_t shield_id)
-{
-	CSingleton<CInventory> inventory;
-	ITEM_DATA* item = inventory->find(shield_id);
-	if (!item)
-	{
-		//‘ÎÛƒAƒCƒeƒ€‚ª‚È‚¢‚Ì‚Å‚Á‚Ä‚¢‚È‚¢‚±‚Æ‚É‚·‚é
-		m_shieldId = 0;
-		m_shield = nullptr;
-		return;
-	}
-	m_shieldId = shield_id;
-	m_shield = item;
-}
-//ƒAƒCƒeƒ€‚ğQÆ‚µ’¼‚·
-void CHARA_DATA::attachItems()
-{
-	setWeapon(m_weaponId);//•Ší
-	setShield(m_shieldId);//‚
-}
-//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒB‚ğ’Ç‰Á
-void CHARA_DATA::addAbility(const crc32_t ability_id)
-{
-	CSingleton<CAbilityList> chara_ability_list;
-	ABILITY_DATA* ability = chara_ability_list->find(ability_id);
-	if (!ability)
-		return;
-	CSingleton<CCharaAbilityBuff> chara_ability_buff;
-	CHARA_ABILITY_DATA* new_chara_ability = chara_ability_buff->assign();
-	if (!new_chara_ability)
-		return;
-	new_chara_ability->m_next = nullptr;
-	new_chara_ability->m_ability = ability;
-	CHARA_ABILITY_DATA* chara_ability = m_abilities;
-	while (chara_ability && chara_ability->m_next)
-		chara_ability = chara_ability->m_next;
-	if (chara_ability)
-		chara_ability->m_next = new_chara_ability;
-	else
-		m_abilities = new_chara_ability;
-}
-//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒB‚ğæ“¾
-ABILITY_DATA* CHARA_DATA::getAbility(const int index)
-{
-	CHARA_ABILITY_DATA* chara_ability = m_abilities;
-	for (int i = 0; i < index && chara_ability; ++i)
-		chara_ability = chara_ability->m_next;
-	return chara_ability == nullptr ? nullptr : chara_ability->m_ability;
-}
 
 //--------------------------------------------------------------------------------
 //ƒeƒXƒgƒf[ƒ^—pƒf[ƒ^Šm”Fˆ—
@@ -7584,6 +7574,7 @@ void makeTestData(const int pattern)
 	//ƒCƒ“ƒxƒ“ƒgƒŠƒf[ƒ^“o˜^
 	{
 		CSingleton<CInventory> inventory;
+		//•Ší“o˜^
 		for (int i = 0; i < 5 + pattern * 10; i += (1 + pattern))
 		{
 			char id[8];
@@ -7610,6 +7601,7 @@ void makeTestData(const int pattern)
 				item.setTitle(nullptr);
 			inventory->regist(item);
 		}
+		//‚“o˜^
 		for (int i = 0; i < 5 + pattern * 10; i += (1 + pattern))
 		{
 			char id[8];
@@ -7636,6 +7628,7 @@ void makeTestData(const int pattern)
 				item.setTitle(nullptr);
 			inventory->regist(item);
 		}
+		//‰ñ•œ–ò“o˜^
 		for (int i = pattern; i < 3 + pattern * 3; ++i)
 		{
 			char id[8];
@@ -7799,13 +7792,39 @@ void printDataAll()
 	}
 }
 
+//--------------------
+//ƒf[ƒ^‘€ìƒeƒXƒg
+void testDataControl()
+{
+	//‘Sƒf[ƒ^ƒŠƒZƒbƒg
+	resetAll();
+	//Œ»İ‚Ìƒf[ƒ^‚ğ•\¦
+	printDataAll();
+	//ƒeƒXƒgƒf[ƒ^ì¬(pattern=0)
+	makeTestData(0);
+	//Œ»İ‚Ìƒf[ƒ^‚ğ•\¦
+	printDataAll();
+	//‘Sƒf[ƒ^ƒŠƒZƒbƒg
+	resetAll();
+	//ƒeƒXƒgƒf[ƒ^ì¬(pattern=1)
+	makeTestData(1);
+	//Œ»İ‚Ìƒf[ƒ^‚ğ•\¦
+	printDataAll();
+}
+
 //--------------------------------------------------------------------------------
 //ƒeƒXƒgƒf[ƒ^—pƒVƒŠƒAƒ‰ƒCƒY
 
+#define SIMULATE_ILLEGAL_DATA//ƒf[ƒ^•s®‡‚ğƒ`ƒFƒbƒN‚·‚é‚È‚ç‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚éiCHARA_DATA‚Ì•s®‡ˆ—‚ğ—LŒø‰»‚·‚éj
+#define USE_SAVEDATA_VERSION//ƒZ[ƒuƒf[ƒ^ƒo[ƒWƒ‡ƒ“ƒNƒ‰ƒX‚ğg—p‚·‚é‚È‚ç‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
+
 //--------------------
-//ƒZ[ƒuƒf[ƒ^—pŠî–{ƒNƒ‰ƒX
+//ƒZ[ƒuƒf[ƒ^“Š‡—pƒNƒ‰ƒX
+//¦’†g‚ª‹ó‚ÌƒNƒ‰ƒX‚Å‚æ‚¢
+//¦‚±‚ê‚É‘Î‚·‚éƒRƒŒƒNƒ^[‚ÆƒfƒBƒXƒgƒŠƒrƒ…[ƒ^‚ğ’è‹`‚µ‚Äg—p‚·‚é
 class CSaveData{};
 
+#ifdef USE_SAVEDATA_VERSION
 //--------------------
 //ƒZ[ƒuƒf[ƒ^ƒo[ƒWƒ‡ƒ“ŠÇ—ƒNƒ‰ƒX
 class CSaveDataVersion
@@ -7872,7 +7891,7 @@ private:
 	bool m_hasSaved;//ƒZ[ƒu‚µ‚½‚©H
 	bool m_hasLoaded;//ƒ[ƒh‚µ‚½‚©H
 	//ƒVƒŠƒAƒ‰ƒCƒY—p‚ÌƒtƒŒƒ“ƒhİ’è
-	FRIEND_SERIALIZE(CSaveDataVersion);
+	FRIEND_SERIALIZE();
 };
 //--------------------
 //ƒZ[ƒuƒf[ƒ^—pƒo[ƒWƒ‡ƒ“‚ğ•\¦
@@ -7890,6 +7909,7 @@ void printSaveDataVer()
 	printf("EƒZ[ƒu‚µ‚½‚©H = %s\n", save_data_version->hasSaved() ? "yes" : "no");
 	printf("Eƒ[ƒh‚µ‚½‚©H = %s\n", save_data_version->hasLoaded() ? "yes" : "no");
 }
+#endif//USE_SAVEDATA_VERSION
 
 //--------------------
 //ƒeƒXƒg—pƒNƒ‰ƒX‚ÌƒVƒŠƒAƒ‰ƒCƒYˆ—’è‹`
@@ -7901,7 +7921,7 @@ namespace serial
 	struct serialize<Arc, std::bitset<N> > {
 		void operator()(Arc& arc, const std::bitset<N>& obj, const CVersion& ver, const CVersion& now_ver)
 		{
-			arc & pairBin("bitset", obj);
+			arc & pairBin("bitset", obj);//ƒIƒuƒWƒFƒNƒg‘S‘Ì‚ğƒoƒCƒgƒf[ƒ^‚Æ‚µ‚Äˆµ‚¤
 		}
 	};
 	//--------------------
@@ -7911,7 +7931,7 @@ namespace serial
 		void operator()(Arc& arc, const CStr<S>& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			arc & pair("len", obj.m_len);
-			arc & pairStr("str", obj.m_str);
+			arc & pairStr("str", obj.m_str);//•¶š—ñƒf[ƒ^‚Æ‚µ‚Äˆµ‚¤
 		}
 	};
 	//--------------------
@@ -7920,8 +7940,8 @@ namespace serial
 	struct serialize<Arc, CStrWithCRC<S> > {
 		void operator()(Arc& arc, const CStrWithCRC<S>& obj, const CVersion& ver, const CVersion& now_ver)
 		{
-			serialize<Arc, typename CStrWithCRC<S>::CParent> parent;
-			parent(arc, obj, ver, now_ver);//eƒNƒ‰ƒX‚ÌƒVƒŠƒAƒ‰ƒCƒY‚ğŒÄ‚Ño‚µ
+			serialize<Arc, typename CStrWithCRC<S>::CParent> parent_functor;
+			parent_functor(arc, obj, ver, now_ver);//eƒNƒ‰ƒX‚ÌƒVƒŠƒAƒ‰ƒCƒY‚ğ’¼ÚŒÄ‚Ño‚µ
 			arc & pair("crc", obj.m_crc);
 		}
 	};
@@ -7943,7 +7963,7 @@ namespace serial
 		{
 			arc & pair("id", obj.m_id);
 			arc & pair("name", obj.m_name);
-			arc & pairStr("title", obj.m_title);//‰Â•Ï’·•¶š—ñiƒ|ƒCƒ“ƒ^j‚ÌƒeƒXƒg
+			arc & pairStr("title", obj.m_title);//‰Â•Ï’·•¶š—ñiƒ|ƒCƒ“ƒ^j
 			//arc & pairArray("title", obj.m_title, obj.getTitleBuffSize());//”z—ñ‚Æ‚µ‚Äˆµ‚¤‚±‚Æ‚à‰Â
 			arc & pair("basic", obj.m_basic);
 			arc & pair("recover", obj.m_recover);
@@ -7956,7 +7976,7 @@ namespace serial
 	struct afterLoad<Arc, ITEM_DATA> {
 		void operator()(Arc& arc, ITEM_DATA& obj, const CVersion& ver, const CVersion& now_ver)
 		{
-			if (obj.m_title[0] == '\0')//•œŒ³‚³‚ê‚È‚©‚Á‚½ƒ^ƒCƒgƒ‹‚Ínullptr‚É‚·‚é
+			if (obj.m_title && obj.m_title[0] == '\0')//‹ó•¶š—ñ‚ÌÌ†‚Ínullptr‚É‚·‚é
 				obj.m_title = nullptr;
 		}
 	};
@@ -7977,6 +7997,7 @@ namespace serial
 	struct serialize<Arc, CHARA_DATA> {
 		void operator()(Arc& arc, const CHARA_DATA& obj, const CVersion& ver, const CVersion& now_ver)
 		{
+		#ifdef SIMULATE_ILLEGAL_DATA
 			arc & pair("id", obj.m_id);
 			arc & pair("name", obj.m_name);
 			arc & pair("level", obj.m_level);
@@ -7984,9 +8005,24 @@ namespace serial
 			arc & pair("weapon", obj.m_weaponId);
 			arc & pair("shield", obj.m_shieldId);
 			//arc & pair("param1", obj.m_param1);//ƒZ[ƒuƒf[ƒ^‚É‚µ‚©‚È‚¢ƒf[ƒ^‚ÌƒVƒ~ƒ…ƒŒ[ƒVƒ‡ƒ“
-			//arc & pair("param2", obj.m_param1);//ƒZ[ƒuƒf[ƒ^‚ª‚È‚¢ƒf[ƒ^‚ÌƒVƒ~ƒ…ƒŒ[ƒVƒ‡ƒ“
+			//arc & pair("param2", obj.m_param2);//ƒZ[ƒuƒf[ƒ^‚ª‚È‚¢ƒf[ƒ^‚ÌƒVƒ~ƒ…ƒŒ[ƒVƒ‡ƒ“
+		#else//SIMULATE_ILLEGAL_DATA
+			arc & pair("id", obj.m_id);
+			arc & pair("name", obj.m_name);
+			arc & pair("level", obj.m_level);
+			arc & pair("basic", obj.m_basic);
+			arc & pair("weapon", obj.m_weaponId);
+			arc & pair("shield", obj.m_shieldId);
+			arc & pair("param1", obj.m_param1);
+			arc & pair("param2", obj.m_param2);
+		#endif//SIMULATE_ILLEGAL_DATA
+			//‰º‹L‚Ì€–Ú‚ÍƒZ[ƒuƒf[ƒ^‚É‹L˜^‚µ‚È‚¢
+			//obj.m_weapon//ITEM_DATA*
+			//obj.m_shield//ITEM_DATA*
+			//obj.m_abilities//CHARA_ABILITY_DATA*
 		}
 	};
+#ifdef SIMULATE_ILLEGAL_DATA
 	//--------------------
 	//ƒVƒŠƒAƒ‰ƒCƒYê—pˆ—FCHARA_DATA
 	template<class Arc>
@@ -8035,6 +8071,7 @@ namespace serial
 			}
 		}
 	};
+#endif//SIMULATE_ILLEGAL_DATA
 	//--------------------
 	//ƒ[ƒhŒãˆ—FCHARA_DATA
 	template<class Arc>
@@ -8042,8 +8079,8 @@ namespace serial
 		void operator()(Arc& arc, CHARA_DATA& obj, const CVersion& ver, const CVersion& now_ver)
 		{
 			CSingleton<CInventory> inventory;
-			obj.m_weapon = inventory->find(obj.m_weaponId);//•Ší‚Ìƒ|ƒCƒ“ƒ^‚ğ•œŒ³
-			obj.m_shield = inventory->find(obj.m_shieldId);//‚‚Ìƒ|ƒCƒ“ƒ^‚ğ•œŒ³
+			obj.m_weapon = inventory->find(obj.m_weaponId);//•Ší‚ÌQÆiƒ|ƒCƒ“ƒ^j‚ğŠ„‚è“–‚Ä
+			obj.m_shield = inventory->find(obj.m_shieldId);//‚‚ÌQÆiƒ|ƒCƒ“ƒ^j‚ğŠ„‚è“–‚Ä
 			obj.m_abilities = nullptr;//ƒAƒrƒŠƒeƒB‚Íˆê’Unullptr‚É‚µ‚Ä‚¨‚­
 		}
 	};
@@ -8054,14 +8091,14 @@ namespace serial
 		void operator()(Arc& arc, const CHARA_DATA& obj, const CVersion& ver)
 		{
 			CHARA_ABILITY_DATA* chara_ability = obj.m_abilities;
-			while (chara_ability)
+			while (chara_ability)//‘S‚Ä‚Ì˜AŒ‹ƒŠƒXƒg‚ğ‚½‚Ç‚Á‚Äˆ—
 			{
 				//ƒAƒrƒŠƒeƒBî•ñæ“¾
 				ABILITY_DATA* ability_data = chara_ability->m_ability;
 				//ƒZ[ƒu—pƒAƒrƒŠƒeƒBî•ñì¬
 				//¦ˆê“I‚Éƒ[ƒJƒ‹•Ï”‚É‹L˜^‚µ‚½î•ñ‚ğƒZ[ƒu‚·‚é
 				CHARA_ABILITY_DATA_FOR_SAVE chara_ability_data_for_save;
-				//chara_ability_data_for_save.m_charaId = obj.m_id.getKey();//ƒAƒrƒŠƒeƒBID
+				//chara_ability_data_for_save.m_charaId = obj.m_id.getKey();//ƒLƒƒƒ‰ID
 				chara_ability_data_for_save.m_abilityId = ability_data->getKey();//ƒAƒrƒŠƒeƒBID
 				//ƒVƒŠƒAƒ‰ƒCƒY
 				arc << pair("charaAbility", chara_ability_data_for_save);
@@ -8076,7 +8113,7 @@ namespace serial
 	struct distributor<Arc, CHARA_DATA> {
 		void operator()(Arc& arc, CHARA_DATA& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver, const CItemBase& target_item)
 		{
-			if (target_item == "charaAbility")
+			if (target_item == "charaAbility")//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒB‚Ìƒf[ƒ^‚©”»’è
 			{
 				//ƒZ[ƒu—pƒAƒrƒŠƒeƒBî•ñ•œŒ³
 				//¦ˆê“I‚Éƒ[ƒJƒ‹•Ï”‚É“WŠJ‚µ‚ÄÀÛ‚Ìƒf[ƒ^‚É”½‰f‚³‚¹‚é
@@ -8107,6 +8144,7 @@ namespace serial
 			arc & pair("flags", obj.m_flags);
 		}
 	};
+#ifdef USE_SAVEDATA_VERSION
 	//--------------------
 	//ƒVƒŠƒAƒ‰ƒCƒYˆ—FCSaveDataVersion
 	template<class Arc>
@@ -8118,17 +8156,20 @@ namespace serial
 			arc & pair("saveTime", obj.m_saveTime);
 		}
 	};
+#endif//USE_SAVEDATA_VERSION
 	//--------------------
 	//ûWˆ—FCSaveData
 	template<class Arc>
 	struct collector<Arc, CSaveData> {
 		void operator()(Arc& arc, const CSaveData& obj, const CVersion& ver)
 		{
+		#ifdef USE_SAVEDATA_VERSION
 			//ƒZ[ƒuƒf[ƒ^ƒo[ƒWƒ‡ƒ“‚Ìƒo[ƒWƒ‡ƒ“‚ğ•Û‘¶—p‚ÉXV
 			CSingleton<CSaveDataVersion> save_data_version;
 			save_data_version->updateLoadedVer();
 			arc << pair("version", *save_data_version);//ƒVƒŠƒAƒ‰ƒCƒY
 			save_data_version->setHasSaved();
+		#endif//USE_SAVEDATA_VERSION
 
 			//ƒCƒ“ƒxƒ“ƒgƒŠ‚Ìƒf[ƒ^‚ğûW
 			CSingleton<CInventory> inventory;
@@ -8196,11 +8237,11 @@ namespace serial
 	{
 		return s_loadTarget != 0;
 	}
-	bool isPartLoad(const crc32_t name_crc)//•”•ªƒ[ƒh‚©H
+	bool isPartLoad(const crc32_t name_crc)//•”•ªƒ[ƒh‚©H‚©‚ÂA‚»‚Ì‘ÎÛ€–Ú‚©H
 	{
 		return isPartLoad() && isLoadTarget(name_crc);
 	}
-	bool isPartLoad(const char* name)//•”•ªƒ[ƒh‚©H
+	bool isPartLoad(const char* name)//•”•ªƒ[ƒh‚©H‚©‚ÂA‚»‚Ì‘ÎÛ€–Ú‚©H
 	{
 		return isPartLoad() && isLoadTarget(name);
 	}
@@ -8210,31 +8251,31 @@ namespace serial
 	struct beforeDistribute<Arc, CSaveData> {
 		void operator()(Arc& arc, CSaveData& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver)
 		{
-			if (isLoadTarget("item"))
+			if (isLoadTarget("item"))//‘S‘Ìƒ[ƒh‚à‚µ‚­‚Í•”•ªƒ[ƒh‚Ì‘ÎÛ‚È‚çÀs
 			{
 				//ƒCƒ“ƒxƒ“ƒgƒŠƒf[ƒ^ƒNƒŠƒA
 				CSingleton<CInventory> inventory;
 				inventory.destroy();
 			}
-			if (isLoadTarget("ability"))
+			if (isLoadTarget("ability"))//‘S‘Ìƒ[ƒh‚à‚µ‚­‚Í•”•ªƒ[ƒh‚Ì‘ÎÛ‚È‚çÀs
 			{
 				//ƒAƒrƒŠƒeƒBƒf[ƒ^ƒNƒŠƒA
 				CSingleton<CAbilityList> ability_list;
 				ability_list.destroy();
 			}
-			if (isLoadTarget("chara"))
+			if (isLoadTarget("chara"))//‘S‘Ìƒ[ƒh‚à‚µ‚­‚Í•”•ªƒ[ƒh‚Ì‘ÎÛ‚È‚çÀs
 			{
 				//ƒLƒƒƒ‰ƒf[ƒ^ƒNƒŠƒA
 				CSingleton<CCharaList> chara_list;
 				chara_list.destroy();
 			}
-			if (isLoadTarget("ability") || isLoadTarget("chara"))
+			if (isLoadTarget("ability") || isLoadTarget("chara"))//‘S‘Ìƒ[ƒh‚à‚µ‚­‚Í•”•ªƒ[ƒh‚Ì‘ÎÛ‚È‚çÀs
 			{
 				//ƒLƒƒƒ‰K“¾ƒAƒrƒŠƒeƒBƒf[ƒ^ƒNƒŠƒA
 				CSingleton<CCharaAbilityBuff> chara_ability_list;
 				chara_ability_list.destroy();
 			}
-			if (isLoadTarget("phase_and_flags"))
+			if (isLoadTarget("phase_and_flags"))//‘S‘Ìƒ[ƒh‚à‚µ‚­‚Í•”•ªƒ[ƒh‚Ì‘ÎÛ‚È‚çÀs
 			{
 				//ƒtƒF[ƒY•isƒf[ƒ^ƒNƒŠƒA
 				CSingleton<CPhaseAndFlags> phase_and_flags;
@@ -8248,42 +8289,45 @@ namespace serial
 	struct distributor<Arc, CSaveData> {
 		void operator()(Arc& arc, CSaveData& obj, const std::size_t array_num_on_save_data, const std::size_t array_num_loaded, const CVersion& ver, const CVersion& now_ver, const CItemBase& target_item)
 		{
-			if (target_item == "version")
+		#ifdef USE_SAVEDATA_VERSION
+			if (target_item == "version")//‘ÎÛ€–Ú‚È‚çÀs
 			{
 				//ƒZ[ƒuƒf[ƒ^ƒo[ƒWƒ‡ƒ“
 				CSingleton<CSaveDataVersion> save_data_version;
 				arc >> pair("version", *save_data_version);//ƒfƒVƒŠƒAƒ‰ƒCƒY
 				save_data_version->setHasLoaded();
 			}
-			else if (target_item == "item" && isLoadTarget(target_item))
+			else
+		#endif//USE_SAVEDATA_VERSION
+			if (target_item == "item" && isLoadTarget(target_item))//‘ÎÛ€–Ú‚©‚Âƒ[ƒh‘ÎÛ‚È‚çÀs
 			{
 				//ƒCƒ“ƒxƒ“ƒgƒŠƒf[ƒ^•œŒ³
 				CSingleton<CInventory> inventory;
 				ITEM_DATA item_data;
 				arc >> pair("item", item_data);//ƒfƒVƒŠƒAƒ‰ƒCƒY
-				inventory->regist(item_data);
+				inventory->regist(item_data);//ƒCƒ“ƒxƒ“ƒgƒŠ‚É“o˜^
 			}
-			else if (target_item == "ability" && isLoadTarget(target_item))
+			else if (target_item == "ability" && isLoadTarget(target_item))//‘ÎÛ€–Ú‚©‚Âƒ[ƒh‘ÎÛ‚È‚çÀs
 			{
 				//ƒAƒrƒŠƒeƒBƒf[ƒ^•œŒ³
 				CSingleton<CAbilityList> ability_list;
 				ABILITY_DATA ability_data;
-				arc >> pair("ability", ability_data);
-				ability_list->regist(ability_data);
+				arc >> pair("ability", ability_data);//ƒfƒVƒŠƒAƒ‰ƒCƒY
+				ability_list->regist(ability_data);//ƒAƒrƒŠƒeƒBƒŠƒXƒg‚É“o˜^
 			}
-			else if (target_item == "chara" && isLoadTarget(target_item))
+			else if (target_item == "chara" && isLoadTarget(target_item))//‘ÎÛ€–Ú‚©‚Âƒ[ƒh‘ÎÛ‚È‚çÀs
 			{
 				//ƒLƒƒƒ‰ƒf[ƒ^•œŒ³
 				CSingleton<CCharaList> chara_list;
 				CHARA_DATA chara_data;
-				arc >> pair("chara", chara_data);
-				chara_list->regist(chara_data);
+				arc >> pair("chara", chara_data);//ƒfƒVƒŠƒAƒ‰ƒCƒY
+				chara_list->regist(chara_data);//ƒLƒƒƒ‰ƒŠƒXƒg‚É“o˜^
 			}
-			else if (target_item == "phase_and_flags" && isLoadTarget(target_item))
+			else if (target_item == "phase_and_flags" && isLoadTarget(target_item))//‘ÎÛ€–Ú‚©‚Âƒ[ƒh‘ÎÛ‚È‚çÀs
 			{
-				//ƒtƒF[ƒY•isƒf[ƒ^•œ‰
+				//ƒtƒF[ƒY•isƒf[ƒ^•œŒ³
 				CSingleton<CPhaseAndFlags> phase_and_flags;
-				arc >> pair("phase_and_flags", *phase_and_flags);
+				arc >> pair("phase_and_flags", *phase_and_flags);//ƒfƒVƒŠƒAƒ‰ƒCƒY
 			}
 		}
 	};
@@ -8348,7 +8392,7 @@ std::size_t serialize(void* save_data_buff, const std::size_t save_data_buff_siz
 	Arc arc(save_data_buff, save_data_buff_size, work_buff, WORK_BUFF_SIZE);
 
 	//ƒVƒŠƒAƒ‰ƒCƒY
-	arc << serial::pair<CSaveData>("SaveData");
+	arc << serial::pair<CSaveData>("SaveData");//CSaveDataƒNƒ‰ƒX‚ÌƒVƒŠƒAƒ‰ƒCƒY‚ğÀs
 
 	//ƒVƒŠƒAƒ‰ƒCƒY‚ÌŒ‹‰Ê‚ğ•\¦
 	serial::CResult result = arc.getResult();
@@ -8371,21 +8415,21 @@ void deserialize(void* save_data, const std::size_t save_data_size)
 	const std::size_t WORK_BUFF_SIZE = 1 * 1024 * 1024;
 	void* work_buff = new char[WORK_BUFF_SIZE];
 
-	//ƒVƒŠƒAƒ‰ƒCƒY—pƒA[ƒJƒCƒuƒIƒuƒWƒFƒNƒg¶¬
+	//ƒfƒVƒŠƒAƒ‰ƒCƒY—pƒA[ƒJƒCƒuƒIƒuƒWƒFƒNƒg¶¬
 	Arc arc(save_data, save_data_size, work_buff, WORK_BUFF_SIZE);
 
 	//ƒfƒVƒŠƒAƒ‰ƒCƒY
-	arc >> serial::pair<CSaveData>("SaveData");
+	arc >> serial::pair<CSaveData>("SaveData");//CSaveDataƒNƒ‰ƒX‚ÌƒfƒVƒŠƒAƒ‰ƒCƒY‚ğÀs
 
 	//ƒfƒVƒŠƒAƒ‰ƒCƒY‚ÌŒ‹‰Ê‚ğ•\¦
 	serial::CResult result = arc.getResult();
 	printf("ƒfƒVƒŠƒAƒ‰ƒCƒYŒ‹‰ÊF\n");
 	printf("  ’v–½“I‚ÈƒGƒ‰[ ... %s\n", result.hasFatalError() ? "”­¶I" : "‚È‚µ");
-	printf("  ˆÈ‰ºAƒZ[ƒuƒf[ƒ^‚Ìó‘Ô‚É‘Î‚·‚éŒ»İ‚ÌƒvƒƒOƒ‰ƒ€‚ª•Ï‚í‚Á‚Ä‚¢‚½‰ÓŠ‚ÌWŒv\n");
+	printf("  ˆÈ‰ºAŒŸo‚³‚ê‚½‘Šˆá‚ÌWŒv\n");
 	printf("  EƒTƒCƒY‚ªk¬‚³‚ê‚½€–Ú‚Ì”           = %d\n", result.getNumSmallerSizeItem());
 	printf("  EƒTƒCƒY‚ªŠg‘å‚³‚ê‚½€–Ú‚Ì”           = %d\n", result.getNumLargerSizeItem());
-	printf("  E”z—ñƒTƒCƒY‚ªk¬‚³‚ê‚½€–Ú‚Ì”       = %d\n", result.getNumSmallerArrItem());
-	printf("  E”z—ñƒTƒCƒY‚ªŠg‘å‚³‚ê‚½€–Ú‚Ì”       = %d\n", result.getNumLargerArrItem());
+	printf("  E”z—ñ—v‘f”‚ªk¬‚³‚ê‚½€–Ú‚Ì”       = %d\n", result.getNumSmallerArrItem());
+	printf("  E”z—ñ—v‘f”‚ªŠg‘å‚³‚ê‚½€–Ú‚Ì”       = %d\n", result.getNumLargerArrItem());
 	printf("  EƒZ[ƒuƒf[ƒ^ã‚É‚Ì‚İ‘¶İ‚µ‚½€–Ú‚Ì” = %d\n", result.getNumIsOnlyOnSaveData());
 	printf("  EƒZ[ƒuƒf[ƒ^ã‚É‚È‚©‚Á‚½€–Ú‚Ì”     = %d\n", result.getNumIsOnlyOnMem());
 	printf("  EŒ»İ‚ÍƒIƒuƒWƒFƒNƒgŒ^‚Å‚Í‚È‚¢‚ªAƒZ[ƒuƒf[ƒ^ã‚Å‚Í‚»‚¤‚¾‚Á‚½€–Ú‚Ì” = %d\n", result.getNumIsObjOnSaveDataOnly());
@@ -8399,11 +8443,11 @@ void deserialize(void* save_data, const std::size_t save_data_size)
 }
 
 //--------------------
-//ƒZ[ƒu
-void save(const char* file_path, const void* file_image, const std::size_t file_image_size)
+//ƒtƒ@ƒCƒ‹‘‚«‚İ
+void writeFile(const char* file_path, const void* file_image, const std::size_t file_image_size)
 {
 	printf("------------------------------------------------------------\n");
-	printf("yƒZ[ƒuz\n");
+	printf("yƒtƒ@ƒCƒ‹‘‚«‚İz\n");
 	printf("file=\"%s\", size=%d\n", file_path, file_image_size);
 	if (file_image_size == 0)
 	{
@@ -8411,6 +8455,7 @@ void save(const char* file_path, const void* file_image, const std::size_t file_
 		return;
 	}
 
+	//ƒtƒ@ƒCƒ‹‚É•Û‘¶
 	FILE* fp;
 #ifdef USE_STRCPY_S
 	fopen_s(&fp, file_path, "wb");
@@ -8430,14 +8475,14 @@ std::size_t getFileSize(FILE* fp)
 	fseek(fp, 0, SEEK_SET);
 	return file_size;
 }
-
 //--------------------
-//ƒ[ƒh
-std::size_t load(const char* file_path, void* file_image_buff, const std::size_t file_image_buff_size_max)
+//ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+std::size_t readFile(const char* file_path, void* file_image_buff, const std::size_t file_image_buff_size_max)
 {
 	printf("------------------------------------------------------------\n");
-	printf("yƒ[ƒhz\n");
+	printf("yƒtƒ@ƒCƒ‹“Ç‚İ‚İz\n");
 
+	//ƒtƒ@ƒCƒ‹‚Ì“à—e‚ğ‚Ü‚Æ‚ß‚Ä“Ç‚İ‚İ
 	FILE* fp;
 #ifdef USE_STRCPY_S
 	fopen_s(&fp, file_path, "rb");
@@ -8455,9 +8500,9 @@ std::size_t load(const char* file_path, void* file_image_buff, const std::size_t
 }
 
 //--------------------
-//ƒVƒŠƒAƒ‰ƒCƒY•ƒZ[ƒu
+//ƒZ[ƒu
 template<class Arc>
-void serializeAndSave(const char* file_path)
+void save(const char* file_path)
 {
 	//ƒZ[ƒuƒf[ƒ^—pƒoƒbƒtƒ@€”õ
 	const std::size_t SAVE_DATA_BUFF_SIZE = 1 * 1024 * 1024;
@@ -8466,21 +8511,21 @@ void serializeAndSave(const char* file_path)
 	//ƒVƒŠƒAƒ‰ƒCƒY
 	const std::size_t save_data_size = serialize<Arc>(save_data_buff, SAVE_DATA_BUFF_SIZE);
 
-	//ƒZ[ƒu
-	save(file_path, save_data_buff, save_data_size);
+	//ƒtƒ@ƒCƒ‹‘‚«‚İ
+	writeFile(file_path, save_data_buff, save_data_size);
 }
 
 //--------------------
-//ƒ[ƒh•ƒfƒVƒŠƒAƒ‰ƒCƒY
+//ƒ[ƒh
 template<class Arc>
-void loadAndDeserialize(const char* file_path)
+void load(const char* file_path)
 {
 	//ƒZ[ƒuƒf[ƒ^—pƒoƒbƒtƒ@€”õ
 	const std::size_t SAVE_DATA_BUFF_SIZE = 1 * 1024 * 1024;
 	void* save_data_buff = new char[SAVE_DATA_BUFF_SIZE];
 
-	//ƒ[ƒh
-	const std::size_t save_data_size = load(file_path, save_data_buff, SAVE_DATA_BUFF_SIZE);
+	//ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+	const std::size_t save_data_size = readFile(file_path, save_data_buff, SAVE_DATA_BUFF_SIZE);
 
 	//ƒfƒVƒŠƒAƒ‰ƒCƒY
 	deserialize<Arc>(save_data_buff, save_data_size);
@@ -8490,58 +8535,73 @@ void loadAndDeserialize(const char* file_path)
 //ƒeƒXƒgÀs
 
 //--------------------
-//ƒVƒŠƒAƒ‰ƒCƒY
-void test2serialize()
+//ƒVƒŠƒAƒ‰ƒCƒY•ƒfƒVƒŠƒAƒ‰ƒCƒYƒeƒXƒg
+void testDataSerialize()
 {
+	//-----
+	//ƒZ[ƒuƒf[ƒ^ƒtƒ@ƒCƒ‹ƒpƒX
+	const char* save_file_name_bin = "save_data.bin";//ƒoƒCƒiƒŠŒ`®—p
+	const char* save_file_name_txt = "save_data.txt";//ƒeƒLƒXƒgŒ`®—p
+
+	//-----
+	//ƒf[ƒ^‚ğì¬‚µ‚ÄƒZ[ƒu
+
 	//‘Sƒf[ƒ^ƒŠƒZƒbƒg
 	resetAll();
-	//ƒeƒXƒgƒf[ƒ^ì¬(pattern=1)
+	//ƒeƒXƒgƒf[ƒ^ì¬(pattern=0)
 	makeTestData(0);
 	//Œ»İ‚Ìƒf[ƒ^‚ğ•\¦
 	printDataAll();
+#ifdef USE_SAVEDATA_VERSION
 	//ƒZ[ƒuƒf[ƒ^—pƒo[ƒWƒ‡ƒ“‚ğ•\¦
 	printSaveDataVer();
-	//ƒtƒ@ƒCƒ‹ƒpƒX•ƒA[ƒJƒCƒuƒIƒuƒWƒFƒNƒg
-	const char* save_file_name_bin = "save_data.bin";
-	const char* save_file_name_txt = "save_data.txt";
-	//ƒVƒŠƒAƒ‰ƒCƒY•ƒZ[ƒu
-	serializeAndSave<serial::COBinaryArchive>(save_file_name_bin);//ƒoƒCƒiƒŠŒ`®‚ğg—p
-	serializeAndSave<serial::COTextArchive>(save_file_name_txt);//ƒeƒLƒXƒgŒ`®‚ğg—p
+#endif//USE_SAVEDATA_VERSION
+	//ƒZ[ƒuiƒVƒŠƒAƒ‰ƒCƒY•ƒtƒ@ƒCƒ‹‘‚«‚İj
+	save<serial::COBinaryArchive>(save_file_name_bin);//ƒoƒCƒiƒŠŒ`®‚ğg—p
+	save<serial::COTextArchive>(save_file_name_txt);//ƒeƒLƒXƒgŒ`®‚ğg—p
+#ifdef USE_SAVEDATA_VERSION
 	//ƒZ[ƒuƒf[ƒ^—pƒo[ƒWƒ‡ƒ“‚ğ•\¦
 	printSaveDataVer();
+#endif//USE_SAVEDATA_VERSION
+
+	//-----
+	//ƒf[ƒ^‚ğƒŠƒZƒbƒg‚µƒ[ƒh
+
 	//‘Sƒf[ƒ^ƒŠƒZƒbƒg
 	resetAll();
 	//Œ»İ‚Ìƒf[ƒ^‚ğ•\¦
 	printDataAll();
-	//ƒ[ƒh•ƒfƒVƒŠƒAƒ‰ƒCƒY
-	loadAndDeserialize<serial::CIBinaryArchive>(save_file_name_bin);
+	//ƒ[ƒh
+	load<serial::CIBinaryArchive>(save_file_name_bin);
+#ifdef USE_SAVEDATA_VERSION
 	//ƒZ[ƒuƒf[ƒ^—pƒo[ƒWƒ‡ƒ“‚ğ•\¦
 	printSaveDataVer();
+#endif//USE_SAVEDATA_VERSION
 	//Œ»İ‚Ìƒf[ƒ^‚ğ•\¦
 	printDataAll();
+
+	//-----
+	//•”•ªƒ[ƒh‚ÌƒeƒXƒg‚Ì‚½‚ß‚ÉAƒZ[ƒuƒf[ƒ^‚ÆˆÙ‚È‚éƒf[ƒ^‚ğì¬
+
 	//‘Sƒf[ƒ^ƒŠƒZƒbƒg
 	resetAll();
 	//ƒeƒXƒgƒf[ƒ^ì¬(pattern=1)
 	makeTestData(1);
 	//Œ»İ‚Ìƒf[ƒ^‚ğ•\¦
 	printDataAll();
+
+	//-----
+	//•”•ªƒ[ƒhˆ—
+
 	//•”•ªƒ[ƒhw’è
 	//serial::setLoadTarget("phase_and_flags");
 	serial::setLoadTarget("chara");
-	//ƒ[ƒh•ƒfƒVƒŠƒAƒ‰ƒCƒY
-	loadAndDeserialize<serial::CIBinaryArchive>(save_file_name_bin);
+	//ƒ[ƒhiƒtƒ@ƒCƒ‹“Ç‚İ‚İ•ƒfƒVƒŠƒAƒ‰ƒCƒYj
+	load<serial::CIBinaryArchive>(save_file_name_bin);
 	//Œ»İ‚Ìƒf[ƒ^‚ğ•\¦
 	printDataAll();
 	//•”•ªƒ[ƒhw’è‰ğœ
 	serial::resetLoadTarget();
-}
-
-//--------------------
-//ƒeƒXƒg
-void test2()
-{
-	//ƒVƒŠƒAƒ‰ƒCƒY
-	test2serialize();
 }
 
 //--------------------------------------------------------------------------------
@@ -8549,7 +8609,8 @@ void test2()
 int main(const int argc, const char* argv[])
 {
 	test1();
-	test2();
+	//testDataControl();
+	testDataSerialize();
 	return EXIT_SUCCESS;
 }
 

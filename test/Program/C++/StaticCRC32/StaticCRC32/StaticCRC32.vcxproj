@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common\size.h" />
+    <ClInclude Include="src\constexpr\constexpr.h" />
+    <ClInclude Include="src\constexpr\constexpr_test.h" />
     <ClInclude Include="src\crc\crc32.h" />
     <ClInclude Include="src\crc\crc32_table.h" />
     <ClInclude Include="src\crc\crc32_template.h" />
@@ -22,6 +24,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\constexpr\constexpr.cpp" />
+    <ClCompile Include="src\constexpr\constexpr_performance.cpp" />
+    <ClCompile Include="src\constexpr\constexpr_test.cpp" />
     <ClCompile Include="src\crc\crc32.cpp" />
     <ClCompile Include="src\crc\crc32_table.cpp" />
     <ClCompile Include="src\main\main.cpp" />

@@ -30,15 +30,31 @@
 #include <smmintrin.h>//SSE4.1
 //#include <nmmintrin.h>//SSE4.2
 //#include <wmmintrin.h>//AESà√çÜâªÇ®ÇÊÇ—PCLMULQDQ
-//#include <immintrin.h>//AVX
+//#include <immintrin.h>//AVX1,AVX2
 #else//USE_SIMD
 #include <math.h>//sqrt
 #endif//USE_SIMD
 
 #ifdef USE_SIMD
+//----------
+//ÉxÉNÉgÉãÉNÉâÉXåvéZópä÷êî
+//operatorÇ™égÇ¶ÇÈÇÊÇ§Ç…ÅA__m128ópÇÃç\ë¢ëÃÇópà”
+struct __m128_s
+{
+	__m128 m_val;
+	inline operator __m128() const { return m_val; }
+	inline __m128_s& operator=(const __m128 val)
+	{
+		m_val = val;
+		return *this;
+	}
+	inline __m128_s(const __m128 val) :
+		m_val(val)
+	{}
+};
 //ìÒçÄââéZéqópä÷êîÇ∆ã§í ä÷êî
 //Å¶SIMDââéZêÍóp
-inline float get_scalar(const __m128 val)
+inline float getScalar(const __m128 val)
 {
 #ifdef USE_MM_EXTRACT_PS
 	union conv
@@ -55,50 +71,59 @@ inline float get_scalar(const __m128 val)
 	return *reinterpret_cast<const float*>(&val);
 #endif//USE_MM_EXTRACT_PS
 }
-inline __m128 calc_add(const __m128 lhs, const __m128 rhs){ return _mm_add_ps(lhs, rhs); }//ret:{lhs[0] + rhs[0], lhs[1] + rhs[1], lhs[2] + rhs[2], lhs[3] + rhs[3]}
-inline __m128 calc_sub(const __m128 lhs, const __m128 rhs){ return _mm_sub_ps(lhs, rhs); }//ret:{lhs[0] - rhs[0], lhs[1] - rhs[1], lhs[2] - rhs[2], lhs[3] - rhs[3]}
-inline __m128 calc_mul(const __m128 lhs, const __m128 rhs){ return _mm_mul_ps(lhs, rhs); }//ret:{lhs[0] * rhs[0], lhs[1] * rhs[1], lhs[2] * rhs[2], lhs[3] * rhs[3]}
-inline __m128 calc_div(const __m128 lhs, const __m128 rhs){ return _mm_div_ps(lhs, rhs); }//ret:{lhs[0] / rhs[0], lhs[1] / rhs[1], lhs[2] / rhs[2], lhs[3] / rhs[3]}
-inline float calc_norm2(const __m128 val)//ÉmÉãÉÄ^2åvéZ
+inline __m128 calcAdd(const __m128 lhs, const __m128 rhs)//ìÒçÄÇÃë´ÇµéZ
 {
-	const __m128 val_pow = _mm_mul_ps(val, val);//ret Å© {val[0] * val[0], val[1] * val[1], val[2] * val[2], val[3] * val[3]}
-	return get_scalar(//ret Å© arg4[0]
+	return _mm_add_ps(lhs, rhs);//ret Å© {lhs[0] + rhs[0], lhs[1] + rhs[1], lhs[2] + rhs[2], lhs[3] + rhs[3]}
+}
+inline __m128 calcSub(const __m128 lhs, const __m128 rhs)//ìÒçÄÇÃà¯Ç´éZ
+{
+	return _mm_sub_ps(lhs, rhs);//ret Å© {lhs[0] - rhs[0], lhs[1] - rhs[1], lhs[2] - rhs[2], lhs[3] - rhs[3]}
+}
+inline __m128 calcMul(const __m128 lhs, const float rhs)//ìÒçÄÇÃä|ÇØéZ
+{
+	return _mm_mul_ps(lhs, _mm_set1_ps(rhs));//ret Å© {lhs[0] * rhs, lhs[1] * rhs, lhs[2] * rhs, lhs[3] * rhs}
+}
+inline __m128 calcDiv(const __m128 lhs, const float rhs)//ìÒçÄÇÃäÑÇËéZ
+{
+	return _mm_div_ps(lhs, _mm_set1_ps(rhs));//ret Å© {lhs[0] / rhs, lhs[1] / rhs, lhs[2] / rhs, lhs[3] / rhs}
+}
+inline float calcNorm2(const __m128 val)//ÉmÉãÉÄ^2åvéZ
+{
+	return getScalar(//ret Å© arg4[0]
 	         _mm_hadd_ps(//arg4 Å© {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
 	           _mm_hadd_ps(    //arg2 Å© {arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
-	             val_pow,        //arg0: val_pow
-	             _mm_setzero_ps()//arg1 Å© {0.f, 0.f, 0.f, 0.f}
+	             _mm_mul_ps(val, val),//arg0 Å© {val[0] * val[0], val[1] * val[1], val[2] * val[2], val[3] * val[3]}
+	             _mm_setzero_ps()     //arg1 Å© {0.f, 0.f, 0.f, 0.f}
 	           ),
 	           _mm_setzero_ps()//arg3 Å© {0.f, 0.f, 0.f, 0.f}
 	         )
 	       );
 }
-inline float calc_norm(const __m128 val)//ÉmÉãÉÄåvéZ
+inline float calcNorm(const __m128 val)//ÉmÉãÉÄåvéZ
 {
-	const __m128 val_pow = _mm_mul_ps(val, val);//ret Å© {val[0] * val[0], val[1] * val[1], val[2] * val[2], val[3] * val[3]}
-	return get_scalar(//ret Å© arg5[0]
+	return getScalar(//ret Å© arg5[0]
 	         _mm_sqrt_ss(//arg5 Å© {sqrt(arg4[0]), arg4[1], arg4[2], arg4[3]}
 	           _mm_hadd_ps(//arg4 Å© {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
 	             _mm_hadd_ps(   //arg2 Å© {arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
-	               val_pow,        //arg0: val_pow
-	               _mm_setzero_ps()//arg1 Å© {0.f, 0.f, 0.f, 0.f}
+	               _mm_mul_ps(val, val),//arg0 Å© {val[0] * val[0], val[1] * val[1], val[2] * val[2], val[3] * val[3]}
+	               _mm_setzero_ps()     //arg1 Å© {0.f, 0.f, 0.f, 0.f}
 	             ),
 	            _mm_setzero_ps()//arg3 Å© {0.f, 0.f, 0.f, 0.f}
 	           )
 	         )
 	       );
 }
-inline __m128 calc_normalize(const __m128 val)//ê≥ãKâª
+inline __m128 calcNormalize(const __m128 val)//ê≥ãKâª
 {
-	const __m128 val_pow = _mm_mul_ps(val, val);//ret Å© {val[0] * val[0], val[1] * val[1], val[2] * val[2], val[3] * val[3]}
 	return _mm_div_ps(//ret Å© {arg7[0] / arg8[0], arg7[1] / arg8[1], arg7[2] / arg8[2], arg7[3] / arg8[3]}
 	         val,        //arg7: val
 	         _mm_set1_ps(//arg8 Å© {arg6, arg6, arg6, arg6}
-	           get_scalar(//arg6 Å© arg5[0]
+	           getScalar(//arg6 Å© arg5[0]
 	            _mm_sqrt_ss(//arg5 Å© {sqrt(arg4[0]), arg4[1], arg4[2], arg4[3]}
 	             _mm_hadd_ps(//arg4 Å© {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
 	               _mm_hadd_ps(      //arg2 Å© {arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
-	                   val_pow,        //arg0: val_pow
-	                   _mm_setzero_ps()//arg1 Å© {0.f, 0.f, 0.f, 0.f}
+	                   _mm_mul_ps(val, val),//arg0 Å© {val[0] * val[0], val[1] * val[1], val[2] * val[2], val[3] * val[3]}
+	                   _mm_setzero_ps()     //arg1 Å© {0.f, 0.f, 0.f, 0.f}
 	                 ),
 	                 _mm_setzero_ps()//arg3 Å© {0.f, 0.f, 0.f, 0.f}
 	               )
@@ -107,29 +132,65 @@ inline __m128 calc_normalize(const __m128 val)//ê≥ãKâª
 	         )
 	       );
 }
-inline float calc_dist2(const __m128 from, const __m128 to)//ãóó£^2åvéZ
+inline __m128 calcAdd(const __m128 lhs, const float rhs)//ìÒçÄÇÃë´ÇµéZ
 {
-	const __m128 val_diff = _mm_sub_ps(to, from);//ret Å© {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
-	const __m128 val_pow = _mm_mul_ps(val_diff, val_diff);//ret Å© {val_diff[0] * val_diff[0], val_diff[1] * val_diff[1], val_diff[2] * val_diff[2], val_diff[3] * val_diff[3]}
-	return get_scalar(//ret Å© arg4[0]
+	return calcAdd(lhs, calcMul(calcNormalize(lhs), rhs));//ret Å© lhs + normalize(lhs) * rhs
+}
+inline __m128 calcSub(const __m128 lhs, const float rhs)//ìÒçÄÇÃà¯Ç´éZ
+{
+	return calcSub(lhs, calcMul(calcNormalize(lhs), rhs));//ret Å© lhs - normalize(lhs) * rhs
+}
+inline float calcDot(const __m128 lhs, const __m128 rhs)//ì‡êœåvéZ
+{
+	return getScalar(//ret Å© arg4[0]
 	         _mm_hadd_ps(//arg4 Å© {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
-	           _mm_hadd_ps(    //arg2 Å© :{arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
-	             val_pow,        //arg0: val_pow
-	             _mm_setzero_ps()//arg1 Å© {0.f, 0.f, 0.f, 0.f}
+	           _mm_hadd_ps(    //arg2 Å© {arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
+	             _mm_mul_ps(lhs, rhs),//arg0 Å© {lhs[0] * rhs[0], lhs[1] * rhs[1], lhs[2] * rhs[2], lhs[3] * rhs[3]}
+	             _mm_setzero_ps()     //arg1 Å© {0.f, 0.f, 0.f, 0.f}
 	           ),
 	           _mm_setzero_ps()//arg3 Å© {0.f, 0.f, 0.f, 0.f}
 	         )
 	       );
 }
-inline float calc_dist(const __m128 from, const __m128 to)//ãóó£åvéZ
+inline float calcNormalizeDot(const __m128 lhs, const __m128 rhs)//ê≥ãKâªÉxÉNÉgÉãÇ≈ì‡êœåvéZ
+{
+	return calcDot(calcNormalize(lhs), calcNormalize(rhs));
+}
+inline __m128 calcCross(const __m128 lhs, const __m128 rhs)//äOêœåvéZ
+{
+	return _mm_sub_ps(//ret Å© {arg2[0] - arg5[0], arg2[1] - arg5[1], arg2[2] - arg5[2], arg2[3] - arg5[3]}
+	         _mm_mul_ps(//arg2 Å© {arg0[0] * arg1[0], arg0[1] * arg1[1], arg0[2] * arg1[2], arg0[3] * arg1[3]}
+	           _mm_shuffle_ps(lhs, lhs, _MM_SHUFFLE(3, 0, 2, 1)),//arg0 Å© {lhs[1], lhs[2], lhs[0], lhs[3]}
+	           _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE(3, 1, 0, 2)) //arg1 Å© {rhs[1], rhs[2], rhs[0], rhs[3]}
+	         ),
+	         _mm_mul_ps(//arg5 Å© {arg3[0] * arg4[0], arg3[1] * arg4[1], arg3[2] * arg4[2], arg3[3] * arg4[3]}
+	           _mm_shuffle_ps(lhs, lhs, _MM_SHUFFLE(3, 1, 0, 2)),//arg3 Å© {lhs[1], lhs[2], lhs[0], lhs[3]}
+	           _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE(3, 0, 2, 1)) //arg4 Å© {rhs[1], rhs[2], rhs[0], rhs[3]}
+	         )
+	       );
+	return lhs;
+}
+inline float calcDistance2(const __m128 from, const __m128 to)//ãóó£^2åvéZ
 {
 	const __m128 val_diff = _mm_sub_ps(to, from);//ret Å© {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
-	const __m128 val_pow = _mm_mul_ps(val_diff, val_diff);//ret Å© {val_diff[0] * val_diff[0], val_diff[1] * val_diff[1], val_diff[2] * val_diff[2], val_diff[3] * val_diff[3]}
-	return get_scalar(//ret Å© arg5[0]
+	return getScalar(//ret Å© arg4[0]
+	         _mm_hadd_ps(//arg4 Å© {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
+	           _mm_hadd_ps(    //arg2 Å© :{arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
+	             _mm_mul_ps(val_diff, val_diff),//arg0 Å© {val_diff[0] * val_diff[0], val_diff[1] * val_diff[1], val_diff[2] * val_diff[2], val_diff[3] * val_diff[3]}
+	             _mm_setzero_ps()               //arg1 Å© {0.f, 0.f, 0.f, 0.f}
+	           ),
+	           _mm_setzero_ps()//arg3 Å© {0.f, 0.f, 0.f, 0.f}
+	         )
+	       );
+}
+inline float calcDistance(const __m128 from, const __m128 to)//ãóó£åvéZ
+{
+	const __m128 val_diff = _mm_sub_ps(to, from);//ret Å© {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
+	return getScalar(//ret Å© arg5[0]
 	         _mm_sqrt_ss(//arg5 Å© {sqrt(arg4[0]), arg4[1], arg4[2], arg4[3]}
 	           _mm_hadd_ps(//arg4 Å© {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
 	             _mm_hadd_ps(    //arg2 Å© {arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
-	               val_pow,        //arg0: val_pow
+	               _mm_mul_ps(val_diff, val_diff),//arg0 Å© {val_diff[0] * val_diff[0], val_diff[1] * val_diff[1], val_diff[2] * val_diff[2], val_diff[3] * val_diff[3]}
 	               _mm_setzero_ps()//arg1 Å© {0.f, 0.f, 0.f, 0.f}
 	             ),
 	             _mm_setzero_ps()//arg3 Å© {0.f, 0.f, 0.f, 0.f}
@@ -139,142 +200,119 @@ inline float calc_dist(const __m128 from, const __m128 to)//ãóó£åvéZ
 }
 #endif//USE_SIMD
 
-struct vec4
+//----------
+//ÉxÉNÉgÉãÉNÉâÉX
+struct vec3
 {
 	//ÉtÉBÅ[ÉãÉh
+#ifdef USE_SIMD
 	float ATTR_SIMD128 m_val[4];
+#else//USE_SIMD
+	float m_val[3];
+#endif//USE_SIMD
 	//ÉAÉNÉZÉbÉT
-	inline float& x() { return m_val[0]; }
-	inline float& y() { return m_val[1]; }
-	inline float& z() { return m_val[2]; }
-	inline float& w() { return m_val[3]; }
-	inline float x() const { return m_val[0]; }
-	inline float y() const { return m_val[1]; }
-	inline float z() const { return m_val[2]; }
-	inline float w() const { return m_val[3]; }
-	inline void x(const float val){ m_val[0] = val; }
-	inline void y(const float val){ m_val[1] = val; }
-	inline void z(const float val){ m_val[2] = val; }
-	inline void w(const float val){ m_val[3] = val; }
-	inline float& operator[](const int index){ return m_val[index]; }
-	inline const float& operator[](const int index) const { return m_val[index]; }
+	float& x() { return m_val[0]; }
+	float& y() { return m_val[1]; }
+	float& z() { return m_val[2]; }
+	float x() const { return m_val[0]; }
+	float y() const { return m_val[1]; }
+	float z() const { return m_val[2]; }
+	void x(const float val){ m_val[0] = val; }
+	void y(const float val){ m_val[1] = val; }
+	void z(const float val){ m_val[2] = val; }
+	float& operator[](const int index){ return m_val[index]; }
+	const float& operator[](const int index) const { return m_val[index]; }
 	//ÉIÉyÉåÅ[É^
-	inline vec4& operator+=(const vec4& rhs)
+	inline vec3& operator+=(const vec3& rhs)
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg2 Å® m_val
-		  calc_add(//arg2 Å© {arg0[0] + arg1[0], arg0[1] + arg1[1], arg0[2] + arg1[2], arg0[3] + arg1[3]}
+		  calcAdd(//arg2 Å© {arg0[0] + arg1[0], arg0[1] + arg1[1], arg0[2] + arg1[2], arg0[3] + arg1[3]}
 		    _mm_load_ps(m_val),   //arg0 Å© m_val
 		    _mm_load_ps(rhs.m_val)//arg1 Å© rhs.m_val
 		  )
 		);
 	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
+		for (int index = 0; index < 3; ++index)
 			m_val[index] += rhs.m_val[index];
 	#endif//USE_SIMD
 		return *this;
 	}
-	inline vec4& operator+=(const float rhs)
+	inline vec3& operator+=(const float rhs)
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg2 Å® m_val
-		  calc_add(//arg2 Å© {arg0[0] + arg1[0], arg0[1] + arg1[1], arg0[2] + arg1[2], arg0[3] + arg1[3]}
+		  calcAdd(//arg2 Å© arg0 + normalize(arg0) * arg1
 		    _mm_load_ps(m_val),//arg0 Å© m_val
-		    _mm_set1_ps(rhs)   //arg1 Å© {rhs, rhs, rhs, rhs}
+		    rhs                //arg1: rhs
 		  )
 		);
 	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
-			m_val[index] += rhs;
+		vec3 rhs_tmp(*this);
+		rhs_tmp.normalize();
+		rhs_tmp *= rhs;
+		*this += rhs_tmp;
 	#endif//USE_SIMD
 		return *this;
 	}
-	inline vec4& operator-=(const vec4& rhs)
+	inline vec3& operator-=(const vec3& rhs)
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg2 Å® m_val
-		  calc_sub(//arg2 Å© {arg0[0] - arg1[0], arg0[1] - arg1[1], arg0[2] - arg1[2], arg0[3] - arg1[3]}
+		  calcSub(//arg2 Å© {arg0[0] - arg1[0], arg0[1] - arg1[1], arg0[2] - arg1[2], arg0[3] - arg1[3]}
 		    _mm_load_ps(m_val),   //arg0 Å© m_val
 		    _mm_load_ps(rhs.m_val)//arg1 Å© rhs.m_val
 		  )
 		);
 	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
+		for (int index = 0; index < 3; ++index)
 			m_val[index] -= rhs.m_val[index];
 	#endif//USE_SIMD
 		return *this;
 	}
-	inline vec4& operator-=(const float rhs)
+	inline vec3& operator-=(const float rhs)
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg2 Å® m_val
-		  calc_sub(//arg2 Å© {arg0[0] - arg1[0], arg0[1] - arg1[1], arg0[2] - arg1[2], arg0[3] - arg1[3]}
+		  calcSub(//arg2 Å© arg0 - normalize(arg0) * arg1
 		    _mm_load_ps(m_val),//arg0 Å© m_val
-		    _mm_set1_ps(rhs)   //arg1 Å© {rhs, rhs, rhs, rhs}
+		    rhs                //arg1: rhs
 		  )
 		);
 	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
-			m_val[index] -= rhs;
+		vec3 rhs_tmp(*this);
+		rhs_tmp.normalize();
+		rhs_tmp *= rhs;
+		*this -= rhs_tmp;
 	#endif//USE_SIMD
 		return *this;
 	}
-	inline vec4& operator*=(const vec4& rhs)
+	inline vec3& operator*=(const float rhs)
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg2 Å® m_val
-		  calc_mul(//arg2 Å© {arg0[0] * arg1[0], arg0[1] * arg1[1], arg0[2] * arg1[2], arg0[3] * arg1[3]}
-		    _mm_load_ps(m_val),   //arg0 Å© m_val
-		    _mm_load_ps(rhs.m_val)//arg1 Å© rhs.m_val
-		  )
-		);
-	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
-			m_val[index] *= rhs.m_val[index];
-	#endif//USE_SIMD
-		return *this;
-	}
-	inline vec4& operator*=(const float rhs)
-	{
-	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg2 Å® m_val
-		  calc_mul(//arg2 Å© {arg0[0] * arg1[0], arg0[1] * arg1[1], arg0[2] * arg1[2], arg0[3] * arg1[3]}
+		  calcMul(//arg2 Å© {arg0[0] * arg1, arg0[1] * arg1, arg0[2] * arg1, arg0[3] * arg1}
 		    _mm_load_ps(m_val),//arg0 Å© m_val
-		    _mm_set1_ps(rhs)   //arg1 Å© {rhs, rhs, rhs, rhs}
+		    rhs                //arg1:rhs
 		  )
 		);
 	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
+		for (int index = 0; index < 3; ++index)
 			m_val[index] *= rhs;
 	#endif//USE_SIMD
 		return *this;
 	}
-	inline vec4& operator/=(const vec4& rhs)
+	inline vec3& operator/=(const float rhs)
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg2 Å® m_val
-		  calc_div(//arg2 Å© {arg0[0] / arg1[0], arg0[1] / arg1[1], arg0[2] / arg1[2], arg0[3] / arg1[3]}
-		    _mm_load_ps(m_val),   //arg0 Å© m_val
-		    _mm_load_ps(rhs.m_val)//arg1 Å© rhs.m_val
-		  )
-		);
-	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
-			m_val[index] /= rhs.m_val[index];
-	#endif//USE_SIMD
-		return *this;
-	}
-	inline vec4& operator/=(const float rhs)
-	{
-	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg2 Å® m_val
-		  calc_div(//arg2 Å© {arg0[0] / arg1[0], arg0[1] / arg1[1], arg0[2] / arg1[2], arg0[3] / arg1[3]}
+		  calcDiv(//arg2 Å© {arg0[0] / arg1, arg0[1] / arg1, arg0[2] / arg1, arg0[3] / arg1}
 		    _mm_load_ps(m_val),//arg0 Å© m_val
-		    _mm_set1_ps(rhs)   //arg1 Å© {rhs, rhs, rhs, rhs}
+		    rhs                //arg1:rhs
 		  )
 		);
 	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
+		for (int index = 0; index < 3; ++index)
 			m_val[index] /= rhs;
 	#endif//USE_SIMD
 		return *this;
@@ -289,66 +327,136 @@ struct vec4
 	{
 		return _mm_load_ps(m_val);//ret Å© m_val
 	}
+	inline operator __m128_s() const
+	{
+		return _mm_load_ps(m_val);//ret Å© m_val
+	}
 #endif//USE_SIMD
 	//ÉRÉsÅ[ÉIÉyÉåÅ[É^
-	inline vec4& operator=(const vec4& rhs)
+	inline vec3& operator=(const vec3& rhs)
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg0 Å® m_val
 		  _mm_load_ps(rhs.m_val)//arg0 Å© rhs.m_val
 		);
 	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
+		for (int index = 0; index < 3; ++index)
 			m_val[index] = rhs.m_val[index];
 	#endif//USE_SIMD
 		return *this;
 	}
 #ifdef USE_SIMD
-	inline vec4& operator=(const __m128 rhs)
+	inline vec3& operator=(const __m128 rhs)
 	{
 		_mm_store_ps(m_val,//arg0 Å® m_val
 		  rhs//arg0: rhs
 		);
 		return *this;
 	}
+	inline vec3& operator=(const __m128_s& rhs)
+	{
+		_mm_store_ps(m_val,//arg0 Å® m_val
+		  rhs.m_val//arg0: rhs
+		);
+		return *this;
+	}
 #endif//USE_SIMD
 	//ÉÅÉ\ÉbÉh
+	//ì‡êœ
+	inline float dot(const vec3& target) const
+	{
+	#ifdef USE_SIMD
+		return calcDot(//ret Å© calcDot(arg0, arg1)
+		         _mm_load_ps(m_val),      //arg0 Å© m_val
+		         _mm_load_ps(target.m_val)//arg1 Å© target.m_val
+		       );
+	#else//USE_SIMD
+		return m_val[0] * target.m_val[0] +
+		       m_val[1] * target.m_val[1] +
+		       m_val[2] * target.m_val[2];
+	#endif//USE_SIMD
+	}
+	//ê≥ãKâªì‡êœ
+	inline float normalizeDot(const vec3& target) const
+	{
+	#ifdef USE_SIMD
+		return calcNormalizeDot(//ret Å© calcNormalizeDot(arg0, arg1)
+		         _mm_load_ps(m_val),      //arg0 Å© m_val
+		         _mm_load_ps(target.m_val)//arg1 Å© target.m_val
+		       );
+	#else//USE_SIMD
+		vec3 tmp1(*this);
+		vec3 tmp2(target);
+		tmp1.normalize();
+		tmp2.normalize();
+		return tmp1.m_val[0] * tmp2.m_val[0] +
+		       tmp1.m_val[1] * tmp2.m_val[1] +
+		       tmp1.m_val[2] * tmp2.m_val[2];
+	#endif//USE_SIMD
+	}
+	//äOêœ
+#ifdef USE_SIMD
+	inline __m128_s cross(const vec3& target) const
+	{
+		return calcCross(//ret Å© calcCross(arg0, arg1)
+		         _mm_load_ps(m_val),      //arg0 Å© m_val
+		         _mm_load_ps(target.m_val)//arg1 Å© target.m_val
+		       );
+	}
+#else//USE_SIMD
+	inline vec3 cross(const vec3& target) const
+	{
+		return vec3(
+		         m_val[1] * target.m_val[2] - m_val[2] * target.m_val[1],
+		         m_val[2] * target.m_val[0] - m_val[0] * target.m_val[2],
+		         m_val[0] * target.m_val[1] - m_val[1] * target.m_val[0]
+		       );
+	}
+#endif//USE_SIMD
 	//ÉmÉãÉÄ^2éÊìæ
 	inline float norm2() const
 	{
 	#ifdef USE_SIMD
-		return calc_norm2(//ret Å© calc_norm2(arg0)
+		return calcNorm2(//ret Å© calcNorm2(arg0)
 		         _mm_load_ps(m_val)//arg0 Å© m_val
 		       );
 	#else//USE_SIMD
 		return m_val[0] * m_val[0] +
 		       m_val[1] * m_val[1] +
-		       m_val[2] * m_val[2] +
-		       m_val[3] * m_val[3];
+		       m_val[2] * m_val[2];
 	#endif//USE_SIMD
 	}
 	//ÉmÉãÉÄéÊìæ
 	inline float norm() const
 	{
 	#ifdef USE_SIMD
-		return calc_norm(//ret Å© calc_norm(arg0)
+		return calcNorm(//ret Å© calcNorm(arg0)
 		         _mm_load_ps(m_val)//arg0 Å© m_val
 		       );
 	#else//USE_SIMD
 		return sqrt(
 		         m_val[0] * m_val[0] +
 		         m_val[1] * m_val[1] +
-		         m_val[2] * m_val[2] +
-		         m_val[3] * m_val[3]
+		         m_val[2] * m_val[2]
 		       );
 	#endif//USE_SIMD
 	}
+	//í∑Ç≥^2éÊìæ
+	inline float length2() const
+	{
+		return norm2();
+	}
+	//í∑Ç≥éÊìæ
+	inline float length() const
+	{
+		return norm();
+	}
 	//ê≥ãKâª
-	inline vec4& normalize()
+	inline vec3& normalize()
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg1 Å® m_val
-		  calc_normalize(//arg1 Å© calc_normalize(arg0)
+		  calcNormalize(//arg1 Å© calcNormalize(arg0)
 		    _mm_load_ps(m_val)//arg0 Å© m_val
 		  )
 		);
@@ -356,177 +464,212 @@ struct vec4
 		const float norm = sqrt(
 		                     m_val[0] * m_val[0] +
 		                     m_val[1] * m_val[1] +
-		                     m_val[2] * m_val[2] +
-		                     m_val[3] * m_val[3]
+		                     m_val[2] * m_val[2]
 		                   );
-		for (int index = 0; index < 4; ++index)
+		for (int index = 0; index < 3; ++index)
 			m_val[index] /= norm;
 	#endif//USE_SIMD
 		return *this;
 	}
-	inline const vec4 normalize() const
+#ifdef USE_SIMD
+	inline __m128_s normalize() const
 	{
-	#ifdef USE_SIMD
-		return vec4(
-		         calc_normalize(//ret Å© calc_normalize(arg0)
-		           _mm_load_ps(m_val)//arg0 Å© m_val
-		         )
+		return calcNormalize(//ret Å© calcNormalize(arg0)
+		         _mm_load_ps(m_val)//arg0 Å© m_val
 		       );
-	#else//USE_SIMD
+	}
+#else//USE_SIMD
+	inline vec3 normalize() const
+	{
 		const float norm = sqrt(
 			m_val[0] * m_val[0] +
 			m_val[1] * m_val[1] +
-			m_val[2] * m_val[2] +
-			m_val[3] * m_val[3]
+			m_val[2] * m_val[2]
 			);
-		return vec4(m_val[0] / norm, m_val[1] / norm, m_val[2] / norm, m_val[3] / norm);
-	#endif//USE_SIMD
+		return vec3(m_val[0] / norm, m_val[1] / norm, m_val[2] / norm);
 	}
+#endif//USE_SIMD
 	//ãóó£^2åvéZ
-	inline float dist2(const vec4& from)
+	inline float distance2(const vec3& from)
 	{
 	#ifdef USE_SIMD
-		return calc_dist2(//ret Å© calc_dist2(arg0)
+		return calcDistance2(//ret Å© calcDist2(arg0)
 		         _mm_load_ps(from.m_val),//arg0 Å© from.m_val
 		         _mm_load_ps(m_val)      //arg1 Å© m_val
 		       );
 	#else//USE_SIMD
-		vec4 tmp(*this);
+		vec3 tmp(*this);
 		tmp -= from;
 		return tmp.norm2();
 	#endif//USE_SIMD
 	}
 	//ãóó£åvéZ
-	inline float dist(const vec4& from)
+	inline float distance(const vec3& from)
 	{
 	#ifdef USE_SIMD
-		return calc_dist(//ret Å© calc_dist(arg0)
+		return calcDistance(//ret Å© calcDist(arg0)
 		         _mm_load_ps(from.m_val),//arg0 Å© from.m_val
 		         _mm_load_ps(m_val)      //arg1 Å© m_val
 		       );
 	#else//USE_SIMD
-		vec4 tmp(*this);
+		vec3 tmp(*this);
 		tmp -= from;
 		return tmp.norm();
 	#endif//USE_SIMD
 	}
+	//ÉRÉsÅ[ÉRÉìÉXÉgÉâÉNÉ^
+	inline vec3(const vec3& obj)
+	{
+	#ifdef USE_SIMD
+		_mm_store_ps(m_val,//arg0 Å® m_val
+			_mm_load_ps(obj.m_val)//arg0 Å© obj.m_val
+			);
+	#else//USE_SIMD
+		for (int index = 0; index < 3; ++index)
+			m_val[index] = obj.m_val[index];
+	#endif//USE_SIMD
+	}
 	//ÉRÉìÉXÉgÉâÉNÉ^
-	inline vec4(const float x, const float y, const float z, const float w)
+	inline vec3(const float x, const float y, const float z)
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg0 Å® m_val
-		  _mm_set_ps(w, z, y, x)//arg0 Å© {x, y, z, w}
+		  _mm_set_ps(0.f, z, y, x)//arg0 Å© {z, y, z, 0.f}
 		);
 	#else//USE_SIMD
 		m_val[0] = x;
 		m_val[1] = y;
 		m_val[2] = z;
-		m_val[3] = w;
 	#endif//USE_SIMD
 	}
-	inline vec4(const float x, const float y, const float z)
-	{
-	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg0 Å® m_val
-		  _mm_set_ps(1.f, z, y, x)//arg0 Å© {z, y, z, 1.f}
-		);
-	#else//USE_SIMD
-		m_val[0] = x;
-		m_val[1] = y;
-		m_val[2] = z;
-		m_val[3] = 1.f;
-	#endif//USE_SIMD
-	}
-	inline vec4(const float val)
+	inline vec3(const float val)
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg0 Å® m_val
 		  _mm_set1_ps(val)//arg0 Å© {val, val, val, val}
 		);
 	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
+		for (int index = 0; index < 3; ++index)
 			m_val[index] = val;
 	#endif//USE_SIMD
 	}
-	inline vec4(const vec4& obj)
-	{
-	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg0 Å® m_val
-		  _mm_load_ps(obj.m_val)//arg0 Å© obj.m_val
-		);
-	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
-			m_val[index] = obj.m_val[index];
-	#endif//USE_SIMD
-	}
 #ifdef USE_SIMD
-	inline vec4(const __m128 val)
+	inline vec3(const __m128 val)
 	{
 		_mm_store_ps(m_val,//arg0 Å® m_val
 		  val//arg0: val
 		);
 	}
+	inline vec3(const __m128_s& val)
+	{
+		_mm_store_ps(m_val,//arg0 Å® m_val
+		  val.m_val//arg0: val
+		);
+	}
 #endif//USE_SIMD
-	inline vec4()
+	inline vec3()
 	{
 	#ifdef USE_SIMD
 		_mm_store_ps(m_val,//arg0 Å® m_val
 		  _mm_setzero_ps()//arg0 Å© {0.f, 0.f, 0.f, 0.f}
 		);
 	#else//USE_SIMD
-		for (int index = 0; index < 4; ++index)
+		for (int index = 0; index < 3; ++index)
 			m_val[0] = 0.f;
 	#endif//USE_SIMD
 	}
 	//ÉfÉXÉgÉâÉNÉ^
-	inline ~vec4()
+	inline ~vec3()
 	{}
 };
 
 //ìÒçÄââéZéqópÉIÉyÉåÅ[É^
 #ifdef USE_SIMD
-//Å¶SIMDââéZéûÇÕ vec4 å^ÇÃÇ‹Ç‹Ç≈ÇÕÇ»Ç≠ÅA__m128å^Ç∆ÇµÇƒââéZÇ∑ÇÈ
-inline __m128 operator+(const vec4& lhs, const vec4& rhs){ return calc_add(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
-inline __m128 operator+(const vec4& lhs, const __m128 rhs){ return calc_add(static_cast<__m128>(lhs), rhs); }
-inline __m128 operator+(const __m128 lhs, const vec4& rhs){ return calc_add(lhs, static_cast<__m128>(rhs)); }
+//Å¶SIMDââéZéûÇÕ vec3 å^ÇÃÇ‹Ç‹Ç≈ÇÕÇ»Ç≠ÅA__m128å^Ç∆ÇµÇƒââéZÇµÅA__m128_så^Çï‘Ç∑
+inline __m128_s operator+(const vec3& lhs, const vec3& rhs){ return calcAdd(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline __m128_s operator+(const vec3& lhs, const __m128_s& rhs){ return calcAdd(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline __m128_s operator+(const __m128_s& lhs, const vec3& rhs){ return calcAdd(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline __m128_s operator+(const __m128_s& lhs, const __m128_s& rhs){ return calcAdd(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline __m128_s operator+(const vec3& lhs, const float rhs){ return calcAdd(static_cast<__m128>(lhs), rhs); }
+inline __m128_s operator+(const __m128_s& lhs, const float rhs){ return calcAdd(static_cast<__m128>(lhs), rhs); }
 
-inline __m128 operator-(const vec4& lhs, const vec4& rhs){ return calc_sub(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
-inline __m128 operator-(const vec4& lhs, const __m128 rhs){ return calc_sub(static_cast<__m128>(lhs), rhs); }
-inline __m128 operator-(const __m128 lhs, const vec4& rhs){ return calc_sub(lhs, static_cast<__m128>(rhs)); }
+inline __m128_s operator-(const vec3& lhs, const vec3& rhs){ return calcSub(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline __m128_s operator-(const vec3& lhs, const __m128_s& rhs){ return calcSub(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline __m128_s operator-(const __m128_s& lhs, const vec3& rhs){ return calcSub(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline __m128_s operator-(const __m128_s& lhs, const __m128_s& rhs){ return calcSub(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline __m128_s operator-(const vec3& lhs, const float rhs){ return calcSub(static_cast<__m128>(lhs), rhs); }
+inline __m128_s operator-(const __m128_s& lhs, const float rhs){ return calcSub(static_cast<__m128>(lhs), rhs); }
 
-inline __m128 operator*(const vec4& lhs, const vec4& rhs){ return calc_mul(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
-inline __m128 operator*(const vec4& lhs, const __m128 rhs){ return calc_mul(static_cast<__m128>(lhs), rhs); }
-inline __m128 operator*(const __m128 lhs, const vec4& rhs){ return calc_mul(lhs, static_cast<__m128>(rhs)); }
+inline __m128_s operator*(const vec3& lhs, const float rhs){ return calcMul(static_cast<__m128>(lhs), rhs); }
+inline __m128_s operator*(const __m128_s& lhs, const float rhs){ return calcMul(static_cast<__m128>(lhs), rhs); }
 
-inline __m128 operator/(const vec4& lhs, const vec4& rhs){ return calc_div(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
-inline __m128 operator/(const vec4& lhs, const __m128 rhs){ return calc_div(static_cast<__m128>(lhs), rhs); }
-inline __m128 operator/(const __m128 lhs, const vec4& rhs){ return calc_div(lhs, static_cast<__m128>(rhs)); }
+inline __m128_s operator/(const vec3& lhs, const float rhs){ return calcDiv(static_cast<__m128>(lhs), rhs); }
+inline __m128_s operator/(const __m128_s& lhs, const float rhs){ return calcDiv(static_cast<__m128>(lhs), rhs); }
 
-inline float norm2(const vec4& val){ return calc_norm2(static_cast<__m128>(val)); }
+inline float dot(const vec3& lhs, const vec3& rhs){ return calcDot(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline float dot(const vec3& lhs, const __m128_s& rhs){ return calcDot(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline float dot(const __m128_s& lhs, const vec3& rhs){ return calcDot(lhs, static_cast<__m128>(rhs)); }
+inline float dot(const __m128_s& lhs, const __m128_s& rhs){ return calcDot(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
 
-inline float norm(const vec4& val){ return calc_norm(static_cast<__m128>(val)); }
+inline float normalizeDot(const vec3& lhs, const vec3& rhs){ return calcNormalizeDot(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline float normalizeDot(const vec3& lhs, const __m128_s& rhs){ return calcNormalizeDot(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline float normalizeDot(const __m128_s& lhs, const vec3& rhs){ return calcNormalizeDot(lhs, static_cast<__m128>(rhs)); }
+inline float normalizeDot(const __m128_s& lhs, const __m128_s& rhs){ return calcNormalizeDot(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
 
-inline __m128 normalize(const vec4& val){ return calc_normalize(static_cast<__m128>(val)); }
+inline __m128_s cross(const vec3& lhs, const vec3& rhs){ return calcCross(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline __m128_s cross(const vec3& lhs, const __m128_s& rhs){ return calcCross(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
+inline __m128_s cross(const __m128_s& lhs, const vec3& rhs){ return calcCross(lhs, static_cast<__m128>(rhs)); }
+inline __m128_s cross(const __m128_s& lhs, const __m128_s& rhs){ return calcCross(static_cast<__m128>(lhs), static_cast<__m128>(rhs)); }
 
-inline float dist2(const vec4& from, const vec4& to){ return calc_dist2(static_cast<__m128>(from), static_cast<__m128>(to)); }
-inline float dist2(const vec4& from, const __m128 to){ return calc_dist2(static_cast<__m128>(from), to); }
-inline float dist2(const __m128 from, const vec4& to){ return calc_dist2(from, static_cast<__m128>(to)); }
+inline float norm2(const vec3& val){ return calcNorm2(static_cast<__m128>(val)); }
+inline float norm2(const __m128_s& val){ return calcNorm2(static_cast<__m128>(val)); }
+inline float norm(const vec3& val){ return calcNorm(static_cast<__m128>(val)); }
+inline float norm(const __m128_s& val){ return calcNorm(static_cast<__m128>(val)); }
 
-inline float dist(const vec4& from, const vec4& to){ return calc_dist(static_cast<__m128>(from), static_cast<__m128>(to)); }
-inline float dist(const vec4& from, const __m128 to){ return calc_dist(static_cast<__m128>(from), to); }
-inline float dist(const __m128 from, const vec4& to){ return calc_dist(from, static_cast<__m128>(to)); }
+inline float length2(const vec3& val){ return calcNorm2(static_cast<__m128>(val)); }
+inline float length2(const __m128_s& val){ return calcNorm2(static_cast<__m128>(val)); }
+inline float length(const vec3& val){ return calcNorm(static_cast<__m128>(val)); }
+inline float length(const __m128_s& val){ return calcNorm(static_cast<__m128>(val)); }
+
+inline __m128_s normalize(const vec3& val){ return calcNormalize(static_cast<__m128>(val)); }
+inline __m128_s normalize(const __m128_s& val){ return calcNormalize(static_cast<__m128>(val)); }
+
+inline float distance2(const vec3& from, const vec3& to){ return calcDistance2(static_cast<__m128>(from), static_cast<__m128>(to)); }
+inline float distance2(const vec3& from, const __m128_s& to){ return calcDistance2(static_cast<__m128>(from), static_cast<__m128>(to)); }
+inline float distance2(const __m128_s& from, const vec3& to){ return calcDistance2(static_cast<__m128>(from), static_cast<__m128>(to)); }
+inline float distance2(const __m128_s& from, const __m128_s& to){ return calcDistance2(static_cast<__m128>(from), static_cast<__m128>(to)); }
+inline float distance(const vec3& from, const vec3& to){ return calcDistance(static_cast<__m128>(from), static_cast<__m128>(to)); }
+inline float distance(const vec3& from, const __m128_s& to){ return calcDistance(static_cast<__m128>(from), static_cast<__m128>(to)); }
+inline float distance(const __m128_s& from, const vec3& to){ return calcDistance(static_cast<__m128>(from), static_cast<__m128>(to)); }
+inline float distance(const __m128_s& from, const __m128_s& to){ return calcDistance(static_cast<__m128>(from), static_cast<__m128>(to)); }
 
 #else//USE_SIMD
-//Å¶îÒSIMDââéZéûÇÕ vec4 å^ÇÃÇ‹Ç‹ââéZÇ∑ÇÈ
-inline vec4 operator+(const vec4& lhs, const vec4& rhs){ vec4 tmp(lhs); return (tmp += rhs); }
-inline vec4 operator-(const vec4& lhs, const vec4& rhs){ vec4 tmp(lhs); return (tmp -= rhs); }
-inline vec4 operator*(const vec4& lhs, const vec4& rhs){ vec4 tmp(lhs); return (tmp *= rhs); }
-inline vec4 operator/(const vec4& lhs, const vec4& rhs){ vec4 tmp(lhs); return (tmp /= rhs); }
-inline float norm2(const vec4& val){ return val.norm2(); }
-inline float norm(const vec4& val){ return val.norm(); }
-inline vec4 normalize(const vec4& val){ vec4 tmp(val); return tmp.normalize(); }
-inline float dist2(const vec4& from, const vec4& to){ vec4 tmp(to); return tmp.dist2(from); }
-inline float dist(const vec4& from, const vec4& to){ vec4 tmp(to); return tmp.dist(from); }
+//Å¶îÒSIMDââéZéûÇÕ vec3 å^ÇÃÇ‹Ç‹ââéZÇ∑ÇÈ
+inline vec3 operator+(const vec3& lhs, const vec3& rhs){ vec3 tmp(lhs); return (tmp += rhs); }
+inline vec3 operator+(const vec3& lhs, const float rhs){ vec3 tmp(lhs); return (tmp += rhs); }
+
+inline vec3 operator-(const vec3& lhs, const vec3& rhs){ vec3 tmp(lhs); return (tmp -= rhs); }
+inline vec3 operator-(const vec3& lhs, const float rhs){ vec3 tmp(lhs); return (tmp -= rhs); }
+
+inline vec3 operator*(const vec3& lhs, const float rhs){ vec3 tmp(lhs); return (tmp *= rhs); }
+
+inline vec3 operator/(const vec3& lhs, const float rhs){ vec3 tmp(lhs); return (tmp /= rhs); }
+
+inline float dot(const vec3& lhs, const vec3& rhs){ return lhs.dot(rhs); }
+inline float normalizeDot(const vec3& lhs, const vec3& rhs){ return lhs.normalizeDot(rhs); }
+
+inline vec3 cross(const vec3& lhs, const vec3& rhs){ return lhs.cross(rhs); }
+
+inline float norm2(const vec3& val){ return val.norm2(); }
+inline float norm(const vec3& val){ return val.norm(); }
+
+inline float length2(const vec3& val){ return val.length2(); }
+inline float length(const vec3& val){ return val.length(); }
+
+inline vec3 normalize(const vec3& val){ vec3 tmp(val); return tmp.normalize(); }
+
+inline float distance2(const vec3& from, const vec3& to){ vec3 tmp(to); return tmp.distance2(from); }
+inline float distance(const vec3& from, const vec3& to){ vec3 tmp(to); return tmp.distance(from); }
 #endif//USE_SIMD
 
 #endif//__VECTOR_H_

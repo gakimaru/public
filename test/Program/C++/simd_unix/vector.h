@@ -3,7 +3,7 @@
 
 #define USE_GCC//GCCを使用
 #define USE_SIMD//明示的なSIMD演算を使用する
-//#define USE_MM_EXTRACT_PS//_mm_extract_ps関数(SSE3)を使用 ※使った方がソースコードの互換性が高いが、使わない方が早い
+//#define USE_MM_EXTRACT_PS//_mm_extract_ps関数(SSE3)を使用 ※使った方がソースコードの互換性が確実だが、使わない方が早い
 
 //アラインメント属性
 #ifdef USE_GCC
@@ -21,16 +21,22 @@
 #endif//USE_SIMD
 
 #ifdef USE_SIMD
-//#include <mmintrin.h>//MMX
-//#include <xmmintrin.h>//SSE
-//#include <emmintrin.h>//SSE2
-//#include <pmmintrin.h>//SSE3
-//#include <tmmintrin.h>//SSSE3
-//#include <ammintrin.h>//SSE4A(AMD)
-#include <smmintrin.h>//SSE4.1
-//#include <nmmintrin.h>//SSE4.2
-//#include <wmmintrin.h>//AES暗号化およびPCLMULQDQ
-//#include <immintrin.h>//AVX1,AVX2
+//#include <x86intrin.h>//x86 instructions
+//#include <mmintrin.h>//MMX(Pentium MMX!)
+//#include <mm3dnow.h>//3dnow!(K6 - 2) (deprecated)
+//#include <xmmintrin.h>//SSE + MMX (Pentium 3, Athlon XP)
+//#include <emmintrin.h>//SSE2 + SSE + MMX (Pentiuem 4, Ahtlon 64)
+//#include <pmmintrin.h>//SSE3 + SSE2 + SSE + MMX (Pentium 4 Prescott, Ahtlon 64 San Diego)
+//#include <tmmintrin.h>//SSSE3 + SSE3 + SSE2 + SSE + MMX (Core 2, Bulldozer)
+//#include <popcntintrin.h>//POPCNT(Core i7, Phenom subset of SSE4.2 and SSE4A)
+//#include <ammintrin.h>//SSE4A + SSE3 + SSE2 + SSE + MMX (Phenom)
+#include <smmintrin.h>//SSE4.1 + SSSE3 + SSE3 + SSE2 + SSE + MMX (Core i7, Bulldozer)
+//#include <nmmintrin.h>//SSE4.2 + SSE4.1 + SSSE3 + SSE3 + SSE2 + SSE + MMX (Core i7, Bulldozer)
+//#include <wmmintrin.h>//AES (Core i7 Westmere, Bulldozer)
+//#include <immintrin.h>//AVX, SSE4_2 + SSE4_1 + SSSE3 + SSE3 + SSE2 + SSE + MMX (Core i7 Sandy Bridge, Bulldozer)
+//#include <ivec.h>//MMXによる整数ベクトルクラス
+//#include <fvec.h>//SSEによる浮動小数点ベクトルクラス
+//#include <dvec.h>//SSE2による整数ベクトルクラス
 #else//USE_SIMD
 #include <math.h>//sqrt
 #endif//USE_SIMD

@@ -40,6 +40,9 @@
     <Filter Include="ソース ファイル\constexpr">
       <UniqueIdentifier>{18c7b298-533d-42b5-b820-4d5201735908}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\constexpr">
+      <UniqueIdentifier>{259c0c6c-eb24-4364-97cd-96a47a08fb0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common\size.h">
@@ -66,6 +69,12 @@
     <ClInclude Include="src\test\test_def_crc_a.h">
       <Filter>ヘッダー ファイル\test</Filter>
     </ClInclude>
+    <ClInclude Include="src\constexpr\constexpr.h">
+      <Filter>ヘッダー ファイル\constexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\constexpr\constexpr_test.h">
+      <Filter>ヘッダー ファイル\constexpr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\crc\crc32.cpp">
@@ -90,6 +99,12 @@
       <Filter>ソース ファイル\test</Filter>
     </ClCompile>
     <ClCompile Include="src\constexpr\constexpr.cpp">
+      <Filter>ソース ファイル\constexpr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\constexpr\constexpr_performance.cpp">
+      <Filter>ソース ファイル\constexpr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\constexpr\constexpr_test.cpp">
       <Filter>ソース ファイル\constexpr</Filter>
     </ClCompile>
   </ItemGroup>

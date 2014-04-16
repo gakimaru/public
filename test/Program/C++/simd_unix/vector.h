@@ -3,7 +3,8 @@
 
 #define USE_GCC//GCCを使用
 #define USE_SIMD//明示的なSIMD演算を使用する
-//#define USE_MM_EXTRACT_PS//_mm_extract_ps関数(SSE3)を使用 ※使った方がソースコードの互換性が確実だが、使わない方が早い
+//#define USE_LOAD_STORE//明示的なロード／ストア処理を使用
+//#define USE_MM_EXTRACT_PS//_mm_extract_ps関数(SSE3)を使用 ※使った方がソースコードの互換性が確実だが、使わない方が速い
 
 //アラインメント属性
 #ifdef USE_GCC
@@ -11,11 +12,11 @@
 #else//USE_GCC
 #define ATTR_ALIGN(n) __declspec(align(n))//for VC
 #endif//USE_GCC
-#define ATTR_ALIGN16 ATTR_ALIGN(16)
+#define ATTR_ALIGN16 ATTR_ALIGN(16)//16バイトアラインメント指定
 
 //SIMD用属性
 #ifdef USE_SIMD
-#define ATTR_SIMD128 ATTR_ALIGN16
+#define ATTR_SIMD128 ATTR_ALIGN16//SIMD用128ビットアラインメント指定
 #else//USE_SIMD
 #define ATTR_SIMD128
 #endif//USE_SIMD
@@ -44,35 +45,14 @@
 #ifdef USE_SIMD
 //----------
 //ベクトルクラス計算用関数
-//operatorが使えるように、__m128用の構造体を用意
-struct __m128_s
-{
-	__m128 m_val;
-	inline operator __m128() const { return m_val; }
-	inline __m128_s& operator=(const __m128 val)
-	{
-		m_val = val;
-		return *this;
-	}
-	inline __m128_s(const __m128 val) :
-		m_val(val)
-	{}
-};
 //二項演算子用関数と共通関数
 //※SIMD演算専用
 inline float getScalar(const __m128 val)
 {
 #ifdef USE_MM_EXTRACT_PS
-	union conv
-	{
-		const int i;
-		const float f;
-		inline float operator()() const { return f; }
-		inline conv(const __m128 val) :
-			i(_mm_extract_ps(val, 0))
-		{}
-	};
-	return conv(val)();
+	float f;
+	_MM_EXTRACT_FLOAT(f, val, 0);//(dest, src, ndx): *((int*)&(dest)) = _mm_extract_ps((src), (ndx))
+	return f;
 #else//USE_MM_EXTRACT_PS
 	return *reinterpret_cast<const float*>(&val);
 #endif//USE_MM_EXTRACT_PS
@@ -95,72 +75,40 @@ inline __m128 calcDiv(const __m128 lhs, const float rhs)//二項の割り算
 }
 inline float calcNorm2(const __m128 val)//ノルム^2計算
 {
-	return getScalar(//ret ← arg4[0]
-	         _mm_hadd_ps(//arg4 ← {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
-	           _mm_hadd_ps(    //arg2 ← {arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
-	             _mm_mul_ps(val, val),//arg0 ← {val[0] * val[0], val[1] * val[1], val[2] * val[2], val[3] * val[3]}
-	             _mm_setzero_ps()     //arg1 ← {0.f, 0.f, 0.f, 0.f}
-	           ),
-	           _mm_setzero_ps()//arg3 ← {0.f, 0.f, 0.f, 0.f}
-	         )
+	return getScalar(//ret ← arg0[0]
+	         _mm_dp_ps(val, val, 0x71)//arg0 ← {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, 0.f, 0.f, 0.f}
 	       );
 }
 inline float calcNorm(const __m128 val)//ノルム計算
 {
-	return getScalar(//ret ← arg5[0]
-	         _mm_sqrt_ss(//arg5 ← {sqrt(arg4[0]), arg4[1], arg4[2], arg4[3]}
-	           _mm_hadd_ps(//arg4 ← {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
-	             _mm_hadd_ps(   //arg2 ← {arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
-	               _mm_mul_ps(val, val),//arg0 ← {val[0] * val[0], val[1] * val[1], val[2] * val[2], val[3] * val[3]}
-	               _mm_setzero_ps()     //arg1 ← {0.f, 0.f, 0.f, 0.f}
-	             ),
-	            _mm_setzero_ps()//arg3 ← {0.f, 0.f, 0.f, 0.f}
-	           )
+	return getScalar(//ret ← arg1[0]
+	         _mm_sqrt_ss(//arg1 ← {sqrt(arg0[0]), arg0[1], arg0[2], arg0[3]}
+	           _mm_dp_ps(val, val, 0x71)//arg0 ← {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, 0.f, 0.f, 0.f}
 	         )
 	       );
 }
 inline __m128 calcNormalize(const __m128 val)//正規化
 {
-	return _mm_div_ps(//ret ← {arg7[0] / arg8[0], arg7[1] / arg8[1], arg7[2] / arg8[2], arg7[3] / arg8[3]}
-	         val,        //arg7: val
-	         _mm_set1_ps(//arg8 ← {arg6, arg6, arg6, arg6}
-	           getScalar(//arg6 ← arg5[0]
-	            _mm_sqrt_ss(//arg5 ← {sqrt(arg4[0]), arg4[1], arg4[2], arg4[3]}
-	             _mm_hadd_ps(//arg4 ← {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
-	               _mm_hadd_ps(      //arg2 ← {arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
-	                   _mm_mul_ps(val, val),//arg0 ← {val[0] * val[0], val[1] * val[1], val[2] * val[2], val[3] * val[3]}
-	                   _mm_setzero_ps()     //arg1 ← {0.f, 0.f, 0.f, 0.f}
-	                 ),
-	                 _mm_setzero_ps()//arg3 ← {0.f, 0.f, 0.f, 0.f}
-	               )
+	return _mm_div_ps(//ret ← {arg4[0] / arg3[0], arg4[1] / arg3[1], arg4[2] / arg3[2], arg4[3] / arg3[3]}
+	         val,        //arg4: val
+	         _mm_set1_ps(//arg3 ← {arg2, arg2, arg2, arg2}
+	           getScalar(//arg2 ← arg1[0]
+	             _mm_sqrt_ss(//arg1 ← {sqrt(arg0[0]), arg0[1], arg0[2], arg0[3]}
+	               _mm_dp_ps(val, val, 0x71)//arg0 ← {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, 0.f, 0.f, 0.f}
 	             )
 	           )
 	         )
 	       );
 }
-inline __m128 calcAdd(const __m128 lhs, const float rhs)//二項の足し算
-{
-	return calcAdd(lhs, calcMul(calcNormalize(lhs), rhs));//ret ← lhs + normalize(lhs) * rhs
-}
-inline __m128 calcSub(const __m128 lhs, const float rhs)//二項の引き算
-{
-	return calcSub(lhs, calcMul(calcNormalize(lhs), rhs));//ret ← lhs - normalize(lhs) * rhs
-}
 inline float calcDot(const __m128 lhs, const __m128 rhs)//内積計算
 {
 	return getScalar(//ret ← arg4[0]
-	         _mm_hadd_ps(//arg4 ← {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
-	           _mm_hadd_ps(    //arg2 ← {arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
-	             _mm_mul_ps(lhs, rhs),//arg0 ← {lhs[0] * rhs[0], lhs[1] * rhs[1], lhs[2] * rhs[2], lhs[3] * rhs[3]}
-	             _mm_setzero_ps()     //arg1 ← {0.f, 0.f, 0.f, 0.f}
-	           ),
-	           _mm_setzero_ps()//arg3 ← {0.f, 0.f, 0.f, 0.f}
-	         )
+	         _mm_dp_ps(lhs, rhs, 0x71)//arg0 ← {lhs[0] * rhs[0] + lhs[1] * rhs[1] + lhs[2] * rhs[2] + 0.f, 0.f, 0.f, 0.f}
 	       );
 }
 inline float calcNormalizeDot(const __m128 lhs, const __m128 rhs)//正規化ベクトルで内積計算
 {
-	return calcDot(calcNormalize(lhs), calcNormalize(rhs));
+	return calcDot(calcNormalize(lhs), calcNormalize(rhs));//ret ← calcDot(calcNormalize(lhs), calcNormalize(rhs))
 }
 inline __m128 calcCross(const __m128 lhs, const __m128 rhs)//外積計算
 {
@@ -197,13 +145,48 @@ inline float calcDistance(const __m128 from, const __m128 to)//距離計算
 	           _mm_hadd_ps(//arg4 ← {arg2[0] + arg2[1], arg2[2] + arg2[3], arg3[0] + arg3[1], arg3[2] + arg3[3]}
 	             _mm_hadd_ps(    //arg2 ← {arg0[0] + arg0[1], arg0[2] + arg0[3], arg1[0] + arg1[1], arg1[2] + arg1[3]}
 	               _mm_mul_ps(val_diff, val_diff),//arg0 ← {val_diff[0] * val_diff[0], val_diff[1] * val_diff[1], val_diff[2] * val_diff[2], val_diff[3] * val_diff[3]}
-	               _mm_setzero_ps()//arg1 ← {0.f, 0.f, 0.f, 0.f}
+	               _mm_setzero_ps()               //arg1 ← {0.f, 0.f, 0.f, 0.f}
 	             ),
 	             _mm_setzero_ps()//arg3 ← {0.f, 0.f, 0.f, 0.f}
 	           )
 	         )
 	       );
 }
+inline __m128 calcAdd(const __m128 lhs, const float rhs)//二項の足し算
+{
+	return calcAdd(lhs, calcMul(calcNormalize(lhs), rhs));//ret ← lhs + normalize(lhs) * rhs
+}
+inline __m128 calcSub(const __m128 lhs, const float rhs)//二項の引き算
+{
+	return calcSub(lhs, calcMul(calcNormalize(lhs), rhs));//ret ← lhs - normalize(lhs) * rhs
+}
+#endif//USE_SIMD
+
+#ifdef USE_SIMD
+//----------
+//ベクトルクラス計算用構造体
+#ifdef USE_GCC
+#define DECLARE_M128_S//__m128_s 構造体を使用
+#endif//USE_GCC
+#ifdef DECLARE_M128_S
+//二項演算子operatorに __m128 が使えるように、__m128 をラップした構造体 __m128_s を用意
+struct __m128_s
+{
+	__m128 m_val;
+	inline operator __m128() const { return m_val; }
+	inline __m128_s& operator=(const __m128 val)
+	{
+		m_val = val;
+		return *this;
+	}
+	inline __m128_s(const __m128 val) :
+		m_val(val)
+	{}
+};
+#else//DECLARE_M128_S
+//Visual C++ では、__m128 は元々構造体なので、__m128_sは__m128の別名とする
+typedef __m128 __m128_s;
+#endif//DECLARE_M128_S
 #endif//USE_SIMD
 
 //----------
@@ -212,8 +195,19 @@ struct vec3
 {
 	//フィールド
 #ifdef USE_SIMD
+#ifndef USE_LOAD_STORE
+	//SIMD演算使用、かつ、unionで最適化したデータ構造
+	union
+	{
+		__m128 m_val128;
+		float m_val[4];
+	};
+#else//USE_LOAD_STORE
+	//SIMD演算使用、かつ、明示的なロード／ストア使用時のデータ構造
 	float ATTR_SIMD128 m_val[4];
+#endif//USE_LOAD_STORE
 #else//USE_SIMD
+	//SIMD非使用時のデータ構造
 	float m_val[3];
 #endif//USE_SIMD
 	//アクセッサ
@@ -228,14 +222,133 @@ struct vec3
 	void z(const float val){ m_val[2] = val; }
 	float& operator[](const int index){ return m_val[index]; }
 	const float& operator[](const int index) const { return m_val[index]; }
+#ifdef USE_SIMD
+	//ロード／ストアメソッド
+	inline __m128 load() const//ロード
+	{
+	#ifndef USE_LOAD_STORE
+		return m_val128;//ret ← m_val128
+	#else//USE_LOAD_STORE
+		return _mm_load_ps(m_val);//ret ← {m_val[0], m_val[1], m_val[2], m_val[3]}
+	#endif//USE_LOAD_STORE
+	}
+	inline __m128 load1() const//ロード
+	{
+	#ifndef USE_LOAD_STORE
+		//return _mm_set1_ps(m_val[0]);//ret ← {m_val[0], m_val[0], m_val[0], m_val[0]}
+		return _mm_set_ps(0.f, m_val[0], m_val[0], m_val[0]);//ret ← {m_val[0], m_val[0], m_val[0], 0.f}
+	#else//USE_LOAD_STORE
+		//return _mm_load1_ps(m_val);//ret ← {m_val[0], m_val[0], m_val[0], m_val[0]}
+		return _mm_blend_ps(//ret ← {arg0[0], arg0[1], arg0[2], arg1[3]}
+		         _mm_load1_ps(m_val),//arg0 ← {m_val[0], m_val[0], m_val[0], m_val[0]}
+		         _mm_setzero_ps(),   //arg1 ← {0.f, 0.f, 0.f, 0.f}
+		         0x08
+		       );
+	#endif//USE_LOAD_STORE
+	}
+	inline __m128 loadS() const//ロード
+	{
+	#ifndef USE_LOAD_STORE
+		return _mm_set_ss(m_val[0]);//ret ← {m_val[0], 0.f, 0.f, 0.f}
+	#else//USE_LOAD_STORE
+		return _mm_load_ss(m_val);//ret ← {m_val[0], 0.f, 0.f, 0.f}
+	#endif//USE_LOAD_STORE
+	}
+	inline float loadSF() const//ロード
+	{
+	#ifndef USE_LOAD_STORE
+		return m_val[0];
+	#else//USE_LOAD_STORE
+		return getScalar(//ret ← arg0[0]
+		         _mm_load_ss(m_val)//arg0 ← {m_val[0], 0.f, 0.f, 0.f}
+		       );
+	#endif//USE_LOAD_STORE
+	}
+	inline void store(const __m128 val)//ストア
+	{
+	#ifndef USE_LOAD_STORE
+		m_val128 = val;//val → m_val128
+	#else//USE_LOAD_STORE
+		_mm_store_ps(m_val, val);//{val[0], val[1], val[2], val[3]} → m_val
+	#endif//USE_LOAD_STORE
+	}
+	inline void store1(const __m128 val)//ストア
+	{
+	#ifndef USE_LOAD_STORE
+		//m_val128 = _mm_set1_ps(//{arg0, arg0, arg0, arg0} → m_val128
+		//             getScalar(val)//arg0 ← val[0]
+		//           );
+		m_val128 = _mm_blend_ps(//{arg1[0], arg1[1], arg1[2], arg2[3]} → m_val128
+			         _mm_set1_ps(     //arg1 ← {arg0, arg0, arg0, arg0}
+			           getScalar(val)//arg0 ← val[0]
+			         ),
+			         _mm_setzero_ps(),//arg2 ← {0.f, 0.f, 0.f, 0.f}
+			         0x08
+			       );
+	#else//USE_LOAD_STORE
+		//_mm_store1_ps(m_val,//{arg0, arg0, arg0, arg0} → m_val
+		//  getScalar(val)//arg0 ← val[0]
+		//);
+		_mm_store_ps(m_val,//arg3 → m_val
+		  _mm_blend_ps(//arg3 ← {arg1[0], arg1[1], arg1[2], arg2[3]}
+		    _mm_set1_ps(     //arg1 ← {arg0, arg0, arg0, arg0}
+		      getScalar(val)//arg0 ← val[0]
+		    ),
+		    _mm_setzero_ps(),//arg2 ← {0.f, 0.f, 0.f, 0.f}
+		    0x08
+		  )
+		);
+	#endif//USE_LOAD_STORE
+	}
+	inline void store1(const float val)//ストア
+	{
+#ifndef USE_LOAD_STORE
+		//m_val128 = _mm_set1_ps(val);//{val, val, val, val} → m_val128
+		m_val128 = _mm_set_ps(0.f, val, val, val);//{val, val, val, 0.f} → m_val128
+#else//USE_LOAD_STORE
+		//_mm_store1_ps(m_val, val);//{val[0], val[0], val[0], val[0]} → m_val
+		_mm_store_ps(m_val,//arg0 → m_val128
+		  _mm_set_ps(0.f, val, val, val)//arg0 ← {val, val, val, 0.f}
+		);
+#endif//USE_LOAD_STORE
+	}
+	inline void storeS(const __m128 val)//ストア
+	{
+	#ifndef USE_LOAD_STORE
+		m_val[0] = getScalar(val);//val[0] → m_val[0]
+	#else//USE_LOAD_STORE
+		_mm_store_ss(m_val, val);//val[0] → m_val[0]
+	#endif//USE_LOAD_STORE
+	}
+	inline void storeSF(const float val)//ストア
+	{
+	#ifndef USE_LOAD_STORE
+		m_val[0] = val;//val → m_val[0]
+	#else//USE_LOAD_STORE
+		_mm_store_ss(m_val,//arg0[0] → m_val[0]
+		  _mm_set_ss(val)//arg0 ← {val, 0.f, 0.f, 0.f}
+		);
+	#endif//USE_LOAD_STORE
+	}
+	inline void storeZero()//ストア
+	{
+	#ifndef USE_LOAD_STORE
+		m_val128 = _mm_setzero_ps();//{0.f, 0.f, 0.f, 0.f} → m_val128
+	#else//USE_LOAD_STORE
+		_mm_store_ss(m_val,//arg0 → m_val
+		  _mm_setzero_ps()//arg0 ← {0.f, 0.f, 0.f, 0.f}
+		);
+	#endif//USE_LOAD_STORE
+	}
+#endif//USE_SIMD
 	//オペレータ
 	inline vec3& operator+=(const vec3& rhs)
 	{
 	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg2 → m_val
+		store(//arg2 → m_val
 		  calcAdd(//arg2 ← {arg0[0] + arg1[0], arg0[1] + arg1[1], arg0[2] + arg1[2], arg0[3] + arg1[3]}
-		    _mm_load_ps(m_val),   //arg0 ← m_val
-		    _mm_load_ps(rhs.m_val)//arg1 ← rhs.m_val
+		    load(),   //arg0 ← m_val
+		    rhs.load()//arg1 ← rhs.m_val
 		  )
 		);
 	#else//USE_SIMD
@@ -247,10 +360,10 @@ struct vec3
 	inline vec3& operator+=(const float rhs)
 	{
 	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg2 → m_val
+		store(//arg2 → m_val
 		  calcAdd(//arg2 ← arg0 + normalize(arg0) * arg1
-		    _mm_load_ps(m_val),//arg0 ← m_val
-		    rhs                //arg1: rhs
+		    load(),//arg0 ← m_val
+		    rhs    //arg1: rhs
 		  )
 		);
 	#else//USE_SIMD
@@ -264,10 +377,10 @@ struct vec3
 	inline vec3& operator-=(const vec3& rhs)
 	{
 	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg2 → m_val
+		store(//arg2 → m_val
 		  calcSub(//arg2 ← {arg0[0] - arg1[0], arg0[1] - arg1[1], arg0[2] - arg1[2], arg0[3] - arg1[3]}
-		    _mm_load_ps(m_val),   //arg0 ← m_val
-		    _mm_load_ps(rhs.m_val)//arg1 ← rhs.m_val
+		    load(),   //arg0 ← m_val
+		    rhs.load()//arg1 ← rhs.m_val
 		  )
 		);
 	#else//USE_SIMD
@@ -279,10 +392,10 @@ struct vec3
 	inline vec3& operator-=(const float rhs)
 	{
 	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg2 → m_val
+		store(//arg2 → m_val
 		  calcSub(//arg2 ← arg0 - normalize(arg0) * arg1
-		    _mm_load_ps(m_val),//arg0 ← m_val
-		    rhs                //arg1: rhs
+		    load(),//arg0 ← m_val
+		    rhs    //arg1 ← rhs
 		  )
 		);
 	#else//USE_SIMD
@@ -296,12 +409,12 @@ struct vec3
 	inline vec3& operator*=(const float rhs)
 	{
 	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg2 → m_val
+		store(//arg2 → m_val
 		  calcMul(//arg2 ← {arg0[0] * arg1, arg0[1] * arg1, arg0[2] * arg1, arg0[3] * arg1}
-		    _mm_load_ps(m_val),//arg0 ← m_val
-		    rhs                //arg1:rhs
+		    load(),//arg0 ← m_val
+		    rhs    //arg1 ← rhs
 		  )
-		);
+		 );
 	#else//USE_SIMD
 		for (int index = 0; index < 3; ++index)
 			m_val[index] *= rhs;
@@ -311,10 +424,10 @@ struct vec3
 	inline vec3& operator/=(const float rhs)
 	{
 	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg2 → m_val
+		store(//arg2 → m_val
 		  calcDiv(//arg2 ← {arg0[0] / arg1, arg0[1] / arg1, arg0[2] / arg1, arg0[3] / arg1}
-		    _mm_load_ps(m_val),//arg0 ← m_val
-		    rhs                //arg1:rhs
+		    load(),//arg0 ← m_val
+		    rhs    //arg1 ← rhs
 		  )
 		);
 	#else//USE_SIMD
@@ -331,20 +444,20 @@ struct vec3
 #ifdef USE_SIMD
 	inline operator __m128() const
 	{
-		return _mm_load_ps(m_val);//ret ← m_val
+		return load();//ret ← m_val
 	}
+#ifdef DECLARE_M128_S
 	inline operator __m128_s() const
 	{
-		return _mm_load_ps(m_val);//ret ← m_val
+		return load();//ret ← m_val
 	}
+#endif//DECLARE_M128_S
 #endif//USE_SIMD
 	//コピーオペレータ
 	inline vec3& operator=(const vec3& rhs)
 	{
 	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg0 → m_val
-		  _mm_load_ps(rhs.m_val)//arg0 ← rhs.m_val
-		);
+		store(rhs.load());
 	#else//USE_SIMD
 		for (int index = 0; index < 3; ++index)
 			m_val[index] = rhs.m_val[index];
@@ -354,18 +467,16 @@ struct vec3
 #ifdef USE_SIMD
 	inline vec3& operator=(const __m128 rhs)
 	{
-		_mm_store_ps(m_val,//arg0 → m_val
-		  rhs//arg0: rhs
-		);
+		store(rhs);
 		return *this;
 	}
+#ifdef DECLARE_M128_S
 	inline vec3& operator=(const __m128_s& rhs)
 	{
-		_mm_store_ps(m_val,//arg0 → m_val
-		  rhs.m_val//arg0: rhs
-		);
+		store(rhs);
 		return *this;
 	}
+#endif//DECLARE_M128_S
 #endif//USE_SIMD
 	//メソッド
 	//内積
@@ -373,8 +484,8 @@ struct vec3
 	{
 	#ifdef USE_SIMD
 		return calcDot(//ret ← calcDot(arg0, arg1)
-		         _mm_load_ps(m_val),      //arg0 ← m_val
-		         _mm_load_ps(target.m_val)//arg1 ← target.m_val
+		         load(),      //arg0 ← m_val
+		         target.load()//arg1 ← target.m_val
 		       );
 	#else//USE_SIMD
 		return m_val[0] * target.m_val[0] +
@@ -387,8 +498,8 @@ struct vec3
 	{
 	#ifdef USE_SIMD
 		return calcNormalizeDot(//ret ← calcNormalizeDot(arg0, arg1)
-		         _mm_load_ps(m_val),      //arg0 ← m_val
-		         _mm_load_ps(target.m_val)//arg1 ← target.m_val
+		         load(),      //arg0 ← m_val
+		         target.load()//arg1 ← target.m_val
 		       );
 	#else//USE_SIMD
 		vec3 tmp1(*this);
@@ -405,8 +516,8 @@ struct vec3
 	inline __m128_s cross(const vec3& target) const
 	{
 		return calcCross(//ret ← calcCross(arg0, arg1)
-		         _mm_load_ps(m_val),      //arg0 ← m_val
-		         _mm_load_ps(target.m_val)//arg1 ← target.m_val
+		         load(),      //arg0 ← m_val
+		         target.load()//arg1 ← target.m_val
 		       );
 	}
 #else//USE_SIMD
@@ -424,7 +535,7 @@ struct vec3
 	{
 	#ifdef USE_SIMD
 		return calcNorm2(//ret ← calcNorm2(arg0)
-		         _mm_load_ps(m_val)//arg0 ← m_val
+		         load()//arg0 ← m_val
 		       );
 	#else//USE_SIMD
 		return m_val[0] * m_val[0] +
@@ -437,7 +548,7 @@ struct vec3
 	{
 	#ifdef USE_SIMD
 		return calcNorm(//ret ← calcNorm(arg0)
-		         _mm_load_ps(m_val)//arg0 ← m_val
+		         load()//arg0 ← m_val128
 		       );
 	#else//USE_SIMD
 		return sqrt(
@@ -461,9 +572,9 @@ struct vec3
 	inline vec3& normalize()
 	{
 	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg1 → m_val
+		store(//arg1 → m_val
 		  calcNormalize(//arg1 ← calcNormalize(arg0)
-		    _mm_load_ps(m_val)//arg0 ← m_val
+		    load()//arg0 ← m_val
 		  )
 		);
 	#else//USE_SIMD
@@ -481,7 +592,7 @@ struct vec3
 	inline __m128_s normalize() const
 	{
 		return calcNormalize(//ret ← calcNormalize(arg0)
-		         _mm_load_ps(m_val)//arg0 ← m_val
+		         load()//arg0 ← m_val
 		       );
 	}
 #else//USE_SIMD
@@ -499,9 +610,9 @@ struct vec3
 	inline float distance2(const vec3& from)
 	{
 	#ifdef USE_SIMD
-		return calcDistance2(//ret ← calcDist2(arg0)
-		         _mm_load_ps(from.m_val),//arg0 ← from.m_val
-		         _mm_load_ps(m_val)      //arg1 ← m_val
+		return calcDistance2(//ret ← calcDist2(arg0, arg1)
+		         from.load(),//arg0 ← from.m_val
+		         load()      //arg1 ← m_val
 		       );
 	#else//USE_SIMD
 		vec3 tmp(*this);
@@ -513,9 +624,9 @@ struct vec3
 	inline float distance(const vec3& from)
 	{
 	#ifdef USE_SIMD
-		return calcDistance(//ret ← calcDist(arg0)
-		         _mm_load_ps(from.m_val),//arg0 ← from.m_val
-		         _mm_load_ps(m_val)      //arg1 ← m_val
+		return calcDistance(//ret ← calcDist(arg0, arg1)
+		         from.load(),//arg0 ← from.m_val
+		         load()      //arg1 ← m_val
 		       );
 	#else//USE_SIMD
 		vec3 tmp(*this);
@@ -525,65 +636,95 @@ struct vec3
 	}
 	//コピーコンストラクタ
 	inline vec3(const vec3& obj)
+#ifdef USE_SIMD
+#ifndef USE_LOAD_STORE
+		: m_val128(obj.m_val128)
+	{}
+#else//USE_LOAD_STORE
 	{
-	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg0 → m_val
-			_mm_load_ps(obj.m_val)//arg0 ← obj.m_val
-			);
-	#else//USE_SIMD
+		store(obj.load());//obj.m_val → m_val
+	}
+#endif//USE_LOAD_STORE
+#else//USE_SIMD
+	{
 		for (int index = 0; index < 3; ++index)
 			m_val[index] = obj.m_val[index];
-	#endif//USE_SIMD
 	}
+#endif//USE_SIMD
 	//コンストラクタ
 	inline vec3(const float x, const float y, const float z)
+#ifdef USE_SIMD
+#ifndef USE_LOAD_STORE
+		:m_val128(_mm_set_ps(0.f, z, y, x))//{x, y, z, 0.f} → m_val128
+	{}
+#else//USE_LOAD_STORE
 	{
-	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg0 → m_val
-		  _mm_set_ps(0.f, z, y, x)//arg0 ← {z, y, z, 0.f}
-		);
-	#else//USE_SIMD
+		store(_mm_set_ps(0.f, z, y, x));//{x, y, z, 0.f} → m_val
+	}
+#endif//USE_LOAD_STORE
+#else//USE_SIMD
+	{
 		m_val[0] = x;
 		m_val[1] = y;
 		m_val[2] = z;
-	#endif//USE_SIMD
-	}
-	inline vec3(const float val)
-	{
-	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg0 → m_val
-		  _mm_set1_ps(val)//arg0 ← {val, val, val, val}
-		);
-	#else//USE_SIMD
-		for (int index = 0; index < 3; ++index)
-			m_val[index] = val;
-	#endif//USE_SIMD
-	}
-#ifdef USE_SIMD
-	inline vec3(const __m128 val)
-	{
-		_mm_store_ps(m_val,//arg0 → m_val
-		  val//arg0: val
-		);
-	}
-	inline vec3(const __m128_s& val)
-	{
-		_mm_store_ps(m_val,//arg0 → m_val
-		  val.m_val//arg0: val
-		);
 	}
 #endif//USE_SIMD
-	inline vec3()
+	inline vec3(const float val)
+#ifdef USE_SIMD
+#ifndef USE_LOAD_STORE
+		//:m_val128(_mm_set1_ps(val))//{val, val, val, val} → m_val128
+		:m_val128(_mm_set_ps(0.f, val, val, val))//{val, val, val, 0.f} → m_val128
+	{}
+#else//USE_LOAD_STORE
 	{
-	#ifdef USE_SIMD
-		_mm_store_ps(m_val,//arg0 → m_val
-		  _mm_setzero_ps()//arg0 ← {0.f, 0.f, 0.f, 0.f}
-		);
-	#else//USE_SIMD
+		//store(_mm_set1_ps(val));//{val, val, val, val} → m_val
+		store1(val);//{val, val, val, 0.f} → m_val
+	}
+#endif//USE_LOAD_STORE
+#else//USE_SIMD
+	{
+		for (int index = 0; index < 3; ++index)
+			m_val[index] = val;
+	}
+#endif//USE_SIMD
+#ifdef USE_SIMD
+	inline vec3(const __m128 val)
+#ifndef USE_LOAD_STORE
+		:m_val128(val)//val → m_val128
+	{}
+#else//USE_LOAD_STORE
+	{
+		store(val);//val → m_val
+	}
+#endif//USE_LOAD_STORE
+#ifdef DECLARE_M128_S
+	inline vec3(const __m128_s& val)
+#ifndef USE_LOAD_STORE
+		:m_val128(val)//val → m_val128
+	{}
+#else//USE_LOAD_STORE
+	{
+		store(val);//val → m_val
+	}
+#endif//USE_LOAD_STORE
+#endif//DECLARE_M128_S
+#endif//USE_SIMD
+	inline vec3()
+#ifdef USE_SIMD
+#ifndef USE_LOAD_STORE
+		:m_val128(_mm_setzero_ps())//{0.f, 0.f, 0.f, 0.f} → m_val128
+	{}
+#else//USE_LOAD_STORE
+	{
+		storeZero();//{0.f, 0.f, 0.f, 0.f} → m_val128
+	}
+#endif//USE_LOAD_STORE
+#else//USE_SIMD
+	{
 		for (int index = 0; index < 3; ++index)
 			m_val[0] = 0.f;
-	#endif//USE_SIMD
 	}
+#endif//USE_SIMD
 	//デストラクタ
 	inline ~vec3()
 	{}

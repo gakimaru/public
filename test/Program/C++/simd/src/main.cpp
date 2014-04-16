@@ -7,6 +7,7 @@
 
 extern void sub(vec3& v1, vec3& v1_n, vec3& v2, vec3& v2_n, vec3& vdist, vec3& vdist_n, float& dist_val, float& dot_val, float& dot_val_n, vec3& vcross, vec3& vcross_n, vec3& v3, vec3& v3_n, const float add, const float mul, const float div, const float sub, const int dummy);
 
+//テストメイン
 int main(const int argc, const char* argv[])
 {
 	const auto start = std::chrono::system_clock::now();

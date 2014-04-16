@@ -1,8 +1,11 @@
 #include "vector.h"
 
+//静的変数
 static float s_val1[3] = { 1.f, 2.f, 3.f };
 static float s_val2[3] = { -4.f, -5.f, -6.f };
 
+//パフォーマンステスト用関数
+//※コンパイラの最適化の影響が起こらないように、ソースファイルを分けて、かつ、ダミーパラメータを受け渡し
 void sub(vec3& v1, vec3& v1_n, vec3& v2, vec3& v2_n, vec3& vdist, vec3& vdist_n, float& dist_val, float& dot_val, float& dot_val_n, vec3& vcross, vec3& vcross_n, vec3& v3, vec3& v3_n, const float add, const float mul, const float div, const float sub, const int dummy)
 {
 	vec3 tmp1(s_val1[0], s_val1[1], s_val1[2]);

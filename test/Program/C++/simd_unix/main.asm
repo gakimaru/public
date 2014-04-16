@@ -49,7 +49,7 @@ LC20:
 	.globl	_main
 	.def	_main;	.scl	2;	.type	32;	.endef
 _main:
-LFB980:
+LFB979:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -306,7 +306,7 @@ L3:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE980:
+LFE979:
 	.section .rdata,"dr"
 	.align 4
 LC4:

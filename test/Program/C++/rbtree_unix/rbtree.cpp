@@ -387,7 +387,7 @@ int main(const int argc, const char* argv[])
 	}
 	{
 		rbtree::stack_t<data_t> stack;
-		const data_t::value_t search_val = 63;
+		const data_t::value_t search_val = 47;
 		printf("--- search node (%d) *in case of success ---\n", search_val);
 		const data_t* node = rbtree::searchNode(top_node, search_val, stack);
 		while (node && *node == search_val)
@@ -399,7 +399,7 @@ int main(const int argc, const char* argv[])
 	}
 	{
 		rbtree::stack_t<data_t> stack;
-		const data_t::value_t search_val = 64;
+		const data_t::value_t search_val = 48;
 		printf("--- search node (%d) *in case of failure ---\n", search_val);
 		const data_t* node = rbtree::searchNode(top_node, search_val, stack);
 		while (node && *node == search_val)
@@ -411,7 +411,7 @@ int main(const int argc, const char* argv[])
 	}
 	{
 		rbtree::stack_t<data_t> stack;
-		const data_t::value_t search_val = 64;
+		const data_t::value_t search_val = 48;
 		printf("--- search nearest node (%d) ---\n", search_val);
 		const data_t * node = rbtree::searchNearestNode(top_node, search_val, stack);
 		for (int i = 0; i < 4 && node; ++i)

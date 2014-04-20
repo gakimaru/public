@@ -340,7 +340,7 @@ namespace rbtree
 		{
 			remove_node = const_cast<T*>(getNextNode(remove_node, stack));
 		}
-		if (*remove_node != target_value)//削除ノードがなければ終了
+		if (remove_node != target_node)//削除ノードがなければ終了
 			return false;
 		//削除
 		T* parent_node = nullptr;//削除ノードの親ノード
@@ -355,8 +355,8 @@ namespace rbtree
 		}
 		T* node_s = const_cast<T*>(remove_node->getNodeS());//小（左）側の子ノードを取得
 		T* node_l = const_cast<T*>(remove_node->getNodeL());//大（右）側の子ノードを取得
-		T* node_sl = nullptr;//削除ノードの小（左）側の子の最大子孫ノード（削除ノードの次に小さいノード）
-		if (node_s && node_l)//小ノードも大ノードもある場合
+		T* node_sl = nullptr;//削除ノードの最大子孫ノード（削除ノードの次に小さいノード）
+		if (node_s && node_l)//大小両方の子がある場合、最大子孫ノード検索
 		{
 			stack.reset();//スタックをリセット
 			node_sl = const_cast<T*>(getLargestNode(node_s, stack));//最大子孫ノードを取得
@@ -370,47 +370,20 @@ namespace rbtree
 			if (node_sl != node_s)
 				node_sl->setNodeS(node_s);//最大子孫ノードの小側の子を変更
 		}
+		T* replace_node =//削除ノードと置き換えるノード
+		    ( node_s && !node_l) ? node_s ://小（左）側の子ノード
+		    (!node_s &&  node_l) ? node_l ://大（右）側の子ノード
+		    ( node_s &&  node_l) ? node_sl://最大子孫ノード
+		  //(!node_s && !node_l) ?
+			                       nullptr;//ノード削除
 		if (!parent_node)//親ノードがない場合 → 先頭ノードが削除ノード
-		{
-			top_node =
-				(node_s && !node_l) ?//小ノードがあり、大ノードがない場合
-					node_s ://小ノードを先頭ノードに変更
-				(!node_s && node_l) ?//小ノードがなく、大ノードがある場合
-					node_l ://大ノードを先頭ノードに変更
-				(node_s && node_l) ?//小ノードも大ノードもある場合
-					node_sl ://最大子孫ノードを先頭ノードに変更
-				//(!node_s && !node_l) ?//小ノードも、大ノードもない場合
-					nullptr//先頭ノードをクリア
-				;
-		}
+			top_node = replace_node;//先頭ノードを置き換え
 		else//if(parent_node)//親ノードがある場合
 		{
-			if (parent_is_large)//削除ノードが親ノードの大側の子だった場合
-			{
-				parent_node->setNodeL(
-					(node_s && !node_l) ?//小ノードがあり、大ノードがない場合
-						node_s ://小ノードを親ノードの大側の子に変更
-					(!node_s && node_l) ?//小ノードがなく、大ノードがある場合
-						node_l ://大ノードを親ノードの大側の子に変更
-					(node_s && node_l) ?//小ノードも大ノードもある場合
-						node_sl ://最大子孫ノードを親ノードの大側の子に変更
-					//(!node_s && !node_l) ?//小ノードも、大ノードもない場合
-						nullptr//親ノードの大側の子をクリア
-				);
-			}
-			else//if (!parent_is_large)//削除ノードが親ノードの小側の子だった場合
-			{
-				parent_node->setNodeS(
-					(node_s && !node_l) ?//小ノードがあり、大ノードがない場合
-						node_s ://小ノードを親ノードの小側の子に変更
-					(!node_s && node_l) ?//小ノードがなく、大ノードがある場合
-						node_l ://大ノードを親ノードの小側の子に変更
-					(node_s && node_l) ?//小ノードも大ノードもある場合
-						node_sl ://最大子孫ノードを親ノードの小側の子に変更
-					//(!node_s && !node_l)//小ノードも、大ノードもない場合
-						nullptr//親ノードの小側の子をクリア
-				);
-			}
+			if (parent_is_large)
+				parent_node->setNodeL(replace_node);//親ノードの大（右）側の子ノードを置き換え
+			else//if (!parent_is_large)
+				parent_node->setNodeS(replace_node);//親ノードの小（左）側の子ノードを置き換え
 		}
 		return true;
 	}
@@ -420,7 +393,7 @@ namespace rbtree
 //赤黒木テスト
 
 #include <random>//C++11 random用
-#include <stdint.h>//intptr_t用
+//#include <stdint.h>//intptr_t用
 
 //----------------------------------------
 //テストデータ

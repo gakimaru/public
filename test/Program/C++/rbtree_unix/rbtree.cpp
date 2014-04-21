@@ -19,7 +19,7 @@
 //　　例えば、配列のインデックスでリンクを持つようなスタイルにも対応できる。）
 //※std::mapを模したコンテナとイテレータを利用可能。
 //----------------------------------------
-//【具体的な活用の想定】
+//【具体的な活用の想定：メモリ管理での活用】
 //・メモリマネージャの管理情報の連結に使用することを想定。
 //・空きメモリサイズ順の連結を行うため、キー重複を許容する必要がある。
 //・また、連結リストが肥大化することを避けるため、親ノードへのリンク情報は
@@ -34,12 +34,9 @@ namespace rbtree
 	//--------------------
 	//赤黒木ノード構造体テンプレート
 	//※CRTPを活用し、下記のような派生構造体／クラスを作成して使用する
-	//  //struct 派生構造体／クラス名 : public rbtree::node_t<派生構造体／クラス名, キー型>
+	//  //struct 派生構造体／クラス名 : public rbtree::node_t<派生構造体／クラス名, キー型, スタックの最大の深さ = 32>
 	//	struct Derived : public rbtree::node_t<Derived, int>
 	//	{
-	//		//定数
-	//		static const int DEPTH_MAX = ???;//最大の深さ（スタック処理用）
-	//		
 	//		//子ノードの取得
 	//		const data_t* getNodeS() const { return ???; }//小（左）側の子ノード取得
 	//		const data_t* getNodeL() const { return ???; }//大（右）側の子ノード取得
@@ -56,13 +53,16 @@ namespace rbtree
 	//		
 	//		//キーを返す
 	//		key_t getKey() const { return ???; }
-	//	}
-	template<class T, typename V>
+	//	};
+	template<class IMPL_TYPE, typename VALUE_TYPE, int STACK_DEPTH_MAX = 32>
 	struct node_t
 	{
+		//定数
+		static const int DEPTH_MAX = STACK_DEPTH_MAX;//スタックの最大の深さ
+
 		//型
-		typedef T impl_t;//実装型（struct impl_t : public rbtree::node_t<impl_t, int>）
-		typedef V key_t;//キー型
+		typedef IMPL_TYPE impl_t;//実装型（struct impl_t : public rbtree::node_t<impl_t, int>）
+		typedef VALUE_TYPE key_t;//キー型
 
 		//キャストオペレータ
 		//※キーを返す
@@ -953,9 +953,6 @@ namespace rbtree
 //テストデータ
 struct data_t : public rbtree::node_t<data_t, int>
 {
-	//定数
-	static const int DEPTH_MAX = 128;//最大の深さ（スタック処理用）
-
 	//子ノードの取得
 	const data_t* getNodeS() const { return m_nodeS; }//小（左）側の子ノード取得
 	const data_t* getNodeL() const { return m_nodeL; }//大（右）側の子ノード取得

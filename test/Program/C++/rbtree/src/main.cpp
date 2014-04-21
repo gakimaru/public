@@ -2,7 +2,10 @@
 #include <stdlib.h>
 
 #include <cstddef>//srd::size_t用
+#include <memory.h>//memcpy用
 #include <assert.h>//assert用
+#include <iterator>//std::iterator用
+#include <algorithm>//algorithm用
 
 //--------------------------------------------------------------------------------
 //赤黒木（red-black tree）
@@ -14,6 +17,7 @@
 //　CRTPを活用して、派生クラスで幾つか既定のメソッドを実装するスタイルとする。
 //　（これにより、ポインタ変数によるリンクの保持以外のスタイルにも対応可能。
 //　　例えば、配列のインデックスでリンクを持つようなスタイルにも対応できる。）
+//※std::mapを模したコンテナとイテレータを利用可能。
 //----------------------------------------
 //【具体的な活用の想定】
 //・メモリマネージャの管理情報の連結に使用することを想定。
@@ -139,6 +143,18 @@ namespace rbtree
 			}
 			return breadth;
 		}
+		//コピーオペレータ
+		stack_t& operator=(const stack_t rhs)
+		{
+			m_depth = rhs.m_depth;
+			memcpy(m_array, rhs.m_array, sizeof(info_t)* m_depth);
+		}
+		//コピーコンストラクタ
+		stack_t(const stack_t& obj) :
+			m_depth(obj.m_depth)
+		{
+			memcpy(m_array, obj.m_array, sizeof(info_t)* m_depth);
+		}
 		//コンストラクタ
 		stack_t() :
 			m_depth(0)
@@ -262,14 +278,14 @@ namespace rbtree
 	//※一致ノードが複数ある場合、その最初のノードを返す
 	//※指定のキーの内輪で最も近いノードと同キーのノードが複数ある場合、その最後のノードを返す
 	//※指定のキーより大きく最も近いノードと同キーのノードが複数ある場合、その最初のノードを返す
-	enum E_SEARCH_TYPE
+	enum MATCH_TYPE_T
 	{
-		FOR_SAME = 0,//一致ノードを検索
+		FOR_MATCH = 0,//一致ノードを検索
 		FOR_NEAREST_SMALLER,//一致ノード、もしくは、内輪で最も近いノードを検索
 		FOR_NEAREST_LARGER,//一致ノード、もしくは、それより大きく最も近いノードを検索
 	};
 	template<class T>
-	const T* searchNode(const T* root, const typename T::key_t key, stack_t<T>& stack, const E_SEARCH_TYPE search_type = FOR_SAME)
+	const T* searchNode(const T* root, const typename T::key_t key, stack_t<T>& stack, const MATCH_TYPE_T search_type = FOR_MATCH)
 	{
 		if (!root)
 			return nullptr;
@@ -333,6 +349,43 @@ namespace rbtree
 			}
 		}
 		return nullptr;//検索失敗
+	}
+	//--------------------
+	//赤黒木操作関数：ツリーのノード数を計測
+	template<class T>
+	std::size_t countNodes(const T* node)
+	{
+		if (!node)
+			return 0;
+		int count = 0;//ノード数
+		++count;
+		const T* node_s = node->getNodeS();
+		const T* node_l = node->getNodeL();
+		if (node_s)
+			count += getNodeCount(node_s);
+		if (node_l)
+			count += getNodeCount(node_l);
+		return count;
+	}
+	//--------------------
+	//赤黒木操作関数：指定のキーのノード数を計測
+	//※内部でスタックを作成
+	template<class T>
+	std::size_t countNodes(const T* root, const typename T::key_t key)
+	{
+		if (!root)
+			return 0;
+		stack_t<T> stack;
+		const T* node = searchNode(root, key, stack, FOR_MATCH);
+		if (!node)
+			return 0;
+		int count = 0;//ノード数
+		while (node)
+		{
+			++node;
+			node = getNextNode(node, stack);
+		}
+		return count;
 	}
 	//--------------------
 	//赤黒木操作関数：ノードを追加
@@ -440,6 +493,453 @@ namespace rbtree
 		}
 		return true;
 	}
+	//--------------------
+	//赤黒木コンテナ
+	//※ルートのリンクを持つのみ
+	//※std::mapを模した構造
+	template<class T>
+	class container
+	{
+	public:
+		//型
+		typedef stack_t<T> stack_type;
+		typedef T node_type;
+		typedef typename T::key_t key_type;
+		typedef std::size_t size_type;
+	public:
+		//--------------------
+		//イテレータ
+		class iterator;
+		typedef const iterator const_iterator;
+		//typedef public std::reverse_iterator<iterator> reverse_iterator;//これは使わない
+		class reverse_iterator;
+		typedef const reverse_iterator const_reverse_iterator;
+		class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
+		{
+			friend class container;
+		public:
+			//キャストオペレータ
+			operator const node_type() const { return *m_node; }
+			operator node_type(){ return *m_node; }
+			operator key_type() const { return static_cast<key_type>(*m_node); }
+		public:
+			//オペレータ
+			const node_type& operator*() const { return *m_node; }
+			node_type& operator*(){ return *m_node; }
+			const node_type* operator->() const { return m_node; }
+			node_type* operator->(){ return m_node; }
+			//比較オペレータ
+			bool operator==(const_iterator& rhs) const
+			{
+				return m_node == nullptr && rhs.m_node == nullptr ? true :
+					m_node == nullptr || rhs.m_node == nullptr ? false :
+					m_node->getKey() == rhs.m_node->getKey();
+			}
+			bool operator!=(const_iterator& rhs) const
+			{
+				return m_node == nullptr && rhs.m_node == nullptr ? false :
+					m_node == nullptr || rhs.m_node == nullptr ? true :
+					m_node->getKey() != rhs.m_node->getKey();
+			}
+			bool operator<(const_iterator& rhs) const
+			{
+				return m_node == nullptr || rhs.m_node == nullptr ? false :
+					m_node->getKey() < rhs.m_node->getKey();
+			}
+			bool operator>(const_iterator& rhs) const
+			{
+				return m_node == nullptr || rhs.m_node == nullptr ? false :
+					m_node->getKey() > rhs.m_node->getKey();
+			}
+			bool operator<=(const_iterator& rhs) const
+			{
+				return m_node == nullptr || rhs.m_node == nullptr ? false :
+					m_node->getKey() <= rhs.m_node->getKey();
+			}
+			bool operator>=(const_iterator& rhs) const
+			{
+				return m_node == nullptr || rhs.m_node == nullptr ? false :
+					m_node->getKey() >= rhs.m_node->getKey();
+			}
+			//演算子オペレータ
+			const_iterator& operator++() const
+			{
+				m_node = const_cast<node_type*>(getNextNode(m_node, m_stack));
+				return *this;
+			}
+			const_iterator& operator--() const
+			{
+				m_node = const_cast<node_type*>(getPrevNode(m_node, m_stack));
+				return *this;
+			}
+			iterator& operator++()
+			{
+				m_node = const_cast<node_type*>(getNextNode(m_node, m_stack));
+				return *this;
+			}
+			iterator& operator--()
+			{
+				m_node = const_cast<node_type*>(getPrevNode(m_node, m_stack));
+				return *this;
+			}
+			const_iterator operator++(int) const
+			{
+				iterator ite(*this);
+				++(*this);
+				return ite;
+			}
+			const_iterator operator--(int) const
+			{
+				iterator ite(*this);
+				--(*this);
+				return ite;
+			}
+			iterator operator++(int)
+			{
+				iterator ite(*this);
+				++(*this);
+				return ite;
+			}
+			iterator operator--(int)
+			{
+				iterator ite(*this);
+				--(*this);
+				return ite;
+			}
+			const_iterator& operator+=(const int val) const
+			{
+				for (int i = 0; i < val; ++i)
+					++(*this);
+				return *this;
+			}
+			const_iterator& operator-=(const int val) const
+			{
+				for (int i = 0; i < val; ++i)
+					--(*this);
+				return *this;
+			}
+			iterator& operator+=(const int val)
+			{
+				for (int i = 0; i < val; ++i)
+					++(*this);
+				return *this;
+			}
+			iterator& operator-=(const int val)
+			{
+				for (int i = 0; i < val; ++i)
+					--(*this);
+				return *this;
+			}
+			const_iterator operator+(const int val) const
+			{
+				iterator ite(*this);
+				ite += val;
+				return ite;
+			}
+			const_iterator operator-(const int val) const
+			{
+				iterator ite(*this);
+				ite -= val;
+				return ite;
+			}
+			iterator operator+(const int val)
+			{
+				iterator ite(*this);
+				ite += val;
+				return ite;
+			}
+			iterator operator-(const int val)
+			{
+				iterator ite(*this);
+				ite -= val;
+				return ite;
+			}
+		public:
+			//コピーオペレータ
+			iterator& operator=(const_iterator& rhs)
+			{
+				m_stack = rhs.m_stack;
+				m_node = rhs.m_node;
+			}
+		public:
+			//リセット
+			void reset() const
+			{
+				m_stack.reset();
+				m_node = nullptr;
+			}
+		public:
+			//コピーコンストラクタ
+			iterator(const_iterator& obj) :
+				m_stack(obj.m_stack),
+				m_node(obj.m_node)
+			{}
+			//コンストラクタ
+			iterator() :
+				m_stack(),
+				m_node(nullptr)
+			{}
+			iterator(const node_type* node, const stack_type& stack) :
+				m_stack(*const_cast<stack_type*>(&stack)),
+				m_node(const_cast<node_type*>(node))
+			{}
+			//デストラクタ
+			~iterator()
+			{}
+		protected:
+			//フィールド
+			mutable stack_type m_stack;//スタック
+			mutable node_type* m_node;//現在のノード
+		};
+		//--------------------
+		//リバースイテレータ
+		//※begin(), end() の要件が若干特殊なので、
+		//　std::reverse_iterator<iterator>を使わずに実装（偽装）。
+		//　中身はoperatorの+と-を逆転しているだけで、
+		//　通常のイテレータと同じ。
+		class reverse_iterator : public iterator
+		{
+		public:
+			//演算子オペレータ
+			const_reverse_iterator& operator++() const
+			{
+				return static_cast<const_reverse_iterator&>(iterator::operator--());
+			}
+			const_reverse_iterator& operator--() const
+			{
+				return static_cast<const_reverse_iterator&>(iterator::operator++());
+			}
+			reverse_iterator& operator++()
+			{
+				return static_cast<reverse_iterator&>(iterator::operator--());
+			}
+			reverse_iterator& operator--()
+			{
+				return static_cast<reverse_iterator&>(iterator::operator++());
+			}
+			const_reverse_iterator operator++(int) const
+			{
+				return static_cast<const_reverse_iterator&>(iterator::operator--(0));
+			}
+			const_reverse_iterator operator--(int) const
+			{
+				return static_cast<const_reverse_iterator&>(iterator::operator++(0));
+			}
+			reverse_iterator operator++(int)
+			{
+				return static_cast<reverse_iterator&>(iterator::operator--(0));
+			}
+			reverse_iterator operator--(int)
+			{
+				return static_cast<reverse_iterator&>(iterator::operator++(0));
+			}
+			const_reverse_iterator& operator+=(const int val) const
+			{
+				return static_cast<const_reverse_iterator&>(iterator::operator-=(val));
+			}
+			const_reverse_iterator& operator-=(const int val) const
+			{
+				return static_cast<const_reverse_iterator&>(iterator::operator+=(val));
+			}
+			reverse_iterator& operator+=(const int val)
+			{
+				return static_cast<reverse_iterator&>(iterator::operator-=(val));
+			}
+			reverse_iterator& operator-=(const int val)
+			{
+				return static_cast<reverse_iterator&>(iterator::operator+=(val));
+			}
+			const_reverse_iterator operator+(const int val) const
+			{
+				return static_cast<const_reverse_iterator&>(iterator::operator-(val));
+			}
+			const_reverse_iterator operator-(const int val) const
+			{
+				return static_cast<const_reverse_iterator&>(iterator::operator+(val));
+			}
+			reverse_iterator operator+(const int val)
+			{
+				return static_cast<reverse_iterator&>(iterator::operator-(val));
+			}
+			reverse_iterator operator-(const int val)
+			{
+				return static_cast<reverse_iterator&>(iterator::operator+(val));
+			}
+		public:
+			//コピーコンストラクタ
+			reverse_iterator(const_iterator& obj) :
+				iterator(obj)
+			{}
+			//コンストラクタ
+			reverse_iterator() :
+				iterator()
+			{}
+			reverse_iterator(const node_type* node, const stack_type& stack) :
+				iterator(node, stack)
+			{}
+			//デストラクタ
+			~reverse_iterator()
+			{}
+		};
+	public:
+		//メソッド：イテレータ系
+		const_iterator& _begin(const_iterator& ite) const
+		{
+			ite.m_node = const_cast<node_type*>(getSmallestNode(m_root, ite.m_stack));
+			return ite;
+		}
+		const_iterator& _end(const_iterator& ite) const
+		{
+			ite.reset();
+			return ite;
+		}
+		const_iterator cbegin() const
+		{
+			iterator ite;
+			return _begin(ite);
+		}
+		const_iterator cend() const
+		{
+			iterator ite;
+			return _end(ite);
+		}
+		const_iterator begin() const
+		{
+			iterator ite;
+			return _begin(ite);
+		}
+		const_iterator end() const
+		{
+			iterator ite;
+			return _end(ite);
+		}
+		iterator begin()
+		{
+			iterator ite;
+			return _begin(ite);
+		}
+		iterator end()
+		{
+			iterator ite;
+			return _end(ite);
+		}
+		const_reverse_iterator& _rbegin(const_reverse_iterator& ite) const
+		{
+			ite.m_node = const_cast<node_type*>(getLargestNode(m_root, ite.m_stack));
+			return ite;
+		}
+		const_reverse_iterator& _rend(const_reverse_iterator& ite) const
+		{
+			ite.reset();
+			return ite;
+		}
+		const_reverse_iterator crbegin() const
+		{
+			reverse_iterator ite;
+			return _rbegin(ite);
+		}
+		const_reverse_iterator crend() const
+		{
+			reverse_iterator ite;
+			return _rend(ite);
+		}
+		const_reverse_iterator rbegin() const
+		{
+			reverse_iterator ite;
+			return _rbegin(ite);
+		}
+		const_reverse_iterator rend() const
+		{
+			reverse_iterator ite;
+			return _rend(ite);
+		}
+		reverse_iterator rbegin()
+		{
+			reverse_iterator ite;
+			return _rbegin(ite);
+		}
+		reverse_iterator rend()
+		{
+			reverse_iterator ite;
+			return _rend(ite);
+		}
+		//メソッド：容量系
+		bool empty() const { return m_root == nullptr; }
+		size_type size() const { return countNodes(m_root); }
+		//size_type max_size() const { return getNodeCount(m_root); }
+		int depth_max() const { return getDepthMax(m_root); }
+		//メソッド：要素アクセス系
+		//※std::mapと異なり、ノードのポインタを返す
+		inline const node_type* _at(const key_type key) const
+		{
+			stack_type stack;
+			return searchNode(m_root, key, stack, FOR_MATCH);
+		}
+		const node_type* at(const key_type key) const { return _at(key); }
+		node_type* at(const key_type key){ return const_cast<node_type*>(_at(key)); }
+		const node_type* operator[](const key_type key) const { return _at(key); }
+		node_type* operator[](const key_type key){ return const_cast<node_type*>(_at(key)); }
+		//メソッド：追加／削除系
+		//※std::mapと異なり、ノードを直接指定し、結果をbool型で受け取る
+		//※要素のメモリ確保／削除を行わない点に注意
+		bool insert(const node_type& node){ return addNode(const_cast<node_type*>(&node), m_root); }
+		bool erase(const node_type& node){ return removeNode(&node, m_root); }
+		void clear(){ m_root = nullptr; }
+		//メソッド：検索系
+		//※lower_bound(), upper_bound()には非対応
+		//※代わりに、find_nearestに対応
+		const_iterator& _find(const_iterator& ite, const key_type key, const MATCH_TYPE_T type = FOR_MATCH) const
+		{
+			ite.m_node = const_cast<node_type*>(searchNode(m_root, key, ite.m_stack, type));
+			return ite;
+		}
+		const_iterator find(const key_type key, const MATCH_TYPE_T type = FOR_MATCH) const
+		{
+			const_iterator ite;
+			return _find(ite, key, type);
+		}
+		iterator find(const key_type key, const MATCH_TYPE_T type = FOR_MATCH)
+		{
+			iterator ite;
+			return _find(ite, key, type);
+		}
+		size_type count(const key_type key) const { return countNodes(m_root, key, FOR_MATCH); }
+		const_iterator& _equal_range(const_iterator& ite, const key_type key) const
+		{
+			ite.m_node = const_cast<node_type*>(searchNode(m_root, key, ite.m_stack, FOR_MATCH));
+			while (ite.m_node && *ite == key)
+				++ite;
+			return ite;
+		}
+		const_iterator equal_range(const key_type key) const
+		{
+			const_iterator ite;
+			return _equal_range(ite, key);
+		}
+		iterator equal_range(const key_type key)
+		{
+			iterator ite;
+			return _equal_range(ite, key);
+		}
+		//その他
+		const node_type* root() const { return m_root; }
+		node_type*& root_ref(){ return m_root; }
+	public:
+		//コピーコンストラクタ
+		container(const container& con) :
+			m_root(con.m_root)
+		{}
+		//コンストラクタ
+		container() :
+			m_root(nullptr)
+		{}
+		//デストラクタ
+		~container()
+		{}
+	private:
+		//フィールド
+		node_type* m_root;//ルートノード
+	};
 }//namespace rbtree
 
 //--------------------------------------------------------------------------------
@@ -501,11 +1001,16 @@ int main(const int argc, const char* argv[])
 	static const int key_max = 99;//最大キー
 	static const int reg_num = 100;//登録数
 
-	//赤黒木のトップノード
-	data_t* root = nullptr;
+	//赤黒木コンテナ
+	typedef rbtree::container<data_t> container_t;
+	typedef container_t::iterator iterator;
+	typedef container_t::const_iterator const_iterator;
+	typedef container_t::reverse_iterator reverse_iterator;
+	typedef container_t::const_reverse_iterator const_reverse_iterator;
+	container_t con;
 
 	//データを登録
-	auto regList = [&root]()
+	auto regList = [&con]()
 	{
 		printf("--- make table ---\n");
 		std::mt19937 rand_engine;
@@ -515,75 +1020,66 @@ int main(const int argc, const char* argv[])
 		{
 			data_t* new_node = new data_t(rand_dist(rand_engine));
 			printf("[%d] ", new_node->getKey());
-			rbtree::addNode(new_node, root);
+			con.insert(*new_node);
 		}
 		printf("\n");
 	};
 	regList();
 
 	//ツリーを表示
-	auto showTree = [&root]()
+	auto showTree = [&con]()
 	{
 		printf("--- show tree ---\n");
-		static const int depth_limit = 4;
-		int depth_max = rbtree::getDepthMax(root);
-		printf("depth_max=%d (show limit=%d)\n", depth_max, depth_limit);
-		depth_max = depth_max <= depth_limit ? depth_max : depth_limit;
+		static const int depth_limit = 3;
+		const int _depth_max = con.depth_max();
+		printf("depth_max=%d (show limit=%d)\n", _depth_max, depth_limit);
+		const int depth_max = _depth_max <= depth_limit ? _depth_max : depth_limit;
 		const int width_max = static_cast<int>(std::pow(2, depth_max));
 		for (int depth = 0; depth <= depth_max; ++depth)
 		{
-			const int depth_rev = depth_max - depth;
 			const int width = static_cast<int>(std::pow(2, depth));
 			static const int label_len = 6;
 			const int print_width = (width_max * label_len) / width;
-			const int print_width_h = (print_width - label_len) / 2;
-			rbtree::stack_t<data_t> stack;
-			const data_t* node = rbtree::getSmallestNode(root, stack);
-			int prev_breath = -1;
-			while (node)
+			const int print_indent = (print_width - label_len) / 2;
+			for (int breath = 0; breath < width; ++breath)
 			{
-				const int depth_curr = stack.getDepth();
-				if (depth_curr == depth)
+				const data_t* node = con.root();
+				int breath_tmp = breath;
+				for (int depth_tmp = 0; node && depth_tmp < depth; ++depth_tmp)
 				{
-					const int breath = stack.calcBreadth();
-					const int skip_width = breath - prev_breath - 1;
-					for (int skip = 0; skip < skip_width; ++skip)
-					{
-						for (int c = 0; c < print_width; ++c)
-							printf(" ");
-					}
+					node = (breath_tmp & (0x1 << depth_tmp)) ?
+						node->getNodeL() :
+						node->getNodeS();
+				}
+				if (node)
+				{
 					{
 						int c = 0;
-						for (; c < print_width_h / 2; ++c)
+						for (; c < print_indent / 2; ++c)
 							printf(" ");
-						if (node->getNodeS() && c < print_width_h)
+						if (node->getNodeS() && c < print_indent)
 						{
 							printf(".");
 							++c;
 						}
-						for (; c < print_width_h; ++c)
+						for (; c < print_indent; ++c)
 							printf(node->getNodeS() ? "-" : " ");
 					}
 					printf("%s%2d:%c%s", node->getNodeS() ? "{" : "[", node->getKey(), node->isBlack() ? 'B' : 'R', node->getNodeL() ? "}" : "]");
 					{
 						int c = 0;
-						for (; c < print_width_h / 2; ++c)
+						for (; c < print_indent / 2; ++c)
 							printf(node->getNodeL() ? "-" : " ");
-						if (node->getNodeL() && c < print_width_h)
+						if (node->getNodeL() && c < print_indent)
 						{
 							printf(".");
 							++c;
 						}
-						for (; c < print_width_h; ++c)
+						for (; c < print_indent; ++c)
 							printf(" ");
 					}
-					prev_breath = breath;
 				}
-				node = rbtree::getNextNode(node, stack);
-			}
-			{
-				const int skip_width = width - prev_breath - 1;
-				for (int skip = 0; skip < skip_width; ++skip)
+				else
 				{
 					for (int c = 0; c < print_width; ++c)
 						printf(" ");
@@ -595,18 +1091,15 @@ int main(const int argc, const char* argv[])
 	showTree();
 
 	//一番小さいノードから昇順に全ノードをリストアップ
-	auto showListAsc = [&root]()
+	auto showListAsc = [&con]()
 	{
 		printf("--- get smallest node -> get next node ---\n");
-		rbtree::stack_t<data_t> stack;
-		const data_t* node = rbtree::getSmallestNode(root, stack);
 		bool is_found = false;
-		while (node)
+		for (const data_t& obj : con)//C++11形式の範囲に基づくforループ
 		{
 			if (!is_found)
 				is_found = true;
-			printf("[%d] ", node->getKey());
-			node = rbtree::getNextNode(node, stack);
+			printf("[%d] ", obj.getKey());
 		}
 		if (is_found)
 			printf("\n");
@@ -616,19 +1109,26 @@ int main(const int argc, const char* argv[])
 	showListAsc();
 
 	//一番大きいノードから降順に全ノードをリストアップ
-	auto showListDesc = [&root]()
+	auto showListDesc = [&con]()
 	{
 		printf("--- get largest node -> get previous node ---\n");
-		rbtree::stack_t<data_t> stack;
-		const data_t* node = rbtree::getLargestNode(root, stack);
 		bool is_found = false;
-		while (node)
-		{
-			if (!is_found)
-				is_found = true;
-			printf("[%d] ", node->getKey());
-			node = rbtree::getPrevNode(node, stack);
-		}
+		std::for_each(con.rbegin(), con.rend(),
+			[&is_found](const data_t& obj)
+			{
+				if (!is_found)
+					is_found = true;
+				printf("[%d] ", obj.getKey());
+			}
+		);
+		//※イテレータの変数宣言と値の更新を分けた方が効率的
+		//const_reverse_iterator ite;con._rbegin(ite);
+		//const_reverse_iterator end;con._rend(end);
+		//for (; ite != end; ++ite)
+		//{
+		//	const data_t& obj = *ite;
+		//	...
+		//}
 		if (is_found)
 			printf("\n");
 		else
@@ -637,24 +1137,32 @@ int main(const int argc, const char* argv[])
 	showListDesc();
 
 	//指定のキーのノードを検索し、同じキーのノードをリストアップ
-	auto searchData = [&root]()
+	auto searchData = [&con]()
 	{
 		printf("--- search node ---\n");
 		for (int search_key = key_min; search_key <= key_max; ++search_key)
 		{
 			rbtree::stack_t<data_t> stack;
-			const data_t* node = rbtree::searchNode(root, search_key, stack);
 			bool is_found = false;
-			while (node && *node == search_key)
-			{
-				if (!is_found)
+			std::for_each(con.find(search_key), con.equal_range(search_key),
+				[&is_found, &search_key](const data_t& obj)
 				{
-					printf("%d=", search_key);
-					is_found = true;
+					if (!is_found)
+					{
+						printf("%d=", search_key);
+						is_found = true;
+					}
+					printf("[%d] ", obj.getKey());
 				}
-				printf("[%d] ", node->getKey());
-				node = rbtree::getNextNode(node, stack);
-			}
+			);
+			//※イテレータの変数宣言と検索を分けた方が効率的
+			//const_iterator ite;con._find(ite, search_key);
+			//const_iterator end;con._equal_range(end, search_key);
+			//for (; ite != end; ++ite)
+			//{
+			//	const data_t& obj = *ite;
+			//	...
+			//}
 			if (is_found)
 				printf("\n");
 		}
@@ -662,24 +1170,28 @@ int main(const int argc, const char* argv[])
 	searchData();
 
 	//指定のキーと同じか内輪で一番近いノードを検索
-	auto searchNearestData = [&root](const rbtree::E_SEARCH_TYPE search_type)
+	auto searchNearestData = [&con](const rbtree::MATCH_TYPE_T search_type)
 	{
 		printf("--- search nearest node for %s ---\n", search_type == rbtree::FOR_NEAREST_SMALLER ? "smaller" : search_type == rbtree::FOR_NEAREST_LARGER ? "larger" : "same");
 		for (int search_key = key_min; search_key <= key_max; ++search_key)
 		{
 			rbtree::stack_t<data_t> stack;
-			const data_t * node = rbtree::searchNode(root, search_key, stack, search_type);
 			bool is_found = false;
-			for (int i = 0; node && *node != search_key && i < 4; ++i)
+			const_iterator ite(con.find(search_key, search_type));
+			const_iterator end(con.end());
+			for (int i = 0; ite != end && *ite != search_key && i < 4; ++i, ++ite)
 			{
 				if (!is_found)
 				{
 					printf("%d=", search_key);
 					is_found = true;
 				}
-				printf("[%d] ", node->getKey());
-				node = rbtree::getNextNode(node, stack);
+				printf("[%d] ", ite->getKey());
 			}
+			//※イテレータの変数宣言と検索を分けた方が若干効率的
+			//const_iterator ite;con._find(ite, search_key, search_type);
+			//const_iterator end;con._end(end);
+			//...
 			if (is_found)
 				printf("\n");
 		}
@@ -690,17 +1202,16 @@ int main(const int argc, const char* argv[])
 	searchNearestData(rbtree::FOR_NEAREST_LARGER);
 
 	//ノードを削除
-	auto removeNodes = [&root]()
+	auto removeNodes = [&con]()
 	{
 		printf("--- remove nodes ---\n");
 		for (int search_key = key_min; search_key <= key_max; ++search_key)
 		{
-			const data_t* target_node = nullptr;
-			{
-				rbtree::stack_t<data_t> stack;
-				target_node = rbtree::searchNode(root, search_key, stack);
-			}
-			const bool result = rbtree::removeNode(target_node, root);
+			const_iterator ite(con.find(search_key));
+			const bool result = con.erase(*ite);
+			//※イテレータの変数宣言と検索を分けた方が若干効率的
+			//const_iterator ite;con._find(ite, search_key);
+			//...
 			if (result)
 				printf("[%d] ", search_key);
 		}
@@ -712,17 +1223,16 @@ int main(const int argc, const char* argv[])
 	showListAsc();
 
 	//ノードを削除
-	auto removeAllNodes = [&root]()
+	auto removeAllNodes = [&con]()
 	{
 		printf("--- remove all nodes ---\n");
 		for (int search_key = key_min; search_key <= key_max;)
 		{
-			const data_t* target_node = nullptr;
-			{
-				rbtree::stack_t<data_t> stack;
-				target_node = rbtree::searchNode(root, search_key, stack);
-			}
-			const bool result = rbtree::removeNode(target_node, root);
+			const_iterator ite(con.find(search_key));
+			const bool result = con.erase(*ite);
+			//※イテレータの変数宣言と検索を分けた方が若干効率的
+			//const_iterator ite;con._find(ite, search_key);
+			//...
 			if (result)
 				printf("[%d] ", search_key);
 			else

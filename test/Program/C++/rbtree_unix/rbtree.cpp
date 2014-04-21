@@ -434,13 +434,14 @@ namespace rbtree
 				break;
 			}
 			stack.push(curr_node, child_is_large);//親ノードをスタックに記録
-			parent_node = curr_node;
-			curr_is_large = child_is_large;
+			//parent_node = curr_node;
+			//curr_is_large = child_is_large;
 			curr_node = child_node;
 		}
 #ifndef DISABLE_ROTATE_FOR_ADD
 		//赤黒バランス調整
-		if (parent_node && curr_node && child_node)
+		//if (parent_node && curr_node && child_node)
+		if (curr_node && child_node)
 		{
 			bool is_rotated = false;//回転処理済みフラグ
 			while (true)
@@ -460,7 +461,7 @@ namespace rbtree
 				}
 				if (curr_node->isRed() && child_node->isRed())//赤ノードが二つ連結していたら回転処理
 				{
-					//左回転処理
+					//汎用左回転処理
 					//      .--------[node]-------.     ⇒          .--------[node_l]
 					//   [node_s]          .--[node_l]  ⇒     .--[node]--.          
 					//                  [node_ls]       ⇒  [node_s]  [node_ls]      
@@ -472,7 +473,7 @@ namespace rbtree
 						const_cast<T*>(node)->setNodeL(node_ls);
 						return node_l;
 					};
-					//右回転処理
+					//汎用右回転処理
 					//      .--------[node]-------.        ⇒  [node_s]-------.         
 					//   [node_s]--.          [node_l]     ⇒           .---[node]--.   
 					//         [node_sl]                   ⇒        [node_sl]  [node_l]
@@ -485,82 +486,94 @@ namespace rbtree
 						return node_s;
 					};
 					//親ノードを軸にした左回転処理
-					//      .-----[parent_node]-----.      ⇒            .----------[curr_node]
-					//   [(S)]             .--[curr_node]  ⇒    .--[parent_node]--.           
-					//                 [child_node]        ⇒  [(S)]         [child_node]      
+					//     .------[parent_node:B]------.              ⇒            .------[curr_node:R]------.       
+					//   [(S)]              .--[curr_node:R]--.       ⇒    .--[parent_node:B]--.       [child_node:R]
+					//                   [(LS)]       [child_node:R]  ⇒  [(S)]              [(LS)]                   
+					//
+					//                                                ⇒           .------[parent_node:R]------.     
+					//                                                ⇒    .--[(S):B]--.               [curr_node:B]
+					//                                                ⇒  [(SS)]     [(SL)]                          
 					auto rotateParentL = [&]() -> const T*
 					{
-						const T* parent_node_old = parent_node;
 						parent_node = rotateL(parent_node);//回転処理
-						//各ノードの関係を調整
-						curr_is_large = false;
-						curr_node = parent_node_old;
-						child_is_large = true;
-						const_cast<T*>(child_node)->setIsBlack();
+						curr_is_large = true;
+						curr_node = child_node;
+						const_cast<T*>(curr_node)->setIsBlack();
+						//child_is_large = true;
+						//child_node = nullptr;
 						return parent_node;
 					};
 					//親ノードを軸にした右回転処理
-					//        .-----[parent_node]-----.    ⇒  [curr_node]----------.           
-					//   [curr_node]--.             [(L)]  ⇒             .---[parent_node]--.  
-					//         [child_node]                ⇒        [child_node]          [(L)]
+					//                .-----[parent_node:B]-----.    ⇒        .------[curr_node:R]------.           
+					//        .--[curr_node:R]--.             [(L)]  ⇒  [child_node:R]       .--[parent_node:B]--.  
+					//   [child_node:R]      [(SL)]                  ⇒                     [(SL)]              [(L)]
+					//
+					//                                               ⇒       .------[parent_node:R]------.         
+					//                                               ⇒  [curr_node:B]              .--[(L):B]--.   
+					//                                               ⇒                           [(LS)]     [(LL)]
 					auto rotateParentR = [&]() -> const T*
 					{
-						const T* parent_node_old = parent_node;
 						parent_node = rotateR(parent_node);//回転処理
-						//各ノードの関係を調整
-						curr_is_large = true;
-						curr_node = parent_node_old;
-						child_is_large = false;
-						const_cast<T*>(child_node)->setIsBlack();
+						curr_is_large = false;
+						curr_node = child_node;
+						const_cast<T*>(curr_node)->setIsBlack();
+						//child_is_large = false;
+						//child_node = nullptr;
 						return parent_node;
 					};
 					//現在のノードを軸にした左回転処理
-					//     .-----[curr_node]-----.          ⇒           .------[child_node]
-					//   [(S)]             .--[child_node]  ⇒    .--[curr_node]--.         
-					//                  [(LS)]              ⇒  [(S)]           [(LS)]      
+					//     .-----[curr_node:R]-----.          ⇒           .--------[child_node:R]
+					//   [(S)]             .--[child_node:R]  ⇒    .--[curr_node:R]--.         
+					//                  [(LS)]                ⇒  [(S)]            [(LS)]      
+					//
+					//                                        ⇒            .------[curr_node:R]
+					//                                        ⇒    .--[child_node:R]--.       
+					//                                        ⇒  [(SS)]            [(SL)]       
 					auto rotateCurrL = [&]() -> const T*
 					{
 						const T* curr_node_old = curr_node;
 						curr_node = rotateL(curr_node);//回転処理
-						//各ノードの関係を調整
-						child_node = curr_node_old;
 						child_is_large = false;
+						child_node = curr_node_old;
 						return curr_node;
 					};
 					//現在のノードを軸にした右回転処理
-					//            .-----[curr_node]-----.    ⇒  .--[child_node]-----.          
-					//   .--[child_node]--.           [(L)]  ⇒             .---[curr_node]--.  
-					//                 [(SS)]                ⇒           [(SS)]           [(L)]
+					//            .-----[curr_node:R]-----.    ⇒  [child_node:R]-----.           
+					//   .--[child_node:R]--.           [(L)]  ⇒           .---[curr_node:R]--.  
+					//                   [(SS)]                ⇒         [(SS)]             [(L)]
+					//
+					//                                         ⇒  [curr_node:R]-----.             
+					//                                         ⇒           .---[child_node:R]--.  
+					//                                         ⇒         [(LS)]             [(LL)]
 					auto rotateCurrR = [&]() -> const T*
 					{
 						const T* curr_node_old = curr_node;
 						curr_node = rotateR(curr_node);//回転処理
-						//各ノードの関係を調整
-						child_node = curr_node_old;
 						child_is_large = true;
+						child_node = curr_node_old;
 						return curr_node;
 					};
 					//回転処理
 					if (!curr_is_large && !child_is_large)
 					{
-						//小（左）→小（左）連結時：右回転
+						//小（左）→小（左）連結時：親を軸に右回転
 						rotateParentR();
 					}
 					else if (!curr_is_large &&  child_is_large)
 					{
-						//小（左）→大（右）連結時：左回転→右回転
+						//小（左）→大（右）連結時：左回転→親を軸に右回転
 						const_cast<T*>(parent_node)->setNodeS(rotateCurrL());
 						rotateParentR();
 					}
 					else if (curr_is_large && !child_is_large)
 					{
-						//大（右）→小（左）連結時：右回転→左回転
+						//大（右）→小（左）連結時：右回転→親を軸に左回転
 						const_cast<T*>(parent_node)->setNodeL(rotateCurrR());
 						rotateParentL();
 					}
 					else//if (!curr_is_large && !child_is_large)
 					{
-						//大（右）→大（右）連結時：左回転
+						//大（右）→大（右）連結時：親を軸に左回転
 						rotateParentL();
 					}
 					is_rotated = true;
@@ -570,9 +583,9 @@ namespace rbtree
 				child_node = curr_node;
 				curr_node = parent_node;
 			}
-			if (parent_node)
+			if (curr_node)
 			{
-				root = const_cast<T*>(parent_node);//ルートノードを更新
+				root = const_cast<T*>(curr_node);//ルートノードを更新
 				root->setIsBlack();//ルートノードは黒
 			}
 		}

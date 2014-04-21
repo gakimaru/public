@@ -40,7 +40,7 @@ namespace rbtree
 	//・平衡木である。
 	//	- 常に左右の木のバランスを保ち、探索時間の大きな劣化がない木構造。
 	//【条件】
-	//・各ノードは「赤」か「黒」の「色」を持つ。（1ビット情報）
+	//・各ノードは「赤」か「黒」の「色」を持つ。
 	//・「根」（root）は必ず「黒」。
 	//・「赤」の子は必ず「黒」。
 	//	- 待遇により、「赤」の親は必ず「黒」。
@@ -377,9 +377,9 @@ namespace rbtree
 		const T* node_s = node->getNodeS();
 		const T* node_l = node->getNodeL();
 		if (node_s)
-			count += getNodeCount(node_s);
+			count += countNodes(node_s);
 		if (node_l)
-			count += getNodeCount(node_l);
+			count += countNodes(node_l);
 		return count;
 	}
 	//--------------------
@@ -395,9 +395,9 @@ namespace rbtree
 		if (!node)
 			return 0;
 		int count = 0;//ノード数
-		while (node)
+		while (node && *node == key)
 		{
-			++node;
+			++count;
 			node = getNextNode(node, stack);
 		}
 		return count;
@@ -882,7 +882,7 @@ namespace rbtree
 		//メソッド：容量系
 		bool empty() const { return m_root == nullptr; }
 		size_type size() const { return countNodes(m_root); }
-		//size_type max_size() const { return getNodeCount(m_root); }
+		//size_type max_size() const { return countNodes(m_root); }
 		int depth_max() const { return getDepthMax(m_root); }
 		//メソッド：要素アクセス系
 		//※std::mapと異なり、ノードのポインタを返す
@@ -919,7 +919,7 @@ namespace rbtree
 			iterator ite;
 			return _find(ite, key, type);
 		}
-		size_type count(const key_type key) const { return countNodes(m_root, key, FOR_MATCH); }
+		size_type count(const key_type key) const { return countNodes(m_root, key); }
 		const_iterator& _equal_range(const_iterator& ite, const key_type key) const
 		{
 			ite.m_node = const_cast<node_type*>(searchNode(m_root, key, ite.m_stack, FOR_MATCH));
@@ -1106,7 +1106,7 @@ int main(const int argc, const char* argv[])
 	//一番小さいノードから昇順に全ノードをリストアップ
 	auto showListAsc = [&con]()
 	{
-		printf("--- get smallest node -> get next node ---\n");
+		printf("--- get smallest node -> get next node (count=%d) ---\n", con.size());
 		bool is_found = false;
 		for (const data_t& obj : con)//C++11形式の範囲に基づくforループ
 		{
@@ -1132,7 +1132,7 @@ int main(const int argc, const char* argv[])
 	//一番大きいノードから降順に全ノードをリストアップ
 	auto showListDesc = [&con]()
 	{
-		printf("--- get largest node -> get previous node ---\n");
+		printf("--- get largest node -> get previous node (count=%d) ---\n", con.size());
 		bool is_found = false;
 		std::for_each(con.rbegin(), con.rend(),
 			[&is_found](const data_t& obj)
@@ -1166,11 +1166,11 @@ int main(const int argc, const char* argv[])
 			rbtree::stack_t<data_t> stack;
 			bool is_found = false;
 			std::for_each(con.find(search_key), con.equal_range(search_key),
-				[&is_found, &search_key](const data_t& obj)
+				[&con, &is_found, &search_key](const data_t& obj)
 				{
 					if (!is_found)
 					{
-						printf("%d=", search_key);
+						printf("%d(%d) = ", search_key, con.count(search_key));
 						is_found = true;
 					}
 					printf("[%d] ", obj.getKey());
@@ -1205,7 +1205,7 @@ int main(const int argc, const char* argv[])
 				const data_t& obj = *ite;
 				if (!is_found)
 				{
-					printf("%d=", search_key);
+					printf("%d = ", search_key);
 					is_found = true;
 				}
 				printf("[%d] ", obj.getKey());

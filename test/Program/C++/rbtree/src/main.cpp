@@ -7,6 +7,9 @@
 #include <iterator>//std::iterator用
 #include <algorithm>//algorithm用
 
+//#define DISABLE_ROTATE_FOR_ADD//ノード追加時の回転処理を無効化する場合は、このマクロを有効化する
+//#define DISABLE_ROTATE_FOR_REMOVE//ノード削除時の回転処理を無効化する場合は、このマクロを有効化する
+
 //--------------------------------------------------------------------------------
 //赤黒木（red-black tree）
 //※メモリ節約のために、親ノードへのリンクを持たないデータ構造とする。
@@ -370,17 +373,9 @@ namespace rbtree
 	template<class T>
 	std::size_t countNodes(const T* node)
 	{
-		if (!node)
-			return 0;
-		int count = 0;//ノード数
-		++count;
-		const T* node_s = node->getNodeS();
-		const T* node_l = node->getNodeL();
-		if (node_s)
-			count += countNodes(node_s);
-		if (node_l)
-			count += countNodes(node_l);
-		return count;
+		return !node ? 0 :
+		               1 + countNodes(node->getNodeS()) +
+		                   countNodes(node->getNodeL());
 	}
 	//--------------------
 	//赤黒木操作関数：指定のキーのノード数を計測
@@ -412,37 +407,176 @@ namespace rbtree
 		if (!root)//ルートノードが未登録の場合
 		{
 			root = new_node;//ルートノードに登録
+			root->setIsBlack();//ルートノードは黒
 			return true;
 		}
+		new_node->setIsRed();//新規ノードは暫定で赤
 		typename T::key_t new_key = *new_node;//新規ノードのキーを取得
 		stack_t<T> stack;//スタックを用意
+		const T* parent_node = nullptr;
+		bool curr_is_large = false;
 		const T* curr_node = root;//現在の探索ノード
+		bool child_is_large = false;
+		const T* child_node = nullptr;
 		while (true)
 		{
-			const int cmp = curr_node->compare(new_key);//指定のキーと大小比較
-			if (cmp <= 0)//指定のキーと一致もしくは指定のキーより小さい
+			child_is_large = curr_node->compare(new_key) <= 0;//指定のキーと一致もしくは指定のキーより小さければtrue
+			child_node = child_is_large ?
+				curr_node->getNodeL()://大（右）側の子ノードを取得
+				curr_node->getNodeS();//小（左）側の子ノードを取得
+			if (!child_node)//子が無ければそこに新規ノードを追加して終了
 			{
-				const T* child_node = curr_node->getNodeL();//大（右）側の子ノードを取得
-				if (!child_node)//子が無ければそこに新規ノードを追加して終了
-				{
-					const_cast<T*>(curr_node)->setNodeL(new_node);//大（右）側の子ノードとして新規ノードを追加
-					break;
-				}
-				stack.push(curr_node, true);//親ノードをスタックに記録
-				curr_node = child_node;
+				child_node = new_node;
+				if (child_is_large)
+					const_cast<T*>(curr_node)->setNodeL(child_node);//大（右）側の子ノードとして新規ノードを追加
+				else
+					const_cast<T*>(curr_node)->setNodeS(child_node);//小（左）側の子ノードとして新規ノードを追加
+				break;
 			}
-			else//if (cmp > 0)//指定のキーより大きい
+			stack.push(curr_node, child_is_large);//親ノードをスタックに記録
+			parent_node = curr_node;
+			curr_is_large = child_is_large;
+			curr_node = child_node;
+		}
+#ifndef DISABLE_ROTATE_FOR_ADD
+		//赤黒バランス調整
+		if (parent_node && curr_node && child_node)
+		{
+			bool is_rotated = false;//回転処理済みフラグ
+			while (true)
 			{
-				const T* child_node = curr_node->getNodeS();//小（左）側の子ノードを取得
-				if (!child_node)//子が無ければそこに新規ノードを追加して終了
-				{
-					const_cast<T*>(curr_node)->setNodeS(new_node);//大（右）側の子ノードとして新規ノードを追加
+				const typename stack_t<T>::info_t* parent_stack_node = stack.pop();//スタックから親ノード情報取得
+				if (!parent_stack_node)
 					break;
+				parent_node = parent_stack_node->m_nodeRef;//親ノード取得
+				curr_is_large = parent_stack_node->m_isLarge;//親ノードからの大小連結情報取得
+				if (is_rotated)//前回回転処理済みなら親ノードの子ノードを連結し直す
+				{
+					if (curr_is_large)
+						const_cast<T*>(parent_node)->setNodeL(curr_node);
+					else
+						const_cast<T*>(parent_node)->setNodeS(curr_node);
+					is_rotated = false;//回転処理済み状態リセット
 				}
-				stack.push(curr_node, false);//親ノードをスタックに記録
-				curr_node = child_node;
+				if (curr_node->isRed() && child_node->isRed())//赤ノードが二つ連結していたら回転処理
+				{
+					//左回転処理
+					//      .--------[node]-------.     ⇒          .--------[node_l]
+					//   [node_s]          .--[node_l]  ⇒     .--[node]--.          
+					//                  [node_ls]       ⇒  [node_s]  [node_ls]      
+					auto rotateL = [](const T* node) -> const T*
+					{
+						const T* node_l = node->getNodeL();
+						const T* node_ls = node_l->getNodeS();
+						const_cast<T*>(node_l)->setNodeS(node);
+						const_cast<T*>(node)->setNodeL(node_ls);
+						return node_l;
+					};
+					//右回転処理
+					//      .--------[node]-------.        ⇒  [node_s]-------.         
+					//   [node_s]--.          [node_l]     ⇒           .---[node]--.   
+					//         [node_sl]                   ⇒        [node_sl]  [node_l]
+					auto rotateR = [](const T* node) -> const T*
+					{
+						const T* node_s = node->getNodeS();
+						const T* node_sl = node_s->getNodeL();
+						const_cast<T*>(node_s)->setNodeL(node);
+						const_cast<T*>(node)->setNodeS(node_sl);
+						return node_s;
+					};
+					//親ノードを軸にした左回転処理
+					//      .-----[parent_node]-----.      ⇒            .----------[curr_node]
+					//   [(S)]             .--[curr_node]  ⇒    .--[parent_node]--.           
+					//                 [child_node]        ⇒  [(S)]         [child_node]      
+					auto rotateParentL = [&]() -> const T*
+					{
+						const T* parent_node_old = parent_node;
+						parent_node = rotateL(parent_node);//回転処理
+						//各ノードの関係を調整
+						curr_is_large = false;
+						curr_node = parent_node_old;
+						child_is_large = true;
+						const_cast<T*>(child_node)->setIsBlack();
+						return parent_node;
+					};
+					//親ノードを軸にした右回転処理
+					//        .-----[parent_node]-----.    ⇒  [curr_node]----------.           
+					//   [curr_node]--.             [(L)]  ⇒             .---[parent_node]--.  
+					//         [child_node]                ⇒        [child_node]          [(L)]
+					auto rotateParentR = [&]() -> const T*
+					{
+						const T* parent_node_old = parent_node;
+						parent_node = rotateR(parent_node);//回転処理
+						//各ノードの関係を調整
+						curr_is_large = true;
+						curr_node = parent_node_old;
+						child_is_large = false;
+						const_cast<T*>(child_node)->setIsBlack();
+						return parent_node;
+					};
+					//現在のノードを軸にした左回転処理
+					//     .-----[curr_node]-----.          ⇒           .------[child_node]
+					//   [(S)]             .--[child_node]  ⇒    .--[curr_node]--.         
+					//                  [(LS)]              ⇒  [(S)]           [(LS)]      
+					auto rotateCurrL = [&]() -> const T*
+					{
+						const T* curr_node_old = curr_node;
+						curr_node = rotateL(curr_node);//回転処理
+						//各ノードの関係を調整
+						child_node = curr_node_old;
+						child_is_large = false;
+						return curr_node;
+					};
+					//現在のノードを軸にした右回転処理
+					//            .-----[curr_node]-----.    ⇒  .--[child_node]-----.          
+					//   .--[child_node]--.           [(L)]  ⇒             .---[curr_node]--.  
+					//                 [(SS)]                ⇒           [(SS)]           [(L)]
+					auto rotateCurrR = [&]() -> const T*
+					{
+						const T* curr_node_old = curr_node;
+						curr_node = rotateR(curr_node);//回転処理
+						//各ノードの関係を調整
+						child_node = curr_node_old;
+						child_is_large = true;
+						return curr_node;
+					};
+					//回転処理
+					if (!curr_is_large && !child_is_large)
+					{
+						//小（左）→小（左）連結時：右回転
+						rotateParentR();
+					}
+					else if (!curr_is_large &&  child_is_large)
+					{
+						//小（左）→大（右）連結時：左回転→右回転
+						const_cast<T*>(parent_node)->setNodeS(rotateCurrL());
+						rotateParentR();
+					}
+					else if (curr_is_large && !child_is_large)
+					{
+						//大（右）→小（左）連結時：右回転→左回転
+						const_cast<T*>(parent_node)->setNodeL(rotateCurrR());
+						rotateParentL();
+					}
+					else//if (!curr_is_large && !child_is_large)
+					{
+						//大（右）→大（右）連結時：左回転
+						rotateParentL();
+					}
+					is_rotated = true;
+				}
+				//親ノードに処理を移す
+				child_is_large = curr_is_large;
+				child_node = curr_node;
+				curr_node = parent_node;
+			}
+			if (parent_node)
+			{
+				root = const_cast<T*>(parent_node);//ルートノードを更新
+				root->setIsBlack();//ルートノードは黒
 			}
 		}
+#endif//DISABLE_ROTATE_FOR_ADD
 		return true;
 	}
 	//--------------------
@@ -492,11 +626,11 @@ namespace rbtree
 				node_sl->setNodeS(node_s);//最大子孫ノードの小側の子を変更
 		}
 		T* replace_node =//削除ノードと置き換えるノード
-			(node_s && !node_l) ? node_s ://小（左）側の子ノード
+			( node_s && !node_l) ? node_s ://小（左）側の子ノード
 			(!node_s &&  node_l) ? node_l ://大（右）側の子ノード
-			(node_s &&  node_l) ? node_sl ://最大子孫ノード
+			( node_s &&  node_l) ? node_sl://最大子孫ノード
 			//(!node_s && !node_l) ?
-			nullptr;//ノード削除
+			                       nullptr;//ノード削除
 		if (!parent_node)//親ノードがない場合 → ルートノードが削除ノード
 			root = replace_node;//ルートノードを置き換え
 		else//if(parent_node)//親ノードがある場合
@@ -526,9 +660,6 @@ namespace rbtree
 		//イテレータ
 		class iterator;
 		typedef const iterator const_iterator;
-		//typedef public std::reverse_iterator<iterator> reverse_iterator;//これは使わない
-		class reverse_iterator;
-		typedef const reverse_iterator const_reverse_iterator;
 		class iterator : public std::iterator<std::bidirectional_iterator_tag, T>
 		{
 			friend class container;
@@ -576,7 +707,7 @@ namespace rbtree
 				return m_node == nullptr || rhs.m_node == nullptr ? false :
 				       m_node->getKey() >= rhs.m_node->getKey();
 			}
-			//演算子オペレータ
+			//演算オペレータ
 			const_iterator& operator++() const
 			{
 				m_node = const_cast<node_type*>(getNextNode(m_node, m_stack));
@@ -709,13 +840,14 @@ namespace rbtree
 		//--------------------
 		//リバースイテレータ
 		//※begin(), end() の要件が若干特殊なので、
-		//　std::reverse_iterator<iterator>を使わずに実装（偽装）。
-		//　中身はoperatorの+と-を逆転しているだけで、
-		//　通常のイテレータと同じ。
+		//　std::reverse_iterator<iterator>を使わずに実装（偽装）する。
+		//　中身はoperatorの+と-を逆転しているだけで、通常のイテレータと同じ。
+		class reverse_iterator;
+		typedef const reverse_iterator const_reverse_iterator;
 		class reverse_iterator : public iterator
 		{
 		public:
-			//演算子オペレータ
+			//演算オペレータ
 			const_reverse_iterator& operator++() const
 			{
 				return static_cast<const_reverse_iterator&>(iterator::operator--());
@@ -938,8 +1070,8 @@ namespace rbtree
 			return _equal_range(ite, key);
 		}
 		//その他
-		const node_type* root() const { return m_root; }
-		node_type*& root_ref(){ return m_root; }
+		const node_type* root() const { return m_root; }//ルートノードを取得
+		node_type*& root_ref(){ return m_root; }//ルートノードの参照を取得
 	public:
 		//コピーコンストラクタ
 		container(const container& con) :
@@ -1058,7 +1190,7 @@ int main(const int argc, const char* argv[])
 			{
 				const data_t* node = con.root();
 				int breath_tmp = breath;
-				for (int depth_tmp = 0; node && depth_tmp < depth; ++depth_tmp)
+				for (int depth_tmp = depth - 1; node && depth_tmp >= 0; --depth_tmp)
 				{
 					node = (breath_tmp & (0x1 << depth_tmp)) ?
 						node->getNodeL() :
@@ -1102,6 +1234,36 @@ int main(const int argc, const char* argv[])
 		}
 	};
 	showTree();
+
+	//黒ノード数を表示
+	auto showBlackNodesCount = [&con]()
+	{
+		printf("--- show black nodes count ---\n");
+		const int depth_max = con.depth_max();
+		printf("depth_max=%d\n", depth_max);
+		const int width_max = static_cast<int>(std::pow(2, depth_max));
+		int prev_key = -1;
+		for (int width = 0; width < width_max; ++width)
+		{
+			const data_t* node = con.root();
+			int black_nodes_count = 0;
+			int last_key = -1;
+			int breath_tmp = width;
+			for (int depth_tmp = depth_max - 1; node && depth_tmp >= 0; --depth_tmp)
+			{
+				last_key = node->getKey();
+				if (node->isBlack())
+					++black_nodes_count;
+				node = (breath_tmp & (0x1 << depth_tmp)) ?
+					node->getNodeL() :
+					node->getNodeS();
+			}
+			if (prev_key != last_key)
+				printf("0x%08x:[%2d] = %d\n", width, last_key, black_nodes_count);
+			prev_key = last_key;
+		}
+	};
+	showBlackNodesCount();
 
 	//一番小さいノードから昇順に全ノードをリストアップ
 	auto showListAsc = [&con]()

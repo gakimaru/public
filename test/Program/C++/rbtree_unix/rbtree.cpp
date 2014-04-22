@@ -554,26 +554,22 @@ namespace rbtree
 						return curr_node;
 					};
 					//回転処理
-					if (!curr_is_large && !child_is_large)
+					if (!curr_is_large && !child_is_large)//小（左）→小（左）連結時：親を軸に右回転
 					{
-						//小（左）→小（左）連結時：親を軸に右回転
 						rotateParentR();
 					}
-					else if (!curr_is_large &&  child_is_large)
+					else if (!curr_is_large &&  child_is_large)//小（左）→大（右）連結時：左回転→親を軸に右回転
 					{
-						//小（左）→大（右）連結時：左回転→親を軸に右回転
 						const_cast<T*>(parent_node)->setNodeS(rotateCurrL());
 						rotateParentR();
 					}
-					else if (curr_is_large && !child_is_large)
+					else if (curr_is_large && !child_is_large)//大（右）→小（左）連結時：右回転→親を軸に左回転
 					{
-						//大（右）→小（左）連結時：右回転→親を軸に左回転
 						const_cast<T*>(parent_node)->setNodeL(rotateCurrR());
 						rotateParentL();
 					}
-					else//if (!curr_is_large && !child_is_large)
+					else//if (!curr_is_large && !child_is_large)//大（右）→大（右）連結時：親を軸に左回転
 					{
-						//大（右）→大（右）連結時：親を軸に左回転
 						rotateParentL();
 					}
 					is_rotated = true;
@@ -1177,7 +1173,7 @@ int main(const int argc, const char* argv[])
 		for (int i = 0; i < reg_num; ++i)
 		{
 			data_t* new_node = new data_t(rand_dist(rand_engine));
-			printf("[%d] ", new_node->getKey());
+			printf("[%2d] ", new_node->getKey());
 			con.insert(*new_node);
 		}
 		printf("\n");
@@ -1203,8 +1199,10 @@ int main(const int argc, const char* argv[])
 			{
 				const data_t* node = con.root();
 				int breath_tmp = breath;
-				for (int depth_tmp = depth - 1; node && depth_tmp >= 0; --depth_tmp)
+				for (int depth_tmp = depth - 1; node; --depth_tmp)
 				{
+					if (depth_tmp < 0)
+						break;
 					node = (breath_tmp & (0x1 << depth_tmp)) ?
 						node->getNodeL() :
 						node->getNodeS();
@@ -1248,35 +1246,56 @@ int main(const int argc, const char* argv[])
 	};
 	showTree();
 
-	//黒ノード数を表示
-	auto showBlackNodesCount = [&con]()
+	//各枝までのノード数を表示
+	auto showNodesCount = [&con]()
 	{
-		printf("--- show black nodes count ---\n");
+		printf("--- show nodes count ---\n");
 		const int depth_max = con.depth_max();
-		printf("depth_max=%d\n", depth_max);
 		const int width_max = static_cast<int>(std::pow(2, depth_max));
-		int prev_key = -1;
-		for (int width = 0; width < width_max; ++width)
+		printf("depth_max=%d, width_max=%d\n", depth_max, width_max);
+		const data_t* prev_node = nullptr;
+		int blacks_min = 0;
+		int blacks_max = 0;
+		int reds_min = 0;
+		int reds_max = 0;
+		int total_min = 0;
+		int total_max = 0;
+		for (int breath = 0; breath < width_max; ++breath)
 		{
+			int blacks = 0;
+			int reds = 0;
+			const data_t* last_node = nullptr;
+			int breath_tmp = breath;
 			const data_t* node = con.root();
-			int black_nodes_count = 0;
-			int last_key = -1;
-			int breath_tmp = width;
-			for (int depth_tmp = depth_max - 1; node && depth_tmp >= 0; --depth_tmp)
+			for (int depth_tmp = depth_max - 1; node; --depth_tmp)
 			{
-				last_key = node->getKey();
+				last_node = node;
 				if (node->isBlack())
-					++black_nodes_count;
+					++blacks;
+				else
+					++reds;
+				if (depth_tmp < 0)
+					break;
 				node = (breath_tmp & (0x1 << depth_tmp)) ?
 					node->getNodeL() :
 					node->getNodeS();
 			}
-			if (prev_key != last_key)
-				printf("0x%08x:[%2d] = %d\n", width, last_key, black_nodes_count);
-			prev_key = last_key;
+			int total = blacks + reds;
+			blacks_min = blacks_min > blacks || blacks_min == 0 ? blacks : blacks_min;
+			blacks_max = blacks_max < blacks || blacks_max == 0 ? blacks : blacks_max;
+			reds_min = reds_min > reds || reds_min == 0 ? reds : reds_min;
+			reds_max = reds_max < reds || reds_max == 0 ? reds : reds_max;
+			total_min = total_min > total || total_min == 0 ? total : total_min;
+			total_max = total_max < total || total_max == 0 ? total : total_max;
+			if (prev_node != last_node)
+				printf("%5d:[%2d] blacks=%d, reds=%d, total=%d\n", breath, last_node->getKey(), blacks, reds, total);
+			prev_node = last_node;
 		}
+		printf("max: blacks=%d, reds=%d, total=%d\n", blacks_max, reds_max, total_max);
+		printf("min: blacks=%d, reds=%d, total=%d\n", blacks_min, reds_min, total_min);
+		printf("diff:blacks=%d, reds=%d, total=%d\n", blacks_max - blacks_min, reds_max - reds_min, total_max - total_min);
 	};
-	showBlackNodesCount();
+	showNodesCount();
 
 	//一番小さいノードから昇順に全ノードをリストアップ
 	auto showListAsc = [&con]()
@@ -1287,7 +1306,7 @@ int main(const int argc, const char* argv[])
 		{
 			if (!is_found)
 				is_found = true;
-			printf("[%d] ", obj.getKey());
+			printf("[%2d] ", obj.getKey());
 		}
 		//※イテレータの変数宣言と値の更新を分けた方が若干効率的
 		//const_reverse_iterator ite;con._begin(ite);
@@ -1314,7 +1333,7 @@ int main(const int argc, const char* argv[])
 			{
 				if (!is_found)
 					is_found = true;
-				printf("[%d] ", obj.getKey());
+				printf("[%2d] ", obj.getKey());
 			}
 		);
 		//※イテレータの変数宣言と値の更新を分けた方が効率的
@@ -1345,10 +1364,10 @@ int main(const int argc, const char* argv[])
 				{
 					if (!is_found)
 					{
-						printf("%d(%d) = ", search_key, con.count(search_key));
+						printf("%2d(%d):", search_key, con.count(search_key));
 						is_found = true;
 					}
-					printf("[%d] ", obj.getKey());
+					printf("[%2d] ", obj.getKey());
 				}
 			);
 			//※イテレータの変数宣言と検索を分けた方が効率的
@@ -1366,6 +1385,8 @@ int main(const int argc, const char* argv[])
 	searchData();
 
 	//指定のキーと同じか内輪で一番近いノードを検索
+	//※一致ノードは表示を省略
+	//※最近ノードから数ノードを表示
 	auto searchNearestData = [&con](const rbtree::MATCH_TYPE_T search_type)
 	{
 		printf("--- search nearest node for %s ---\n", search_type == rbtree::FOR_NEAREST_SMALLER ? "smaller" : search_type == rbtree::FOR_NEAREST_LARGER ? "larger" : "same");
@@ -1380,10 +1401,10 @@ int main(const int argc, const char* argv[])
 				const data_t& obj = *ite;
 				if (!is_found)
 				{
-					printf("%d = ", search_key);
+					printf("%2d:", search_key);
 					is_found = true;
 				}
-				printf("[%d] ", obj.getKey());
+				printf("[%2d] ", obj.getKey());
 			}
 			//※イテレータの変数宣言と検索を分けた方が若干効率的
 			//const_iterator ite;con._find(ite, search_key, search_type);
@@ -1399,6 +1420,7 @@ int main(const int argc, const char* argv[])
 	searchNearestData(rbtree::FOR_NEAREST_LARGER);
 
 	//ノードを削除
+	//※すべての値のキーを一つずつ削除
 	auto removeNodes = [&con]()
 	{
 		printf("--- remove nodes ---\n");
@@ -1410,16 +1432,23 @@ int main(const int argc, const char* argv[])
 			//const_iterator ite;con._find(ite, search_key);
 			//...
 			if (result)
-				printf("[%d] ", search_key);
+				printf("[%2d] ", search_key);
 		}
 		printf("\n");
 	};
 	removeNodes();
 
+	//ツリーを表示
+	showTree();
+
+	//黒ノード数を表示
+	showNodesCount();
+	
 	//一番小さいノードから昇順に全ノードをリストアップ
 	showListAsc();
 
-	//ノードを削除
+	//ノードを全削除
+	//※すべての値のキーに対して、削除が失敗するまで削除を実行
 	auto removeAllNodes = [&con]()
 	{
 		printf("--- remove all nodes ---\n");
@@ -1431,7 +1460,7 @@ int main(const int argc, const char* argv[])
 			//const_iterator ite;con._find(ite, search_key);
 			//...
 			if (result)
-				printf("[%d] ", search_key);
+				printf("[%2d] ", search_key);
 			else
 				++search_key;
 		}

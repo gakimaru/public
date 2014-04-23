@@ -7,21 +7,51 @@
 #include <iterator>//std::iterator用
 #include <algorithm>//algorithm用
 
-//#define DISABLE_ROTATE_FOR_ADD//ノード追加時の回転処理を無効化する場合は、このマクロを有効化する
-#define DISABLE_ROTATE_FOR_REMOVE//ノード削除時の回転処理を無効化する場合は、このマクロを有効化する
+//#define DISABLE_COLOR_FOR_ADD//ノード追加時のカラー操作と回転処理を無効化する場合は、このマクロを有効化する
+//#define DISABLE_COLOR_FOR_REMOVE//ノード削除時のカラー操作と回転処理を無効化する場合は、このマクロを有効化する
+
+//#define DEBUG_PRINT_FOR_ADD//ノード追加時のデバッグ情報表示を有効化する場合は、このマクロを有効化する
+//#define DEBUG_PRINT_FOR_REMOVE//ノード削除時のデバッグ情報表示を有効化する場合は、このマクロを有効化する
 
 //--------------------------------------------------------------------------------
 //赤黒木（red-black tree）
-//※メモリ節約のために、親ノードへのリンクを持たないデータ構造とする。
-//※代わりに、検索等の関数実行時に外部からスタックを渡す事で親を辿ることが可能。
-//※テンプレートにより、アルゴリズムを汎用化。
-//※キー重複（同キーのノードが複数ある状態）を許容するアルゴリズムとする。
-//※リンクの方法に柔軟性を持たせ、かつ、virtualを避けるために、
-//　CRTPを活用して、派生クラスで幾つか既定のメソッドを実装するスタイルとする。
-//　（これにより、ポインタ変数によるリンクの保持以外のスタイルにも対応可能。
-//　　例えば、配列のインデックスでリンクを持つようなスタイルにも対応できる。）
-//※std::mapを模したコンテナとイテレータを利用可能。
-//----------------------------------------
+//--------------------------------------------------------------------------------
+//データ構造とアルゴリズム
+//【特徴】
+//・二分木である。
+//	  - ノードの左側には、キーの値が自ノードより小さいノードを連結。
+//	  - ノードの右側には、キーの値が自ノードより大きいノードを連結。
+//・平衡木である。
+//	  - 常に左右の木のバランスを保ち、探索時間の大きな劣化がない木構造。
+//【条件】
+//・条件①：各ノードは「赤」か「黒」の「色」を持つ。
+//・条件②：「根」（root）は必ず「黒」。
+//・条件③：「赤」の子は必ず「黒」。
+//	          - 待遇により、「赤」の親は必ず「黒」。
+//	          - 「黒」の子は「赤」でも「黒」でも良い。
+//・条件④：すべての「根」から「葉」までの経路上にある「黒」の数は、
+//　　　　　あらゆる経路で一定。
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
+//【本ソースにおける実装要件】
+//・メモリ節約のために、親ノードへのリンクを持たないデータ構造とする。
+//・代わりに、検索等の関数実行時に外部からスタックを渡す事で親を辿ることが可能。
+//・テンプレートにより、アルゴリズムを汎用化。
+//・キー重複（同キーのノードが複数ある状態）を許容するアルゴリズムとする。
+//・リンクの方法に柔軟性を持たせ、かつ、virtualを必須としないように、
+//　データ構造は自由とする。
+//　（リンクの変数をポインタにしようがインデックスにしようが自由）
+//・代わりに、データ操作専用のクラスをユーザー定義することで、
+//　処理に汎用性を持たせる。
+//・一切メモリ操作は行わず、ノードのオブジェクトを受け取って操作する
+//　アルゴリズムのみを提供する。
+//・std::mapを模したコンテナとイテレータを利用可能とする。
+//・コンテナは、根ノードのみを保持し、一切メモリ操作しないものとする。
+//・イテレータは、上述のスタック操作を隠ぺいする。
+//--------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------
 //【具体的な活用の想定：メモリ管理での活用】
 //・メモリマネージャの管理情報の連結に使用することを想定。
 //・空きメモリサイズ順の連結を行うため、キー重複を許容する必要がある。
@@ -35,39 +65,26 @@
 //・一つのメモリ管理情報を、2種類のツリーに振り分けて使用する。
 //　削除済みメモリノードのツリーはサイズをキーにし、
 //　使用中メモリノードのツリーはポインタをキーにする。
-//　このような利用を可能とするために、データ構造とアルゴリズムを完全に
+//・このような利用を可能とするために、データ構造とアルゴリズムを完全に
 //　切り離した構成にする。
+//--------------------------------------------------------------------------------
+
 namespace rbtree
 {
 	//--------------------
-	//赤黒木のデータ構造とアルゴリズム
-	//【特徴】
-	//・二分木である。
-	//	- ノードの左側には、キーの値が自ノードより小さいノードを連結。
-	//	- ノードの右側には、キーの値が自ノードより大きいノードを連結。
-	//・平衡木である。
-	//	- 常に左右の木のバランスを保ち、探索時間の大きな劣化がない木構造。
-	//【条件】
-	//・条件①：各ノードは「赤」か「黒」の「色」を持つ。
-	//・条件②：「根」（root）は必ず「黒」。
-	//・条件③：「赤」の子は必ず「黒」。
-	//	        - 待遇により、「赤」の親は必ず「黒」。
-	//	        - 「黒」の子は「赤」でも「黒」でも良い。
-	//・条件④：すべての「根」から「葉」までの経路上にある「黒」の数は、あらゆる経路で一定。
-	//--------------------
-	//赤黒木ノード操作構造体テンプレート
-	//※CRTPを活用し、下記のような派生構造体／クラスを作成して使用する
+	//赤黒木ノード操作用テンプレート構造体
+	//※CRTPを活用し、下記のような派生構造体を作成して使用する
 	//  //template<class IMPL_OPE_TYPE, typename NODE_TYPE, typename KEY_TYPE, int STACK_DEPTH_MAX = 32>
 	//  //struct base_ope_t;
 	//  //struct 派生構造体名 : public rbtree::base_ope_t<派生構造体, ノード型, キー型, スタックの最大の深さ = 32>
 	//	struct ope_t : public rbtree::ope_t<ope_t, data_t, int>
 	//	{
 	//		//子ノードを取得
-	//		inline static const node_type* getNodeS(const node_type& node){ return ???; }//小（左）側
-	//		inline static const node_type* getNodeL(const node_type& node){ return ???; }//大（右）側
+	//		inline static const node_type* getChildL(const node_type& node){ return ???; }//大（右）側
+	//		inline static const node_type* getChildS(const node_type& node){ return ???; }//小（左）側
 	//		//子ノードを変更
-	//		inline static void setNodeS(node_type& node, const node_type* node_s){ ??? = node; }//小（左）側
-	//		inline static void setNodeL(node_type& node, const node_type* node_l){ ??? = node; }//大（右）側
+	//		inline static void setChildL(node_type& node, const node_type* child){ ??? = child; }//大（右）側
+	//		inline static void setChildS(node_type& node, const node_type* child){ ??? = child; }//小（左）側
 	//		
 	//		//ノードの色を取得
 	//		inline static color_t getColor(const node_type& node){ return ??? ? BLACK : RED; }
@@ -98,6 +115,22 @@ namespace rbtree
 		typedef OPE_TYPE ope_type;//ノード操作型
 		typedef NODE_TYPE node_type;//ノード型
 		typedef KEY_TYPE key_type;//キー型
+		
+		//子ノードを取得
+		inline static const node_type* getChild(const node_type& node, const bool child_is_large)
+		{
+			return child_is_large ?
+				ope_type::getChildL(node) ://大（右）側
+				ope_type::getChildS(node); //小（左）側
+		}
+		//子ノードを変更
+		inline static void setChild(node_type& node, const bool child_is_large, const node_type* child)
+		{
+			if (child_is_large)
+				ope_type::setChildL(node, child);//大（右）側
+			else
+				ope_type::setChildS(node, child);//小（左）側
+		}
 
 		//ノードとキーを比較
 		inline static int compare(const node_type& lhs, const node_type& rhs)
@@ -148,6 +181,12 @@ namespace rbtree
 		typedef OPE_TYPE ope_type; \
 		typedef typename ope_type::node_type node_type; \
 		typedef typename ope_type::key_type key_type; \
+		typedef node_type value_type; \
+		typedef value_type& reference; \
+		typedef const value_type& const_reference; \
+		typedef value_type* pointer; \
+		typedef const value_type* const_pointer; \
+		typedef std::size_t size_type; \
 		typedef stack_t<ope_type> stack_type; \
 		typedef typename stack_type::info_t stack_info_type;
 	//--------------------
@@ -260,7 +299,7 @@ namespace rbtree
 		const node_type* curr_node = root;//現在の探索ノード
 		while (true)
 		{
-			const node_type* child_node = ope_type::getNodeS(*curr_node);//小（左）側の子ノードを取得
+			const node_type* child_node = ope_type::getChildS(*curr_node);//小（左）側の子ノードを取得
 			if (!child_node)//子が無ければ終了
 				return  curr_node;
 			stack.push(curr_node, false);//親ノードをスタックに記録
@@ -280,7 +319,7 @@ namespace rbtree
 		const node_type* curr_node = root;//現在の探索ノード
 		while (true)
 		{
-			const node_type* child_node = ope_type::getNodeL(*curr_node);//大（右）側の子ノードを取得
+			const node_type* child_node = ope_type::getChildL(*curr_node);//大（右）側の子ノードを取得
 			if (!child_node)//子が無ければ終了
 				return  curr_node;
 			stack.push(curr_node, true);//親ノードをスタックに記録
@@ -297,13 +336,13 @@ namespace rbtree
 		DECLARE_OPE_TYPES(OPE_TYPE);
 		if (!curr_node)
 			return nullptr;
-		const node_type* node_l = ope_type::getNodeL(*curr_node);//大（右）側の子ノードを取得
-		if (node_l)//子がある場合
+		const node_type* child_node_l = ope_type::getChildL(*curr_node);//大（右）側の子ノードを取得
+		if (child_node_l)//子がある場合
 		{
 			stack.push(curr_node, true);//親ノードをスタックに記録
-			return getSmallestNode<ope_type>(node_l, stack);//子から一番小さい子孫ノードを取得
+			return getSmallestNode<ope_type>(child_node_l, stack);//子から一番小さい子孫ノードを取得
 		}
-		else//if(!node_l)//子がない場合
+		else//if(!child_node_l)//子がない場合
 		{
 			const stack_info_type* stack_node = nullptr;
 			while (stack_node = stack.pop())//親ノードを取得
@@ -323,13 +362,13 @@ namespace rbtree
 		DECLARE_OPE_TYPES(OPE_TYPE);
 		if (!curr_node)
 			return nullptr;
-		const node_type* node_s = ope_type::getNodeS(*curr_node);//小（左）側の子ノードを取得
-		if (node_s)//子がある場合
+		const node_type* child_node_s = ope_type::getChildS(*curr_node);//小（左）側の子ノードを取得
+		if (child_node_s)//子がある場合
 		{
 			stack.push(curr_node, false);//親ノードをスタックに記録
-			return getLargestNode<ope_type>(node_s, stack);//子から一番大きい子孫ノードを取得
+			return getLargestNode<ope_type>(child_node_s, stack);//子から一番大きい子孫ノードを取得
 		}
-		else//if(!node_s)//子がない場合
+		else//if(!child_node_s)//子がない場合
 		{
 			const stack_info_type* stack_node = nullptr;
 			while (stack_node = stack.pop())//親ノードを取得
@@ -394,7 +433,7 @@ namespace rbtree
 				match_node = curr_node;//一致ノードを記録
 				match_stack_depth = stack.getDepth();//一致ノード検出時のスタック位置を記録
 				stack.push(curr_node, false);//仮の親ノードとしてスタックに記録
-				curr_node = ope_type::getNodeS(*curr_node);//小（左）側の子の方に検索を続行
+				curr_node = ope_type::getChildS(*curr_node);//小（左）側の子の方に検索を続行
 				if (!curr_node)//子が無ければ終了
 					break;
 			}
@@ -405,7 +444,7 @@ namespace rbtree
 					nearest_node = curr_node;//最近ノードを記録
 					nearest_stack_depth = stack.getDepth();//最近ノード検出時のスタック位置を記録
 				}
-				const node_type* child_node = ope_type::getNodeL(*curr_node);//大（右）側の子ノードを取得
+				const node_type* child_node = ope_type::getChildL(*curr_node);//大（右）側の子ノードを取得
 				if (!child_node)//子が無ければ終了
 					break;
 				stack.push(curr_node, true);//仮の親ノードとしてスタックに記録
@@ -418,7 +457,7 @@ namespace rbtree
 					nearest_node = curr_node;//最近ノードを記録
 					nearest_stack_depth = stack.getDepth();//最近ノード検出時のスタック位置を記録
 				}
-				const node_type* child_node = ope_type::getNodeS(*curr_node);//小（左）側の子ノードを取得
+				const node_type* child_node = ope_type::getChildS(*curr_node);//小（左）側の子ノードを取得
 				if (!child_node)//子が無ければ終了
 					break;
 				stack.push(curr_node, false);//仮の親ノードとしてスタックに記録
@@ -460,9 +499,8 @@ namespace rbtree
 	std::size_t countNodes(const typename OPE_TYPE::node_type* node)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		return !node ? 0 :
-			1 + countNodes<ope_type>(ope_type::getNodeS(*node)) +
-			countNodes<ope_type>(ope_type::getNodeL(*node));
+		return !node ? 0 : 1 + countNodes<ope_type>(ope_type::getChildL(*node)) +
+		                       countNodes<ope_type>(ope_type::getChildS(*node));
 	}
 	//--------------------
 	//赤黒木操作関数：指定のキーのノード数を計測
@@ -486,462 +524,9 @@ namespace rbtree
 		return count;
 	}
 	//--------------------
-	//赤黒木操作関数：【汎用処理】ノード左回転処理
-	//         .--------[node]---------.   
-	//      [node_s]             .--[node_l]
-	//                        [node_ls]     
-	//
-	//                    ↓【左回転】
-	//
-	//         .-------[node_l]
-	//    .--[node]--.          
-	// [node_s]  [node_ls]      
+	//赤黒木操作関数：ノード追加時の赤黒バランス調整
 	template<class OPE_TYPE>
-	inline typename OPE_TYPE::node_type* rotateL(typename OPE_TYPE::node_type* node)
-	{
-		DECLARE_OPE_TYPES(OPE_TYPE);
-		node_type* node_l = const_cast<node_type*>(ope_type::getNodeL(*node));
-		node_type* node_ls = const_cast<node_type*>(ope_type::getNodeS(*node_l));
-		ope_type::setNodeS(*node_l, node);
-		ope_type::setNodeL(*node, node_ls);
-		return node_l;
-	};
-	//--------------------
-	//赤黒木操作関数：【汎用処理】ノード右回転処理
-	//    .---------[node]-------.   
-	// [node_s]--.           [node_l]
-	//       [node_sl]              
-	//
-	//                ↓【右回転】
-	//
-	//             [node_s]-------.         
-	//                      .---[node]--.   
-	//                   [node_sl]  [node_l]
-	template<class OPE_TYPE>
-	inline typename OPE_TYPE::node_type* rotateR(typename OPE_TYPE::node_type* node)
-	{
-		DECLARE_OPE_TYPES(OPE_TYPE);
-		node_type* node_s = const_cast<node_type*>(ope_type::getNodeS(*node));
-		node_type* node_sl = const_cast<node_type*>(ope_type::getNodeL(*node_s));
-		ope_type::setNodeL(*node_s, node);
-		ope_type::setNodeS(*node, node_sl);
-		return node_s;
-	};
-	//--------------------
-	//赤黒木操作関数：遡って赤黒バランス調整
-	//※ノード追加時用
-	template<class OPE_TYPE>
-	void balanceForAdd(typename OPE_TYPE::node_type*& root, stack_t<OPE_TYPE>& stack, typename OPE_TYPE::node_type* curr_node, bool child_is_large, typename OPE_TYPE::node_type* child_node)
-	{
-		DECLARE_OPE_TYPES(OPE_TYPE);
-		if (curr_node && child_node)
-		{
-			bool is_rotated = false;//回転処理済みフラグ
-			while (true)
-			{
-				stack_info_type* parent_info = stack.pop();//スタックから親ノード情報取得
-				if (!parent_info)
-					break;
-				node_type* parent_node = const_cast<node_type*>(parent_info->m_nodeRef);//親ノード取得
-				bool curr_is_large = parent_info->m_isLarge;//親ノードからの大小連結情報取得
-				if (is_rotated)//前回回転処理済みなら親ノードの子ノードを連結し直す
-				{
-					if (curr_is_large)
-						ope_type::setNodeL(*parent_node, curr_node);
-					else
-						ope_type::setNodeS(*parent_node, curr_node);
-					is_rotated = false;//回転処理済み状態リセット
-				}
-				if (ope_type::isRed(*curr_node) && ope_type::isRed(*child_node))//赤ノードが二つ連結していたら回転処理
-				{
-					//【共通処理】親ノードを軸にした左回転処理
-					//             .-------[parent_node:B]--------.                
-					//           [(S)]                    .--[curr_node:R]--.      
-					//                                  [(LS)]       [child_node:R]
-					// 
-					//                          ↓【左回転】
-					//
-					//          .-----------[curr_node:R]---------.        
-					//   .--[parent_node:B]--.               [child_node:R]
-					// [(S)]              [(LS)]                           
-					// 
-					//                          ↓【変数と色を調整】
-					//                                                 黒に
-					//            .--------[parent_node:R]--------.     ↓ 
-					//   .------[(S):B]------.                [curr_node:B]
-					// [(SS)]             [(SL)]                           
-					auto rotateParentL = [&]() -> const node_type*
-					{
-					parent_node = rotateL<ope_type>(parent_node);//左回転処理
-					curr_is_large = true;
-					curr_node = child_node;
-					ope_type::setIsBlack(*curr_node);//ノードを黒にする
-					//child_is_large = true;
-					//child_node = nullptr;
-					return parent_node;
-				};
-					//【共通処理】親ノードを軸にした右回転処理
-					//               .-----[parent_node:B]-----.  
-					//       .--[curr_node:R]--.             [(L)]
-					// [child_node:R]       [(SL)]                
-					//
-					//                            ↓【右回転】
-					//
-					//               .-------[curr_node:R]-------.            
-					//          [child_node:R]         .--[parent_node:B]--.  
-					//                               [(SL)]              [(L)]
-					//
-					//                            ↓【変数と色を調整】
-					//
-					//               .-------[parent_node:R]-----.            
-					//           [curr_node:B]         .------[(L):B]------.  
-					//                     ↑        [(LS)]             [(LL)]
-					//                    黒に
-					auto rotateParentR = [&]() -> const node_type*
-					{
-						parent_node = rotateR<ope_type>(parent_node);//右回転処理
-						curr_is_large = false;
-						curr_node = child_node;
-						ope_type::setIsBlack(*curr_node);//ノードを黒にする
-						//child_is_large = false;
-						//child_node = nullptr;
-						return parent_node;
-					};
-					//【共通処理】現在のノードを軸にした左回転処理
-					//           .-------[curr_node:R]-------.        
-					//         [(S)]                .--[child_node:R]
-					//                            [(LS)]              
-					// 
-					//                          ↓【左回転】
-					//
-					//           .-------[child_node:R]
-					//   .--[curr_node:R]--.           
-					// [(S)]            [(LS)]         
-					// 
-					//                          ↓【変数を調整】※色の調整はしない
-					//
-					//           .--------[curr_node:R]
-					//   .--[child_node:R]--.          
-					// [(SS)]            [(SL)]        
-					auto rotateCurrL = [&]() -> const node_type*
-					{
-						node_type* curr_node_old = curr_node;
-						curr_node = rotateL<ope_type>(curr_node);//左回転処理
-						child_is_large = false;
-						child_node = curr_node_old;
-						return curr_node;
-					};
-					//【共通処理】現在のノードを軸にした右回転処理
-					//       .--------[curr_node:R]--------.   
-					// [child_node:R]--.                 [(L)] 
-					//              [(SS)]               
-					// 
-					//                     ↓【右回転】
-					//
-					//               [child_node:R]-------.           
-					//                           .--[curr_node:R]--.  
-					//                         [(SS)]            [(L)]
-					// 
-					//                     ↓【変数を調整】※色の調整はしない
-					//
-					//                [curr_node:R]-------.           
-					//                          .--[child_node:R]--.  
-					//                        [(LS)]            [(LL)]
-					auto rotateCurrR = [&]() -> const node_type*
-					{
-						node_type* curr_node_old = curr_node;
-						curr_node = rotateR<ope_type>(curr_node);//回転処理
-						child_is_large = true;
-						child_node = curr_node_old;
-						return curr_node;
-					};
-					//各状態に合わせた回転処理
-					if (!curr_is_large && !child_is_large)
-					{
-						//【小（左）：赤】→【小（左）：赤】
-						//               .-----[parent_node:B]-----.  
-						//       .--[curr_node:R]--.             [(L)]
-						// [child_node:R]       [(SL)]                
-						//
-						//                            ↓【親ノードを右回転】
-						//
-						//               .-------[curr_node:R]-------.            
-						//          [child_node:R]         .--[parent_node:B]--.  
-						//                               [(SL)]              [(L)]
-						//
-						//                            ↓【変数と色を調整】
-						//
-						//               .-------[parent_node:R]-----.            
-						//           [curr_node:B]         .------[(L):B]------.  
-						//                     ↑        [(LS)]             [(LL)]
-						//                    黒に
-						rotateParentR();
-					}
-					else if (!curr_is_large &&  child_is_large)
-					{
-						//【小（左）：赤】→【大（右）：赤】
-						//                       .-----------------[parent_node:B]-------.  
-						//               .--[curr_node:R]--.                           [(L)]
-						//             [(SS)]        .--[child_node:R]--.
-						//                        [(SLS)]          [(SLL)]
-						//
-						//                                               ↓【現在ノードを左回転】
-						//
-						//                        .----------------[parent_node:B]-------.  
-						//           .------[child_node:R]------.                      [(L)]
-						//   .--[curr_node:R]--.            [(SLL)]                
-						// [(SS)]          [(SLS)]
-						//
-						//                                               ↓【親ノードを右回転】
-						//
-						//                        .-----------------[child_node:R]-------.            
-						//                .--[curr_node:R]--.               .--[parent_node:B]--.  
-						//              [(SS)]           [(SLS)]          [(SLL)]             [(L)]
-						//
-						//                                               ↓【変数と色を調整】
-						//
-						//                        .-----------------[parent_node:R]-----.            
-						//                .--[curr_node:B]--.                   .-----[(L):B]---.  
-						//               [(SS)])        ↑[(SL)]              [(LS)]         [(LL)]
-						//                             黒に
-						ope_type::setNodeS(*parent_node, rotateCurrL());
-						rotateParentR();
-					}
-					else if (curr_is_large && !child_is_large)
-					{
-						//【大（右）：赤】→【小（左）：赤】
-						//             .-------[parent_node:B]----------------.                  
-						//           [(S)]                       .-------[curr_node:R]-------.   
-						//                               .--[child_node:R]--.              [(LL)]
-						//                             [(LSS)]          [(LSL)]               
-						// 
-						//                          ↓【現在ノードを右回転】
-						//
-						//             .-------[parent_node:B]-----------------.                           
-						//           [(S)]                       .-------[child_node:R]-------.            
-						//                                     [(LSS)]                .--[curr_node:R]--.  
-						//                                                          [(LSL)]          [(LL)]
-						// 
-						//                          ↓【親ノードを左回転】
-						//
-						//           .----------[child_node:R]---------.            
-						//   .--[parent_node:B]--.             .--[curr_node:R]--.  
-						// [(S)]             [(LSS)]         [(LSL)]          [(LL)]
-						// 
-						//                          ↓【変数と色を調整】
-						//                                                  黒に
-						//            .--------[parent_node:R]--------.      ↓      
-						//   .------[(S):B]------.              .--[curr_node:B]--.  
-						// [(SS)]             [(SL)]          [(LSL)]          [(LL)]
-						ope_type::setNodeL(*parent_node, rotateCurrR());
-						rotateParentL();
-					}
-					else//if (!curr_is_large && !child_is_large)
-					{
-						//【大（右）：赤】→【大（右）：赤】
-						//             .-------[parent_node:B]--------.                
-						//           [(S)]                    .--[curr_node:R]--.      
-						//                                  [(LS)]       [child_node:R]
-						// 
-						//                          ↓【親ノードを左回転】
-						//
-						//          .-----------[curr_node:R]---------.        
-						//   .--[parent_node:B]--.               [child_node:R]
-						// [(S)]              [(LS)]                           
-						// 
-						//                          ↓【変数と色を調整】
-						//                                                 黒に
-						//            .--------[parent_node:R]--------.     ↓ 
-						//   .------[(S):B]------.                [curr_node:B]
-						// [(SS)]             [(SL)]                           
-						rotateParentL();
-					}
-					is_rotated = true;
-				}
-				//親ノードに処理を移す
-				child_is_large = curr_is_large;
-				child_node = curr_node;
-				curr_node = parent_node;
-			}
-			if (curr_node)
-			{
-				root = curr_node;//根ノードを更新
-				ope_type::setIsBlack(*root);//根ノードは黒
-			}
-		}
-	}
-	//--------------------
-	//赤黒木操作関数：遡って赤黒バランス調整
-	//※ノード削除時用
-	template<class OPE_TYPE>
-	void balanceForRemove(typename OPE_TYPE::node_type*& root, stack_t<OPE_TYPE>& stack, typename OPE_TYPE::node_type* remove_node, typename OPE_TYPE::node_type* replace_node)
-	{
-		DECLARE_OPE_TYPES(OPE_TYPE);
-		bool is_necessary_rotate = false;//回転必要？
-		bool remove_node_is_black = ope_type::isBlack(*remove_node);
-		bool replace_node_is_black = replace_node ? ope_type::isBlack(*replace_node) : false;
-		//回転操作必要判定
-		if (!remove_node_is_black)//削除ノードが赤の場合
-		{
-			if (!replace_node)//置き換えノードがない場合
-			{
-				//is_necessary_rotate = false;//回転不要
-				printf("([R]←[n]:OK )");
-			}
-			else//if(replace_node)//置き換えノードがある場合
-			{
-				if (!replace_node_is_black)//置き換えノードが赤の場合
-				{
-					//is_necessary_rotate = false;//回転不要
-					printf("([R]←[R]:OK )");
-				}
-				else//if (replace_node_is_black)//置き換えノードが黒の場合
-				{
-					is_necessary_rotate = true;//回転必要
-					printf("([R]←[B]:ROT)");
-					ope_type::setIsRed(*replace_node);//置き換えノードを赤にする
-					//remove_node_is_black = true;//削除ノードは黒
-					//                            //※置き換え元のノードが削除されたものとして処理する
-				}
-			}
-		}
-		else//if (remove_node_is_black)//削除ノードが黒の場合
-		{
-			if (!replace_node)//置き換えノードがない場合
-			{
-				is_necessary_rotate = true;//回転必要
-				printf("([B]←[n]:ROT)");
-			}
-			else//if(replace_node)//置き換えノードがある場合
-			{
-				if (!replace_node_is_black)//置き換えノードが赤の場合
-				{
-					//is_necessary_rotate = false;//回転不要
-					printf("([B]←[R]:OK )");
-					ope_type::setIsBlack(*replace_node);//置き換えノードを黒にする
-					//remove_node_is_black = false;//削除ノードは赤
-					//                             //※置き換え元のノードが削除されたものとして処理する
-				}
-				else//if (replace_node_is_black)//置き換えノードが黒の場合
-				{
-					is_necessary_rotate = true;//回転必要
-					printf("([B]←[B]:ROT)");
-				}
-			}
-		}
-		//回転操作
-		//※黒ノードが削除された時のみ回転を行う
-		if (is_necessary_rotate)
-		{
-			node_type* parent_node = nullptr;
-			bool curr_is_large = false;
-			while (true)
-			{
-				stack_info_type* parent_info = stack.pop();
-				if (!parent_info)
-					break;
-				parent_node = const_cast<node_type*>(parent_info->m_nodeRef);
-				curr_is_large = parent_info->m_isLarge;
-				if (is_necessary_rotate)
-				{
-					node_type* curr_node = parent_node ?//現在のノード取得 ※この側で黒ノードが一つ減少している
-						curr_is_large ?
-							const_cast<node_type*>(ope_type::getNodeL(*parent_node)) :
-							const_cast<node_type*>(ope_type::getNodeS(*parent_node)) :
-						nullptr;
-					node_type* sibling_node = parent_node ?//兄弟ノード取得
-						curr_is_large ?
-							const_cast<node_type*>(ope_type::getNodeS(*parent_node)) :
-							const_cast<node_type*>(ope_type::getNodeL(*parent_node)) :
-						nullptr;
-					node_type* sibling_node_s = sibling_node ?//兄弟ノードの小（左）側の子ノード取得
-						const_cast<node_type*>(ope_type::getNodeS(*sibling_node)) :
-						nullptr;
-					node_type* sibling_node_l = sibling_node ?//兄弟ノードの大（右）側の子ノード取得
-						const_cast<node_type*>(ope_type::getNodeL(*sibling_node)) :
-						nullptr;
-					if (sibling_node)
-					{
-						if (!curr_is_large)//削除ノード：【小（左）:黒】
-						{
-							if (ope_type::isBlack(*sibling_node))//兄弟ノード：【大（右）：黒】
-							{
-								if (sibling_node_s && ope_type::isRed(*sibling_node_s))//→【小（左）：赤】
-								{
-									is_necessary_rotate = false;//調整完了
-									printf("(ROT:SIB→L=B→S=R,OK)");
-								}
-								else if (sibling_node_l && ope_type::isRed(*sibling_node_l))//→【大（右）：赤】
-								{
-									is_necessary_rotate = false;//調整完了
-									printf("(ROT:SIB→L=B→L=R,OK)");
-								}
-								else//→【小（左）：黒orなし】かつ【大（右）：黒orなし】
-								{
-									if (ope_type::isRed(*parent_node))
-									{
-										is_necessary_rotate = false;//調整完了
-										printf("(ROT:SIB→L=B→SL!=R,P=R,OK)");
-									}
-									else//if (ope_type::isBlack(*parent_node))
-									{
-										is_necessary_rotate = true;//調整続行
-										printf("(ROT:SIB→L:B→SL!=R,P=B,MORE)");
-									}
-								}
-							}
-							else//if (ope_type::isRed(*sibling_node))//兄弟ノード：【大（右）：赤】
-							{
-								//※必然的に親ノードは黒
-								is_necessary_rotate = true;//調整続行
-								printf("(ROT:SIB→L=R,MORE)");
-							}
-						}
-						else//if (curr_is_large)//削除ノード：【大（右）:黒】
-						{
-							if (ope_type::isBlack(*sibling_node))//兄弟ノード：【小（左）：黒】
-							{
-								if (sibling_node_s && ope_type::isRed(*sibling_node_s))//→【小（左）：赤】
-								{
-									is_necessary_rotate = false;//調整完了
-									printf("(ROT:SIB→S=B→S=R,OK)");
-								}
-								else if (sibling_node_l && ope_type::isRed(*sibling_node_l))//→【大（右）：赤】
-								{
-									is_necessary_rotate = false;//調整完了
-									printf("(ROT:SIB→S=B→L=R,OK)");
-								}
-								else//→【小（左）：黒orなし】かつ【大（右）：黒orなし】
-								{
-									if (ope_type::isRed(*parent_node))
-									{
-										is_necessary_rotate = false;//調整完了
-										printf("(ROT:SIB→S=B→SL!=R,P=R,OK)");
-									}
-									else//if (ope_type::isBlack(*parent_node))
-									{
-										is_necessary_rotate = true;//調整続行
-										printf("(ROT:SIB→S=B→SL!=R,P=B,MORE)");
-									}
-								}
-							}
-							else//if (ope_type::isRed(*sibling_node))//兄弟ノード：【小（左）：赤】
-							{
-								//※必然的に親ノードは黒
-								is_necessary_rotate = true;//調整続行
-								printf("(ROT:SIB→S=R,MORE)");
-							}
-						}
-					}
-				}
-			}
-			if (parent_node)
-			{
-				root = parent_node;
-				ope_type::setIsBlack(*root);
-			}
-		}
-	}
+	void _balanceForAdd(typename OPE_TYPE::node_type*& root, stack_t<OPE_TYPE>& stack, typename OPE_TYPE::node_type* curr_node, bool child_is_large, typename OPE_TYPE::node_type* child_node);
 	//--------------------
 	//赤黒木操作関数：ノードを追加
 	//※関数内でスタックを使用
@@ -951,42 +536,45 @@ namespace rbtree
 		DECLARE_OPE_TYPES(OPE_TYPE);
 		if (!new_node)
 			return false;
+		ope_type::setChildL(*new_node, nullptr);//新規ノードはリンクをクリア：大（右）側
+		ope_type::setChildS(*new_node, nullptr);//新規ノードはリンクをクリア：小（左）側
 		if (!root)//根ノードが未登録の場合
 		{
 			root = new_node;//根ノードに登録
+		#ifndef DISABLE_COLOR_FOR_ADD
 			ope_type::setIsBlack(*root);//根ノードは黒
-			return true;
+		#endif//DISABLE_COLOR_FOR_ADD
+			return true;//この時点で処理終了
 		}
+	#ifndef DISABLE_COLOR_FOR_ADD
 		ope_type::setIsRed(*new_node);//新規ノードは暫定で赤
+	#endif//DISABLE_COLOR_FOR_ADD
 		key_type new_key = ope_type::getKey(*new_node);//新規ノードのキーを取得
 		stack_type stack;//スタックを用意
 		node_type* curr_node = root;//現在の探索ノード
-		bool child_is_large = false;
-		node_type* child_node = nullptr;
+		bool new_key_is_large = false;
 		while (true)
 		{
-			child_is_large = ope_type::le(*curr_node, new_key);//指定のキーと一致もしくは指定のキーより小さければtrue
-			child_node = child_is_large ?
-				const_cast<node_type*>(ope_type::getNodeL(*curr_node)) ://大（右）側の子ノードを取得
-				const_cast<node_type*>(ope_type::getNodeS(*curr_node));//小（左）側の子ノードを取得
-			if (!child_node)//子が無ければそこに新規ノードを追加して終了
+			new_key_is_large = ope_type::ge(new_key, *curr_node);//指定のキーと一致もしくは指定のキーの方が大きければtrue
+			node_type* child_node = const_cast<node_type*>(ope_type::getChild(*curr_node, new_key_is_large));//子ノードを取得
+			if (!child_node)//子ノードが無ければそこに新規ノードを追加して終了
 			{
-				child_node = new_node;
-				if (child_is_large)
-					ope_type::setNodeL(*curr_node, child_node);//大（右）側の子ノードとして新規ノードを追加
-				else
-					ope_type::setNodeS(*curr_node, child_node);//小（左）側の子ノードとして新規ノードを追加
+				ope_type::setChild(*curr_node, new_key_is_large, new_node);//子ノードとして新規ノードを追加
 				break;
 			}
-			stack.push(curr_node, child_is_large);//親ノードをスタックに記録
+			stack.push(curr_node, new_key_is_large);//親ノードをスタックに記録
 			curr_node = child_node;
 		}
-	#ifndef DISABLE_ROTATE_FOR_ADD
+	#ifndef DISABLE_COLOR_FOR_ADD
 		//赤黒バランス調整
-		balanceForAdd<ope_type>(root, stack, curr_node, child_is_large, child_node);
-	#endif//DISABLE_ROTATE_FOR_ADD
+		_balanceForAdd<ope_type>(root, stack, curr_node, new_key_is_large, new_node);
+	#endif//DISABLE_COLOR_FOR_ADD
 		return true;
 	}
+	//--------------------
+	//赤黒木操作関数：ノード削除時の赤黒バランス調整
+	template<class OPE_TYPE>
+	void _balanceForRemove(typename OPE_TYPE::node_type*& root, stack_t<OPE_TYPE>& stack, typename OPE_TYPE::node_type* removing_node, typename OPE_TYPE::node_type* replacing_node);
 	//--------------------
 	//赤黒木操作関数：ノードを削除
 	//※関数内でスタックを二つ使用
@@ -997,8 +585,8 @@ namespace rbtree
 		if (!target_node || !root)
 			return false;
 		stack_type stack;//スタックを用意
-		node_type* remove_node = const_cast<node_type*>(searchNode<ope_type>(root, target_node, stack));//削除ノードを検索してスタックを作る
-		if (!remove_node)//検索に失敗したら終了
+		node_type* removing_node = const_cast<node_type*>(searchNode<ope_type>(root, target_node, stack));//削除ノードを検索してスタックを作る
+		if (!removing_node)//検索に失敗したら終了
 			return false;
 		//削除開始
 		node_type* parent_node = nullptr;//削除ノードの親ノード
@@ -1011,46 +599,1238 @@ namespace rbtree
 				curr_is_large = parent_info->m_isLarge;//親ノードからの連結方向
 			}
 		}
-		node_type* node_s = const_cast<node_type*>(ope_type::getNodeS(*remove_node));//小（左）側の子ノードを取得
-		node_type* node_l = const_cast<node_type*>(ope_type::getNodeL(*remove_node));//大（右）側の子ノードを取得
-		node_type* node_sl = nullptr;//削除ノードの最大子孫ノード（削除ノードの次に小さいノード）
-		node_type* replace_node =//削除ノードと置き換えるノード
-			( node_s && !node_l) ? node_s ://小（左）側の子ノード
-			(!node_s &&  node_l) ? node_l ://大（右）側の子ノード
-			                       nullptr;//ノード削除 or 最大子孫ノード
-		if (node_s && node_l)//大小両方の子がある場合、最大子孫ノード検索
+		node_type* child_node_l = const_cast<node_type*>(ope_type::getChildL(*removing_node));//大（右）側の子ノードを取得
+		node_type* child_node_s = const_cast<node_type*>(ope_type::getChildS(*removing_node));//小（左）側の子ノードを取得
+		node_type* descendant_node = nullptr;//削除ノードの最大子孫ノード（削除ノードの次に小さいノード）
+		node_type* replacing_node = nullptr;//削除ノードと置き換えるノード
+		//削除ノードと置き換えるノードの選出処理
+		//-------------------------------------------------------------------------
+		//【ツリーの説明の凡例】
+		//・「(S)」は、小（左）側のノードを示す
+		//・「(L)」は、大（右）側のノードを示す
+		//・「(SL)」は、小（左）側の子の大（右）側のノードを示す
+		//　（「(LS)」[(SS)」「(SSL)」などのパターンも同様）
+		//・「(null)」は、ノードがないことを示す
+		//-------------------------------------------------------------------------
+		if (child_node_s && !child_node_l)
 		{
-			stack_info_type* remove_info = stack.push(remove_node, false);//スタックに削除ノードを追加
-			node_sl = const_cast<node_type*>(getLargestNode<ope_type>(node_s, stack));//最大子孫ノードを取得
-			stack_info_type* parent_info_sl = stack.top();//最大子孫ノードの親ノードを取得
-			node_type* parent_node_sl = const_cast<node_type*>(parent_info_sl->m_nodeRef);//最大子孫ノードの親ノードを取得
-			ope_type::setNodeL(*parent_node_sl, ope_type::getNodeS(*node_sl));//最大子孫ノードを親ノードから切り離し
-			ope_type::setNodeL(*node_sl, node_l);//最大子孫ノードの大側の子を変更
-			if (node_sl != node_s)
-				ope_type::setNodeS(*node_sl, node_s);//最大子孫ノードの小側の子を変更
-			replace_node = node_sl;//削除ノードと置き換えるノードをセット
-			remove_info->m_nodeRef = node_sl;//スタックの情報を書き換え
+			//削除ノードの小（左）側にのみ子ノードがある場合、それを置き換えノードとする
+			//-------------------------------------------------------------------------
+			//            .-------[removing_node]------.  
+			//   .--[replacing_node]--.             (null) 
+			// [(SS)]              [(SL)]                
+			//-------------------------------------------------------------------------
+			//                          ↓【置き換え】
+			//                 .--[replacing_node]--.  
+			//               [(SS)]              [(SL)]
+			//-------------------------------------------------------------------------
+			replacing_node = child_node_s;//削除ノードと置き換えるノードをセット
 		}
-		if (!parent_node)//親ノードがない場合 → 根ノードが削除
+		else if (!child_node_s && child_node_l)
 		{
-			root = replace_node;//根ノードを置き換え
-			if (!root)//根ノードなければ、その時点で終了
+			//削除ノードの大（右）側にのみ子ノードがある場合、それを置き換えノードとする
+			//-------------------------------------------------------------------------
+			//            .-------[removing_node]------.          
+			//          (null)              .--[replacing_node]--.  
+			//                            [(LS)]              [(LL)]
+			//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			//                          ↓【置き換え】
+			//                 .--[replacing_node]--.  
+			//               [(LS)]              [(LL)]
+			//-------------------------------------------------------------------------
+			replacing_node = child_node_l;//削除ノードと置き換えるノードをセット
+		}
+		else if (child_node_s && child_node_l)
+		{
+			//削除ノードの小（左）側と大（右）側の両方の子ノードがある場合、最大子孫ノードを置き換えノードとする
+			//-------------------------------------------------------------------------
+			//【ケース①】
+			//            .---------------[removing_node]---------------.  
+			//          [(S)]----.                                    [(L)]
+			//                   .(最大子孫)                             
+			//           .--[replacing_node]--.                            
+			//         [(SLS)]             (null)                          
+			//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			//                                 ↓【置き換え】
+			//            .---------------[replacing_node]--------------.  
+			//          [(S)]----.                                    [(L)]
+			//                   .(最大子孫)                             
+			//                [(SLS)]                                    
+			//-------------------------------------------------------------------------
+			//【ケース②】
+			//            .---------------[removing_node]---------------.  
+			//    .--[replacing_node]--.                              [(L)]
+			//  [(SLS)]             (null)                                 
+			//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			//                                 ↓【置き換え】
+			//            .---------------[replacing_node]--------------.  
+			//         [(SLS)]                                        [(L)]
+			//-------------------------------------------------------------------------
+			stack_info_type* remove_info = stack.push(removing_node, false);//スタックに削除ノードを追加
+			descendant_node = const_cast<node_type*>(getLargestNode<ope_type>(child_node_s, stack));//最大子孫ノードを取得
+			replacing_node = descendant_node;//削除ノードと置き換えるノードをセット
+			if (replacing_node != child_node_s)
+			{
+				//【ケース①：最大子孫ノードが削除ノードの小（左）側の子ではなく、その子孫】
+				stack_info_type* descendant_parent_info = stack.top();//最大子孫ノードの親ノードを取得
+				node_type* descendant_parent_node = const_cast<node_type*>(descendant_parent_info->m_nodeRef);//最大子孫ノードの親ノードを取得
+				ope_type::setChildL(*descendant_parent_node, ope_type::getChildS(*replacing_node));//最大子孫ノードの親ノードの大（右）側の子ノードを変更
+				ope_type::setChildS(*replacing_node, child_node_s);//置き換えノードの小（左）側の子ノードを変更
+			}
+			else//if (descendant_node == child_node_s)
+			{
+				//【ケース②：最大子孫ノードが削除ノードの小（左）側の子】
+				//なにもしない
+			}
+			ope_type::setChildL(*replacing_node, child_node_l);//置き換えノードの大（右）側の子ノードを変更
+			remove_info->m_nodeRef = replacing_node;//スタック上の削除ノード参照を置き換えノード参照に書き換え
+		}
+		//else//if (!child_node_s && !child_node_l)
+		//{
+		//	//削除ノードの小（左）側と大（右）側の両方の子ノードがない場合、置き換えノードはnullptr
+		//	replacing_node = nullptr;//削除ノードと置き換えるノードをセット
+		//}
+		//削除ノードの置き換え処理
+		if (!parent_node)//親ノードがない場合 → 根ノードが削除された場合である
+		{
+			root = replacing_node;//根ノードを置き換え
+			if (!root)//根ノードがなくなったら、この時点で処理終了
 				return true;
 		}
 		else//if(parent_node)//親ノードがある場合
 		{
-			if (curr_is_large)
-				ope_type::setNodeL(*parent_node, replace_node);//親ノードの大（右）側の子ノードを置き換え
-			else//if (!curr_is_large)
-				ope_type::setNodeS(*parent_node, replace_node);//親ノードの小（左）側の子ノードを置き換え
+			ope_type::setChild(*parent_node, curr_is_large, replacing_node);//親ノードの子ノードを置き換え
 		}
-	#ifndef DISABLE_ROTATE_FOR_REMOVE
+	#ifndef DISABLE_COLOR_FOR_REMOVE
 		//赤黒バランス調整
-		balanceForRemove<ope_type>(root, stack, remove_node, replace_node);
-	#endif//DISABLE_ROTATE_FOR_REMOVE
+		_balanceForRemove<ope_type>(root, stack, removing_node, replacing_node);
+	#endif//DISABLE_COLOR_FOR_REMOVE
 		return true;
 	}
 	//--------------------
+	//赤黒木操作関数：【汎用処理】ノード左回転処理
+	//-------------------------------------------------------------------------
+	//              .--------------[curr_node]--------------.     
+	//       [child_node_s]                     .----[child_node_l]
+	//                                    [child_node_ls]          
+	//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	//                               ↓【左回転】
+	//              .-------------[child_node_l]
+	//      .-----[curr_node]----.               
+	// [child_node_s]  [child_node_ls]           
+	//-------------------------------------------------------------------------
+	template<class OPE_TYPE>
+	inline typename OPE_TYPE::node_type* _rotateL(typename OPE_TYPE::node_type* curr_node)
+	{
+		DECLARE_OPE_TYPES(OPE_TYPE);
+		node_type* child_node_l = const_cast<node_type*>(ope_type::getChildL(*curr_node));
+		node_type* child_node_ls = const_cast<node_type*>(ope_type::getChildS(*child_node_l));
+		ope_type::setChildS(*child_node_l, curr_node);
+		ope_type::setChildL(*curr_node, child_node_ls);
+		return child_node_l;
+	};
+	//--------------------
+	//赤黒木操作関数：【汎用処理】ノード右回転処理
+	//-------------------------------------------------------------------------
+	//        .--------------[curr_node]--------------.   
+	// [child_node_s]----.                       [child_node_l]
+	//          [child_node_sl]              
+	//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	//                            ↓【右回転】
+	//                      [child_node_s]------------.               
+	//                                      .----[curr_node]----.     
+	//                                 [child_node_sl]  [child_node_l]
+	//-------------------------------------------------------------------------
+	template<class OPE_TYPE>
+	inline typename OPE_TYPE::node_type* _rotateR(typename OPE_TYPE::node_type* curr_node)
+	{
+		DECLARE_OPE_TYPES(OPE_TYPE);
+		node_type* child_node_s = const_cast<node_type*>(ope_type::getChildS(*curr_node));
+		node_type* child_node_sl = const_cast<node_type*>(ope_type::getChildL(*child_node_s));
+		ope_type::setChildL(*child_node_s, curr_node);
+		ope_type::setChildS(*curr_node, child_node_sl);
+		return child_node_s;
+	};
+	//--------------------
+	//赤黒木操作関数：ノード追加時の赤黒バランス調整
+	template<class OPE_TYPE>
+	void _balanceForAdd(typename OPE_TYPE::node_type*& root, stack_t<OPE_TYPE>& stack, typename OPE_TYPE::node_type* curr_node, bool child_is_large, typename OPE_TYPE::node_type* child_node)
+	{
+		DECLARE_OPE_TYPES(OPE_TYPE);
+		bool is_rotated = false;//回転処理済みフラグ
+		while (true)
+		{
+			stack_info_type* parent_info = stack.pop();//スタックから親ノード情報取得
+			if (!parent_info)
+				break;
+			node_type* parent_node = const_cast<node_type*>(parent_info->m_nodeRef);//親ノード取得
+			bool curr_is_large = parent_info->m_isLarge;//親ノードからの大小連結情報取得
+			if (is_rotated)//前回回転処理済みなら親ノードの子ノードを連結し直す
+			{
+				ope_type::setChild(*parent_node, curr_is_large, curr_node);
+				is_rotated = false;//回転処理済み状態リセット
+			}
+			//回転処理
+			//-------------------------------------------------------------------------
+			//【ツリーの説明の凡例】
+			//・「:B」は、黒を示す
+			//・「:R」は、赤を示す
+			//・「:+B」は、黒に変更することを示す
+			//・「:+R」は、赤に変更することを示す
+			//・「(S)」は、小（左）側のノードを示す
+			//・「(L)」は、大（右）側のノードを示す
+			//・「(SL)」は、小（左）側の子の大（右）側のノードを示す
+			//　（「(LS)」[(SS)」「(SSL)」などのパターンも同様）
+			//・「(null)」は、ノードがないことを示す
+			//-------------------------------------------------------------------------
+			if (ope_type::isRed(*curr_node) && ope_type::isRed(*child_node))//赤ノードが二つ連結していたら回転処理
+			{
+				//【共通処理】親ノードを左回転処理
+				//-------------------------------------------------------------------------
+				//             .-------[parent_node:B]--------.                
+				//           [(S)]                    .--[curr_node:R]--.      
+				//                                  [(LS)]       [child_node:R]
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//                          ↓【左回転】
+				//          .-----------[curr_node:R]---------.        
+				//   .--[parent_node:B]--.               [child_node:R]
+				// [(S)]              [(LS)]                           
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//                          ↓【変数と色を調整】
+				//                                                  黒に
+				//            .--------[parent_node:R]--------.      ↓ 
+				//   .------[(S):B]------.                [curr_node:+B]
+				// [(SS)]             [(SL)]                           
+				//-------------------------------------------------------------------------
+				auto rotateParentL = [&]() -> const node_type*
+				{
+					parent_node = _rotateL<ope_type>(parent_node);//左回転処理
+					curr_is_large = true;
+					curr_node = child_node;
+					ope_type::setIsBlack(*curr_node);//ノードを黒にする
+					//child_is_large = true;
+					//child_node = nullptr;
+					return parent_node;
+				};
+				//【共通処理】親ノードを右回転処理
+				//-------------------------------------------------------------------------
+				//               .-----[parent_node:B]-----.  
+				//       .--[curr_node:R]--.             [(L)]
+				// [child_node:R]       [(SL)]                
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//                            ↓【右回転】
+				//               .-------[curr_node:R]-------.            
+				//          [child_node:R]         .--[parent_node:B]--.  
+				//                               [(SL)]              [(L)]
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//                            ↓【変数と色を調整】
+				//               .-------[parent_node:R]-----.            
+				//           [curr_node:+B]        .------[(L):B]------.  
+				//                      ↑       [(LS)]             [(LL)]
+				//                     黒に
+				//-------------------------------------------------------------------------
+				auto rotateParentR = [&]() -> const node_type*
+				{
+					parent_node = _rotateR<ope_type>(parent_node);//右回転処理
+					curr_is_large = false;
+					curr_node = child_node;
+					ope_type::setIsBlack(*curr_node);//ノードを黒にする
+					//child_is_large = false;
+					//child_node = nullptr;
+					return parent_node;
+				};
+				//【共通処理】現在のノードを左回転処理
+				//-------------------------------------------------------------------------
+				//           .-------[curr_node:R]-------.        
+				//         [(S)]                .--[child_node:R]
+				//                            [(LS)]              
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//                          ↓【左回転】
+				//           .-------[child_node:R]
+				//   .--[curr_node:R]--.           
+				// [(S)]            [(LS)]         
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//                          ↓【変数を調整】※色の調整はしない
+				//           .--------[curr_node:R]
+				//   .--[child_node:R]--.          
+				// [(SS)]            [(SL)]        
+				//-------------------------------------------------------------------------
+				auto rotateCurrL = [&]() -> const node_type*
+				{
+					node_type* curr_node_tmp = curr_node;
+					curr_node = _rotateL<ope_type>(curr_node);//左回転処理
+					child_is_large = false;
+					child_node = curr_node_tmp;
+					return curr_node;
+				};
+				//【共通処理】現在のノードを右回転処理
+				//-------------------------------------------------------------------------
+				//       .--------[curr_node:R]--------.   
+				// [child_node:R]--.                 [(L)] 
+				//              [(SS)]               
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//                     ↓【右回転】
+				//               [child_node:R]-------.           
+				//                           .--[curr_node:R]--.  
+				//                         [(SS)]            [(L)]
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//                     ↓【変数を調整】※色の調整はしない
+				//                [curr_node:R]-------.           
+				//                          .--[child_node:R]--.  
+				//                        [(LS)]            [(LL)]
+				//-------------------------------------------------------------------------
+				auto rotateCurrR = [&]() -> const node_type*
+				{
+					node_type* curr_node_tmp = curr_node;
+					curr_node = _rotateR<ope_type>(curr_node);//右回転処理
+					child_is_large = true;
+					child_node = curr_node_tmp;
+					return curr_node;
+				};
+				//各状態に合わせた回転処理
+				if (!curr_is_large && !child_is_large)
+				{
+					//【回転ケース[S-S]：［小（左）側の子：赤］→［小（左）側の子：赤］】
+					//-------------------------------------------------------------------------
+					//               .-----[parent_node:B]-----.  
+					//       .--[curr_node:R]--.             [(L)]
+					// [child_node:R]       [(SL)]                
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                            ↓【親ノードを右回転】
+					//               .-------[curr_node:R]-------.            
+					//          [child_node:R]         .--[parent_node:B]--.  
+					//                               [(SL)]              [(L)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                            ↓【変数と色を調整】
+					//               .-------[parent_node:R]-----.            
+					//           [curr_node:+B]         .------[(L):B]------.  
+					//                      ↑        [(LS)]             [(LL)]
+					//                     黒に
+					//-------------------------------------------------------------------------
+				#ifdef DEBUG_PRINT_FOR_ADD
+					printf("<ADD-SS-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
+				#endif//DEBUG_PRINT_FOR_ADD
+					rotateParentR();//親ノードを右回転処理
+				}
+				else if (!curr_is_large &&  child_is_large)
+				{
+					//【回転ケース[S-L]：［小（左）側の子：赤］→［大（右）側の子：赤］】
+					//-------------------------------------------------------------------------
+					//                       .-----------------[parent_node:B]-------.  
+					//               .--[curr_node:R]--.                           [(L)]
+					//             [(SS)]        .--[child_node:R]--.
+					//                        [(SLS)]          [(SLL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                                               ↓【現在ノードを左回転】
+					//                        .----------------[parent_node:B]-------.  
+					//           .------[child_node:R]------.                      [(L)]
+					//   .--[curr_node:R]--.            [(SLL)]                
+					// [(SS)]          [(SLS)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                                               ↓【親ノードを右回転】
+					//                        .-----------------[child_node:R]-------.            
+					//                .--[curr_node:R]--.               .--[parent_node:B]--.  
+					//              [(SS)]           [(SLS)]          [(SLL)]             [(L)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                                               ↓【変数と色を調整】
+					//                        .-----------------[parent_node:R]-----.            
+					//                .--[curr_node:+B]--.                  .-----[(L):B]---.  
+					//               [(SS)])        ↑ [(SL)]             [(LS)]         [(LL)]
+					//                             黒に
+					//-------------------------------------------------------------------------
+				#ifdef DEBUG_PRINT_FOR_ADD
+					printf("<ADD-SL-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
+				#endif//DEBUG_PRINT_FOR_ADD
+					ope_type::setChildS(*parent_node, rotateCurrL());//現在のノードを左回転処理
+					rotateParentR();//親ノードを右回転処理
+				}
+				else if (curr_is_large && !child_is_large)
+				{
+					//【回転ケ－ス[L-S]：［大（右）側の子：赤］→［小（左）側の子：赤］】
+					//-------------------------------------------------------------------------
+					//             .-------[parent_node:B]----------------.                  
+					//           [(S)]                       .-------[curr_node:R]-------.   
+					//                               .--[child_node:R]--.              [(LL)]
+					//                             [(LSS)]          [(LSL)]               
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                          ↓【現在ノードを右回転】
+					//             .-------[parent_node:B]-----------------.                           
+					//           [(S)]                       .-------[child_node:R]-------.            
+					//                                     [(LSS)]                .--[curr_node:R]--.  
+					//                                                          [(LSL)]          [(LL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                          ↓【親ノードを左回転】
+					//           .----------[child_node:R]---------.            
+					//   .--[parent_node:B]--.             .--[curr_node:R]--.  
+					// [(S)]             [(LSS)]         [(LSL)]          [(LL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                          ↓【変数と色を調整】
+					//            .--------[parent_node:R]--------.       ↓黒に  
+					//   .------[(S):B]------.              .--[curr_node:+B]--.  
+					// [(SS)]             [(SL)]          [(LSL)]           [(LL)]
+					//-------------------------------------------------------------------------
+				#ifdef DEBUG_PRINT_FOR_ADD
+					printf("<ADD-LS-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
+				#endif//DEBUG_PRINT_FOR_ADD
+					ope_type::setChildL(*parent_node, rotateCurrR());//現在のノードを右回転処理
+					rotateParentL();//親ノードを左回転処理
+				}
+				else//if (!curr_is_large && !child_is_large)
+				{
+					//【回転ケース[L-L]：［大（右）側の子：赤］→［大（右）側の子：赤］】
+					//-------------------------------------------------------------------------
+					//             .-------[parent_node:B]--------.                
+					//           [(S)]                    .--[curr_node:R]--.      
+					//                                  [(LS)]       [child_node:R]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                          ↓【親ノードを左回転】
+					//          .-----------[curr_node:R]---------.        
+					//   .--[parent_node:B]--.               [child_node:R]
+					// [(S)]              [(LS)]                           
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                          ↓【変数と色を調整】
+					//            .--------[parent_node:R]--------.      ↓ 黒に
+					//   .------[(S):B]------.                [curr_node:+B]
+					// [(SS)]             [(SL)]                           
+					//-------------------------------------------------------------------------
+				#ifdef DEBUG_PRINT_FOR_ADD
+					printf("<ADD-LL-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
+				#endif//DEBUG_PRINT_FOR_ADD
+					rotateParentL();//親ノードを左回転処理
+				}
+				is_rotated = true;
+			}
+			//親ノードに処理を移す
+			child_is_large = curr_is_large;
+			child_node = curr_node;
+			curr_node = parent_node;
+		}
+		if (curr_node)
+		{
+			root = curr_node;//根ノードを更新
+			ope_type::setIsBlack(*root);//根ノードは黒
+		}
+	}
+	//--------------------
+	//赤黒木操作関数：ノード削除時の赤黒バランス調整
+	template<class OPE_TYPE>
+	void _balanceForRemove(typename OPE_TYPE::node_type*& root, stack_t<OPE_TYPE>& stack, typename OPE_TYPE::node_type* removing_node, typename OPE_TYPE::node_type* replacing_node)
+	{
+		DECLARE_OPE_TYPES(OPE_TYPE);
+		bool is_necessary_rotate = false;//回転処理必要？
+		bool remove_node_is_black = ope_type::isBlack(*removing_node);
+		bool replace_node_is_black = replacing_node ? ope_type::isBlack(*replacing_node) : false;
+		//回転処理必要判定
+		//-------------------------------------------------------------------------
+		//【ツリーの説明の凡例】
+		//・「:B」は、黒を示す
+		//・「:R」は、赤を示す
+		//・「:+B」は、黒に変更することを示す
+		//・「:+R」は、赤に変更することを示す
+		//・「(S)」は、小（左）側のノードを示す
+		//・「(L)」は、大（右）側のノードを示す
+		//・「(SL)」は、小（左）側の子の大（右）側のノードを示す
+		//　（「(LS)」[(SS)」「(SSL)」などのパターンも同様）
+		//・「(null)」は、ノードがないことを示す
+		//-------------------------------------------------------------------------
+		if (!remove_node_is_black)//削除ノードが赤の場合
+		{
+			if (!replacing_node)//置き換えノードがない場合
+			{
+				//【判定ケース[R-n]：削除ノードが赤、置き換えノードがない】：回転処理不要
+				//-------------------------------------------------------------------------
+				//  .--[removing_node:R]--. 
+				// (null)           (null)
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//           ↓【削除】
+				//         (null)
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//※黒が減らないので、ツリーに影響がない。
+				//-------------------------------------------------------------------------
+				//【最終状態の特徴】
+				//・赤黒の位置関係（条件③）も
+				//　黒のバランス（条件④）も崩れない。
+				//-------------------------------------------------------------------------
+			#ifdef DEBUG_PRINT_FOR_REMOVE
+				printf("<DEL-Rn-[%d:R]←(null)=OK>", ope_type::getKey(*removing_node));
+			#endif//DEBUG_PRINT_FOR_REMOVE
+				//is_necessary_rotate = false;//回転処理不要
+			}
+			else//if(replacing_node)//置き換えノードがある場合
+			{
+				if (!replace_node_is_black)//置き換えノードが黒の場合
+				{
+					//【判定ケース[R-R]：削除ノードが赤、置き換えノードが赤】：回転処理不要
+					//-------------------------------------------------------------------------
+					//     .---------------------[removing_node:R]-----.  
+					//   [(S)]---------.                           [(L)]
+					//                 .(最大子孫)                      
+					//        .--[replacing_node:R]--.                    
+					//     [(SLS)]              (null)                  
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                                  ↓【置き換え】
+					//     .---------------------[replacing_node:R]----.  
+					//   [(S)]---------.                           [(L)]
+					//                 .(最大子孫)                      
+					//              [(SLS)]                             
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//※黒が減らないので、ツリーに影響がない。
+					//-------------------------------------------------------------------------
+					//【他のケース】
+					//※置き換えノードが削除ノードの子であるケースはない。
+					//　（赤の子が赤であってはいけないルールのため）
+					//-------------------------------------------------------------------------
+					//【最終状態の特徴】
+					//・赤黒の位置関係（条件③）も
+					//　黒のバランス（条件④）も崩れない。
+					//-------------------------------------------------------------------------
+				#ifdef DEBUG_PRINT_FOR_REMOVE
+					printf("<DEL-RR-[%d:R]←[%d:R]=OK>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
+				#endif//DEBUG_PRINT_FOR_REMOVE
+					//is_necessary_rotate = false;//回転処理不要
+				}
+				else//if (replace_node_is_black)//置き換えノードが黒の場合
+				{
+					//【判定ケース[R-B]：削除ノードが赤、置き換えノードが黒】：回転処理必要
+					//-------------------------------------------------------------------------
+					//【ケース①】
+					//              .-----[removing_node:R]-----.  
+					//   .--[replacing_node:B]--.            (null)
+					// [(SS)]              [(SL)]                
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                          ↓【置き換え】
+					//              .-----[replacing_node:B]-----.  
+					//            [(SS)]                    [(SL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                          ↓【色を調整】
+					//              .-----[replacing_node:+R]----.  
+					//            [(SS)]                ↑  [(SL)]
+					//                                 赤に       
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//※「(SS)」と「(SL)」の黒のバランスは保たれるが、
+					//　サブツリー全体で黒が一つ減るので、
+					//　親に遡ってツリーの調整（回転処理）が必要。
+					//-------------------------------------------------------------------------
+					//【ケース②】
+					//      .-----[removing_node:R]-----.            
+					//    (null)           .--[replacing_node:B]--.  
+					//                   [(LS)]              [(LL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                    ↓【置き換え】
+					//      .-----[replacing_node:B]-----.  
+					//    [(LS)]                    [(LL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                    ↓【色を調整】
+					//      .-----[replacing_node:+R]----.  
+					//    [(LS)]                ↑  [(LL)]
+					//                         赤に       
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//※「(LS)」と「(LL)」の黒のバランスは保たれるが、
+					//　サブツリー全体で黒が一つ減るので、
+					//　親に遡ってツリーの調整（回転処理）が必要。
+					//-------------------------------------------------------------------------
+					//【ケース③】
+					//     .---------------------[removing_node:R]-----.  
+					//   [(S)]---------.                           [(L)]
+					//                 .(最大子孫)                      
+					//        .--[replacing_node:B]--.                    
+					//     [(SLS)]              (null)                  
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                                  ↓【置き換え】
+					//     .---------------------[replacing_node:B]----.  
+					//   [(S)]---------.                           [(L)]
+					//                 .(最大子孫)                      
+					//              [(SLS)]                             
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                                  ↓【色を調整】
+					//     .---------------------[replacing_node:+R]----.  
+					//   [(S)]---------.                       ↑   [(L)]
+					//                 .(最大子孫)            赤に       
+					//              [(SLS)]                              
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//※「(SLS)」とその兄弟で黒のバランスが崩れるので、
+					//　「(SLS)」から調整（回転処理）が必要。
+					//-------------------------------------------------------------------------
+					//【最終状態の特徴】
+					//・赤黒の位置関係（条件③）は保たれるが、
+					//　黒のバランス（条件④）が崩れる。
+					//-------------------------------------------------------------------------
+				#ifdef DEBUG_PRINT_FOR_REMOVE
+					printf("<DEL-RB-[%d:R]←[%d:B]=ROT>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
+				#endif//DEBUG_PRINT_FOR_REMOVE
+					is_necessary_rotate = true;//回転処理必要
+					ope_type::setIsRed(*replacing_node);//置き換えノードを赤にする
+					//remove_node_is_black = true;//削除ノードは黒
+					//                            //※置き換え元のノードが削除されたものとして処理する
+				}
+			}
+		}
+		else//if (remove_node_is_black)//削除ノードが黒の場合
+		{
+			if (!replacing_node)//置き換えノードがない場合
+			{
+				//【判定ケース[B-n]：削除ノードが黒、置き換えノードがない】：回転処理必要
+				//-------------------------------------------------------------------------
+				//  .--[removing_node:B]--. 
+				// (null)           (null)
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//           ↓【削除】
+				//         (null)
+				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+				//※黒が一つ減るので、
+				//　親に遡ってツリーの調整（回転処理）が必要。
+				//-------------------------------------------------------------------------
+				//【最終状態の特徴】
+				//・赤黒の位置関係（条件③）は保たれるが、
+				//　黒のバランス（条件④）が崩れる。
+				//-------------------------------------------------------------------------
+			#ifdef DEBUG_PRINT_FOR_REMOVE
+				printf("<DEL-Bn-[%d:B]←(null)=ROT>", ope_type::getKey(*removing_node));
+			#endif//DEBUG_PRINT_FOR_REMOVE
+				is_necessary_rotate = true;//回転処理必要
+			}
+			else//if(replacing_node)//置き換えノードがある場合
+			{
+				if (!replace_node_is_black)//置き換えノードが赤の場合
+				{
+					//【判定ケース[B-R]：削除ノードが黒、置き換えノードが赤】：回転処理不要
+					//-------------------------------------------------------------------------
+					//【ケース①】
+					//              .-----[removing_node:B]-----.  
+					//   .--[replacing_node:R]--.            (null)
+					// [(SS)]              [(SL)]                
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                          ↓【置き換え】
+					//              .-----[replacing_node:R]-----.  
+					//            [(SS)]                    [(SL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                          ↓【色を調整】
+					//              .-----[replacing_node:+B]----.  
+					//            [(SS)]                ↑  [(SL)]
+					//                                 黒に       
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//※結果的に黒が減らないので、ツリーに影響がない。
+					//-------------------------------------------------------------------------
+					//【ケース②】
+					//      .-----[removing_node:B]-----.            
+					//    (null)           .--[replacing_node:R]--.  
+					//                   [(LS)]              [(LL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                    ↓【置き換え】
+					//      .-----[replacing_node:R]-----.  
+					//    [(LS)]                    [(LL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                    ↓【色を調整】
+					//      .-----[replacing_node:+B]----.  
+					//    [(LS)]                ↑  [(LL)]
+					//                         黒に       
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//※結果的に黒が減らないので、ツリーに影響がない。
+					//-------------------------------------------------------------------------
+					//【ケース③】
+					//     .---------------------[removing_node:B]-----.  
+					//   [(S)]---------.                           [(L)]
+					//                 .(最大子孫)                      
+					//        .--[replacing_node:R]--.                    
+					//     [(SLS)]              (null)                  
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                                  ↓【置き換え】
+					//     .---------------------[replacing_node:R]----.  
+					//   [(S)]---------.                           [(L)]
+					//                 .(最大子孫)                      
+					//              [(SLS)]                             
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                                  ↓【色を調整】
+					//     .---------------------[replacing_node:+B]----.  
+					//   [(S)]---------.                       ↑   [(L)]
+					//                 .(最大子孫)            黒に       
+					//              [(SLS)]                              
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//※結果的に黒が減らないので、ツリーに影響がない。
+					//-------------------------------------------------------------------------
+					//【最終状態の特徴】
+					//・赤黒の位置関係（条件③）も
+					//　黒のバランス（条件④）も崩れない。
+					//-------------------------------------------------------------------------
+				#ifdef DEBUG_PRINT_FOR_REMOVE
+					printf("<DEL-BR-[%d:B]←[%d:R]=OK>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
+				#endif//DEBUG_PRINT_FOR_REMOVE
+					//is_necessary_rotate = false;//回転処理不要
+					ope_type::setIsBlack(*replacing_node);//置き換えノードを黒にする
+					//remove_node_is_black = false;//削除ノードは赤
+					//                             //※置き換え元のノードが削除されたものとして処理する
+				}
+				else//if (replace_node_is_black)//置き換えノードが黒の場合
+				{
+					//【範囲ケース[B-B]：削除ノードが黒、置き換えノードが黒】：回転処理必要
+					//-------------------------------------------------------------------------
+					//【ケース①】
+					//              .-----[removing_node:B]-----.  
+					//   .--[replacing_node:B]--.            (null)
+					// [(SS)]              [(SL)]                
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                          ↓【置き換え】
+					//              .-----[replacing_node:B]-----.  
+					//            [(SS)]                    [(SL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//※「(SS)」と「(SL)」の黒のバランスは保たれるが、
+					//　サブツリー全体で黒が一つ減るので、
+					//　親に遡ってツリーの調整（回転処理）が必要。
+					//-------------------------------------------------------------------------
+					//【ケース②】
+					//      .-----[removing_node:B]-----.            
+					//    (null)           .--[replacing_node:B]--.  
+					//                   [(LS)]              [(LL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                    ↓【置き換え】
+					//      .-----[replacing_node:B]-----.  
+					//    [(LS)]                    [(LL)]
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//※「(LS)」と「(LL)」の黒のバランスは保たれるが、
+					//　サブツリー全体で黒が一つ減るので、
+					//　親に遡ってツリーの調整（回転処理）が必要。
+					//-------------------------------------------------------------------------
+					//【ケース③】
+					//     .---------------------[removing_node:B]-----.  
+					//   [(S)]---------.                           [(L)]
+					//                 .(最大子孫)                      
+					//        .--[replacing_node:B]--.                    
+					//     [(SLS)]              (null)                  
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//                                  ↓【置き換え】
+					//     .---------------------[replacing_node:B]----.  
+					//   [(S)]---------.                           [(L)]
+					//                 .(最大子孫)                      
+					//              [(SLS)]                             
+					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					//※「(SLS)」とその兄弟で黒のバランスが崩れるので、
+					//　「(SLS)」から調整（回転処理）が必要。
+					//-------------------------------------------------------------------------
+					//【最終状態の特徴】
+					//・赤黒の位置関係（条件③）は保たれるが、
+					//　黒のバランス（条件④）が崩れる。
+					//-------------------------------------------------------------------------
+				#ifdef DEBUG_PRINT_FOR_REMOVE
+					printf("<DEL-BB-[%d:B]←[%d:B]=ROT>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
+				#endif//DEBUG_PRINT_FOR_REMOVE
+					is_necessary_rotate = true;//回転処理必要
+				}
+			}
+		}
+		//回転処理
+		//※黒ノードが削除された時のみ回転を行う
+		//-------------------------------------------------------------------------
+		//【ツリーの説明の凡例】
+		//・「:B」は、黒を示す
+		//・「:R」は、赤を示す
+		//・「:?」は、黒もしくは赤を示す
+		//・「:?/n」は、黒もしくは赤、もしくは、ノードがないことを示す
+		//・「:B/n」は、黒、もしくは、ノードがないことを示す
+		//・「:-B」は、そのノード、もしくは、その子孫で、黒ノードの削除があったことを示す
+		//・「:+B」は、黒に変更することを示す
+		//・「:+R」は、赤に変更することを示す
+		//・「:+?」は、元の位置と同じ色に変更することを示す
+		//・「(S)」は、小（左）側のノードを示す
+		//・「(L)」は、大（右）側のノードを示す
+		//・「(SL)」は、小（左）側の子の大（右）側のノードを示す
+		//　（「(LS)」[(SS)」「(SSL)」などのパターンも同様）
+		//・「(null)」は、ノードがないことを示す
+		//-------------------------------------------------------------------------
+		if (is_necessary_rotate)
+		{
+			node_type* parent_node = nullptr;//親ノード
+			node_type* parent_node_prev = nullptr;//前回のループ処理での親ノード
+			bool curr_is_large = false;//親ノードからの連結方向
+			while (true)
+			{
+				stack_info_type* parent_info = stack.pop();//親ノード情報を取得
+				if (!parent_info)
+					break;
+				parent_node = const_cast<node_type*>(parent_info->m_nodeRef);//親ノードを取得
+				curr_is_large = parent_info->m_isLarge;///親ノードからの連結方向を取得
+				if (parent_node_prev)//前回のループ処理での親ノードを親子連結
+				{
+					ope_type::setChild(*parent_node, curr_is_large, parent_node_prev);
+					parent_node_prev = nullptr;//前回のループ処理での親ノードをクリア
+				}
+				if (is_necessary_rotate)//回転処理が必要
+				{
+					node_type* curr_node =//現在のノード取得 ※この側で黒ノードが一つ減少している
+						parent_node ?
+							const_cast<node_type*>(ope_type::getChild(*parent_node, curr_is_large)) :
+							nullptr;
+					node_type* sibling_node =//兄弟ノード取得
+						parent_node ?
+							const_cast<node_type*>(ope_type::getChild(*parent_node, !curr_is_large)) :
+							nullptr;
+					node_type* sibling_node_s =//兄弟ノードの小（左）側の子ノード取得
+						sibling_node ?
+							const_cast<node_type*>(ope_type::getChildS(*sibling_node)) :
+							nullptr;
+					node_type* sibling_node_l =//兄弟ノードの大（右）側の子ノード取得
+						sibling_node ?
+							const_cast<node_type*>(ope_type::getChildL(*sibling_node)) :
+							nullptr;
+					if (sibling_node)//兄弟ノードが存在する場合
+					{
+						if (!curr_is_large)//【ケース：［小（左）側：黒］が削除】
+						{
+							if (ope_type::isBlack(*sibling_node))//【ケース：削除側の兄弟が［大（右）側：黒］】
+							{
+								if (sibling_node_s && ope_type::isRed(*sibling_node_s))//【ケース：兄弟の子が［小（左）側の子：赤］】
+								{
+									//【回転ケース[S①]：［削除：小（左）側：黒］→［兄弟：大（右）側：黒］→［小（左）側の子：赤］】
+									//-------------------------------------------------------------------------
+									//              .----------[parent_node:?]-------------------.                         
+									//        [curr_node:-B]                      .------[sibling_node:B]------.           
+									//                                   .--[sibling_node_s:R]--.      [sibling_node_l:?/n]
+									//                                [(LSS)]                [(LSL)]                       
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//                               ↓【兄弟ノードを右回転】
+									//              .----------[parent_node:?]-------------------.                                     
+									//        [curr_node:-B]                      .------[sibling_node_s:R]------.                     
+									//                                         [(LSS)]                .--[sibling_node:B]--.           
+									//                                                             [(LSL)]         [sibling_node_l:?/n]
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//                               ↓【親ノードを左回転】
+									//              .----------[sibling_node_s:R]----------------.                          
+									//     .--[parent_node:?]--.                   .------[sibling_node:B]------.           
+									// [curr_node:-B]       [(LSS)]             [(LSL)]                 [sibling_node_l:?/n]
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//                               ↓【色を調整】
+									//                                         ↓元のparent_nodeと同じ色に                   
+									//              .----------[sibling_node_s:+?]----------------.                          
+									//     .--[parent_node:+B]--.                   .------[sibling_node:B]------.           
+									// [curr_node:?]       ↑[(LSS)]             [(LSL)]                 [sibling_node_l:?/n]
+									//           ↑       黒に                                                               
+									//          上の「+B」により、この「-B」が解消                                           
+									//-------------------------------------------------------------------------
+									//【最終状態の特徴】
+									//・赤黒の位置関係（条件③）は保たれる。
+									//・サブツリーの小（左）側に黒が一つ増えることで、
+									//　ツリー全体のバランス（条件④）が回復し、ツリーの調整は完了する。
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//【初期状態の考察】
+									//・「curr_node」以下の黒の数は、
+									//　「sibling_node」以下の黒の数より一つ少ない。
+									//・「(LSS)」以下と「(LSL)」以下と「sibling_node_l」以下の黒の数は、それぞれ
+									//　「sibling_node」以下の黒の数より一つ少ない。
+									//・「curr_node」以下と「(LSS)」以下と「(LSL)」以下と「sibling_node_l」以下の
+									//　黒の数は、すべて同じ。
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//【最終状態の考察】
+									//・サブツリーの大（右）側の黒の数は変化しない。
+									//・サブツリーの小（左）側の黒の数は一つ増える。
+									//・ツリー全体の黒の数は変化しない。
+									//-------------------------------------------------------------------------
+								#ifdef DEBUG_PRINT_FOR_REMOVE
+									printf("<ROT-S1-[%d:?]→[%d:B]→[%d:R]=OK>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_s));
+								#endif//DEBUG_PRINT_FOR_REMOVE
+									ope_type::setChildL(*parent_node, _rotateR<ope_type>(sibling_node));//兄弟ノードを右回転処理
+									_rotateL<ope_type>(parent_node);//親ノードを左回転処理
+									ope_type::setColor(*sibling_node_s, ope_type::getColor(*parent_node));//親ノードを元のparent_nodeと同じカラーに
+									ope_type::setIsBlack(*parent_node);//削除側ノードを黒に
+									parent_node_prev = sibling_node_s;//親ノードを記録（次のループ処理の親の子に連結する）
+									is_necessary_rotate = false;//調整完了
+								}
+								else if (sibling_node_l && ope_type::isRed(*sibling_node_l))//【ケース：兄弟の子が［大（右）側の子：赤］】
+								{
+									//【回転ケース[S②]：［削除：小（左）側：黒］→［兄弟：大（右）側：黒］→［大（右）側の子：赤］】
+									//-------------------------------------------------------------------------
+									//              .----------[parent_node:?]-------------------.                             
+									//        [curr_node:-B]                      .------[sibling_node:B]------.               
+									//                                      [sibling_node_s:B/n]    .--[sibling_node_l:R]--.   
+									//                                                           [(LLS)]                [(LLL)]
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//                               ↓【親ノードを左回転】
+									//              .-----------[sibling_node:B]----------------.                    
+									//     .--[parent_node:?]--.                  .------[sibling_node_l:R]------.   
+									// [curr_node:-B] [sibling_node_s:B/n]     [(LLS)]                        [(LLL)]
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//                               ↓【色を調整】
+									//                                        ↓元のparent_nodeと同じ色に            
+									//              .-----------[sibling_node:+?]----------------.                   
+									//     .--[parent_node:+B]--.                 .------[sibling_node_l:+B]-----.   
+									// [curr_node:?]  [sibling_node_s:B/n]     [(LLS)]                   ↑   [(LLL)]
+									//           ↑       ↑黒に                                        黒に         
+									//          上の「+B」により、この「-B」が解消                                   
+									//-------------------------------------------------------------------------
+									//【最終状態の特徴】
+									//・赤黒の位置関係（条件③）は保たれる。
+									//・サブツリーの小（左）側に黒が一つ増えることで、
+									//　ツリー全体のバランス（条件④）が回復し、ツリーの調整は完了する。
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//【初期状態の考察】
+									//・「curr_node」以下の黒の数は、
+									//　「sibling_node」以下の黒の数より一つ少ない。
+									//・「(LLS)」以下と「(LLL)」以下と「sibling_node_s」以下の黒の数は、それぞれ
+									//　「sibling_node」以下の黒の数より一つ少ない。
+									//・「curr_node」以下と「(LLS)」以下と「(LLL)」以下と「sibling_node_s」以下の
+									//　黒の数は、すべて同じ。
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//【最終状態の考察】
+									//・サブツリーの大（右）側の黒の数は変化しない。
+									//・サブツリーの小（左）側の黒の数は一つ増える。
+									//・ツリー全体の黒の数は変化しない。
+									//-------------------------------------------------------------------------
+								#ifdef DEBUG_PRINT_FOR_REMOVE
+									printf("<ROT-S2-[%d:?]→[%d:B]→[%d:R]=OK>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_l));
+								#endif//DEBUG_PRINT_FOR_REMOVE
+									_rotateL<ope_type>(parent_node);//親ノードを左回転処理
+									ope_type::setColor(*sibling_node, ope_type::getColor(*parent_node));//親ノードを元のparent_nodeと同じカラーに
+									ope_type::setIsBlack(*parent_node);//削除側ノードを黒に
+									ope_type::setIsBlack(*sibling_node_l);//兄弟ノードを黒に
+									parent_node_prev = sibling_node;//親ノードを記録（次のループ処理の親の子に連結する）
+									is_necessary_rotate = false;//調整完了
+								}
+								else//【ケース：兄弟の子が大小（左右）両方とも黒もしくはヌル】
+								{
+									if (ope_type::isRed(*parent_node))//【ケース：削除ノードの親が赤】
+									{
+										//【回転ケース[S③a]：［削除：小（左）側：黒］→［親：赤］→［兄弟：大（右）側：黒］→［大小（左右）両側の子：赤以外］】
+										//-------------------------------------------------------------------------
+										//       .----------[parent_node:R]-------------------.                         
+										// [curr_node:-B]                      .------[sibling_node:B]------.           
+										//                               [sibling_node_s:B/n]    .--[sibling_node_l:B/n]
+										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+										//                        ↓【色を調整】
+										//       .----------[parent_node:+B]-------------------.   ↓赤に               
+										// [curr_node:?]             黒に↑   .------[sibling_node:+R]------.           
+										//           ↑                  [sibling_node_s:B/n]    .--[sibling_node_l:B/n]
+										//           上の「+B」により、この「-B」が解消                                 
+										//-------------------------------------------------------------------------
+										//【最終状態の特徴】
+										//・赤黒の位置関係（条件③）は保たれる。
+										//・サブツリーの大（右）側の黒が一つ減ることで、
+										//　サブツリーのバランスが回復し、
+										//　更に、サブツリーの先頭に黒が一つ増えることで、
+										//　ツリー全体のバランス（条件④）が回復し、ツリーの調整は完了する。
+										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+										//【初期状態の考察】
+										//・「curr_node」以下の黒の数は、
+										//　「sibling_node」以下の黒の数より一つ少ない。
+										//・「sibling_node_s」以下と「sibling_node_l」以下の黒の数は、
+										//　それぞれ「sibling_node」以下の黒の数より一つ少ない。
+										//・「curr_node」以下と「sibling_node_s」以下と「sibling_node_l」以下の
+										//　黒の数は、すべて同じ。
+										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+										//【最終状態の考察】
+										//・サブツリーの大（右）側の黒の数は±０。
+										//・サブツリーの小（左）側の黒の数は一つ増える。
+										//・ツリー全体の黒の数は変化しない。
+										//-------------------------------------------------------------------------
+									#ifdef DEBUG_PRINT_FOR_REMOVE
+										printf("<ROT-S3a-[%d:R]→[%d:B]→[*:B/n]=OK>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
+									#endif//DEBUG_PRINT_FOR_REMOVE
+										ope_type::setIsBlack(*parent_node);//親ノードを黒に
+										ope_type::setIsRed(*sibling_node);//兄弟ノードを赤に
+										//parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
+										is_necessary_rotate = false;//調整完了
+									}
+									else//if (ope_type::isBlack(*parent_node))//【ケース：削除ノードの親が黒】
+									{
+										//【回転ケース[S③b]：［削除：小（左）側：黒］→［親：黒］→［兄弟：大（右）側：黒］→［大小（左右）両側の子：赤以外］】
+										//-------------------------------------------------------------------------
+										//              .----------[parent_node:B]-------------------.                         
+										//        [curr_node:-B]                      .------[sibling_node:B]------.           
+										//                                      [sibling_node_s:B/n]    .--[sibling_node_l:B/n]
+										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+										//                               ↓【色を調整】
+										//              .----------[parent_node:B]--------------------.   ↓赤に               
+										//        [curr_node:?]                      .------[sibling_node:+R]------.           
+										//                  ↑                  [sibling_node_s:B/n]    .--[sibling_node_l:B/n]
+										//                  右の「+R」により、この「-B」が解消（右側も黒が減ったので）         
+										//-------------------------------------------------------------------------
+										//【最終状態の特徴】
+										//・赤黒の位置関係（条件③）は保たれる。
+										//・サブツリーの大（右）側の黒が一つ減ることで、
+										//　サブツリーのバランスが回復するが、
+										//　サブツリー全体では黒が一つ減った状態のため、
+										//　親に遡ってツリーの調整が必要。
+										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+										//【初期状態の考察】
+										//・「curr_node」以下の黒の数は、
+										//　「sibling_node」以下の黒の数より一つ少ない。
+										//・「sibling_node_s」以下と「sibling_node_l」以下の黒の数は、
+										//　それぞれ「sibling_node」以下の黒の数より一つ少ない。
+										//・「curr_node」以下と「sibling_node_s」以下と「sibling_node_l」以下の
+										//　黒の数は、すべて同じ。
+										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+										//【最終状態の考察】
+										//・サブツリーの大（右）側の黒の数は一つ減る。
+										//・サブツリーの小（左）側の黒の数は変わらない。
+										//・サブツリーのバランスは取れるが、
+										//　サブツリー全体で黒の数が一つ少ない。
+										//-------------------------------------------------------------------------
+									#ifdef DEBUG_PRINT_FOR_REMOVE
+										printf("<ROT-S3b-[%d:B]→[%d:B]→[*:B/n]=NEXT>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
+									#endif//DEBUG_PRINT_FOR_REMOVE
+										ope_type::setIsRed(*sibling_node);//兄弟ノードを赤に
+										//parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
+										//is_necessary_rotate = true;//調整続行
+									}
+								}
+							}
+							else//if (ope_type::isRed(*sibling_node))//【ケース：削除側の兄弟が［大（右）側：赤］】
+							{
+								//※兄弟が赤であるため、「条件③」により、必然的に親は黒になる
+								//【回転ケース[S④]：［削除：小（左）側：黒］→［親：黒］→［兄弟：大（右）側：赤］】
+								//-------------------------------------------------------------------------
+								//                 .--------------[parent_node:B]---------------.                       
+								//        [curr_node:-B]                         .------[sibling_node:R]------.         
+								//                                         [sibling_node_s:B/n]     [sibling_node_l:B/n]
+								//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+								//                                      ↓【親ノードを左回転】
+								//                 .--------------[sibling_node:R]--------------.          
+								//      .----[parent_node:B]----.                      [sibling_node_l:B/n]
+								// [curr_node:-B]   [sibling_node_s:B/n]                                   
+								//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+								//                                      ↓【色を調整】
+								//                 .--------------[sibling_node:+B]-------------.          
+								//      .----[parent_node:+R]----.              ↑黒に [sibling_node_l:B/n]
+								// [curr_node:-B]   [sibling_node_s:B/n]                                   
+								//            ↑          ↑赤に（curr_nodeが赤だと、「条件③」が崩れる）
+								//            この「-B」は解消されない                                     
+								//-------------------------------------------------------------------------
+								//【最終状態の特徴】
+								//・赤黒の位置関係（条件③）が崩れる可能性があるが、
+								//　この後の処理で必ずcurr_nodeの親が黒になるので問題ない。
+								//・サブツリーのバランスは回復しない。
+								//・この状態のparent_nodeとcurr_nodeサブツリーに対して、
+								//　再帰的に【ケース[①～③]】を実行すると、サブツリーの
+								//　バランスが保たれる。
+								//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+								//【初期状態の考察】
+								//・「curr_node」以下の黒の数は、
+								//　「sibling_node_s」／「sibling_node_l」以下の黒の数より一つ少ない。
+								//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+								//【最終状態の考察】
+								//・サブツリーの大（右）側の黒の数は変化しない。
+								//・サブツリーの小（左）側はバランスが崩れるため、
+								//　さらにそのサブツリーでバランスを調整する。
+								//-------------------------------------------------------------------------
+							#ifdef DEBUG_PRINT_FOR_REMOVE
+								printf("<ROT-S4-[%d:B]→[%d:R]→[*:B/n]=RETRY>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
+							#endif//DEBUG_PRINT_FOR_REMOVE
+								_rotateL<ope_type>(parent_node);//親ノードを左回転処理
+								ope_type::setIsRed(*parent_node);//削除側ノードを赤に
+								ope_type::setIsBlack(*sibling_node);//親ノードを黒に
+								stack_info_type* ancestor_info = stack.top();//スタックから現在の親情報を取得
+								const bool parent_is_large = ancestor_info ? ancestor_info->m_isLarge : false;//親の親からの連結方向
+								if (ancestor_info)
+								{
+									node_type* ancestor_node = const_cast<node_type*>(ancestor_info->m_nodeRef);
+									ope_type::setChild(*ancestor_node, parent_is_large, sibling_node);//親の親に新しい親を連結
+								}
+								stack.push(sibling_node, false);//もう一度同じサブツリーを回転操作するために、親ノードをスタックにプッシュ
+								stack.push(parent_node, false);//もう一度同じサブツリーを回転操作するために、親ノードをスタックにプッシュ
+								//parent_node_prev = curr_node;//親ノードを記録（次のループ処理の親の子に連結する）
+								//is_necessary_rotate = true;//再帰的に調整続行
+							}
+						}
+						else//if (curr_is_large)//【ケース：［大（右）側：黒］が削除】
+						{
+							if (ope_type::isBlack(*sibling_node))//【ケース：削除側の兄弟が［小（左）側：黒］】
+							{
+								if (sibling_node_l && ope_type::isRed(*sibling_node_l))//【ケース：兄弟の子が［大（右）側の子：赤］】
+								{
+									//【回転ケース[L①]：［削除：大（右）側：黒］→［兄弟：小（左）側：黒］→［大（右）側の子：赤］】
+									//-------------------------------------------------------------------------
+									//                               .-------------------[parent_node:?]----------.      
+									//                 .------[sibling_node:B]------.                      [curr_node:-B]
+									//       [sibling_node_s:?/n]      .--[sibling_node_l:R]--.                          
+									//                              [(SLS)]                [(SLL)]                       
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//                                                         ↓【兄弟ノードを左回転】
+									//                               .-------------------[parent_node:?]----------.      
+									//                 .------[sibling_node_l:R]------.                    [curr_node:-B]
+									//           .--[sibling_node:B]--.            [(SLL)]                               
+									// [sibling_node_s:?/n]        [(SLS)]                                               
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//                                                         ↓【親ノードを右回転】
+									//                               .-----------------[sibling_node_l:R]---------.              
+									//                 .------[sibling_node:B]------.                .--[parent_node:?]--.       
+									//           [sibling_node_s:?/n]            [(SLS)]          [(SLL)]          [curr_node:-B]
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//                                                         ↓【色を調整】
+									//                                                                 ↓元のparent_nodeと同じ色に
+									//                               .-----------------[sibling_node_l:+?]--------.  ↓黒に       
+									//                 .------[sibling_node:B]------.                .--[parent_node:+B]--.       
+									//           [sibling_node_s:?/n]            [(SLS)]          [(SLL)]          [curr_node:?]  
+									//                                                     上の「+B」により、この「-B」が解消↑   
+									//-------------------------------------------------------------------------
+									//※調整完了。
+									//※説明は省略。【ケース[S①]】と同じ
+									//-------------------------------------------------------------------------
+								#ifdef DEBUG_PRINT_FOR_REMOVE
+									printf("<ROT-L1-[%d:?]→[%d:B]→[%d:R]=OK>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_l));
+								#endif//DEBUG_PRINT_FOR_REMOVE
+									ope_type::setChildS(*parent_node, _rotateL<ope_type>(sibling_node));//兄弟ノードを左回転処理
+									_rotateR<ope_type>(parent_node);//親ノードを右回転処理
+									ope_type::setColor(*sibling_node_l, ope_type::getColor(*parent_node));//親ノードを元のparent_nodeと同じカラーに
+									ope_type::setIsBlack(*parent_node);//削除側ノードを黒に
+									parent_node_prev = sibling_node_l;//親ノードを記録（次のループ処理の親の子に連結する）
+									is_necessary_rotate = false;//調整完了
+								}
+								else if (sibling_node_s && ope_type::isRed(*sibling_node_s))//【ケース：兄弟の子が［小（左）側の子：赤］】
+								{
+									//【回転ケース[L②]：［削除：大（右）側：黒］→［兄弟：小（左）側：黒］→［小（左）側の子：赤］】
+									//-------------------------------------------------------------------------
+									//                               .-------------------[parent_node:?]----------.      
+									//                 .------[sibling_node:B]------.                      [curr_node:-B]
+									//    .--[sibling_node_s:R]--.      [sibling_node_l:B/n]                             
+									// [(SLS)]                [(SLL)]                                                    
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//                                                        ↓【親ノードを右回転】
+									//                               .------------------[sibling_node:R]----------.              
+									//                 .------[sibling_node_s:R]------.                .--[parent_node:?]--.       
+									//              [(SLS)]                        [(SLL)]    [sibling_node_l:B/n]   [curr_node:-B]
+									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+									//                                                        ↓【色を調整】
+									//                                                                ↓元のparent_nodeと同じ色に            
+									//                               .------------------[sibling_node:+?]---------.   ↓黒に         
+									//                 .------[sibling_node_s:+B]-----.               .--[parent_node:+B]--.       
+									//              [(SLS)]                   ↑   [(SLL)]    [sibling_node_l:B/n]   [curr_node:?]
+									//                                       黒に            上の「+B」により、この「-B」が解消↑
+									//-------------------------------------------------------------------------
+									//※調整完了。
+									//※説明は省略。【ケース[S②]】と同じ
+									//-------------------------------------------------------------------------
+								#ifdef DEBUG_PRINT_FOR_REMOVE
+									printf("<ROT-L2-[%d:?]→[%d:B]→[%d:R]=OK>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_s));
+								#endif//DEBUG_PRINT_FOR_REMOVE
+									_rotateR<ope_type>(parent_node);//親ノードを右回転処理
+									ope_type::setColor(*sibling_node, ope_type::getColor(*parent_node));//親ノードを元のparent_nodeと同じカラーに
+									ope_type::setIsBlack(*parent_node);//削除側ノードを黒に
+									ope_type::setIsBlack(*sibling_node_s);//兄弟ノードを黒に
+									parent_node_prev = sibling_node;//親ノードを記録（次のループ処理の親の子に連結する）
+									is_necessary_rotate = false;//調整完了
+								}
+								else//【ケース：兄弟の子が大小（左右）両方とも黒もしくはヌル】
+								{
+									if (ope_type::isRed(*parent_node))//【ケース：削除ノードの親が赤】
+									{
+										//【回転ケース[L③a]：［削除：大（右）側：黒］→［親：赤］→［兄弟：小（左）側：黒］→［大小（左右）両側の子：赤以外］】
+										//-------------------------------------------------------------------------
+										//                       .-------------------[parent_node:R]----------.      
+										//         .------[sibling_node:B]------.                      [curr_node:-B]
+										// [sibling_node_s:B/n]     [sibling_node_l:B/n]                             
+										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+										//                                                 ↓【色を調整】
+										//                       .-------------------[parent_node:+B]---------.      
+										//         .------[sibling_node:+B]-----.                 ↑   [curr_node:?]
+										// [sibling_node_s:B/n]     [sibling_node_l:B/n]         黒に			 ↑      
+										//                              ↑赤に                         上の「 + B」により、
+										//                                                             この「 - B」が解消
+										//-------------------------------------------------------------------------
+										//※調整完了。
+										//※説明は省略。【ケース[S③a]】と同じ
+										//-------------------------------------------------------------------------
+									#ifdef DEBUG_PRINT_FOR_REMOVE
+										printf("<ROT-L3a-[%d:R]→[%d:B]→[*:B/n]=OK>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
+									#endif//DEBUG_PRINT_FOR_REMOVE
+										ope_type::setIsBlack(*parent_node);//親ノードを黒に
+										ope_type::setIsRed(*sibling_node);//兄弟ノードを赤に
+										//parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
+										is_necessary_rotate = false;//調整完了
+									}
+									else//if (ope_type::isBlack(*parent_node))//【ケース：削除ノードの親が黒】
+									{
+										//【回転ケース[L③b]：［削除：大（右）側：黒］→［親：黒］→［兄弟：小（左）側：黒］→［大小（左右）両側の子：赤以外］】
+										//-------------------------------------------------------------------------
+										//                       .-------------------[parent_node:B]----------.      
+										//         .------[sibling_node:B]------.                      [curr_node:-B]
+										// [sibling_node_s:B/n]     [sibling_node_l:B/n]                             
+										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+										//                                                 ↓【色を調整】
+										//                       .-------------------[parent_node:B]---------.      
+										//         .------[sibling_node:+R]-----.                      [curr_node:?]
+										// [sibling_node_s:B/n]     [sibling_node_l:B/n]       左の「+R」により、↑ 
+										//                              ↑赤に                 この「-B」が解消     
+										//                                                   （左側も黒が減ったので）
+										//-------------------------------------------------------------------------
+										//※調整続行。
+										//※説明は省略。【ケース[S③b]】と同じ
+										//-------------------------------------------------------------------------
+									#ifdef DEBUG_PRINT_FOR_REMOVE
+										printf("<ROT-L3b-[%d:B]→[%d:B]→[*:B/n]=NEXT>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
+									#endif//DEBUG_PRINT_FOR_REMOVE
+										ope_type::setIsRed(*sibling_node);//兄弟ノードを赤に
+										//parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
+										//is_necessary_rotate = true;//調整続行
+									}
+								}
+							}
+							else//if (ope_type::isRed(*sibling_node))//【ケース：削除側の兄弟が［小（左）側：赤］】
+							{
+								//※兄弟が赤であるため、「条件③」により、必然的に親は黒になる
+								//【回転ケース[L④]：［削除：大（右）側：黒］→［親：黒］→［兄弟：小（左）側：赤］】
+								//-------------------------------------------------------------------------
+								//                         .-------------------[parent_node:B]----------.      
+								//           .------[sibling_node:R]------.                      [curr_node:-B]
+								// [sibling_node_s:B/n]        [sibling_node_l:B/n]                             
+								//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+								//                                                   ↓【親ノードを右回転】
+								//                         .------------------[sibling_node:R]----------.              
+								//                 [sibling_node_s:B/n]                       .--[parent_node:B]--.       
+								//                                                    [sibling_node_l:B/n]   [curr_node:-B]
+								//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+								//                                                   ↓【色を調整】
+								//                         .-----------------[sibling_node:+B]----------.     ↓赤に（curr_nodeが赤だと、
+								//                 [sibling_node_s:B/n]                黒に↑ .--[parent_node:+R]--.  「条件③」が崩れる）
+								//                                                    [sibling_node_l:B/n]   [curr_node:-B]
+								//                                                                                      ↑ 
+								//                                                                 この「-B」は解消されない
+								//-------------------------------------------------------------------------
+								//※再帰的に調整続行。
+								//※説明は省略。【ケース[S④]】と同じ
+								//-------------------------------------------------------------------------
+							#ifdef DEBUG_PRINT_FOR_REMOVE
+								printf("<ROT-L4-[%d:B]→[%d:R]→[*:B/n]=RETRY>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
+							#endif//DEBUG_PRINT_FOR_REMOVE
+								_rotateR<ope_type>(parent_node);//親ノードを右回転処理
+								ope_type::setIsRed(*parent_node);//削除側ノードを赤に
+								ope_type::setIsBlack(*sibling_node);//親ノードを黒に
+								stack_info_type* ancestor_info = stack.top();//スタックから現在の親情報を取得
+								const bool parent_is_large = ancestor_info ? ancestor_info->m_isLarge : false;//親の親からの連結方向
+								if (ancestor_info)
+								{
+									node_type* ancestor_node = const_cast<node_type*>(ancestor_info->m_nodeRef);
+									ope_type::setChild(*ancestor_node, parent_is_large, sibling_node);//親の親に新しい親を連結
+								}
+								stack.push(sibling_node, true);//もう一度同じサブツリーを回転操作するために、親ノードをスタックにプッシュ
+								stack.push(parent_node, true);//もう一度同じサブツリーを回転操作するために、親ノードをスタックにプッシュ
+								//parent_node_prev = curr_node;//親ノードを記録（次のループ処理の親の子に連結する）
+								//is_necessary_rotate = true;//再帰的に調整続行
+							}
+						}
+					}
+					else//if (!sibling_node)//兄弟ノードが存在しない場合
+					{
+						//黒ノード（削除対象ノード）の兄弟ノードが存在しないことは本来ありえない
+						//※「条件④」により、根から葉までのあらゆる経路で黒の数は一定のため、
+						//　黒ノードを削除した場合、必ず兄弟ノードもしくはその子孫に黒がいる。
+					#ifdef DEBUG_PRINT_FOR_REMOVE
+						printf("【赤黒木にバグあり！】黒ノード（削除）の兄弟ノードが存在しない\n");
+					#endif//DEBUG_PRINT_FOR_REMOVE
+						assert(sibling_node != nullptr);
+						//parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
+					}
+				}
+				else//if (!is_necessary_rotate)//回転処理が不要
+				{
+					//parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
+				}
+			}
+			if (parent_node)
+			{
+				root = parent_node;
+				ope_type::setIsBlack(*root);
+			}
+		}
+	}
+
+	//----------------------------------------
 	//赤黒木コンテナ
 	//※根ノードを持つのみ
 	//※std::mapを模した構造
@@ -1531,12 +2311,12 @@ struct data_t
 struct ope_t : public rbtree::base_ope_t<ope_t, data_t, int>
 {
 	//子ノードを取得
-	inline static const node_type* getNodeS(const node_type& node){ return node.m_nodeS; }//小（左）側
-	inline static const node_type* getNodeL(const node_type& node){ return node.m_nodeL; }//大（右）側
+	inline static const node_type* getChildL(const node_type& node){ return node.m_nodeL; }//大（右）側
+	inline static const node_type* getChildS(const node_type& node){ return node.m_nodeS; }//小（左）側
 	//子ノードを変更
-	inline static void setNodeS(node_type& node, const data_t* node_s){ node.m_nodeS = node_s; }//小（左）側
-	inline static void setNodeL(node_type& node, const data_t* node_l){ node.m_nodeL = node_l; }//大（右）側
-		
+	inline static void setChildL(node_type& node, const node_type* child){ node.m_nodeL = child; }//大（右）側
+	inline static void setChildS(node_type& node, const node_type* child){ node.m_nodeS = child; }//小（左）側
+
 	//ノードの色を取得
 	inline static color_t getColor(const node_type& node){ return node.m_isBlack ? BLACK : RED; }
 	//ノードの色を変更
@@ -1572,15 +2352,28 @@ int main(const int argc, const char* argv[])
 	auto regList = [&con]()
 	{
 		printf("--- make table ---\n");
+		auto insert = [&con](const int key)
+		{
+			data_t* new_node = new data_t(key);
+			printf("[%2d] ", new_node->m_key);
+			con.insert(*new_node);
+		#ifdef DEBUG_PRINT_FOR_ADD
+			printf("\n");
+		#endif//DEBUG_PRINT_FOR_ADD
+		};
+	#if 1
 		std::mt19937 rand_engine;
 		rand_engine.seed(0);
 		std::uniform_int_distribution<int> rand_dist(key_min, key_max);
 		for (int i = 0; i < reg_num; ++i)
 		{
-			data_t* new_node = new data_t(rand_dist(rand_engine));
-			printf("[%2d] ", new_node->m_key);
-			con.insert(*new_node);
+			insert(rand_dist(rand_engine));
 		}
+	#else
+		const int key_list[] = { 54, 59, 71, 84, 60, 85, 54, 84, 42, 62, 64, 38, 43, 29, 89, 5, 96, 27, 38, 47, 79, 81, 52, 47, 56, 39, 92, 83, 7, 33, 8, 64, 2, 36, 83, 95, 77, 14, 87, 87, 97, 47, 79, 80, 46, 52, 78, 67, 11, 72, 63, 58, 14, 53, 94, 75, 52, 10, 41, 47, 26, 18, 77, 73, 45, 21, 56, 13, 1, 32, 61, 14, 61, 22, 61, 38, 94, 90, 68, 44, 35, 61, 43, 90, 69, 9, 6, 96, 66, 65, 67, 17, 21, 35, 12, 75, 31, 60, 36, 32};
+		for (int key : key_list)
+			insert(key);
+	#endif
 		printf("\n");
 	};
 	regList();
@@ -1609,8 +2402,8 @@ int main(const int argc, const char* argv[])
 					if (depth_tmp < 0)
 						break;
 					node = (breath_tmp & (0x1 << depth_tmp)) ?
-						ope_t::getNodeL(*node) :
-						ope_t::getNodeS(*node);
+						ope_t::getChildL(*node) :
+						ope_t::getChildS(*node);
 				}
 				if (node)
 				{
@@ -1618,20 +2411,20 @@ int main(const int argc, const char* argv[])
 						int c = 0;
 						for (; c < print_indent / 2; ++c)
 							printf(" ");
-						if (ope_t::getNodeS(*node) && c < print_indent)
+						if (ope_t::getChildS(*node) && c < print_indent)
 						{
 							printf(".");
 							++c;
 						}
 						for (; c < print_indent; ++c)
-							printf(ope_t::getNodeS(*node) ? "-" : " ");
+							printf(ope_t::getChildS(*node) ? "-" : " ");
 					}
-					printf("%s%2d:%c%s", ope_t::getNodeS(*node) ? "{" : "[", node->m_key, ope_t::isBlack(*node) ? 'B' : 'R', ope_t::getNodeL(*node) ? "}" : "]");
+					printf("%s%2d:%c%s", ope_t::getChildS(*node) ? "{" : "[", node->m_key, ope_t::isBlack(*node) ? 'B' : 'R', ope_t::getChildL(*node) ? "}" : "]");
 					{
 						int c = 0;
 						for (; c < print_indent / 2; ++c)
-							printf(ope_t::getNodeL(*node) ? "-" : " ");
-						if (ope_t::getNodeL(*node) && c < print_indent)
+							printf(ope_t::getChildL(*node) ? "-" : " ");
+						if (ope_t::getChildL(*node) && c < print_indent)
 						{
 							printf(".");
 							++c;
@@ -1659,12 +2452,12 @@ int main(const int argc, const char* argv[])
 		const int width_max = static_cast<int>(std::pow(2, depth_max));
 		printf("depth_max=%d, width_max=%d\n", depth_max, width_max);
 		const data_t* prev_node = nullptr;
-		int blacks_min = 0;
-		int blacks_max = 0;
-		int reds_min = 0;
-		int reds_max = 0;
-		int total_min = 0;
-		int total_max = 0;
+		int blacks_min = -1;
+		int blacks_max = -1;
+		int reds_min = -1;
+		int reds_max = -1;
+		int total_min = -1;
+		int total_max = -1;
 		for (int breath = 0; breath < width_max; ++breath)
 		{
 			int blacks = 0;
@@ -1682,20 +2475,26 @@ int main(const int argc, const char* argv[])
 				if (depth_tmp < 0)
 					break;
 				node = (breath_tmp & (0x1 << depth_tmp)) ?
-					ope_t::getNodeL(*node) :
-					ope_t::getNodeS(*node);
+					ope_t::getChildL(*node) :
+					ope_t::getChildS(*node);
 			}
 			int total = blacks + reds;
-			blacks_min = blacks_min > blacks || blacks_min == 0 ? blacks : blacks_min;
-			blacks_max = blacks_max < blacks || blacks_max == 0 ? blacks : blacks_max;
-			reds_min = reds_min > reds || reds_min == 0 ? reds : reds_min;
-			reds_max = reds_max < reds || reds_max == 0 ? reds : reds_max;
-			total_min = total_min > total || total_min == 0 ? total : total_min;
-			total_max = total_max < total || total_max == 0 ? total : total_max;
+			blacks_min = blacks_min > blacks || blacks_min == -1 ? blacks : blacks_min;
+			blacks_max = blacks_max < blacks || blacks_max == -1 ? blacks : blacks_max;
+			reds_min = reds_min > reds || reds_min == -1 ? reds : reds_min;
+			reds_max = reds_max < reds || reds_max == -1 ? reds : reds_max;
+			total_min = total_min > total || total_min == -1 ? total : total_min;
+			total_max = total_max < total || total_max == -1 ? total : total_max;
 			if (prev_node != last_node)
 				printf("%5d:[%2d] blacks=%d, reds=%d, total=%d\n", breath, last_node->m_key, blacks, reds, total);
 			prev_node = last_node;
 		}
+		blacks_min = blacks_min >= 0 ? blacks_min : 0;
+		blacks_max = blacks_max >= 0 ? blacks_max : 0;
+		reds_min = reds_min >= 0 ? reds_min : 0;
+		reds_max = reds_max >= 0 ? reds_max : 0;
+		total_min = total_min >= 0 ? total_min : 0;
+		total_max = total_max >= 0 ? total_max : 0;
 		printf("max: blacks=%d, reds=%d, total=%d\n", blacks_max, reds_max, total_max);
 		printf("min: blacks=%d, reds=%d, total=%d\n", blacks_min, reds_min, total_min);
 		printf("diff:blacks=%d, reds=%d, total=%d\n", blacks_max - blacks_min, reds_max - reds_min, total_max - total_min);
@@ -1705,7 +2504,7 @@ int main(const int argc, const char* argv[])
 	//一番小さいノードから昇順に全ノードをリストアップ
 	auto showListAsc = [&con]()
 	{
-		printf("--- get smallest node -> get next node (count=%d) ---\n", con.size());
+		printf("--- show nodes ascending (count=%d) ---\n", con.size());
 		bool is_found = false;
 		for (const data_t& obj : con)//C++11形式の範囲に基づくforループ
 		{
@@ -1731,7 +2530,7 @@ int main(const int argc, const char* argv[])
 	//一番大きいノードから降順に全ノードをリストアップ
 	auto showListDesc = [&con]()
 	{
-		printf("--- get largest node -> get previous node (count=%d) ---\n", con.size());
+		printf("--- show nodes descending (count=%d) ---\n", con.size());
 		bool is_found = false;
 		std::for_each(con.rbegin(), con.rend(),
 			[&is_found](const data_t& obj)
@@ -1822,23 +2621,42 @@ int main(const int argc, const char* argv[])
 	searchNearestData(rbtree::FOR_NEAREST_SMALLER);
 
 	//指定のキーと同じかそれより大きい最近ノードを検索
-	//searchNearestData(rbtree::FOR_NEAREST_LARGER);
+	searchNearestData(rbtree::FOR_NEAREST_LARGER);
 
 	//ノードを削除
 	//※特定のキーを削除
 	auto removeNodes = [&con]()
 	{
 		printf("--- remove nodes ---\n");
-		auto removeNode = [&con](const int remove_key)
+		auto erase = [&con](const int remove_key) -> bool
 		{
 			const bool result = con.erase(remove_key);
 			if (result)
-				printf("[%2d] \n", remove_key);
+			{
+				printf("[%2d] ", remove_key);
+			#ifdef DEBUG_PRINT_FOR_REMOVE
+				printf("\n");
+			#endif//DEBUG_PRINT_FOR_REMOVE
+			}
+			return result;
 		};
-		removeNode(1);
-		removeNode(54);
-		removeNode(68);
-		//removeNode(78);
+	#if 1
+		std::mt19937 rand_engine;
+		rand_engine.seed(1);
+		std::uniform_int_distribution<int> rand_dist(key_min, key_max);
+		const int removed_count_max = reg_num / 4;
+		int removed_count = 0;
+		while (removed_count < removed_count_max)
+		{
+			const bool result = erase(rand_dist(rand_engine));
+			if (result)
+				++removed_count;
+		}
+	#else
+		const int key_list[] = { 41, 72, 12, 14, 9, 39, 18, 38, 66, 53, 84, 31, 68, 52, 44, 87 };
+		for (int key : key_list)
+			erase(key);
+	#endif
 		printf("\n");
 	};
 	removeNodes();
@@ -1848,6 +2666,9 @@ int main(const int argc, const char* argv[])
 
 	//黒ノード数を表示
 	showNodesCount();
+
+	//一番小さいノードから昇順に全ノードをリストアップ
+	showListAsc();
 
 	//ノードを削除
 	//※すべての値のキーを一つずつ削除
@@ -1862,7 +2683,12 @@ int main(const int argc, const char* argv[])
 			//const_iterator ite;con._find(ite, search_key);
 			//...
 			if (result)
-				printf("[%2d] \n", remove_key);
+			{
+				printf("[%2d] ", remove_key);
+			#ifdef DEBUG_PRINT_FOR_REMOVE
+				printf("\n");
+			#endif//DEBUG_PRINT_FOR_REMOVE
+			}
 		}
 		printf("\n");
 	};
@@ -1890,13 +2716,24 @@ int main(const int argc, const char* argv[])
 			//const_iterator ite;con._find(ite, search_key);
 			//...
 			if (result)
-				printf("[%2d] \n", remove_key);
+			{
+				printf("[%2d] ", remove_key);
+			#ifdef DEBUG_PRINT_FOR_REMOVE
+				printf("\n");
+			#endif//DEBUG_PRINT_FOR_REMOVE
+			}
 			else
 				++remove_key;
 		}
 		printf("\n");
 	};
 	removeAllNodes();
+
+	//ツリーを表示
+	showTree();
+
+	//黒ノード数を表示
+	showNodesCount();
 
 	//一番小さいノードから昇順に全ノードをリストアップ
 	showListAsc();

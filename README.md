@@ -177,6 +177,9 @@
      |  |  |
      |  |  |-[Random]                 ... 乱数のテスト
      |  |  |
+     |  |  |-[rbtree]                 ... ★赤黒木（red-black tree）のサンプルプログラム
+     |  |  |-[rbtree_unix]            ... ★赤黒木（red-black tree）のサンプルプログラム（unix系＋GCC）
+     |  |  |
      |  |  |-[ResourceBuilderFactory] ... ★リソースビルダーファクトリーのサンプル処理
      |  |  |
      |  |  |-[RTTI]                   ... 実行時型情報（RTTI）の確認

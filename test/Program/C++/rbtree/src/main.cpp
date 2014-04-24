@@ -3,10 +3,18 @@
 static const int TEST_DATA_KEY_MIN = 0;//テストデータの最小キー
 static const int TEST_DATA_KEY_MAX = 99;//テストデータの最大キー
 static const int TEST_DATA_REG_NUM = 100;//テストデータの登録数
-#define PRINT_TEST_DATA_TREE//テストデーのツリーを表示する場合はこのマクロを有効化する（表示しなくても検索は実行する）
-#define PRINT_TEST_DATA_SEARCH//テストデーの検索結果を表示する場合はこのマクロを有効化する（表示しなくても検索は実行する）
-#define PRINT_TEST_DATA_COLOR_COUNT//テストデータの赤黒カウント数計測を表示する場合はこのマクロを有効化する
-#define PRINT_TEST_DATA_DETAIL//テストデーの詳細タを表示する場合はこのマクロを有効化する
+static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタックの最大の深さ（デフォルトは32で、平衡木なら10万件は扱える）
+//#define REGIST_TEST_DATA_SEQUENTIALLY//データをシーケンシャルに登録する場合は、このマクロを有効化する（無効化時はランダム）
+#define PRINT_TEST_DATA_TREE//テストデーのツリーを表示する場合は、このマクロを有効化する（表示しなくても検索は実行する）
+#define PRINT_TEST_DATA_SEARCH//テストデーの検索結果を表示する場合は、このマクロを有効化する（表示しなくても検索は実行する）
+#define PRINT_TEST_DATA_COLOR_COUNT//テストデータの赤黒カウント数計測を表示する場合は、このマクロを有効化する
+#define PRINT_TEST_DATA_DETAIL//テストデーの詳細タを表示する場合は、このマクロを有効化する
+
+//テストデータを固定順に登録する場合は、このマクロを有効化する（無効時はランダム、ただし、REGIST_TEST_DATA_SEQUENTIALLYが優先）
+//#define TEST_DATA_REGISTRATION_LIST { 54, 59, 71, 84, 60, 85, 54, 84, 42, 62, 64, 38, 43, 29, 89, 5, 96, 27, 38, 47, 79, 81, 52, 47, 56, 39, 92, 83, 7, 33, 8, 64, 2, 36, 83, 95, 77, 14, 87, 87, 97, 47, 79, 80, 46, 52, 78, 67, 11, 72, 63, 58, 14, 53, 94, 75, 52, 10, 41, 47, 26, 18, 77, 73, 45, 21, 56, 13, 1, 32, 61, 14, 61, 22, 61, 38, 94, 90, 68, 44, 35, 61, 43, 90, 69, 9, 6, 96, 66, 65, 67, 17, 21, 35, 12, 75, 31, 60, 36, 32}
+
+//テストデータを固定順に削除する場合は、このマクロを有効化する（無効時はランダム）
+//#define TEST_DATA_REMOVING_LIST { 41, 72, 12, 14, 9, 39, 18, 38, 66, 53, 84, 31, 68, 52, 44, 87 }
 
 //--------------------------------------------------------------------------------
 //赤黒木アルゴリズム用コンパイラスイッチ
@@ -22,6 +30,7 @@ static const int TEST_DATA_REG_NUM = 100;//テストデータの登録数
 #include <memory.h>//memcpy用
 #include <assert.h>//assert用
 #include <iterator>//std::iterator用
+
 
 //--------------------------------------------------------------------------------
 //赤黒木（red-black tree）
@@ -199,6 +208,26 @@ namespace rbtree
 		typedef std::size_t size_type; \
 		typedef stack_t<ope_type> stack_type; \
 		typedef typename stack_type::info_t stack_info_type;
+	//----------------------------------------
+	//デバッグ用補助関数
+#ifdef DEBUG_PRINT_FOR_ADD
+	template<typename... Tx>
+	inline int printf_dbg_add(const char* fmt, Tx... args)
+	{
+		return printf(fmt, args...);
+	}
+#else//DEBUG_PRINT_FOR_ADD
+	inline int printf_dbg_add(const char* fmt, ...){ return 0; }
+#endif//DEBUG_PRINT_FOR_ADD
+#ifdef DEBUG_PRINT_FOR_REMOVE
+	template<typename... Tx>
+	inline int printf_dbg_remove(const char* fmt, Tx... args)
+	{
+		return printf(fmt, args...);
+	}
+#else//DEBUG_PRINT_FOR_REMOVE
+	inline int printf_dbg_remove(const char* fmt, ...){ return 0; }
+#endif//DEBUG_PRINT_FOR_REMOVE
 	//--------------------
 	//赤黒木操作処理用スタッククラス
 	//※赤黒木のノード情報を扱う
@@ -541,11 +570,11 @@ namespace rbtree
 	//赤黒木操作関数：ノードを追加
 	//※関数内でスタックを使用
 	template<class OPE_TYPE>
-	bool addNode(typename OPE_TYPE::node_type* new_node, typename OPE_TYPE::node_type*& root)
+	typename OPE_TYPE::node_type* addNode(typename OPE_TYPE::node_type* new_node, typename OPE_TYPE::node_type*& root)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
 		if (!new_node)
-			return false;
+			return nullptr;
 		ope_type::setChildL(*new_node, nullptr);//新規ノードはリンクをクリア：大（右）側
 		ope_type::setChildS(*new_node, nullptr);//新規ノードはリンクをクリア：小（左）側
 		if (!root)//根ノードが未登録の場合
@@ -554,7 +583,7 @@ namespace rbtree
 		#ifndef DISABLE_COLOR_FOR_ADD
 			ope_type::setIsBlack(*root);//根ノードは黒
 		#endif//DISABLE_COLOR_FOR_ADD
-			return true;//この時点で処理終了
+			return new_node;//この時点で処理終了
 		}
 	#ifndef DISABLE_COLOR_FOR_ADD
 		ope_type::setIsRed(*new_node);//新規ノードは暫定で赤
@@ -579,7 +608,7 @@ namespace rbtree
 		//赤黒バランス調整
 		_balanceForAdd<ope_type>(root, stack, curr_node, new_key_is_large, new_node);
 	#endif//DISABLE_COLOR_FOR_ADD
-		return true;
+		return new_node;
 	}
 	//--------------------
 	//赤黒木操作関数：ノード削除時の赤黒バランス調整
@@ -589,15 +618,15 @@ namespace rbtree
 	//赤黒木操作関数：ノードを削除
 	//※関数内でスタックを二つ使用
 	template<class OPE_TYPE>
-	bool removeNode(const typename OPE_TYPE::node_type* target_node, typename OPE_TYPE::node_type*& root)
+	typename OPE_TYPE::node_type* removeNode(const typename OPE_TYPE::node_type* target_node, typename OPE_TYPE::node_type*& root)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
 		if (!target_node || !root)
-			return false;
+			return nullptr;
 		stack_type stack;//スタックを用意
 		node_type* removing_node = const_cast<node_type*>(searchNode<ope_type>(root, target_node, stack));//削除ノードを検索してスタックを作る
 		if (!removing_node)//検索に失敗したら終了
-			return false;
+			return nullptr;
 		//削除開始
 		node_type* parent_node = nullptr;//削除ノードの親ノード
 		bool curr_is_large = false;//削除ノードの親ノードからの連結方向
@@ -701,11 +730,13 @@ namespace rbtree
 		//	replacing_node = nullptr;//削除ノードと置き換えるノードをセット
 		//}
 		//削除ノードの置き換え処理
+		ope_type::setChildL(*removing_node, nullptr);
+		ope_type::setChildS(*removing_node, nullptr);
 		if (!parent_node)//親ノードがない場合 → 根ノードが削除された場合である
 		{
 			root = replacing_node;//根ノードを置き換え
 			if (!root)//根ノードがなくなったら、この時点で処理終了
-				return true;
+				return removing_node;
 		}
 		else//if(parent_node)//親ノードがある場合
 		{
@@ -715,7 +746,7 @@ namespace rbtree
 		//赤黒バランス調整
 		_balanceForRemove<ope_type>(root, stack, removing_node, replacing_node);
 	#endif//DISABLE_COLOR_FOR_REMOVE
-		return true;
+		return removing_node;
 	}
 	//--------------------
 	//赤黒木操作関数：【汎用処理】ノード左回転処理
@@ -917,9 +948,7 @@ namespace rbtree
 					//                      ↑        [(LS)]             [(LL)]                
 					//                     黒に                                                
 					//-------------------------------------------------------------------------
-				#ifdef DEBUG_PRINT_FOR_ADD
-					printf("<ADD-SS-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
-				#endif//DEBUG_PRINT_FOR_ADD
+					printf_dbg_add("<ADD-SS-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
 					rotateParentR();//親ノードを右回転処理
 				}
 				else if (!curr_is_large &&  child_is_large)
@@ -948,9 +977,7 @@ namespace rbtree
 					//               [(SS)])        ↑ [(SL)]             [(LS)]         [(LL)]
 					//                             黒に                                        
 					//-------------------------------------------------------------------------
-				#ifdef DEBUG_PRINT_FOR_ADD
-					printf("<ADD-SL-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
-				#endif//DEBUG_PRINT_FOR_ADD
+					printf_dbg_add("<ADD-SL-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
 					ope_type::setChildS(*parent_node, rotateCurrL());//現在のノードを左回転処理
 					rotateParentR();//親ノードを右回転処理
 				}
@@ -979,9 +1006,7 @@ namespace rbtree
 					//   .------[(S):B]------.              .--[curr_node:+B]--.                       
 					// [(SS)]             [(SL)]          [(LSL)]           [(LL)]                     
 					//---------------------------------------------------------------------------------
-				#ifdef DEBUG_PRINT_FOR_ADD
-					printf("<ADD-LS-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
-				#endif//DEBUG_PRINT_FOR_ADD
+					printf_dbg_add("<ADD-LS-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
 					ope_type::setChildL(*parent_node, rotateCurrR());//現在のノードを右回転処理
 					rotateParentL();//親ノードを左回転処理
 				}
@@ -1003,9 +1028,7 @@ namespace rbtree
 					//   .------[(S):B]------.                [curr_node:+B]                   
 					// [(SS)]             [(SL)]                                               
 					//-------------------------------------------------------------------------
-				#ifdef DEBUG_PRINT_FOR_ADD
-					printf("<ADD-LL-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
-				#endif//DEBUG_PRINT_FOR_ADD
+					printf_dbg_add("<ADD-LL-[%d:B]→[%d:R]→[%d:R]>", ope_type::getKey(*parent_node), ope_type::getKey(*curr_node), ope_type::getKey(*child_node));
 					rotateParentL();//親ノードを左回転処理
 				}
 				is_rotated = true;
@@ -1061,9 +1084,7 @@ namespace rbtree
 				//・赤黒の位置関係（条件③）も                                             
 				//　黒のバランス（条件④）も崩れない。                                     
 				//-------------------------------------------------------------------------
-			#ifdef DEBUG_PRINT_FOR_REMOVE
-				printf("<DEL-Rn-[%d:R]←(null)=END", ope_type::getKey(*removing_node));
-			#endif//DEBUG_PRINT_FOR_REMOVE
+				printf_dbg_remove("<DEL-Rn-[%d:R]←(null)=END", ope_type::getKey(*removing_node));
 				//is_necessary_rotate = false;//回転処理不要
 			}
 			else//if(replacing_node)//置き換えノードがある場合
@@ -1094,9 +1115,7 @@ namespace rbtree
 					//・赤黒の位置関係（条件③）も                                             
 					//　黒のバランス（条件④）も崩れない。                                     
 					//-------------------------------------------------------------------------
-				#ifdef DEBUG_PRINT_FOR_REMOVE
-					printf("<DEL-RR-[%d:R]←[%d:R]=END>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
-				#endif//DEBUG_PRINT_FOR_REMOVE
+					printf_dbg_remove("<DEL-RR-[%d:R]←[%d:R]=END>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
 					//is_necessary_rotate = false;//回転処理不要
 				}
 				else//if (replace_node_is_black)//置き換えノードが黒の場合
@@ -1165,9 +1184,7 @@ namespace rbtree
 					//・赤黒の位置関係（条件③）は保たれるが、                                 
 					//　黒のバランス（条件④）が崩れる。                                       
 					//-------------------------------------------------------------------------
-				#ifdef DEBUG_PRINT_FOR_REMOVE
-					printf("<DEL-RB-[%d:R]←[%d:B]=ROT>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
-				#endif//DEBUG_PRINT_FOR_REMOVE
+					printf_dbg_remove("<DEL-RB-[%d:R]←[%d:B]=ROT>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
 					is_necessary_rotate = true;//回転処理必要
 					ope_type::setIsRed(*replacing_node);//置き換えノードを赤にする
 					//remove_node_is_black = true;//削除ノードは黒
@@ -1194,9 +1211,7 @@ namespace rbtree
 				//・赤黒の位置関係（条件③）は保たれるが、                                 
 				//　黒のバランス（条件④）が崩れる。                                       
 				//-------------------------------------------------------------------------
-			#ifdef DEBUG_PRINT_FOR_REMOVE
-				printf("<DEL-Bn-[%d:B]←(null)=ROT>", ope_type::getKey(*removing_node));
-			#endif//DEBUG_PRINT_FOR_REMOVE
+				printf_dbg_remove("<DEL-Bn-[%d:B]←(null)=ROT>", ope_type::getKey(*removing_node));
 				is_necessary_rotate = true;//回転処理必要
 			}
 			else//if(replacing_node)//置き換えノードがある場合
@@ -1262,9 +1277,7 @@ namespace rbtree
 					//・赤黒の位置関係（条件③）も                                             
 					//　黒のバランス（条件④）も崩れない。                                     
 					//-------------------------------------------------------------------------
-				#ifdef DEBUG_PRINT_FOR_REMOVE
-					printf("<DEL-BR-[%d:B]←[%d:R]=END>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
-				#endif//DEBUG_PRINT_FOR_REMOVE
+					printf_dbg_remove("<DEL-BR-[%d:B]←[%d:R]=END>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
 					//is_necessary_rotate = false;//回転処理不要
 					ope_type::setIsBlack(*replacing_node);//置き換えノードを黒にする
 					//remove_node_is_black = false;//削除ノードは赤
@@ -1320,9 +1333,7 @@ namespace rbtree
 					//・赤黒の位置関係（条件③）は保たれるが、                                 
 					//　黒のバランス（条件④）が崩れる。                                       
 					//-------------------------------------------------------------------------
-				#ifdef DEBUG_PRINT_FOR_REMOVE
-					printf("<DEL-BB-[%d:B]←[%d:B]=ROT>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
-				#endif//DEBUG_PRINT_FOR_REMOVE
+					printf_dbg_remove("<DEL-BB-[%d:B]←[%d:B]=ROT>", ope_type::getKey(*removing_node), ope_type::getKey(*replacing_node));
 					is_necessary_rotate = true;//回転処理必要
 				}
 			}
@@ -1433,9 +1444,7 @@ namespace rbtree
 									//・サブツリーの小（左）側の黒の数は一つ増える。                                                   
 									//・ツリー全体の黒の数は変化しない。                                                               
 									//-------------------------------------------------------------------------------------------------
-								#ifdef DEBUG_PRINT_FOR_REMOVE
-									printf("<ROT-S1-[%d:?]→[%d:B]→[%d:R]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_s));
-								#endif//DEBUG_PRINT_FOR_REMOVE
+									printf_dbg_remove("<ROT-S1-[%d:?]→[%d:B]→[%d:R]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_s));
 									ope_type::setChildL(*parent_node, _rotateR<ope_type>(sibling_node));//兄弟ノードを右回転処理
 									_rotateL<ope_type>(parent_node);//親ノードを左回転処理
 									ope_type::setColor(*sibling_node_s, ope_type::getColor(*parent_node));//親ノードを元のparent_nodeと同じカラーに
@@ -1483,9 +1492,7 @@ namespace rbtree
 									//・サブツリーの小（左）側の黒の数は一つ増える。                                           
 									//・ツリー全体の黒の数は変化しない。                                                       
 									//-----------------------------------------------------------------------------------------
-								#ifdef DEBUG_PRINT_FOR_REMOVE
-									printf("<ROT-S2-[%d:?]→[%d:B]→[%d:R]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_l));
-								#endif//DEBUG_PRINT_FOR_REMOVE
+									printf_dbg_remove("<ROT-S2-[%d:?]→[%d:B]→[%d:R]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_l));
 									_rotateL<ope_type>(parent_node);//親ノードを左回転処理
 									ope_type::setColor(*sibling_node, ope_type::getColor(*parent_node));//親ノードを元のparent_nodeと同じカラーに
 									ope_type::setIsBlack(*parent_node);//削除側ノードを黒に
@@ -1529,9 +1536,7 @@ namespace rbtree
 										//・サブツリーの小（左）側の黒の数は一つ増える。                                
 										//・ツリー全体の黒の数は変化しない。                                            
 										//------------------------------------------------------------------------------
-									#ifdef DEBUG_PRINT_FOR_REMOVE
-										printf("<ROT-S3a-[%d:R]→[%d:B]→[*:B/n]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
-									#endif//DEBUG_PRINT_FOR_REMOVE
+										printf_dbg_remove("<ROT-S3a-[%d:R]→[%d:B]→[*:B/n]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
 										ope_type::setIsBlack(*parent_node);//親ノードを黒に
 										ope_type::setIsRed(*sibling_node);//兄弟ノードを赤に
 										parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
@@ -1572,9 +1577,7 @@ namespace rbtree
 										//・サブツリーのバランスは取れるが、                                                   
 										//　サブツリー全体で黒の数が一つ少ない。                                               
 										//-------------------------------------------------------------------------------------
-									#ifdef DEBUG_PRINT_FOR_REMOVE
-										printf("<ROT-S3b-[%d:B]→[%d:B]→[*:B/n]=NEXT>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
-									#endif//DEBUG_PRINT_FOR_REMOVE
+										printf_dbg_remove("<ROT-S3b-[%d:B]→[%d:B]→[*:B/n]=NEXT>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
 										ope_type::setIsRed(*sibling_node);//兄弟ノードを赤に
 										parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
 										//is_necessary_rotate = true;//調整続行
@@ -1619,9 +1622,7 @@ namespace rbtree
 								//・サブツリーの小（左）側はバランスが崩れるため、                                      
 								//　さらにそのサブツリーでバランスを調整する。                                          
 								//--------------------------------------------------------------------------------------
-							#ifdef DEBUG_PRINT_FOR_REMOVE
-								printf("<ROT-S4-[%d:B]→[%d:R]→[*:B/n]=RETRY>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
-							#endif//DEBUG_PRINT_FOR_REMOVE
+								printf_dbg_remove("<ROT-S4-[%d:B]→[%d:R]→[*:B/n]=RETRY>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
 								_rotateL<ope_type>(parent_node);//親ノードを左回転処理
 								ope_type::setIsRed(*parent_node);//削除側ノードを赤に
 								ope_type::setIsBlack(*sibling_node);//親ノードを黒に
@@ -1672,9 +1673,7 @@ namespace rbtree
 									//※調整完了。                                                                                
 									//※説明は省略。【ケース[S①]】と同じ                                                         
 									//--------------------------------------------------------------------------------------------
-								#ifdef DEBUG_PRINT_FOR_REMOVE
-									printf("<ROT-L1-[%d:?]→[%d:B]→[%d:R]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_l));
-								#endif//DEBUG_PRINT_FOR_REMOVE
+									printf_dbg_remove("<ROT-L1-[%d:?]→[%d:B]→[%d:R]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_l));
 									ope_type::setChildS(*parent_node, _rotateL<ope_type>(sibling_node));//兄弟ノードを左回転処理
 									_rotateR<ope_type>(parent_node);//親ノードを右回転処理
 									ope_type::setColor(*sibling_node_l, ope_type::getColor(*parent_node));//親ノードを元のparent_nodeと同じカラーに
@@ -1706,9 +1705,7 @@ namespace rbtree
 									//※調整完了。                                                                                 
 									//※説明は省略。【ケース[S②]】と同じ                                                          
 									//---------------------------------------------------------------------------------------------
-								#ifdef DEBUG_PRINT_FOR_REMOVE
-									printf("<ROT-L2-[%d:?]→[%d:B]→[%d:R]=OK>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_s));
-								#endif//DEBUG_PRINT_FOR_REMOVE
+									printf_dbg_remove("<ROT-L2-[%d:?]→[%d:B]→[%d:R]=OK>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_s));
 									_rotateR<ope_type>(parent_node);//親ノードを右回転処理
 									ope_type::setColor(*sibling_node, ope_type::getColor(*parent_node));//親ノードを元のparent_nodeと同じカラーに
 									ope_type::setIsBlack(*parent_node);//削除側ノードを黒に
@@ -1736,9 +1733,7 @@ namespace rbtree
 										//※調整完了。                                                                     
 										//※説明は省略。【ケース[S③a]】と同じ                                             
 										//---------------------------------------------------------------------------------
-									#ifdef DEBUG_PRINT_FOR_REMOVE
-										printf("<ROT-L3a-[%d:R]→[%d:B]→[*:B/n]=OK>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
-									#endif//DEBUG_PRINT_FOR_REMOVE
+										printf_dbg_remove("<ROT-L3a-[%d:R]→[%d:B]→[*:B/n]=OK>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
 										ope_type::setIsBlack(*parent_node);//親ノードを黒に
 										ope_type::setIsRed(*sibling_node);//兄弟ノードを赤に
 										parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
@@ -1762,9 +1757,7 @@ namespace rbtree
 										//※調整続行。                                                               
 										//※説明は省略。【ケース[S③b]】と同じ                                       
 										//---------------------------------------------------------------------------
-									#ifdef DEBUG_PRINT_FOR_REMOVE
-										printf("<ROT-L3b-[%d:B]→[%d:B]→[*:B/n]=NEXT>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
-									#endif//DEBUG_PRINT_FOR_REMOVE
+										printf_dbg_remove("<ROT-L3b-[%d:B]→[%d:B]→[*:B/n]=NEXT>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
 										ope_type::setIsRed(*sibling_node);//兄弟ノードを赤に
 										parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
 										//is_necessary_rotate = true;//調整続行
@@ -1795,9 +1788,7 @@ namespace rbtree
 								//※再帰的に調整続行。                                                                                    
 								//※説明は省略。【ケース[S④]】と同じ                                                                     
 								//--------------------------------------------------------------------------------------------------------
-							#ifdef DEBUG_PRINT_FOR_REMOVE
-								printf("<ROT-L4-[%d:B]→[%d:R]→[*:B/n]=RETRY>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
-							#endif//DEBUG_PRINT_FOR_REMOVE
+								printf_dbg_remove("<ROT-L4-[%d:B]→[%d:R]→[*:B/n]=RETRY>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
 								_rotateR<ope_type>(parent_node);//親ノードを右回転処理
 								ope_type::setIsRed(*parent_node);//削除側ノードを赤に
 								ope_type::setIsBlack(*sibling_node);//親ノードを黒に
@@ -1820,9 +1811,7 @@ namespace rbtree
 						//黒ノード（削除対象ノード）の兄弟ノードが存在しないことは本来ありえない
 						//※「条件④」により、根から葉までのあらゆる経路で黒の数は一定のため、
 						//　黒ノードを削除した場合、必ず兄弟ノードもしくはその子孫に黒がいる。
-					#ifdef DEBUG_PRINT_FOR_REMOVE
-						printf("【赤黒木にバグあり！】黒ノード（削除）の兄弟ノードが存在しない\n");
-					#endif//DEBUG_PRINT_FOR_REMOVE
+						printf_dbg_remove("【赤黒木にバグあり！】黒ノード（削除）の兄弟ノードが存在しない\n");
 						assert(sibling_node != nullptr);
 						parent_node_prev = parent_node;//親ノードを記録（次のループ処理の親の子に連結する）
 					}
@@ -2225,9 +2214,9 @@ namespace rbtree
 		//メソッド：追加／削除系
 		//※std::mapと異なり、ノードを直接指定し、結果をbool型で受け取る
 		//※要素のメモリ確保／削除を行わない点に注意
-		bool insert(const node_type& node){ return addNode<ope_type>(const_cast<node_type*>(&node), m_root); }
-		bool erase(const node_type& node){ return removeNode<ope_type>(&node, m_root); }
-		bool erase(const key_type key){ return removeNode<ope_type>(at(key), m_root); }
+		node_type* insert(const node_type& node){ return addNode<ope_type>(const_cast<node_type*>(&node), m_root); }
+		node_type* erase(const node_type& node){ return removeNode<ope_type>(&node, m_root); }
+		node_type* erase(const key_type key){ return removeNode<ope_type>(at(key), m_root); }
 		void clear(){ m_root = nullptr; }
 		//メソッド：検索系
 		//※lower_bound(), upper_bound()には非対応
@@ -2320,7 +2309,7 @@ struct data_t
 };
 //----------------------------------------
 //テストデータ操作クラス
-struct ope_t : public rbtree::base_ope_t<ope_t, data_t, int, 64>
+struct ope_t : public rbtree::base_ope_t<ope_t, data_t, int, TEST_DATA_STACK_DEPTH_MAX>
 {
 	//子ノードを取得
 	inline static const node_type* getChildL(const node_type& node){ return node.m_nodeL; }//大（右）側
@@ -2343,6 +2332,27 @@ struct ope_t : public rbtree::base_ope_t<ope_t, data_t, int, 64>
 		return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
 	}
 };
+
+//----------------------------------------
+//テスト用補助関数
+#ifdef PRINT_TEST_DATA_DETAIL
+template<typename... Tx>
+inline int printf_detail(const char* fmt, Tx... args)
+{
+	return printf(fmt, args...);
+}
+#else//PRINT_TEST_DATA_DETAIL
+inline int printf_detail(const char* fmt, ...){ return 0; }
+#endif//PRINT_TEST_DATA_DETAIL
+#ifdef PRINT_TEST_DATA_SEARCH
+template<typename... Tx>
+inline int printf_dbg_search(const char* fmt, Tx... args)
+{
+	return printf(fmt, args...);
+}
+#else//PRINT_TEST_DATA_SEARCH
+inline int printf_dbg_search(const char* fmt, ...){ return 0; }
+#endif//PRINT_TEST_DATA_SEARCH
 
 //----------------------------------------
 //テスト
@@ -2369,32 +2379,33 @@ int main(const int argc, const char* argv[])
 		auto insert = [&con](const int key)
 		{
 			data_t* new_node = new data_t(key);
-		#ifdef PRINT_TEST_DATA_DETAIL
-			printf("[%2d] ", new_node->m_key);
-		#endif//PRINT_TEST_DATA_DETAIL
+			printf_detail("[%2d] ", new_node->m_key);
 			con.insert(*new_node);
-		#ifdef PRINT_TEST_DATA_DETAIL
-		#ifdef DEBUG_PRINT_FOR_ADD
-			printf("\n");
-		#endif//DEBUG_PRINT_FOR_ADD
-		#endif//PRINT_TEST_DATA_DETAIL
+			rbtree::printf_dbg_add("\n");
 		};
-	#if 1
+	#ifdef REGIST_TEST_DATA_SEQUENTIALLY
+		//シーケンシャルにデータ登録
+		for (int i = 0; i < TEST_DATA_REG_NUM; ++i)
+		{
+			const int key = TEST_DATA_KEY_MIN + i % (TEST_DATA_KEY_MAX - TEST_DATA_KEY_MIN + 1);
+			insert(key);
+		}
+	#else//REGIST_TEST_DATA_SEQUENTIALLY
+	#ifndef TEST_DATA_REGISTRATION_LIST
+		//ランダムにデータ登録
 		std::mt19937 rand_engine;
 		rand_engine.seed(0);
 		std::uniform_int_distribution<int> rand_dist(TEST_DATA_KEY_MIN, TEST_DATA_KEY_MAX);
 		for (int i = 0; i < TEST_DATA_REG_NUM; ++i)
-		{
 			insert(rand_dist(rand_engine));
-		}
-	#else
-		const int key_list[] = { 54, 59, 71, 84, 60, 85, 54, 84, 42, 62, 64, 38, 43, 29, 89, 5, 96, 27, 38, 47, 79, 81, 52, 47, 56, 39, 92, 83, 7, 33, 8, 64, 2, 36, 83, 95, 77, 14, 87, 87, 97, 47, 79, 80, 46, 52, 78, 67, 11, 72, 63, 58, 14, 53, 94, 75, 52, 10, 41, 47, 26, 18, 77, 73, 45, 21, 56, 13, 1, 32, 61, 14, 61, 22, 61, 38, 94, 90, 68, 44, 35, 61, 43, 90, 69, 9, 6, 96, 66, 65, 67, 17, 21, 35, 12, 75, 31, 60, 36, 32};
+	#else//TEST_DATA_REGISTRATION_LIST
+		//固定順にデータ登録
+		const int key_list[] = TEST_DATA_REGISTRATION_LIST;
 		for (int key : key_list)
 			insert(key);
-	#endif
-	#ifdef PRINT_TEST_DATA_DETAIL
-		printf("\n");
-	#endif//PRINT_TEST_DATA_DETAIL
+	#endif//TEST_DATA_REGISTRATION_LIST
+	#endif//REGIST_TEST_DATA_SEQUENTIALLY
+		printf_detail("\n");
 		printf("%d registered.\n", TEST_DATA_REG_NUM);
 	};
 	regList();
@@ -2485,6 +2496,11 @@ int main(const int argc, const char* argv[])
 		const int depth_max = con.depth_max();
 		const long long width_max = static_cast<long long>(std::pow(2, static_cast<long long>(depth_max)));
 		printf("depth_max=%d, width_max=%lld\n", depth_max, width_max);
+		if(depth_max > 63)
+		{
+			printf("'depth_max' is over 63. aborting therefor.\n");
+			return;
+		}
 	#ifdef PRINT_TEST_DATA_COLOR_COUNT
 		const data_t* prev_node = nullptr;
 		int blacks_min = -1;
@@ -2549,9 +2565,7 @@ int main(const int argc, const char* argv[])
 		{
 			if (!is_found)
 				is_found = true;
-		#ifdef PRINT_TEST_DATA_DETAIL
-			printf("[%2d] ", obj.m_key);
-		#endif//PRINT_TEST_DATA_DETAIL
+			printf_detail("[%2d] ", obj.m_key);
 		}
 		//※イテレータの変数宣言と値の更新を分けた方が若干効率的
 		//const_reverse_iterator ite;con._begin(ite);
@@ -2562,11 +2576,7 @@ int main(const int argc, const char* argv[])
 		//	...
 		//}
 		if (is_found)
-		{
-		#ifdef PRINT_TEST_DATA_DETAIL
-			printf("\n");
-		#endif//PRINT_TEST_DATA_DETAIL
-		}
+			printf_detail("\n");
 		else
 			printf("(nothing)\n");
 	};
@@ -2583,9 +2593,7 @@ int main(const int argc, const char* argv[])
 			{
 				if (!is_found)
 					is_found = true;
-			#ifdef PRINT_TEST_DATA_DETAIL
-				printf("[%2d] ", obj.m_key);
-			#endif//PRINT_TEST_DATA_DETAIL
+				printf_detail("[%2d] ", obj.m_key);
 		}
 		);
 		//※イテレータの変数宣言と値の更新を分けた方が効率的
@@ -2597,11 +2605,7 @@ int main(const int argc, const char* argv[])
 		//	...
 		//}
 		if (is_found)
-		{
-		#ifdef PRINT_TEST_DATA_DETAIL
-			printf("\n");
-		#endif//PRINT_TEST_DATA_DETAIL
-		}
+			printf_detail("\n");
 		else
 			printf("(nothing)\n");
 	};
@@ -2623,23 +2627,13 @@ int main(const int argc, const char* argv[])
 				{
 					if (!is_found)
 					{
-					#ifdef PRINT_TEST_DATA_SEARCH
-						printf("%2d(%d):", search_key, con.count(search_key));
-					#endif//PRINT_TEST_DATA_SEARCH
+						printf_dbg_search("%2d(%d):", search_key, con.count(search_key));
 						is_found = true;
 					}
 					if (print_count < print_count_limit)
-					{
-					#ifdef PRINT_TEST_DATA_SEARCH
-						printf("[%2d] ", obj.m_key);
-					#endif//PRINT_TEST_DATA_SEARCH
-					}
+						printf_dbg_search("[%2d] ", obj.m_key);
 					else if (print_count == print_count_limit)
-					{
-					#ifdef PRINT_TEST_DATA_SEARCH
-						printf("...");
-					#endif//PRINT_TEST_DATA_DETAIL
-					}
+						printf_dbg_search("...");
 					++print_count;
 				}
 			);
@@ -2652,11 +2646,7 @@ int main(const int argc, const char* argv[])
 			//	...
 			//}
 			if (is_found)
-			{
-			#ifdef PRINT_TEST_DATA_SEARCH
-				printf("\n");
-			#endif//PRINT_TEST_DATA_SEARCH
-			}
+				printf_dbg_search("\n");
 		}
 	};
 	searchData();
@@ -2679,25 +2669,17 @@ int main(const int argc, const char* argv[])
 				const data_t& obj = *ite;
 				if (!is_found)
 				{
-				#ifdef PRINT_TEST_DATA_SEARCH
-					printf("%2d:", search_key);
-				#endif//PRINT_TEST_DATA_SEARCH
+					printf_dbg_search("%2d:", search_key);
 					is_found = true;
 				}
-			#ifdef PRINT_TEST_DATA_SEARCH
-				printf("[%2d] ", obj.m_key);
-			#endif//PRINT_TEST_DATA_SEARCH
+				printf_dbg_search("[%2d] ", obj.m_key);
 			}
 			//※イテレータの変数宣言と検索を分けた方が若干効率的
 			//const_iterator ite;con._find(ite, search_key, search_type);
 			//const_iterator end;con._end(end);
 			//...
 			if (is_found)
-			{
-			#ifdef PRINT_TEST_DATA_SEARCH
-				printf("\n");
-			#endif//PRINT_TEST_DATA_SEARCH
-			}
+				printf_dbg_search("\n");
 		}
 	};
 	searchNearestData(rbtree::FOR_NEAREST_SMALLER);
@@ -2714,40 +2696,40 @@ int main(const int argc, const char* argv[])
 		printf("--- Remove nodes ---\n");
 		auto erase = [&con](const int remove_key) -> bool
 		{
-			const bool result = con.erase(remove_key);
-			if (result)
+			data_t* removed_node = con.erase(remove_key);
+			if (removed_node)
 			{
-			#ifdef PRINT_TEST_DATA_DETAIL
-				printf("[%2d] ", remove_key);
-			#endif//PRINT_TEST_DATA_DETAIL
-			#ifdef DEBUG_PRINT_FOR_REMOVE
-				printf("\n");
-			#endif//DEBUG_PRINT_FOR_REMOVE
+				delete removed_node;
+				printf_detail("[%2d] ", remove_key);
+				rbtree::printf_dbg_remove("\n");
+				return true;
 			}
-			return result;
+			return false;
 		};
-	#if 1
+		int removed_count = 0;
+	#ifndef TEST_DATA_REMOVING_LIST
+		//ランダムにデータ削除
 		std::mt19937 rand_engine;
 		rand_engine.seed(1);
 		std::uniform_int_distribution<int> rand_dist(TEST_DATA_KEY_MIN, TEST_DATA_KEY_MAX);
 		const int removed_count_max = TEST_DATA_REG_NUM / 4;
-		int removed_count = 0;
 		while (removed_count < removed_count_max)
 		{
 			const bool result = erase(rand_dist(rand_engine));
 			if (result)
 				++removed_count;
 		}
-	#else
-		const int key_list[] = { 41, 72, 12, 14, 9, 39, 18, 38, 66, 53, 84, 31, 68, 52, 44, 87 };
+	#else//TEST_DATA_REMOVING_LIST
+		//固定順にデータ削除
+		const int key_list[] = TEST_DATA_REMOVING_LIST;
 		for (int key : key_list)
-			erase(key);
-	#endif
-	#ifdef PRINT_TEST_DATA_DETAIL
-	#ifndef DEBUG_PRINT_FOR_REMOVE
-		printf("\n");
-	#endif//DEBUG_PRINT_FOR_REMOVE
-	#endif//PRINT_TEST_DATA_DETAIL
+		{
+			const bool result = erase(key);
+			if (result)
+				++removed_count;
+		}
+	#endif//TEST_DATA_REMOVING_LIST
+		rbtree::printf_dbg_remove("\n");
 		printf("%d removed.\n", removed_count);
 	};
 	removeNodes();
@@ -2774,26 +2756,19 @@ int main(const int argc, const char* argv[])
 		for (int remove_key = TEST_DATA_KEY_MIN; remove_key <= TEST_DATA_KEY_MAX; ++remove_key)
 		{
 			const_iterator ite(con.find(remove_key));
-			const bool result = con.erase(*ite);
+			data_t* removed_node = con.erase(*ite);
 			//※イテレータの変数宣言と検索を分けた方が若干効率的
 			//const_iterator ite;con._find(ite, search_key);
 			//...
-			if (result)
+			if (removed_node)
 			{
+				delete removed_node;
 				++removed_count;
-			#ifdef PRINT_TEST_DATA_DETAIL
-				printf("[%2d] ", remove_key);
-			#endif//PRINT_TEST_DATA_DETAIL
-			#ifdef DEBUG_PRINT_FOR_REMOVE
-				printf("\n");
-			#endif//DEBUG_PRINT_FOR_REMOVE
+				printf_detail("[%2d] ", remove_key);
+				rbtree::printf_dbg_remove("\n");
 			}
 		}
-	#ifdef PRINT_TEST_DATA_DETAIL
-	#ifndef DEBUG_PRINT_FOR_REMOVE
-		printf("\n");
-	#endif//DEBUG_PRINT_FOR_REMOVE
-	#endif//PRINT_TEST_DATA_DETAIL
+		rbtree::printf_dbg_remove("\n");
 		printf("%d removed.\n", removed_count);
 	};
 	removeEachKeyNodes();
@@ -2820,28 +2795,21 @@ int main(const int argc, const char* argv[])
 		for (int remove_key = TEST_DATA_KEY_MIN; remove_key <= TEST_DATA_KEY_MAX;)
 		{
 			const_iterator ite(con.find(remove_key));
-			const bool result = con.erase(*ite);
+			data_t* removed_node = con.erase(*ite);
 			//※イテレータの変数宣言と検索を分けた方が若干効率的
 			//const_iterator ite;con._find(ite, search_key);
 			//...
-			if (result)
+			if (removed_node)
 			{
+				delete removed_node;
 				++removed_count;
-			#ifdef PRINT_TEST_DATA_DETAIL
-				printf("[%2d] ", remove_key);
-			#endif//PRINT_TEST_DATA_DETAIL
-			#ifdef DEBUG_PRINT_FOR_REMOVE
-				printf("\n");
-			#endif//DEBUG_PRINT_FOR_REMOVE
+				printf_detail("[%2d] ", remove_key);
+				rbtree::printf_dbg_remove("\n");
 			}
 			else
 				++remove_key;
 		}
-	#ifdef PRINT_TEST_DATA_DETAIL
-	#ifndef DEBUG_PRINT_FOR_REMOVE
-		printf("\n");
-	#endif//DEBUG_PRINT_FOR_REMOVE
-	#endif//PRINT_TEST_DATA_DETAIL
+		rbtree::printf_dbg_remove("\n");
 		printf("%d removed.\n", removed_count);
 	};
 	removeAllNodes();

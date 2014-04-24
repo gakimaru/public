@@ -1,3 +1,20 @@
+//--------------------------------------------------------------------------------
+//赤黒木テスト用設定とコンパイラスイッチ
+static const int TEST_DATA_KEY_MIN = 0;//テストデータの最小キー
+static const int TEST_DATA_KEY_MAX = 99;//テストデータの最大キー
+static const int TEST_DATA_REG_NUM = 100;//テストデータの登録数
+#define PRINT_TEST_DATA_TREE//テストデーのツリーを表示する場合はこのマクロを有効化する（表示しなくても検索は実行する）
+#define PRINT_TEST_DATA_SEARCH//テストデーの検索結果を表示する場合はこのマクロを有効化する（表示しなくても検索は実行する）
+#define PRINT_TEST_DATA_COLOR_COUNT//テストデータの赤黒カウント数計測を表示する場合はこのマクロを有効化する
+#define PRINT_TEST_DATA_DETAIL//テストデーの詳細タを表示する場合はこのマクロを有効化する
+
+//--------------------------------------------------------------------------------
+//赤黒木アルゴリズム用コンパイラスイッチ
+//#define DISABLE_COLOR_FOR_ADD//ノード追加時のカラー操作と回転処理を無効化する場合は、このマクロを有効化する
+//#define DISABLE_COLOR_FOR_REMOVE//ノード削除時のカラー操作と回転処理を無効化する場合は、このマクロを有効化する
+//#define DEBUG_PRINT_FOR_ADD//ノード追加時のデバッグ情報表示を有効化する場合は、このマクロを有効化する
+//#define DEBUG_PRINT_FOR_REMOVE//ノード削除時のデバッグ情報表示を有効化する場合は、このマクロを有効化する
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -5,13 +22,6 @@
 #include <memory.h>//memcpy用
 #include <assert.h>//assert用
 #include <iterator>//std::iterator用
-#include <algorithm>//algorithm用
-
-//#define DISABLE_COLOR_FOR_ADD//ノード追加時のカラー操作と回転処理を無効化する場合は、このマクロを有効化する
-//#define DISABLE_COLOR_FOR_REMOVE//ノード削除時のカラー操作と回転処理を無効化する場合は、このマクロを有効化する
-
-//#define DEBUG_PRINT_FOR_ADD//ノード追加時のデバッグ情報表示を有効化する場合は、このマクロを有効化する
-//#define DEBUG_PRINT_FOR_REMOVE//ノード削除時のデバッグ情報表示を有効化する場合は、このマクロを有効化する
 
 //--------------------------------------------------------------------------------
 //赤黒木（red-black tree）
@@ -253,13 +263,13 @@ namespace rbtree
 		//スタックの現在の幅を算出
 		//※「幅」＝スタックの現在の深さまでの大小連結の合計値を算出
 		//※小側を-1、大側を+1として計算
-		int calcBreadth()
+		long long calcBreadth()
 		{
-			int breadth = 0;
+			long long breadth = 0;
 			for (int depth = 0; depth < m_depth; ++depth)
 			{
-				breadth *= 2;
-				breadth += (m_array[depth].m_isLarge ? 1 : 0);
+				breadth *= 2ll;
+				breadth += (m_array[depth].m_isLarge ? 1ll : 0ll);
 			}
 			return breadth;
 		}
@@ -2279,8 +2289,10 @@ namespace rbtree
 //--------------------------------------------------------------------------------
 //赤黒木テスト
 
-#include <algorithm>//std::max用
+#include <algorithm>//for_each用
 #include <random>//C++11 std::random用
+#include <chrono>//C++11 時間計測用
+#include <type_traits>//C++11 時間計測用
 
 //----------------------------------------
 //テストデータ
@@ -2336,18 +2348,19 @@ struct ope_t : public rbtree::base_ope_t<ope_t, data_t, int, 64>
 //テスト
 int main(const int argc, const char* argv[])
 {
-	static const int key_min = 0;//最小キー
-	static const int key_max = 99;//最大キー
-	static const int reg_num = 100;//登録数
-	#define PRINT_TEST_DATA//テストデータを表示する場合はこのマクロを有効化する
-
-	//赤黒木コンテナ
+	//型
 	typedef rbtree::container<ope_t> container_t;
 	typedef container_t::iterator iterator;
 	typedef container_t::const_iterator const_iterator;
 	typedef container_t::reverse_iterator reverse_iterator;
 	typedef container_t::const_reverse_iterator const_reverse_iterator;
+	
+	//赤黒木コンテナ
 	container_t con;
+
+	//処理時間計測開始
+	const std::chrono::system_clock::time_point begin_time = std::chrono::system_clock::now();
+	std::chrono::system_clock::time_point prev_time = begin_time;
 
 	//データを登録
 	auto regList = [&con]()
@@ -2356,21 +2369,21 @@ int main(const int argc, const char* argv[])
 		auto insert = [&con](const int key)
 		{
 			data_t* new_node = new data_t(key);
-		#ifdef PRINT_TEST_DATA
+		#ifdef PRINT_TEST_DATA_DETAIL
 			printf("[%2d] ", new_node->m_key);
-		#endif//PRINT_TEST_DATA
+		#endif//PRINT_TEST_DATA_DETAIL
 			con.insert(*new_node);
-		#ifdef PRINT_TEST_DATA
+		#ifdef PRINT_TEST_DATA_DETAIL
 		#ifdef DEBUG_PRINT_FOR_ADD
 			printf("\n");
 		#endif//DEBUG_PRINT_FOR_ADD
-		#endif//PRINT_TEST_DATA
+		#endif//PRINT_TEST_DATA_DETAIL
 		};
 	#if 1
 		std::mt19937 rand_engine;
 		rand_engine.seed(0);
-		std::uniform_int_distribution<int> rand_dist(key_min, key_max);
-		for (int i = 0; i < reg_num; ++i)
+		std::uniform_int_distribution<int> rand_dist(TEST_DATA_KEY_MIN, TEST_DATA_KEY_MAX);
+		for (int i = 0; i < TEST_DATA_REG_NUM; ++i)
 		{
 			insert(rand_dist(rand_engine));
 		}
@@ -2379,20 +2392,33 @@ int main(const int argc, const char* argv[])
 		for (int key : key_list)
 			insert(key);
 	#endif
-	#ifdef PRINT_TEST_DATA
+	#ifdef PRINT_TEST_DATA_DETAIL
 		printf("\n");
-	#endif//PRINT_TEST_DATA
-		printf("%d registered.\n", reg_num);
+	#endif//PRINT_TEST_DATA_DETAIL
+		printf("%d registered.\n", TEST_DATA_REG_NUM);
 	};
 	regList();
+
+	//経過時間を表示
+	auto printElapsedTime = [](const std::chrono::system_clock::time_point& prev_time) -> std::chrono::system_clock::time_point
+	{
+		//最終経過時間表示
+		const auto now_time = std::chrono::system_clock::now();
+		const auto duration = now_time - prev_time;
+		const double elapsed_time = static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count()) / 1000000000.;
+		printf("*elapsed_time=%.9llf sec\n", elapsed_time);
+		return now_time;
+	};
+	prev_time = printElapsedTime(prev_time);
 
 	//ツリーを表示
 	auto showTree = [&con]()
 	{
 		printf("--- Show tree (count=%d) ---\n", con.size());
-		static const int depth_limit = 5;
+		static const int depth_limit = 5;//最大でも5段階（1+2+4+8+16+32個）までを表示
 		const int _depth_max = con.depth_max();
-		printf("depth_max=%d (show limit=%d)\n", _depth_max, depth_limit);
+		printf("depth_max=%d (limit for showing=%d)\n", _depth_max, depth_limit);
+	#ifdef PRINT_TEST_DATA_TREE
 		const int depth_max = _depth_max <= depth_limit ? _depth_max : depth_limit;
 		const int width_max = static_cast<int>(std::pow(2, depth_max));
 		for (int depth = 0; depth <= depth_max; ++depth)
@@ -2409,9 +2435,7 @@ int main(const int argc, const char* argv[])
 				{
 					if (depth_tmp < 0)
 						break;
-					node = (breath_tmp & (0x1 << depth_tmp)) ?
-						ope_t::getChildL(*node) :
-						ope_t::getChildS(*node);
+					node = ope_t::getChild(*node, (breath_tmp & (0x1 << depth_tmp)) != 0x0);
 				}
 				if (node)
 				{
@@ -2449,16 +2473,19 @@ int main(const int argc, const char* argv[])
 			}
 			printf("\n");
 		}
+	#endif//PRINT_TEST_DATA_TREE
 	};
 	showTree();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//各枝までのノード数を表示
 	auto showNodesCount = [&con]()
 	{
 		printf("--- Show nodes count (count=%d) ---\n", con.size());
 		const int depth_max = con.depth_max();
-		const int width_max = static_cast<int>(std::pow(2, depth_max));
-		printf("depth_max=%d, width_max=%d\n", depth_max, width_max);
+		const long long width_max = static_cast<long long>(std::pow(2, static_cast<long long>(depth_max)));
+		printf("depth_max=%d, width_max=%lld\n", depth_max, width_max);
+	#ifdef PRINT_TEST_DATA_COLOR_COUNT
 		const data_t* prev_node = nullptr;
 		int blacks_min = -1;
 		int blacks_max = -1;
@@ -2466,14 +2493,14 @@ int main(const int argc, const char* argv[])
 		int reds_max = -1;
 		int total_min = -1;
 		int total_max = -1;
-		for (int breath = 0; breath < width_max; ++breath)
+		for (long long breath = 0; breath < width_max; ++breath)
 		{
 			int blacks = 0;
 			int reds = 0;
 			const data_t* last_node = nullptr;
-			int breath_tmp = breath;
+			long long breath_tmp = breath;
 			const data_t* node = con.root();
-			for (int depth_tmp = depth_max - 1; node; --depth_tmp)
+			for (long long depth_tmp = depth_max - 1; node; --depth_tmp)
 			{
 				last_node = node;
 				if (ope_t::isBlack(*node))
@@ -2482,9 +2509,7 @@ int main(const int argc, const char* argv[])
 					++reds;
 				if (depth_tmp < 0)
 					break;
-				node = (breath_tmp & (0x1 << depth_tmp)) ?
-					ope_t::getChildL(*node) :
-					ope_t::getChildS(*node);
+				node = ope_t::getChild(*node, (breath_tmp & (0x1ll << depth_tmp)) != 0x0ll);
 			}
 			int total = blacks + reds;
 			blacks_min = blacks_min > blacks || blacks_min == -1 ? blacks : blacks_min;
@@ -2495,9 +2520,9 @@ int main(const int argc, const char* argv[])
 			total_max = total_max < total || total_max == -1 ? total : total_max;
 			if (prev_node != last_node)
 			{
-			#ifdef PRINT_TEST_DATA
-				printf("%5d:[%2d] blacks=%d, reds=%d, total=%d\n", breath, last_node->m_key, blacks, reds, total);
-			#endif//PRINT_TEST_DATA
+			#ifdef PRINT_TEST_DATA_DETAIL
+				printf("%5lld:[%2d] blacks=%d, reds=%d, total=%d\n", breath, last_node->m_key, blacks, reds, total);
+			#endif//PRINT_TEST_DATA_DETAIL
 			}
 			prev_node = last_node;
 		}
@@ -2510,8 +2535,10 @@ int main(const int argc, const char* argv[])
 		printf("max: blacks=%d, reds=%d, total=%d\n", blacks_max, reds_max, total_max);
 		printf("min: blacks=%d, reds=%d, total=%d\n", blacks_min, reds_min, total_min);
 		printf("diff:blacks=%d, reds=%d, total=%d\n", blacks_max - blacks_min, reds_max - reds_min, total_max - total_min);
+	#endif//PRINT_TEST_DATA_COLOR_COUNT
 	};
 	showNodesCount();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//一番小さいノードから昇順に全ノードをリストアップ
 	auto showListAsc = [&con]()
@@ -2522,9 +2549,9 @@ int main(const int argc, const char* argv[])
 		{
 			if (!is_found)
 				is_found = true;
-		#ifdef PRINT_TEST_DATA
+		#ifdef PRINT_TEST_DATA_DETAIL
 			printf("[%2d] ", obj.m_key);
-		#endif//PRINT_TEST_DATA
+		#endif//PRINT_TEST_DATA_DETAIL
 		}
 		//※イテレータの変数宣言と値の更新を分けた方が若干効率的
 		//const_reverse_iterator ite;con._begin(ite);
@@ -2536,14 +2563,15 @@ int main(const int argc, const char* argv[])
 		//}
 		if (is_found)
 		{
-		#ifdef PRINT_TEST_DATA
+		#ifdef PRINT_TEST_DATA_DETAIL
 			printf("\n");
-		#endif//PRINT_TEST_DATA
+		#endif//PRINT_TEST_DATA_DETAIL
 		}
 		else
 			printf("(nothing)\n");
 	};
 	showListAsc();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//一番大きいノードから降順に全ノードをリストアップ
 	auto showListDesc = [&con]()
@@ -2555,9 +2583,9 @@ int main(const int argc, const char* argv[])
 			{
 				if (!is_found)
 					is_found = true;
-			#ifdef PRINT_TEST_DATA
+			#ifdef PRINT_TEST_DATA_DETAIL
 				printf("[%2d] ", obj.m_key);
-			#endif//PRINT_TEST_DATA
+			#endif//PRINT_TEST_DATA_DETAIL
 		}
 		);
 		//※イテレータの変数宣言と値の更新を分けた方が効率的
@@ -2570,20 +2598,21 @@ int main(const int argc, const char* argv[])
 		//}
 		if (is_found)
 		{
-		#ifdef PRINT_TEST_DATA
+		#ifdef PRINT_TEST_DATA_DETAIL
 			printf("\n");
-		#endif//PRINT_TEST_DATA
+		#endif//PRINT_TEST_DATA_DETAIL
 		}
 		else
 			printf("(nothing)\n");
 	};
 	showListDesc();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//指定のキーのノードを検索し、同じキーのノードをリストアップ
 	auto searchData = [&con]()
 	{
 		printf("--- Search node ---\n");
-		for (int search_key = key_min; search_key <= key_max; ++search_key)
+		for (int search_key = TEST_DATA_KEY_MIN; search_key <= TEST_DATA_KEY_MAX; ++search_key)
 		{
 			rbtree::stack_t<ope_t> stack;
 			static const int print_count_limit = 10;
@@ -2594,13 +2623,23 @@ int main(const int argc, const char* argv[])
 				{
 					if (!is_found)
 					{
+					#ifdef PRINT_TEST_DATA_SEARCH
 						printf("%2d(%d):", search_key, con.count(search_key));
+					#endif//PRINT_TEST_DATA_SEARCH
 						is_found = true;
 					}
 					if (print_count < print_count_limit)
+					{
+					#ifdef PRINT_TEST_DATA_SEARCH
 						printf("[%2d] ", obj.m_key);
+					#endif//PRINT_TEST_DATA_SEARCH
+					}
 					else if (print_count == print_count_limit)
+					{
+					#ifdef PRINT_TEST_DATA_SEARCH
 						printf("...");
+					#endif//PRINT_TEST_DATA_DETAIL
+					}
 					++print_count;
 				}
 			);
@@ -2613,10 +2652,15 @@ int main(const int argc, const char* argv[])
 			//	...
 			//}
 			if (is_found)
+			{
+			#ifdef PRINT_TEST_DATA_SEARCH
 				printf("\n");
+			#endif//PRINT_TEST_DATA_SEARCH
+			}
 		}
 	};
 	searchData();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//指定のキーと同じか内輪で一番近いノードを検索
 	//※一致ノードは表示を省略
@@ -2624,7 +2668,7 @@ int main(const int argc, const char* argv[])
 	auto searchNearestData = [&con](const rbtree::match_type_t search_type)
 	{
 		printf("--- Search nearest node for %s ---\n", search_type == rbtree::FOR_NEAREST_SMALLER ? "smaller" : search_type == rbtree::FOR_NEAREST_LARGER ? "larger" : "same");
-		for (int search_key = key_min; search_key <= key_max; ++search_key)
+		for (int search_key = TEST_DATA_KEY_MIN; search_key <= TEST_DATA_KEY_MAX; ++search_key)
 		{
 			rbtree::stack_t<ope_t> stack;
 			bool is_found = false;
@@ -2635,23 +2679,33 @@ int main(const int argc, const char* argv[])
 				const data_t& obj = *ite;
 				if (!is_found)
 				{
+				#ifdef PRINT_TEST_DATA_SEARCH
 					printf("%2d:", search_key);
+				#endif//PRINT_TEST_DATA_SEARCH
 					is_found = true;
 				}
+			#ifdef PRINT_TEST_DATA_SEARCH
 				printf("[%2d] ", obj.m_key);
+			#endif//PRINT_TEST_DATA_SEARCH
 			}
 			//※イテレータの変数宣言と検索を分けた方が若干効率的
 			//const_iterator ite;con._find(ite, search_key, search_type);
 			//const_iterator end;con._end(end);
 			//...
 			if (is_found)
+			{
+			#ifdef PRINT_TEST_DATA_SEARCH
 				printf("\n");
+			#endif//PRINT_TEST_DATA_SEARCH
+			}
 		}
 	};
 	searchNearestData(rbtree::FOR_NEAREST_SMALLER);
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//指定のキーと同じかそれより大きい最近ノードを検索
 	searchNearestData(rbtree::FOR_NEAREST_LARGER);
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//ノードを削除
 	//※特定のキーを削除
@@ -2663,9 +2717,9 @@ int main(const int argc, const char* argv[])
 			const bool result = con.erase(remove_key);
 			if (result)
 			{
-			#ifdef PRINT_TEST_DATA
+			#ifdef PRINT_TEST_DATA_DETAIL
 				printf("[%2d] ", remove_key);
-			#endif//PRINT_TEST_DATA
+			#endif//PRINT_TEST_DATA_DETAIL
 			#ifdef DEBUG_PRINT_FOR_REMOVE
 				printf("\n");
 			#endif//DEBUG_PRINT_FOR_REMOVE
@@ -2675,8 +2729,8 @@ int main(const int argc, const char* argv[])
 	#if 1
 		std::mt19937 rand_engine;
 		rand_engine.seed(1);
-		std::uniform_int_distribution<int> rand_dist(key_min, key_max);
-		const int removed_count_max = reg_num / 4;
+		std::uniform_int_distribution<int> rand_dist(TEST_DATA_KEY_MIN, TEST_DATA_KEY_MAX);
+		const int removed_count_max = TEST_DATA_REG_NUM / 4;
 		int removed_count = 0;
 		while (removed_count < removed_count_max)
 		{
@@ -2689,23 +2743,27 @@ int main(const int argc, const char* argv[])
 		for (int key : key_list)
 			erase(key);
 	#endif
-	#ifdef PRINT_TEST_DATA
+	#ifdef PRINT_TEST_DATA_DETAIL
 	#ifndef DEBUG_PRINT_FOR_REMOVE
 		printf("\n");
 	#endif//DEBUG_PRINT_FOR_REMOVE
-	#endif//PRINT_TEST_DATA
+	#endif//PRINT_TEST_DATA_DETAIL
 		printf("%d removed.\n", removed_count);
 	};
 	removeNodes();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//ツリーを表示
 	showTree();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//黒ノード数を表示
 	showNodesCount();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//一番小さいノードから昇順に全ノードをリストアップ
 	showListAsc();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//ノードを削除
 	//※すべての値のキーを一つずつ削除
@@ -2713,7 +2771,7 @@ int main(const int argc, const char* argv[])
 	{
 		printf("--- Remove each-key nodes ---\n");
 		int removed_count = 0;
-		for (int remove_key = key_min; remove_key <= key_max; ++remove_key)
+		for (int remove_key = TEST_DATA_KEY_MIN; remove_key <= TEST_DATA_KEY_MAX; ++remove_key)
 		{
 			const_iterator ite(con.find(remove_key));
 			const bool result = con.erase(*ite);
@@ -2723,31 +2781,35 @@ int main(const int argc, const char* argv[])
 			if (result)
 			{
 				++removed_count;
-			#ifdef PRINT_TEST_DATA
+			#ifdef PRINT_TEST_DATA_DETAIL
 				printf("[%2d] ", remove_key);
-			#endif//PRINT_TEST_DATA
+			#endif//PRINT_TEST_DATA_DETAIL
 			#ifdef DEBUG_PRINT_FOR_REMOVE
 				printf("\n");
 			#endif//DEBUG_PRINT_FOR_REMOVE
 			}
 		}
-	#ifdef PRINT_TEST_DATA
+	#ifdef PRINT_TEST_DATA_DETAIL
 	#ifndef DEBUG_PRINT_FOR_REMOVE
 		printf("\n");
 	#endif//DEBUG_PRINT_FOR_REMOVE
-	#endif//PRINT_TEST_DATA
+	#endif//PRINT_TEST_DATA_DETAIL
 		printf("%d removed.\n", removed_count);
 	};
 	removeEachKeyNodes();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//ツリーを表示
 	showTree();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//黒ノード数を表示
 	showNodesCount();
-	
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
+
 	//一番小さいノードから昇順に全ノードをリストアップ
 	showListAsc();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//ノードを全削除
 	//※すべての値のキーに対して、削除が失敗するまで削除を実行
@@ -2755,7 +2817,7 @@ int main(const int argc, const char* argv[])
 	{
 		printf("--- Remove all nodes ---\n");
 		int removed_count = 0;
-		for (int remove_key = key_min; remove_key <= key_max;)
+		for (int remove_key = TEST_DATA_KEY_MIN; remove_key <= TEST_DATA_KEY_MAX;)
 		{
 			const_iterator ite(con.find(remove_key));
 			const bool result = con.erase(*ite);
@@ -2765,9 +2827,9 @@ int main(const int argc, const char* argv[])
 			if (result)
 			{
 				++removed_count;
-			#ifdef PRINT_TEST_DATA
+			#ifdef PRINT_TEST_DATA_DETAIL
 				printf("[%2d] ", remove_key);
-			#endif//PRINT_TEST_DATA
+			#endif//PRINT_TEST_DATA_DETAIL
 			#ifdef DEBUG_PRINT_FOR_REMOVE
 				printf("\n");
 			#endif//DEBUG_PRINT_FOR_REMOVE
@@ -2775,23 +2837,31 @@ int main(const int argc, const char* argv[])
 			else
 				++remove_key;
 		}
-	#ifdef PRINT_TEST_DATA
+	#ifdef PRINT_TEST_DATA_DETAIL
 	#ifndef DEBUG_PRINT_FOR_REMOVE
 		printf("\n");
 	#endif//DEBUG_PRINT_FOR_REMOVE
-	#endif//PRINT_TEST_DATA
+	#endif//PRINT_TEST_DATA_DETAIL
 		printf("%d removed.\n", removed_count);
 	};
 	removeAllNodes();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//ツリーを表示
 	showTree();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//黒ノード数を表示
 	showNodesCount();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//一番小さいノードから昇順に全ノードをリストアップ
 	showListAsc();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
+
+	//終了
+	printf("--- end ---\n");
+	printElapsedTime(begin_time);//経過時間を表示
 
 	return EXIT_SUCCESS;
 }

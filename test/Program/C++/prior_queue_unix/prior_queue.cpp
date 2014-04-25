@@ -34,7 +34,9 @@ static const int TEST_DATA_REG_NUM = 60;//テストデータの登録数
 //　ただし、配列のポインタをそのまま返すだけの begin(), end() 関数は実装する。
 //・この二分ヒープをプライオリティキューに利用した場合、
 //　デキュー（pop）時に、キューイング（push）の順序性は保証されない。
-//　※この強度はSTLと同じ。
+//　※この挙動はSTLと同じ。
+//・ただし、（二分ヒープを内包する）プライオリティキューでは、キーの比較に
+//　プライオリティとシーケンス番号を併用することで、順序性を保証する。
 //・STL（std::priority_queue）との違いは下記の通り
 //    - 固定長配列である。（STLは内部にstd::vectorを使用しており、自動拡張する）
 //    - 赤黒木コンテナ（rb_tree）の実装と合わせた構造にしており、
@@ -251,23 +253,180 @@ namespace bin_heap
 		std::size_t m_used;//使用数
 		const bool m_isReverse;//キー比較を反転するか？
 	};
+	//--------------------
+	//基本型定義マクロ消去
+	#undef DECLARE_OPE_TYPES
 }//namespace bin_heap
 
 //--------------------------------------------------------------------------------
 //プライオリティキュー
-//※二分ヒープをそのまま使用しているのみ。
-//※最終的には、二分ヒープを内部に保持し、委譲を行う構造にした上で、
-//　スレッドセーフな構造にする。
-//　（逆に、二分ヒープのような基本的なアルゴリズムのレベルでは、
-//　　汎用性を重視し、スレッドセーフ化はすべきでない。）
+//※プライオリティとともに、シーケンス番号を扱うことで、キューイングの順序性を保証する。
+//※最終的には、スレッドセーフな構造にする。
 namespace prior_queue
 {
-	template<class OPE_TYPE, typename NODE_TYPE, int _NODES_MAX>
-	using base_ope_t = bin_heap::base_ope_t<OPE_TYPE, NODE_TYPE, _NODES_MAX>;
-	
+	//--------------------
+	//プライオリティキュー操作用テンプレート構造体
+	//※CRTPを活用し、下記のような派生構造体を作成して使用する
+	//  //template<class OPE_TYPE, typename NODE_TYPE, int _NODES_MAX>
+	//  //struct base_ope_t;
+	//  //struct 派生構造体名 : public prior_queue::base_ope_t<派生構造体, ノード型, 最大ノード数, 優先度型, シーケンス番号型>
+	//	struct ope_t : public prior_queue::ope_t<ope_t, data_t, 1024, int, unsigned int>
+	//	{
+	//		//優先度を取得
+	//		inline static prior_type getPrior(const node_type& node){ return node.m_prior; }
+	//		//優先度を更新
+	//		inline static void setPrior(node_type& node, const prior_type prior){ node.m_prior = prior; }
+	//		
+	//		//シーケンス番号を取得
+	//		inline static seq_type getSeqNo(const node_type& node){ return node.m_seqNo; }
+	//		//シーケンス番号を更新
+	//		inline static void setSeqNo(node_type& node, const seq_type seq_no) const { node.m_seqNo = seq_no; }
+	//		
+	//		//優先度を比較
+	//		//Return value:
+	//		//  0 ... lhs == rhs
+	//		//  1 ... lhs > rhs
+	//		// -1 ... lhs < rhs
+	//		inline static int compareProior(const prior_type lhs, const prior_type rhs)
+	//		{
+	//			return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
+	//		}
+	//	};
+	template<class OPE_TYPE, typename NODE_TYPE, int _NODES_MAX, typename PRIOR_TYPE = int, typename SEQ_TYPE = unsigned int>
+	struct base_ope_t
+	{
+		//定数
+		static const int NODES_MAX = _NODES_MAX;//最大ノード数
+
+		//型
+		typedef OPE_TYPE ope_type;//ノード操作型
+		typedef NODE_TYPE node_type;//ノード型
+		typedef PRIOR_TYPE prior_type;//優先度型
+		typedef SEQ_TYPE seq_type;//シーケンス番号型
+
+		//シーケンス番号を比較
+		inline static bool lessSeqNo(const seq_type lhs, const seq_type rhs)
+		{
+			return lhs > rhs;
+		}
+
+		//優先度を比較
+		//※デフォルト
+		//Return value:
+		//  0 ... lhs == rhs
+		//  1 ... lhs > rhs
+		// -1 ... lhs < rhs
+		inline static int comparePriority(const prior_type lhs, const prior_type rhs)
+		{
+			return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
+		}
+
+		//キーを比較
+		//※lhsの方が小さいければ true を返す
+		inline static bool _lessSeqNo(const int compare_priority, const seq_type lhs, const seq_type rhs)
+		{
+			return compare_priority < 0 ? true : compare_priority > 0 ? false : ope_type::lessSeqNo(lhs, rhs);
+		}
+		inline static bool less(const node_type& lhs, const node_type& rhs)
+		{
+			return _lessSeqNo(ope_type::comparePriority(ope_type::getPrior(lhs), ope_type::getPrior(rhs)), ope_type::getSeqNo(lhs), ope_type::getSeqNo(rhs));
+		}
+
+		//STLのstd::priority_queueと共用するための関数オブジェクト
+		inline bool operator()(const node_type& lhs, const node_type& rhs) const{ return less(lhs, rhs); }
+	};
+	//--------------------
+	//基本型定義マクロ
+	#define DECLARE_OPE_TYPES(OPE_TYPE) \
+		typedef OPE_TYPE ope_type; \
+		typedef typename ope_type::node_type node_type; \
+		typedef node_type value_type; \
+		typedef value_type& reference; \
+		typedef const value_type& const_reference; \
+		typedef value_type* pointer; \
+		typedef const value_type* const_pointer; \
+		typedef std::size_t size_type; \
+		typedef typename ope_type::prior_type prior_type; \
+		typedef typename ope_type::seq_type seq_type; \
+		typedef bin_heap::container<ope_type> bin_heap;
+
+	//----------------------------------------
+	//プライオリティキューコンテナ
+	//※内部に二分ヒープを持つ
+	//※std::priority_queueとはあまり互換性がなく、イテレータにも対応しない
 	template<class OPE_TYPE>
-	using container = bin_heap::container<OPE_TYPE>;
-}
+	class container
+	{
+	public:
+		//型
+		DECLARE_OPE_TYPES(OPE_TYPE);
+	public:
+		//アクセッサ
+		const bin_heap& getHeap() const { return m_heap; }//二分ヒープ取得
+		bin_heap& getHeap(){ return m_heap; }//二分ヒープ取得
+	public:
+		//キャストオペレータ
+		operator const bin_heap() const{ return m_heap; }//二分ヒープを返す
+		operator bin_heap(){ return m_heap; }//二分ヒープを返す
+	public:
+		//メソッド
+		std::size_t max_size() const { return m_heap.max_aize(); }//最大要素数を取得
+		std::size_t capacity() const { return m_heap.capacity(); }//最大要素数を取得
+		std::size_t size() const { return m_heap.size(); }//使用中の要素数を取得
+		bool empty() const { return m_heap.empty(); }//空か？
+	public:
+		void clear(){ m_heap.clear(); }//クリア
+		inline const node_type* begin() const { return m_heap.begin(); }//開始ノード
+		inline const node_type* end() const { return m_heap.end(); }//終了ノード
+		inline node_type* begin(){ return m_heap.begin(); }//開始ノード
+		inline node_type* end(){ return m_heap.end(); }//終了ノード
+	private:
+		//シーケンス番号発行
+		seq_type getNextSeqNo(){ return m_seqNo++; }
+	public:
+		//キューイング
+		const node_type* enqueue(node_type& obj)
+		{
+			ope_type::setSeqNo(obj, getNextSeqNo());
+			return m_heap.push(obj);
+		}
+		//キューイング開始
+		//※空きノード取得
+		node_type* enqueueBegin(const prior_type prior)
+		{
+			node_type* node = m_heap.push_begin();
+			if (!node)
+				return nullptr;
+			ope_type::setPrior(*node, prior);
+			ope_type::setSeqNo(*node, getNextSeqNo());
+			return node;
+		}
+		//キューイング終了
+		const node_type* push_end(){ return m_heap.push_end(); }
+		//デキュー
+		bool dequeue(node_type& dst){ return m_heap.pop(dst); }
+		//デキュー開始
+		const node_type* dequeueBegin(){ return m_heap.pop_begin(); }
+		//デキュー終了
+		bool dequeueEnd(){ return m_heap.pop_end(); }
+	public:
+		//コンストラクタ
+		//※キー比較処理を渡す
+		container(const bool is_reverse = false) :
+			m_heap(is_reverse)
+		{}
+		//デストラクタ
+		~container()
+		{}
+	private:
+		//フィールド
+		bin_heap m_heap;//二分ヒープ
+		seq_type m_seqNo;//シーケンス番号
+	};
+	//--------------------
+	//基本型定義マクロ消去
+	#undef DECLARE_OPE_TYPES
+}//namespace prior_queue
 
 //--------------------------------------------------------------------------------
 //プライオリティキューテスト
@@ -279,24 +438,50 @@ namespace prior_queue
 
 //----------------------------------------
 //テストデータ
+enum PRIORITY : short
+{
+	HIGHEST = 5,
+	HIGHER = 2,
+	NORMAL = 3,
+	LOWER = 2,
+	LOWEST = 1,
+};
 struct data_t
 {
-	int m_key;//キー
+	PRIORITY m_prior;//優先度
+	int m_seqNo;//シーケンス番号
 	int m_val;//データ
+
+	//コンストラクタ
+	data_t(const PRIORITY prior, const int val) :
+		m_prior(prior),
+		m_seqNo(0),
+		m_val(val)
+	{}
+	data_t(const int val) :
+		m_prior(NORMAL),
+		m_seqNo(0),
+		m_val(val)
+	{}
+	data_t() :
+		m_prior(NORMAL),
+		m_seqNo(0),
+		m_val(0)
+	{}
 };
 //----------------------------------------
 //テストデータ操作クラス
-struct ope_t : public prior_queue::base_ope_t<ope_t, data_t, TEST_DATA_MAX>
+struct ope_t : public prior_queue::base_ope_t<ope_t, data_t, TEST_DATA_MAX, PRIORITY, int>
 {
-	//キーを比較
-	//※lhsの方が小さいければ true を返す
-	inline static bool less(const node_type& lhs, const node_type& rhs)
-	{
-		return lhs.m_key < rhs.m_key;
-	}
-
-	//STLのstd::priority_queueと共用するための関数オブジェクト
-	inline bool operator()(const node_type& lhs, const node_type& rhs) const{ return less(lhs, rhs); }
+	//優先度を取得
+	inline static prior_type getPrior(const node_type& node){ return node.m_prior; }
+	//優先度を更新
+	inline static void setPrior(node_type& node, const prior_type prior){ node.m_prior = prior; }
+	
+	//シーケンス番号を取得
+	inline static seq_type getSeqNo(const node_type& node){ return node.m_seqNo; }
+	//シーケンス番号を更新
+	inline static void setSeqNo(node_type& node, const seq_type seq_no){ node.m_seqNo = seq_no; }
 };
 
 //----------------------------------------
@@ -315,10 +500,12 @@ inline int printf_detail(const char* fmt, ...){ return 0; }
 //テスト
 int main(const int argc, const char* argv[])
 {
-	//コンテナ生成
-	prior_queue::container<ope_t> con;
+	//プライオリティキューコンテナ生成
+	typedef prior_queue::container<ope_t> contaier_type;
+	typedef contaier_type::bin_heap bin_heap;
+	contaier_type con;
 
-	//ノードをプッシュ
+	//キューイング
 	auto pushNodes = [&con]()
 	{
 		printf("--- Push nodes ---\n");
@@ -327,9 +514,10 @@ int main(const int argc, const char* argv[])
 		std::uniform_int_distribution<int> rand_dist(TEST_DATA_PRIOR_MIN, TEST_DATA_PRIOR_MAX);
 		for (int val = 0; val < TEST_DATA_REG_NUM; ++val)
 		{
-			const int key = rand_dist(rand_engine);
-			printf_detail("[%d:%2d] ", key, val);
-			con.push({ key, val });
+			const PRIORITY priority = static_cast<PRIORITY>(rand_dist(rand_engine));
+			printf_detail("[%d:%2d] ", priority, val);
+			data_t obj(priority, val);
+			con.enqueue(obj);
 		}
 		printf_detail("\n");
 	};
@@ -341,7 +529,7 @@ int main(const int argc, const char* argv[])
 	{
 		printf("--- Test for C++11 for(:) ---\n");
 		for (const data_t& o : con)
-			printf("[%1d:%2d] ", o.m_key, o.m_val);
+			printf("[%1d:%2d] ", o.m_prior, o.m_val);
 		printf("\n");
 	};
 	printNodesTest1();
@@ -354,7 +542,7 @@ int main(const int argc, const char* argv[])
 		printf("--- Test for std::for_each() ---\n");
 		std::for_each(con.begin(), con.end(), [](data_t& o)
 			{
-				printf("[%1d:%2d] ", o.m_key, o.m_val);
+				printf("[%1d:%2d] ", o.m_prior, o.m_val);
 			}
 		);
 		printf("\n");
@@ -363,11 +551,12 @@ int main(const int argc, const char* argv[])
 #endif
 
 	//木を表示
-	auto showTree = [&con]()
+	auto showTree = [](const bin_heap& heap)
 	{
-		printf("--- Show tree (count=%d) ---\n", con.size());
+		printf("--- Show tree (count=%d) ---\n", heap.size());
 		static const int depth_limit = 5;//最大でも5段階目までを表示（0段階目から数えるので最大で6段階表示される→最大：1+2+4+8+16+32個）
-		const int _depth_max = con.depth_max();
+		
+		const int _depth_max = heap.depth_max();
 		printf("depth_max=%d (limit for showing=%d)\n", _depth_max, depth_limit);
 		const int depth_max = _depth_max <= depth_limit ? _depth_max : depth_limit;
 		const int width_max = static_cast<int>(std::pow(2, depth_max));
@@ -379,13 +568,13 @@ int main(const int argc, const char* argv[])
 			const int print_indent = (print_width - label_len) / 2;
 			for (int breath = 0; breath < width; ++breath)
 			{
-				const data_t* node = con.ref_top();
+				const data_t* node = heap.ref_top();
 				int breath_tmp = breath;
 				for (int depth_tmp = depth - 1; node; --depth_tmp)
 				{
 					if (depth_tmp < 0)
 						break;
-					node = con.ref_child(node, (breath_tmp & (0x1 << depth_tmp)) != 0x0);
+					node = heap.ref_child(node, (breath_tmp & (0x1 << depth_tmp)) != 0x0);
 				}
 				if (node)
 				{
@@ -393,20 +582,20 @@ int main(const int argc, const char* argv[])
 						int c = 0;
 						for (; c < print_indent / 2; ++c)
 							printf(" ");
-						if (con.ref_child_l(node) && c < print_indent)
+						if (heap.ref_child_l(node) && c < print_indent)
 						{
 							printf(".");
 							++c;
 						}
 						for (; c < print_indent; ++c)
-							printf(con.ref_child_l(node) ? "-" : " ");
+							printf(heap.ref_child_l(node) ? "-" : " ");
 					}
-					printf("%s%1d:%2d%s", con.ref_child_l(node) ? "{" : "[", node->m_key, node->m_val, con.ref_child_r(node) ? "}" : "]");
+					printf("%s%1d:%2d%s", heap.ref_child_l(node) ? "{" : "[", node->m_prior, node->m_val, heap.ref_child_r(node) ? "}" : "]");
 					{
 						int c = 0;
 						for (; c < print_indent / 2; ++c)
-							printf(con.ref_child_r(node) ? "-" : " ");
-						if (con.ref_child_r(node) && c < print_indent)
+							printf(heap.ref_child_r(node) ? "-" : " ");
+						if (heap.ref_child_r(node) && c < print_indent)
 						{
 							printf(".");
 							++c;
@@ -424,7 +613,7 @@ int main(const int argc, const char* argv[])
 			printf("\n");
 		}
 	};
-	showTree();
+	showTree(con);
 
 	//ノードをポップ
 	auto popNodes = [&con](const int pop_limit)
@@ -433,19 +622,64 @@ int main(const int argc, const char* argv[])
 		for (int i = 0; i < pop_limit; ++i)
 		{
 			data_t node;
-			const bool result = con.pop(node);
+			const bool result = con.dequeue(node);
 			if (!result)
 				break;
-			printf("[%1d:%2d] ", node.m_key, node.m_val);
+			printf("[%1d:%2d] ", node.m_prior, node.m_val);
 		}
 		printf("\n");
 	};
 	popNodes(TEST_DATA_REG_NUM / 2);
-	showTree();//木を表示
+	showTree(con);//木を表示
 
 	//ノードをポップ
 	popNodes(TEST_DATA_REG_NUM);
-	showTree();//木を表示
+	showTree(con);//木を表示
+
+	//以下、二分ヒープとの挙動比較
+	bin_heap heap;
+
+	//二分ヒープでノードをプッシュ
+	auto pushNodesBinHeap = [&heap]()
+	{
+		printf("--- Push nodes(Binary Heap) ---\n");
+		std::mt19937 rand_engine;
+		rand_engine.seed(0);
+		std::uniform_int_distribution<int> rand_dist(TEST_DATA_PRIOR_MIN, TEST_DATA_PRIOR_MAX);
+		for (int val = 0; val < TEST_DATA_REG_NUM; ++val)
+		{
+			const PRIORITY priority = static_cast<PRIORITY>(rand_dist(rand_engine));
+			printf_detail("[%d:%2d] ", priority, val);
+			data_t obj(priority, val);
+			heap.push(obj);
+		}
+		printf_detail("\n");
+	};
+	pushNodesBinHeap();
+
+	//木を表示
+	showTree(heap);
+	
+	//二分ヒープでノードをポップ
+	auto popNodesBinHeap  = [&heap](const int pop_limit)
+	{
+		printf("--- Pop nodes(Binary Heap) ---\n");
+		for (int i = 0; i < pop_limit; ++i)
+		{
+			data_t node;
+			const bool result = heap.pop(node);
+			if (!result)
+				break;
+			printf("[%1d:%2d] ", node.m_prior, node.m_val);
+		}
+		printf("\n");
+	};
+	popNodesBinHeap(TEST_DATA_REG_NUM / 2);
+	showTree(heap);//木を表示
+
+	//ノードをポップ
+	popNodesBinHeap(TEST_DATA_REG_NUM);
+	showTree(heap);//木を表示
 
 	//以下、STLとの挙動比較
 	std::priority_queue<data_t, std::vector<data_t>, ope_t> stl;
@@ -459,9 +693,10 @@ int main(const int argc, const char* argv[])
 		std::uniform_int_distribution<int> rand_dist(TEST_DATA_PRIOR_MIN, TEST_DATA_PRIOR_MAX);
 		for (int val = 0; val < TEST_DATA_REG_NUM; ++val)
 		{
-			const int key = rand_dist(rand_engine);
-			printf_detail("[%1d:%2d] ", key, val);
-			stl.push({ key, val });
+			const PRIORITY priority = static_cast<PRIORITY>(rand_dist(rand_engine));
+			printf_detail("[%1d:%2d] ", priority, val);
+			data_t obj(priority, val);
+			stl.push(obj);
 		}
 		printf_detail("\n");
 	};
@@ -474,7 +709,7 @@ int main(const int argc, const char* argv[])
 		for (int i = 0; i < pop_limit && !stl.empty(); ++i)
 		{
 			data_t node = stl.top();
-			printf("[%1d:%2d] ", node.m_key, node.m_val);
+			printf("[%1d:%2d] ", node.m_prior, node.m_val);
 			stl.pop();
 		}
 		printf("\n");

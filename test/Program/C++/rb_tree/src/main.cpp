@@ -115,6 +115,10 @@ namespace rb_tree
 	//		inline static key_type getKey(const node_type& node){ return ???; }
 	//		
 	//		//キーを比較
+	//		//Return value:
+	//		//  0 ... lhs == rhs
+	//		//  1 ... lhs > rhs
+	//		// -1 ... lhs < rhs
 	//		inline static int compareKey(const key_type lhs, const key_type rhs)
 	//		{
 	//			return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
@@ -150,6 +154,17 @@ namespace rb_tree
 				ope_type::setChildL(node, child);//大（右）側
 			else
 				ope_type::setChildS(node, child);//小（左）側
+		}
+
+		//キーを比較
+		//※デフォルト
+		//Return value:
+		//  0 ... lhs == rhs
+		//  1 ... lhs > rhs
+		// -1 ... lhs < rhs
+		inline static int compareKey(const key_type lhs, const key_type rhs)
+		{
+			return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
 		}
 
 		//ノードとキーを比較
@@ -2329,10 +2344,12 @@ struct ope_t : public rb_tree::base_ope_t<ope_t, data_t, int, TEST_DATA_STACK_DE
 	inline static key_type getKey(const node_type& node){ return node.m_key; }
 
 	//キーを比較
-	inline static int compareKey(const key_type lhs, const key_type rhs)
-	{
-		return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
-	}
+	//※デフォルトのままとする
+	//Return value:
+	//  0 ... lhs == rhs
+	//  1 ... lhs > rhs
+	// -1 ... lhs < rhs
+	//inline static int compareKey(const key_type lhs, const key_type rhs);
 };
 
 //----------------------------------------

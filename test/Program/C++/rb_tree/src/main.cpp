@@ -5,8 +5,8 @@ static const int TEST_DATA_KEY_MAX = 99;//テストデータの最大キー
 static const int TEST_DATA_REG_NUM = 100;//テストデータの登録数
 static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタックの最大の深さ（デフォルトは32で、平衡木なら10万件は扱える）
 //#define REGIST_TEST_DATA_SEQUENTIALLY//データをシーケンシャルに登録する場合は、このマクロを有効化する（無効化時はランダム）
-#define PRINT_TEST_DATA_TREE//テストデーのツリーを表示する場合は、このマクロを有効化する（表示しなくても検索は実行する）
-#define PRINT_TEST_DATA_SEARCH//テストデーの検索結果を表示する場合は、このマクロを有効化する（表示しなくても検索は実行する）
+#define PRINT_TEST_DATA_TREE//テストデータの木を表示する場合は、このマクロを有効化する（表示しなくても検索は実行する）
+#define PRINT_TEST_DATA_SEARCH//テストデーたの検索結果を表示する場合は、このマクロを有効化する（表示しなくても検索は実行する）
 #define PRINT_TEST_DATA_COLOR_COUNT//テストデータの赤黒カウント数計測を表示する場合は、このマクロを有効化する
 #define PRINT_TEST_DATA_DETAIL//テストデーの詳細タを表示する場合は、このマクロを有効化する
 
@@ -37,11 +37,12 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタ
 //--------------------------------------------------------------------------------
 //データ構造とアルゴリズム
 //【特徴】
-//・二分木である。
-//	  - ノードの左側には、キーの値が自ノードより小さいノードを連結。
-//	  - ノードの右側には、キーの値が自ノードより大きいノードを連結。
+//・二分探索木である。
+//	  - ノードの左側の子には、キーの値が小さいノードを連結。
+//	  - ノードの右側の子には、キーの値が大きいか等しいノードを連結。
 //・平衡木である。
-//	  - 常に左右の木のバランスを保ち、探索時間の大きな劣化がない木構造。
+//	  - 常に左右の木のバランスを保つ。
+//・以上の特徴により、探索・追加・削除の時間が、常にO(log n)に保たれる。
 //【条件】
 //・条件①：各ノードは「赤」か「黒」の「色」を持つ。
 //・条件②：「根」（root）は必ず「黒」。
@@ -53,7 +54,7 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタ
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-//【本ソースにおける実装要件】
+//【本プログラムにおける実装要件】
 //・メモリ節約のために、親ノードへのリンクを持たないデータ構造とする。
 //・代わりに、検索等の関数実行時に外部からスタックを渡す事で親を辿ることが可能。
 //・テンプレートにより、アルゴリズムを汎用化。
@@ -71,7 +72,7 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタ
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-//【具体的な活用の想定：メモリ管理での活用】
+//【具体的な活用の想定】※以下、メモリ管理処理に適用することを想定した要件。
 //・メモリマネージャの管理情報の連結に使用することを想定。
 //・空きメモリサイズ順の連結を行うため、キー重複を許容する必要がある。
 //・また、連結リストが肥大化することを避けるため、親ノードへのリンク情報は
@@ -81,22 +82,22 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタ
 //　ノードを探し出す。
 //・ノード間のリンク情報は、64bitポインタ変数による肥大化が起こらないように、
 //　メモリ空間の先頭からオフセットされた32bitの相対ポインタを扱う。
-//・一つのメモリ管理情報を、2種類のツリーに振り分けて使用する。
-//　削除済みメモリノードのツリーはサイズをキーにし、
-//　使用中メモリノードのツリーはポインタをキーにする。
+//・一つのメモリ管理情報を、2種類の木に振り分けて使用する。
+//　削除済みメモリノードの二分探索木はサイズをキーにし、
+//　使用中メモリノードの二分探索木はポインタをキーにする。
 //・このような利用を可能とするために、データ構造とアルゴリズムを完全に
 //　切り離した構成にする。
 //--------------------------------------------------------------------------------
 
-namespace rbtree
+namespace rb_tree
 {
 	//--------------------
 	//赤黒木ノード操作用テンプレート構造体
 	//※CRTPを活用し、下記のような派生構造体を作成して使用する
-	//  //template<class IMPL_OPE_TYPE, typename NODE_TYPE, typename KEY_TYPE, int STACK_DEPTH_MAX = 32>
+	//  //template<class OPE_TYPE, typename NODE_TYPE, typename KEY_TYPE, int STACK_DEPTH_MAX = 32>
 	//  //struct base_ope_t;
-	//  //struct 派生構造体名 : public rbtree::base_ope_t<派生構造体, ノード型, キー型, スタックの最大の深さ = 32>
-	//	struct ope_t : public rbtree::ope_t<ope_t, data_t, int>
+	//  //struct 派生構造体名 : public rb_tree::base_ope_t<派生構造体, ノード型, キー型, スタックの最大の深さ = 32>
+	//	struct ope_t : public rb_tree::ope_t<ope_t, data_t, int>
 	//	{
 	//		//子ノードを取得
 	//		inline static const node_type* getChildL(const node_type& node){ return ???; }//大（右）側
@@ -114,7 +115,7 @@ namespace rbtree
 	//		inline static key_type getKey(const node_type& node){ return ???; }
 	//		
 	//		//キーを比較
-	//		inline static int compare_key(const key_type lhs, const key_type rhs)
+	//		inline static int compareKey(const key_type lhs, const key_type rhs)
 	//		{
 	//			return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
 	//		}
@@ -154,19 +155,19 @@ namespace rbtree
 		//ノードとキーを比較
 		inline static int compare(const node_type& lhs, const node_type& rhs)
 		{
-			return ope_type::compare_key(ope_type::getKey(lhs), ope_type::getKey(rhs));
+			return ope_type::compareKey(ope_type::getKey(lhs), ope_type::getKey(rhs));
 		}
 		inline static int compare(const node_type& lhs, const key_type rhs)
 		{
-			return ope_type::compare_key(ope_type::getKey(lhs), rhs);
+			return ope_type::compareKey(ope_type::getKey(lhs), rhs);
 		}
 		inline static int compare(const key_type lhs, const node_type& rhs)
 		{
-			return ope_type::compare_key(lhs, ope_type::getKey(rhs));
+			return ope_type::compareKey(lhs, ope_type::getKey(rhs));
 		}
 		inline static int compare(const key_type lhs, const key_type rhs)
 		{
-			return ope_type::compare_key(lhs, rhs);
+			return ope_type::compareKey(lhs, rhs);
 		}
 		inline static bool eq(const node_type& lhs, const node_type& rhs){ return compare(lhs, rhs) == 0; }
 		inline static bool eq(const node_type& lhs, const key_type rhs){ return compare(lhs, rhs) == 0; }
@@ -419,7 +420,7 @@ namespace rbtree
 		return nullptr;
 	}
 	//--------------------
-	//赤黒木操作関数：ツリーの最大の深さを計測
+	//赤黒木操作関数：木の最大の深さを計測
 	//※内部でスタックを作成
 	//※-1でリストなし
 	template<class OPE_TYPE>
@@ -533,7 +534,7 @@ namespace rbtree
 		return target_node;
 	}
 	//--------------------
-	//赤黒木操作関数：ツリーのノード数を計測
+	//赤黒木操作関数：木のノード数を計測
 	template<class OPE_TYPE>
 	std::size_t countNodes(const typename OPE_TYPE::node_type* node)
 	{
@@ -644,7 +645,7 @@ namespace rbtree
 		node_type* replacing_node = nullptr;//削除ノードと置き換えるノード
 		//削除ノードと置き換えるノードの選出処理
 		//-------------------------------------------------------------------------
-		//【ツリーの説明の凡例】
+		//【木の説明の凡例】
 		//・「(S)」は、小（左）側のノードを示す。
 		//・「(L)」は、大（右）側のノードを示す。
 		//・「(SL)」は、小（左）側の子の大（右）側のノードを示す。
@@ -813,7 +814,7 @@ namespace rbtree
 			}
 			//回転処理
 			//-------------------------------------------------------------------------
-			//【ツリーの説明の凡例】
+			//【木の説明の凡例】
 			//・「:B」は、黒を示す。
 			//・「:R」は、赤を示す。
 			//・「:+B」は、黒に変更することを示す。
@@ -1055,7 +1056,7 @@ namespace rbtree
 		bool replace_node_is_black = replacing_node ? ope_type::isBlack(*replacing_node) : false;
 		//回転処理必要判定
 		//-------------------------------------------------------------------------
-		//【ツリーの説明の凡例】
+		//【木の説明の凡例】
 		//・「:B」は、黒を示す。
 		//・「:R」は、赤を示す。
 		//・「:+B」は、黒に変更することを示す。
@@ -1078,7 +1079,7 @@ namespace rbtree
 				//             ↓【削除】                                                  
 				//           (null)                                                        
 				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-				//※黒が減らないので、ツリーに影響がない。                                 
+				//※黒が減らないので、木に影響がない。                                     
 				//-------------------------------------------------------------------------
 				//【最終状態の特徴】                                                       
 				//・赤黒の位置関係（条件③）も                                             
@@ -1105,7 +1106,7 @@ namespace rbtree
 					//                 .(最大子孫)                                             
 					//              [(SLS)]                                                    
 					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-					//※黒が減らないので、ツリーに影響がない。                                 
+					//※黒が減らないので、木に影響がない。                                     
 					//-------------------------------------------------------------------------
 					//【他のケース】                                                           
 					//※置き換えノードが削除ノードの子であるケースはない。                     
@@ -1136,9 +1137,9 @@ namespace rbtree
 					//            [(SS)]                ↑    [(SL)]                           
 					//                                 赤に                                    
 					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-					//※「(SS)」と「(SL)」の黒のバランスは保たれるが、
-					//　サブツリー全体で黒が一つ減るので、
-					//　親に遡ってツリーの調整（回転処理）が必要。
+					//※「(SS)」と「(SL)」の黒のバランスは保たれるが、                         
+					//　部分木全体で黒が一つ減るので、                                         
+					//　親に遡って木の調整（回転処理）が必要。                                 
 					//-------------------------------------------------------------------------
 					//【ケース②】                                                             
 					//      .-----[removing_node:R]-----.                                      
@@ -1155,8 +1156,8 @@ namespace rbtree
 					//                         赤に                                            
 					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 					//※「(LS)」と「(LL)」の黒のバランスは保たれるが、                         
-					//　サブツリー全体で黒が一つ減るので、                                     
-					//　親に遡ってツリーの調整（回転処理）が必要。                             
+					//　部分木全体で黒が一つ減るので、                                         
+					//　親に遡って木の調整（回転処理）が必要。                                 
 					//-------------------------------------------------------------------------
 					//【ケース③】                                                             
 					//     .---------------------[removing_node:R]-----.                       
@@ -1205,7 +1206,7 @@ namespace rbtree
 				//           (null)                                                        
 				//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 				//※黒が一つ減るので、                                                     
-				//　親に遡ってツリーの調整（回転処理）が必要。                             
+				//　親に遡って木の調整（回転処理）が必要。                                 
 				//-------------------------------------------------------------------------
 				//【最終状態の特徴】                                                       
 				//・赤黒の位置関係（条件③）は保たれるが、                                 
@@ -1234,7 +1235,7 @@ namespace rbtree
 					//            [(SS)]                ↑    [(SL)]                           
 					//                                 黒に                                    
 					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-					//※結果的に黒が減らないので、ツリーに影響がない。                         
+					//※結果的に黒が減らないので、木に影響がない。                             
 					//-------------------------------------------------------------------------
 					//【ケース②】                                                             
 					//      .-----[removing_node:B]-----.                                      
@@ -1250,7 +1251,7 @@ namespace rbtree
 					//    [(LS)]                ↑    [(LL)]                                   
 					//                         黒に                                            
 					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-					//※結果的に黒が減らないので、ツリーに影響がない。                         
+					//※結果的に黒が減らないので、木に影響がない。                             
 					//-------------------------------------------------------------------------
 					//【ケース③】                                                             
 					//     .---------------------[removing_node:B]-----.                       
@@ -1271,7 +1272,7 @@ namespace rbtree
 					//                 .(最大子孫)            黒に                             
 					//              [(SLS)]                                                    
 					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-					//※結果的に黒が減らないので、ツリーに影響がない。                         
+					//※結果的に黒が減らないので、木に影響がない。                             
 					//-------------------------------------------------------------------------
 					//【最終状態の特徴】                                                       
 					//・赤黒の位置関係（条件③）も                                             
@@ -1297,8 +1298,8 @@ namespace rbtree
 					//            [(SS)]                      [(SL)]                           
 					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 					//※「(SS)」と「(SL)」の黒のバランスは保たれるが、                         
-					//　サブツリー全体で黒が一つ減るので、                                     
-					//　親に遡ってツリーの調整（回転処理）が必要。                             
+					//　部分木全体で黒が一つ減るので、                                         
+					//　親に遡って木の調整（回転処理）が必要。                                 
 					//-------------------------------------------------------------------------
 					//【ケース②】                                                             
 					//      .-----[removing_node:B]-----.                                      
@@ -1310,8 +1311,8 @@ namespace rbtree
 					//    [(LS)]                      [(LL)]                                   
 					//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 					//※「(LS)」と「(LL)」の黒のバランスは保たれるが、                         
-					//　サブツリー全体で黒が一つ減るので、                                     
-					//　親に遡ってツリーの調整（回転処理）が必要。                             
+					//　部分木全体で黒が一つ減るので、                                         
+					//　親に遡って木の調整（回転処理）が必要。                                 
 					//-------------------------------------------------------------------------
 					//【ケース③】                                                             
 					//     .---------------------[removing_node:B]-----.                       
@@ -1341,7 +1342,7 @@ namespace rbtree
 		//回転処理
 		//※黒ノードが削除された時のみ回転を行う
 		//-------------------------------------------------------------------------
-		//【ツリーの説明の凡例】
+		//【木の説明の凡例】
 		//・「:B」は、黒を示す。
 		//・「:R」は、赤を示す。
 		//・「:?」は、黒もしくは赤を示す。
@@ -1428,8 +1429,8 @@ namespace rbtree
 									//-------------------------------------------------------------------------------------------------
 									//【最終状態の特徴】                                                                               
 									//・赤黒の位置関係（条件③）は保たれる。                                                           
-									//・サブツリーの小（左）側に黒が一つ増えることで、                                                 
-									//　ツリー全体のバランス（条件④）が回復し、ツリーの調整は完了する。                               
+									//・部分木の小（左）側に黒が一つ増えることで、                                                     
+									//　木全体のバランス（条件④）が回復し、木の調整は完了する。                                       
 									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 									//【初期状態の考察】                                                                               
 									//・「curr_node」以下の黒の数は、                                                                  
@@ -1440,9 +1441,9 @@ namespace rbtree
 									//　黒の数は、すべて同じ。                                                                         
 									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 									//【最終状態の考察】                                                                               
-									//・サブツリーの大（右）側の黒の数は変化しない。                                                   
-									//・サブツリーの小（左）側の黒の数は一つ増える。                                                   
-									//・ツリー全体の黒の数は変化しない。                                                               
+									//・部分木の大（右）側の黒の数は変化しない。                                                       
+									//・部分木の小（左）側の黒の数は一つ増える。                                                       
+									//・木全体の黒の数は変化しない。                                                                   
 									//-------------------------------------------------------------------------------------------------
 									printf_dbg_remove("<ROT-S1-[%d:?]→[%d:B]→[%d:R]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_s));
 									ope_type::setChildL(*parent_node, _rotateR<ope_type>(sibling_node));//兄弟ノードを右回転処理
@@ -1476,8 +1477,8 @@ namespace rbtree
 									//-----------------------------------------------------------------------------------------
 									//【最終状態の特徴】                                                                       
 									//・赤黒の位置関係（条件③）は保たれる。                                                   
-									//・サブツリーの小（左）側に黒が一つ増えることで、                                         
-									//　ツリー全体のバランス（条件④）が回復し、ツリーの調整は完了する。                       
+									//・部分木の小（左）側に黒が一つ増えることで、                                             
+									//　木全体のバランス（条件④）が回復し、木の調整は完了する。                               
 									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 									//【初期状態の考察】                                                                       
 									//・「curr_node」以下の黒の数は、                                                          
@@ -1488,9 +1489,9 @@ namespace rbtree
 									//　黒の数は、すべて同じ。                                                                 
 									//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 									//【最終状態の考察】                                                                       
-									//・サブツリーの大（右）側の黒の数は変化しない。                                           
-									//・サブツリーの小（左）側の黒の数は一つ増える。                                           
-									//・ツリー全体の黒の数は変化しない。                                                       
+									//・部分木の大（右）側の黒の数は変化しない。                                               
+									//・部分木の小（左）側の黒の数は一つ増える。                                               
+									//・木全体の黒の数は変化しない。                                                           
 									//-----------------------------------------------------------------------------------------
 									printf_dbg_remove("<ROT-S2-[%d:?]→[%d:B]→[%d:R]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node), ope_type::getKey(*sibling_node_l));
 									_rotateL<ope_type>(parent_node);//親ノードを左回転処理
@@ -1518,10 +1519,10 @@ namespace rbtree
 										//------------------------------------------------------------------------------
 										//【最終状態の特徴】                                                            
 										//・赤黒の位置関係（条件③）は保たれる。                                        
-										//・サブツリーの大（右）側の黒が一つ減ることで、                                
-										//　サブツリーのバランスが回復し、                                              
-										//　更に、サブツリーの根に黒が一つ増えることで、                                
-										//　ツリー全体のバランス（条件④）が回復し、ツリーの調整は完了する。            
+										//・部分木の大（右）側の黒が一つ減ることで、                                    
+										//　部分木のバランスが回復し、                                                  
+										//　更に、部分木の根に黒が一つ増えることで、                                    
+										//　木全体のバランス（条件④）が回復し、木の調整は完了する。                    
 										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 										//【初期状態の考察】                                                            
 										//・「curr_node」以下の黒の数は、                                               
@@ -1532,9 +1533,9 @@ namespace rbtree
 										//　黒の数は、すべて同じ。                                                      
 										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 										//【最終状態の考察】                                                            
-										//・サブツリーの大（右）側の黒の数は±０。                                      
-										//・サブツリーの小（左）側の黒の数は一つ増える。                                
-										//・ツリー全体の黒の数は変化しない。                                            
+										//・部分木の大（右）側の黒の数は±０。                                          
+										//・部分木の小（左）側の黒の数は一つ増える。                                    
+										//・木全体の黒の数は変化しない。                                                
 										//------------------------------------------------------------------------------
 										printf_dbg_remove("<ROT-S3a-[%d:R]→[%d:B]→[*:B/n]=END>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
 										ope_type::setIsBlack(*parent_node);//親ノードを黒に
@@ -1558,10 +1559,10 @@ namespace rbtree
 										//-------------------------------------------------------------------------------------
 										//【最終状態の特徴】                                                                   
 										//・赤黒の位置関係（条件③）は保たれる。                                               
-										//・サブツリーの大（右）側の黒が一つ減ることで、                                       
-										//　サブツリーのバランスが回復するが、                                                 
-										//　サブツリー全体では黒が一つ減った状態のため、                                       
-										//　親に遡ってツリーの調整が必要。                                                     
+										//・部分木の大（右）側の黒が一つ減ることで、                                           
+										//　部分木のバランスが回復するが、                                                     
+										//　部分木全体では黒が一つ減った状態のため、                                           
+										//　親に遡って木の調整が必要。                                                         
 										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 										//【初期状態の考察】                                                                   
 										//・「curr_node」以下の黒の数は、                                                      
@@ -1572,10 +1573,10 @@ namespace rbtree
 										//　黒の数は、すべて同じ。                                                             
 										//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 										//【最終状態の考察】                                                                   
-										//・サブツリーの大（右）側の黒の数は一つ減る。                                         
-										//・サブツリーの小（左）側の黒の数は変わらない。                                       
-										//・サブツリーのバランスは取れるが、                                                   
-										//　サブツリー全体で黒の数が一つ少ない。                                               
+										//・部分木の大（右）側の黒の数は一つ減る。                                             
+										//・部分木の小（左）側の黒の数は変わらない。                                           
+										//・部分木のバランスは取れるが、                                                       
+										//　部分木全体で黒の数が一つ少ない。                                                   
 										//-------------------------------------------------------------------------------------
 										printf_dbg_remove("<ROT-S3b-[%d:B]→[%d:B]→[*:B/n]=NEXT>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
 										ope_type::setIsRed(*sibling_node);//兄弟ノードを赤に
@@ -1608,9 +1609,9 @@ namespace rbtree
 								//【最終状態の特徴】                                                                    
 								//・赤黒の位置関係（条件③）が崩れる可能性があるが、                                    
 								//　この後の処理で必ずcurr_nodeの親が黒になるので問題ない。                             
-								//・サブツリーのバランスは回復しない。                                                  
-								//・この状態のparent_nodeとcurr_nodeサブツリーに対して、                                
-								//　再帰的に【ケース[①～③]】を実行すると、サブツリーの                                
+								//・部分木のバランスは回復しない。                                                      
+								//・この状態のparent_nodeとcurr_node部分木に対して、                                    
+								//　再帰的に【ケース[①～③]】を実行すると、部分木の                                    
 								//　バランスが保たれる。                                                                
 								//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 								//【初期状態の考察】                                                                    
@@ -1618,9 +1619,9 @@ namespace rbtree
 								//　「sibling_node_s」／「sibling_node_l」以下の黒の数より一つ少ない。                  
 								//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 								//【最終状態の考察】                                                                    
-								//・サブツリーの大（右）側の黒の数は変化しない。                                        
-								//・サブツリーの小（左）側はバランスが崩れるため、                                      
-								//　さらにそのサブツリーでバランスを調整する。                                          
+								//・部分木の大（右）側の黒の数は変化しない。                                            
+								//・部分木の小（左）側はバランスが崩れるため、                                          
+								//　さらにその部分木でバランスを調整する。                                              
 								//--------------------------------------------------------------------------------------
 								printf_dbg_remove("<ROT-S4-[%d:B]→[%d:R]→[*:B/n]=RETRY>", ope_type::getKey(*parent_node), ope_type::getKey(*sibling_node));
 								_rotateL<ope_type>(parent_node);//親ノードを左回転処理
@@ -1633,8 +1634,8 @@ namespace rbtree
 									node_type* ancestor_node = const_cast<node_type*>(ancestor_info->m_nodeRef);
 									ope_type::setChild(*ancestor_node, parent_is_large, sibling_node);//親の親に新しい親を連結
 								}
-								stack.push(sibling_node, false);//もう一度同じサブツリーを回転操作するために、親ノードをスタックにプッシュ
-								stack.push(parent_node, false);//もう一度同じサブツリーを回転操作するために、親ノードをスタックにプッシュ
+								stack.push(sibling_node, false);//もう一度同じ部分木を回転操作するために、親ノードをスタックにプッシュ
+								stack.push(parent_node, false);//もう一度同じ部分木を回転操作するために、親ノードをスタックにプッシュ
 								parent_node_prev = curr_node;//親ノードを記録（次のループ処理の親の子に連結する）
 								//is_necessary_rotate = true;//再帰的に調整続行
 							}
@@ -1799,8 +1800,8 @@ namespace rbtree
 									node_type* ancestor_node = const_cast<node_type*>(ancestor_info->m_nodeRef);
 									ope_type::setChild(*ancestor_node, parent_is_large, sibling_node);//親の親に新しい親を連結
 								}
-								stack.push(sibling_node, true);//もう一度同じサブツリーを回転操作するために、親ノードをスタックにプッシュ
-								stack.push(parent_node, true);//もう一度同じサブツリーを回転操作するために、親ノードをスタックにプッシュ
+								stack.push(sibling_node, true);//もう一度同じ部分木を回転操作するために、親ノードをスタックにプッシュ
+								stack.push(parent_node, true);//もう一度同じ部分木を回転操作するために、親ノードをスタックにプッシュ
 								parent_node_prev = curr_node;//親ノードを記録（次のループ処理の親の子に連結する）
 								//is_necessary_rotate = true;//再帰的に調整続行
 							}
@@ -2196,9 +2197,10 @@ namespace rbtree
 			return _rend(ite);
 		}
 		//メソッド：容量系
-		bool empty() const { return m_root == nullptr; }
+		//std::size_t max_size() const { return (不定); }
+		//std::size_t capacity() const { return (不定); }
 		std::size_t size() const { return countNodes<ope_type>(m_root); }
-		//std::size_t max_size() const { return countNodes<ope_type>(m_root); }
+		bool empty() const { return m_root == nullptr; }
 		int depth_max() const { return getDepthMax<ope_type>(m_root); }
 		//メソッド：要素アクセス系
 		//※std::mapと異なり、ノードのポインタを返す
@@ -2217,7 +2219,7 @@ namespace rbtree
 		node_type* insert(const node_type& node){ return addNode<ope_type>(const_cast<node_type*>(&node), m_root); }
 		node_type* erase(const node_type& node){ return removeNode<ope_type>(&node, m_root); }
 		node_type* erase(const key_type key){ return removeNode<ope_type>(at(key), m_root); }
-		void clear(){ m_root = nullptr; }
+		node_type* clear(){ node_type* root = m_root; m_root = nullptr; return root; }
 		//メソッド：検索系
 		//※lower_bound(), upper_bound()には非対応
 		//※代わりに、find_nearestに対応
@@ -2273,7 +2275,7 @@ namespace rbtree
 		//フィールド
 		node_type* m_root;//根ノード
 	};
-}//namespace rbtree
+}//namespace rb_tree
 
 //--------------------------------------------------------------------------------
 //赤黒木テスト
@@ -2309,7 +2311,7 @@ struct data_t
 };
 //----------------------------------------
 //テストデータ操作クラス
-struct ope_t : public rbtree::base_ope_t<ope_t, data_t, int, TEST_DATA_STACK_DEPTH_MAX>
+struct ope_t : public rb_tree::base_ope_t<ope_t, data_t, int, TEST_DATA_STACK_DEPTH_MAX>
 {
 	//子ノードを取得
 	inline static const node_type* getChildL(const node_type& node){ return node.m_nodeL; }//大（右）側
@@ -2327,7 +2329,7 @@ struct ope_t : public rbtree::base_ope_t<ope_t, data_t, int, TEST_DATA_STACK_DEP
 	inline static key_type getKey(const node_type& node){ return node.m_key; }
 
 	//キーを比較
-	inline static int compare_key(const key_type lhs, const key_type rhs)
+	inline static int compareKey(const key_type lhs, const key_type rhs)
 	{
 		return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
 	}
@@ -2359,7 +2361,7 @@ inline int printf_dbg_search(const char* fmt, ...){ return 0; }
 int main(const int argc, const char* argv[])
 {
 	//型
-	typedef rbtree::container<ope_t> container_t;
+	typedef rb_tree::container<ope_t> container_t;
 	typedef container_t::iterator iterator;
 	typedef container_t::const_iterator const_iterator;
 	typedef container_t::reverse_iterator reverse_iterator;
@@ -2381,7 +2383,7 @@ int main(const int argc, const char* argv[])
 			data_t* new_node = new data_t(key);
 			printf_detail("[%2d] ", new_node->m_key);
 			con.insert(*new_node);
-			rbtree::printf_dbg_add("\n");
+			rb_tree::printf_dbg_add("\n");
 		};
 	#ifdef REGIST_TEST_DATA_SEQUENTIALLY
 		//シーケンシャルにデータ登録
@@ -2422,11 +2424,11 @@ int main(const int argc, const char* argv[])
 	};
 	prev_time = printElapsedTime(prev_time);
 
-	//ツリーを表示
+	//木を表示
 	auto showTree = [&con]()
 	{
 		printf("--- Show tree (count=%d) ---\n", con.size());
-		static const int depth_limit = 5;//最大でも5段階（1+2+4+8+16+32個）までを表示
+		static const int depth_limit = 5;//最大でも5段階目までを表示（0段階目から数えるので最大で6段階表示される→最大：1+2+4+8+16+32個）
 		const int _depth_max = con.depth_max();
 		printf("depth_max=%d (limit for showing=%d)\n", _depth_max, depth_limit);
 	#ifdef PRINT_TEST_DATA_TREE
@@ -2618,7 +2620,7 @@ int main(const int argc, const char* argv[])
 		printf("--- Search node ---\n");
 		for (int search_key = TEST_DATA_KEY_MIN; search_key <= TEST_DATA_KEY_MAX; ++search_key)
 		{
-			rbtree::stack_t<ope_t> stack;
+			rb_tree::stack_t<ope_t> stack;
 			static const int print_count_limit = 10;
 			int print_count = 0;
 			bool is_found = false;
@@ -2655,12 +2657,12 @@ int main(const int argc, const char* argv[])
 	//指定のキーと同じか内輪で一番近いノードを検索
 	//※一致ノードは表示を省略
 	//※最近ノードから数ノードを表示
-	auto searchNearestData = [&con](const rbtree::match_type_t search_type)
+	auto searchNearestData = [&con](const rb_tree::match_type_t search_type)
 	{
-		printf("--- Search nearest node for %s ---\n", search_type == rbtree::FOR_NEAREST_SMALLER ? "smaller" : search_type == rbtree::FOR_NEAREST_LARGER ? "larger" : "same");
+		printf("--- Search nearest node for %s ---\n", search_type == rb_tree::FOR_NEAREST_SMALLER ? "smaller" : search_type == rb_tree::FOR_NEAREST_LARGER ? "larger" : "same");
 		for (int search_key = TEST_DATA_KEY_MIN; search_key <= TEST_DATA_KEY_MAX; ++search_key)
 		{
-			rbtree::stack_t<ope_t> stack;
+			rb_tree::stack_t<ope_t> stack;
 			bool is_found = false;
 			const_iterator ite(con.find(search_key, search_type));
 			const_iterator end(con.end());
@@ -2682,11 +2684,11 @@ int main(const int argc, const char* argv[])
 				printf_dbg_search("\n");
 		}
 	};
-	searchNearestData(rbtree::FOR_NEAREST_SMALLER);
+	searchNearestData(rb_tree::FOR_NEAREST_SMALLER);
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//指定のキーと同じかそれより大きい最近ノードを検索
-	searchNearestData(rbtree::FOR_NEAREST_LARGER);
+	searchNearestData(rb_tree::FOR_NEAREST_LARGER);
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
 	//ノードを削除
@@ -2701,7 +2703,7 @@ int main(const int argc, const char* argv[])
 			{
 				delete removed_node;
 				printf_detail("[%2d] ", remove_key);
-				rbtree::printf_dbg_remove("\n");
+				rb_tree::printf_dbg_remove("\n");
 				return true;
 			}
 			return false;
@@ -2729,17 +2731,17 @@ int main(const int argc, const char* argv[])
 				++removed_count;
 		}
 	#endif//TEST_DATA_REMOVING_LIST
-		rbtree::printf_dbg_remove("\n");
+		rb_tree::printf_dbg_remove("\n");
 		printf("%d removed.\n", removed_count);
 	};
 	removeNodes();
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
-	//ツリーを表示
+	//木を表示
 	showTree();
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
-	//黒ノード数を表示
+	//各枝までのノード数を表示
 	showNodesCount();
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
@@ -2765,20 +2767,20 @@ int main(const int argc, const char* argv[])
 				delete removed_node;
 				++removed_count;
 				printf_detail("[%2d] ", remove_key);
-				rbtree::printf_dbg_remove("\n");
+				rb_tree::printf_dbg_remove("\n");
 			}
 		}
-		rbtree::printf_dbg_remove("\n");
+		rb_tree::printf_dbg_remove("\n");
 		printf("%d removed.\n", removed_count);
 	};
 	removeEachKeyNodes();
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
-	//ツリーを表示
+	//木を表示
 	showTree();
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
-	//黒ノード数を表示
+	//各枝までのノード数を表示
 	showNodesCount();
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
@@ -2804,22 +2806,22 @@ int main(const int argc, const char* argv[])
 				delete removed_node;
 				++removed_count;
 				printf_detail("[%2d] ", remove_key);
-				rbtree::printf_dbg_remove("\n");
+				rb_tree::printf_dbg_remove("\n");
 			}
 			else
 				++remove_key;
 		}
-		rbtree::printf_dbg_remove("\n");
+		rb_tree::printf_dbg_remove("\n");
 		printf("%d removed.\n", removed_count);
 	};
 	removeAllNodes();
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
-	//ツリーを表示
+	//木を表示
 	showTree();
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
-	//黒ノード数を表示
+	//各枝までのノード数を表示
 	showNodesCount();
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 

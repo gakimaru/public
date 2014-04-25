@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D5230CF4-D062-4961-A9A6-16EEFAAB7B24}</ProjectGuid>
+    <ProjectGuid>{A51495A0-1265-48D1-ABBB-AC2723F1BE7C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>rbtree</RootNamespace>
+    <RootNamespace>rb_tree</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

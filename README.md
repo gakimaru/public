@@ -175,10 +175,13 @@
      |  |  |
      |  |  |-[PrecompiledHeader]      ... プリコンパイル済みヘッダーの確認
      |  |  |
+     |  |  |-[prior_queue]            ... ★二分ヒープ（プライオリティキュー）のサンプルプログラム
+     |  |  |-[prior_queue_unix]       ... ★二分ヒープ（プライオリティキュー）のサンプルプログラム（unix系＋GCC）
+     |  |  |
      |  |  |-[Random]                 ... 乱数のテスト
      |  |  |
-     |  |  |-[rbtree]                 ... ★赤黒木（red-black tree）のサンプルプログラム
-     |  |  |-[rbtree_unix]            ... ★赤黒木（red-black tree）のサンプルプログラム（unix系＋GCC）
+     |  |  |-[rb_tree]                ... ★赤黒木（red-black tree）のサンプルプログラム
+     |  |  |-[rb_tree_unix]           ... ★赤黒木（red-black tree）のサンプルプログラム（unix系＋GCC）
      |  |  |
      |  |  |-[ResourceBuilderFactory] ... ★リソースビルダーファクトリーのサンプル処理
      |  |  |

@@ -383,6 +383,12 @@ namespace prior_queue
 	private:
 		//シーケンス番号発行
 		seq_type getNextSeqNo(){ return m_seqNo++; }
+		//可能ならシーケンス番号をリセット
+		void checkAndResetSeqNo()
+		{
+			if (m_heap.empty())
+				m_seqNo = 0;
+		}
 	public:
 		//キューイング
 		const node_type* enqueue(node_type& obj)
@@ -404,11 +410,23 @@ namespace prior_queue
 		//キューイング終了
 		const node_type* push_end(){ return m_heap.push_end(); }
 		//デキュー
-		bool dequeue(node_type& dst){ return m_heap.pop(dst); }
+		bool dequeue(node_type& dst)
+		{
+			const bool result = m_heap.pop(dst);
+			if (!result)
+				return false;
+			checkAndResetSeqNo();
+			return true;
+		}
 		//デキュー開始
 		const node_type* dequeueBegin(){ return m_heap.pop_begin(); }
 		//デキュー終了
-		bool dequeueEnd(){ return m_heap.pop_end(); }
+		bool dequeueEnd()
+		{
+			const bool result = m_heap.pop_end();
+			checkAndResetSeqNo();
+			return result;
+		}
 	public:
 		//コンストラクタ
 		//※キー比較処理を渡す
@@ -716,6 +734,11 @@ int main(const int argc, const char* argv[])
 	};
 	popNodesSTL(TEST_DATA_REG_NUM / 2);
 	popNodesSTL(TEST_DATA_REG_NUM);
+
+	//プライオリティキューを再実行
+	pushNodes();//キューイング
+	showTree(con);//木を表示
+	popNodes(TEST_DATA_REG_NUM);//ノードをポップ
 
 	return EXIT_SUCCESS;
 }

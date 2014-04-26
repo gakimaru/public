@@ -262,15 +262,15 @@ namespace bin_heap
 //プライオリティキュー
 //※プライオリティとともに、シーケンス番号を扱うことで、キューイングの順序性を保証する。
 //※最終的には、スレッドセーフな構造にする。
-namespace prior_queue
+namespace priority_queue
 {
 	//--------------------
 	//プライオリティキュー操作用テンプレート構造体
 	//※CRTPを活用し、下記のような派生構造体を作成して使用する
 	//  //template<class OPE_TYPE, typename NODE_TYPE, int _NODES_MAX>
 	//  //struct base_ope_t;
-	//  //struct 派生構造体名 : public prior_queue::base_ope_t<派生構造体, ノード型, 最大ノード数, 優先度型, シーケンス番号型>
-	//	struct ope_t : public prior_queue::ope_t<ope_t, data_t, 1024, int, unsigned int>
+	//  //struct 派生構造体名 : public priority_queue::base_ope_t<派生構造体, ノード型, 最大ノード数, 優先度型, シーケンス番号型>
+	//	struct ope_t : public priority_queue::ope_t<ope_t, data_t, 1024, int, unsigned int>
 	//	{
 	//		//優先度を取得
 	//		inline static prior_type getPrior(const node_type& node){ return node.m_prior; }
@@ -444,7 +444,7 @@ namespace prior_queue
 	//--------------------
 	//基本型定義マクロ消去
 	#undef DECLARE_OPE_TYPES
-}//namespace prior_queue
+}//namespace priority_queue
 
 //--------------------------------------------------------------------------------
 //プライオリティキューテスト
@@ -489,7 +489,7 @@ struct data_t
 };
 //----------------------------------------
 //テストデータ操作クラス
-struct ope_t : public prior_queue::base_ope_t<ope_t, data_t, TEST_DATA_MAX, PRIORITY, int>
+struct ope_t : public priority_queue::base_ope_t<ope_t, data_t, TEST_DATA_MAX, PRIORITY, int>
 {
 	//優先度を取得
 	inline static prior_type getPrior(const node_type& node){ return node.m_prior; }
@@ -519,7 +519,7 @@ inline int printf_detail(const char* fmt, ...){ return 0; }
 int main(const int argc, const char* argv[])
 {
 	//プライオリティキューコンテナ生成
-	typedef prior_queue::container<ope_t> contaier_type;
+	typedef priority_queue::container<ope_t> contaier_type;
 	typedef contaier_type::bin_heap bin_heap;
 	contaier_type con;
 

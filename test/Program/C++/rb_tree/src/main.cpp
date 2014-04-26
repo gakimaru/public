@@ -9,6 +9,7 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタ
 #define PRINT_TEST_DATA_SEARCH//テストデーたの検索結果を表示する場合は、このマクロを有効化する（表示しなくても検索は実行する）
 #define PRINT_TEST_DATA_COLOR_COUNT//テストデータの赤黒カウント数計測を表示する場合は、このマクロを有効化する
 #define PRINT_TEST_DATA_DETAIL//テストデーの詳細タを表示する場合は、このマクロを有効化する
+//#define ENABLE_CALC_COUNT_PERFORMANCE//データ件数カウントの処理時間を計測する場合は、このマクロを有効化する
 
 //テストデータを固定順に登録する場合は、このマクロを有効化する（無効時はランダム、ただし、REGIST_TEST_DATA_SEQUENTIALLYが優先）
 //#define TEST_DATA_REGISTRATION_LIST { 54, 59, 71, 84, 60, 85, 54, 84, 42, 62, 64, 38, 43, 29, 89, 5, 96, 27, 38, 47, 79, 81, 52, 47, 56, 39, 92, 83, 7, 33, 8, 64, 2, 36, 83, 95, 77, 14, 87, 87, 97, 47, 79, 80, 46, 52, 78, 67, 11, 72, 63, 58, 14, 53, 94, 75, 52, 10, 41, 47, 26, 18, 77, 73, 45, 21, 56, 13, 1, 32, 61, 14, 61, 22, 61, 38, 94, 90, 68, 44, 35, 61, 43, 90, 69, 9, 6, 96, 66, 65, 67, 17, 21, 35, 12, 75, 31, 60, 36, 32}
@@ -26,11 +27,11 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタ
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <cstddef>//srd::size_t用
 #include <memory.h>//memcpy用
 #include <assert.h>//assert用
+#include <cstddef>//srd::size_t用
 #include <iterator>//std::iterator用
-
+#include <utility>//std::move用
 
 //--------------------------------------------------------------------------------
 //赤黒木（red-black tree）
@@ -554,8 +555,33 @@ namespace rb_tree
 	std::size_t countNodes(const typename OPE_TYPE::node_type* node)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
+	#if 0
+		//再帰処理版
 		return !node ? 0 : 1 + countNodes<ope_type>(ope_type::getChildL(*node)) +
 		                       countNodes<ope_type>(ope_type::getChildS(*node));
+	#else
+		//ループ処理版
+		//※再帰処理版よりもループ処理版の方が高速
+		//　▼実際に処理時間を測定して確認
+		//　　以下、ノード数100の計測を10000000回行った結果
+		//　　・再帰処理版：　3.443212500 sec
+		//　　・ループ処理版：1.663094300 sec
+		int count = 0;
+		const node_type* stack[stack_type::DEPTH_MAX];
+		int stack_pos = 0;
+		while (node)
+		{
+			while (node)
+			{
+				++count;
+				stack[stack_pos++] = node;
+				node = ope_type::getChildS(*node);
+			}
+			while (!node && stack_pos != 0)
+				node = ope_type::getChildL(*stack[--stack_pos]);
+		}
+		return count;
+	#endif
 	}
 	//--------------------
 	//赤黒木操作関数：指定のキーのノード数を計測
@@ -1865,65 +1891,65 @@ namespace rb_tree
 			friend class container;
 		public:
 			//キャストオペレータ
-			operator const node_type() const { return *m_node; }
-			operator node_type&(){ return *m_node; }
-			operator key_type() const { return ope_type::getKey(*m_node); }
+			inline operator const node_type() const { return *m_node; }
+			inline operator node_type&(){ return *m_node; }
+			inline operator key_type() const { return ope_type::getKey(*m_node); }
 		public:
 			//オペレータ
-			const node_type& operator*() const { return *m_node; }
-			node_type& operator*(){ return *m_node; }
-			const node_type* operator->() const { return m_node; }
-			node_type* operator->(){ return m_node; }
+			inline const node_type& operator*() const { return *m_node; }
+			inline node_type& operator*(){ return *m_node; }
+			inline const node_type* operator->() const { return m_node; }
+			inline node_type* operator->(){ return m_node; }
 			//比較オペレータ
-			bool operator==(const_iterator& rhs) const
+			inline bool operator==(const_iterator& rhs) const
 			{
 				return m_node == nullptr && rhs.m_node == nullptr ? true :
 				       m_node == nullptr || rhs.m_node == nullptr ? false :
 				       ope_type::eq(*m_node, *rhs);
 			}
-			bool operator!=(const_iterator& rhs) const
+			inline bool operator!=(const_iterator& rhs) const
 			{
 				return m_node == nullptr && rhs.m_node == nullptr ? false :
 				       m_node == nullptr || rhs.m_node == nullptr ? true :
 					   ope_type::ne(*m_node, *rhs);
 			}
-			bool operator>(const_iterator& rhs) const
+			inline bool operator>(const_iterator& rhs) const
 			{
 				return m_node == nullptr || rhs.m_node == nullptr ? false :
 				       ope_type::gt(*m_node, *rhs);
 			}
-			bool operator>=(const_iterator& rhs) const
+			inline bool operator>=(const_iterator& rhs) const
 			{
 				return m_node == nullptr || rhs.m_node == nullptr ? false :
 				       ope_type::ge(*m_node, *rhs);
 			}
-			bool operator<(const_iterator& rhs) const
+			inline bool operator<(const_iterator& rhs) const
 			{
 				return m_node == nullptr || rhs.m_node == nullptr ? false :
 				       ope_type::lt(*m_node, *rhs);
 			}
-			bool operator<=(const_iterator& rhs) const
+			inline bool operator<=(const_iterator& rhs) const
 			{
 				return m_node == nullptr || rhs.m_node == nullptr ? false :
 				       ope_type::le(*m_node, *rhs);
 			}
 			//演算オペレータ
-			const_iterator& operator++() const
+			inline const_iterator& operator++() const
 			{
 				m_node = const_cast<node_type*>(getNextNode<ope_type>(m_node, m_stack));
 				return *this;
 			}
-			const_iterator& operator--() const
+			inline const_iterator& operator--() const
 			{
 				m_node = const_cast<node_type*>(getPrevNode<ope_type>(m_node, m_stack));
 				return *this;
 			}
-			iterator& operator++()
+			inline iterator& operator++()
 			{
 				m_node = const_cast<node_type*>(getNextNode<ope_type>(m_node, m_stack));
 				return *this;
 			}
-			iterator& operator--()
+			inline iterator& operator--()
 			{
 				m_node = const_cast<node_type*>(getPrevNode<ope_type>(m_node, m_stack));
 				return *this;
@@ -2001,11 +2027,17 @@ namespace rb_tree
 				return ite;
 			}
 		public:
-			//コピーオペレータ
-			iterator& operator=(const_iterator& rhs)
+			//ムーブオペレータ
+			iterator& operator=(const_iterator&& rhs)
 			{
 				m_stack = rhs.m_stack;
 				m_node = rhs.m_node;
+				return *this;
+			}
+			//コピーオペレータ
+			inline iterator& operator=(const_iterator& rhs)
+			{
+				return operator=(std::move(rhs));
 			}
 		public:
 			//リセット
@@ -2015,10 +2047,14 @@ namespace rb_tree
 				m_node = nullptr;
 			}
 		public:
-			//コピーコンストラクタ
-			iterator(const_iterator& obj) :
+			//ムーブコンストラクタ
+			iterator(const_iterator&& obj) :
 				m_stack(obj.m_stack),
 				m_node(obj.m_node)
+			{}
+			//コピーコンストラクタ
+			inline iterator(const_iterator& obj) :
+				iterator(std::move(obj))
 			{}
 			//コンストラクタ
 			iterator() :
@@ -2030,7 +2066,7 @@ namespace rb_tree
 				m_node(const_cast<node_type*>(node))
 			{}
 			//デストラクタ
-			~iterator()
+			inline ~iterator()
 			{}
 		protected:
 			//フィールド
@@ -2048,94 +2084,103 @@ namespace rb_tree
 		{
 		public:
 			//演算オペレータ
-			const_reverse_iterator& operator++() const
+			inline const_reverse_iterator& operator++() const
 			{
 				return static_cast<const_reverse_iterator&>(iterator::operator--());
 			}
-			const_reverse_iterator& operator--() const
+			inline const_reverse_iterator& operator--() const
 			{
 				return static_cast<const_reverse_iterator&>(iterator::operator++());
 			}
-			reverse_iterator& operator++()
+			inline reverse_iterator& operator++()
 			{
 				return static_cast<reverse_iterator&>(iterator::operator--());
 			}
-			reverse_iterator& operator--()
+			inline reverse_iterator& operator--()
 			{
 				return static_cast<reverse_iterator&>(iterator::operator++());
 			}
-			const_reverse_iterator operator++(int) const
+			inline const_reverse_iterator operator++(int) const
 			{
 				return static_cast<const_reverse_iterator&>(iterator::operator--(0));
 			}
-			const_reverse_iterator operator--(int) const
+			inline const_reverse_iterator operator--(int) const
 			{
 				return static_cast<const_reverse_iterator&>(iterator::operator++(0));
 			}
-			reverse_iterator operator++(int)
+			inline reverse_iterator operator++(int)
 			{
 				return static_cast<reverse_iterator&>(iterator::operator--(0));
 			}
-			reverse_iterator operator--(int)
+			inline reverse_iterator operator--(int)
 			{
 				return static_cast<reverse_iterator&>(iterator::operator++(0));
 			}
-			const_reverse_iterator& operator+=(const int val) const
+			inline const_reverse_iterator& operator+=(const int val) const
 			{
 				return static_cast<const_reverse_iterator&>(iterator::operator-=(val));
 			}
-			const_reverse_iterator& operator-=(const int val) const
+			inline const_reverse_iterator& operator-=(const int val) const
 			{
 				return static_cast<const_reverse_iterator&>(iterator::operator+=(val));
 			}
-			reverse_iterator& operator+=(const int val)
+			inline reverse_iterator& operator+=(const int val)
 			{
 				return static_cast<reverse_iterator&>(iterator::operator-=(val));
 			}
-			reverse_iterator& operator-=(const int val)
+			inline reverse_iterator& operator-=(const int val)
 			{
 				return static_cast<reverse_iterator&>(iterator::operator+=(val));
 			}
-			const_reverse_iterator operator+(const int val) const
+			inline const_reverse_iterator operator+(const int val) const
 			{
 				return static_cast<const_reverse_iterator&>(iterator::operator-(val));
 			}
-			const_reverse_iterator operator-(const int val) const
+			inline const_reverse_iterator operator-(const int val) const
 			{
 				return static_cast<const_reverse_iterator&>(iterator::operator+(val));
 			}
-			reverse_iterator operator+(const int val)
+			inline reverse_iterator operator+(const int val)
 			{
 				return static_cast<reverse_iterator&>(iterator::operator-(val));
 			}
-			reverse_iterator operator-(const int val)
+			inline reverse_iterator operator-(const int val)
 			{
 				return static_cast<reverse_iterator&>(iterator::operator+(val));
 			}
 		public:
+			//ムーブコンストラクタ
+			inline reverse_iterator(const_iterator&& obj) :
+				iterator(obj)
+			{}
 			//コピーコンストラクタ
-			reverse_iterator(const_iterator& obj) :
+			inline reverse_iterator(const_iterator& obj) :
 				iterator(obj)
 			{}
 			//コンストラクタ
-			reverse_iterator() :
+			inline reverse_iterator() :
 				iterator()
 			{}
-			reverse_iterator(const node_type* node, const stack_type& stack) :
+			inline reverse_iterator(const node_type* node, const stack_type& stack) :
 				iterator(node, stack)
 			{}
 			//デストラクタ
-			~reverse_iterator()
+			inline ~reverse_iterator()
 			{}
 		};
 	public:
+		//アクセッサ
+		inline const node_type* root() const { return m_root; }//根ノードを取得
+		inline node_type* root(){ return m_root; }//根ノードを取得
+		inline node_type*& root_ref(){ return m_root; }//根ノードの参照を取得
+	public:
 		//メソッド：イテレータ系
-		const_iterator& _begin(const_iterator& ite) const
+		inline const_iterator& _begin(const_iterator& ite) const
 		{
 			ite.m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, ite.m_stack));
 			return ite;
 		}
-		const_iterator& _end(const_iterator& ite) const
+		inline const_iterator& _end(const_iterator& ite) const
 		{
 			ite.reset();
 			return ite;
@@ -2171,12 +2216,12 @@ namespace rb_tree
 			return _end(ite);
 		}
 		//メソッド：リバースイテレータ系
-		const_reverse_iterator& _rbegin(const_reverse_iterator& ite) const
+		inline const_reverse_iterator& _rbegin(const_reverse_iterator& ite) const
 		{
 			ite.m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, ite.m_stack));
 			return ite;
 		}
-		const_reverse_iterator& _rend(const_reverse_iterator& ite) const
+		inline const_reverse_iterator& _rend(const_reverse_iterator& ite) const
 		{
 			ite.reset();
 			return ite;
@@ -2212,33 +2257,37 @@ namespace rb_tree
 			return _rend(ite);
 		}
 		//メソッド：容量系
-		//std::size_t max_size() const { return (不定); }
-		//std::size_t capacity() const { return (不定); }
-		std::size_t size() const { return countNodes<ope_type>(m_root); }
-		bool empty() const { return m_root == nullptr; }
-		int depth_max() const { return getDepthMax<ope_type>(m_root); }
+		//inline std::size_t max_size() const { return (不定); }
+		//inline std::size_t capacity() const { return (不定); }
+		inline std::size_t size() const { return countNodes<ope_type>(m_root); }//ノード数を取得
+		inline bool empty() const { return m_root == nullptr; }//木が空か？
+		inline int depth_max() const { return getDepthMax<ope_type>(m_root); }//木の深さを取得
 		//メソッド：要素アクセス系
 		//※std::mapと異なり、ノードのポインタを返す
-		inline const node_type* _at(const key_type key) const
+		const node_type* at(const key_type key) const
 		{
 			stack_type stack;
 			return searchNode<ope_type>(m_root, key, stack, FOR_MATCH);
 		}
-		const node_type* at(const key_type key) const { return _at(key); }
-		node_type* at(const key_type key){ return const_cast<node_type*>(_at(key)); }
-		const node_type* operator[](const key_type key) const { return _at(key); }
-		node_type* operator[](const key_type key){ return const_cast<node_type*>(_at(key)); }
+		inline node_type* at(const key_type key){ return const_cast<node_type*>(const_cast<const container*>(this)->at(key)); }
+		inline const node_type* operator[](const key_type key) const { return at(key); }
+		inline node_type* operator[](const key_type key){ return at(key); }
 		//メソッド：追加／削除系
 		//※std::mapと異なり、ノードを直接指定し、結果をbool型で受け取る
 		//※要素のメモリ確保／削除を行わない点に注意
-		node_type* insert(const node_type& node){ return addNode<ope_type>(const_cast<node_type*>(&node), m_root); }
-		node_type* erase(const node_type& node){ return removeNode<ope_type>(&node, m_root); }
-		node_type* erase(const key_type key){ return removeNode<ope_type>(at(key), m_root); }
-		node_type* clear(){ node_type* root = m_root; m_root = nullptr; return root; }
+		inline node_type* insert(const node_type& node){ return addNode<ope_type>(const_cast<node_type*>(&node), m_root); }
+		inline node_type* erase(const node_type& node){ return removeNode<ope_type>(&node, m_root); }
+		inline node_type* erase(const key_type key){ return removeNode<ope_type>(at(key), m_root); }
+		node_type* clear()
+		{ 
+			node_type* root = m_root;
+			m_root = nullptr;
+			return root;
+		}
 		//メソッド：検索系
 		//※lower_bound(), upper_bound()には非対応
 		//※代わりに、find_nearestに対応
-		const_iterator& _find(const_iterator& ite, const key_type key, const match_type_t type = FOR_MATCH) const
+		inline const_iterator& _find(const_iterator& ite, const key_type key, const match_type_t type = FOR_MATCH) const
 		{
 			ite.m_node = const_cast<node_type*>(searchNode<ope_type>(m_root, key, ite.m_stack, type));
 			return ite;
@@ -2253,7 +2302,7 @@ namespace rb_tree
 			iterator ite;
 			return _find(ite, key, type);
 		}
-		std::size_t count(const key_type key) const { return countNodes<ope_type>(m_root, key); }
+		inline std::size_t count(const key_type key) const { return countNodes<ope_type>(m_root, key); }
 		const_iterator& _equal_range(const_iterator& ite, const key_type key) const
 		{
 			ite.m_node = const_cast<node_type*>(searchNode<ope_type>(m_root, key, ite.m_stack, FOR_MATCH));
@@ -2271,13 +2320,14 @@ namespace rb_tree
 			iterator ite;
 			return _equal_range(ite, key);
 		}
-		//その他
-		const node_type* root() const { return m_root; }//根ノードを取得
-		node_type*& root_ref(){ return m_root; }//根ノードの参照を取得
 	public:
+		//ムーブコンストラクタ
+		container(const container&& con) :
+			m_root(con.m_root)
+		{}
 		//コピーコンストラクタ
 		container(const container& con) :
-			m_root(con.m_root)
+			container(std::move(con))
 		{}
 		//コンストラクタ
 		container() :
@@ -2450,10 +2500,10 @@ int main(const int argc, const char* argv[])
 		printf("depth_max=%d (limit for showing=%d)\n", _depth_max, depth_limit);
 	#ifdef PRINT_TEST_DATA_TREE
 		const int depth_max = _depth_max <= depth_limit ? _depth_max : depth_limit;
-		const int width_max = static_cast<int>(std::pow(2, depth_max));
+		const int width_max = depth_max < 0 ? 0 : 1 << depth_max;//static_cast<int>(std::pow(2, depth_max));
 		for (int depth = 0; depth <= depth_max; ++depth)
 		{
-			const int width = static_cast<int>(std::pow(2, depth));
+			const int width = 1 << depth;//static_cast<int>(std::pow(2, depth));
 			static const int label_len = 6;
 			const int print_width = (width_max * label_len) / width;
 			const int print_indent = (print_width - label_len) / 2;
@@ -2508,13 +2558,28 @@ int main(const int argc, const char* argv[])
 	showTree();
 	prev_time = printElapsedTime(prev_time);//経過時間を表示
 
+#ifdef ENABLE_CALC_COUNT_PERFORMANCE
+	//ノード数カウントの時間計測
+	auto calcNodesCount = [&con]()
+	{
+		static const int loop_max = 10000000;
+		printf("--- Calc count (%d times) ---\n", loop_max);
+		long long count = 0;
+		for (int i = 0; i < loop_max; ++i)
+			count += con.size();
+		printf("count=%lld\n", count);
+	};
+	calcNodesCount();
+	prev_time = printElapsedTime(prev_time);//経過時間を表示
+#endif//ENABLE_CALC_COUNT_PERFORMANCE
+
 	//各枝までのノード数を表示
 	auto showNodesCount = [&con]()
 	{
 		printf("--- Show nodes count (count=%d) ---\n", con.size());
 		const int depth_max = con.depth_max();
-		const long long width_max = static_cast<long long>(std::pow(2, static_cast<long long>(depth_max)));
-		printf("depth_max=%d, width_max=%lld\n", depth_max, width_max);
+		const unsigned long long width_max = depth_max < 0 ? 0llu : 1llu << depth_max;//static_cast<long long>(std::pow(2, static_cast<long long>(depth_max)));
+		printf("depth_max=%d, width_max=%llu\n", depth_max, width_max);
 		if(depth_max > 63)
 		{
 			printf("'depth_max' is over 63. aborting therefor.\n");
@@ -2528,7 +2593,7 @@ int main(const int argc, const char* argv[])
 		int reds_max = -1;
 		int total_min = -1;
 		int total_max = -1;
-		for (long long breath = 0; breath < width_max; ++breath)
+		for (unsigned long long breath = 0; breath < width_max; ++breath)
 		{
 			int blacks = 0;
 			int reds = 0;

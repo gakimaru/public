@@ -1,0 +1,1560 @@
+============================================================
+Sort type: [C-Lib qsort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [C-Lib qsort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [STL sort(with function)]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.001000300 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [STL sort(with function)]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [STL sort(with inline function)]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [STL sort(with inline function)]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [STL sort(with functor)]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [STL sort(with functor)]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [STL sort(with lamda)]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [STL sort(with lamda)]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Bubble sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Bubble sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Shaker sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Shaker sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Odd-Even sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Odd-Even sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Comb sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.001001200 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Comb sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Gnome sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Gnome sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Shaker Gnome sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Shaker Gnome sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Quick sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Quick sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Selection sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=54/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=49/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=45/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Selection sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Shaker Selection sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Shaker Selection sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Heap sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Heap sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Insertion sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Insertion sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Shell sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Shell sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Intro sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Intro sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+============================================================
+Sort type: [Pre-Check sort]
+============================================================
+
+------------------------------
+Measure type: shuffle1
+------------------------------
+----- Make Array(shuffle1) -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=58/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle2
+------------------------------
+----- Make Array(shuffle2) -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=55/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: shuffle3
+------------------------------
+----- Make Array(shuffle3) -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000999700 sec
+----- Sort -----
+Attay is NOT ordered! (NG=50/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered
+------------------------------
+----- Make Array(ordered) -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Array is ordered.(count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: reversed
+------------------------------
+----- Make Array(reversed) -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=99/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+------------------------------
+Measure type: ordered_without_both_ends
+------------------------------
+----- Make Array(ordered_without_both_ends) -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Sort -----
+Attay is NOT ordered! (NG=2/count=100)
+*elapsed time=0.000000000 sec
+----- Delete array -----
+*elapsed time=0.000000000 sec
+
+============================================================
+Sort type: [Pre-Check sort]
+*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+============================================================
+
+
+- End -
+*elapsed time=0.003001200 sec

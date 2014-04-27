@@ -74,42 +74,21 @@ inline __m128 calcDiv(const __m128 lhs, const float rhs)//“ñ€‚ÌŠ„‚èZ
 {
 	return _mm_div_ps(lhs, _mm_set1_ps(rhs));//ret © {lhs[0] / rhs, lhs[1] / rhs, lhs[2] / rhs, lhs[3] / rhs}
 }
-inline float calcNorm2(const __m128 val)//ƒmƒ‹ƒ€^2ŒvZ
-{
-	return getScalar(//ret © arg0[0]
-	         _mm_dp_ps(val, val, 0x71)//arg0 © {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, 0.f, 0.f, 0.f}
-	       );
-}
-inline float calcNorm(const __m128 val)//ƒmƒ‹ƒ€ŒvZ
-{
-	return getScalar(//ret © arg1[0]
-	         _mm_sqrt_ss(//arg1 © {sqrt(arg0[0]), arg0[1], arg0[2], arg0[3]}
-	           _mm_dp_ps(val, val, 0x71)//arg0 © {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, 0.f, 0.f, 0.f}
-	         )
-	       );
-}
-inline __m128 calcNormalize(const __m128 val)//³‹K‰»
-{
-	return _mm_div_ps(//ret © {arg4[0] / arg3[0], arg4[1] / arg3[1], arg4[2] / arg3[2], arg4[3] / arg3[3]}
-	         val,        //arg4: val
-	         _mm_set1_ps(//arg3 © {arg2, arg2, arg2, arg2}
-	           getScalar(//arg2 © arg1[0]
-	             _mm_sqrt_ss(//arg1 © {sqrt(arg0[0]), arg0[1], arg0[2], arg0[3]}
-	               _mm_dp_ps(val, val, 0x71)//arg0 © {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, 0.f, 0.f, 0.f}
-	             )
-	           )
-	         )
-	       );
-}
 inline float calcDot(const __m128 lhs, const __m128 rhs)//“àÏŒvZ
 {
-	return getScalar(//ret © arg4[0]
+	return getScalar(//ret © arg0[0]
 	         _mm_dp_ps(lhs, rhs, 0x71)//arg0 © {lhs[0] * rhs[0] + lhs[1] * rhs[1] + lhs[2] * rhs[2] + 0.f, 0.f, 0.f, 0.f}
 	       );
 }
-inline float calcNormalizeDot(const __m128 lhs, const __m128 rhs)//³‹K‰»ƒxƒNƒgƒ‹‚Å“àÏŒvZ
+inline __m128 calcDot(const __m128 val)//“àÏŒvZ
 {
-	return calcDot(calcNormalize(lhs), calcNormalize(rhs));//ret © calcDot(calcNormalize(lhs), calcNormalize(rhs))
+	return _mm_dp_ps(val, val, 0x77);//ret © {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, (“¯’l), (“¯’l), 0.f}
+}
+inline __m128 calcSqrtDot(const __m128 val)//sqrt(“àÏ)ŒvZ
+{
+	return _mm_sqrt_ps(//ret © {sqrt(arg0[0]), sqrt(arg0[1]), sqrt(arg0[2]), sqrt(arg0[3])}
+	         _mm_dp_ps(val, val, 0x77)//arg0 © {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, (“¯’l), (“¯’l), 0.f}
+	       );
 }
 inline __m128 calcCross(const __m128 lhs, const __m128 rhs)//ŠOÏŒvZ
 {
@@ -125,19 +104,42 @@ inline __m128 calcCross(const __m128 lhs, const __m128 rhs)//ŠOÏŒvZ
 	       );
 	return lhs;
 }
+inline float calcNorm2(const __m128 val)//ƒmƒ‹ƒ€^2ŒvZ
+{
+	return getScalar(//ret © arg0[0]
+	         calcDot(val)//arg0 © {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, (“¯’l), (“¯’l), 0.f}
+	       );
+}
+inline float calcNorm(const __m128 val)//ƒmƒ‹ƒ€ŒvZ
+{
+	return getScalar(//ret © arg0[0]
+	         calcSqrtDot(val)//arg0 © {sqrt(val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f), (“¯’l), (“¯’l), 0.f}
+	       );
+}
+inline __m128 calcNormalize(const __m128 val)//³‹K‰»
+{
+	return _mm_div_ps(//ret © {arg1[0] / arg0[0], arg1[1] / arg0[1], arg1[2] / arg0[2], arg1[3] / arg0[3]}
+	         val,            //arg0: val
+	         calcSqrtDot(val)//arg1 © {sqrt(val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f), (“¯’l), (“¯’l), 0.f}
+	       );
+}
+inline float calcNormalizeDot(const __m128 lhs, const __m128 rhs)//³‹K‰»ƒxƒNƒgƒ‹‚Å“àÏŒvZ
+{
+	return calcDot(calcNormalize(lhs), calcNormalize(rhs));//ret © calcDot(calcNormalize(lhs), calcNormalize(rhs))
+}
 inline float calcDistance2(const __m128 from, const __m128 to)//‹——£^2ŒvZ
 {
-	const __m128 val_diff = _mm_sub_ps(to, from);//ret © {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
-	return getScalar(//ret © arg0[0]
-	         _mm_dp_ps(val_diff, val_diff, 0x71)//arg0 © {val_diff[0] * val_diff[0] + val_diff[1] * val_diff[1] + val_diff[2] * val_diff[2] + 0.f, 0.f, 0.f, 0.f}
+	return getScalar(//ret © arg1[0]
+	         calcDot(//arg1 © {arg0[0] * arg0[0], arg0[1] * arg0[1], arg0[2] * arg0[2], 0.f}
+	           _mm_sub_ps(to, from)//arg0 © {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
+	         )
 	       );
 }
 inline float calcDistance(const __m128 from, const __m128 to)//‹——£ŒvZ
 {
-	const __m128 val_diff = _mm_sub_ps(to, from);//ret © {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
 	return getScalar(//ret © arg1[0]
-	         _mm_sqrt_ss(//arg1 © {sqrt(arg0[0]), arg0[1], arg0[2], arg0[3]}
-	           _mm_dp_ps(val_diff, val_diff, 0x71)//arg0 © {val_diff[0] * val_diff[0] + val_diff[1] * val_diff[1] + val_diff[2] * val_diff[2] + 0.f, 0.f, 0.f, 0.f}
+	         calcSqrtDot(//arg1 © {sqrt(arg0[0] * arg0[0]), sqrt(arg0[1] * arg0[1]), sqrt(arg0[2] * arg0[2]), 0.f}
+	           _mm_sub_ps(to, from)//arg0 © {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
 	         )
 	       );
 }

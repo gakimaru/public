@@ -49,7 +49,7 @@ LC20:
 	.globl	_main
 	.def	_main;	.scl	2;	.type	32;	.endef
 _main:
-LFB979:
+LFB981:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -115,7 +115,7 @@ L3:
 	movl	%esi, 4(%esp)
 	movl	%eax, (%esp)
 	call	__Z3subR4vec3S0_S0_S0_S0_S0_RfS1_S1_S0_S0_S0_S0_ffffi
-	cmpl	$10000000, %ebx
+	cmpl	$100000000, %ebx
 	jne	L3
 	call	__ZNSt6chrono3_V212system_clock3nowEv
 	movl	$1000, 8(%esp)
@@ -134,7 +134,7 @@ L3:
 	flds	92(%esp)
 	fstps	72(%esp)
 	call	_puts
-	movl	$10000000, 4(%esp)
+	movl	$100000000, 4(%esp)
 	movl	$LC6, (%esp)
 	call	_printf
 	movl	$LC7, (%esp)
@@ -143,8 +143,8 @@ L3:
 	call	_printf
 	movaps	144(%esp), %xmm0
 	movl	$LC8, (%esp)
-	dpps	$113, %xmm0, %xmm0
-	sqrtss	%xmm0, %xmm0
+	dpps	$119, %xmm0, %xmm0
+	sqrtps	%xmm0, %xmm0
 	movss	%xmm0, 72(%esp)
 	flds	72(%esp)
 	fstpl	28(%esp)
@@ -157,8 +157,8 @@ L3:
 	call	_printf
 	movaps	160(%esp), %xmm0
 	movl	$LC9, (%esp)
-	dpps	$113, %xmm0, %xmm0
-	sqrtss	%xmm0, %xmm0
+	dpps	$119, %xmm0, %xmm0
+	sqrtps	%xmm0, %xmm0
 	movss	%xmm0, 72(%esp)
 	flds	72(%esp)
 	fstpl	28(%esp)
@@ -171,8 +171,8 @@ L3:
 	call	_printf
 	movaps	176(%esp), %xmm0
 	movl	$LC10, (%esp)
-	dpps	$113, %xmm0, %xmm0
-	sqrtss	%xmm0, %xmm0
+	dpps	$119, %xmm0, %xmm0
+	sqrtps	%xmm0, %xmm0
 	movss	%xmm0, 72(%esp)
 	flds	72(%esp)
 	fstpl	28(%esp)
@@ -185,8 +185,8 @@ L3:
 	call	_printf
 	movaps	192(%esp), %xmm0
 	movl	$LC11, (%esp)
-	dpps	$113, %xmm0, %xmm0
-	sqrtss	%xmm0, %xmm0
+	dpps	$119, %xmm0, %xmm0
+	sqrtps	%xmm0, %xmm0
 	movss	%xmm0, 72(%esp)
 	flds	72(%esp)
 	fstpl	28(%esp)
@@ -199,8 +199,8 @@ L3:
 	call	_printf
 	movaps	208(%esp), %xmm0
 	movl	$LC12, (%esp)
-	dpps	$113, %xmm0, %xmm0
-	sqrtss	%xmm0, %xmm0
+	dpps	$119, %xmm0, %xmm0
+	sqrtps	%xmm0, %xmm0
 	movss	%xmm0, 72(%esp)
 	flds	72(%esp)
 	fstpl	28(%esp)
@@ -213,8 +213,8 @@ L3:
 	call	_printf
 	movaps	224(%esp), %xmm0
 	movl	$LC13, (%esp)
-	dpps	$113, %xmm0, %xmm0
-	sqrtss	%xmm0, %xmm0
+	dpps	$119, %xmm0, %xmm0
+	sqrtps	%xmm0, %xmm0
 	movss	%xmm0, 72(%esp)
 	flds	72(%esp)
 	fstpl	28(%esp)
@@ -239,8 +239,8 @@ L3:
 	call	_printf
 	movaps	240(%esp), %xmm0
 	movl	$LC17, (%esp)
-	dpps	$113, %xmm0, %xmm0
-	sqrtss	%xmm0, %xmm0
+	dpps	$119, %xmm0, %xmm0
+	sqrtps	%xmm0, %xmm0
 	movss	%xmm0, 72(%esp)
 	flds	72(%esp)
 	fstpl	28(%esp)
@@ -253,8 +253,8 @@ L3:
 	call	_printf
 	movaps	256(%esp), %xmm0
 	movl	$LC18, (%esp)
-	dpps	$113, %xmm0, %xmm0
-	sqrtss	%xmm0, %xmm0
+	dpps	$119, %xmm0, %xmm0
+	sqrtps	%xmm0, %xmm0
 	movss	%xmm0, 72(%esp)
 	flds	72(%esp)
 	fstpl	28(%esp)
@@ -267,8 +267,8 @@ L3:
 	call	_printf
 	movaps	272(%esp), %xmm0
 	movl	$LC19, (%esp)
-	dpps	$113, %xmm0, %xmm0
-	sqrtss	%xmm0, %xmm0
+	dpps	$119, %xmm0, %xmm0
+	sqrtps	%xmm0, %xmm0
 	movss	%xmm0, 72(%esp)
 	flds	72(%esp)
 	fstpl	28(%esp)
@@ -281,8 +281,8 @@ L3:
 	call	_printf
 	movaps	288(%esp), %xmm0
 	movl	$LC20, (%esp)
-	dpps	$113, %xmm0, %xmm0
-	sqrtss	%xmm0, %xmm0
+	dpps	$119, %xmm0, %xmm0
+	sqrtps	%xmm0, %xmm0
 	movss	%xmm0, 72(%esp)
 	flds	72(%esp)
 	fstpl	28(%esp)
@@ -306,7 +306,7 @@ L3:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-LFE979:
+LFE981:
 	.section .rdata,"dr"
 	.align 4
 LC4:

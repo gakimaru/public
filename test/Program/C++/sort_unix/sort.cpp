@@ -1,14 +1,11 @@
-//static const int TEST_DATA_COUNT = 1000000;//テストデータ件数（最大）
-//static const int TEST_DATA_COUNT = 100000;//テストデータ件数（最大）
-static const int TEST_DATA_COUNT = 100;//テストデータ件数（最大）
-
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <stdlib.h>//qsort関数用
-#include <crtdefs.h>//ptrdiff_t用
+#include <stdint.h>//intptr_t用
+#include <cstddef>//std::size_t用
 #include <functional>//C++11 std::function用
-#include <type_traits>//C++11 std::function用
+//#include <crtdefs.h>//ptrdiff_t用
 
 //--------------------------------------------------------------------------------
 //ソートアルゴリズム
@@ -18,9 +15,35 @@ static const int TEST_DATA_COUNT = 100;//テストデータ件数（最大）
 //========================================
 
 //----------------------------------------
+//処理共通化用マクロ
+#define sortFuncSet(func_name) \
+	template<class T, std::size_t N, class COMPARE> \
+	inline std::size_t func_name(T(&array)[N], COMPARE comparison) \
+	{ \
+		return func_name(array, N, comparison); \
+	} \
+	template<class T, class COMPARE> \
+	inline std::size_t func_name(T* begin, T* end, COMPARE comparison) \
+	{ \
+		return func_name(begin, end - begin, comparison); \
+	} \
+	template<class ITERATOR, class COMPARE> \
+	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end, COMPARE comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		return size == 0 ? 0 : func_name(&begin[0], size, comparison); \
+	} \
+	template<class CONTAINER, class COMPARE> \
+	inline std::size_t func_name(CONTAINER& con, COMPARE comparison) \
+	{ \
+		std::size_t size = con.size(); \
+		return size == 0 ? 0 : func_name(&(con.at(0)), size, comparison); \
+	}
+
+//----------------------------------------
 //整列状態確認
 template<class T, class COMPARE>
-inline std::size_t calcUnordered(const T* array, const std::size_t size, COMPARE&& comparison)
+inline std::size_t calcUnordered(const T* array, const std::size_t size, COMPARE comparison)
 {
 	std::size_t unordered = 0;
 	const T* prev = array;
@@ -32,19 +55,10 @@ inline std::size_t calcUnordered(const T* array, const std::size_t size, COMPARE
 	}
 	return unordered;
 }
-template<class ITERATOR, class COMPARE>
-std::size_t calcUnordered(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	return calcUnordered(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-std::size_t calcUnordered(CONTAINER& con, COMPARE&& comparison)
-{
-	return calcUnordered(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(calcUnordered);
 
 //========================================
-//ソートアルゴリズム説明
+//ソートアルゴリズムの説明
 //========================================
 
 //・計算時間：
@@ -67,189 +81,157 @@ std::size_t calcUnordered(CONTAINER& con, COMPARE&& comparison)
 
 //----------------------------------------
 //アルゴリズム：バブルソート
+//----------------------------------------
 //・平均計算時間：-
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
+//----------------------------------------
 //※交換発生有無のチェックを行い、最適化する
+//----------------------------------------
 template<class T, class COMPARE>
-void bubbleSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t bubbleSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void bubbleSort(T* begin, T* end, COMPARE&& comparison)
-{
-	bubbleSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void bubbleSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	bubbleSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void bubbleSort(CONTAINER& con, COMPARE&& comparison)
-{
-	bubbleSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(bubbleSort);
 
 //----------------------------------------
 //アルゴリズム：シェーカーソート
+//----------------------------------------
 //・平均計算時間：-
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
+//----------------------------------------
 //※交換発生有無のチェックを行い、最適化する
+//----------------------------------------
 template<class T, class COMPARE>
-void shakerSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t shakerSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void shakerSort(T* begin, T* end, COMPARE&& comparison)
-{
-	shakerSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void shakerSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	shakerSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void shakerSort(CONTAINER& con, COMPARE&& comparison)
-{
-	shakerSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(shakerSort);
 
 //----------------------------------------
 //アルゴリズム：奇遇転置ソート
+//----------------------------------------
 //・平均計算時間：-
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
+//----------------------------------------
 //※OpenMPを使用し、並列化で最適化する
+//----------------------------------------
 template<class T, class COMPARE>
-void oddEvenSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t oddEvenSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
+sortFuncSet(oddEvenSort);
+
+//----------------------------------------
+//アルゴリズム：シェアソート
+//----------------------------------------
+//・平均計算時間：-
+//・最悪計算時間：O(n^1.5)
+//・メモリ使用量：O(1)
+//・安定性：　　　×
+//----------------------------------------
+//※OpenMPを使用し、並列化で最適化する
+//----------------------------------------
 template<class T, class COMPARE>
-inline void oddEvenSort(T* begin, T* end, COMPARE&& comparison)
+std::size_t shareSort(T* array, const std::size_t size, COMPARE comparison)
 {
-	oddEvenSort(begin, end - begin, comparison);
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class ITERATOR, class COMPARE>
-inline void oddEvenSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	oddEvenSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void oddEvenSort(CONTAINER& con, COMPARE&& comparison)
-{
-	oddEvenSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(shareSort);
 
 //----------------------------------------
 //アルゴリズム：コムソート
+//----------------------------------------
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　×
+//----------------------------------------
 template<class T, class COMPARE>
-void combSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t combSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void combSort(T* begin, T* end, COMPARE&& comparison)
-{
-	combSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void combSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	combSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void combSort(CONTAINER& con, COMPARE&& comparison)
-{
-	combSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(combSort);
 
 //----------------------------------------
 //アルゴリズム：ノームソート
+//----------------------------------------
 //・平均計算時間：-
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
+//----------------------------------------
 template<class T, class COMPARE>
-void gnomeSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t gnomeSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void gnomeSort(T* begin, T* end, COMPARE&& comparison)
-{
-	gnomeSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void gnomeSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	gnomeSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void gnomeSort(CONTAINER& con, COMPARE&& comparison)
-{
-	gnomeSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(gnomeSort);
 
 //----------------------------------------
 //アルゴリズム：シェーカーノームソート
+//----------------------------------------
 //・平均計算時間：-
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
+//----------------------------------------
 template<class T, class COMPARE>
-void shakerGnomeSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t shakerGnomeSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void shakerGnomeSort(T* begin, T* end, COMPARE&& comparison)
-{
-	shakerGnomeSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void shakerGnomeSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	shakerGnomeSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void shakerGnomeSort(CONTAINER& con, COMPARE&& comparison)
-{
-	shakerGnomeSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(shakerGnomeSort);
 
 //----------------------------------------
 //アルゴリズム：クイックソート
+//----------------------------------------
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(log n)
 //・安定性：　　　×
+//----------------------------------------
 //※再帰処理を使用せずに最適化（最大件数を log2(4294967296) = 32 とする）
+//----------------------------------------
 template<class T, class COMPARE>
-void quickSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t quickSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void quickSort(T* begin, T* end, COMPARE&& comparison)
-{
-	quickSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void quickSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	quickSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void quickSort(CONTAINER& con, COMPARE&& comparison)
-{
-	quickSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(quickSort);
 
 //========================================
 //ソートアルゴリズム分類：選択ソート
@@ -257,107 +239,59 @@ inline void quickSort(CONTAINER& con, COMPARE&& comparison)
 
 //----------------------------------------
 //アルゴリズム：選択ソート
+//----------------------------------------
 //・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　×
-//※交換発生有無のチェックを行い、最適化する
+//----------------------------------------
 template<class T, class COMPARE>
-void selectionSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t selectionSort(T* array, const std::size_t size, COMPARE comparison)
 {
-	const T* end = array + size;
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	T* now = array;
 	const std::size_t size_1 = size - 1;
-	bool is_swapped = true;
-	for (std::size_t i = 0; i < size_1 && is_swapped; ++i)
+	for (std::size_t i = 0; i < size_1; ++i, ++now)
 	{
-		is_swapped = false;
-		T* now = array + i;
 		T* min = now;
 		T* check = now;
 		for (std::size_t ii = i + 1; ii < size; ++ii)
 		{
 			++check;
-			if (comparison(*check, *now))
-			{
+			if (comparison(*check, *min))
 				min = check;
-			}
 		}
 		if (now != min)
 		{
 			T tmp = *min;
 			*min = *now;
 			*now = tmp;
-			is_swapped = true;
+			++swapped_count;
 		}
 	}
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void selectionSort(T* begin, T* end, COMPARE&& comparison)
-{
-	selectionSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void selectionSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	selectionSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void selectionSort(CONTAINER& con, COMPARE&& comparison)
-{
-	selectionSort(&(con.at(0)), con.size(), comparison);
-}
-
-//----------------------------------------
-//アルゴリズム：シェーカー選択ソート
-//・平均計算時間：O(n^2)
-//・最悪計算時間：O(n^2)
-//・メモリ使用量：O(1)
-//・安定性：　　　×
-template<class T, class COMPARE>
-void shakerSelectionSort(T* array, const std::size_t size, COMPARE&& comparison)
-{
-}
-template<class T, class COMPARE>
-inline void shakerSelectionSort(T* begin, T* end, COMPARE&& comparison)
-{
-	shakerSelectionSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void shakerSelectionSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	shakerSelectionSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void shakerSelectionSort(CONTAINER& con, COMPARE&& comparison)
-{
-	shakerSelectionSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(selectionSort);
 
 //----------------------------------------
 //アルゴリズム：ヒープソート
+//----------------------------------------
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n log n)
 //・メモリ使用量：O(1)
 //・安定性：　　　×
+//----------------------------------------
 template<class T, class COMPARE>
-void heapSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t heapSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void heapSort(T* begin, T* end, COMPARE&& comparison)
-{
-	heapSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void heapSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	heapSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void heapSort(CONTAINER& con, COMPARE&& comparison)
-{
-	heapSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(heapSort);
 
 //========================================
 //ソートアルゴリズム分類：挿入ソート
@@ -365,55 +299,39 @@ inline void heapSort(CONTAINER& con, COMPARE&& comparison)
 
 //----------------------------------------
 //アルゴリズム：挿入ソート
+//----------------------------------------
 //・平均計算時間：O(n + d) ※d = O(n^2
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
+//----------------------------------------
 template<class T, class COMPARE>
-void insertionSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t insertionSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void insertionSort(T* begin, T* end, COMPARE&& comparison)
-{
-	insertionSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void insertionSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	insertionSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void insertionSort(CONTAINER& con, COMPARE&& comparison)
-{
-	insertionSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(insertionSort);
 
 //----------------------------------------
 //アルゴリズム：シェルソート
+//----------------------------------------
 //・平均計算時間：-
 //・最悪計算時間：O(n log^2 n)
 //・メモリ使用量：O(1)
 //・安定性：　　　×
+//----------------------------------------
 template<class T, class COMPARE>
-void shellSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t shellSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void shellSort(T* begin, T* end, COMPARE&& comparison)
-{
-	shellSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void shellSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	shellSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void shellSort(CONTAINER& con, COMPARE&& comparison)
-{
-	shellSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(shellSort);
 
 //========================================
 //ソートアルゴリズム分類：混成ソート
@@ -421,60 +339,53 @@ inline void shellSort(CONTAINER& con, COMPARE&& comparison)
 
 //----------------------------------------
 //アルゴリズム：イントロソート
+//----------------------------------------
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n log n)
 //・メモリ使用量：O(n log n)
 //・安定性：　　　×
+//----------------------------------------
+//※クイックソートの再帰レベルが log n に達したら、
+//　ヒープソートに切り替える。
+//　また、再起の末、ソートの対象件数が一定数（32など）未満に
+//　なったら、挿入ソートに切り替える。
+//※STLのstd::sort()と同様の手法。
+//----------------------------------------
 template<class T, class COMPARE>
-void introSort(T* array, const std::size_t size, COMPARE&& comparison)
+std::size_t introSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void introSort(T* begin, T* end, COMPARE&& comparison)
-{
-	introSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void introSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	introSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void introSort(CONTAINER& con, COMPARE&& comparison)
-{
-	introSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(introSort);
 
 //----------------------------------------
 //アルゴリズム：事前チェックソート
+//----------------------------------------
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n log n)
 //・メモリ使用量：O(n log n)
 //・安定性：　　　○
+//----------------------------------------
 //※安定ソートのみを使用し、高速性を追求
+//----------------------------------------
 template<class T, class COMPARE>
-void preCheckSort(T* array, const std::size_t size, COMPARE&& comparison)
+//----------------------------------------
+std::size_t preCheckSort(T* array, const std::size_t size, COMPARE comparison)
 {
+	if (!array || size == 0)
+		return 0;
+	std::size_t swapped_count = 0;
+	return swapped_count;
 }
-template<class T, class COMPARE>
-inline void preCheckSort(T* begin, T* end, COMPARE&& comparison)
-{
-	preCheckSort(begin, end - begin, comparison);
-}
-template<class ITERATOR, class COMPARE>
-inline void preCheckSort(ITERATOR& begin, ITERATOR& end, COMPARE&& comparison)
-{
-	preCheckSort(&begin[0], end - begin, comparison);
-}
-template<class CONTAINER, class COMPARE>
-inline void preCheckSort(CONTAINER& con, COMPARE&& comparison)
-{
-	preCheckSort(&(con.at(0)), con.size(), comparison);
-}
+sortFuncSet(preCheckSort);
 
 //--------------------------------------------------------------------------------
 //テスト
 
+#include <memory.h>//_aligned_malloc,memalign用
 #include <algorithm>//std::sort, std::for_each用
 #include <array>//C++11 std::array用
 #include <random>//C++11 random用
@@ -484,42 +395,85 @@ inline void preCheckSort(CONTAINER& con, COMPARE&& comparison)
 
 //----------------------------------------
 //テスト用構造体の配列型
-typedef std::array<data_t, TEST_DATA_COUNT> array_t;
+class array_t : public std::array<data_t, TEST_DATA_COUNT>
+{
+public:
+	void* operator new(const size_t size)
+	{
+		return _memalign(TEST_DATA_ALIGN, sizeof(array_t));
+	}
+	void operator delete (void* p)
+	{
+		_free(p);
+	}
+};
 
 //----------------------------------------
 //テスト用の比較処理
 //qsort用関数
-int compare_func_qsort(const void*lhs, const void*rhs)
+int comparison_func_qsort(const void*lhs, const void*rhs)
 {
 	return reinterpret_cast<const data_t*>(lhs)->m_key - reinterpret_cast<const data_t*>(rhs)->m_key;
 }
 //通常関数
-extern bool compare_func(const data_t& lhs, const data_t& rhs);
+extern bool comparison_func(const data_t& lhs, const data_t& rhs);
 //インライン関数
-inline bool compare_func_inline(const data_t& lhs, const data_t& rhs)
+inline bool comparison_func_inline(const data_t& lhs, const data_t& rhs)
 {
 	return lhs.m_key < rhs.m_key;
 }
 //関数オブジェクト
-struct compare_functor{
+struct comparison_functor{
 	inline bool operator()(const data_t& lhs, const data_t& rhs)
 	{
 		return lhs.m_key < rhs.m_key;
 	}
 };
 //ラムダ関数
-auto compare_lambda = [](const data_t& lhs, const data_t& rhs) -> bool
+auto comparison_lambda = [](const data_t& lhs, const data_t& rhs) -> bool
 {
 	return lhs.m_key < rhs.m_key;
 };
+//デフォルト
+//#define comparison_default comparison_func
+//#define comparison_default comparison_func_inline
+//#define comparison_default comparison_functor()
+#define comparison_default comparison_lambda
 
 //----------------------------------------
 //メイン
 int main(const int argc, const char* argv[])
 {
+
 	//時間計測
 	auto begin_time = std::chrono::system_clock::now();
 	auto prev_time = begin_time;
+
+	//処理時間計測
+	auto calcElapsedTime = [](const std::chrono::system_clock::time_point& now_time, const std::chrono::system_clock::time_point& prev_time) -> double
+	{
+		const auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(now_time - prev_time);
+		const auto elapsed_time = static_cast<double>(duration.count()) / 1000000000.;
+		return elapsed_time;
+	};
+	auto getElapsedTime = [&calcElapsedTime](const std::chrono::system_clock::time_point& prev_time) -> double
+	{
+		return calcElapsedTime(std::chrono::system_clock::now(), prev_time);
+	};
+
+	//処理時間表示
+	auto printElapsedTimeDirect = [&calcElapsedTime](const double elapsed_time, const bool is_preint) -> std::chrono::system_clock::time_point
+	{
+		if (is_preint)
+			printf("*elapsed time=%.9llf sec\n", elapsed_time);
+		return std::chrono::system_clock::now();
+	};
+	auto printElapsedTime = [&calcElapsedTime, &printElapsedTimeDirect](const std::chrono::system_clock::time_point& prev_time, const bool is_print) -> std::chrono::system_clock::time_point
+	{
+		const auto now_time = std::chrono::system_clock::now();
+		const auto elapsed_time = calcElapsedTime(now_time, prev_time);
+		return printElapsedTimeDirect(elapsed_time, is_print);
+	};
 
 	//配列初期化
 	enum init_type_t
@@ -532,7 +486,7 @@ int main(const int argc, const char* argv[])
 		init_ordered_without_both_ends,//整列済みパターン（ただし、始端と終端のみ入れ替え）
 		init_pattern_num//初期化パターン数
 	};
-	auto makeArray = [](array_t*& array, const init_type_t type, const char* type_name)
+	auto makeArray = [&prev_time, &printElapsedTime](array_t*& array, const init_type_t type, const char* type_name)
 	{
 		printf("----- Make Array(%s) -----\n", type_name);
 		array = new array_t();
@@ -569,60 +523,111 @@ int main(const int argc, const char* argv[])
 			}
 			break;
 		}
+		const bool is_print = true;
+		if (is_print)
+		{
+			const data_t* element0_p = &(*array)[0];
+			const data_t* element1_p = &(*array)[1];
+			const std::size_t data_size = sizeof(data_t);
+			const std::size_t element_size = reinterpret_cast<intptr_t>(element1_p)-reinterpret_cast<intptr_t>(element0_p);
+			const std::size_t array_size = sizeof(*array);
+			const std::size_t element_count = array->size();
+			printf("array_size=%d, element_count=%d, element_size=%d, data_size=%d, element0_p=%p, element1_p=%p\n", array_size, element_count, element_size, data_size, element0_p, element1_p);
+		}
+		prev_time = printElapsedTime(prev_time, is_print);
 	};
-
-	//処理時間計測
-	auto calcElapsedTime = [](const std::chrono::system_clock::time_point& now_time, const std::chrono::system_clock::time_point& prev_time) -> double
+	array_t* array_shuffle1 = nullptr;
+	array_t* array_shuffle2 = nullptr;
+	array_t* array_shuffle3 = nullptr;
+	array_t* array_ordered = nullptr;
+	array_t* array_reversed = nullptr;
+	array_t* array_ordered_without_both_ends = nullptr;
+	auto makeArraySet = [&makeArray, &array_shuffle1, &array_shuffle2, &array_shuffle3, &array_ordered, &array_reversed, &array_ordered_without_both_ends]()
 	{
-		const auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(now_time - prev_time);
-		const auto elapsed_time = static_cast<double>(duration.count()) / 1000000000.;
-		return elapsed_time;
+		#define PARAM(x) array_##x, init_##x, #x
+		makeArray(PARAM(shuffle1));
+		makeArray(PARAM(shuffle2));
+		makeArray(PARAM(shuffle3));
+		makeArray(PARAM(ordered));
+		makeArray(PARAM(reversed));
+		makeArray(PARAM(ordered_without_both_ends));
+		#undef PARAM
 	};
-	auto getElapsedTime = [&calcElapsedTime](const std::chrono::system_clock::time_point& prev_time) -> double
+	auto copyWorkArray = [&prev_time, &printElapsedTime, &array_shuffle1, &array_shuffle2, &array_shuffle3, &array_ordered, &array_reversed, &array_ordered_without_both_ends](array_t*& array, const init_type_t type, const char* type_name)
 	{
-		return calcElapsedTime(std::chrono::system_clock::now(), prev_time);
-	};
-
-	//処理時間表示
-	auto printElapsedTimeDirect = [&calcElapsedTime](const double elapsed_time) -> std::chrono::system_clock::time_point
-	{
-		printf("*elapsed time=%.9llf sec\n", elapsed_time);
-		return std::chrono::system_clock::now();
-	};
-	auto printElapsedTime = [&calcElapsedTime, &printElapsedTimeDirect](const std::chrono::system_clock::time_point& prev_time) -> std::chrono::system_clock::time_point
-	{
-		const auto now_time = std::chrono::system_clock::now();
-		const auto elapsed_time = calcElapsedTime(now_time, prev_time);
-		return printElapsedTimeDirect(elapsed_time);
-	};
-
-	//配列状態表示
-	auto showArrayCondition = [](const array_t* array)
-	{
-		//int ng = calcUnordered(*array, compare_func);
-		//int ng = calcUnordered(*array, compare_func_inline);
-		int ng = calcUnordered(*array, compare_functor());
-		//int ng = calcUnordered(*array, compare_lambda);
-		if (ng == 0)
-			printf("Array is ordered.(count=%d)\n", array->size());
-		else
-			printf("Attay is NOT ordered! (NG=%d/count=%d)\n", ng, array->size());
-	};
-
-	//ソート
-	typedef std::function<void(array_t*)> sort_procedure;
-	auto sort = [](array_t*& array, sort_procedure sort_proc)
-	{
-		printf("----- Sort -----\n");
-		sort_proc(array);
+		const bool is_print = false;
+		if (is_print)
+			printf("----- Copy Work Array(%s) -----\n", type_name);
+		array = new array_t();
+		const array_t* array_src = nullptr;
+		switch (type)
+		{
+		case init_shuffle1:                   array_src = array_shuffle1; break;
+		case init_shuffle2:                   array_src = array_shuffle2; break;
+		case init_shuffle3:                   array_src = array_shuffle3; break;
+		case init_ordered:                    array_src = array_ordered; break;
+		case init_reversed:                   array_src = array_reversed; break;
+		case init_ordered_without_both_ends:  array_src = array_ordered_without_both_ends; break;
+		}
+		*array = *array_src;
+		prev_time = printElapsedTime(prev_time, is_print);
 	};
 
 	//配列削除
-	auto termArray = [](array_t*& array)
+	auto deleteArray = [&prev_time, &printElapsedTime](array_t*& array, const char* type_name)
 	{
-		printf("----- Delete array -----\n");
+		printf("----- Delete array(%s) -----\n", type_name);
 		delete array;
 		array = nullptr;
+		const bool is_print = false;
+		prev_time = printElapsedTime(prev_time, is_print);
+	};
+	auto deleteArraySet = [&deleteArray, &array_shuffle1, &array_shuffle2, &array_shuffle3, &array_ordered, &array_reversed, &array_ordered_without_both_ends]()
+	{
+		#define PARAM(x) array_##x, #x
+		deleteArray(PARAM(shuffle1));
+		deleteArray(PARAM(shuffle2));
+		deleteArray(PARAM(shuffle3));
+		deleteArray(PARAM(ordered));
+		deleteArray(PARAM(reversed));
+		deleteArray(PARAM(ordered_without_both_ends));
+		#undef PARAM
+	};
+	auto deleteWorkArray = [&prev_time, &printElapsedTime](array_t*& array, const char* type_name)
+	{
+		const bool is_print = false;
+		if (is_print)
+			printf("----- Delete Work Array(%s) -----\n", type_name);
+		delete array;
+		array = nullptr;
+		prev_time = printElapsedTime(prev_time, is_print);
+	};
+
+	//配列状態表示
+	auto showArrayCondition = [&prev_time, &printElapsedTime](const array_t* array)
+	{
+		int ng = calcUnordered(*array, comparison_default);
+		if (ng == 0)
+			printf("Array is ordered.(count=%d)\n", array->size());
+		else
+			printf("Array is NOT ordered! (NG=%d/count=%d)\n", ng, array->size());
+		const bool is_print = false;
+		prev_time = printElapsedTime(prev_time, is_print);
+	};
+
+	//ソート
+	typedef std::function<std::size_t(array_t*)> sort_procedure;
+	auto sort = [&prev_time, &getElapsedTime, &printElapsedTimeDirect](array_t*& array, sort_procedure sort_proc) -> double
+	{
+		printf("----- Sort -----\n");
+		prev_time = std::chrono::system_clock::now();
+		const std::size_t swapped = sort_proc(array);
+		double elapsed_time = getElapsedTime(prev_time);
+		if (swapped != 0xffffffff)
+			printf("swapped=%d\n", swapped);
+		const bool is_print = true;
+		prev_time = printElapsedTimeDirect(elapsed_time, is_print);
+		return elapsed_time;
 	};
 	
 	//計測
@@ -633,20 +638,16 @@ int main(const int argc, const char* argv[])
 		printf("Measure type: %s\n", type_name);
 		printf("------------------------------\n");
 		array_t* array = nullptr;//配列
-		makeArray(array, type, type_name);//配列初期化
+		copyWorkArray(array, type, type_name);//配列初期化
 		showArrayCondition(array);//配列状態表示
-		prev_time = printElapsedTime(prev_time);//処理時間表示
-		sort(array, sort_proc);//ソート
-		const double elapsed_time = getElapsedTime(prev_time);//ソートの処理時間を計測
+		double elapsed_time = sort(array, sort_proc);//ソート
 		showArrayCondition(array);//配列状態表示
-		prev_time = printElapsedTimeDirect(elapsed_time);//処理時間表示
-		termArray(array);//配列削除
-		prev_time = printElapsedTime(prev_time);//処理時間表示
+		deleteWorkArray(array, type_name);//配列削除
 		return elapsed_time;
 	};
 
 	//平均処理時間表示
-	auto printAverageTime = [](const char* sort_type_name, const double sorting_time, const int measure_count)
+	auto printAverageTime = [](const char* sort_type_name, const double sorting_time, const int measure_count) -> double
 	{
 		const auto average_time = sorting_time / static_cast<double>(measure_count);
 		printf("\n");
@@ -654,92 +655,109 @@ int main(const int argc, const char* argv[])
 		printf("Sort type: [%s]\n", sort_type_name);
 		printf("*** sorting time=%.9llf sec ---> average time=%.9llf sec\n", sorting_time, average_time);
 		printf("============================================================\n");
+		return average_time;
 	};
 
 	//まとめて計測
-	auto measureAll = [&](const char* sort_type_name, sort_procedure sort_proc)
+	auto measureAll = [&](const char* sort_type_name, sort_procedure sort_proc) -> double
 	{
 		printf("============================================================\n");
 		printf("Sort type: [%s]\n", sort_type_name);
 		printf("============================================================\n");
 
-		#define pair(x) init_##x, #x
-
 		double sorting_time = 0.;//ソート処理時間
 		
+		#define PARAM(x) init_##x, #x
+
 		//シャッフルパターン１
-		sorting_time += measure(pair(shuffle1), sort_proc);
+		sorting_time += measure(PARAM(shuffle1), sort_proc);
 
 		//シャッフルパターン２
-		sorting_time += measure(pair(shuffle2), sort_proc);
+		sorting_time += measure(PARAM(shuffle2), sort_proc);
 
 		//シャッフルパターン３
-		sorting_time += measure(pair(shuffle3), sort_proc);
+		sorting_time += measure(PARAM(shuffle3), sort_proc);
 
 		//整列済みパターン
-		sorting_time += measure(pair(ordered), sort_proc);
+		sorting_time += measure(PARAM(ordered), sort_proc);
 
 		//逆順整列済みパターン
-		sorting_time += measure(pair(reversed), sort_proc);
+		sorting_time += measure(PARAM(reversed), sort_proc);
 
 		//整列済みパターン（ただし、始端と終端のみ入れ替え）
-		sorting_time += measure(pair(ordered_without_both_ends), sort_proc);
-		
-		printAverageTime(sort_type_name, sorting_time, init_pattern_num);//平均ソート処理時間表示
-		
-		#undef pair
+		sorting_time += measure(PARAM(ordered_without_both_ends), sort_proc);
+
+		#undef PARAM
+
+		return printAverageTime(sort_type_name, sorting_time, init_pattern_num);//平均ソート処理時間表示
 	};
+
+	//----------------------------------------
+	//測定開始
+	printf("============================================================\n");
+	printf("Initialize\n");
+	printf("============================================================\n");
+	makeArraySet();
+	printf("\n");
+	printf("\n");
 
 	//----------------------------------------
 	//標準ライブラリによるソート
 
+	//--------------------
 	//Cライブラリ：qsort関数
 	//アルゴリズム：クイックソート
-	auto clib_qsort = [](array_t* array)
+	auto clib_qsort = [](array_t* array) -> std::size_t
 	{
-		qsort(&array->at(0), array->size(),sizeof(data_t), compare_func_qsort);
+		qsort(&array->at(0), array->size(),sizeof(data_t), comparison_func_qsort);
+		return 0xffffffff;
 	};
-	measureAll("C-Lib qsort", clib_qsort);
+	const double avg_clib_qsort = measureAll("C-Library qsort", clib_qsort);
 	printf("\n");
 	printf("\n");
 
+	//--------------------
 	//STLソート1：通常関数で比較
 	//アルゴリズム：イントロソート（クイックソート＋ヒープソート＋挿入ソート）
-	auto stl_sort1 = [](array_t* array)
+	auto stl_sort1 = [](array_t* array) -> std::size_t
 	{
-		std::sort(array->begin(), array->end(), compare_func);
+		std::sort(array->begin(), array->end(), comparison_func);
+		return 0xffffffff;
 	};
-	measureAll("STL sort(with function)", stl_sort1);
+	const double avg_stl1 = measureAll("STL std::sort(with function)", stl_sort1);
 	printf("\n");
 	printf("\n");
 
 	//STLソート2：インライン関数で比較
 	//アルゴリズム：（同上）
-	auto stl_sort2 = [](array_t* array)
+	auto stl_sort2 = [](array_t* array) -> std::size_t
 	{
-		std::sort(array->begin(), array->end(), compare_func_inline);
+		std::sort(array->begin(), array->end(), comparison_func_inline);
+		return 0xffffffff;
 	};
-	measureAll("STL sort(with inline function)", stl_sort2);
+	const double avg_stl2 = measureAll("STL std::sort(with inline function)", stl_sort2);
 	printf("\n");
 	printf("\n");
 
 	//STLソート3：関数オブジェクトで比較
 	//アルゴリズム：（同上）
-	auto stl_sort3 = [](array_t* array)
+	auto stl_sort3 = [](array_t* array) -> std::size_t
 	{
-		std::sort(array->begin(), array->end(), compare_functor());
+		std::sort(array->begin(), array->end(), comparison_functor());
+		return 0xffffffff;
 	};
-	measureAll("STL sort(with functor)", stl_sort3);
+	const double avg_stl3 = measureAll("STL std::sort(with functor)", stl_sort3);
 	printf("\n");
 	printf("\n");
 
 	//STLソート4：ラムダ関数で比較
 	//アルゴリズム：（同上）
-	auto stl_sort4 = [](array_t* array)
+	auto stl_sort4 = [](array_t* array) -> std::size_t
 	{
-		std::sort(array->begin(), array->end(), compare_lambda);
+		std::sort(array->begin(), array->end(), comparison_lambda);
+		return 0xffffffff;
 	};
-	measureAll("STL sort(with lamda)", stl_sort4);
+	const double avg_stl4 = measureAll("STL std::sort(with lamda)", stl_sort4);
 	printf("\n");
 	printf("\n");
 	
@@ -747,65 +765,74 @@ int main(const int argc, const char* argv[])
 	//交換ソート
 
 	//アルゴリズム：バブルソート
-	auto bubble_sort = [](array_t* array)
+	auto bubble_sort = [](array_t* array) -> std::size_t
 	{
-		bubbleSort(&array->at(0), array->size(), compare_functor());
+		return bubbleSort(&array->at(0), array->size(), comparison_default);
 	};
-	measureAll("Bubble sort", bubble_sort);
+	const double avg_bubble = measureAll("Bubble sort", bubble_sort);
 	printf("\n");
 	printf("\n");
 	
 	//アルゴリズム：シェーカーソート
-	auto shaker_sort = [](array_t* array)
+	auto shaker_sort = [](array_t* array) -> std::size_t
 	{
-		shakerSort(&array->at(0), array->size(), compare_functor());
+		return shakerSort(*array, comparison_default);
 	};
-	measureAll("Shaker sort", shaker_sort);
+	const double avg_shaker = measureAll("Shaker sort", shaker_sort);
 	printf("\n");
 	printf("\n");
 
 	//アルゴリズム：奇遇転置ソート
-	auto odd_even_sort = [](array_t* array)
+	auto odd_even_sort = [](array_t* array) -> std::size_t
 	{
-		oddEvenSort(&array->at(0), array->size(), compare_functor());
+		return oddEvenSort(*array, comparison_default);
 	};
-	measureAll("Odd-Even sort", odd_even_sort);
+	const double avg_odd_even = measureAll("Odd-Even sort", odd_even_sort);
+	printf("\n");
+	printf("\n");
+
+	//アルゴリズム：シェアソート
+	auto share_sort = [](array_t* array) -> std::size_t
+	{
+		return shareSort(*array, comparison_default);
+	};
+	const double avg_share = measureAll("Share sort", share_sort);
 	printf("\n");
 	printf("\n");
 
 	//アルゴリズム：コムソート
-	auto comb_sort = [](array_t* array)
+	auto comb_sort = [](array_t* array) -> std::size_t
 	{
-		combSort(&array->at(0), array->size(), compare_functor());
+		return combSort(*array, comparison_default);
 	};
-	measureAll("Comb sort", comb_sort);
+	const double avg_comb = measureAll("Comb sort", comb_sort);
 	printf("\n");
 	printf("\n");
 
 	//アルゴリズム：ノームソート
-	auto gnome_sort = [](array_t* array)
+	auto gnome_sort = [](array_t* array) -> std::size_t
 	{
-		gnomeSort(&array->at(0), array->size(), compare_functor());
+		return gnomeSort(*array, comparison_default);
 	};
-	measureAll("Gnome sort", gnome_sort);
+	const double avg_gnome = measureAll("Gnome sort", gnome_sort);
 	printf("\n");
 	printf("\n");
 
 	//アルゴリズム：シェーカーノームソート
-	auto shaker_gnome_sort = [](array_t* array)
+	auto shaker_gnome_sort = [](array_t* array) -> std::size_t
 	{
-		shakerGnomeSort(&array->at(0), array->size(), compare_functor());
+		return shakerGnomeSort(*array, comparison_default);
 	};
-	measureAll("Shaker Gnome sort", shaker_gnome_sort);
+	const double avg_shaker_gnome = measureAll("Shaker Gnome sort", shaker_gnome_sort);
 	printf("\n");
 	printf("\n");
 
 	//アルゴリズム：クイックソート
-	auto quick_sort = [](array_t* array)
+	auto quick_sort = [](array_t* array) -> std::size_t
 	{
-		quickSort(&array->at(0), array->size(), compare_functor());
+		return quickSort(*array, comparison_default);
 	};
-	measureAll("Quick sort", quick_sort);
+	const double avg_quick = measureAll("Quick sort", quick_sort);
 	printf("\n");
 	printf("\n");
 
@@ -813,29 +840,20 @@ int main(const int argc, const char* argv[])
 	//選択ソート
 
 	//アルゴリズム：選択ソート
-	auto selection_sort = [](array_t* array)
+	auto selection_sort = [](array_t* array) -> std::size_t
 	{
-		selectionSort(&array->at(0), array->size(), compare_functor());
+		return selectionSort(*array, comparison_default);
 	};
-	measureAll("Selection sort", selection_sort);
-	printf("\n");
-	printf("\n");
-
-	//アルゴリズム：シェーカー選択ソート
-	auto shaker_selection_sort = [](array_t* array)
-	{
-		shakerSelectionSort(&array->at(0), array->size(), compare_functor());
-	};
-	measureAll("Shaker Selection sort", shaker_selection_sort);
+	const double avg_selection = measureAll("Selection sort", selection_sort);
 	printf("\n");
 	printf("\n");
 
 	//アルゴリズム：ヒープソート
-	auto heap_sort = [](array_t* array)
+	auto heap_sort = [](array_t* array) -> std::size_t
 	{
-		heapSort(&array->at(0), array->size(), compare_functor());
+		return heapSort(*array, comparison_default);
 	};
-	measureAll("Heap sort", heap_sort);
+	const double avg_heap = measureAll("Heap sort", heap_sort);
 	printf("\n");
 	printf("\n");
 
@@ -843,20 +861,20 @@ int main(const int argc, const char* argv[])
 	//挿入ソート
 
 	//アルゴリズム：挿入ソート
-	auto insertion_sort = [](array_t* array)
+	auto insertion_sort = [](array_t* array) -> std::size_t
 	{
-		insertionSort(&array->at(0), array->size(), compare_functor());
+		return insertionSort(*array, comparison_default);
 	};
-	measureAll("Insertion sort", insertion_sort);
+	const double avg_insertion = measureAll("Insertion sort", insertion_sort);
 	printf("\n");
 	printf("\n");
 
 	//アルゴリズム：シェルソート
-	auto shell_sort = [](array_t* array)
+	auto shell_sort = [](array_t* array) -> std::size_t
 	{
-		shellSort(&array->at(0), array->size(), compare_functor());
+		return shellSort(*array, comparison_default);
 	};
-	measureAll("Shell sort", heap_sort);
+	const double avg_shell = measureAll("Shell sort", heap_sort);
 	printf("\n");
 	printf("\n");
 
@@ -864,27 +882,61 @@ int main(const int argc, const char* argv[])
 	//混成ソート
 
 	//アルゴリズム：イントロソート
-	auto intro_sort = [](array_t* array)
+	auto intro_sort = [](array_t* array) -> std::size_t
 	{
-		introSort(&array->at(0), array->size(), compare_functor());
+		return introSort(*array, comparison_default);
 	};
-	measureAll("Intro sort", heap_sort);
+	const double avg_intro = measureAll("Intro sort", heap_sort);
 	printf("\n");
 	printf("\n");
 
 	//アルゴリズム：事前チェックソート
-	auto pre_check_sort = [](array_t* array)
+	auto pre_check_sort = [](array_t* array) -> std::size_t
 	{
-		preCheckSort(&array->at(0), array->size(), compare_functor());
+		return preCheckSort(*array, comparison_default);
 	};
-	measureAll("Pre-Check sort", heap_sort);
+	const double avg_pre_check = measureAll("Pre-Check sort", heap_sort);
 	printf("\n");
 	printf("\n");
 
 	//----------------------------------------
-	//終了
-	printf("- End -\n");
-	printElapsedTime(begin_time);//処理時間表示
+	//測定終了
+	printf("============================================================\n");
+	printf("Result(average elapsed-time)\n");
+	printf("============================================================\n");
+	printf("[C-Library sort](Quick sort)\n");
+	printf("- qsort:              %12.9llf sec\n", avg_clib_qsort);
+	printf("[STL sort](Intro sort)\n");
+	printf("- std::sort:          %12.9llf sec (with function)\n", avg_stl1);
+	printf("- std::sort:          %12.9llf sec (with inline function)\n", avg_stl2);
+	printf("- std::sort:          %12.9llf sec (with functor)\n", avg_stl3);
+	printf("- std::sort:          %12.9llf sec (with lambda)\n", avg_stl4);
+	printf("[Exchange sorts]\n");
+	printf("- Bubble sort:        %12.9llf sec\n", avg_bubble);
+	printf("- Shaker sort:        %12.9llf sec\n", avg_shaker);
+	printf("- Odd-Even sort:      %12.9llf sec\n", avg_odd_even);
+	printf("- Share sort:         %12.9llf sec\n", avg_share);
+	printf("- Comb sort:          %12.9llf sec\n", avg_comb);
+	printf("- Gnome sort:         %12.9llf sec\n", avg_gnome);
+	printf("- Shakere gnome sort: %12.9llf sec\n", avg_shaker_gnome);
+	printf("- Quick sort:         %12.9llf sec\n", avg_quick);
+	printf("[Selection sorts]\n");
+	printf("- Selection sort:     %12.9llf sec\n", avg_selection);
+	printf("- Heap sort:          %12.9llf sec\n", avg_heap);
+	printf("[Insertion sorts]\n");
+	printf("- Insertion sort:     %12.9llf sec\n", avg_insertion);
+	printf("- Shell sort:         %12.9llf sec\n", avg_shell);
+	printf("[Hybrid sorts]\n");
+	printf("- Intro sort:         %12.9llf sec\n", avg_intro);
+	printf("- Pre-Check sort:     %12.9llf sec\n", avg_pre_check);
+	printf("\n");
+	printf("============================================================\n");
+	printf("Terminate\n");
+	printf("============================================================\n");
+	deleteArraySet();
+	printf("\n");
+	printf("- Finish -\n");
+	printElapsedTime(begin_time, true);//処理時間表示
 
 	return EXIT_SUCCESS;
 }

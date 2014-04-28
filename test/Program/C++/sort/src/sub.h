@@ -2,13 +2,22 @@
 //ソートアルゴリズムテスト用設定とコンパイラスイッチ
 //static const int TEST_DATA_COUNT = 500000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 100000;//テストデータ件数（最大）
-//static const int TEST_DATA_COUNT = 10000;//テストデータ件数（最大）
-static const int TEST_DATA_COUNT = 1000;//テストデータ件数（最大）
+//static const int TEST_DATA_COUNT = 50000;//テストデータ件数（最大）
+static const int TEST_DATA_COUNT = 10000;//テストデータ件数（最大）
+//static const int TEST_DATA_COUNT = 5000;//テストデータ件数（最大）
+//static const int TEST_DATA_COUNT = 1000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 100;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 10;//テストデータ件数（最大）
+//static const int TEST_DATA_COUNT = 2;//テストデータ件数（最大）
+//static const int TEST_DATA_COUNT = 1;//テストデータ件数（最大）
 
-#define TEST_DATA_SIZE 256//テストデータ一件のサイズ
+//#define TEST_DATA_SIZE 512//テストデータ一件のサイズ
+//#define TEST_DATA_SIZE 256//テストデータ一件のサイズ
+#define TEST_DATA_SIZE 64//テストデータ一件のサイズ
+//#define TEST_DATA_SIZE 4//テストデータ一件のサイズ
+
 #define TEST_DATA_ALIGN 16//テストデータ一件のアラインメント
+//#define TEST_DATA_ALIGN 4//テストデータ一件のアラインメント
 
 //#define USE_GCC//GCCを使用
 

@@ -2,23 +2,17 @@
 Initialize
 ============================================================
 ----- Make Array(shuffle1) -----
-array_size=272000, element_count=1000, element_size=272, data_size=272, element0_p=006FDE80, element1_p=006FDF90
-*elapsed time=0.000000000 sec
+Array is NOT ordered! [NG=4952 / record(s)=10000]
 ----- Make Array(shuffle2) -----
-array_size=272000, element_count=1000, element_size=272, data_size=272, element0_p=00740520, element1_p=00740630
-*elapsed time=0.000000000 sec
+Array is NOT ordered! [NG=5003 / record(s)=10000]
 ----- Make Array(shuffle3) -----
-array_size=272000, element_count=1000, element_size=272, data_size=272, element0_p=00782BC0, element1_p=00782CD0
-*elapsed time=0.000000000 sec
+Array is NOT ordered! [NG=4986 / record(s)=10000]
 ----- Make Array(ordered) -----
-array_size=272000, element_count=1000, element_size=272, data_size=272, element0_p=008B0050, element1_p=008B0160
-*elapsed time=0.000000000 sec
+Array is ordered. [record(s)=10000]
 ----- Make Array(reversed) -----
-array_size=272000, element_count=1000, element_size=272, data_size=272, element0_p=008F26F0, element1_p=008F2800
-*elapsed time=0.001000300 sec
+Array is NOT ordered! [NG=9999 / record(s)=10000]
 ----- Make Array(ordered_without_both_ends) -----
-array_size=272000, element_count=1000, element_size=272, data_size=272, element0_p=00934D90, element1_p=00934EA0
-*elapsed time=0.000000000 sec
+Array is NOT ordered! [NG=2 / record(s)=10000]
 
 
 ============================================================
@@ -26,56 +20,47 @@ Sort type: [C-Library qsort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.007003900 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.006998900 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-*elapsed time=0.001000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.007000600 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.001002100 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.001002000 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000999400 sec.
+Array is ordered. [record(s)=10000]
 
 ============================================================
 Sort type: [C-Library qsort]
-*** sorting time=0.001000000 sec ---> average time=0.000166667 sec
+* Total time       = 0.024006900 sec.
+* Average time     = 0.004001150 sec.
+* Min time         = 0.000999400 sec.
+* Max time         = 0.007003900 sec.
 ============================================================
 
 
@@ -84,56 +69,47 @@ Sort type: [STL std::sort(with function)]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.003000000 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.002998800 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.002999500 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.001000300 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-*elapsed time=0.000999100 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000997400 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.001002300 sec.
+Array is ordered. [record(s)=10000]
 
 ============================================================
 Sort type: [STL std::sort(with function)]
-*** sorting time=0.000999100 sec ---> average time=0.000166517 sec
+* Total time       = 0.011998300 sec.
+* Average time     = 0.001999717 sec.
+* Min time         = 0.000997400 sec.
+* Max time         = 0.003000000 sec.
 ============================================================
 
 
@@ -142,56 +118,47 @@ Sort type: [STL std::sort(with inline function)]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.002000000 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.001999700 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-*elapsed time=0.001000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.002000000 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.001001200 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000999100 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
 
 ============================================================
 Sort type: [STL std::sort(with inline function)]
-*** sorting time=0.001000000 sec ---> average time=0.000166667 sec
+* Total time       = 0.008000000 sec.
+* Average time     = 0.001333333 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.002000000 sec.
 ============================================================
 
 
@@ -200,56 +167,47 @@ Sort type: [STL std::sort(with functor)]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000996800 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.001000000 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000999400 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-*elapsed time=0.001005000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
 
 ============================================================
 Sort type: [STL std::sort(with functor)]
-*** sorting time=0.001005000 sec ---> average time=0.000167500 sec
+* Total time       = 0.002996200 sec.
+* Average time     = 0.000499367 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.001000000 sec.
 ============================================================
 
 
@@ -258,56 +216,47 @@ Sort type: [STL std::sort(with lamda)]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000999700 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.001000900 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-*elapsed time=0.001000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000998600 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.001002000 sec.
+Array is ordered. [record(s)=10000]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
 
 ============================================================
 Sort type: [STL std::sort(with lamda)]
-*** sorting time=0.001000000 sec ---> average time=0.000166667 sec
+* Total time       = 0.004001200 sec.
+* Average time     = 0.000666867 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.001002000 sec.
 ============================================================
 
 
@@ -316,62 +265,57 @@ Sort type: [Bubble sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.234011100 sec.
+Array is ordered. [record(s)=10000]
+[swapped=25023486 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.211013000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=24900229 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.210010400 sec.
+Array is ordered. [record(s)=10000]
+[swapped=24709869 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.216012400 sec.
+Array is ordered. [record(s)=10000]
+[swapped=49995000 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.068003200 sec.
+Array is ordered. [record(s)=10000]
+[swapped=19997 count(s)]
 
 ============================================================
 Sort type: [Bubble sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+* Total time       = 0.939050100 sec.
+* Average time     = 0.156508350 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.234011100 sec.
+* Total Swapped    = 124648581 count(s)
+* Average  Swapped =  20774763 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =  49995000 count(s)
 ============================================================
 
 
@@ -380,62 +324,57 @@ Sort type: [Shaker sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.160011100 sec.
+Array is ordered. [record(s)=10000]
+[swapped=25023486 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.177033400 sec.
+Array is ordered. [record(s)=10000]
+[swapped=24900229 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.170012000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=24709869 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.198984000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=49995000 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=19997 count(s)]
 
 ============================================================
 Sort type: [Shaker sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+* Total time       = 0.706040500 sec.
+* Average time     = 0.117673417 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.198984000 sec.
+* Total Swapped    = 124648581 count(s)
+* Average  Swapped =  20774763 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =  49995000 count(s)
 ============================================================
 
 
@@ -444,126 +383,116 @@ Sort type: [Odd-Even sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.243013700 sec.
+Array is ordered. [record(s)=10000]
+[swapped=25023486 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.244016100 sec.
+Array is ordered. [record(s)=10000]
+[swapped=24900229 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.253032800 sec.
+Array is ordered. [record(s)=10000]
+[swapped=24709869 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.358006200 sec.
+Array is ordered. [record(s)=10000]
+[swapped=49995000 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.137003700 sec.
+Array is ordered. [record(s)=10000]
+[swapped=19997 count(s)]
 
 ============================================================
 Sort type: [Odd-Even sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+* Total time       = 1.235072500 sec.
+* Average time     = 0.205845417 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.358006200 sec.
+* Total Swapped    = 124648581 count(s)
+* Average  Swapped =  20774763 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =  49995000 count(s)
 ============================================================
 
 
 ============================================================
-Sort type: [Share sort]
+Sort type: [Shear sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.015000900 sec.
+Array is ordered. [record(s)=10000]
+[swapped=90828 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.015001000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=90053 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.015000900 sec.
+Array is ordered. [record(s)=10000]
+[swapped=89389 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.013000900 sec.
+Array is ordered. [record(s)=10000]
+[swapped=5000 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.013001600 sec.
+Array is ordered. [record(s)=10000]
+[swapped=15000 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.013000600 sec.
+Array is ordered. [record(s)=10000]
+[swapped=5297 count(s)]
 
 ============================================================
-Sort type: [Share sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+Sort type: [Shear sort]
+* Total time       = 0.084005900 sec.
+* Average time     = 0.014000983 sec.
+* Min time         = 0.013000600 sec.
+* Max time         = 0.015001000 sec.
+* Total Swapped    =    295567 count(s)
+* Average  Swapped =     49261 count(s)
+* Min Swapped      =      5000 count(s)
+* Max Swapped      =     90828 count(s)
 ============================================================
 
 
@@ -572,62 +501,57 @@ Sort type: [Comb sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.002019000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=63386 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.000981000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=63401 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.002000600 sec.
+Array is ordered. [record(s)=10000]
+[swapped=63493 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=20078 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=10083 count(s)]
 
 ============================================================
 Sort type: [Comb sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+* Total time       = 0.005000600 sec.
+* Average time     = 0.000833433 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.002019000 sec.
+* Total Swapped    =    220441 count(s)
+* Average  Swapped =     36740 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =     63493 count(s)
 ============================================================
 
 
@@ -636,126 +560,57 @@ Sort type: [Gnome sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.142007500 sec.
+Array is ordered. [record(s)=10000]
+[swapped=25023486 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.145008700 sec.
+Array is ordered. [record(s)=10000]
+[swapped=24900229 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.139028000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=24709869 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.208013900 sec.
+Array is ordered. [record(s)=10000]
+[swapped=49995000 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.063006600 sec.
+Array is ordered. [record(s)=10000]
+[swapped=19997 count(s)]
 
 ============================================================
 Sort type: [Gnome sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
-============================================================
-
-
-============================================================
-Sort type: [Shaker Gnome sort]
-============================================================
-
-------------------------------
-Measure type: shuffle1
-------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
-
-------------------------------
-Measure type: shuffle2
-------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
-
-------------------------------
-Measure type: shuffle3
-------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
-
-------------------------------
-Measure type: ordered
-------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
-
-------------------------------
-Measure type: reversed
-------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
-
-------------------------------
-Measure type: ordered_without_both_ends
-------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
-
-============================================================
-Sort type: [Shaker Gnome sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+* Total time       = 0.697064700 sec.
+* Average time     = 0.116177450 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.208013900 sec.
+* Total Swapped    = 124648581 count(s)
+* Average  Swapped =  20774763 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =  49995000 count(s)
 ============================================================
 
 
@@ -764,62 +619,57 @@ Sort type: [Quick sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=31656 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=31813 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=31827 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=5000 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=1 count(s)]
 
 ============================================================
 Sort type: [Quick sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+* Total time       = 0.000000000 sec.
+* Average time     = 0.000000000 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.000000000 sec.
+* Total Swapped    =    100297 count(s)
+* Average  Swapped =     16716 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =     31827 count(s)
 ============================================================
 
 
@@ -828,62 +678,57 @@ Sort type: [Selection sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=995
-*elapsed time=0.001999700 sec
-Array is ordered.(count=1000)
+*elapsed time=0.122995100 sec.
+Array is ordered. [record(s)=10000]
+[swapped=9990 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=992
-*elapsed time=0.001000300 sec
-Array is ordered.(count=1000)
+*elapsed time=0.122993700 sec.
+Array is ordered. [record(s)=10000]
+[swapped=9989 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=994
-*elapsed time=0.001999700 sec
-Array is ordered.(count=1000)
+*elapsed time=0.121982600 sec.
+Array is ordered. [record(s)=10000]
+[swapped=9993 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.001000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.124007800 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=500
-*elapsed time=0.001000300 sec
-Array is ordered.(count=1000)
+*elapsed time=0.123007400 sec.
+Array is ordered. [record(s)=10000]
+[swapped=5000 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=1
-*elapsed time=0.001000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.124033500 sec.
+Array is ordered. [record(s)=10000]
+[swapped=1 count(s)]
 
 ============================================================
 Sort type: [Selection sort]
-*** sorting time=0.008000000 sec ---> average time=0.001333333 sec
+* Total time       = 0.739020100 sec.
+* Average time     = 0.123170017 sec.
+* Min time         = 0.121982600 sec.
+* Max time         = 0.124033500 sec.
+* Total Swapped    =     34973 count(s)
+* Average  Swapped =      5828 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =      9993 count(s)
 ============================================================
 
 
@@ -892,62 +737,57 @@ Sort type: [Heap sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.001998800 sec.
+Array is ordered. [record(s)=10000]
+[swapped=129664 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.000975200 sec.
+Array is ordered. [record(s)=10000]
+[swapped=129591 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.002000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=129767 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.001000600 sec.
+Array is ordered. [record(s)=10000]
+[swapped=227262 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.001017800 sec.
+Array is ordered. [record(s)=10000]
+[swapped=116696 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.001000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=227237 count(s)]
 
 ============================================================
 Sort type: [Heap sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+* Total time       = 0.007992400 sec.
+* Average time     = 0.001332067 sec.
+* Min time         = 0.000975200 sec.
+* Max time         = 0.002000000 sec.
+* Total Swapped    =    960217 count(s)
+* Average  Swapped =    160036 count(s)
+* Min Swapped      =    116696 count(s)
+* Max Swapped      =    227262 count(s)
 ============================================================
 
 
@@ -956,62 +796,57 @@ Sort type: [Insertion sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.251015000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=9986 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.251000600 sec.
+Array is ordered. [record(s)=10000]
+[swapped=9987 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.233017700 sec.
+Array is ordered. [record(s)=10000]
+[swapped=9985 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.407071000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=9999 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.063973900 sec.
+Array is ordered. [record(s)=10000]
+[swapped=9999 count(s)]
 
 ============================================================
 Sort type: [Insertion sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+* Total time       = 1.206078200 sec.
+* Average time     = 0.201013033 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.407071000 sec.
+* Total Swapped    =     49956 count(s)
+* Average  Swapped =      8326 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =      9999 count(s)
 ============================================================
 
 
@@ -1020,62 +855,116 @@ Sort type: [Shell sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.014008300 sec.
+Array is ordered. [record(s)=10000]
+[swapped=32047 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.013019300 sec.
+Array is ordered. [record(s)=10000]
+[swapped=33202 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.013002400 sec.
+Array is ordered. [record(s)=10000]
+[swapped=32443 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.024981100 sec.
+Array is ordered. [record(s)=10000]
+[swapped=44661 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.007000900 sec.
+Array is ordered. [record(s)=10000]
+[swapped=7087 count(s)]
 
 ============================================================
 Sort type: [Shell sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+* Total time       = 0.072012000 sec.
+* Average time     = 0.012002000 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.024981100 sec.
+* Total Swapped    =    149440 count(s)
+* Average  Swapped =     24906 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =     44661 count(s)
+============================================================
+
+
+============================================================
+Sort type: [Inplace Merge sort]
+============================================================
+
+------------------------------
+Sort array(shuffle1)
+------------------------------
+*elapsed time=0.076005500 sec.
+Array is ordered. [record(s)=10000]
+[swapped=65366 count(s)]
+
+------------------------------
+Sort array(shuffle2)
+------------------------------
+*elapsed time=0.074004400 sec.
+Array is ordered. [record(s)=10000]
+[swapped=65297 count(s)]
+
+------------------------------
+Sort array(shuffle3)
+------------------------------
+*elapsed time=0.073004000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=65345 count(s)]
+
+------------------------------
+Sort array(ordered)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
+
+------------------------------
+Sort array(reversed)
+------------------------------
+*elapsed time=0.161026900 sec.
+Array is ordered. [record(s)=10000]
+[swapped=71712 count(s)]
+
+------------------------------
+Sort array(ordered_without_both_ends)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=10012 count(s)]
+
+============================================================
+Sort type: [Inplace Merge sort]
+* Total time       = 0.384040800 sec.
+* Average time     = 0.064006800 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.161026900 sec.
+* Total Swapped    =    277732 count(s)
+* Average  Swapped =     46288 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =     71712 count(s)
 ============================================================
 
 
@@ -1084,160 +973,105 @@ Sort type: [Intro sort]
 ============================================================
 
 ------------------------------
-Measure type: shuffle1
+Sort array(shuffle1)
 ------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
+*elapsed time=0.001000600 sec.
+Array is ordered. [record(s)=10000]
+[swapped=35068 count(s)]
 
 ------------------------------
-Measure type: shuffle2
+Sort array(shuffle2)
 ------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
+*elapsed time=0.000997600 sec.
+Array is ordered. [record(s)=10000]
+[swapped=34615 count(s)]
 
 ------------------------------
-Measure type: shuffle3
+Sort array(shuffle3)
 ------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
+*elapsed time=0.000999700 sec.
+Array is ordered. [record(s)=10000]
+[swapped=34495 count(s)]
 
 ------------------------------
-Measure type: ordered
+Sort array(ordered)
 ------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=0 count(s)]
 
 ------------------------------
-Measure type: reversed
+Sort array(reversed)
 ------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
+*elapsed time=0.000999700 sec.
+Array is ordered. [record(s)=10000]
+[swapped=5000 count(s)]
 
 ------------------------------
-Measure type: ordered_without_both_ends
+Sort array(ordered_without_both_ends)
 ------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+[swapped=1 count(s)]
 
 ============================================================
 Sort type: [Intro sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
+* Total time       = 0.003997600 sec.
+* Average time     = 0.000666267 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.001000600 sec.
+* Total Swapped    =    109179 count(s)
+* Average  Swapped =     18196 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =     35068 count(s)
 ============================================================
 
 
 ============================================================
-Sort type: [Pre-Check sort]
+Result(Summary)
 ============================================================
-
-------------------------------
-Measure type: shuffle1
-------------------------------
-Array is NOT ordered! (NG=488/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=488/count=1000)
-
-------------------------------
-Measure type: shuffle2
-------------------------------
-Array is NOT ordered! (NG=501/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=501/count=1000)
-
-------------------------------
-Measure type: shuffle3
-------------------------------
-Array is NOT ordered! (NG=496/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=496/count=1000)
-
-------------------------------
-Measure type: ordered
-------------------------------
-Array is ordered.(count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is ordered.(count=1000)
-
-------------------------------
-Measure type: reversed
-------------------------------
-Array is NOT ordered! (NG=999/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=999/count=1000)
-
-------------------------------
-Measure type: ordered_without_both_ends
-------------------------------
-Array is NOT ordered! (NG=2/count=1000)
------ Sort -----
-swapped=0
-*elapsed time=0.000000000 sec
-Array is NOT ordered! (NG=2/count=1000)
-
-============================================================
-Sort type: [Pre-Check sort]
-*** sorting time=0.000000000 sec ---> average time=0.000000000 sec
-============================================================
-
-
-============================================================
-Result(average elapsed-time)
-============================================================
+Array Element size = 80 Bytes
+Array Element(s)   = 10000 Count(s)
+Total Array size   = 800000 Bytes
+------------------------------------------------------------------------------------------------------------------------
+- (Sort Name):          Elapsed Time (Sum/Average/Min/Max) sec.             Swapped (Sum/Average/Min/Max) count(s)
+------------------------------------------------------------------------------------------------------------------------
 [C-Library sort](Quick sort)
-- qsort:               0.000166667 sec
+- qsort(inline-function):  0.024006900/ 0.004001150/ 0.000999400/ 0.007003900
+------------------------------------------------------------------------------------------------------------------------
 [STL sort](Intro sort)
-- std::sort:           0.000166517 sec (with function)
-- std::sort:           0.000166667 sec (with inline function)
-- std::sort:           0.000167500 sec (with functor)
-- std::sort:           0.000166667 sec (with lambda)
+- std::sort(function):     0.011998300/ 0.001999717/ 0.000997400/ 0.003000000
+- std::sort(inline-func):  0.008000000/ 0.001333333/ 0.000000000/ 0.002000000
+- std::sort(functor):      0.002996200/ 0.000499367/ 0.000000000/ 0.001000000
+- std::sort(lambda):       0.004001200/ 0.000666867/ 0.000000000/ 0.001002000
+------------------------------------------------------------------------------------------------------------------------
 [Exchange sorts]
-- Bubble sort:         0.000000000 sec
-- Shaker sort:         0.000000000 sec
-- Odd-Even sort:       0.000000000 sec
-- Share sort:          0.000000000 sec
-- Comb sort:           0.000000000 sec
-- Gnome sort:          0.000000000 sec
-- Shakere gnome sort:  0.000000000 sec
-- Quick sort:          0.000000000 sec
+- Bubble sort<S>:          0.939050100/ 0.156508350/ 0.000000000/ 0.234011100 124648581/  20774763/         0/  49995000
+- Shaker sort<S>:          0.706040500/ 0.117673417/ 0.000000000/ 0.198984000 124648581/  20774763/         0/  49995000
+- Odd-Even sort<S>:        1.235072500/ 0.205845417/ 0.000000000/ 0.358006200 124648581/  20774763/         0/  49995000
+- Shear sort:              0.084005900/ 0.014000983/ 0.013000600/ 0.015001000    295567/     49261/      5000/     90828
+- Comb sort:               0.005000600/ 0.000833433/ 0.000000000/ 0.002019000    220441/     36740/         0/     63493
+- Gnome sort<S>:           0.697064700/ 0.116177450/ 0.000000000/ 0.208013900 124648581/  20774763/         0/  49995000
+- Quick sort:              0.000000000/ 0.000000000/ 0.000000000/ 0.000000000    100297/     16716/         0/     31827
+------------------------------------------------------------------------------------------------------------------------
 [Selection sorts]
-- Selection sort:      0.001333333 sec
-- Heap sort:           0.000000000 sec
+- Selection sort:          0.739020100/ 0.123170017/ 0.121982600/ 0.124033500     34973/      5828/         0/      9993
+- Heap sort:               0.007992400/ 0.001332067/ 0.000975200/ 0.002000000    960217/    160036/    116696/    227262
+------------------------------------------------------------------------------------------------------------------------
 [Insertion sorts]
-- Insertion sort:      0.000000000 sec
-- Shell sort:          0.000000000 sec
+- Insertion sort<S>:       1.206078200/ 0.201013033/ 0.000000000/ 0.407071000     49956/      8326/         0/      9999
+- Shell sort:              0.072012000/ 0.012002000/ 0.000000000/ 0.024981100    149440/     24906/         0/     44661
+------------------------------------------------------------------------------------------------------------------------
+[Merge sorts]
+- Inplace-Merge sort<S>:   0.384040800/ 0.064006800/ 0.000000000/ 0.161026900    277732/     46288/         0/     71712
+------------------------------------------------------------------------------------------------------------------------
 [Hybrid sorts]
-- Intro sort:          0.000000000 sec
-- Pre-Check sort:      0.000000000 sec
+- Intro sort:              0.003997600/ 0.000666267/ 0.000000000/ 0.001000600    109179/     18196/         0/     35068
+------------------------------------------------------------------------------------------------------------------------
+* <S> ... Stable sort algorithm.
 
 ============================================================
-Terminate
+Finalize
 ============================================================
 ----- Delete array(shuffle1) -----
 ----- Delete array(shuffle2) -----
@@ -1246,5 +1080,8 @@ Terminate
 ----- Delete array(reversed) -----
 ----- Delete array(ordered_without_both_ends) -----
 
-- Finish -
-*elapsed time=0.033001500 sec
+
+============================================================
+End
+============================================================
+*elapsed time=6.180361600 sec.

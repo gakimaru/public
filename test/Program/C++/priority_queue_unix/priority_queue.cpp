@@ -104,6 +104,12 @@ namespace bin_heap
 		//定数
 		static const std::size_t ARRAY_NUM = ope_type::NODES_MAX;//配列要素数
 	public:
+		//アクセッサ
+		const node_type& at(const int index) const { return *ref_node(index); }
+		node_type& at(const int index){ return *ref_node(index); }
+		const node_type& operator[](const int index) const { return *ref_node(index); }
+		node_type& operator[](const int index){ return *ref_node(index); }
+	public:
 		//メソッド
 		std::size_t max_size() const { return ARRAY_NUM; }//最大要素数を取得
 		std::size_t capacity() const { return ARRAY_NUM; }//最大要素数を取得
@@ -262,15 +268,15 @@ namespace bin_heap
 //プライオリティキュー
 //※プライオリティとともに、シーケンス番号を扱うことで、キューイングの順序性を保証する。
 //※最終的には、スレッドセーフな構造にする。
-namespace priority_queue
+namespace prior_queue
 {
 	//--------------------
 	//プライオリティキュー操作用テンプレート構造体
 	//※CRTPを活用し、下記のような派生構造体を作成して使用する
 	//  //template<class OPE_TYPE, typename NODE_TYPE, int _NODES_MAX>
 	//  //struct base_ope_t;
-	//  //struct 派生構造体名 : public priority_queue::base_ope_t<派生構造体, ノード型, 最大ノード数, 優先度型, シーケンス番号型>
-	//	struct ope_t : public priority_queue::ope_t<ope_t, data_t, 1024, int, unsigned int>
+	//  //struct 派生構造体名 : public prior_queue::base_ope_t<派生構造体, ノード型, 最大ノード数, 優先度型, シーケンス番号型>
+	//	struct ope_t : public prior_queue::ope_t<ope_t, data_t, 1024, int, unsigned int>
 	//	{
 	//		//優先度を取得
 	//		inline static prior_type getPrior(const node_type& node){ return node.m_prior; }
@@ -431,7 +437,8 @@ namespace priority_queue
 		//コンストラクタ
 		//※キー比較処理を渡す
 		container(const bool is_reverse = false) :
-			m_heap(is_reverse)
+			m_heap(is_reverse),
+			m_seqNo(0)
 		{}
 		//デストラクタ
 		~container()
@@ -444,7 +451,7 @@ namespace priority_queue
 	//--------------------
 	//基本型定義マクロ消去
 	#undef DECLARE_OPE_TYPES
-}//namespace priority_queue
+}//namespace prior_queue
 
 //--------------------------------------------------------------------------------
 //プライオリティキューテスト
@@ -489,7 +496,7 @@ struct data_t
 };
 //----------------------------------------
 //テストデータ操作クラス
-struct ope_t : public priority_queue::base_ope_t<ope_t, data_t, TEST_DATA_MAX, PRIORITY, int>
+struct ope_t : public prior_queue::base_ope_t<ope_t, data_t, TEST_DATA_MAX, PRIORITY, int>
 {
 	//優先度を取得
 	inline static prior_type getPrior(const node_type& node){ return node.m_prior; }
@@ -519,7 +526,7 @@ inline int printf_detail(const char* fmt, ...){ return 0; }
 int main(const int argc, const char* argv[])
 {
 	//プライオリティキューコンテナ生成
-	typedef priority_queue::container<ope_t> contaier_type;
+	typedef prior_queue::container<ope_t> contaier_type;
 	typedef contaier_type::bin_heap bin_heap;
 	contaier_type con;
 
@@ -573,7 +580,6 @@ int main(const int argc, const char* argv[])
 	{
 		printf("--- Show tree (count=%d) ---\n", heap.size());
 		static const int depth_limit = 5;//最大でも5段階目までを表示（0段階目から数えるので最大で6段階表示される→最大：1+2+4+8+16+32個）
-		
 		const int _depth_max = heap.depth_max();
 		printf("depth_max=%d (limit for showing=%d)\n", _depth_max, depth_limit);
 		const int depth_max = _depth_max <= depth_limit ? _depth_max : depth_limit;

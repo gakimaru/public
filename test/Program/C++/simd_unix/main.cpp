@@ -24,7 +24,7 @@ int main(const int argc, const char* argv[])
 	vec3 vcross_n;
 	vec3 v3;
 	vec3 v3_n;
-	const int repeat = 10000000;
+	const int repeat = 100000000;
 	for (int loop = 0; loop < repeat; ++loop)
 	{
 		sub(v1, v1_n, v2, v2_n, vdist, vdist_n, dist_val, dot_val, dot_val_n, vcross, vcross_n, v3, v3_n, 1.f, 2.f, 3.f, 4.f, loop);

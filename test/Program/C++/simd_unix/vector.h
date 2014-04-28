@@ -74,42 +74,21 @@ inline __m128 calcDiv(const __m128 lhs, const float rhs)//二項の割り算
 {
 	return _mm_div_ps(lhs, _mm_set1_ps(rhs));//ret ← {lhs[0] / rhs, lhs[1] / rhs, lhs[2] / rhs, lhs[3] / rhs}
 }
-inline float calcNorm2(const __m128 val)//ノルム^2計算
-{
-	return getScalar(//ret ← arg0[0]
-	         _mm_dp_ps(val, val, 0x71)//arg0 ← {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, 0.f, 0.f, 0.f}
-	       );
-}
-inline float calcNorm(const __m128 val)//ノルム計算
-{
-	return getScalar(//ret ← arg1[0]
-	         _mm_sqrt_ss(//arg1 ← {sqrt(arg0[0]), arg0[1], arg0[2], arg0[3]}
-	           _mm_dp_ps(val, val, 0x71)//arg0 ← {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, 0.f, 0.f, 0.f}
-	         )
-	       );
-}
-inline __m128 calcNormalize(const __m128 val)//正規化
-{
-	return _mm_div_ps(//ret ← {arg4[0] / arg3[0], arg4[1] / arg3[1], arg4[2] / arg3[2], arg4[3] / arg3[3]}
-	         val,        //arg4: val
-	         _mm_set1_ps(//arg3 ← {arg2, arg2, arg2, arg2}
-	           getScalar(//arg2 ← arg1[0]
-	             _mm_sqrt_ss(//arg1 ← {sqrt(arg0[0]), arg0[1], arg0[2], arg0[3]}
-	               _mm_dp_ps(val, val, 0x71)//arg0 ← {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, 0.f, 0.f, 0.f}
-	             )
-	           )
-	         )
-	       );
-}
 inline float calcDot(const __m128 lhs, const __m128 rhs)//内積計算
 {
-	return getScalar(//ret ← arg4[0]
+	return getScalar(//ret ← arg0[0]
 	         _mm_dp_ps(lhs, rhs, 0x71)//arg0 ← {lhs[0] * rhs[0] + lhs[1] * rhs[1] + lhs[2] * rhs[2] + 0.f, 0.f, 0.f, 0.f}
 	       );
 }
-inline float calcNormalizeDot(const __m128 lhs, const __m128 rhs)//正規化ベクトルで内積計算
+inline __m128 calcDot(const __m128 val)//内積計算
 {
-	return calcDot(calcNormalize(lhs), calcNormalize(rhs));//ret ← calcDot(calcNormalize(lhs), calcNormalize(rhs))
+	return _mm_dp_ps(val, val, 0x77);//ret ← {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, (同値), (同値), 0.f}
+}
+inline __m128 calcSqrtDot(const __m128 val)//sqrt(内積)計算
+{
+	return _mm_sqrt_ps(//ret ← {sqrt(arg0[0]), sqrt(arg0[1]), sqrt(arg0[2]), sqrt(arg0[3])}
+	         _mm_dp_ps(val, val, 0x77)//arg0 ← {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, (同値), (同値), 0.f}
+	       );
 }
 inline __m128 calcCross(const __m128 lhs, const __m128 rhs)//外積計算
 {
@@ -125,19 +104,42 @@ inline __m128 calcCross(const __m128 lhs, const __m128 rhs)//外積計算
 	       );
 	return lhs;
 }
+inline float calcNorm2(const __m128 val)//ノルム^2計算
+{
+	return getScalar(//ret ← arg0[0]
+	         calcDot(val)//arg0 ← {val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f, (同値), (同値), 0.f}
+	       );
+}
+inline float calcNorm(const __m128 val)//ノルム計算
+{
+	return getScalar(//ret ← arg0[0]
+	         calcSqrtDot(val)//arg0 ← {sqrt(val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f), (同値), (同値), 0.f}
+	       );
+}
+inline __m128 calcNormalize(const __m128 val)//正規化
+{
+	return _mm_div_ps(//ret ← {arg1[0] / arg0[0], arg1[1] / arg0[1], arg1[2] / arg0[2], arg1[3] / arg0[3]}
+	         val,            //arg0: val
+	         calcSqrtDot(val)//arg1 ← {sqrt(val[0] * val[0] + val[1] * val[1] + val[2] * val[2] + 0.f), (同値), (同値), 0.f}
+	       );
+}
+inline float calcNormalizeDot(const __m128 lhs, const __m128 rhs)//正規化ベクトルで内積計算
+{
+	return calcDot(calcNormalize(lhs), calcNormalize(rhs));//ret ← calcDot(calcNormalize(lhs), calcNormalize(rhs))
+}
 inline float calcDistance2(const __m128 from, const __m128 to)//距離^2計算
 {
-	const __m128 val_diff = _mm_sub_ps(to, from);//ret ← {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
-	return getScalar(//ret ← arg0[0]
-	         _mm_dp_ps(val_diff, val_diff, 0x71)//arg0 ← {val_diff[0] * val_diff[0] + val_diff[1] * val_diff[1] + val_diff[2] * val_diff[2] + 0.f, 0.f, 0.f, 0.f}
+	return getScalar(//ret ← arg1[0]
+	         calcDot(//arg1 ← {arg0[0] * arg0[0], arg0[1] * arg0[1], arg0[2] * arg0[2], 0.f}
+	           _mm_sub_ps(to, from)//arg0 ← {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
+	         )
 	       );
 }
 inline float calcDistance(const __m128 from, const __m128 to)//距離計算
 {
-	const __m128 val_diff = _mm_sub_ps(to, from);//ret ← {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
 	return getScalar(//ret ← arg1[0]
-	         _mm_sqrt_ss(//arg1 ← {sqrt(arg0[0]), arg0[1], arg0[2], arg0[3]}
-	           _mm_dp_ps(val_diff, val_diff, 0x71)//arg0 ← {val_diff[0] * val_diff[0] + val_diff[1] * val_diff[1] + val_diff[2] * val_diff[2] + 0.f, 0.f, 0.f, 0.f}
+	         calcSqrtDot(//arg1 ← {sqrt(arg0[0] * arg0[0]), sqrt(arg0[1] * arg0[1]), sqrt(arg0[2] * arg0[2]), 0.f}
+	           _mm_sub_ps(to, from)//arg0 ← {to[0] - from[0], to[1] - from[1], to[2] - from[2], to[3] - from[3]}
 	         )
 	       );
 }
@@ -547,11 +549,7 @@ struct vec3
 		         load()//arg0 ← m_val128
 		       );
 	#else//USE_SIMD
-		return sqrt(
-		         m_val[0] * m_val[0] +
-		         m_val[1] * m_val[1] +
-		         m_val[2] * m_val[2]
-		       );
+		return sqrt(norm2());
 	#endif//USE_SIMD
 	}
 	//長さ^2取得
@@ -574,13 +572,9 @@ struct vec3
 		  )
 		);
 	#else//USE_SIMD
-		const float norm = sqrt(
-		                     m_val[0] * m_val[0] +
-		                     m_val[1] * m_val[1] +
-		                     m_val[2] * m_val[2]
-		                   );
+		const float val_norm = norm();
 		for (int index = 0; index < 3; ++index)
-			m_val[index] /= norm;
+			m_val[index] /= val_norm;
 	#endif//USE_SIMD
 		return *this;
 	}
@@ -594,12 +588,8 @@ struct vec3
 #else//USE_SIMD
 	inline vec3 normalize() const
 	{
-		const float norm = sqrt(
-			m_val[0] * m_val[0] +
-			m_val[1] * m_val[1] +
-			m_val[2] * m_val[2]
-			);
-		return vec3(m_val[0] / norm, m_val[1] / norm, m_val[2] / norm);
+		const float val_norm = norm();
+		return vec3(m_val[0] / val_norm, m_val[1] / val_norm, m_val[2] / val_norm);
 	}
 #endif//USE_SIMD
 	//距離^2計算

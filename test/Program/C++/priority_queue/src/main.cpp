@@ -104,6 +104,12 @@ namespace bin_heap
 		//定数
 		static const std::size_t ARRAY_NUM = ope_type::NODES_MAX;//配列要素数
 	public:
+		//アクセッサ
+		const node_type& at(const int index) const { return *ref_node(index); }
+		node_type& at(const int index){ return *ref_node(index); }
+		const node_type& operator[](const int index) const { return *ref_node(index); }
+		node_type& operator[](const int index){ return *ref_node(index); }
+	public:
 		//メソッド
 		std::size_t max_size() const { return ARRAY_NUM; }//最大要素数を取得
 		std::size_t capacity() const { return ARRAY_NUM; }//最大要素数を取得
@@ -431,7 +437,8 @@ namespace prior_queue
 		//コンストラクタ
 		//※キー比較処理を渡す
 		container(const bool is_reverse = false) :
-			m_heap(is_reverse)
+			m_heap(is_reverse),
+			m_seqNo(0)
 		{}
 		//デストラクタ
 		~container()
@@ -573,7 +580,6 @@ int main(const int argc, const char* argv[])
 	{
 		printf("--- Show tree (count=%d) ---\n", heap.size());
 		static const int depth_limit = 5;//最大でも5段階目までを表示（0段階目から数えるので最大で6段階表示される→最大：1+2+4+8+16+32個）
-		
 		const int _depth_max = heap.depth_max();
 		printf("depth_max=%d (limit for showing=%d)\n", _depth_max, depth_limit);
 		const int depth_max = _depth_max <= depth_limit ? _depth_max : depth_limit;

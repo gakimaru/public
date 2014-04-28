@@ -764,7 +764,15 @@ std::size_t insertionSort(T* array, const std::size_t size, COMPARE comparison)
 				--prev;
 			}
 			tmp = *next;
-			memmove(min + 1, min, reinterpret_cast<uintptr_t>(next)-reinterpret_cast<uintptr_t>(min));
+			//※VC++2013では、memmove関数を使うよりも、直接メモリ操作する方が速い（関数呼び出しのせいか？）
+			//memmove(min + 1, min, reinterpret_cast<uintptr_t>(next) - reinterpret_cast<uintptr_t>(min));
+			{
+				const int move_num = next - min;
+				T* dst = min + 1 + move_num;
+				const T* src = min + move_num;
+				for (int move = 0; move < move_num; ++move)
+					*(--dst) = *(--src);
+			}
 			*min = tmp;
 			++swapped_count;
 		}
@@ -822,12 +830,12 @@ std::size_t shellSort(T* array, const std::size_t size, COMPARE comparison)
 					prev -= h;
 				}
 				tmp = *next;
-				T* move = min;
-				while (move < next)
+				T* move = next;
+				while (move > min)
 				{
-					T* move_next = move + h;
-					*(move_next) = *move;
-					move = move_next;
+					T* move_prev = move - h;
+					*move = *move_prev;
+					move = move_prev;
 				}
 				*min = tmp;
 				++swapped_count;
@@ -856,55 +864,76 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 		return 0;
 	std::size_t swapped_count = 0;
 	T tmp;
-	std::size_t partition_size = 1;
-	while (partition_size < size)
+	std::size_t block_size = 1;//ブロックサイズ（隣り合ったブロックをマージし、ループごとにブロックサイズを倍にする）
+	while (block_size < size)
 	{
-		const std::size_t partition_size_over = size % partition_size;
-		const std::size_t unit_size = partition_size << 1;
-		const std::size_t unit_size_over = size % unit_size;
-		const std::size_t unit_num = size / unit_size + (unit_size_over != 0 ? 1 : 0);
-		std::size_t unit_pos = 0;
-		for (std::size_t unit = 0; unit < unit_num; ++unit)
+		const std::size_t block_size_over = size % block_size;
+		const std::size_t merge_size = block_size << 1;
+		const std::size_t merge_size_over = size % merge_size;
+		const std::size_t merge_sets = size / merge_size + (merge_size_over != 0 ? 1 : 0);
+		std::size_t merge_pos = 0;
+		for (std::size_t merge_set = 0; merge_set < merge_sets; ++merge_set)
 		{
-			const std::size_t unit_pos_right = unit_pos + partition_size;
-			if (unit_pos_right >= size)
+			std::size_t merge_pos_next = merge_pos + block_size;
+			if (merge_pos_next >= size)//二つ分のブロックが残っていなければこのループは終了（次回のループでマージ）
 				break;
-			const std::size_t unit_pos_next = unit_pos + unit_size;
-			const std::size_t partition_size_min = unit_pos_next <= size ? partition_size : partition_size_over;
-			T* left = array + unit_pos;
-			T* left_end = left + partition_size;
-			T* right = left_end;
-			T* right_end = right + partition_size_min;
-			while(left < left_end && right < right_end)
+			merge_pos_next += block_size;
+			const std::size_t block_size_right = merge_pos_next <= size ? block_size : block_size_over;
+			T* left_begin = array + merge_pos;
+			T* left_end = left_begin + block_size;
+			T* right_begin = left_end;
+			T* right_end = right_begin + block_size_right;
+			T* left = left_end - 1;
+			T* right = right_begin;
+			while (right < right_end)
 			{
-				if (comparison(*right, *left))
+				if (comparison(*right, *left))//左ブロックの右端と右ブロックの左端をチェック
 				{
-					tmp = *left;
-					*left = *right;
-					T* right_curr = right;
-					T* right_ins= right_curr + 1;
-					while (right_ins < right_end)
+					//挿入位置検索
+				#if 1
+					std::size_t search_range = (right - left_begin) >> 1;
+					std::size_t search_pos = search_range;
+					T* left_ins = left_begin + search_pos;
+					while (search_range != 0)
 					{
-						if (comparison(*right_ins, tmp))
-							++right_ins;
+						const std::size_t search_range_prev = search_range;
+						search_range = search_range >> 1;
+						left_ins = left_begin + search_pos;
+						if (comparison(*right, *left_ins))
+							search_pos = search_pos - search_range_prev + search_range;
 						else
-							break;
+							search_pos = search_pos + search_range;
 					}
-					--right_ins;
-					if (right != right_ins)
-						memmove(right, right + 1, reinterpret_cast<uintptr_t>(right_ins)-reinterpret_cast<uintptr_t>(right));
-					*right_ins = tmp;
-					right = right_curr;
+					while (left_ins < right && comparison(*left_ins, *right))
+						++left_ins;
+				#else
+					T* left_ins = left;
+				#endif
+					while (left_ins >= left_begin && comparison(*right, *left_ins))
+						--left_ins;
+					++left_ins;
+					//挿入
+					tmp = *right;
+					//※VC++2013では、memmove関数を使うよりも、直接メモリ操作する方が速い（関数呼び出しのせいか？）
+					//memmove(left_ins, left_ins + 1, reinterpret_cast<uintptr_t>(right) - reinterpret_cast<uintptr_t>(left_ins));
+					{
+						const std::size_t move_elems = right - left_ins;
+						T* dst = right;
+						T* src = dst - 1;
+						for (std::size_t move_elem = 0; move_elem < move_elems; ++move_elem)
+							*(dst--) = *(src--);
+					}
+					*left_ins = tmp;
 					++swapped_count;
+					++left;
+					++right;
 				}
 				else
-				{
-					++left;
-				}
+					break;
 			}
-			unit_pos = unit_pos_next;
+			merge_pos = merge_pos_next;
 		}
-		partition_size <<= 1;
+		block_size <<= 1;
 	}
 	return swapped_count;
 }
@@ -1140,7 +1169,20 @@ int main(const int argc, const char* argv[])
 		if (ng == 0)
 			printf("Array is ordered. [record(s)=%d]\n", array->size());
 		else
-			printf("Array is NOT ordered! [NG=%d / record(s)=%d]\n", ng, array->size());
+			printf("[NG] Array is NOT ordered! [NG=%d / record(s)=%d]\n", ng, array->size());
+		{
+			const std::size_t size = array->size();
+			const data_t* prev = &array->at(0);
+			const data_t* now = prev + 1;
+			for (std::size_t i = 1; i < size; ++i, ++now, ++prev)
+			{
+				if (now->m_key == prev->m_key)
+				{
+					printf("[NG] Sorting program failure !!\n");
+					break;
+				}
+			}
+		}
 		const bool is_print = false;
 		prev_time = printElapsedTime(prev_time, is_print);
 	};

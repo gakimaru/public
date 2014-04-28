@@ -8,6 +8,8 @@ static const int TEST_DATA_COUNT = 10000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 1000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 100;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 10;//テストデータ件数（最大）
+//static const int TEST_DATA_COUNT = 5;//テストデータ件数（最大）
+//static const int TEST_DATA_COUNT = 3;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 2;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 1;//テストデータ件数（最大）
 

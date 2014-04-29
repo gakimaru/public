@@ -799,22 +799,14 @@ std::size_t shellSort(T* array, const std::size_t size, COMPARE comparison)
 	std::size_t swapped_count = 0;
 	T tmp;
 	const T* end = array + size;
-	std::size_t h_stack[32];
-	h_stack[0] = 1;
-	int h_stack_p = 1;
 	std::size_t h = 1;
-	while (true)
 	{
-		h = 3 * h + 1;
-		if (h >= size)
-			break;
-		h_stack[h_stack_p++] = h;
+		const std::size_t h_max = size / 3;
+		while (h <= h_max)
+			h = 3 * h + 1;
 	}
-	while (true)
+	while (h > 0)
 	{
-		h = h_stack[--h_stack_p];
-		if (h == 1)
-			break;
 		T* now = array;
 		T* next = now + h;
 		while (next < end)
@@ -843,8 +835,8 @@ std::size_t shellSort(T* array, const std::size_t size, COMPARE comparison)
 			++now;
 			++next;
 		}
+		h = (h - 1) / 3;
 	}
-	swapped_count += insertionSort(array, size, comparison);//ÅŒã‚É‘}“üƒ\[ƒg
 	return swapped_count;
 }
 sortFuncSet(shellSort);

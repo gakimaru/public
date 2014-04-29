@@ -56,10 +56,10 @@ namespace bin_heap
 	//--------------------
 	//二部ヒープ操作用テンプレート構造体
 	//※CRTPを活用し、下記のような派生構造体を作成して使用する
-	//  //template<class OPE_TYPE, typename NODE_TYPE, int _NODES_MAX>
+	//  //template<class OPE_TYPE, typename NODE_TYPE>
 	//  //struct base_ope_t;
-	//  //struct 派生構造体名 : public bin_heap::base_ope_t<派生構造体, ノード型, 最大ノード数>
-	//	struct ope_t : public bin_heap::ope_t<ope_t, data_t, 1024>
+	//  //struct 派生構造体名 : public bin_heap::base_ope_t<派生構造体, ノード型>
+	//	struct ope_t : public bin_heap::ope_t<ope_t, data_t>
 	//	{
 	//		//キーを比較
 	//		//※lhsの方が小さいければ true を返す
@@ -68,12 +68,9 @@ namespace bin_heap
 	//			return lhs.m_key < rhs.m_key;
 	//		}
 	//	};
-	template<class OPE_TYPE, typename NODE_TYPE, int _NODES_MAX>
+	template<class OPE_TYPE, typename NODE_TYPE>
 	struct base_ope_t
 	{
-		//定数
-		static const int NODES_MAX = _NODES_MAX;//最大ノード数
-
 		//型
 		typedef OPE_TYPE ope_type;//ノード操作型
 		typedef NODE_TYPE node_type;//ノード型
@@ -94,7 +91,7 @@ namespace bin_heap
 	//二部ヒープコンテナ
 	//※固定配列と使用中の要素数を持つ
 	//※std::priority_queueとはあまり互換性がなく、イテレータにも対応しない
-	template<class OPE_TYPE>
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
 	class container
 	{
 	public:
@@ -102,7 +99,7 @@ namespace bin_heap
 		DECLARE_OPE_TYPES(OPE_TYPE);
 	public:
 		//定数
-		static const std::size_t ARRAY_NUM = ope_type::NODES_MAX;//配列要素数
+		static const std::size_t TABLE_SIZE = _TABLE_SIZE;//配列要素数
 	public:
 		//アクセッサ
 		const node_type& at(const int index) const { return *ref_node(index); }
@@ -111,8 +108,8 @@ namespace bin_heap
 		node_type& operator[](const int index){ return *ref_node(index); }
 	public:
 		//メソッド
-		std::size_t max_size() const { return ARRAY_NUM; }//最大要素数を取得
-		std::size_t capacity() const { return ARRAY_NUM; }//最大要素数を取得
+		std::size_t max_size() const { return TABLE_SIZE; }//最大要素数を取得
+		std::size_t capacity() const { return TABLE_SIZE; }//最大要素数を取得
 		std::size_t size() const { return m_used; }//使用中の要素数を取得
 		bool empty() const { return m_used == 0; }//空か？
 	private:
@@ -123,7 +120,7 @@ namespace bin_heap
 		inline const node_type* ref_node(const int index) const { return index >= 0 && index < static_cast<int>(m_used) ? &m_array[index] : nullptr; }//ノード参照
 		inline const node_type* ref_top() const { return m_used == 0 ? nullptr : &m_array[0]; }//先頭ノード参照
 		inline const node_type* ref_bottom() const { return m_used == 0 ? nullptr : &m_array[m_used - 1]; }//終端ノード参照
-		inline const node_type* ref_new() const { return m_used == ARRAY_NUM ? nullptr : &m_array[m_used]; }//新規ノード参照
+		inline const node_type* ref_new() const { return m_used == TABLE_SIZE ? nullptr : &m_array[m_used]; }//新規ノード参照
 		inline const node_type* begin() const { return m_used == 0 ? nullptr : &m_array[0]; }//開始ノード
 		inline const node_type* end() const { return m_used == 0 ? nullptr : &m_array[m_used]; }//終了ノード
 		inline node_type* ref_node(const int index){ return  const_cast<node_type*>(const_cast<const container*>(this)->ref_node()); }//ノード参照
@@ -133,7 +130,7 @@ namespace bin_heap
 		inline node_type* begin(){ return const_cast<node_type*>(const_cast<const container*>(this)->begin()); }//開始ノード
 		inline node_type* end(){ return const_cast<node_type*>(const_cast<const container*>(this)->end()); }//終了ノード
 	private:
-		inline int _adj_index(const int index) const { return index >= 0 && index < ARRAY_NUM ? index : -1; }//インデックスを範囲内に補正
+		inline int _adj_index(const int index) const { return index >= 0 && index < TABLE_SIZE ? index : -1; }//インデックスを範囲内に補正
 		inline int _ref_index(const node_type* node) const{ return node - m_array; }//ノードをインデックスに変換 ※範囲チェックなし
 		inline int _calc_parent(const int index) const { return (index - 1) >> 1; }//親インデックス計算 ※範囲チェックなし
 		inline int _calc_child_l(const int index) const { return (index << 1) + 1; }//左側の子インデックス計算 ※範囲チェックなし
@@ -172,7 +169,7 @@ namespace bin_heap
 		//※追加した新規ノードを上に移動
 		const node_type* push_end()
 		{
-			if (m_used == ARRAY_NUM)
+			if (m_used == TABLE_SIZE)
 				return nullptr;
 			//末端の葉ノードとして登録された新規ノードを上方に移動
 			std::size_t index = m_used++;
@@ -255,7 +252,7 @@ namespace bin_heap
 		{}
 	private:
 		//フィールド
-		node_type m_array[ARRAY_NUM];//配列
+		node_type m_array[TABLE_SIZE];//配列
 		std::size_t m_used;//使用数
 		const bool m_isReverse;//キー比較を反転するか？
 	};
@@ -275,8 +272,8 @@ namespace prior_queue
 	//※CRTPを活用し、下記のような派生構造体を作成して使用する
 	//  //template<class OPE_TYPE, typename NODE_TYPE, int _NODES_MAX>
 	//  //struct base_ope_t;
-	//  //struct 派生構造体名 : public prior_queue::base_ope_t<派生構造体, ノード型, 最大ノード数, 優先度型, シーケンス番号型>
-	//	struct ope_t : public prior_queue::ope_t<ope_t, data_t, 1024, int, unsigned int>
+	//  //struct 派生構造体名 : public prior_queue::base_ope_t<派生構造体, ノード型, 優先度型, シーケンス番号型>
+	//	struct ope_t : public prior_queue::ope_t<ope_t, data_t, int, unsigned int>
 	//	{
 	//		//優先度を取得
 	//		inline static prior_type getPrior(const node_type& node){ return node.m_prior; }
@@ -298,12 +295,9 @@ namespace prior_queue
 	//			return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
 	//		}
 	//	};
-	template<class OPE_TYPE, typename NODE_TYPE, int _NODES_MAX, typename PRIOR_TYPE = int, typename SEQ_TYPE = unsigned int>
+	template<class OPE_TYPE, typename NODE_TYPE, typename PRIOR_TYPE = int, typename SEQ_TYPE = unsigned int>
 	struct base_ope_t
 	{
-		//定数
-		static const int NODES_MAX = _NODES_MAX;//最大ノード数
-
 		//型
 		typedef OPE_TYPE ope_type;//ノード操作型
 		typedef NODE_TYPE node_type;//ノード型
@@ -353,19 +347,19 @@ namespace prior_queue
 		typedef const value_type* const_pointer; \
 		typedef std::size_t size_type; \
 		typedef typename ope_type::prior_type prior_type; \
-		typedef typename ope_type::seq_type seq_type; \
-		typedef bin_heap::container<ope_type> bin_heap;
+		typedef typename ope_type::seq_type seq_type;
 
 	//----------------------------------------
 	//プライオリティキューコンテナ
 	//※内部に二分ヒープを持つ
 	//※std::priority_queueとはあまり互換性がなく、イテレータにも対応しない
-	template<class OPE_TYPE>
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
 	class container
 	{
 	public:
 		//型
 		DECLARE_OPE_TYPES(OPE_TYPE);
+		typedef bin_heap::container<ope_type, _TABLE_SIZE> bin_heap;
 	public:
 		//アクセッサ
 		const bin_heap& getHeap() const { return m_heap; }//二分ヒープ取得
@@ -496,7 +490,7 @@ struct data_t
 };
 //----------------------------------------
 //テストデータ操作クラス
-struct ope_t : public prior_queue::base_ope_t<ope_t, data_t, TEST_DATA_MAX, PRIORITY, int>
+struct ope_t : public prior_queue::base_ope_t<ope_t, data_t, PRIORITY, int>
 {
 	//優先度を取得
 	inline static prior_type getPrior(const node_type& node){ return node.m_prior; }
@@ -526,7 +520,7 @@ inline int printf_detail(const char* fmt, ...){ return 0; }
 int main(const int argc, const char* argv[])
 {
 	//プライオリティキューコンテナ生成
-	typedef prior_queue::container<ope_t> contaier_type;
+	typedef prior_queue::container<ope_t, TEST_DATA_MAX> contaier_type;
 	typedef contaier_type::bin_heap bin_heap;
 	contaier_type con;
 

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="StaticCRC32">
+      <UniqueIdentifier>{c048d3b9-36a9-4889-ada1-7eb244231782}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StaticCRC32\src">
+      <UniqueIdentifier>{0885b82d-3cc7-4805-8453-15b700677bb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StaticCRC32\include">
+      <UniqueIdentifier>{b8f724d1-a493-4cab-922d-1487ec59577c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StaticCRC32\include\constexpr">
+      <UniqueIdentifier>{38cb404a-d0bb-4232-a233-22ab3a4811d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StaticCRC32\src\constexpr">
+      <UniqueIdentifier>{19b10a52-7cda-4a6a-9c35-d214890a400b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\StaticCRC32\StaticCRC32\src\constexpr\constexpr.cpp">
+      <Filter>StaticCRC32\include\constexpr</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\StaticCRC32\StaticCRC32\src\constexpr\constexpr.h">
+      <Filter>StaticCRC32\src\constexpr</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

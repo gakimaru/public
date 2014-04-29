@@ -1,0 +1,28 @@
+----- Hash Table -----
+hash_table:
+.getOriginalTableSize()=20
+.getTableSize()=23
+.getTableSizeOvered()=3
+.getKeyMin()=0
+.getKeyMax()=4294967295
+.getKeyRange()=0
+contructor: data_t [123]
+contructor: data_t [456]
+contructor: data_t [789]
+destructor: ~data_t [456]
+destructor: ~data_t [789]
+contructor: data_t [456!]
+contructor: data_t [123!!]
+contructor: data_t [456!!]
+destructor: ~data_t [456!!]
+contructor: data_t [789!!]
+index=5, key=107902cb, name=789!!, value=78901, is_deleted=false
+index=8, key=0000014a, name=789, value=789, is_deleted=TRUE
+index=9, key=573324dd, name=456!!, value=45679, is_deleted=false
+index=13, key=000000dc, name=456!, value=4567, is_deleted=false
+index=18, key=0000006e, name=123, value=123, is_deleted=false
+index=19, key=107b2fb2, name=123!!, value=12345, is_deleted=false
+.size()=4
+.getUsingCount()=5
+.getDeletedCount()=1
+.getMaxFindCycle()=2

@@ -87,7 +87,7 @@ sortFuncSet(calcUnordered);
 //・メモリ使用量：O(1)
 //・安定性：　　　○
 //----------------------------------------
-//※交換発生有無のチェックを行い、最適化する
+//※交換発生有無のチェックを行い、最適化する。
 //----------------------------------------
 template<class T, class COMPARE>
 std::size_t bubbleSort(T* array, const std::size_t size, COMPARE comparison)
@@ -130,7 +130,7 @@ sortFuncSet(bubbleSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　○
 //----------------------------------------
-//※交換発生有無のチェックを行い、最適化する
+//※交換発生有無のチェックを行い、最適化する。
 //----------------------------------------
 template<class T, class COMPARE>
 std::size_t shakerSort(T* array, const std::size_t size, COMPARE comparison)
@@ -190,7 +190,7 @@ sortFuncSet(shakerSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　○
 //----------------------------------------
-//※OpenMPを使用し、並列化で最適化する
+//※OpenMPを使用し、並列化で最適化する。
 //----------------------------------------
 template<class T, class COMPARE>
 std::size_t oddEvenSort(T* array, const std::size_t size, COMPARE comparison)
@@ -206,12 +206,12 @@ std::size_t oddEvenSort(T* array, const std::size_t size, COMPARE comparison)
 		is_swapped = false;
 		for (std::size_t odd_even = 0; odd_even < 2; ++odd_even)
 		{
-			std::size_t i;
+			int i;//本来は std::size_t
 			T* now;
 			T* next;
 			tmp;
-		#pragma omp parallel for reduction(+:swapped_count) private(now, next, tmp)
-			for (i = odd_even; i < end; i += 2)
+		#pragma omp parallel for reduction(+:swapped_count) reduction(||:is_swapped) private(now, next, tmp)
+			for (i = odd_even; i < static_cast<int>(end); i += 2)
 			{
 				now = array + i;
 				next = now + 1;
@@ -238,27 +238,40 @@ sortFuncSet(oddEvenSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　×
 //----------------------------------------
-//※OpenMPを使用し、並列化で最適化する
+//※OpenMPを使用し、並列化で最適化する。
+//※内部で奇遇転地ソートを使用し、二重に並列化するが、
+//　他のソートアルゴリズムを使用した方が効率的かもしれない。
 //----------------------------------------
+//#define SHEAR_SORT_USE_OPENMP_NEST//OpenMPのparallelの入れ子処理を使用する場合は、このマクロを有効にする
 #include <math.h>//sqrt()用
+#ifdef SHEAR_SORT_USE_OPENMP_NEST
+#ifdef _OPENMP
+#include <omp.h>//omp_set_nested()用
+#endif//_OPENMP
+#endif//SHEAR_SORT_USE_OPENMP_NEST
 template<class T, class COMPARE>
 std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 {
 	if (!array || size <= 1)
 		return 0;
+#ifdef SHEAR_SORT_USE_OPENMP_NEST
+#ifdef _OPENMP
+	const int omp_nested_before = omp_get_nested();
+	omp_set_nested(1);//並列化のネストを許可
+#endif//_OPENMP
+#endif//SHEAR_SORT_USE_OPENMP_NEST
 	std::size_t swapped_count = 0;
 	T tmp;
-	std::size_t row;
-	std::size_t col;
-	std::size_t row_min;
-	std::size_t col_min;
+	int row;//本来は std::size_t
+	int col;//本来は std::size_t
 	std::size_t rows_col;
 	std::size_t cols_row;
 	std::size_t rows_1_col;
 	std::size_t cols_1_row;
+	std::size_t odd_even;
 	T* now;
-	T* min;
-	T* check;
+	T* next;
+	bool is_swapped;
 	bool is_odd;
 	std::size_t rows = static_cast<std::size_t>(sqrt(size));//正方形のデータとして扱うための行数算出
 	std::size_t over = size % rows;//余り算出
@@ -280,62 +293,80 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 	{
 		//各行ごとに、列方向にソート
 		//※偶数行は小さい順、奇数行は大きい順にソート
-	#pragma omp parallel for reduction(+:swapped_count) private(col, col_min, cols_row, cols_1_row, now, min, check, tmp, is_odd)
-		for (row = 0; row <= rows; ++row)
+#ifdef SHEAR_SORT_USE_OPENMP_NEST
+	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, is_odd)
+#else//SHEAR_SORT_USE_OPENMP_NEST
+	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, is_odd, now, next, tmp)
+#endif//SHEAR_SORT_USE_OPENMP_NEST
+		for (row = 0; row <= static_cast<int>(rows); ++row)
 		{
-			cols_row = row == rows ? over : cols;
+			cols_row = row == static_cast<int>(rows) ? over : cols;
 			if (cols_row > 1)
 			{
 				is_odd = ((row & 0x1) == 0x1);
-				//選択ソート
-				now = array + row * cols;
+				//奇遇転置ソート
 				cols_1_row = cols_row - 1;
-				for (col = 0; col < cols_1_row; ++col, ++now)
+				is_swapped = true;
+				while (is_swapped)
 				{
-					min = now;
-					check = now;
-					for (col_min = col + 1; col_min < cols_row; ++col_min)
+					is_swapped = false;
+					for (odd_even = 0; odd_even < 2; ++odd_even)
 					{
-						++check;
-						if ((!is_odd && comparison(*check, *min)) ||//偶数行は小さい順
-						    ( is_odd && comparison(*min, *check)))  //奇数行は大きい順
-							min = check;
-					}
-					if (now != min)
-					{
-						tmp = *min;
-						*min = *now;
-						*now = tmp;
-						++swapped_count;
+				#ifdef SHEAR_SORT_USE_OPENMP_NEST
+					#pragma omp parallel for reduction(+:swapped_count) reduction(||:is_swapped) private(now, next, tmp)
+				#endif//SHEAR_SORT_USE_OPENMP_NEST
+						for (col = odd_even; col < static_cast<int>(cols_1_row); col += 2)
+						{
+							now = array + row * cols + col;
+							next = now + 1;
+							if ((!is_odd && comparison(*next, *now)) ||//偶数行は小さい順
+								( is_odd && comparison(*now, *next)))  //奇数行は大きい順
+							{
+								tmp = *next;
+								*next = *now;
+								*now = tmp;
+								is_swapped = true;
+								++swapped_count;
+							}
+						}
 					}
 				}
 			}
 		}
 		//各列ごとに、行方向にソート
 		//※小さい順にソート
-	#pragma omp parallel for reduction(+:swapped_count) private(row, row_min, rows_col, rows_1_col, now, min, check, tmp)
-		for (col = 0; col < cols; ++col)
+#ifdef SHEAR_SORT_USE_OPENMP_NEST
+	#pragma omp parallel for reduction(+:swapped_count) private(rows_col, rows_1_col, is_swapped)
+#else//SHEAR_SORT_USE_OPENMP_NEST
+	#pragma omp parallel for reduction(+:swapped_count) private(rows_col, rows_1_col, is_swapped, now, next, tmp)
+#endif//SHEAR_SORT_USE_OPENMP_NEST
+		for (col = 0; col < static_cast<int>(cols); ++col)
 		{
-			rows_col = rows + (col < over ? 1 : 0);
-			//選択ソート
-			now = array + col;
+			rows_col = rows + (col < static_cast<int>(over) ? 1 : 0);
+			//奇遇転置ソート
 			rows_1_col = rows_col - 1;
-			for (row = 0; row < rows_1_col; ++row, now += cols)
+			is_swapped = true;
+			while (is_swapped)
 			{
-				min = now;
-				check = now;
-				for (row_min = row + 1; row_min < rows_col; ++row_min)
+				is_swapped = false;
+				for (odd_even = 0; odd_even < 2; ++odd_even)
 				{
-					check += cols;
-					if (comparison(*check, *min))
-						min = check;
-				}
-				if (now != min)
-				{
-					tmp = *min;
-					*min = *now;
-					*now = tmp;
-					++swapped_count;
+			#ifdef SHEAR_SORT_USE_OPENMP_NEST
+				#pragma omp parallel for reduction(+:swapped_count) reduction(||:is_swapped) private(now, next, tmp)
+			#endif//SHEAR_SORT_USE_OPENMP_NEST
+					for (row = odd_even; row < static_cast<int>(rows_1_col); row += 2)
+					{
+						now = array + row * cols + col;
+						next = now + cols;
+						if (comparison(*next, *now))
+						{
+							tmp = *next;
+							*next = *now;
+							*now = tmp;
+							is_swapped = true;
+							++swapped_count;
+						}
+					}
 				}
 			}
 		}
@@ -343,36 +374,48 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 	{
 		//各行ごとに、列方向にソート
 		//※小さい順にソート
-	#pragma omp parallel for reduction(+:swapped_count) private(col, col_min, cols_row, cols_1_row, now, min, check, tmp)
-		for (row = 0; row <= rows; ++row)
+#ifdef SHEAR_SORT_USE_OPENMP_NEST
+	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped)
+#else//SHEAR_SORT_USE_OPENMP_NEST
+	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, now, next, tmp)
+#endif//SHEAR_SORT_USE_OPENMP_NEST
+		for (row = 0; row <= static_cast<int>(rows); ++row)
 		{
-			cols_row = row == rows ? over : cols;
+			cols_row = row == static_cast<int>(rows) ? over : cols;
 			if (cols_row > 1)
 			{
-				//選択ソート
-				now = array + row * cols;
+				//奇遇転置ソート
 				cols_1_row = cols_row - 1;
-				for (col = 0; col < cols_1_row; ++col, ++now)
+				is_swapped = true;
+				while (is_swapped)
 				{
-					min = now;
-					check = now;
-					for (col_min = col + 1; col_min < cols_row; ++col_min)
+					is_swapped = false;
+					for (odd_even = 0; odd_even < 2; ++odd_even)
 					{
-						++check;
-						if (comparison(*check, *min))
-							min = check;
-					}
-					if (now != min)
-					{
-						tmp = *min;
-						*min = *now;
-						*now = tmp;
-						++swapped_count;
+					//#pragma omp parallel for reduction(+:swapped_count) reduction(||:is_swapped) private(now, next, tmp)
+						for (col = odd_even; col < static_cast<int>(cols_1_row); col += 2)
+						{
+							now = array + row * cols + col;
+							next = now + 1;
+							if (comparison(*next, *now))
+							{
+								tmp = *next;
+								*next = *now;
+								*now = tmp;
+								is_swapped = true;
+								++swapped_count;
+							}
+						}
 					}
 				}
 			}
 		}
 	}
+#ifdef SHEAR_SORT_USE_OPENMP_NEST
+#ifdef _OPENMP
+	omp_set_nested(omp_nested_before);
+#endif//_OPENMP
+#endif//SHEAR_SORT_USE_OPENMP_NEST
 	return swapped_count;
 }
 sortFuncSet(shearSort);
@@ -472,7 +515,8 @@ sortFuncSet(gnomeSort);
 //・メモリ使用量：O(log n)
 //・安定性：　　　×
 //----------------------------------------
-//※再帰処理を使用せずに最適化（最大件数を log2(4294967296) = 32 とする）
+//※再帰処理を使用せずに最適化する。
+//　（最大件数を log2(4294967296) = 32 とする）
 //----------------------------------------
 template<class T, class COMPARE>
 std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
@@ -799,22 +843,14 @@ std::size_t shellSort(T* array, const std::size_t size, COMPARE comparison)
 	std::size_t swapped_count = 0;
 	T tmp;
 	const T* end = array + size;
-	std::size_t h_stack[32];
-	h_stack[0] = 1;
-	int h_stack_p = 1;
 	std::size_t h = 1;
-	while (true)
 	{
-		h = 3 * h + 1;
-		if (h >= size)
-			break;
-		h_stack[h_stack_p++] = h;
+		const std::size_t h_max = size / 3;
+		while (h <= h_max)
+			h = 3 * h + 1;
 	}
-	while (true)
+	while (h > 0)
 	{
-		h = h_stack[--h_stack_p];
-		if (h == 1)
-			break;
 		T* now = array;
 		T* next = now + h;
 		while (next < end)
@@ -843,8 +879,8 @@ std::size_t shellSort(T* array, const std::size_t size, COMPARE comparison)
 			++now;
 			++next;
 		}
+		h = (h - 1) / 3;
 	}
-	swapped_count += insertionSort(array, size, comparison);//最後に挿入ソート
 	return swapped_count;
 }
 sortFuncSet(shellSort);
@@ -957,10 +993,12 @@ sortFuncSet(inplaceMergeSort);
 //　なったら、挿入ソートに切り替える。
 //※STLのstd::sort()と同様の手法。
 //----------------------------------------
-//※再帰処理を使用せずに最適化（最大件数を log2(4294967296) = 32 とする）
-//※挿入ソート切り替えタイミングを16に設定
-//※挿入ソートではなく、コムソートを使用するスタイルに改良
-//※ヒープソートではなく、コムソートを使用するスタイルに改良
+//※再帰処理を使用せずに最適化する。
+//　（最大件数を log2(4294967296) = 32 とする）
+//※挿入ソート切り替えタイミングを16に設定する。
+//　（VC++2013のSstd::sortでは32）
+//※挿入ソートではなく、コムソートを使用するスタイルに改良。
+//※ヒープソートではなく、コムソートを使用するスタイルに改良。
 //----------------------------------------
 template<class T, class COMPARE>
 std::size_t _introSort(T* array, const std::size_t size, COMPARE comparison)
@@ -970,7 +1008,7 @@ std::size_t _introSort(T* array, const std::size_t size, COMPARE comparison)
 	//--------------------
 	//クイックソート：スタック処理版
 	//※再帰処理版は省略
-	static const std::size_t SIZE_THRESHOLD = 16;//挿入ソートに切り替える件数　※VC++のSTLでは32
+	static const std::size_t SIZE_THRESHOLD = 16;//挿入ソートに切り替える件数
 	std::size_t swapped_count = 0;
 	T tmp;
 	struct stack_t
@@ -1040,12 +1078,12 @@ std::size_t _introSort(T* array, const std::size_t size, COMPARE comparison)
 			{
 				if (new_size < SIZE_THRESHOLD)
 				{
-					//swapped_count += insertionSort(new_array, new_size, comparison);//挿入ソートに切り替え ※標準は挿入ソート
+					//swapped_count += insertionSort(new_array, new_size, comparison);//【本来の処理】挿入ソートに切り替え ※標準は挿入ソート
 					swapped_count += combSort(new_array, new_size, comparison);//【改良】コムソートに切り替え
 				}
 				else if (new_depth == 0)
 				{
-					//swapped_count += heapSort(new_array, new_size, comparison);//ヒープソートに切り替え
+					//swapped_count += heapSort(new_array, new_size, comparison);//【本来の処理】ヒープソートに切り替え
 					swapped_count += combSort(new_array, new_size, comparison);//【改良】コムソートに切り替え
 				}
 				else

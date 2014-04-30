@@ -13,6 +13,8 @@ static const int TEST_DATA_COUNT = 10000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 2;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 1;//テストデータ件数（最大）
 
+#define TEST_DATA_SAME_KEY_NUM 3//テストデータに登録する同一キーデータの数（各キーのデータを指定数ずつ登録）
+
 //#define TEST_DATA_SIZE 512//テストデータ一件のサイズ
 //#define TEST_DATA_SIZE 256//テストデータ一件のサイズ
 #define TEST_DATA_SIZE 64//テストデータ一件のサイズ
@@ -44,6 +46,7 @@ static const int TEST_DATA_COUNT = 10000;//テストデータ件数（最大）
 struct ATTR_ALIGN(TEST_DATA_ALIGN) data_t
 {
 	int m_key;//キー
+	int m_seqNo;//シーケンス番号
 	char m_data[TEST_DATA_SIZE];//データ（大き目のサイズにする）
 };
 

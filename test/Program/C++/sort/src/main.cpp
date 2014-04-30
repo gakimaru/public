@@ -249,11 +249,13 @@ sortFuncSet(oddEvenSort);
 #include <omp.h>//omp_set_nested()用
 #endif//_OPENMP
 #endif//SHEAR_SORT_USE_OPENMP_NEST
+#include <omp.h>//omp_set_nested()用
 template<class T, class COMPARE>
 std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 {
 	if (!array || size <= 1)
 		return 0;
+printf("omp_get_nested()=%d\n", omp_get_nested());
 #ifdef SHEAR_SORT_USE_OPENMP_NEST
 #ifdef _OPENMP
 	const int omp_nested_before = omp_get_nested();
@@ -268,10 +270,11 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 	std::size_t cols_row;
 	std::size_t rows_1_col;
 	std::size_t cols_1_row;
-	std::size_t odd_even;
+	std::size_t col_odd_even;
+	std::size_t row_odd_even;
+	bool is_swapped;
 	T* now;
 	T* next;
-	bool is_swapped;
 	bool is_odd;
 	std::size_t rows = static_cast<std::size_t>(sqrt(size));//正方形のデータとして扱うための行数算出
 	std::size_t over = size % rows;//余り算出
@@ -294,9 +297,9 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 		//各行ごとに、列方向にソート
 		//※偶数行は小さい順、奇数行は大きい順にソート
 #ifdef SHEAR_SORT_USE_OPENMP_NEST
-	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, is_odd)
+	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, col_odd_even, is_odd)
 #else//SHEAR_SORT_USE_OPENMP_NEST
-	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, is_odd, now, next, tmp)
+	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, col_odd_even, is_odd, col, now, next, tmp)
 #endif//SHEAR_SORT_USE_OPENMP_NEST
 		for (row = 0; row <= static_cast<int>(rows); ++row)
 		{
@@ -310,12 +313,12 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 				while (is_swapped)
 				{
 					is_swapped = false;
-					for (odd_even = 0; odd_even < 2; ++odd_even)
+					for (col_odd_even = 0; col_odd_even < 2; ++col_odd_even)
 					{
 				#ifdef SHEAR_SORT_USE_OPENMP_NEST
 					#pragma omp parallel for reduction(+:swapped_count) reduction(||:is_swapped) private(now, next, tmp)
 				#endif//SHEAR_SORT_USE_OPENMP_NEST
-						for (col = odd_even; col < static_cast<int>(cols_1_row); col += 2)
+						for (col = col_odd_even; col < static_cast<int>(cols_1_row); col += 2)
 						{
 							now = array + row * cols + col;
 							next = now + 1;
@@ -336,9 +339,9 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 		//各列ごとに、行方向にソート
 		//※小さい順にソート
 #ifdef SHEAR_SORT_USE_OPENMP_NEST
-	#pragma omp parallel for reduction(+:swapped_count) private(rows_col, rows_1_col, is_swapped)
+	#pragma omp parallel for reduction(+:swapped_count) private(rows_col, rows_1_col, row_odd_even, is_swapped)
 #else//SHEAR_SORT_USE_OPENMP_NEST
-	#pragma omp parallel for reduction(+:swapped_count) private(rows_col, rows_1_col, is_swapped, now, next, tmp)
+	#pragma omp parallel for reduction(+:swapped_count) private(rows_col, rows_1_col, row_odd_even, is_swapped, row, now, next, tmp)
 #endif//SHEAR_SORT_USE_OPENMP_NEST
 		for (col = 0; col < static_cast<int>(cols); ++col)
 		{
@@ -349,12 +352,12 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 			while (is_swapped)
 			{
 				is_swapped = false;
-				for (odd_even = 0; odd_even < 2; ++odd_even)
+				for (row_odd_even = 0; row_odd_even < 2; ++row_odd_even)
 				{
 			#ifdef SHEAR_SORT_USE_OPENMP_NEST
 				#pragma omp parallel for reduction(+:swapped_count) reduction(||:is_swapped) private(now, next, tmp)
 			#endif//SHEAR_SORT_USE_OPENMP_NEST
-					for (row = odd_even; row < static_cast<int>(rows_1_col); row += 2)
+					for (row = row_odd_even; row < static_cast<int>(rows_1_col); row += 2)
 					{
 						now = array + row * cols + col;
 						next = now + cols;
@@ -375,9 +378,9 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 		//各行ごとに、列方向にソート
 		//※小さい順にソート
 #ifdef SHEAR_SORT_USE_OPENMP_NEST
-	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped)
+	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, col_odd_even, is_swapped)
 #else//SHEAR_SORT_USE_OPENMP_NEST
-	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, now, next, tmp)
+	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, col_odd_even, is_swapped, col, now, next, tmp)
 #endif//SHEAR_SORT_USE_OPENMP_NEST
 		for (row = 0; row <= static_cast<int>(rows); ++row)
 		{
@@ -390,10 +393,12 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 				while (is_swapped)
 				{
 					is_swapped = false;
-					for (odd_even = 0; odd_even < 2; ++odd_even)
+					for (col_odd_even = 0; col_odd_even < 2; ++col_odd_even)
 					{
-					//#pragma omp parallel for reduction(+:swapped_count) reduction(||:is_swapped) private(now, next, tmp)
-						for (col = odd_even; col < static_cast<int>(cols_1_row); col += 2)
+					#ifdef SHEAR_SORT_USE_OPENMP_NEST
+						#pragma omp parallel for reduction(+:swapped_count) reduction(||:is_swapped) private(now, next, tmp)
+					#endif//SHEAR_SORT_USE_OPENMP_NEST
+						for (col = col_odd_even; col < static_cast<int>(cols_1_row); col += 2)
 						{
 							now = array + row * cols + col;
 							next = now + 1;
@@ -512,10 +517,10 @@ sortFuncSet(gnomeSort);
 //----------------------------------------
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n^2)
-//・メモリ使用量：O(log n)
+//・メモリ使用量：O(log n) ※再帰処理を使用しなければ O(1)
 //・安定性：　　　×
 //----------------------------------------
-//※再帰処理を使用せずに最適化する。
+//※再帰処理を使用せず、ループ処理にして最適化する。
 //　（最大件数を log2(4294967296) = 32 とする）
 //----------------------------------------
 template<class T, class COMPARE>
@@ -921,20 +926,22 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 			T* right_end = right_begin + block_size_right;
 			T* left = left_end - 1;
 			T* right = right_begin;
+			T* left_ins_prev = nullptr;
 			while (right < right_end)
 			{
 				if (comparison(*right, *left))//左ブロックの右端と右ブロックの左端をチェック
 				{
 					//挿入位置検索
 				#if 1
-					std::size_t search_range = (right - left_begin) >> 1;
+					T* left_begin_now = left_ins_prev ? left_ins_prev + 1 : left_begin;
+					std::size_t search_range = (right - left_begin_now) >> 1;
 					std::size_t search_pos = search_range;
-					T* left_ins = left_begin + search_pos;
+					T* left_ins = left_begin_now + search_pos;
 					while (search_range != 0)
 					{
 						const std::size_t search_range_prev = search_range;
 						search_range = search_range >> 1;
-						left_ins = left_begin + search_pos;
+						left_ins = left_begin_now + search_pos;
 						if (comparison(*right, *left_ins))
 							search_pos = search_pos - search_range_prev + search_range;
 						else
@@ -942,12 +949,15 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 					}
 					while (left_ins < right && comparison(*left_ins, *right))
 						++left_ins;
+					while (left_ins >= left_begin_now && comparison(*right, *left_ins))
+						--left_ins;
 				#else
 					T* left_ins = left;
-				#endif
 					while (left_ins >= left_begin && comparison(*right, *left_ins))
 						--left_ins;
+				#endif
 					++left_ins;
+					left_ins_prev = left_ins;
 					//挿入
 					tmp = *right;
 					//※VC++2013では、memmove関数を使うよりも、直接メモリ操作する方が速い（関数呼び出しのせいか？）
@@ -984,7 +994,7 @@ sortFuncSet(inplaceMergeSort);
 //----------------------------------------
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n log n)
-//・メモリ使用量：O(n log n)
+//・メモリ使用量：O(n log n) ※クイックソートで再帰処理を使用しなければ O(1)
 //・安定性：　　　×
 //----------------------------------------
 //※クイックソートの再帰レベルが log n に達したら、
@@ -993,10 +1003,10 @@ sortFuncSet(inplaceMergeSort);
 //　なったら、挿入ソートに切り替える。
 //※STLのstd::sort()と同様の手法。
 //----------------------------------------
-//※再帰処理を使用せずに最適化する。
+//※再帰処理を使用せず、ループ処理にして最適化する。
 //　（最大件数を log2(4294967296) = 32 とする）
 //※挿入ソート切り替えタイミングを16に設定する。
-//　（VC++2013のSstd::sortでは32）
+//　（VC++2013のstd::sortでは32）
 //※挿入ソートではなく、コムソートを使用するスタイルに改良。
 //※ヒープソートではなく、コムソートを使用するスタイルに改良。
 //----------------------------------------
@@ -1212,14 +1222,23 @@ int main(const int argc, const char* argv[])
 			const std::size_t size = array->size();
 			const data_t* prev = &array->at(0);
 			const data_t* now = prev + 1;
+			bool array_is_not_stable = false;
+			bool array_is_broken = false;
 			for (std::size_t i = 1; i < size; ++i, ++now, ++prev)
 			{
-				if (now->m_key == prev->m_key)
-				{
-					printf("[NG] Sorting program failure !!\n");
+				if (prev->m_key == now->m_key && prev->m_seqNo > now->m_seqNo)
+					array_is_not_stable = true;
+				if (prev->m_seqNo == now->m_seqNo)
+					array_is_broken = true;
+				if (array_is_not_stable && array_is_broken)
 					break;
-				}
 			}
+			if (array_is_broken)
+				printf("[NG] Array is BROKEN !! Sorting-program is mistaken !\n");
+			if (array_is_not_stable)
+				printf("Array is NOT STABLE.\n");
+			else
+				printf("Array is stable.\n");
 		}
 		const bool is_print = false;
 		prev_time = printElapsedTime(prev_time, is_print);
@@ -1241,6 +1260,7 @@ int main(const int argc, const char* argv[])
 		printf("----- Make Array(%s) -----\n", type_name);
 		array = new array_t();
 		int key = 0;
+		int same_key_num = 0;
 		switch (type)
 		{
 		case init_shuffle1:
@@ -1249,10 +1269,22 @@ int main(const int argc, const char* argv[])
 		case init_ordered:
 		case init_ordered_without_both_ends:
 			for (data_t& obj : *array)
-				obj.m_key = ++key;
+			{
+				obj.m_key = key;
+				++same_key_num;
+				if (same_key_num % TEST_DATA_SAME_KEY_NUM == 0)
+					++key;
+			}
 			break;
 		case init_reversed:
-			for_each(array->rbegin(), array->rend(), [&key](data_t& obj){obj.m_key = ++key; });
+			for_each(array->rbegin(), array->rend(), [&key, &same_key_num](data_t& obj)
+				{
+					obj.m_key = key;
+					++same_key_num;
+					if (same_key_num % TEST_DATA_SAME_KEY_NUM == 0)
+						++key;
+				}
+			);
 			break;
 		}
 		switch (type)
@@ -1272,6 +1304,11 @@ int main(const int argc, const char* argv[])
 				(*array)[array->size() - 1] = tmp;
 			}
 			break;
+		}
+		int seq_no = 0;
+		for (data_t& obj : *array)
+		{
+			obj.m_seqNo = ++seq_no;
 		}
 		const bool is_print = false;
 		prev_time = printElapsedTime(prev_time, is_print);

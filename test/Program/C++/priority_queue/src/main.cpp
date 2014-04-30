@@ -112,10 +112,20 @@ namespace bin_heap
 		std::size_t capacity() const { return TABLE_SIZE; }//最大要素数を取得
 		std::size_t size() const { return m_used; }//使用中の要素数を取得
 		bool empty() const { return m_used == 0; }//空か？
-	private:
-		int _calc_depth_max(int depth) const { depth >>= 1; return depth == 0 ? 0 : 1 + _calc_depth_max(depth); }//最大の深さを計算
 	public:
-		int depth_max() const { return m_used == 0 ? -1 : _calc_depth_max(m_used + 1); }//最大の深さを取得
+		int depth_max() const//最大の深さを取得
+		{
+			if (m_used == 0)
+				return -1;
+			int depth = 0;
+			int used = m_used >> 1;
+			while (used != 0)
+			{
+				++depth;
+				used >>= 1;
+			}
+			return depth;
+		}
 		void clear(){ m_used = 0; }//クリア
 		inline const node_type* ref_node(const int index) const { return index >= 0 && index < static_cast<int>(m_used) ? &m_array[index] : nullptr; }//ノード参照
 		inline const node_type* ref_top() const { return m_used == 0 ? nullptr : &m_array[0]; }//先頭ノード参照
@@ -149,10 +159,8 @@ namespace bin_heap
 		inline node_type* ref_child_l(const int index){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child_l(index)); }//左側の子ノード参照
 		inline node_type* ref_child_r(const int index){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child_r(index)); }//左側の子ノード参照
 		inline node_type* ref_child(const int index, const bool is_right){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child(index, is_right)); }//子ノード参照
-	private:
-		inline bool _less(const bool result) const { return m_isReverse ? !result : result; }//キー比較
 	public:
-		inline bool less(const node_type& lhs, const node_type& rhs) const { return _less(ope_type::less(lhs, rhs)); }//キー比較
+		inline bool less(const node_type& lhs, const node_type& rhs) const { return ope_type::less(lhs, rhs); }//キー比較
 		//プッシュ
 		const node_type* push(const node_type& obj)
 		{
@@ -171,23 +179,9 @@ namespace bin_heap
 		{
 			if (m_used == TABLE_SIZE)
 				return nullptr;
+			node_type* obj = &m_array[m_used++];
 			//末端の葉ノードとして登録された新規ノードを上方に移動
-			std::size_t index = m_used++;
-			node_type* obj = &m_array[index];
-			while (index != 0)
-			{
-				index = _calc_parent(index);
-				node_type* parent = &m_array[index];
-				if (less(*parent, *obj))
-				{
-					node_type tmp;
-					tmp = *obj;
-					*obj = *parent;
-					*parent = tmp;
-					obj = parent;
-				}
-			}
-			return obj;
+			return up_heap(obj);
 		}
 		//ポップ
 		bool pop(node_type& dst)
@@ -208,9 +202,38 @@ namespace bin_heap
 			if (m_used == 0)
 				return false;
 			//根ノードがポップされたので、末端の葉ノードを根ノードに上書きした上で、それを下方に移動
-			std::size_t index = 0;
 			node_type* obj = &m_array[0];
 			*obj = m_array[--m_used];
+			down_heap(obj);
+			return true;
+		}
+		//ノードを上方に移動
+		const node_type* up_heap(node_type* obj)
+		{
+			int index = ref_index(obj);
+			if (index < 0)
+				return nullptr;
+			while (index != 0)
+			{
+				index = _calc_parent(index);
+				node_type* parent = &m_array[index];
+				if (less(*parent, *obj))
+				{
+					node_type tmp;
+					tmp = *obj;
+					*obj = *parent;
+					*parent = tmp;
+					obj = parent;
+				}
+			}
+			return obj;
+		}
+		//ノードを下方に移動
+		const node_type* down_heap(node_type* obj)
+		{
+			int index = ref_index(obj);
+			if (index < 0)
+				return nullptr;
 			while (true)
 			{
 				index = _calc_child_l(index);
@@ -238,14 +261,13 @@ namespace bin_heap
 				}
 				obj = child;
 			}
-			return true;
+			return obj;
 		}
 	public:
 		//コンストラクタ
 		//※キー比較処理を渡す
 		container(const bool is_reverse = false) :
-			m_used(0),
-			m_isReverse(is_reverse)
+			m_used(0)
 		{}
 		//デストラクタ
 		~container()
@@ -253,8 +275,7 @@ namespace bin_heap
 	private:
 		//フィールド
 		node_type m_array[TABLE_SIZE];//配列
-		std::size_t m_used;//使用数
-		const bool m_isReverse;//キー比較を反転するか？
+		int m_used;//使用数
 	};
 	//--------------------
 	//基本型定義マクロ消去
@@ -264,7 +285,7 @@ namespace bin_heap
 //--------------------------------------------------------------------------------
 //プライオリティキュー
 //※プライオリティとともに、シーケンス番号を扱うことで、キューイングの順序性を保証する。
-//※最終的には、スレッドセーフな構造にする。
+#include <mutex>//C++11 std::mutex
 namespace prior_queue
 {
 	//--------------------
@@ -393,25 +414,37 @@ namespace prior_queue
 		//キューイング
 		const node_type* enqueue(node_type& obj)
 		{
+			std::lock_guard<std::mutex> lock(m_mutex);//関数終了時に自動的にロック解放
 			ope_type::setSeqNo(obj, getNextSeqNo());
 			return m_heap.push(obj);
 		}
 		//キューイング開始
 		//※空きノード取得
+		//※キューイング完了時に enqueueEnd を呼び出す必要あり
 		node_type* enqueueBegin(const prior_type prior)
 		{
-			node_type* node = m_heap.push_begin();
-			if (!node)
+			m_mutex.lock();//ロックを取得したまま関数を抜ける
+			node_type* obj = m_heap.push_begin();
+			if (!obj)
+			{
+				m_mutex.unlock();//失敗時はロック解放
 				return nullptr;
-			ope_type::setPrior(*node, prior);
-			ope_type::setSeqNo(*node, getNextSeqNo());
-			return node;
+			}
+			ope_type::setPrior(*obj, prior);
+			ope_type::setSeqNo(*obj, getNextSeqNo());
+			return obj;
 		}
 		//キューイング終了
-		const node_type* push_end(){ return m_heap.push_end(); }
+		const node_type* enqeueEnd()
+		{
+			const node_type* new_node = m_heap.push_end();
+			m_mutex.unlock();//ロック解放
+			return new_node;
+		}
 		//デキュー
 		bool dequeue(node_type& dst)
 		{
+			std::lock_guard<std::mutex> lock(m_mutex);//関数終了時に自動的にロック解放
 			const bool result = m_heap.pop(dst);
 			if (!result)
 				return false;
@@ -419,20 +452,45 @@ namespace prior_queue
 			return true;
 		}
 		//デキュー開始
-		const node_type* dequeueBegin(){ return m_heap.pop_begin(); }
+		//※デキュー完了時に dequeueEnd を呼び出す必要あり
+		const node_type* dequeueBegin()
+		{
+			m_mutex.lock();//ロックを取得したまま関数を抜ける
+			return m_heap.pop_begin();
+		}
 		//デキュー終了
 		bool dequeueEnd()
 		{
 			const bool result = m_heap.pop_end();
 			checkAndResetSeqNo();
+			m_mutex.unlock();//ロック解放
 			return result;
+		}
+		//先頭（根）キューを参照
+		//※デキューしない
+		const node_type* top() const
+		{
+			return m_heap.ref_top();
+		}
+		//先頭（根）キューのプライオリティ変更
+		//※プライオリティを変更した時点でキューの位置が入れ替わる
+		node_type* changePriorityOnTop(const prior_type prior)
+		{
+			std::lock_guard<std::mutex> lock(m_mutex);//関数終了時に自動的にロック解放
+			node_type* obj = m_heap.ref_top();
+			if (!obj)
+				return nullptr;
+			ope_type::setPrior(*obj, prior);
+			m_heap.down_heap(obj);
+			return obj;
 		}
 	public:
 		//コンストラクタ
 		//※キー比較処理を渡す
 		container(const bool is_reverse = false) :
 			m_heap(is_reverse),
-			m_seqNo(0)
+			m_seqNo(0),
+			m_mutex()
 		{}
 		//デストラクタ
 		~container()
@@ -441,6 +499,7 @@ namespace prior_queue
 		//フィールド
 		bin_heap m_heap;//二分ヒープ
 		seq_type m_seqNo;//シーケンス番号
+		std::mutex m_mutex;//ミューテックス
 	};
 	//--------------------
 	//基本型定義マクロ消去
@@ -460,7 +519,7 @@ namespace prior_queue
 enum PRIORITY : short
 {
 	HIGHEST = 5,
-	HIGHER = 2,
+	HIGHER = 4,
 	NORMAL = 3,
 	LOWER = 2,
 	LOWEST = 1,
@@ -647,6 +706,22 @@ int main(const int argc, const char* argv[])
 		}
 		printf("\n");
 	};
+	popNodes(3);
+	showTree(con);//木を表示
+
+	//先頭ノードの優先度を変更
+	auto changePriorityOnTop = [&con](const PRIORITY new_priority)
+	{
+		printf("--- Change Priority ---\n");
+		const data_t* node = con.top();
+		printf("[%1d:%2d] -> [%1d:%2d]\n", node->m_prior, node->m_val, new_priority, node->m_val);
+		con.changePriorityOnTop(new_priority);
+	};
+	changePriorityOnTop(HIGHER);
+	changePriorityOnTop(LOWER);
+	showTree(con);//木を表示
+	
+	//ノードをポップ
 	popNodes(TEST_DATA_REG_NUM / 2);
 	showTree(con);//木を表示
 

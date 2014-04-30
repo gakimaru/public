@@ -2,17 +2,23 @@
 Initialize
 ============================================================
 ----- Make Array(shuffle1) -----
-[NG] Array is NOT ordered! [NG=4952 / record(s)=10000]
+[NG] Array is NOT ordered! [NG=4951 / record(s)=10000]
+Array is stable.
 ----- Make Array(shuffle2) -----
-[NG] Array is NOT ordered! [NG=5003 / record(s)=10000]
+[NG] Array is NOT ordered! [NG=5002 / record(s)=10000]
+Array is stable.
 ----- Make Array(shuffle3) -----
-[NG] Array is NOT ordered! [NG=4986 / record(s)=10000]
+[NG] Array is NOT ordered! [NG=4984 / record(s)=10000]
+Array is stable.
 ----- Make Array(ordered) -----
 Array is ordered. [record(s)=10000]
+Array is stable.
 ----- Make Array(reversed) -----
-[NG] Array is NOT ordered! [NG=9999 / record(s)=10000]
+[NG] Array is NOT ordered! [NG=3333 / record(s)=10000]
+Array is stable.
 ----- Make Array(ordered_without_both_ends) -----
 [NG] Array is NOT ordered! [NG=2 / record(s)=10000]
+Array is stable.
 
 
 ============================================================
@@ -22,45 +28,51 @@ Sort type: [C-Library qsort]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.003000300 sec.
+*elapsed time=0.002997100 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(shuffle2)
 ------------------------------
-*elapsed time=0.002999400 sec.
+*elapsed time=0.003000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(shuffle3)
 ------------------------------
-*elapsed time=0.003000900 sec.
+*elapsed time=0.003000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
-*elapsed time=0.000999700 sec.
+*elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
-*elapsed time=0.001000300 sec.
+*elapsed time=0.001012300 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
 *elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ============================================================
 Sort type: [C-Library qsort]
-* Total time       = 0.011000600 sec.
-* Average time     = 0.001833433 sec.
+* Total time       = 0.010009400 sec.
+* Average time     = 0.001668233 sec.
 * Min time         = 0.000000000 sec.
-* Max time         = 0.003000900 sec.
+* Max time         = 0.003000000 sec.
 ============================================================
 
 
@@ -70,46 +82,52 @@ Sort type: [STL std::sort(with function)]
 
 ------------------------------
 Sort array(shuffle1)
+------------------------------
+*elapsed time=0.001974800 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+
+------------------------------
+Sort array(shuffle2)
+------------------------------
+*elapsed time=0.001019300 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+
+------------------------------
+Sort array(shuffle3)
+------------------------------
+*elapsed time=0.002001200 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+
+------------------------------
+Sort array(ordered)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+
+------------------------------
+Sort array(reversed)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+
+------------------------------
+Sort array(ordered_without_both_ends)
 ------------------------------
 *elapsed time=0.001000000 sec.
 Array is ordered. [record(s)=10000]
-
-------------------------------
-Sort array(shuffle2)
-------------------------------
-*elapsed time=0.001000300 sec.
-Array is ordered. [record(s)=10000]
-
-------------------------------
-Sort array(shuffle3)
-------------------------------
-*elapsed time=0.000998600 sec.
-Array is ordered. [record(s)=10000]
-
-------------------------------
-Sort array(ordered)
-------------------------------
-*elapsed time=0.001000300 sec.
-Array is ordered. [record(s)=10000]
-
-------------------------------
-Sort array(reversed)
-------------------------------
-*elapsed time=0.000000000 sec.
-Array is ordered. [record(s)=10000]
-
-------------------------------
-Sort array(ordered_without_both_ends)
-------------------------------
-*elapsed time=0.000000000 sec.
-Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ============================================================
 Sort type: [STL std::sort(with function)]
-* Total time       = 0.003999200 sec.
-* Average time     = 0.000666533 sec.
+* Total time       = 0.005995300 sec.
+* Average time     = 0.000999217 sec.
 * Min time         = 0.000000000 sec.
-* Max time         = 0.001000300 sec.
+* Max time         = 0.002001200 sec.
 ============================================================
 
 
@@ -120,45 +138,51 @@ Sort type: [STL std::sort(with inline function)]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.000999700 sec.
+*elapsed time=0.001000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(shuffle2)
 ------------------------------
-*elapsed time=0.001008500 sec.
+*elapsed time=0.001001200 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(shuffle3)
 ------------------------------
-*elapsed time=0.000991500 sec.
+*elapsed time=0.000998800 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
-*elapsed time=0.000000000 sec.
+*elapsed time=0.001000300 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
-*elapsed time=0.001001100 sec.
+*elapsed time=0.000999700 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
-*elapsed time=0.000999200 sec.
+*elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ============================================================
 Sort type: [STL std::sort(with inline function)]
 * Total time       = 0.005000000 sec.
 * Average time     = 0.000833333 sec.
 * Min time         = 0.000000000 sec.
-* Max time         = 0.001008500 sec.
+* Max time         = 0.001001200 sec.
 ============================================================
 
 
@@ -169,45 +193,51 @@ Sort type: [STL std::sort(with functor)]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.001000600 sec.
+*elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(shuffle2)
 ------------------------------
-*elapsed time=0.001000200 sec.
+*elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(shuffle3)
 ------------------------------
-*elapsed time=0.000999800 sec.
+*elapsed time=0.001000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
-*elapsed time=0.000000000 sec.
+*elapsed time=0.001000000 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
-*elapsed time=0.000997600 sec.
+*elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
-*elapsed time=0.001000900 sec.
+*elapsed time=0.001002900 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ============================================================
 Sort type: [STL std::sort(with functor)]
-* Total time       = 0.004999100 sec.
-* Average time     = 0.000833183 sec.
+* Total time       = 0.003002900 sec.
+* Average time     = 0.000500483 sec.
 * Min time         = 0.000000000 sec.
-* Max time         = 0.001000900 sec.
+* Max time         = 0.001002900 sec.
 ============================================================
 
 
@@ -218,314 +248,354 @@ Sort type: [STL std::sort(with lamda)]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.000999700 sec.
+*elapsed time=0.000997400 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(shuffle2)
-------------------------------
-*elapsed time=0.001000900 sec.
-Array is ordered. [record(s)=10000]
-
-------------------------------
-Sort array(shuffle3)
-------------------------------
-*elapsed time=0.000999100 sec.
-Array is ordered. [record(s)=10000]
-
-------------------------------
-Sort array(ordered)
-------------------------------
-*elapsed time=0.001020200 sec.
-Array is ordered. [record(s)=10000]
-
-------------------------------
-Sort array(reversed)
-------------------------------
-*elapsed time=0.000000000 sec.
-Array is ordered. [record(s)=10000]
-
-------------------------------
-Sort array(ordered_without_both_ends)
-------------------------------
-*elapsed time=0.000000000 sec.
-Array is ordered. [record(s)=10000]
-
-============================================================
-Sort type: [STL std::sort(with lamda)]
-* Total time       = 0.004019900 sec.
-* Average time     = 0.000669983 sec.
-* Min time         = 0.000000000 sec.
-* Max time         = 0.001020200 sec.
-============================================================
-
-
-============================================================
-Sort type: [Bubble sort]
-============================================================
-
-------------------------------
-Sort array(shuffle1)
-------------------------------
-*elapsed time=0.211992900 sec.
-Array is ordered. [record(s)=10000]
-[swapped=25023486 count(s)]
-
-------------------------------
-Sort array(shuffle2)
-------------------------------
-*elapsed time=0.212032200 sec.
-Array is ordered. [record(s)=10000]
-[swapped=24900229 count(s)]
-
-------------------------------
-Sort array(shuffle3)
-------------------------------
-*elapsed time=0.208991200 sec.
-Array is ordered. [record(s)=10000]
-[swapped=24709869 count(s)]
-
-------------------------------
-Sort array(ordered)
-------------------------------
-*elapsed time=0.000000000 sec.
-Array is ordered. [record(s)=10000]
-[swapped=0 count(s)]
-
-------------------------------
-Sort array(reversed)
-------------------------------
-*elapsed time=0.213011700 sec.
-Array is ordered. [record(s)=10000]
-[swapped=49995000 count(s)]
-
-------------------------------
-Sort array(ordered_without_both_ends)
-------------------------------
-*elapsed time=0.067003600 sec.
-Array is ordered. [record(s)=10000]
-[swapped=19997 count(s)]
-
-============================================================
-Sort type: [Bubble sort]
-* Total time       = 0.913031600 sec.
-* Average time     = 0.152171933 sec.
-* Min time         = 0.000000000 sec.
-* Max time         = 0.213011700 sec.
-* Total Swapped    = 124648581 count(s)
-* Average  Swapped =  20774763 count(s)
-* Min Swapped      =         0 count(s)
-* Max Swapped      =  49995000 count(s)
-============================================================
-
-
-============================================================
-Sort type: [Shaker sort]
-============================================================
-
-------------------------------
-Sort array(shuffle1)
-------------------------------
-*elapsed time=0.160008600 sec.
-Array is ordered. [record(s)=10000]
-[swapped=25023486 count(s)]
-
-------------------------------
-Sort array(shuffle2)
-------------------------------
-*elapsed time=0.157016200 sec.
-Array is ordered. [record(s)=10000]
-[swapped=24900229 count(s)]
-
-------------------------------
-Sort array(shuffle3)
-------------------------------
-*elapsed time=0.159026100 sec.
-Array is ordered. [record(s)=10000]
-[swapped=24709869 count(s)]
-
-------------------------------
-Sort array(ordered)
-------------------------------
-*elapsed time=0.000000000 sec.
-Array is ordered. [record(s)=10000]
-[swapped=0 count(s)]
-
-------------------------------
-Sort array(reversed)
-------------------------------
-*elapsed time=0.197991500 sec.
-Array is ordered. [record(s)=10000]
-[swapped=49995000 count(s)]
-
-------------------------------
-Sort array(ordered_without_both_ends)
-------------------------------
-*elapsed time=0.000000000 sec.
-Array is ordered. [record(s)=10000]
-[swapped=19997 count(s)]
-
-============================================================
-Sort type: [Shaker sort]
-* Total time       = 0.674042400 sec.
-* Average time     = 0.112340400 sec.
-* Min time         = 0.000000000 sec.
-* Max time         = 0.197991500 sec.
-* Total Swapped    = 124648581 count(s)
-* Average  Swapped =  20774763 count(s)
-* Min Swapped      =         0 count(s)
-* Max Swapped      =  49995000 count(s)
-============================================================
-
-
-============================================================
-Sort type: [Odd-Even sort]
-============================================================
-
-------------------------------
-Sort array(shuffle1)
-------------------------------
-*elapsed time=0.129006400 sec.
-Array is ordered. [record(s)=10000]
-[swapped=25023486 count(s)]
-
-------------------------------
-Sort array(shuffle2)
-------------------------------
-*elapsed time=0.125007400 sec.
-Array is ordered. [record(s)=10000]
-[swapped=24900229 count(s)]
-
-------------------------------
-Sort array(shuffle3)
-------------------------------
-*elapsed time=0.137007700 sec.
-Array is ordered. [record(s)=10000]
-[swapped=24709869 count(s)]
-
-------------------------------
-Sort array(ordered)
-------------------------------
-*elapsed time=0.000000000 sec.
-Array is ordered. [record(s)=10000]
-[swapped=0 count(s)]
-
-------------------------------
-Sort array(reversed)
-------------------------------
-*elapsed time=0.179010700 sec.
-Array is ordered. [record(s)=10000]
-[swapped=49995000 count(s)]
-
-------------------------------
-Sort array(ordered_without_both_ends)
-------------------------------
-*elapsed time=0.060004300 sec.
-Array is ordered. [record(s)=10000]
-[swapped=19997 count(s)]
-
-============================================================
-Sort type: [Odd-Even sort]
-* Total time       = 0.630036500 sec.
-* Average time     = 0.105006083 sec.
-* Min time         = 0.000000000 sec.
-* Max time         = 0.179010700 sec.
-* Total Swapped    = 124648581 count(s)
-* Average  Swapped =  20774763 count(s)
-* Min Swapped      =         0 count(s)
-* Max Swapped      =  49995000 count(s)
-============================================================
-
-
-============================================================
-Sort type: [Shear sort]
-============================================================
-
-------------------------------
-Sort array(shuffle1)
-------------------------------
-*elapsed time=0.005000000 sec.
-[NG] Array is NOT ordered! [NG=2828 / record(s)=10000]
-[swapped=1016205 count(s)]
-
-------------------------------
-Sort array(shuffle2)
-------------------------------
-*elapsed time=0.004002000 sec.
-[NG] Array is NOT ordered! [NG=3116 / record(s)=10000]
-[swapped=947673 count(s)]
-
-------------------------------
-Sort array(shuffle3)
-------------------------------
-*elapsed time=0.004998900 sec.
-[NG] Array is NOT ordered! [NG=2971 / record(s)=10000]
-[swapped=1040335 count(s)]
-
-------------------------------
-Sort array(ordered)
-------------------------------
-*elapsed time=0.002000000 sec.
-[NG] Array is NOT ordered! [NG=1998 / record(s)=10000]
-[swapped=322174 count(s)]
-
-------------------------------
-Sort array(reversed)
-------------------------------
-*elapsed time=0.006000600 sec.
-[NG] Array is NOT ordered! [NG=2999 / record(s)=10000]
-[swapped=1381856 count(s)]
-
-------------------------------
-Sort array(ordered_without_both_ends)
-------------------------------
-*elapsed time=0.002000300 sec.
-[NG] Array is NOT ordered! [NG=2201 / record(s)=10000]
-[swapped=319530 count(s)]
-
-============================================================
-Sort type: [Shear sort]
-* Total time       = 0.024001800 sec.
-* Average time     = 0.004000300 sec.
-* Min time         = 0.002000000 sec.
-* Max time         = 0.006000600 sec.
-* Total Swapped    =   5027773 count(s)
-* Average  Swapped =    837962 count(s)
-* Min Swapped      =    319530 count(s)
-* Max Swapped      =   1381856 count(s)
-============================================================
-
-
-============================================================
-Sort type: [Comb sort]
-============================================================
-
-------------------------------
-Sort array(shuffle1)
-------------------------------
-*elapsed time=0.002000300 sec.
-Array is ordered. [record(s)=10000]
-[swapped=63386 count(s)]
-
-------------------------------
-Sort array(shuffle2)
-------------------------------
-*elapsed time=0.000999700 sec.
-Array is ordered. [record(s)=10000]
-[swapped=63401 count(s)]
-
-------------------------------
-Sort array(shuffle3)
 ------------------------------
 *elapsed time=0.001000300 sec.
 Array is ordered. [record(s)=10000]
-[swapped=63493 count(s)]
+Array is NOT STABLE.
+
+------------------------------
+Sort array(shuffle3)
+------------------------------
+*elapsed time=0.000999700 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+
+------------------------------
+Sort array(reversed)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+
+------------------------------
+Sort array(ordered_without_both_ends)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+
+============================================================
+Sort type: [STL std::sort(with lamda)]
+* Total time       = 0.002997400 sec.
+* Average time     = 0.000499567 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.001000300 sec.
+============================================================
+
+
+============================================================
+Sort type: [Bubble sort]
+============================================================
+
+------------------------------
+Sort array(shuffle1)
+------------------------------
+*elapsed time=0.211012200 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=25018590 count(s)]
+
+------------------------------
+Sort array(shuffle2)
+------------------------------
+*elapsed time=0.212031600 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=24895289 count(s)]
+
+------------------------------
+Sort array(shuffle3)
+------------------------------
+*elapsed time=0.205992000 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=24704876 count(s)]
+
+------------------------------
+Sort array(ordered)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=0 count(s)]
+
+------------------------------
+Sort array(reversed)
+------------------------------
+*elapsed time=0.213009600 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=49985001 count(s)]
+
+------------------------------
+Sort array(ordered_without_both_ends)
+------------------------------
+*elapsed time=0.069004200 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=19995 count(s)]
+
+============================================================
+Sort type: [Bubble sort]
+* Total time       = 0.911049600 sec.
+* Average time     = 0.151841600 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.213009600 sec.
+* Total Swapped    = 124623751 count(s)
+* Average  Swapped =  20770625 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =  49985001 count(s)
+============================================================
+
+
+============================================================
+Sort type: [Shaker sort]
+============================================================
+
+------------------------------
+Sort array(shuffle1)
+------------------------------
+*elapsed time=0.159009500 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=25018590 count(s)]
+
+------------------------------
+Sort array(shuffle2)
+------------------------------
+*elapsed time=0.155008700 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=24895289 count(s)]
+
+------------------------------
+Sort array(shuffle3)
+------------------------------
+*elapsed time=0.156019800 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=24704876 count(s)]
+
+------------------------------
+Sort array(ordered)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=0 count(s)]
+
+------------------------------
+Sort array(reversed)
+------------------------------
+*elapsed time=0.196011900 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=49985001 count(s)]
+
+------------------------------
+Sort array(ordered_without_both_ends)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=19995 count(s)]
+
+============================================================
+Sort type: [Shaker sort]
+* Total time       = 0.666049900 sec.
+* Average time     = 0.111008317 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.196011900 sec.
+* Total Swapped    = 124623751 count(s)
+* Average  Swapped =  20770625 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =  49985001 count(s)
+============================================================
+
+
+============================================================
+Sort type: [Odd-Even sort]
+============================================================
+
+------------------------------
+Sort array(shuffle1)
+------------------------------
+*elapsed time=0.128998400 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=25018590 count(s)]
+
+------------------------------
+Sort array(shuffle2)
+------------------------------
+*elapsed time=0.128007800 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=24895289 count(s)]
+
+------------------------------
+Sort array(shuffle3)
+------------------------------
+*elapsed time=0.132007200 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=24704876 count(s)]
+
+------------------------------
+Sort array(ordered)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=0 count(s)]
+
+------------------------------
+Sort array(reversed)
+------------------------------
+*elapsed time=0.176010400 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=49985001 count(s)]
+
+------------------------------
+Sort array(ordered_without_both_ends)
+------------------------------
+*elapsed time=0.062003600 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=19995 count(s)]
+
+============================================================
+Sort type: [Odd-Even sort]
+* Total time       = 0.627027400 sec.
+* Average time     = 0.104504567 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.176010400 sec.
+* Total Swapped    = 124623751 count(s)
+* Average  Swapped =  20770625 count(s)
+* Min Swapped      =         0 count(s)
+* Max Swapped      =  49985001 count(s)
+============================================================
+
+
+============================================================
+Sort type: [Shear sort]
+============================================================
+
+------------------------------
+Sort array(shuffle1)
+------------------------------
+omp_get_nested()=0
+*elapsed time=0.004999700 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+[swapped=1892312 count(s)]
+
+------------------------------
+Sort array(shuffle2)
+------------------------------
+omp_get_nested()=0
+*elapsed time=0.004000600 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+[swapped=1873730 count(s)]
+
+------------------------------
+Sort array(shuffle3)
+------------------------------
+omp_get_nested()=0
+*elapsed time=0.004000000 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+[swapped=1860168 count(s)]
+
+------------------------------
+Sort array(ordered)
+------------------------------
+omp_get_nested()=0
+*elapsed time=0.001000300 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=485134 count(s)]
+
+------------------------------
+Sort array(reversed)
+------------------------------
+omp_get_nested()=0
+*elapsed time=0.003000000 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+[swapped=1465201 count(s)]
+
+------------------------------
+Sort array(ordered_without_both_ends)
+------------------------------
+omp_get_nested()=0
 *elapsed time=0.001000000 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
+[swapped=485527 count(s)]
+
+============================================================
+Sort type: [Shear sort]
+* Total time       = 0.018000600 sec.
+* Average time     = 0.003000100 sec.
+* Min time         = 0.001000000 sec.
+* Max time         = 0.004999700 sec.
+* Total Swapped    =   8062072 count(s)
+* Average  Swapped =   1343678 count(s)
+* Min Swapped      =    485134 count(s)
+* Max Swapped      =   1892312 count(s)
+============================================================
+
+
+============================================================
+Sort type: [Comb sort]
+============================================================
+
+------------------------------
+Sort array(shuffle1)
+------------------------------
+*elapsed time=0.002000300 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+[swapped=57500 count(s)]
+
+------------------------------
+Sort array(shuffle2)
+------------------------------
+*elapsed time=0.001000600 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+[swapped=57587 count(s)]
+
+------------------------------
+Sort array(shuffle3)
+------------------------------
+*elapsed time=0.001001200 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+[swapped=57584 count(s)]
+
+------------------------------
+Sort array(ordered)
+------------------------------
+*elapsed time=0.000000000 sec.
+Array is ordered. [record(s)=10000]
+Array is stable.
 [swapped=0 count(s)]
 
 ------------------------------
@@ -533,25 +603,27 @@ Sort array(reversed)
 ------------------------------
 *elapsed time=0.001000000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=20078 count(s)]
+Array is NOT STABLE.
+[swapped=18345 count(s)]
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
-*elapsed time=0.001000000 sec.
+*elapsed time=0.001000600 sec.
 Array is ordered. [record(s)=10000]
-[swapped=10083 count(s)]
+Array is NOT STABLE.
+[swapped=7303 count(s)]
 
 ============================================================
 Sort type: [Comb sort]
-* Total time       = 0.007000300 sec.
-* Average time     = 0.001166717 sec.
-* Min time         = 0.000999700 sec.
+* Total time       = 0.006002700 sec.
+* Average time     = 0.001000450 sec.
+* Min time         = 0.000000000 sec.
 * Max time         = 0.002000300 sec.
-* Total Swapped    =    220441 count(s)
-* Average  Swapped =     36740 count(s)
+* Total Swapped    =    198319 count(s)
+* Average  Swapped =     33053 count(s)
 * Min Swapped      =         0 count(s)
-* Max Swapped      =     63493 count(s)
+* Max Swapped      =     57587 count(s)
 ============================================================
 
 
@@ -562,55 +634,61 @@ Sort type: [Gnome sort]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.168024200 sec.
+*elapsed time=0.169009800 sec.
 Array is ordered. [record(s)=10000]
-[swapped=25023486 count(s)]
+Array is stable.
+[swapped=25018590 count(s)]
 
 ------------------------------
 Sort array(shuffle2)
 ------------------------------
-*elapsed time=0.139013300 sec.
+*elapsed time=0.137043500 sec.
 Array is ordered. [record(s)=10000]
-[swapped=24900229 count(s)]
+Array is stable.
+[swapped=24895289 count(s)]
 
 ------------------------------
 Sort array(shuffle3)
 ------------------------------
-*elapsed time=0.139008500 sec.
+*elapsed time=0.138017200 sec.
 Array is ordered. [record(s)=10000]
-[swapped=24709869 count(s)]
+Array is stable.
+[swapped=24704876 count(s)]
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
 *elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
 [swapped=0 count(s)]
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
-*elapsed time=0.234988400 sec.
+*elapsed time=0.204987600 sec.
 Array is ordered. [record(s)=10000]
-[swapped=49995000 count(s)]
+Array is stable.
+[swapped=49985001 count(s)]
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
-*elapsed time=0.066003900 sec.
+*elapsed time=0.066002100 sec.
 Array is ordered. [record(s)=10000]
-[swapped=19997 count(s)]
+Array is stable.
+[swapped=19995 count(s)]
 
 ============================================================
 Sort type: [Gnome sort]
-* Total time       = 0.747038300 sec.
-* Average time     = 0.124506383 sec.
+* Total time       = 0.715060200 sec.
+* Average time     = 0.119176700 sec.
 * Min time         = 0.000000000 sec.
-* Max time         = 0.234988400 sec.
-* Total Swapped    = 124648581 count(s)
-* Average  Swapped =  20774763 count(s)
+* Max time         = 0.204987600 sec.
+* Total Swapped    = 124623751 count(s)
+* Average  Swapped =  20770625 count(s)
 * Min Swapped      =         0 count(s)
-* Max Swapped      =  49995000 count(s)
+* Max Swapped      =  49985001 count(s)
 ============================================================
 
 
@@ -621,55 +699,61 @@ Sort type: [Quick sort]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.001000600 sec.
+*elapsed time=0.001022600 sec.
 Array is ordered. [record(s)=10000]
-[swapped=31656 count(s)]
+Array is NOT STABLE.
+[swapped=33719 count(s)]
 
 ------------------------------
 Sort array(shuffle2)
+------------------------------
+*elapsed time=0.000997900 sec.
+Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
+[swapped=33677 count(s)]
+
+------------------------------
+Sort array(shuffle3)
 ------------------------------
 *elapsed time=0.000999700 sec.
 Array is ordered. [record(s)=10000]
-[swapped=31813 count(s)]
-
-------------------------------
-Sort array(shuffle3)
-------------------------------
-*elapsed time=0.001000300 sec.
-Array is ordered. [record(s)=10000]
-[swapped=31827 count(s)]
+Array is NOT STABLE.
+[swapped=33444 count(s)]
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
 *elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=0 count(s)]
+Array is NOT STABLE.
+[swapped=3333 count(s)]
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
 *elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=5000 count(s)]
+Array is NOT STABLE.
+[swapped=8333 count(s)]
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
 *elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=1 count(s)]
+Array is NOT STABLE.
+[swapped=3334 count(s)]
 
 ============================================================
 Sort type: [Quick sort]
-* Total time       = 0.003000600 sec.
-* Average time     = 0.000500100 sec.
+* Total time       = 0.003020200 sec.
+* Average time     = 0.000503367 sec.
 * Min time         = 0.000000000 sec.
-* Max time         = 0.001000600 sec.
-* Total Swapped    =    100297 count(s)
-* Average  Swapped =     16716 count(s)
-* Min Swapped      =         0 count(s)
-* Max Swapped      =     31827 count(s)
+* Max time         = 0.001022600 sec.
+* Total Swapped    =    115840 count(s)
+* Average  Swapped =     19306 count(s)
+* Min Swapped      =      3333 count(s)
+* Max Swapped      =     33719 count(s)
 ============================================================
 
 
@@ -680,55 +764,61 @@ Sort type: [Selection sort]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.126007100 sec.
+*elapsed time=0.123991600 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 [swapped=9990 count(s)]
 
 ------------------------------
 Sort array(shuffle2)
 ------------------------------
-*elapsed time=0.126008200 sec.
+*elapsed time=0.124034400 sec.
 Array is ordered. [record(s)=10000]
-[swapped=9989 count(s)]
+Array is NOT STABLE.
+[swapped=9995 count(s)]
 
 ------------------------------
 Sort array(shuffle3)
 ------------------------------
-*elapsed time=0.122006800 sec.
+*elapsed time=0.123007200 sec.
 Array is ordered. [record(s)=10000]
-[swapped=9993 count(s)]
+Array is NOT STABLE.
+[swapped=9990 count(s)]
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
-*elapsed time=0.123007600 sec.
+*elapsed time=0.123008100 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
 [swapped=0 count(s)]
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
-*elapsed time=0.124025500 sec.
+*elapsed time=0.123982000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=5000 count(s)]
+Array is NOT STABLE.
+[swapped=8333 count(s)]
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
-*elapsed time=0.124988300 sec.
+*elapsed time=0.124042000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=1 count(s)]
+Array is stable.
+[swapped=3 count(s)]
 
 ============================================================
 Sort type: [Selection sort]
-* Total time       = 0.746043500 sec.
-* Average time     = 0.124340583 sec.
-* Min time         = 0.122006800 sec.
-* Max time         = 0.126008200 sec.
-* Total Swapped    =     34973 count(s)
-* Average  Swapped =      5828 count(s)
+* Total time       = 0.742065300 sec.
+* Average time     = 0.123677550 sec.
+* Min time         = 0.123007200 sec.
+* Max time         = 0.124042000 sec.
+* Total Swapped    =     38311 count(s)
+* Average  Swapped =      6385 count(s)
 * Min Swapped      =         0 count(s)
-* Max Swapped      =      9993 count(s)
+* Max Swapped      =      9995 count(s)
 ============================================================
 
 
@@ -739,55 +829,61 @@ Sort type: [Heap sort]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.001000300 sec.
+*elapsed time=0.001992100 sec.
 Array is ordered. [record(s)=10000]
-[swapped=129664 count(s)]
+Array is NOT STABLE.
+[swapped=129635 count(s)]
 
 ------------------------------
 Sort array(shuffle2)
 ------------------------------
-*elapsed time=0.001000000 sec.
+*elapsed time=0.001000300 sec.
 Array is ordered. [record(s)=10000]
-[swapped=129591 count(s)]
+Array is NOT STABLE.
+[swapped=129583 count(s)]
 
 ------------------------------
 Sort array(shuffle3)
 ------------------------------
-*elapsed time=0.001000000 sec.
+*elapsed time=0.001997900 sec.
 Array is ordered. [record(s)=10000]
-[swapped=129767 count(s)]
+Array is NOT STABLE.
+[swapped=129778 count(s)]
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
-*elapsed time=0.001000900 sec.
+*elapsed time=0.001000000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=227262 count(s)]
+Array is NOT STABLE.
+[swapped=218680 count(s)]
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
-*elapsed time=0.000999400 sec.
+*elapsed time=0.001001800 sec.
 Array is ordered. [record(s)=10000]
-[swapped=116696 count(s)]
+Array is NOT STABLE.
+[swapped=116627 count(s)]
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
-*elapsed time=0.002000000 sec.
+*elapsed time=0.001000000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=227237 count(s)]
+Array is NOT STABLE.
+[swapped=213143 count(s)]
 
 ============================================================
 Sort type: [Heap sort]
-* Total time       = 0.007000600 sec.
-* Average time     = 0.001166767 sec.
-* Min time         = 0.000999400 sec.
-* Max time         = 0.002000000 sec.
-* Total Swapped    =    960217 count(s)
-* Average  Swapped =    160036 count(s)
-* Min Swapped      =    116696 count(s)
-* Max Swapped      =    227262 count(s)
+* Total time       = 0.007992100 sec.
+* Average time     = 0.001332017 sec.
+* Min time         = 0.001000000 sec.
+* Max time         = 0.001997900 sec.
+* Total Swapped    =    937446 count(s)
+* Average  Swapped =    156241 count(s)
+* Min Swapped      =    116627 count(s)
+* Max Swapped      =    218680 count(s)
 ============================================================
 
 
@@ -798,53 +894,59 @@ Sort type: [Insertion sort]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.140008000 sec.
+*elapsed time=0.140000200 sec.
 Array is ordered. [record(s)=10000]
-[swapped=9986 count(s)]
+Array is stable.
+[swapped=9985 count(s)]
 
 ------------------------------
 Sort array(shuffle2)
 ------------------------------
-*elapsed time=0.154027900 sec.
+*elapsed time=0.141014800 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
 [swapped=9987 count(s)]
 
 ------------------------------
 Sort array(shuffle3)
 ------------------------------
-*elapsed time=0.140040800 sec.
+*elapsed time=0.140002500 sec.
 Array is ordered. [record(s)=10000]
-[swapped=9985 count(s)]
+Array is stable.
+[swapped=9983 count(s)]
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
 *elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
 [swapped=0 count(s)]
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
-*elapsed time=0.222009300 sec.
+*elapsed time=0.222019200 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
 [swapped=9999 count(s)]
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
-*elapsed time=0.063008700 sec.
+*elapsed time=0.064002700 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
 [swapped=9999 count(s)]
 
 ============================================================
 Sort type: [Insertion sort]
-* Total time       = 0.719094700 sec.
-* Average time     = 0.119849117 sec.
+* Total time       = 0.707039400 sec.
+* Average time     = 0.117839900 sec.
 * Min time         = 0.000000000 sec.
-* Max time         = 0.222009300 sec.
-* Total Swapped    =     49956 count(s)
-* Average  Swapped =      8326 count(s)
+* Max time         = 0.222019200 sec.
+* Total Swapped    =     49953 count(s)
+* Average  Swapped =      8325 count(s)
 * Min Swapped      =         0 count(s)
 * Max Swapped      =      9999 count(s)
 ============================================================
@@ -857,55 +959,61 @@ Sort type: [Shell sort]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.056040200 sec.
+*elapsed time=0.050001900 sec.
 Array is ordered. [record(s)=10000]
-[swapped=49482 count(s)]
+Array is NOT STABLE.
+[swapped=48473 count(s)]
 
 ------------------------------
 Sort array(shuffle2)
 ------------------------------
-*elapsed time=0.056980000 sec.
+*elapsed time=0.050978400 sec.
 Array is ordered. [record(s)=10000]
-[swapped=49850 count(s)]
+Array is NOT STABLE.
+[swapped=48925 count(s)]
 
 ------------------------------
 Sort array(shuffle3)
 ------------------------------
-*elapsed time=0.057008000 sec.
+*elapsed time=0.052028400 sec.
 Array is ordered. [record(s)=10000]
-[swapped=49717 count(s)]
+Array is NOT STABLE.
+[swapped=48799 count(s)]
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
-*elapsed time=0.001002100 sec.
+*elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
 [swapped=0 count(s)]
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
-*elapsed time=0.046983700 sec.
+*elapsed time=0.029000600 sec.
 Array is ordered. [record(s)=10000]
-[swapped=39962 count(s)]
+Array is NOT STABLE.
+[swapped=37222 count(s)]
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
-*elapsed time=0.021000000 sec.
+*elapsed time=0.018000900 sec.
 Array is ordered. [record(s)=10000]
-[swapped=6254 count(s)]
+Array is NOT STABLE.
+[swapped=5156 count(s)]
 
 ============================================================
 Sort type: [Shell sort]
-* Total time       = 0.239014000 sec.
-* Average time     = 0.039835667 sec.
-* Min time         = 0.001002100 sec.
-* Max time         = 0.057008000 sec.
-* Total Swapped    =    195265 count(s)
-* Average  Swapped =     32544 count(s)
+* Total time       = 0.200010200 sec.
+* Average time     = 0.033335033 sec.
+* Min time         = 0.000000000 sec.
+* Max time         = 0.052028400 sec.
+* Total Swapped    =    188575 count(s)
+* Average  Swapped =     31429 count(s)
 * Min Swapped      =         0 count(s)
-* Max Swapped      =     49850 count(s)
+* Max Swapped      =     48925 count(s)
 ============================================================
 
 
@@ -916,55 +1024,61 @@ Sort type: [Inplace Merge sort]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.061028300 sec.
+*elapsed time=0.060005900 sec.
 Array is ordered. [record(s)=10000]
-[swapped=58297 count(s)]
+Array is NOT STABLE.
+[swapped=58291 count(s)]
 
 ------------------------------
 Sort array(shuffle2)
 ------------------------------
-*elapsed time=0.059979100 sec.
+*elapsed time=0.059995400 sec.
 Array is ordered. [record(s)=10000]
-[swapped=58199 count(s)]
+Array is NOT STABLE.
+[swapped=58193 count(s)]
 
 ------------------------------
 Sort array(shuffle3)
 ------------------------------
-*elapsed time=0.060003100 sec.
+*elapsed time=0.059009800 sec.
 Array is ordered. [record(s)=10000]
-[swapped=58197 count(s)]
+Array is NOT STABLE.
+[swapped=58188 count(s)]
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
 *elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is stable.
 [swapped=0 count(s)]
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
-*elapsed time=0.132009100 sec.
+*elapsed time=0.131020900 sec.
 Array is ordered. [record(s)=10000]
-[swapped=64608 count(s)]
+Array is stable.
+[swapped=60442 count(s)]
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
 *elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
+Array is NOT STABLE.
 [swapped=10006 count(s)]
 
 ============================================================
 Sort type: [Inplace Merge sort]
-* Total time       = 0.313019600 sec.
-* Average time     = 0.052169933 sec.
+* Total time       = 0.310032000 sec.
+* Average time     = 0.051672000 sec.
 * Min time         = 0.000000000 sec.
-* Max time         = 0.132009100 sec.
-* Total Swapped    =    249307 count(s)
-* Average  Swapped =     41551 count(s)
+* Max time         = 0.131020900 sec.
+* Total Swapped    =    245120 count(s)
+* Average  Swapped =     40853 count(s)
 * Min Swapped      =         0 count(s)
-* Max Swapped      =     64608 count(s)
+* Max Swapped      =     60442 count(s)
 ============================================================
 
 
@@ -975,55 +1089,61 @@ Sort type: [Intro sort]
 ------------------------------
 Sort array(shuffle1)
 ------------------------------
-*elapsed time=0.001000600 sec.
+*elapsed time=0.001014900 sec.
 Array is ordered. [record(s)=10000]
-[swapped=35068 count(s)]
+Array is NOT STABLE.
+[swapped=30574 count(s)]
 
 ------------------------------
 Sort array(shuffle2)
 ------------------------------
-*elapsed time=0.001000000 sec.
+*elapsed time=0.001010300 sec.
 Array is ordered. [record(s)=10000]
-[swapped=34615 count(s)]
+Array is NOT STABLE.
+[swapped=30587 count(s)]
 
 ------------------------------
 Sort array(shuffle3)
 ------------------------------
-*elapsed time=0.001000000 sec.
+*elapsed time=0.000995300 sec.
 Array is ordered. [record(s)=10000]
-[swapped=34495 count(s)]
+Array is NOT STABLE.
+[swapped=31103 count(s)]
 
 ------------------------------
 Sort array(ordered)
 ------------------------------
 *elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=0 count(s)]
+Array is NOT STABLE.
+[swapped=1023 count(s)]
 
 ------------------------------
 Sort array(reversed)
 ------------------------------
-*elapsed time=0.001000600 sec.
+*elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=5000 count(s)]
+Array is NOT STABLE.
+[swapped=6022 count(s)]
 
 ------------------------------
 Sort array(ordered_without_both_ends)
 ------------------------------
 *elapsed time=0.000000000 sec.
 Array is ordered. [record(s)=10000]
-[swapped=1 count(s)]
+Array is NOT STABLE.
+[swapped=1024 count(s)]
 
 ============================================================
 Sort type: [Intro sort]
-* Total time       = 0.004001200 sec.
-* Average time     = 0.000666867 sec.
+* Total time       = 0.003020500 sec.
+* Average time     = 0.000503417 sec.
 * Min time         = 0.000000000 sec.
-* Max time         = 0.001000600 sec.
-* Total Swapped    =    109179 count(s)
-* Average  Swapped =     18196 count(s)
-* Min Swapped      =         0 count(s)
-* Max Swapped      =     35068 count(s)
+* Max time         = 0.001014900 sec.
+* Total Swapped    =    100333 count(s)
+* Average  Swapped =     16722 count(s)
+* Min Swapped      =      1023 count(s)
+* Max Swapped      =     31103 count(s)
 ============================================================
 
 
@@ -1037,36 +1157,36 @@ Total Array size   = 800000 Bytes
 - (Sort Name):          Elapsed Time (Sum/Average/Min/Max) sec.             Swapped (Sum/Average/Min/Max) count(s)
 ------------------------------------------------------------------------------------------------------------------------
 [C-Library sort](Quick sort)
-- qsort(inline-function):  0.011000600/ 0.001833433/ 0.000000000/ 0.003000900
+- qsort(inline-function):  0.010009400/ 0.001668233/ 0.000000000/ 0.003000000
 ------------------------------------------------------------------------------------------------------------------------
 [STL sort](Intro sort)
-- std::sort(function):     0.003999200/ 0.000666533/ 0.000000000/ 0.001000300
-- std::sort(inline-func):  0.005000000/ 0.000833333/ 0.000000000/ 0.001008500
-- std::sort(functor):      0.004999100/ 0.000833183/ 0.000000000/ 0.001000900
-- std::sort(lambda):       0.004019900/ 0.000669983/ 0.000000000/ 0.001020200
+- std::sort(function):     0.005995300/ 0.000999217/ 0.000000000/ 0.002001200
+- std::sort(inline-func):  0.005000000/ 0.000833333/ 0.000000000/ 0.001001200
+- std::sort(functor):      0.003002900/ 0.000500483/ 0.000000000/ 0.001002900
+- std::sort(lambda):       0.002997400/ 0.000499567/ 0.000000000/ 0.001000300
 ------------------------------------------------------------------------------------------------------------------------
 [Exchange sorts]
-- Bubble sort<S>:          0.913031600/ 0.152171933/ 0.000000000/ 0.213011700 124648581/  20774763/         0/  49995000
-- Shaker sort<S>:          0.674042400/ 0.112340400/ 0.000000000/ 0.197991500 124648581/  20774763/         0/  49995000
-- Odd-Even sort<S>:        0.630036500/ 0.105006083/ 0.000000000/ 0.179010700 124648581/  20774763/         0/  49995000
-- Shear sort:              0.024001800/ 0.004000300/ 0.002000000/ 0.006000600   5027773/    837962/    319530/   1381856
-- Comb sort:               0.007000300/ 0.001166717/ 0.000999700/ 0.002000300    220441/     36740/         0/     63493
-- Gnome sort<S>:           0.747038300/ 0.124506383/ 0.000000000/ 0.234988400 124648581/  20774763/         0/  49995000
-- Quick sort:              0.003000600/ 0.000500100/ 0.000000000/ 0.001000600    100297/     16716/         0/     31827
+- Bubble sort<S>:          0.911049600/ 0.151841600/ 0.000000000/ 0.213009600 124623751/  20770625/         0/  49985001
+- Shaker sort<S>:          0.666049900/ 0.111008317/ 0.000000000/ 0.196011900 124623751/  20770625/         0/  49985001
+- Odd-Even sort<S>:        0.627027400/ 0.104504567/ 0.000000000/ 0.176010400 124623751/  20770625/         0/  49985001
+- Shear sort:              0.018000600/ 0.003000100/ 0.001000000/ 0.004999700   8062072/   1343678/    485134/   1892312
+- Comb sort:               0.006002700/ 0.001000450/ 0.000000000/ 0.002000300    198319/     33053/         0/     57587
+- Gnome sort<S>:           0.715060200/ 0.119176700/ 0.000000000/ 0.204987600 124623751/  20770625/         0/  49985001
+- Quick sort:              0.003020200/ 0.000503367/ 0.000000000/ 0.001022600    115840/     19306/      3333/     33719
 ------------------------------------------------------------------------------------------------------------------------
 [Selection sorts]
-- Selection sort:          0.746043500/ 0.124340583/ 0.122006800/ 0.126008200     34973/      5828/         0/      9993
-- Heap sort:               0.007000600/ 0.001166767/ 0.000999400/ 0.002000000    960217/    160036/    116696/    227262
+- Selection sort:          0.742065300/ 0.123677550/ 0.123007200/ 0.124042000     38311/      6385/         0/      9995
+- Heap sort:               0.007992100/ 0.001332017/ 0.001000000/ 0.001997900    937446/    156241/    116627/    218680
 ------------------------------------------------------------------------------------------------------------------------
 [Insertion sorts]
-- Insertion sort<S>:       0.719094700/ 0.119849117/ 0.000000000/ 0.222009300     49956/      8326/         0/      9999
-- Shell sort:              0.239014000/ 0.039835667/ 0.001002100/ 0.057008000    195265/     32544/         0/     49850
+- Insertion sort<S>:       0.707039400/ 0.117839900/ 0.000000000/ 0.222019200     49953/      8325/         0/      9999
+- Shell sort:              0.200010200/ 0.033335033/ 0.000000000/ 0.052028400    188575/     31429/         0/     48925
 ------------------------------------------------------------------------------------------------------------------------
 [Merge sorts]
-- Inplace-Merge sort<S>:   0.313019600/ 0.052169933/ 0.000000000/ 0.132009100    249307/     41551/         0/     64608
+- Inplace-Merge sort<S>:   0.310032000/ 0.051672000/ 0.000000000/ 0.131020900    245120/     40853/         0/     60442
 ------------------------------------------------------------------------------------------------------------------------
 [Hybrid sorts]
-- Intro sort:              0.004001200/ 0.000666867/ 0.000000000/ 0.001000600    109179/     18196/         0/     35068
+- Intro sort:              0.003020500/ 0.000503417/ 0.000000000/ 0.001014900    100333/     16722/      1023/     31103
 ------------------------------------------------------------------------------------------------------------------------
 * <S> ... Stable sort algorithm.
 
@@ -1084,4 +1204,4 @@ Finalize
 ============================================================
 End
 ============================================================
-*elapsed time=5.090294000 sec.
+*elapsed time=4.969336400 sec.

@@ -3,8 +3,12 @@
 #ifdef _OPENMP
 #define ODD_EVEN_SORT_USE_OPENMP//奇遇転置ソート：OpenMPを使用する場合は、このマクロを有効にする
 #define SHEAR_SORT_USE_OPENMP//シェアソート：OpenMPを使用する場合は、このマクロを有効にする
-//#define SHEAR_SORT_USE_OPENMP_NEST//シェアソート：OpenMPのparallelの入れ子処理を使用する場合は、このマクロを有効にする ※これを使うとかえって遅くなる、もしくは、正常に動作しない
-#define INPLACE_MERGE_SORT_USE_OPENMP//インプレースマージソート：OpenMPを使用する場合は、このマクロを有効にする
+//#define SHEAR_SORT_USE_OPENMP_NEST//シェアソート：OpenMPのparallelの入れ子処理を使用する場合は、このマクロを有効にする ※有効にするとかえって遅くなる、もしくは、正常に動作しない
+//#define INPLACE_MERGE_SORT_USE_OPENMP//インプレースマージソート：OpenMPを使用する場合は、このマクロを有効にする ※有効にすると遅くなることがある
+#endif//_OPENMP
+#define QUICK_SORT_NO_USE_RECURSIVE_CALL//クイックソートの再帰処理版を無効にする場合は、このマクロを有効にする
+#ifdef _OPENMP
+//#define QUICK_SORT_USE_OPENMP//クイックソート：OpenMPを使用する場合は、このマクロを有効にする ※有効にするとかえって遅くなる
 #endif//_OPENMP
 
 #include <stdio.h>
@@ -15,6 +19,7 @@
 #include <crtdefs.h>//ptrdiff_t用
 #include <cstddef>//std::size_t用
 #include <functional>//C++11 std::function用
+#include <assert.h>//assert用
 
 //--------------------------------------------------------------------------------
 //ソートアルゴリズム
@@ -522,14 +527,13 @@ sortFuncSet(gnomeSort);
 //・メモリ使用量：O(log n) ※再帰処理を使用しなければ O(1)
 //・安定性：　　　×
 //----------------------------------------
-//※再帰処理を使用せず、ループ処理にして最適化する。
+//※再帰処理を使用せず、スタックを使用したループ処理にして最適化する。
 //　（最大件数を log2(4294967296) = 32 とする）
 //----------------------------------------
 template<class T, class COMPARE>
 std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
 {
-//#define USE_RECURSIVE_CALL//再帰処理版を有効にする場合は、このマクロを有効にする
-#ifdef USE_RECURSIVE_CALL
+#ifndef QUICK_SORT_NO_USE_RECURSIVE_CALL
 	//--------------------
 	//再帰処理版
 	if (size <= 1)
@@ -575,7 +579,8 @@ std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
 	swapped_count += _quickSort(array, begin - array, comparison);//中央値未満の配列
 	swapped_count += _quickSort(end + 1, term - end - 1, comparison);//中央値以上の配列
 	return swapped_count;
-#else//USE_RECURSIVE_CALL
+#else//QUICK_SORT_NO_USE_RECURSIVE_CALL
+#ifndef QUICK_SORT_USE_OPENMP
 	//--------------------
 	//スタック処理版
 	std::size_t swapped_count = 0;
@@ -592,7 +597,7 @@ std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
 	stack_p->array = array;
 	stack_p->size = size;
 	int stack_curr = 1;//スタック位置
-	while(stack_curr > 0)
+	while (stack_curr > 0)
 	{
 		//配列をスタックから取得
 		stack_p = &stack[--stack_curr];
@@ -642,13 +647,119 @@ std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
 			if (new_size >= 1)
 			{
 				stack_p = &stack[stack_curr++];
+				assert(stack_curr <= STACK_MAX);
 				stack_p->array = new_array;
 				stack_p->size = new_size;
 			}
 		}
 	}
 	return swapped_count;
-#endif//USE_RECURSIVE_CALL
+#else//QUICK_SORT_USE_OPENMP
+	//--------------------
+	//OpenMP＆キュー処理版
+	//※並列化のためにスタックではなくキューを使用。
+	//　そのため、全件分のキュー（メモリ）が必要。
+	//　パフォーマンスも今ひとつ。
+	std::size_t swapped_count = 0;
+	T tmp;
+	struct queue_t
+	{
+		T* array;
+		std::size_t size;
+	};
+	queue_t* queue = new queue_t[size];
+	//最初の配列をキューにプッシュ
+	queue_t* queue_p = &queue[0];
+	queue_p->array = array;
+	queue_p->size = size;
+	unsigned int queue_write = 1;//キュー書き込み位置
+	unsigned int queue_read = 0;//キュー読み込み位置
+	unsigned int queue_read_tmp;
+	unsigned int queue_write_tmp;
+	T* _array;
+	size_t _size;
+	const T* term;
+	T* begin;
+	T* end;
+	const T* med;
+	const T* pivot;
+	int recursive;
+	T* new_array;
+	std::size_t new_size;
+	while (queue_read != queue_write)
+	{
+		queue_read_tmp = queue_read;
+		queue_write_tmp = queue_write;
+		const int loop_count = queue_write_tmp > queue_read_tmp ? queue_write_tmp - queue_read_tmp : size - queue_write_tmp + queue_read_tmp;
+	#pragma omp parallel for reduction(+:swapped_count) private(queue_p, _array, _size, term, begin, end, med, pivot, recursive, new_array, new_size, queue_read_tmp, queue_write_tmp, tmp)
+		for (int loop = 0; loop < loop_count; ++loop)
+		{
+		#pragma omp critical
+			{ queue_read_tmp = queue_read++; }
+			//if (true)
+			{
+				//配列をキューから取得
+				queue_p = &queue[queue_read_tmp % size];
+				_array = queue_p->array;
+				_size = queue_p->size;
+				//配列の範囲情報
+				term = _array + _size;
+				begin = _array;
+				end = _array + _size - 1;
+				//中央値を決定
+				med = _array + (_size >> 1);
+				pivot =
+					comparison(*begin, *med) ?
+						comparison(*med, *end) ?
+							med :
+							comparison(*end, *begin) ?
+								begin :
+								end :
+						comparison(*end, *med) ?
+							med :
+							comparison(*begin, *end) ?
+								begin :
+								end;
+				//中央値未満の配列と中央値以上の配列に二分
+				while (true)
+				{
+					while (comparison(*begin, *pivot))
+						++begin;
+					while (comparison(*pivot, *end))
+						--end;
+					if (begin >= end)
+						break;
+					tmp = *begin;
+					*begin = *end;
+					*end = tmp;
+					pivot = pivot == begin ? end : pivot == end ? begin : pivot;//中央値の位置調整（中央値の位置も入れ替わるため）
+					++swapped_count;
+					++begin;
+					--end;
+				}
+				//recursive = 0 : 中央値未満の配列をプッシュ
+				//            1 : 中央値以上の配列をプッシュ
+				for (recursive = 0; recursive < 2; ++recursive)
+				{
+					new_array = recursive == 0 ? _array : end + 1;
+					new_size = recursive == 0 ? begin - _array : term - end - 1;
+					if (new_size >= 1)
+					{
+					#pragma omp critical
+						{ queue_write_tmp = queue_write++; }
+						assert(queue_write_tmp >= queue_read ? queue_write_tmp - queue_read < size : size - queue_write_tmp + queue_read < size);
+						queue_p = &queue[queue_write_tmp % size];
+						queue_p->array = new_array;
+						queue_p->size = new_size;
+					}
+				}
+			}
+		}
+	}
+	delete[] queue;
+	return swapped_count;
+#endif//QUICK_SORT_USE_OPENMP
+#endif//QUICK_SORT_NO_USE_RECURSIVE_CALL
 }
 template<class T, class COMPARE>
 inline std::size_t quickSort(T* array, const std::size_t size, COMPARE comparison)
@@ -905,6 +1016,85 @@ sortFuncSet(shellSort);
 template<class T, class COMPARE>
 std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE comparison)
 {
+#ifndef INPLACE_MERGE_SORT_USE_OPENMP
+	//通常版
+	if (!array || size <= 1)
+		return 0;
+	std::size_t swapped_count = 0;
+	T tmp;
+	for (std::size_t block_size = 1; block_size < size; block_size <<= 1)
+	{
+		const std::size_t merge_size = block_size << 1;
+		const std::size_t left_block_size = block_size;
+		for (std::size_t merge_pos = 0; merge_pos + block_size <= size; merge_pos += merge_size)
+		{
+			const std::size_t right_block_size = merge_pos + merge_size <= size ? block_size : size % block_size;
+			T* left_begin = array + merge_pos;
+			T* left_end = left_begin + left_block_size;
+			T* right_begin = left_end;
+			T* right_end = right_begin + right_block_size;
+			T* left = left_end - 1;
+			T* right = right_begin;
+			T* left_ins_prev = nullptr;
+			while (right < right_end)
+			{
+				if (comparison(*right, *left))//左ブロックの右端と右ブロックの左端をチェック
+				{
+				#if 0
+					//挿入位置検索 ※線形検索
+					T* left_ins = left;
+					while (left_ins >= left_begin && comparison(*right, *left_ins))
+						--left_ins;
+					++left_ins;
+				#else
+					//挿入位置検索 ※二分検索
+					T* left_ins;
+					{
+						T* search_begin = left_ins_prev ? left_ins_prev + 1 : left_begin;
+						std::size_t search_range_half = (right - search_begin) >> 1;
+						std::size_t search_pos = search_range_half;
+						left_ins = search_begin + search_pos;
+						while (search_range_half > 1)
+						{
+							search_range_half = search_range_half >> 1;
+							left_ins = search_begin + search_pos;
+							if (comparison(*right, *left_ins))
+								search_pos -= search_range_half;
+							else
+								search_pos += search_range_half;
+						}
+						while (left_ins < right && !comparison(*right, *left_ins))
+							++left_ins;
+						while (left_ins >= search_begin && comparison(*right, *left_ins))
+							--left_ins;
+						++left_ins;
+						left_ins_prev = left_ins;
+					}
+				#endif
+					//挿入
+					tmp = *right;
+					//※memmove関数を使うよりも、直接メモリ操作する方が速い
+					//memmove(left_ins + 1, left_ins, reinterpret_cast<uintptr_t>(right) - reinterpret_cast<uintptr_t>(left_ins));
+					{
+						const std::size_t move_elems = right - left_ins;
+						T* dst = right;
+						const T* src = dst - 1;
+						for (std::size_t move_elem = 0; move_elem < move_elems; ++move_elem, --dst, --src)
+							*dst = *src;
+					}
+					*left_ins = tmp;
+					++swapped_count;
+					++left;
+					++right;
+				}
+				else
+					break;
+			}
+		}
+	}
+	return swapped_count;
+#else//INPLACE_MERGE_SORT_USE_OPENMP
+	//OpenMP版
 	if (!array || size <= 1)
 		return 0;
 	std::size_t swapped_count = 0;
@@ -931,9 +1121,7 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 		const std::size_t merge_size = block_size << 1;
 		const std::size_t left_block_size = block_size;
 		const int loop_count = static_cast<int>((size / merge_size) + (size % merge_size > block_size));
-#ifdef INPLACE_MERGE_SORT_USE_OPENMP
 	#pragma omp parallel for reduction(+:swapped_count) private(merge_pos, right_block_size, left_begin, left_end, left, left_ins_prev, left_ins, right_begin, right_end, right, search_begin, search_range_half, search_pos, move_elems, move_elem, dst, src, tmp)
-#endif//INPLACE_MERGE_SORT_USE_OPENMP
 		for (int i = 0; i< loop_count; ++i)
 		{
 			merge_pos = i * merge_size;
@@ -1001,6 +1189,7 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 		}
 	}
 	return swapped_count;
+#endif//INPLACE_MERGE_SORT_USE_OPENMP
 }
 sortFuncSet(inplaceMergeSort);
 

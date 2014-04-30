@@ -3,8 +3,8 @@
 #ifdef _OPENMP
 #define ODD_EVEN_SORT_USE_OPENMP//奇遇転置ソート：OpenMPを使用する場合は、このマクロを有効にする
 #define SHEAR_SORT_USE_OPENMP//シェアソート：OpenMPを使用する場合は、このマクロを有効にする
-//#define SHEAR_SORT_USE_OPENMP_NEST//シェアソート：OpenMPのparallelの入れ子処理を使用する場合は、このマクロを有効にする ※これを使うとかえって遅くなる
-#define INPLACE_MERGE_SORT_USE_OPENMP//シェアソート：OpenMPを使用する場合は、このマクロを有効にする
+//#define SHEAR_SORT_USE_OPENMP_NEST//シェアソート：OpenMPのparallelの入れ子処理を使用する場合は、このマクロを有効にする ※これを使うとかえって遅くなる、もしくは、正常に動作しない
+#define INPLACE_MERGE_SORT_USE_OPENMP//インプレースマージソート：OpenMPを使用する場合は、このマクロを有効にする
 #endif//_OPENMP
 
 #include <stdio.h>
@@ -900,6 +900,8 @@ sortFuncSet(shellSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　○
 //----------------------------------------
+//※OpenMPを使用し、並列化が可能。
+//----------------------------------------
 template<class T, class COMPARE>
 std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE comparison)
 {
@@ -907,37 +909,58 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 		return 0;
 	std::size_t swapped_count = 0;
 	T tmp;
+	std::size_t merge_pos;
+	std::size_t right_block_size;
+	T* left_begin;
+	T* left_end;
+	T* left;
+	T* left_ins_prev;
+	T* left_ins;
+	T* right_begin;
+	T* right_end;
+	T* right;
+	T* search_begin;
+	std::size_t search_range_half;
+	std::size_t search_pos;
+	std::size_t move_elems;
+	std::size_t move_elem;
+	T* dst;
+	const T* src;
 	for (std::size_t block_size = 1; block_size < size; block_size <<= 1)
 	{
 		const std::size_t merge_size = block_size << 1;
 		const std::size_t left_block_size = block_size;
-		for (std::size_t merge_pos = 0; merge_pos + block_size <= size; merge_pos += merge_size)
+		const int loop_count = static_cast<int>((size / merge_size) + (size % merge_size > block_size));
+#ifdef INPLACE_MERGE_SORT_USE_OPENMP
+	#pragma omp parallel for reduction(+:swapped_count) private(merge_pos, right_block_size, left_begin, left_end, left, left_ins_prev, left_ins, right_begin, right_end, right, search_begin, search_range_half, search_pos, move_elems, move_elem, dst, src, tmp)
+#endif//INPLACE_MERGE_SORT_USE_OPENMP
+		for (int i = 0; i< loop_count; ++i)
 		{
-			const std::size_t right_block_size = merge_pos + merge_size <= size ? block_size : size % block_size;
-			T* left_begin = array + merge_pos;
-			T* left_end = left_begin + left_block_size;
-			T* right_begin = left_end;
-			T* right_end = right_begin + right_block_size;
-			T* left = left_end - 1;
-			T* right = right_begin;
-			T* left_ins_prev = nullptr;
+			merge_pos = i * merge_size;
+			right_block_size = merge_pos + merge_size <= size ? block_size : size % block_size;
+			left_begin = array + merge_pos;
+			left_end = left_begin + left_block_size;
+			right_begin = left_end;
+			right_end = right_begin + right_block_size;
+			left = left_end - 1;
+			right = right_begin;
+			left_ins_prev = nullptr;
 			while (right < right_end)
 			{
 				if (comparison(*right, *left))//左ブロックの右端と右ブロックの左端をチェック
 				{
 				#if 0
 					//挿入位置検索 ※線形検索
-					T* left_ins = left;
+					left_ins = left;
 					while (left_ins >= left_begin && comparison(*right, *left_ins))
 						--left_ins;
 					++left_ins;
 				#else
 					//挿入位置検索 ※二分検索
-					T* left_ins;
 					{
-						T* search_begin = left_ins_prev ? left_ins_prev + 1 : left_begin;
-						std::size_t search_range_half = (right - search_begin) >> 1;
-						std::size_t search_pos = search_range_half;
+						search_begin = left_ins_prev ? left_ins_prev + 1 : left_begin;
+						search_range_half = (right - search_begin) >> 1;
+						search_pos = search_range_half;
 						left_ins = search_begin + search_pos;
 						while (search_range_half > 1)
 						{
@@ -961,10 +984,10 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 					//※memmove関数を使うよりも、直接メモリ操作する方が速い
 					//memmove(left_ins + 1, left_ins, reinterpret_cast<uintptr_t>(right) - reinterpret_cast<uintptr_t>(left_ins));
 					{
-						const std::size_t move_elems = right - left_ins;
-						T* dst = right;
-						const T* src = dst - 1;
-						for (std::size_t move_elem = 0; move_elem < move_elems; ++move_elem, --dst, --src)
+						move_elems = right - left_ins;
+						dst = right;
+						src = dst - 1;
+						for (move_elem = 0; move_elem < move_elems; ++move_elem, --dst, --src)
 							*dst = *src;
 					}
 					*left_ins = tmp;

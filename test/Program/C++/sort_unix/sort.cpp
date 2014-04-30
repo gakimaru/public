@@ -1,3 +1,12 @@
+//--------------------------------------------------------------------------------
+//ソートアルゴリズム用コンパイラスイッチ
+#ifdef _OPENMP
+#define ODD_EVEN_SORT_USE_OPENMP//奇遇転置ソート：OpenMPを使用する場合は、このマクロを有効にする
+#define SHEAR_SORT_USE_OPENMP//シェアソート：OpenMPを使用する場合は、このマクロを有効にする
+//#define SHEAR_SORT_USE_OPENMP_NEST//シェアソート：OpenMPのparallelの入れ子処理を使用する場合は、このマクロを有効にする ※これを使うとかえって遅くなる
+#define INPLACE_MERGE_SORT_USE_OPENMP//シェアソート：OpenMPを使用する場合は、このマクロを有効にする
+#endif//_OPENMP
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -210,7 +219,9 @@ std::size_t oddEvenSort(T* array, const std::size_t size, COMPARE comparison)
 			T* now;
 			T* next;
 			tmp;
+	#ifdef ODD_EVEN_SORT_USE_OPENMP
 		#pragma omp parallel for reduction(+:swapped_count) reduction(||:is_swapped) private(now, next, tmp)
+	#endif//ODD_EVEN_SORT_USE_OPENMP
 			for (i = odd_even; i < static_cast<int>(end); i += 2)
 			{
 				now = array + i;
@@ -242,25 +253,18 @@ sortFuncSet(oddEvenSort);
 //※内部で奇遇転地ソートを使用し、二重に並列化するが、
 //　他のソートアルゴリズムを使用した方が効率的かもしれない。
 //----------------------------------------
-//#define SHEAR_SORT_USE_OPENMP_NEST//OpenMPのparallelの入れ子処理を使用する場合は、このマクロを有効にする
 #include <math.h>//sqrt()用
 #ifdef SHEAR_SORT_USE_OPENMP_NEST
-#ifdef _OPENMP
 #include <omp.h>//omp_set_nested()用
-#endif//_OPENMP
 #endif//SHEAR_SORT_USE_OPENMP_NEST
-#include <omp.h>//omp_set_nested()用
 template<class T, class COMPARE>
 std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 {
 	if (!array || size <= 1)
 		return 0;
-printf("omp_get_nested()=%d\n", omp_get_nested());
 #ifdef SHEAR_SORT_USE_OPENMP_NEST
-#ifdef _OPENMP
 	const int omp_nested_before = omp_get_nested();
 	omp_set_nested(1);//並列化のネストを許可
-#endif//_OPENMP
 #endif//SHEAR_SORT_USE_OPENMP_NEST
 	std::size_t swapped_count = 0;
 	T tmp;
@@ -296,11 +300,11 @@ printf("omp_get_nested()=%d\n", omp_get_nested());
 	{
 		//各行ごとに、列方向にソート
 		//※偶数行は小さい順、奇数行は大きい順にソート
-#ifdef SHEAR_SORT_USE_OPENMP_NEST
+#if defined(SHEAR_SORT_USE_OPENMP_NEST)
 	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, col_odd_even, is_odd)
-#else//SHEAR_SORT_USE_OPENMP_NEST
+#elif defined(SHEAR_SORT_USE_OPENMP)
 	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, col_odd_even, is_odd, col, now, next, tmp)
-#endif//SHEAR_SORT_USE_OPENMP_NEST
+#endif//SHEAR_SORT_USE_OPENMP
 		for (row = 0; row <= static_cast<int>(rows); ++row)
 		{
 			cols_row = row == static_cast<int>(rows) ? over : cols;
@@ -338,11 +342,11 @@ printf("omp_get_nested()=%d\n", omp_get_nested());
 		}
 		//各列ごとに、行方向にソート
 		//※小さい順にソート
-#ifdef SHEAR_SORT_USE_OPENMP_NEST
+#if defined(SHEAR_SORT_USE_OPENMP_NEST)
 	#pragma omp parallel for reduction(+:swapped_count) private(rows_col, rows_1_col, row_odd_even, is_swapped)
-#else//SHEAR_SORT_USE_OPENMP_NEST
+#elif defined(SHEAR_SORT_USE_OPENMP)
 	#pragma omp parallel for reduction(+:swapped_count) private(rows_col, rows_1_col, row_odd_even, is_swapped, row, now, next, tmp)
-#endif//SHEAR_SORT_USE_OPENMP_NEST
+#endif//SHEAR_SORT_USE_OPENMP
 		for (col = 0; col < static_cast<int>(cols); ++col)
 		{
 			rows_col = rows + (col < static_cast<int>(over) ? 1 : 0);
@@ -377,11 +381,11 @@ printf("omp_get_nested()=%d\n", omp_get_nested());
 	{
 		//各行ごとに、列方向にソート
 		//※小さい順にソート
-#ifdef SHEAR_SORT_USE_OPENMP_NEST
+#if defined(SHEAR_SORT_USE_OPENMP_NEST)
 	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, col_odd_even, is_swapped)
-#else//SHEAR_SORT_USE_OPENMP_NEST
+#elif defined(SHEAR_SORT_USE_OPENMP)
 	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, col_odd_even, is_swapped, col, now, next, tmp)
-#endif//SHEAR_SORT_USE_OPENMP_NEST
+#endif//SHEAR_SORT_USE_OPENMP
 		for (row = 0; row <= static_cast<int>(rows); ++row)
 		{
 			cols_row = row == static_cast<int>(rows) ? over : cols;
@@ -417,9 +421,7 @@ printf("omp_get_nested()=%d\n", omp_get_nested());
 		}
 	}
 #ifdef SHEAR_SORT_USE_OPENMP_NEST
-#ifdef _OPENMP
 	omp_set_nested(omp_nested_before);
-#endif//_OPENMP
 #endif//SHEAR_SORT_USE_OPENMP_NEST
 	return swapped_count;
 }
@@ -517,10 +519,10 @@ sortFuncSet(gnomeSort);
 //----------------------------------------
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n^2)
-//・メモリ使用量：O(log n)
+//・メモリ使用量：O(log n) ※再帰処理を使用しなければ O(1)
 //・安定性：　　　×
 //----------------------------------------
-//※再帰処理を使用せずに最適化する。
+//※再帰処理を使用せず、ループ処理にして最適化する。
 //　（最大件数を log2(4294967296) = 32 とする）
 //----------------------------------------
 template<class T, class COMPARE>
@@ -813,14 +815,14 @@ std::size_t insertionSort(T* array, const std::size_t size, COMPARE comparison)
 				--prev;
 			}
 			tmp = *next;
-			//※VC++2013では、memmove関数を使うよりも、直接メモリ操作する方が速い（関数呼び出しのせいか？）
+			//※memmove関数を使うよりも、直接メモリ操作する方が速い
 			//memmove(min + 1, min, reinterpret_cast<uintptr_t>(next) - reinterpret_cast<uintptr_t>(min));
 			{
-				const int move_num = next - min;
-				T* dst = min + 1 + move_num;
-				const T* src = min + move_num;
-				for (int move = 0; move < move_num; ++move)
-					*(--dst) = *(--src);
+				const std::size_t move_elems = next - min;
+				T* dst = next;
+				const T* src = dst - 1;
+				for (std::size_t move_elem = 0; move_elem < move_elems; ++move_elem, --dst, --src)
+					*dst = *src;
 			}
 			*min = tmp;
 			++swapped_count;
@@ -905,25 +907,17 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 		return 0;
 	std::size_t swapped_count = 0;
 	T tmp;
-	std::size_t block_size = 1;//ブロックサイズ（隣り合ったブロックをマージし、ループごとにブロックサイズを倍にする）
-	while (block_size < size)
+	for (std::size_t block_size = 1; block_size < size; block_size <<= 1)
 	{
-		const std::size_t block_size_over = size % block_size;
 		const std::size_t merge_size = block_size << 1;
-		const std::size_t merge_size_over = size % merge_size;
-		const std::size_t merge_sets = size / merge_size + (merge_size_over != 0 ? 1 : 0);
-		std::size_t merge_pos = 0;
-		for (std::size_t merge_set = 0; merge_set < merge_sets; ++merge_set)
+		const std::size_t left_block_size = block_size;
+		for (std::size_t merge_pos = 0; merge_pos + block_size <= size; merge_pos += merge_size)
 		{
-			std::size_t merge_pos_next = merge_pos + block_size;
-			if (merge_pos_next >= size)//二つ分のブロックが残っていなければこのループは終了（次回のループでマージ）
-				break;
-			merge_pos_next += block_size;
-			const std::size_t block_size_right = merge_pos_next <= size ? block_size : block_size_over;
+			const std::size_t right_block_size = merge_pos + merge_size <= size ? block_size : size % block_size;
 			T* left_begin = array + merge_pos;
-			T* left_end = left_begin + block_size;
+			T* left_end = left_begin + left_block_size;
 			T* right_begin = left_end;
-			T* right_end = right_begin + block_size_right;
+			T* right_end = right_begin + right_block_size;
 			T* left = left_end - 1;
 			T* right = right_begin;
 			T* left_ins_prev = nullptr;
@@ -931,43 +925,47 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 			{
 				if (comparison(*right, *left))//左ブロックの右端と右ブロックの左端をチェック
 				{
-					//挿入位置検索
-				#if 1
-					T* left_begin_now = left_ins_prev ? left_ins_prev + 1 : left_begin;
-					std::size_t search_range = (right - left_begin_now) >> 1;
-					std::size_t search_pos = search_range;
-					T* left_ins = left_begin_now + search_pos;
-					while (search_range != 0)
-					{
-						const std::size_t search_range_prev = search_range;
-						search_range = search_range >> 1;
-						left_ins = left_begin_now + search_pos;
-						if (comparison(*right, *left_ins))
-							search_pos = search_pos - search_range_prev + search_range;
-						else
-							search_pos = search_pos + search_range;
-					}
-					while (left_ins < right && comparison(*left_ins, *right))
-						++left_ins;
-					while (left_ins >= left_begin_now && comparison(*right, *left_ins))
-						--left_ins;
-				#else
+				#if 0
+					//挿入位置検索 ※線形検索
 					T* left_ins = left;
 					while (left_ins >= left_begin && comparison(*right, *left_ins))
 						--left_ins;
-				#endif
 					++left_ins;
-					left_ins_prev = left_ins;
+				#else
+					//挿入位置検索 ※二分検索
+					T* left_ins;
+					{
+						T* search_begin = left_ins_prev ? left_ins_prev + 1 : left_begin;
+						std::size_t search_range_half = (right - search_begin) >> 1;
+						std::size_t search_pos = search_range_half;
+						left_ins = search_begin + search_pos;
+						while (search_range_half > 1)
+						{
+							search_range_half = search_range_half >> 1;
+							left_ins = search_begin + search_pos;
+							if (comparison(*right, *left_ins))
+								search_pos -= search_range_half;
+							else
+								search_pos += search_range_half;
+						}
+						while (left_ins < right && !comparison(*right, *left_ins))
+							++left_ins;
+						while (left_ins >= search_begin && comparison(*right, *left_ins))
+							--left_ins;
+						++left_ins;
+						left_ins_prev = left_ins;
+					}
+				#endif
 					//挿入
 					tmp = *right;
-					//※VC++2013では、memmove関数を使うよりも、直接メモリ操作する方が速い（関数呼び出しのせいか？）
-					//memmove(left_ins, left_ins + 1, reinterpret_cast<uintptr_t>(right) - reinterpret_cast<uintptr_t>(left_ins));
+					//※memmove関数を使うよりも、直接メモリ操作する方が速い
+					//memmove(left_ins + 1, left_ins, reinterpret_cast<uintptr_t>(right) - reinterpret_cast<uintptr_t>(left_ins));
 					{
 						const std::size_t move_elems = right - left_ins;
 						T* dst = right;
-						T* src = dst - 1;
-						for (std::size_t move_elem = 0; move_elem < move_elems; ++move_elem)
-							*(dst--) = *(src--);
+						const T* src = dst - 1;
+						for (std::size_t move_elem = 0; move_elem < move_elems; ++move_elem, --dst, --src)
+							*dst = *src;
 					}
 					*left_ins = tmp;
 					++swapped_count;
@@ -977,9 +975,7 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 				else
 					break;
 			}
-			merge_pos = merge_pos_next;
 		}
-		block_size <<= 1;
 	}
 	return swapped_count;
 }
@@ -994,7 +990,7 @@ sortFuncSet(inplaceMergeSort);
 //----------------------------------------
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n log n)
-//・メモリ使用量：O(n log n)
+//・メモリ使用量：O(n log n) ※クイックソートで再帰処理を使用しなければ O(1)
 //・安定性：　　　×
 //----------------------------------------
 //※クイックソートの再帰レベルが log n に達したら、
@@ -1003,10 +999,10 @@ sortFuncSet(inplaceMergeSort);
 //　なったら、挿入ソートに切り替える。
 //※STLのstd::sort()と同様の手法。
 //----------------------------------------
-//※再帰処理を使用せずに最適化する。
+//※再帰処理を使用せず、ループ処理にして最適化する。
 //　（最大件数を log2(4294967296) = 32 とする）
 //※挿入ソート切り替えタイミングを16に設定する。
-//　（VC++2013のSstd::sortでは32）
+//　（VC++2013のSTL std::sortでは32）
 //※挿入ソートではなく、コムソートを使用するスタイルに改良。
 //※ヒープソートではなく、コムソートを使用するスタイルに改良。
 //----------------------------------------
@@ -1126,6 +1122,7 @@ sortFuncSet(introSort);
 #include <array>//C++11 std::array用
 #include <random>//C++11 random用
 #include <chrono>//C++11 std::chrono用
+#include <bitset>//std::bitset用
 
 #include "sub.h"
 
@@ -1219,20 +1216,21 @@ int main(const int argc, const char* argv[])
 		else
 			printf("[NG] Array is NOT ordered! [NG=%d / record(s)=%d]\n", ng, array->size());
 		{
+			std::bitset<TEST_DATA_COUNT> seq_no_map;
 			const std::size_t size = array->size();
 			const data_t* prev = &array->at(0);
 			const data_t* now = prev + 1;
 			bool array_is_not_stable = false;
 			bool array_is_broken = false;
+			seq_no_map[prev->m_seqNo] = true;
 			for (std::size_t i = 1; i < size; ++i, ++now, ++prev)
 			{
+				seq_no_map[now->m_seqNo] = true;
 				if (prev->m_key == now->m_key && prev->m_seqNo > now->m_seqNo)
 					array_is_not_stable = true;
-				if (prev->m_seqNo == now->m_seqNo)
-					array_is_broken = true;
-				if (array_is_not_stable && array_is_broken)
-					break;
 			}
+			if (seq_no_map.count() != TEST_DATA_COUNT)
+				array_is_broken = true;
 			if (array_is_broken)
 				printf("[NG] Array is BROKEN !! Sorting-program is mistaken !\n");
 			if (array_is_not_stable)
@@ -1307,13 +1305,11 @@ int main(const int argc, const char* argv[])
 		}
 		int seq_no = 0;
 		for (data_t& obj : *array)
-		{
-			obj.m_seqNo = ++seq_no;
-		}
+			obj.m_seqNo = seq_no++;
 		const bool is_print = false;
 		prev_time = printElapsedTime(prev_time, is_print);
 		showArrayCondition(array);
-	#if 0
+	#if 0//配列情報表示（デバッグ確認用）
 		const data_t* element0_p = &(*array)[0];
 		const data_t* element1_p = &(*array)[1];
 		const std::size_t data_size = sizeof(data_t);

@@ -1,0 +1,41 @@
+Compiler: name="VC++", Ver=[1800(0x00000708).0(0x00000000)]
+    This compiler is "Visual C++"
+
+Compiler-language: C++ (C++ Ver.=2003)
+    C++ is available.
+        C++ is implemented C++98.
+        C++ is implemented C++03.
+
+Plataform: "Win"(x86 32bits, little-endian), Ver=[0(0x00000000).0(0x00000000)]
+    Target plarform is "Windows"
+
+__FILE__="src\main.cpp"
+__LINE__=421
+__FUNCTION__="main::test::func"
+__PRETTY_FUNCTION__="void __cdecl main::test::func(void)"
+__FUNCSIG__="void __cdecl main::test::func(void)"
+__func__="main::test::func"
+__FUNCDNAME__="?func@test@?1??main@@9@SAXXZ"
+__DATE__="May  2 2014"
+__TIME__="10:48:09"
+__TIMESTAMP__="Fri May  2 10:48:06 2014"
+
+GET_FUNC_NAME()="void __cdecl main::test::func(void)"
+GET_FILE_LINE()="src\main.cpp(432)"
+GET_FILE_LINE_TIME()="src\main.cpp(433)[Fri May  2 10:48:06 2014]"
+
+nullptr_var=00000000
+    'nullptr' is featured.
+
+This is override func.
+    'override' is featured.
+
+constexpr_var=6
+constexpr_calc(1, 2)=3
+
+TLS Variable=123
+
+sizeof(data_t)=32
+alignof(data_t)=16
+_aligned_malloc(sizeof(data_t), alignof(data_t))=00FA95E0
+_aligned_free(p)

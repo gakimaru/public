@@ -27,12 +27,6 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタ
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <memory.h>//memcpy用
-#include <assert.h>//assert用
-#include <cstddef>//srd::size_t用
-#include <iterator>//std::iterator用
-#include <utility>//std::move用
-
 //--------------------------------------------------------------------------------
 //赤黒木（red-black tree）
 //--------------------------------------------------------------------------------
@@ -89,6 +83,12 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタ
 //・このような利用を可能とするために、データ構造とアルゴリズムを完全に
 //　切り離した構成にする。
 //--------------------------------------------------------------------------------
+
+#include <memory.h>//memcpy用
+#include <assert.h>//assert用
+#include <cstddef>//srd::size_t用
+#include <iterator>//std::iterator用
+#include <utility>//std::move用
 
 namespace rb_tree
 {
@@ -2344,6 +2344,7 @@ namespace rb_tree
 
 //--------------------------------------------------------------------------------
 //赤黒木テスト
+//--------------------------------------------------------------------------------
 
 #include <algorithm>//for_each用
 #include <random>//C++11 std::random用
@@ -2424,7 +2425,7 @@ inline int printf_dbg_search(const char* fmt, ...){ return 0; }
 #endif//PRINT_TEST_DATA_SEARCH
 
 //----------------------------------------
-//テスト
+//テストメイン
 int main(const int argc, const char* argv[])
 {
 	//型

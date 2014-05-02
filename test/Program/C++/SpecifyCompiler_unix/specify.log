@@ -1,0 +1,49 @@
+Compiler: name="GCC", Ver=[4(0x00000004).8(0x00000008)]
+    This compiler is "GCC"
+
+Compiler-language: C++ (C++ Ver.=2011)
+    C++ is available.
+        C++ is implemented C++98.
+        C++ is implemented C++03.
+        C++ is implemented C++11.
+
+Plataform: "Cygin"(x86 32bits, little-endian), Ver=[0(0x00000000).0(0x00000000)]
+    Target plarform is "Cygwin"
+
+__FILE__="specify.cpp"
+__LINE__=421
+__FUNCTION__="func"
+__PRETTY_FUNCTION__="static void main(int, const char**)::test::func()"
+__FUNCSIG__="static void main(int, const char**)::test::func()"
+__func__="func"
+__FUNCDNAME__=""
+__DATE__="May  2 2014"
+__TIME__="10:48:24"
+__TIMESTAMP__="Fri May  2 10:48:16 2014"
+
+GET_FUNC_NAME()="static void main(int, const char**)::test::func()"
+GET_FILE_LINE()="specify.cpp(432)"
+GET_FILE_LINE_TIME()="specify.cpp(433)[Fri May  2 10:48:16 2014]"
+
+nullptr_var=0x0
+    'nullptr' is featured.
+
+This is override func.
+    'override' is featured.
+
+constexpr_var=6
+constexpr_calc(1, 2)=3
+    'constexpr' is featured.
+
+user_defined_literal_var=10
+    'operator ""'(user defined literal) is featured.
+
+TLS Variable=123
+    'thread_local' is featured.
+
+sizeof(data_t)=32
+alignof(data_t)=16
+_aligned_malloc(sizeof(data_t), alignof(data_t))=0x800203f0
+_aligned_free(p)
+    'alignas' is featured.
+    'alignof' is featured.

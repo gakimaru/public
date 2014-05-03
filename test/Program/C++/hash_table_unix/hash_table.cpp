@@ -1,7 +1,7 @@
 //--------------------------------------------------------------------------------
 //ハッシュテーブルテスト用設定とコンパイラスイッチ
 static const int TEST_DATA_TABLE_SIZE = 500000;//テストデータテーブルサイズ
-//static const int TEST_DATA_TABLE_SIZE = 10;//テストデータテーブルサイズ
+//static const int TEST_DATA_TABLE_SIZE = 20;//テストデータテーブルサイズ
 
 //#define PRINT_TEST_DATA_DETAIL//テストデーの詳細タを表示する場合は、このマクロを有効化する
 //#define TEST_DATA_WATCH_CONSTRUCTOR//コンストラクタ／デストラクタ／代入演算子の動作を確認する場合、このマクロを有効化する
@@ -952,8 +952,12 @@ private:
 //　　速度が劣化する可能性がある。
 //・STL（std::unodered_map）との違いは下記の通り
 //    - 固定長配列である。（STLは自動拡張する）
-//    - キーと値のペアで扱わない。
-//　　- insert/erase時のイテレータに対応しない。
+//    - 衝突時は開番地方を用いて処理し、メモリ操作を行わない。
+//        ※STLは（おそらく）連鎖法。STLの方が速いが、より多くのメモリを必要とする。
+//    - リハッシュは削除済みデータを掃除するのみ。
+//    - キーと値のペア（std::pair）で扱わず、基本的にキーと値を直接扱う。
+//      その代わり、イテレータにはインデックスやキーなどの情報を含む。
+//　　- insert/erase時のイテレータ指定に対応しない。
 //    - 赤黒木コンテナ（rb_tree）の実装と合わせた構造にしており、
 //　　  操作用テンプレート構造体を用いる。
 //--------------------------------------------------------------------------------
@@ -1344,10 +1348,17 @@ namespace hash_table
 			return count;
 		}
 	public:
-		std::size_t max_size() const { return TABLE_SIZE; }//最大要素数を取得
-		std::size_t capacity() const { return TABLE_SIZE; }//最大要素数を取得
-		std::size_t size() const { return m_usingCount - m_deletedCount; }//使用中の要素数を取得
-		bool empty() const { return size() == 0; }//空か？
+		inline size_type max_size() const { return TABLE_SIZE; }//最大要素数を取得
+		//inline size_type capacity() const { return TABLE_SIZE; }//最大要素数を取得
+		inline bool empty() const { return size() == 0; }//空か？
+		inline size_type bucket_count() const { return TABLE_SIZE; }//最大要素数を取得
+		inline size_type max_bucket_count() const { return TABLE_SIZE; }//最大要素数を取得
+		inline size_type size() const { return m_usingCount - m_deletedCount; }//使用中の要素数を取得
+		inline size_type bucket(const key_type key) const { return findIndex(key); }//キーに対応するインデックスを取得
+		inline size_type bucket(const char* key) const { return findIndex(key); }//キーに対応するインデックスを取得
+		inline size_type bucket(const std::string key) const { return findIndex(key); }//キーに対応するインデックスを取得
+		inline size_type bucket(const value_type& value) const { return findIndex(value); }//キーに対応するインデックスを取得
+		inline size_type bucket_size(const index_type index) const { return m_using[index] && !m_deleted[index] ? 1 : 0; }//特定バケット内の要素数を取得
 	public:
 		//検索系アクセッサ：キーで検索して値を返す
 		//※マルチスレッドで処理する際は、一連の処理ブロック全体の前後で
@@ -1371,6 +1382,14 @@ namespace hash_table
 	public:
 		//キャストオペレータ
 		operator CRWLock&(){ return m_lock; }//リード・ライトロック
+		//【ロックの使用方法】
+		//{
+		//    CRWLock::RLock lock(container);//引数にハッシュテーブルコンテナを渡すことで、リードロックを取得
+		//    //※この処理ブロックを抜けると自動的にロック解放
+		//    data_t* obj = container[key];//データアクセス
+		//}
+		//※ライトロックも同様の方法で明示的にロックできるが、
+		//　コンテナ生成時にコンストラクタ引数で自動ロック属性を指定する方が良い。
 	public:
 		//メソッド
 		inline index_type calcIndexStep(const key_type key) const { return INDEX_STEP_BASE - key % INDEX_STEP_BASE; }//キーからインデックスの歩幅（第二ハッシュ）を計算
@@ -1723,6 +1742,8 @@ namespace hash_table
 		}
 	public:
 		//リハッシュ
+		//※テーブルを拡大・再構築するのではなく、削除済みデータを完全に削除するだけ。
+		//　そのために、削除済みデータの位置に移動可能なデータを移動する。
 		//※処理中、ライトロックを取得する（自動ライトロック属性設定時）
 		inline bool rehash()
 		{
@@ -1772,7 +1793,7 @@ namespace hash_table
 		~container()
 		{}
 	private:
-		unsigned char m_table[TABLE_SIZE][sizeof(value_type)];//データテーブル
+		unsigned char m_table[TABLE_SIZE][sizeof(value_type)];//データテーブル（バケット）
 		key_type m_keyTable[TABLE_SIZE];//キーテーブル
 		std::bitset<TABLE_SIZE> m_using;//キー設定済みフラグ ※登録を削除してもfalseにならない（リハッシュ時には調整される）
 		std::bitset<TABLE_SIZE> m_deleted;//削除済みフラグ
@@ -2108,7 +2129,7 @@ int main(const int argc, const char* argv[])
 		printf("\n");
 		printf("--- Table Parameter ---\n");
 		printf(".max_size()=%u\n", con->max_size());
-		printf(".capacity()=%u\n", con->capacity());
+		//printf(".capacity()=%u\n", con->capacity());
 		printf(".getOriginalTableSize()=%u\n", con->getOriginalTableSize());
 		printf(".getTableSize()=%u\n", con->getTableSize());
 		printf(".getTableSizeExtended()=%u\n", con->getTableSizeExtended());
@@ -2128,6 +2149,8 @@ int main(const int argc, const char* argv[])
 	{
 		printf("\n");
 		printf("--- Table Status ---\n");
+		printf(".bucket_count()=%u\n", con->bucket_count());
+		printf(".max_bucket_count()=%u\n", con->max_bucket_count());
 		printf(".size()=%u\n", con->size());
 		printf(".empty()=%u\n", con->empty());
 		printf(".getUsingCount()=%u\n", con->getUsingCount());
@@ -2222,7 +2245,7 @@ int main(const int argc, const char* argv[])
 		//for (container_type::set& set : +con)
 		for (auto& set : *con)
 		{
-			printf_detail("%c[%6d](%6d) key=%08x, name=\"%s\", value=%d%s\n", set.isPrimaryIndex() ? ' ' : '*', set.m_index, set.m_primaryIndex, set.m_key, set->m_name, set->m_value, set.m_isDeleted ? " (DELETED)" : "");
+			printf_detail("%c[%6d](%6d) key=%08x, name=\"%s\", value=%d (bucket=%d, bucket_size=%d)%s\n", set.isPrimaryIndex() ? ' ' : '*', set.m_index, set.m_primaryIndex, set.m_key, set->m_name, set->m_value, con->bucket(set.m_key), con->bucket_size(set.m_index), set.m_isDeleted ? " <DELETED>" : "");
 		}
 		const bool is_print = false;
 		prev_time = printElapsedTime(prev_time, is_print);
@@ -2256,7 +2279,7 @@ int main(const int argc, const char* argv[])
 				if(obj)
 				{
 					key = obj->m_key;
-					index = i;
+					index = con->bucket(key);
 					primary_index = con->calcIndex(key);
 					is_primary_index = (index == primary_index);
 					is_deleted = false;
@@ -2270,7 +2293,7 @@ int main(const int argc, const char* argv[])
 				if(obj)
 				{
 					key = obj->m_key;
-					index = i;
+					index = con->bucket(key);
 					primary_index = con->calcIndex(key);
 					is_primary_index = (index == primary_index);
 					is_deleted = false;
@@ -2294,7 +2317,7 @@ int main(const int argc, const char* argv[])
 			#endif//USE_FIND_TYPE
 			if (obj)
 			{
-				printf_detail("OK  %c[%6d](%6d) key=%08x, name=\"%s\", value=%d%s\n", is_primary_index ? ' ' : '*', index, primary_index, key, obj->m_name, obj->m_value, is_deleted ? " (DELETED)" : "");
+				printf_detail("OK  %c[%6d](%6d) key=%08x, name=\"%s\", value=%d (bucket=%d, bucket_size=%d)%s\n", is_primary_index ? ' ' : '*', index, primary_index, key, obj->m_name, obj->m_value, con->bucket(key), con->bucket_size(index), is_deleted ? " <DELETED>" : "");
 				++find_success;
 			}
 			else
@@ -2476,6 +2499,10 @@ int main(const int argc, const char* argv[])
 		printf("--- [STL] Table Status ---\n");
 		printf(".size()=%u\n", stl_con->size());
 		printf(".empty()=%u\n", stl_con->empty());
+		printf(".bucket_count()=%u\n", stl_con->bucket_count());
+		printf(".max_bucket_count()=%u\n", stl_con->max_bucket_count());
+		printf(".load_factor()=%u\n", stl_con->load_factor());
+		printf(".max_load_factor()=%u\n", stl_con->max_load_factor());
 	};
 	printSTLTableStatus();
 
@@ -2521,7 +2548,9 @@ int main(const int argc, const char* argv[])
 		//for (container_type::set& set : +con)
 		for (auto& pair : *stl_con)
 		{
-			printf_detail("key=%08x, name=\"%s\", value=%d\n", pair.first, pair.second.m_name, pair.second.m_value);
+			const crc32_t key = pair.first;
+			const stl_container_type::size_type index = stl_con->bucket(key);
+			printf_detail("[%6d] key=%08x, name=\"%s\", value=%d (bucket=%d, bucket_size=%d)\n", index, key, pair.second.m_name, pair.second.m_value, index, stl_con->bucket_size(index));
 		}
 		const bool is_print = false;
 		prev_time = printElapsedTime(prev_time, is_print);
@@ -2544,7 +2573,9 @@ int main(const int argc, const char* argv[])
 			auto ite = stl_con->find(key);
 			if (ite != stl_con->end())
 			{
-				printf_detail("OK  key=%08x, name=\"%s\", value=%d\n", ite->first, ite->second.m_name, ite->second.m_value);
+				const crc32_t key = ite->first;
+				const stl_container_type::size_type index = stl_con->bucket(key);
+				printf_detail("OK  key=%08x, name=\"%s\", value=%d (bucket=%d, bucket_size=%d)\n", key, ite->second.m_name, ite->second.m_value, index, stl_con->bucket_size(index));
 				++find_success;
 			}
 			else
@@ -2727,6 +2758,12 @@ int main(const int argc, const char* argv[])
 		printObj(20);
 		printObj(30);
 		printObj(40);
+
+		//ロック取得テスト
+		{
+			CRWLock::RLock lock(p_con);
+			printObj(20);
+		}
 	}
 
 	//--------------------

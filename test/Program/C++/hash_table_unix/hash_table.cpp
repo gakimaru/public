@@ -2775,14 +2775,34 @@ int main(const int argc, const char* argv[])
 		printf("Hash Table Test for Function\n");
 		printf("--------------------------------------------------------------------------------\n");
 		
-		//操作型
+		//操作型 ※単純な関数呼び出し用
 		struct func_ope_t : public hash_table::base_ope_t<func_ope_t, crc32_t, std::function<int(int, int)>>
 		{
 		};
 		
+		//オブジェクトメンバー関数呼び出しテスト用
+		struct data_t
+		{
+			int calc(int a, int b)
+			{
+				return (a + b) * m_val;
+			}
+			data_t(const int val) :
+				m_val(val)
+			{}
+		private:
+			int m_val;
+		};
+
+		//操作型 ※オブジェクトメンバー関数呼び出し用
+		struct obj_ope_t : public hash_table::base_ope_t<func_ope_t, crc32_t, std::function<int(data_t&, int, int)>>
+		{
+		};
+
 		//ハッシュテーブル
 		hash_table::container<func_ope_t, 100> func_con;
-		
+		hash_table::container<obj_ope_t, 100> obj_con;
+
 		//関数型ハッシュテーブルテスト用関数：通常関数
 		extern int func_add(int a, int b);
 
@@ -2799,23 +2819,27 @@ int main(const int argc, const char* argv[])
 		{
 			return a * b;
 		};
+
+		//関数型ハッシュテーブルテスト用関数：ラムダ関数
 		auto func_div = [](int a, int b) -> int
 		{
 			return a / b;
 		};
-		//※ std::function<>はクラスメンバー関数も扱えるが省略
 
 		//登録
 		func_con.emplace("+", func_add);
 		func_con.emplace("-", func_sub());
 		func_con.emplace("*", func_mul);
-		func_con.emplace("/", func_div);
+		func_con.emplace("/", std::bind(func_div, 50, 4));//std::bindを使用
+		obj_con.emplace("calc", std::mem_fn(&data_t::calc));//クラスメンバー関数の場合
 
 		//検索して実行
 		printf("50 + 4 = %d\n", (*func_con["+"])(50, 4));
 		printf("50 - 4 = %d\n", (*func_con["-"])(50, 4));
 		printf("50 * 4 = %d\n", (*func_con["*"])(50, 4));
-		printf("50 / 4 = %d\n", (*func_con["/"])(50, 4));
+		printf("50 / 4 = %d\n", (*func_con["/"])(0, 0));//std::bind()で事前にパラメータがセット済み
+		data_t obj(3);
+		printf("obj.calc(1, 2) = %d\n", (*obj_con["calc"])(obj, 1, 2));//クラスメンバー関数の場合、オブジェクトを渡す必要がある
 	}
 
 	return EXIT_SUCCESS;

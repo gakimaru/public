@@ -34,40 +34,65 @@
 //----------------------------------------
 //ソート処理オーバーロード関数用マクロ
 #define sortFuncSet(func_name) \
-	template<class T, std::size_t N, class COMPARE> \
-	inline std::size_t func_name(T(&array)[N], COMPARE comparison) \
+	template<class T, std::size_t N, class PREDICATE> \
+	inline std::size_t func_name(T(&array)[N], PREDICATE predicate) \
 	{ \
-		return func_name(array, N, comparison); \
+		return func_name(array, N, predicate); \
 	} \
-	template<class T, class COMPARE> \
-	inline std::size_t func_name(T* begin, T* end, COMPARE comparison) \
+	template<class T, class PREDICATE> \
+	inline std::size_t func_name(T* begin, T* end, PREDICATE predicate) \
 	{ \
-		return func_name(begin, end - begin, comparison); \
+		return func_name(begin, end - begin, predicate); \
 	} \
-	template<class ITERATOR, class COMPARE> \
-	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end, COMPARE comparison) \
+	template<class ITERATOR, class PREDICATE> \
+	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end, PREDICATE predicate) \
 	{ \
 		const std::size_t size = end - begin; \
-		return size == 0 ? 0 : func_name(&begin[0], size, comparison); \
+		return size == 0 ? 0 : func_name(&begin[0], size, predicate); \
 	} \
-	template<class CONTAINER, class COMPARE> \
-	inline std::size_t func_name(CONTAINER& con, COMPARE comparison) \
+	template<class CONTAINER, class PREDICATE> \
+	inline std::size_t func_name(CONTAINER& con, PREDICATE predicate) \
 	{ \
 		std::size_t size = con.size(); \
-		return size == 0 ? 0 : func_name(&(con.at(0)), size, comparison); \
+		return size == 0 ? 0 : func_name(&(con.at(0)), size, predicate); \
+	} \
+	template<class T> \
+	inline std::size_t func_name(T* array, const std::size_t size) \
+	{ \
+		return func_name(array, size, std::less<T>()); \
+	} \
+	template<class T, std::size_t N> \
+	inline std::size_t func_name(T(&array)[N]) \
+	{ \
+		return func_name(array, std::less<T>()); \
+	} \
+	template<class T> \
+	inline std::size_t func_name(T* begin, T* end) \
+	{ \
+		return func_name(begin, end, std::less<T>()); \
+	} \
+	template<class ITERATOR> \
+	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end) \
+	{ \
+		return func_name(begin, end, std::less<typename ITERATOR::value_type>()); \
+	} \
+	template<class CONTAINER> \
+	inline std::size_t func_name(CONTAINER& con) \
+	{ \
+		return func_name(con, std::less<typename CONTAINER::value_type>()); \
 	}
 
 //----------------------------------------
 //整列状態確認
-template<class T, class COMPARE>
-inline std::size_t calcUnordered(const T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+inline std::size_t calcUnordered(const T* array, const std::size_t size, PREDICATE predicate)
 {
 	std::size_t unordered = 0;
 	const T* prev = array;
 	const T* now = prev + 1;
 	for (std::size_t i = 1; i < size; ++i, ++now, ++prev)
 	{
-		if (comparison(*now, *prev))
+		if (predicate(*now, *prev))
 			++unordered;
 	}
 	return unordered;
@@ -223,8 +248,8 @@ inline void rotateValues(T* val1, T* val2, int step)
 //----------------------------------------
 //※交換発生有無のチェックを行い、最適化する。
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t bubbleSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t bubbleSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
@@ -238,7 +263,7 @@ std::size_t bubbleSort(T* array, const std::size_t size, COMPARE comparison)
 		T* next = now + 1;
 		for (std::size_t ii = 0; ii < end; ++ii, ++now, ++next)
 		{
-			if (comparison(*next, *now))
+			if (predicate(*next, *now))
 			{
 				swapValues(*next, *now);
 				is_swapped = true;
@@ -263,8 +288,8 @@ sortFuncSet(bubbleSort);
 //----------------------------------------
 //※交換発生有無のチェックを行い、最適化する。
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t shakerSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t shakerSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
@@ -278,7 +303,7 @@ std::size_t shakerSort(T* array, const std::size_t size, COMPARE comparison)
 		T* next = now + 1;
 		for (std::size_t i = begin; i < end; ++i, ++now, ++next)
 		{
-			if (comparison(*next, *now))
+			if (predicate(*next, *now))
 			{
 				swapValues(*next, *now);
 				is_swapped = true;
@@ -293,7 +318,7 @@ std::size_t shakerSort(T* array, const std::size_t size, COMPARE comparison)
 		T* prev = now - 1;
 		for (std::size_t i = end; i > begin; --i, --now, --prev)
 		{
-			if (comparison(*now, *prev))
+			if (predicate(*now, *prev))
 			{
 				swapValues(*now, *prev);
 				is_swapped = true;
@@ -318,8 +343,8 @@ sortFuncSet(shakerSort);
 //----------------------------------------
 //※OpenMPを使用し、並列化で最適化する。
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t oddEvenSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t oddEvenSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
@@ -341,7 +366,7 @@ std::size_t oddEvenSort(T* array, const std::size_t size, COMPARE comparison)
 			{
 				now = array + i;
 				next = now + 1;
-				if (comparison(*next, *now))
+				if (predicate(*next, *now))
 				{
 					swapValues(*next, *now);
 					is_swapped = true;
@@ -370,8 +395,8 @@ sortFuncSet(oddEvenSort);
 #ifdef SHEAR_SORT_USE_OPENMP_NEST
 #include <omp.h>//omp_set_nested()用
 #endif//SHEAR_SORT_USE_OPENMP_NEST
-template<class T, class COMPARE>
-std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
@@ -438,8 +463,8 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 						{
 							now = array + row * cols + col;
 							next = now + 1;
-							if ((!is_odd && comparison(*next, *now)) ||//偶数行は小さい順
-								( is_odd && comparison(*now, *next)))  //奇数行は大きい順
+							if ((!is_odd && predicate(*next, *now)) ||//偶数行は小さい順
+								( is_odd && predicate(*now, *next)))  //奇数行は大きい順
 							{
 								swapValues(*next, *now);
 								is_swapped = true;
@@ -475,7 +500,7 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 					{
 						now = array + row * cols + col;
 						next = now + cols;
-						if (comparison(*next, *now))
+						if (predicate(*next, *now))
 						{
 							swapValues(*next, *now);
 							is_swapped = true;
@@ -514,7 +539,7 @@ std::size_t shearSort(T* array, const std::size_t size, COMPARE comparison)
 						{
 							now = array + row * cols + col;
 							next = now + 1;
-							if (comparison(*next, *now))
+							if (predicate(*next, *now))
 							{
 								swapValues(*next, *now);
 								is_swapped = true;
@@ -541,8 +566,8 @@ sortFuncSet(shearSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　×
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t combSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t combSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
@@ -557,7 +582,7 @@ std::size_t combSort(T* array, const std::size_t size, COMPARE comparison)
 		T* next = now + h;
 		while (next < end)
 		{
-			if (comparison(*next, *now))
+			if (predicate(*next, *now))
 			{
 				swapValues(*next, *now);
 				is_swapped = true;
@@ -581,8 +606,8 @@ sortFuncSet(combSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　○
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t gnomeSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t gnomeSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
@@ -592,13 +617,13 @@ std::size_t gnomeSort(T* array, const std::size_t size, COMPARE comparison)
 	T* next = now + 1;
 	while (next < end)
 	{
-		if (comparison(*next, *now))
+		if (predicate(*next, *now))
 		{
 			T* prev = now;
 			now = next;
 			while (prev >= array)
 			{
-				if (comparison(*now, *prev))
+				if (predicate(*now, *prev))
 				{
 					swapValues(*now, *prev);
 					++swapped_count;
@@ -627,8 +652,8 @@ sortFuncSet(gnomeSort);
 //※再帰処理を使用せず、スタックを使用したループ処理にして最適化する。
 //　（最大件数を log2(4294967296) = 32 とする）
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 #ifndef QUICK_SORT_NO_USE_RECURSIVE_CALL
 	//--------------------
@@ -643,23 +668,23 @@ std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
 	//中央値を決定
 	const T* med = array + (size >> 1);
 	const T* pivot =
-		comparison(*begin, *med) ?
-			comparison(*med, *end) ?
+		predicate(*begin, *med) ?
+			predicate(*med, *end) ?
 				med :
-				comparison(*end, *begin) ?
+				predicate(*end, *begin) ?
 					begin :
 					end :
-			comparison(*end, *med) ?
+			predicate(*end, *med) ?
 				med :
-				comparison(*begin, *end) ?
+				predicate(*begin, *end) ?
 					begin :
 					end;
 	//中央値未満の配列と中央値以上の配列に二分
 	while (true)
 	{
-		while (comparison(*begin, *pivot))
+		while (predicate(*begin, *pivot))
 			++begin;
-		while (comparison(*pivot, *end))
+		while (predicate(*pivot, *end))
 			--end;
 		if (begin >= end)
 			break;
@@ -670,8 +695,8 @@ std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
 		--end;
 	}
 	//再帰処理
-	swapped_count += _quickSort(array, begin - array, comparison);//中央値未満の配列
-	swapped_count += _quickSort(end + 1, term - end - 1, comparison);//中央値以上の配列
+	swapped_count += _quickSort(array, begin - array, predicate);//中央値未満の配列
+	swapped_count += _quickSort(end + 1, term - end - 1, predicate);//中央値以上の配列
 	return swapped_count;
 #else//QUICK_SORT_NO_USE_RECURSIVE_CALL
 #ifndef QUICK_SORT_USE_OPENMP
@@ -703,23 +728,23 @@ std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
 		//中央値を決定
 		const T* med = _array + (_size >> 1);
 		const T* pivot =
-			comparison(*begin, *med) ?
-				comparison(*med, *end) ?
+			predicate(*begin, *med) ?
+				predicate(*med, *end) ?
 					med :
-					comparison(*end, *begin) ?
+					predicate(*end, *begin) ?
 						begin :
 						end :
-				comparison(*end, *med) ?
+				predicate(*end, *med) ?
 					med :
-					comparison(*begin, *end) ?
+					predicate(*begin, *end) ?
 						begin :
 						end;
 		//中央値未満の配列と中央値以上の配列に二分
 		while (true)
 		{
-			while (comparison(*begin, *pivot))
+			while (predicate(*begin, *pivot))
 				++begin;
-			while (comparison(*pivot, *end))
+			while (predicate(*pivot, *end))
 				--end;
 			if (begin >= end)
 				break;
@@ -799,23 +824,23 @@ std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
 				//中央値を決定
 				med = _array + (_size >> 1);
 				pivot =
-					comparison(*begin, *med) ?
-						comparison(*med, *end) ?
+					predicate(*begin, *med) ?
+						predicate(*med, *end) ?
 							med :
-							comparison(*end, *begin) ?
+							predicate(*end, *begin) ?
 								begin :
 								end :
-						comparison(*end, *med) ?
+						predicate(*end, *med) ?
 							med :
-							comparison(*begin, *end) ?
+							predicate(*begin, *end) ?
 								begin :
 								end;
 				//中央値未満の配列と中央値以上の配列に二分
 				while (true)
 				{
-					while (comparison(*begin, *pivot))
+					while (predicate(*begin, *pivot))
 						++begin;
-					while (comparison(*pivot, *end))
+					while (predicate(*pivot, *end))
 						--end;
 					if (begin >= end)
 						break;
@@ -849,12 +874,12 @@ std::size_t _quickSort(T* array, const std::size_t size, COMPARE comparison)
 #endif//QUICK_SORT_USE_OPENMP
 #endif//QUICK_SORT_NO_USE_RECURSIVE_CALL
 }
-template<class T, class COMPARE>
-inline std::size_t quickSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+inline std::size_t quickSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
-	return _quickSort(array, size, comparison);
+	return _quickSort(array, size, predicate);
 }
 sortFuncSet(quickSort);
 
@@ -870,8 +895,8 @@ sortFuncSet(quickSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　×
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t selectionSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t selectionSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
@@ -885,7 +910,7 @@ std::size_t selectionSort(T* array, const std::size_t size, COMPARE comparison)
 		for (std::size_t ii = i + 1; ii < size; ++ii)
 		{
 			++check;
-			if (comparison(*check, *min))
+			if (predicate(*check, *min))
 				min = check;
 		}
 		if (now != min)
@@ -906,8 +931,8 @@ sortFuncSet(selectionSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　×
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t heapSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t heapSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
@@ -922,7 +947,7 @@ std::size_t heapSort(T* array, const std::size_t size, COMPARE comparison)
 		{
 			parent_i = (parent_i - 1) >> 1;
 			T* parent = array + parent_i;
-			if (comparison(*parent, *now))
+			if (predicate(*parent, *now))
 			{
 				swapValues(*parent, *now);
 				++swapped_count;
@@ -950,12 +975,12 @@ std::size_t heapSort(T* array, const std::size_t size, COMPARE comparison)
 				break;
 			T* child = array + child_i;
 			T* child_r = child_i + 1 < heap_size ? child + 1 : nullptr;
-			if (child_r && comparison(*child, *child_r))
+			if (child_r && predicate(*child, *child_r))
 			{
 				child = child_r;
 				++child_i;
 			}
-			if(comparison(*now, *child))
+			if(predicate(*now, *child))
 			{
 				swapValues(*now, *child);
 				++swapped_count;
@@ -981,8 +1006,8 @@ sortFuncSet(heapSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　○
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t insertionSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t insertionSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
@@ -992,13 +1017,13 @@ std::size_t insertionSort(T* array, const std::size_t size, COMPARE comparison)
 	T* next = now + 1;
 	while (next < end)
 	{
-		if (comparison(*next, *now))
+		if (predicate(*next, *now))
 		{
 			T* min = now;
 			T* prev = now - 1;
 			while (prev >= array)
 			{
-				if (comparison(*next, *prev))
+				if (predicate(*next, *prev))
 					min = prev;
 				else
 					break;
@@ -1022,8 +1047,8 @@ sortFuncSet(insertionSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　×
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t shellSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t shellSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
@@ -1039,13 +1064,13 @@ std::size_t shellSort(T* array, const std::size_t size, COMPARE comparison)
 		T* next = now + h;
 		while (next < end)
 		{
-			if (comparison(*next, *now))
+			if (predicate(*next, *now))
 			{
 				T* min = now;
 				T* prev = now - h;
 				while (prev >= array)
 				{
-					if (comparison(*next, *prev))
+					if (predicate(*next, *prev))
 						min = prev;
 					else
 						break;
@@ -1073,8 +1098,8 @@ sortFuncSet(shellSort);
 //----------------------------------------
 //※OpenMPを使用し、並列化が可能。
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t inplaceMergeSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 #ifndef INPLACE_MERGE_SORT_USE_OPENMP
 	//通常版
@@ -1097,12 +1122,12 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 			T* left_ins_prev = nullptr;
 			while (right < right_end)
 			{
-				if (comparison(*right, *left))//左ブロックの右端と右ブロックの左端をチェック
+				if (predicate(*right, *left))//左ブロックの右端と右ブロックの左端をチェック
 				{
 				#if 0
 					//挿入位置検索 ※線形検索
 					T* left_ins = left;
-					while (left_ins >= left_begin && comparison(*right, *left_ins))
+					while (left_ins >= left_begin && predicate(*right, *left_ins))
 						--left_ins;
 					++left_ins;
 				#else
@@ -1117,14 +1142,14 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 						{
 							search_range_half = search_range_half >> 1;
 							left_ins = search_begin + search_pos;
-							if (comparison(*right, *left_ins))
+							if (predicate(*right, *left_ins))
 								search_pos -= search_range_half;
 							else
 								search_pos += search_range_half;
 						}
-						while (left_ins < right && !comparison(*right, *left_ins))
+						while (left_ins < right && !predicate(*right, *left_ins))
 							++left_ins;
-						while (left_ins >= search_begin && comparison(*right, *left_ins))
+						while (left_ins >= search_begin && predicate(*right, *left_ins))
 							--left_ins;
 						++left_ins;
 						left_ins_prev = left_ins;
@@ -1179,12 +1204,12 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 			left_ins_prev = nullptr;
 			while (right < right_end)
 			{
-				if (comparison(*right, *left))//左ブロックの右端と右ブロックの左端をチェック
+				if (predicate(*right, *left))//左ブロックの右端と右ブロックの左端をチェック
 				{
 				#if 0
 					//挿入位置検索 ※線形検索
 					left_ins = left;
-					while (left_ins >= left_begin && comparison(*right, *left_ins))
+					while (left_ins >= left_begin && predicate(*right, *left_ins))
 						--left_ins;
 					++left_ins;
 				#else
@@ -1198,14 +1223,14 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, COMPARE compariso
 						{
 							search_range_half = search_range_half >> 1;
 							left_ins = search_begin + search_pos;
-							if (comparison(*right, *left_ins))
+							if (predicate(*right, *left_ins))
 								search_pos -= search_range_half;
 							else
 								search_pos += search_range_half;
 						}
-						while (left_ins < right && !comparison(*right, *left_ins))
+						while (left_ins < right && !predicate(*right, *left_ins))
 							++left_ins;
-						while (left_ins >= search_begin && comparison(*right, *left_ins))
+						while (left_ins >= search_begin && predicate(*right, *left_ins))
 							--left_ins;
 						++left_ins;
 						left_ins_prev = left_ins;
@@ -1255,8 +1280,8 @@ sortFuncSet(inplaceMergeSort);
 //　本来のヒープソートではなく、シェルソートを使用するスタイルに改良。
 //※整列済み判定を最初に一度行うことで最適化する。
 //----------------------------------------
-template<class T, class COMPARE>
-std::size_t _introSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	int depth_max = 0;//ヒープソートに切り替える再帰（スタック）の深さ
 	for (std::size_t size_tmp = size; size_tmp > 1; size_tmp >>= 1, ++depth_max);
@@ -1293,23 +1318,23 @@ std::size_t _introSort(T* array, const std::size_t size, COMPARE comparison)
 		//中央値を決定
 		const T* med = _array + (_size >> 1);
 		const T* pivot =
-			comparison(*begin, *med) ?
-				comparison(*med, *end) ?
+			predicate(*begin, *med) ?
+				predicate(*med, *end) ?
 					med :
-					comparison(*end, *begin) ?
+					predicate(*end, *begin) ?
 						begin :
 						end :
-				comparison(*end, *med) ?
+				predicate(*end, *med) ?
 					med :
-					comparison(*begin, *end) ?
+					predicate(*begin, *end) ?
 						begin :
 						end;
 		//中央値未満の配列と中央値以上の配列に二分
 		while (true)
 		{
-			while (comparison(*begin, *pivot))
+			while (predicate(*begin, *pivot))
 				++begin;
-			while (comparison(*pivot, *end))
+			while (predicate(*pivot, *end))
 				--end;
 			if (begin >= end)
 				break;
@@ -1330,15 +1355,15 @@ std::size_t _introSort(T* array, const std::size_t size, COMPARE comparison)
 			{
 				if (new_size < SIZE_THRESHOLD)
 				{
-					//swapped_count += insertionSort(new_array, new_size, comparison);//【本来の処理】挿入ソートに切り替え
-					//swapped_count += combSort(new_array, new_size, comparison);//【改良】コムソートに切り替え
-					swapped_count += shellSort(new_array, new_size, comparison);//【改良】シェルソートに切り替え
+					//swapped_count += insertionSort(new_array, new_size, predicate);//【本来の処理】挿入ソートに切り替え
+					//swapped_count += combSort(new_array, new_size, predicate);//【改良】コムソートに切り替え
+					swapped_count += shellSort(new_array, new_size, predicate);//【改良】シェルソートに切り替え
 				}
 				else if (new_depth == 0)
 				{
-					//swapped_count += heapSort(new_array, new_size, comparison);//【本来の処理】ヒープソートに切り替え
-					//swapped_count += combSort(new_array, new_size, comparison);//【改良】コムソートに切り替え
-					swapped_count += shellSort(new_array, new_size, comparison);//【改良】シェルソートに切り替え
+					//swapped_count += heapSort(new_array, new_size, predicate);//【本来の処理】ヒープソートに切り替え
+					//swapped_count += combSort(new_array, new_size, predicate);//【改良】コムソートに切り替え
+					swapped_count += shellSort(new_array, new_size, predicate);//【改良】シェルソートに切り替え
 				}
 				else
 				{
@@ -1353,14 +1378,14 @@ std::size_t _introSort(T* array, const std::size_t size, COMPARE comparison)
 	}
 	return swapped_count;
 }
-template<class T, class COMPARE>
-inline std::size_t introSort(T* array, const std::size_t size, COMPARE comparison)
+template<class T, class PREDICATE>
+inline std::size_t introSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 	if (!array || size <= 1)
 		return 0;
-	if (calcUnordered(array, size, comparison) == 0)
+	if (calcUnordered(array, size, predicate) == 0)
 		return 0;
-	return _introSort(array, size, comparison);
+	return _introSort(array, size, predicate);
 }
 sortFuncSet(introSort);
 
@@ -1395,34 +1420,40 @@ public:
 //----------------------------------------
 //テスト用の比較処理
 //qsort用関数
-inline int comparison_func_qsort(const void*lhs, const void*rhs)
+inline int predicate_func_qsort(const void*lhs, const void*rhs)
 {
 	return reinterpret_cast<const data_t*>(lhs)->m_key - reinterpret_cast<const data_t*>(rhs)->m_key;
 }
 //通常関数
-extern bool comparison_func(const data_t& lhs, const data_t& rhs);
+extern bool predicate_func(const data_t& lhs, const data_t& rhs);
 //インライン関数
-inline bool comparison_func_inline(const data_t& lhs, const data_t& rhs)
+inline bool predicate_func_inline(const data_t& lhs, const data_t& rhs)
 {
 	return lhs.m_key < rhs.m_key;
 }
 //関数オブジェクト
-struct comparison_functor{
+struct predicate_functor{
 	inline bool operator()(const data_t& lhs, const data_t& rhs)
 	{
 		return lhs.m_key < rhs.m_key;
 	}
 };
 //ラムダ関数
-auto comparison_lambda = [](const data_t& lhs, const data_t& rhs) -> bool
+auto predicate_lambda = [](const data_t& lhs, const data_t& rhs) -> bool
 {
 	return lhs.m_key < rhs.m_key;
 };
+//二項比較オペレータ
+//※sort関数に比較関数の指定を省略した場合、このオペレータが使用される
+inline bool operator <(const data_t& lhs, const data_t& rhs){ return lhs.m_key < rhs.m_key; }
+//※sort関数にstd::greater<T>()を指定した場合、このオペレータが使用される
+inline bool operator >(const data_t& lhs, const data_t& rhs){ return lhs.m_key > rhs.m_key; }
+
 //デフォルト
-//#define comparison_default comparison_func
-//#define comparison_default comparison_func_inline
-//#define comparison_default comparison_functor()
-#define comparison_default comparison_lambda
+//#define predicate_default predicate_func
+//#define predicate_default predicate_func_inline
+//#define predicate_default predicate_functor()
+#define predicate_default predicate_lambda
 
 //----------------------------------------
 //メイン
@@ -1461,7 +1492,7 @@ int main(const int argc, const char* argv[])
 	//配列状態表示
 	auto showArrayCondition = [&prev_time, &printElapsedTime](const array_t* array)
 	{
-		int ng = calcUnordered(*array, comparison_default);
+		int ng = calcUnordered(*array, predicate_default);
 		if (ng == 0)
 			printf("Array is ordered. [record(s)=%d]\n", array->size());
 		else
@@ -1834,7 +1865,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：クイックソート
 	auto clib_qsort = [](array_t* array) -> std::size_t
 	{
-		qsort(&array->at(0), array->size(),sizeof(data_t), comparison_func_qsort);
+		qsort(&array->at(0), array->size(),sizeof(data_t), predicate_func_qsort);
 		return 0xffffffff;
 	};
 	const sum_t sum_clib_qsort = measureAll("C-Library qsort", clib_qsort);
@@ -1846,7 +1877,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：イントロソート（クイックソート＋ヒープソート＋挿入ソート）
 	auto stl_sort1 = [](array_t* array) -> std::size_t
 	{
-		std::sort(array->begin(), array->end(), comparison_func);
+		std::sort(array->begin(), array->end(), predicate_func);
 		return 0xffffffff;
 	};
 	const sum_t sum_stl1 = measureAll("STL std::sort(with function)", stl_sort1);
@@ -1857,7 +1888,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：（同上）
 	auto stl_sort2 = [](array_t* array) -> std::size_t
 	{
-		std::sort(array->begin(), array->end(), comparison_func_inline);
+		std::sort(array->begin(), array->end(), predicate_func_inline);
 		return 0xffffffff;
 	};
 	const sum_t sum_stl2 = measureAll("STL std::sort(with inline function)", stl_sort2);
@@ -1868,7 +1899,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：（同上）
 	auto stl_sort3 = [](array_t* array) -> std::size_t
 	{
-		std::sort(array->begin(), array->end(), comparison_functor());
+		std::sort(array->begin(), array->end(), predicate_functor());
 		return 0xffffffff;
 	};
 	const sum_t sum_stl3 = measureAll("STL std::sort(with functor)", stl_sort3);
@@ -1879,20 +1910,47 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：（同上）
 	auto stl_sort4 = [](array_t* array) -> std::size_t
 	{
-		std::sort(array->begin(), array->end(), comparison_lambda);
+		std::sort(array->begin(), array->end(), predicate_lambda);
 		return 0xffffffff;
 	};
 	const sum_t sum_stl4 = measureAll("STL std::sort(with lamda)", stl_sort4);
 	printf("\n");
 	printf("\n");
-	
+
+	//--------------------
+	//STL安定ソート
+	//アルゴリズム：マージソート ※外部メモリ使用あり
+	auto stl_stable_sort = [](array_t* array) -> std::size_t
+	{
+		std::stable_sort(array->begin(), array->end(), predicate_func);
+		return 0xffffffff;
+	};
+	const sum_t sum_stl_stable = measureAll("STL std::stable_sort *Not inplace", stl_stable_sort);
+	printf("\n");
+	printf("\n");
+
 	//----------------------------------------
 	//交換ソート
 
 	//アルゴリズム：バブルソート
 	auto bubble_sort = [](array_t* array) -> std::size_t
 	{
-		return bubbleSort(&array->at(0), array->size(), comparison_default);
+		return bubbleSort(*array, predicate_default);
+		
+		//その他のソート指定方法
+		//return bubbleSort(&array->at(0), array->size(), predicate_default);
+		//return bubbleSort(array->_Elems, predicate_default);
+		//return bubbleSort(&array->at(0), &array->at(array->size() - 1) + 1, predicate_default);
+		//return bubbleSort(array->begin(), array->end(), predicate_default);
+		//return bubbleSort(*array, predicate_default);
+		//比較関数を省略する方法 ※ operator<(const T&, const T&) が定義されている必要あり
+		//return bubbleSort(&array->at(0), array->size());
+		//return bubbleSort(array->_Elems);
+		//return bubbleSort(&array->at(0), &array->at(array->size() - 1) + 1);
+		//return bubbleSort(array->begin(), array->end());
+		//return bubbleSort(*array);
+		//専用の比較関数を設けず、比較を逆転する方法 ※ operator>(const T&, const T&) が定義されている必要あり
+		//return bubbleSort(*array, std::greater<data_t>());
 	};
 	const sum_t sum_bubble = measureAll("Bubble sort", bubble_sort);
 	printf("\n");
@@ -1901,7 +1959,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：シェーカーソート
 	auto shaker_sort = [](array_t* array) -> std::size_t
 	{
-		return shakerSort(*array, comparison_default);
+		return shakerSort(*array, predicate_default);
 	};
 	const sum_t sum_shaker = measureAll("Shaker sort", shaker_sort);
 	printf("\n");
@@ -1910,7 +1968,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：奇遇転置ソート
 	auto odd_even_sort = [](array_t* array) -> std::size_t
 	{
-		return oddEvenSort(*array, comparison_default);
+		return oddEvenSort(*array, predicate_default);
 	};
 	const sum_t sum_odd_even = measureAll("Odd-Even sort", odd_even_sort);
 	printf("\n");
@@ -1919,7 +1977,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：シェアソート
 	auto shear_sort = [](array_t* array) -> std::size_t
 	{
-		return shearSort(*array, comparison_default);
+		return shearSort(*array, predicate_default);
 	};
 	const sum_t sum_shear = measureAll("Shear sort", shear_sort);
 	printf("\n");
@@ -1928,7 +1986,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：コムソート
 	auto comb_sort = [](array_t* array) -> std::size_t
 	{
-		return combSort(*array, comparison_default);
+		return combSort(*array, predicate_default);
 	};
 	const sum_t sum_comb = measureAll("Comb sort", comb_sort);
 	printf("\n");
@@ -1937,7 +1995,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：ノームソート
 	auto gnome_sort = [](array_t* array) -> std::size_t
 	{
-		return gnomeSort(*array, comparison_default);
+		return gnomeSort(*array, predicate_default);
 	};
 	const sum_t sum_gnome = measureAll("Gnome sort", gnome_sort);
 	printf("\n");
@@ -1946,7 +2004,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：クイックソート
 	auto quick_sort = [](array_t* array) -> std::size_t
 	{
-		return quickSort(*array, comparison_default);
+		return quickSort(*array, predicate_default);
 	};
 	const sum_t sum_quick = measureAll("Quick sort", quick_sort);
 	printf("\n");
@@ -1958,7 +2016,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：選択ソート
 	auto selection_sort = [](array_t* array) -> std::size_t
 	{
-		return selectionSort(*array, comparison_default);
+		return selectionSort(*array, predicate_default);
 	};
 	const sum_t sum_selection = measureAll("Selection sort", selection_sort);
 	printf("\n");
@@ -1967,7 +2025,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：ヒープソート
 	auto heap_sort = [](array_t* array) -> std::size_t
 	{
-		return heapSort(*array, comparison_default);
+		return heapSort(*array, predicate_default);
 	};
 	const sum_t sum_heap = measureAll("Heap sort", heap_sort);
 	printf("\n");
@@ -1979,7 +2037,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：挿入ソート
 	auto insertion_sort = [](array_t* array) -> std::size_t
 	{
-		return insertionSort(*array, comparison_default);
+		return insertionSort(*array, predicate_default);
 	};
 	const sum_t sum_insertion = measureAll("Insertion sort", insertion_sort);
 	printf("\n");
@@ -1988,7 +2046,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：シェルソート
 	auto shell_sort = [](array_t* array) -> std::size_t
 	{
-		return shellSort(*array, comparison_default);
+		return shellSort(*array, predicate_default);
 	};
 	const sum_t sum_shell = measureAll("Shell sort", shell_sort);
 	printf("\n");
@@ -2000,7 +2058,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：インプレースマージソート
 	auto inplace_merge_sort = [](array_t* array) -> std::size_t
 	{
-		return inplaceMergeSort(*array, comparison_default);
+		return inplaceMergeSort(*array, predicate_default);
 	};
 	const sum_t sum_inplace_merge = measureAll("Inplace Merge sort", inplace_merge_sort);
 	printf("\n");
@@ -2012,7 +2070,7 @@ int main(const int argc, const char* argv[])
 	//アルゴリズム：イントロソート
 	auto intro_sort = [](array_t* array) -> std::size_t
 	{
-		return introSort(*array, comparison_default);
+		return introSort(*array, predicate_default);
 	};
 	const sum_t sum_intro = measureAll("Intro sort", intro_sort);
 	printf("\n");
@@ -2057,6 +2115,9 @@ int main(const int argc, const char* argv[])
 	printLine("std::sort(inline-func):", sum_stl2);
 	printLine("std::sort(functor):", sum_stl3);
 	printLine("std::sort(lambda):", sum_stl4);
+	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
+	printf("[STL stable sort](Merge sort) *Not inplace\n");
+	printLine("std::stable_sort<S>:", sum_stl_stable);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("[Exchange sorts]\n");
 	printLine("Bubble sort<S>:", sum_bubble);
@@ -2121,8 +2182,8 @@ int main(const int argc, const char* argv[])
 		};
 		printf("[Before]\n");
 		printData();
-		auto comparison = [](data_t* val1, data_t* val2){ return val1->m_key < val2->m_key; };
-		introSort(p_arr, comparison);
+		auto predicate = [](data_t* val1, data_t* val2){ return val1->m_key < val2->m_key; };
+		introSort(p_arr, predicate);
 		printf("[After]\n");
 		printData();
 		printf("--- End ---\n");

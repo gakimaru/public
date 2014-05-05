@@ -27,12 +27,6 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <memory.h>//memcpy用
-#include <assert.h>//assert用
-#include <cstddef>//srd::size_t用
-#include <iterator>//std::iterator用
-#include <utility>//std::move用
-
 //--------------------------------------------------------------------------------
 //赤黒木（red-black tree）
 //--------------------------------------------------------------------------------
@@ -90,6 +84,12 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木
 //　切り離した構成にする。
 //--------------------------------------------------------------------------------
 
+#include <memory.h>//memcpy用
+#include <assert.h>//assert用
+#include <cstddef>//srd::size_t用
+#include <iterator>//std::iterator用
+#include <utility>//std::move用
+
 namespace rb_tree
 {
 	//--------------------
@@ -141,6 +141,9 @@ namespace rb_tree
 		typedef NODE_TYPE node_type;//ノード型
 		typedef KEY_TYPE key_type;//キー型
 		
+		//子ノードを取得 ※const外し(remove_const)
+		inline static node_type* getChildL_rc(node_type& node){ return const_cast<node_type*>(ope_type::getChildL(const_cast<const node_type&>(node))); }//大（右）側
+		inline static node_type* getChildS_rc(node_type& node){ return const_cast<node_type*>(ope_type::getChildS(const_cast<const node_type&>(node))); }//小（左）側
 		//子ノードを取得
 		inline static const node_type* getChild(const node_type& node, const bool child_is_large)
 		{
@@ -148,6 +151,7 @@ namespace rb_tree
 				ope_type::getChildL(node) ://大（右）側
 				ope_type::getChildS(node); //小（左）側
 		}
+		inline static node_type* getChild_rc(node_type& node, const bool child_is_large){ return const_cast<node_type*>(getChild(const_cast<const node_type&>(node), child_is_large)); }
 		//子ノードを変更
 		inline static void setChild(node_type& node, const bool child_is_large, const node_type* child)
 		{
@@ -637,7 +641,7 @@ namespace rb_tree
 		while (true)
 		{
 			new_key_is_large = ope_type::ge(new_key, *curr_node);//指定のキーと一致もしくは指定のキーの方が大きければtrue
-			node_type* child_node = const_cast<node_type*>(ope_type::getChild(*curr_node, new_key_is_large));//子ノードを取得
+			node_type* child_node = ope_type::getChild_rc(*curr_node, new_key_is_large);//子ノードを取得
 			if (!child_node)//子ノードが無ければそこに新規ノードを追加して終了
 			{
 				ope_type::setChild(*curr_node, new_key_is_large, new_node);//子ノードとして新規ノードを追加
@@ -680,8 +684,8 @@ namespace rb_tree
 				curr_is_large = parent_info->m_isLarge;//親ノードからの連結方向
 			}
 		}
-		node_type* child_node_l = const_cast<node_type*>(ope_type::getChildL(*removing_node));//大（右）側の子ノードを取得
-		node_type* child_node_s = const_cast<node_type*>(ope_type::getChildS(*removing_node));//小（左）側の子ノードを取得
+		node_type* child_node_l = ope_type::getChildL_rc(*removing_node);//大（右）側の子ノードを取得
+		node_type* child_node_s = ope_type::getChildS_rc(*removing_node);//小（左）側の子ノードを取得
 		node_type* descendant_node = nullptr;//削除ノードの最大子孫ノード（削除ノードの次に小さいノード）
 		node_type* replacing_node = nullptr;//削除ノードと置き換えるノード
 		//削除ノードと置き換えるノードの選出処理
@@ -806,8 +810,8 @@ namespace rb_tree
 	inline typename OPE_TYPE::node_type* _rotateL(typename OPE_TYPE::node_type* curr_node)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		node_type* child_node_l = const_cast<node_type*>(ope_type::getChildL(*curr_node));
-		node_type* child_node_ls = const_cast<node_type*>(ope_type::getChildS(*child_node_l));
+		node_type* child_node_l = ope_type::getChildL_rc(*curr_node);
+		node_type* child_node_ls = ope_type::getChildS_rc(*child_node_l);
 		ope_type::setChildS(*child_node_l, curr_node);
 		ope_type::setChildL(*curr_node, child_node_ls);
 		return child_node_l;
@@ -828,8 +832,8 @@ namespace rb_tree
 	inline typename OPE_TYPE::node_type* _rotateR(typename OPE_TYPE::node_type* curr_node)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		node_type* child_node_s = const_cast<node_type*>(ope_type::getChildS(*curr_node));
-		node_type* child_node_sl = const_cast<node_type*>(ope_type::getChildL(*child_node_s));
+		node_type* child_node_s = ope_type::getChildS_rc(*curr_node);
+		node_type* child_node_sl = ope_type::getChildL_rc(*child_node_s);
 		ope_type::setChildL(*child_node_s, curr_node);
 		ope_type::setChildS(*curr_node, child_node_sl);
 		return child_node_s;
@@ -1420,19 +1424,19 @@ namespace rb_tree
 				{
 					node_type* curr_node =//現在のノード取得 ※この側で黒ノードが一つ減少している
 						parent_node ?
-							const_cast<node_type*>(ope_type::getChild(*parent_node, curr_is_large)) :
+							ope_type::getChild_rc(*parent_node, curr_is_large) :
 							nullptr;
 					node_type* sibling_node =//兄弟ノード取得
 						parent_node ?
-							const_cast<node_type*>(ope_type::getChild(*parent_node, !curr_is_large)) :
+							ope_type::getChild_rc(*parent_node, !curr_is_large) :
 							nullptr;
 					node_type* sibling_node_s =//兄弟ノードの小（左）側の子ノード取得
 						sibling_node ?
-							const_cast<node_type*>(ope_type::getChildS(*sibling_node)) :
+							ope_type::getChildS_rc(*sibling_node) :
 							nullptr;
 					node_type* sibling_node_l =//兄弟ノードの大（右）側の子ノード取得
 						sibling_node ?
-							const_cast<node_type*>(ope_type::getChildL(*sibling_node)) :
+							ope_type::getChildL_rc(*sibling_node) :
 							nullptr;
 					if (sibling_node)//兄弟ノードが存在する場合
 					{
@@ -2264,7 +2268,7 @@ namespace rb_tree
 		inline int depth_max() const { return getDepthMax<ope_type>(m_root); }//木の深さを取得
 		//メソッド：要素アクセス系
 		//※std::mapと異なり、ノードのポインタを返す
-		inline const node_type* at(const key_type key) const
+		const node_type* at(const key_type key) const
 		{
 			stack_type stack;
 			return searchNode<ope_type>(m_root, key, stack, FOR_MATCH);
@@ -2344,6 +2348,7 @@ namespace rb_tree
 
 //--------------------------------------------------------------------------------
 //赤黒木テスト
+//--------------------------------------------------------------------------------
 
 #include <algorithm>//for_each用
 #include <random>//C++11 std::random用
@@ -2424,7 +2429,7 @@ inline int printf_dbg_search(const char* fmt, ...){ return 0; }
 #endif//PRINT_TEST_DATA_SEARCH
 
 //----------------------------------------
-//テスト
+//テストメイン
 int main(const int argc, const char* argv[])
 {
 	//型

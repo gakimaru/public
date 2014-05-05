@@ -162,6 +162,7 @@
 
 //----------------------------------------
 //C++11仕様対応
+//参考：https://sites.google.com/site/cpprefjp/implementation-status
 //参考(VC++)：http://msdn.microsoft.com/ja-jp/library/hh567368.aspx
 //            ※VC++2010以降、C++11仕様を部分実装
 //参考(GCC)：http://gcc.gnu.org/projects/cxx0x.html
@@ -174,7 +175,7 @@
 
 //【C++11仕様】nullptr
 #ifdef IS_VC
-	#if _MSC_VER >= 1600//VC++2010以降
+	#if _MSC_VER >= 1600//VC++10.0(2010)以降
 		#define HAS_NULLPTR
 	#else//_MSC_VER
 		//static const void* nullptr = 0;
@@ -182,7 +183,7 @@
 	#endif//_MSC_VER
 #endif//IS_VC
 #ifdef IS_GCC
-	#ifdef HAS_CPP11
+	#if defined(HAS_CPP11) && __GNUC_PREREQ(4, 6)
 		#define HAS_NULLPTR
 	#else//HAS_CPP11
 		//static const void* nullptr = 0;
@@ -192,35 +193,47 @@
 
 //【C++11仕様】override指定子
 #ifdef IS_VC
-	#if _MSC_VER >= 1600//VC++2010以降
+	#if _MSC_VER >= 1400//VC++8.0(2005)以降
 		#define HAS_OVERRIDE
 	#else//_MSC_VER
 		#define override//ダミー
 	#endif//_MSC_VER
 #endif//IS_VC
 #ifdef IS_GCC
-	#ifdef HAS_CPP11
+	#if defined(HAS_CPP11) && __GNUC_PREREQ(4, 7)
 		#define HAS_OVERRIDE
 	#else//HAS_CPP11
 		#define override//ダミー
 	#endif//HAS_CPP11
 #endif//IS_GCC
 
+//【C++11仕様】final指定子
+#ifdef IS_VC
+	#if _MSC_VER >= 1700//VC++11.0(2012)以降
+		#define HAS_FINAL
+	#else//_MSC_VER
+		#define final//ダミー
+	#endif//_MSC_VER
+#endif//IS_VC
+#ifdef IS_GCC
+	#if defined(HAS_CPP11) && __GNUC_PREREQ(4, 7)
+		#define HAS_FINAL
+	#else//HAS_CPP11
+		#define final//ダミー
+	#endif//HAS_CPP11
+#endif//IS_GCC
+
 //【C++11仕様】constexpr修飾子
 #ifdef IS_VC
-	#if _MSC_VER > 1800//VC++2013以後（暫定）
+	#if _MSC_VER > 1800//VC++12.0(2013)以後（暫定）
 		#define HAS_CONSTEXPR
 	#else//_MSC_VER
 		#define constexpr const
 	#endif//_MSC_VER
 #endif//IS_VC
 #ifdef IS_GCC
-	#ifdef HAS_CPP11
-		#if __GNUC_PREREQ(4, 6)
-			#define HAS_CONSTEXPR
-		#else//__GNUC_PREREQ
-			#define constexpr const
-		#endif//__GNUC_PREREQ
+	#if defined(HAS_CPP11) && __GNUC_PREREQ(4, 6)
+		#define HAS_CONSTEXPR
 	#else//HAS_CPP11
 		#define constexpr const
 	#endif//HAS_CPP11
@@ -228,28 +241,42 @@
 
 //【C++11仕様】ユーザー定義リテラル
 #ifdef IS_VC
-	#if _MSC_VER > 1800//VC++2013以後（暫定）
+	#if _MSC_VER > 1800//VC++12.0(2013)以後（暫定）
 		#define HAS_USER_DEFINED_LITERAL
 	#endif//_MSC_VER
 #endif//IS_VC
 #ifdef IS_GCC
-	#ifdef HAS_CPP11
-		#if __GNUC_PREREQ(4, 7)
-			#define HAS_USER_DEFINED_LITERAL
-		#endif//__GNUC_PREREQ
+	#if defined(HAS_CPP11) && __GNUC_PREREQ(4, 7)
+		#define HAS_USER_DEFINED_LITERAL
+	#endif//HAS_CPP11
+#endif//IS_GCC
+
+//【C++11仕様】static_assert
+#ifdef IS_VC
+	#if _MSC_VER >= 1600//VC++10.0(2010)以後
+		#define HAS_STATIC_ASSERT
+	#else//_MSC_VER
+		#define STATIC_ASSERT(expr, msg) typedef char __STATIC_ASSERT_TYPE[(expr) ? 1 : -1]
+	#endif//_MSC_VER
+#endif//IS_VC
+#ifdef IS_GCC
+	#if defined(HAS_CPP11) && __GNUC_PREREQ(4, 3)
+		#define HAS_STATIC_ASSERT
+	#else//HAS_CPP11
+		#define STATIC_ASSERT(expr, msg) typedef char __STATIC_ASSERT_TYPE[(expr) ? 1 : -1]
 	#endif//HAS_CPP11
 #endif//IS_GCC
 
 //【C++11仕様】thread_local：スレッドローカルストレージ（TLS）修飾子
 #ifdef IS_VC
-	#if _MSC_VER > 1800//VC++2013以後（暫定）
+	#if _MSC_VER > 1800//VC++12.0(2013)以後（暫定）
 		#define HAS_THREAD_LOCAL
 	#else//_MSC_VER
 		#define thread_local __declspec(thread)
 	#endif//_MSC_VER
 #endif//IS_VC
 #ifdef IS_GCC
-	#ifdef HAS_CPP11
+	#if defined(HAS_CPP11) && __GNUC_PREREQ(4, 8)
 		#define HAS_THREAD_LOCAL
 	#else//HAS_CPP11
 		#define thread_local __thread
@@ -257,7 +284,7 @@
 #endif//IS_GCC
 
 //【C++11仕様】alignas：アラインメント修飾子
-//【注意】修飾子の指定位置がコンパイラによって異なるので、マクロでその違いを吸収するのは難しい
+//【注意】修飾子の指定位置がコンパイラによって異なる
 //        ＜変数宣言＞
 //        ・C++11 ... alignas(32) float pos[4];
 //        ・VC++  ... __declspec(align(16)) float pos[4];
@@ -269,15 +296,15 @@
 //        ・GCC   ... struct vector{ float pos[4]; } __attribute((aligned(32));
 //                    struct __attribute((aligned(32)) vector{ float pos[4]; };
 #ifdef IS_WIN
-	#if _MSC_VER > 1800//VC++2013以後（暫定）
+	#if _MSC_VER > 1800//VC++12.0(2013)以後（暫定）
 		#define HAS_ALIGNAS
 	#else//_MSC_VER
 		#define alignas(n) __declspec(align(n))
 	#endif//_MSC_VER
 #endif//IS_WIN
 #ifdef IS_GCC
-	#ifdef HAS_CPP11
-#define HAS_ALIGNAS
+	#if defined(HAS_CPP11) && __GNUC_PREREQ(4, 8)
+		#define HAS_ALIGNAS
 	#else//HAS_CPP11
 		#define alignas(n) __attribute__((aligned(n)))
 	#endif//HAS_CPP11
@@ -285,14 +312,14 @@
 
 //【C++11仕様】alignof：アラインメント取得関数
 #ifdef IS_WIN
-	#if _MSC_VER > 1800//VC++2013以後（暫定）
+	#if _MSC_VER > 1800//VC++12.0(2013)以後（暫定）
 		#define HAS_ALIGNOF
 	#else//_MSC_VER
 		#define alignof(T) __alignof(T)
 	#endif//_MSC_VER
 #endif//IS_WIN
 #ifdef IS_GCC
-	#ifdef HAS_CPP11
+	#if defined(HAS_CPP11) && __GNUC_PREREQ(4, 5)
 		#define HAS_ALIGNOF
 	#else//HAS_CPP11
 		#define alignof(T) __alignof__(T)

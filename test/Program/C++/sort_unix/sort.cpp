@@ -1,38 +1,40 @@
 //--------------------------------------------------------------------------------
-//ƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€—pƒRƒ“ƒpƒCƒ‰ƒXƒCƒbƒ`
+//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ç”¨ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã‚¹ã‚¤ãƒƒãƒ
 #ifdef _OPENMP
-#define ODD_EVEN_SORT_USE_OPENMP//Šï‹ö“]’uƒ\[ƒgFOpenMP‚ğg—p‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
-#define SHEAR_SORT_USE_OPENMP//ƒVƒFƒAƒ\[ƒgFOpenMP‚ğg—p‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
-//#define SHEAR_SORT_USE_OPENMP_NEST//ƒVƒFƒAƒ\[ƒgFOpenMP‚Ìparallel‚Ì“ü‚êqˆ—‚ğg—p‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é ¦—LŒø‚É‚·‚é‚Æ‚©‚¦‚Á‚Ä’x‚­‚È‚éA‚à‚µ‚­‚ÍA³í‚É“®ì‚µ‚È‚¢
-//#define INPLACE_MERGE_SORT_USE_OPENMP//ƒCƒ“ƒvƒŒ[ƒXƒ}[ƒWƒ\[ƒgFOpenMP‚ğg—p‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é ¦—LŒø‚É‚·‚é‚Æ’x‚­‚È‚é‚±‚Æ‚ª‚ ‚é
+#define ODD_EVEN_SORT_USE_OPENMP//å¥‡é‡è»¢ç½®ã‚½ãƒ¼ãƒˆï¼šOpenMPã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹ã«ã™ã‚‹
+#define SHEAR_SORT_USE_OPENMP//ã‚·ã‚§ã‚¢ã‚½ãƒ¼ãƒˆï¼šOpenMPã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹ã«ã™ã‚‹
+//#define SHEAR_SORT_USE_OPENMP_NEST//ã‚·ã‚§ã‚¢ã‚½ãƒ¼ãƒˆï¼šOpenMPã®parallelã®å…¥ã‚Œå­å‡¦ç†ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹ã«ã™ã‚‹ â€»æœ‰åŠ¹ã«ã™ã‚‹ã¨ã‹ãˆã£ã¦é…ããªã‚‹ã€ã‚‚ã—ãã¯ã€æ­£å¸¸ã«å‹•ä½œã—ãªã„
+//#define INPLACE_MERGE_SORT_USE_OPENMP//ã‚¤ãƒ³ãƒ—ãƒ¬ãƒ¼ã‚¹ãƒãƒ¼ã‚¸ã‚½ãƒ¼ãƒˆï¼šOpenMPã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹ã«ã™ã‚‹ â€»æœ‰åŠ¹ã«ã™ã‚‹ã¨é…ããªã‚‹ã“ã¨ãŒã‚ã‚‹
 #endif//_OPENMP
-#define QUICK_SORT_NO_USE_RECURSIVE_CALL//ƒNƒCƒbƒNƒ\[ƒg‚ÌÄ‹Aˆ—”Å‚ğ–³Œø‚É‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é
+#define QUICK_SORT_NO_USE_RECURSIVE_CALL//ã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆã®å†å¸°å‡¦ç†ç‰ˆã‚’ç„¡åŠ¹ã«ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹ã«ã™ã‚‹
 #ifdef _OPENMP
-//#define QUICK_SORT_USE_OPENMP//ƒNƒCƒbƒNƒ\[ƒgFOpenMP‚ğg—p‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‚É‚·‚é ¦—LŒø‚É‚·‚é‚Æ‚©‚¦‚Á‚Ä’x‚­‚È‚é
+//#define QUICK_SORT_USE_OPENMP//ã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆï¼šOpenMPã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹ã«ã™ã‚‹ â€»æœ‰åŠ¹ã«ã™ã‚‹ã¨ã‹ãˆã£ã¦é…ããªã‚‹
 #endif//_OPENMP
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <stdlib.h>//qsortŠÖ”—p
-#include <stdint.h>//intptr_t—p
-#include <crtdefs.h>//ptrdiff_t—p
-#include <cstddef>//std::size_t—p
-#include <functional>//C++11 std::function—p
-#include <type_traits>//C++11 std::is_class, std::conditional—p
-#include <utility>//C++11 std::move—p
-#include <assert.h>//assert—p
+#include <stdlib.h>//qsorté–¢æ•°ç”¨
+#include <stdint.h>//intptr_tç”¨
+#include <crtdefs.h>//ptrdiff_tç”¨
+#include <cstddef>//std::size_tç”¨
+#include <type_traits>//C++11 std::is_class, std::conditionalç”¨
+#include <functional>//std::less, std::greaterç”¨
+#include <utility>//C++11 std::moveç”¨
+#include <assert.h>//assertç”¨
+
+#include "basic.h"
 
 //--------------------------------------------------------------------------------
-//—lX‚Èƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€
+//æ§˜ã€…ãªã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ 
 //--------------------------------------------------------------------------------
 
 //========================================
-//ƒ\[ƒg•â•ˆ—
+//ã‚½ãƒ¼ãƒˆè£œåŠ©å‡¦ç†
 //========================================
 
 //----------------------------------------
-//ƒ\[ƒgˆ—ƒI[ƒo[ƒ[ƒhŠÖ”—pƒ}ƒNƒ
+//ã‚½ãƒ¼ãƒˆå‡¦ç†ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰é–¢æ•°ç”¨ãƒã‚¯ãƒ­
 #define sortFuncSet(func_name) \
 	template<class T, std::size_t N, class PREDICATE> \
 	inline std::size_t func_name(T(&array)[N], PREDICATE predicate) \
@@ -83,7 +85,33 @@
 	}
 
 //----------------------------------------
-//®—ñó‘ÔŠm”F
+//éæ¯”è¼ƒã‚½ãƒ¼ãƒˆå‡¦ç†ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰é–¢æ•°ç”¨ãƒã‚¯ãƒ­
+#define distributedSortFuncSet(func_name) \
+	template<class T, std::size_t N, class GET_KEY_FUNCTOR> \
+	inline std::size_t func_name(T(&array)[N], GET_KEY_FUNCTOR get_key_functor) \
+	{ \
+		return func_name(array, N, get_key_functor); \
+	} \
+	template<class T, class GET_KEY_FUNCTOR> \
+	inline std::size_t func_name(T* begin, T* end, GET_KEY_FUNCTOR get_key_functor) \
+	{ \
+		return func_name(begin, end - begin, get_key_functor); \
+	} \
+	template<class ITERATOR, class GET_KEY_FUNCTOR> \
+	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end, GET_KEY_FUNCTOR get_key_functor) \
+	{ \
+		const std::size_t size = end - begin; \
+		return size == 0 ? 0 : func_name(&begin[0], size, get_key_functor); \
+	} \
+	template<class CONTAINER, class GET_KEY_FUNCTOR> \
+	inline std::size_t func_name(CONTAINER& con, GET_KEY_FUNCTOR get_key_functor) \
+	{ \
+		std::size_t size = con.size(); \
+		return size == 0 ? 0 : func_name(&(con.at(0)), size, get_key_functor); \
+	}
+
+//----------------------------------------
+//æ•´åˆ—çŠ¶æ…‹ç¢ºèª
 template<class T, class PREDICATE>
 inline std::size_t calcUnordered(const T* array, const std::size_t size, PREDICATE predicate)
 {
@@ -100,7 +128,7 @@ inline std::size_t calcUnordered(const T* array, const std::size_t size, PREDICA
 sortFuncSet(calcUnordered);
 
 //----------------------------------------
-//ƒf[ƒ^‚Ì“ü‚ê‘Ö‚¦
+//ãƒ‡ãƒ¼ã‚¿ã®å…¥ã‚Œæ›¿ãˆ
 template<class T>
 struct _swapArithmetic{
 	inline static void exec(T& val1, T& val2)
@@ -125,11 +153,11 @@ template<class T>
 struct _swapObjects{
 	inline static void exec(T& val1, T& val2)
 	{
-	#if 1//ƒ€[ƒuƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Æƒ€[ƒuƒIƒyƒŒ[ƒ^‚ğg—p‚µ‚Ä“ü‚ê‘Ö‚¦iSTL‚Æ“¯‚¶j
-		T tmp(std::move(val2));
+	#if 1//ãƒ ãƒ¼ãƒ–ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã¨ãƒ ãƒ¼ãƒ–ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ã‚’ä½¿ç”¨ã—ã¦å…¥ã‚Œæ›¿ãˆï¼ˆ#include <utility> ã® std::swap() ã¨åŒã˜ï¼‰
+		T tmp = std::move(val2);
 		val2 = std::move(val1);
 		val1 = std::move(tmp);
-	#else//ƒRƒ“ƒXƒgƒ‰ƒNƒ^^ƒIƒyƒŒ[ƒ^‚ÌŒÄ‚Ño‚µ‚ğ”ğ‚¯‚Ä’Pƒ‚Èƒƒ‚ƒŠƒRƒs[
+	#else//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ã®å‘¼ã³å‡ºã—ã‚’é¿ã‘ã¦å˜ç´”ãªãƒ¡ãƒ¢ãƒªã‚³ãƒ”ãƒ¼
 		char tmp[sizeof(T)];
 		memcpy(tmp, &val2, sizeof(T));
 		memcpy(&val2, &val1, sizeof(T));
@@ -154,7 +182,7 @@ inline void swapValues(T& val1, T& val2)
 }
 
 //----------------------------------------
-//ƒf[ƒ^‚Ìƒ[ƒe[ƒVƒ‡ƒ“
+//ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³
 template<class T>
 struct _rotateArithmetic{
 	inline static void exec(T* val1, T* val2, int step)
@@ -217,36 +245,36 @@ inline void rotateValues(T* val1, T* val2, int step)
 }
 
 //========================================
-//ƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€‚Ìà–¾
+//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã®èª¬æ˜
 //========================================
 
-//EŒvZŠÔF
-//    - O(n)       ... ƒf[ƒ^Œ”•ª‚ÌŠÔ
-//    - O(n ^ 2)   ... ƒf[ƒ^Œ”‚Ì‚Qæ•ª‚ÌŠÔ
-//    - O(log n)   ... log2(ƒf[ƒ^Œ”)•ª‚ÌŠÔi4¨, 16¨4, 1024¨10,1048576¨20j
-//    - O(n log n) ... n~log n •ª‚ÌŠÔ
-//Eƒƒ‚ƒŠg—p—ÊF
-//    - O(1)       ... ‚PŒ•ª‚Ìƒƒ‚ƒŠ‚ª•K—v
-//    - O(n)       ... ƒf[ƒ^Œ”•ª‚Ìƒƒ‚ƒŠ‚ª•K—v
-//    - O(log n)   ... log2(ƒf[ƒ^Œ”)•ª‚Ìƒƒ‚ƒŠ‚ª•K—v
-//EˆÀ’è«F
-//    - ›         ... ƒL[‚ª“¯‚¶ƒf[ƒ^‚Ì‡˜«‚ªˆÛ‚³‚ê‚é‚±‚Æ‚ğ•ÛØ‚·‚é
-//                     —áF{ 3-a, 5-b, 4-c, 5-d, 9-e, 3-f, 4-g, 3-h, 5-i } ¨ { 3-a, 3-f, 3-h, 4-c, 4-g, 5-b, 5-d, 5-i, 9-e }
-//    - ~         ... —áF(“¯ã)                                          ¨ { 3-a, 3-h, 3-f, 4-c, 4-g, 5-i, 5-d, 5-b, 9-e }
+//ãƒ»è¨ˆç®—æ™‚é–“ï¼š
+//    - O(n)       ... ãƒ‡ãƒ¼ã‚¿ä»¶æ•°åˆ†ã®æ™‚é–“
+//    - O(n ^ 2)   ... ãƒ‡ãƒ¼ã‚¿ä»¶æ•°ã®ï¼’ä¹—åˆ†ã®æ™‚é–“
+//    - O(log n)   ... log2(ãƒ‡ãƒ¼ã‚¿ä»¶æ•°)åˆ†ã®æ™‚é–“ï¼ˆ4â†’, 16â†’4, 1024â†’10,1048576â†’20ï¼‰
+//    - O(n log n) ... nÃ—log n åˆ†ã®æ™‚é–“
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼š
+//    - O(1)       ... ï¼‘ä»¶åˆ†ã®ãƒ¡ãƒ¢ãƒªãŒå¿…è¦
+//    - O(n)       ... ãƒ‡ãƒ¼ã‚¿ä»¶æ•°åˆ†ã®ãƒ¡ãƒ¢ãƒªãŒå¿…è¦
+//    - O(log n)   ... log2(ãƒ‡ãƒ¼ã‚¿ä»¶æ•°)åˆ†ã®ãƒ¡ãƒ¢ãƒªãŒå¿…è¦
+//ãƒ»å®‰å®šæ€§ï¼š
+//    - â—‹         ... ã‚­ãƒ¼ãŒåŒã˜ãƒ‡ãƒ¼ã‚¿ã®é †åºæ€§ãŒç¶­æŒã•ã‚Œã‚‹ã“ã¨ã‚’ä¿è¨¼ã™ã‚‹
+//                     ä¾‹ï¼š{ 3-a, 5-b, 4-c, 5-d, 9-e, 3-f, 4-g, 3-h, 5-i } â†’ { 3-a, 3-f, 3-h, 4-c, 4-g, 5-b, 5-d, 5-i, 9-e }
+//    - Ã—         ... ä¾‹ï¼š(åŒä¸Š)                                          â†’ { 3-a, 3-h, 3-f, 4-c, 4-g, 5-i, 5-d, 5-b, 9-e }
 
 //========================================
-//ƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€•ª—ŞFŒğŠ·ƒ\[ƒg
+//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ åˆ†é¡ï¼šäº¤æ›ã‚½ãƒ¼ãƒˆ
 //========================================
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€Fƒoƒuƒ‹ƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šãƒãƒ–ãƒ«ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔF-
-//EÅˆ«ŒvZŠÔFO(n^2)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@›
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼š-
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n^2)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€â—‹
 //----------------------------------------
-//¦ŒğŠ·”­¶—L–³‚Ìƒ`ƒFƒbƒN‚ğs‚¢AÅ“K‰»‚·‚éB
+//â€»äº¤æ›ç™ºç”Ÿæœ‰ç„¡ã®ãƒã‚§ãƒƒã‚¯ã‚’è¡Œã„ã€æœ€é©åŒ–ã™ã‚‹ã€‚
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t bubbleSort(T* array, const std::size_t size, PREDICATE predicate)
@@ -279,14 +307,14 @@ std::size_t bubbleSort(T* array, const std::size_t size, PREDICATE predicate)
 sortFuncSet(bubbleSort);
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€FƒVƒF[ƒJ[ƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚·ã‚§ãƒ¼ã‚«ãƒ¼ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔF-
-//EÅˆ«ŒvZŠÔFO(n^2)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@›
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼š-
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n^2)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€â—‹
 //----------------------------------------
-//¦ŒğŠ·”­¶—L–³‚Ìƒ`ƒFƒbƒN‚ğs‚¢AÅ“K‰»‚·‚éB
+//â€»äº¤æ›ç™ºç”Ÿæœ‰ç„¡ã®ãƒã‚§ãƒƒã‚¯ã‚’è¡Œã„ã€æœ€é©åŒ–ã™ã‚‹ã€‚
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t shakerSort(T* array, const std::size_t size, PREDICATE predicate)
@@ -334,14 +362,14 @@ std::size_t shakerSort(T* array, const std::size_t size, PREDICATE predicate)
 sortFuncSet(shakerSort);
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€FŠï‹ö“]’uƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šå¥‡é‡è»¢ç½®ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔF-
-//EÅˆ«ŒvZŠÔFO(n^2)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@›
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼š-
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n^2)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€â—‹
 //----------------------------------------
-//¦OpenMP‚ğg—p‚µA•À—ñ‰»‚ÅÅ“K‰»‚·‚éB
+//â€»OpenMPã‚’ä½¿ç”¨ã—ã€ä¸¦åˆ—åŒ–ã§æœ€é©åŒ–ã™ã‚‹ã€‚
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t oddEvenSort(T* array, const std::size_t size, PREDICATE predicate)
@@ -356,7 +384,7 @@ std::size_t oddEvenSort(T* array, const std::size_t size, PREDICATE predicate)
 		is_swapped = false;
 		for (std::size_t odd_even = 0; odd_even < 2; ++odd_even)
 		{
-			int i;//–{—ˆ‚Í std::size_t
+			int i;//æœ¬æ¥ã¯ std::size_t
 			T* now;
 			T* next;
 	#ifdef ODD_EVEN_SORT_USE_OPENMP
@@ -380,20 +408,20 @@ std::size_t oddEvenSort(T* array, const std::size_t size, PREDICATE predicate)
 sortFuncSet(oddEvenSort);
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€FƒVƒFƒAƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚·ã‚§ã‚¢ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔF-
-//EÅˆ«ŒvZŠÔFO(n^1.5)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@~
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼š-
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n^1.5)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€Ã—
 //----------------------------------------
-//¦OpenMP‚ğg—p‚µA•À—ñ‰»‚ÅÅ“K‰»‚·‚éB
-//¦“à•”‚ÅŠï‹ö“]’nƒ\[ƒg‚ğg—p‚µA“ñd‚É•À—ñ‰»‚·‚é‚ªA
-//@‘¼‚Ìƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€‚ğg—p‚µ‚½•û‚ªŒø—¦“I‚©‚à‚µ‚ê‚È‚¢B
+//â€»OpenMPã‚’ä½¿ç”¨ã—ã€ä¸¦åˆ—åŒ–ã§æœ€é©åŒ–ã™ã‚‹ã€‚
+//â€»å†…éƒ¨ã§å¥‡é‡è»¢åœ°ã‚½ãƒ¼ãƒˆã‚’ä½¿ç”¨ã—ã€äºŒé‡ã«ä¸¦åˆ—åŒ–ã™ã‚‹ãŒã€
+//ã€€ä»–ã®ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’ä½¿ç”¨ã—ãŸæ–¹ãŒåŠ¹ç‡çš„ã‹ã‚‚ã—ã‚Œãªã„ã€‚
 //----------------------------------------
-#include <math.h>//sqrt()—p
+#include <math.h>//sqrt()ç”¨
 #ifdef SHEAR_SORT_USE_OPENMP_NEST
-#include <omp.h>//omp_set_nested()—p
+#include <omp.h>//omp_set_nested()ç”¨
 #endif//SHEAR_SORT_USE_OPENMP_NEST
 template<class T, class PREDICATE>
 std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
@@ -402,11 +430,11 @@ std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 		return 0;
 #ifdef SHEAR_SORT_USE_OPENMP_NEST
 	const int omp_nested_before = omp_get_nested();
-	omp_set_nested(1);//•À—ñ‰»‚ÌƒlƒXƒg‚ğ‹–‰Â
+	omp_set_nested(1);//ä¸¦åˆ—åŒ–ã®ãƒã‚¹ãƒˆã‚’è¨±å¯
 #endif//SHEAR_SORT_USE_OPENMP_NEST
 	std::size_t swapped_count = 0;
-	int row;//–{—ˆ‚Í std::size_t
-	int col;//–{—ˆ‚Í std::size_t
+	int row;//æœ¬æ¥ã¯ std::size_t
+	int col;//æœ¬æ¥ã¯ std::size_t
 	std::size_t rows_col;
 	std::size_t cols_row;
 	std::size_t rows_1_col;
@@ -417,14 +445,14 @@ std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 	T* now;
 	T* next;
 	bool is_odd;
-	std::size_t rows = static_cast<std::size_t>(sqrt(size));//³•ûŒ`‚Ìƒf[ƒ^‚Æ‚µ‚Äˆµ‚¤‚½‚ß‚Ìs”Zo
-	std::size_t over = size % rows;//—]‚èZo
-	if (over > 0 && (rows & 0x1) == 0x1)//—]‚è‚ªo‚½ê‡Ai—]‚è‚ğœ‚­js”‚ª‹ô”‚É‚È‚é‚æ‚¤‚É’²®
+	std::size_t rows = static_cast<std::size_t>(sqrt(size));//æ­£æ–¹å½¢ã®ãƒ‡ãƒ¼ã‚¿ã¨ã—ã¦æ‰±ã†ãŸã‚ã®è¡Œæ•°ç®—å‡º
+	std::size_t over = size % rows;//ä½™ã‚Šç®—å‡º
+	if (over > 0 && (rows & 0x1) == 0x1)//ä½™ã‚ŠãŒå‡ºãŸå ´åˆã€ï¼ˆä½™ã‚Šã‚’é™¤ãï¼‰è¡Œæ•°ãŒå¶æ•°ã«ãªã‚‹ã‚ˆã†ã«èª¿æ•´
 	{
 		--rows;
 		over = size % rows;
 	}
-	const std::size_t cols = size / rows;//1s“–‚½‚è‚Ì—ñ”Zo
+	const std::size_t cols = size / rows;//1è¡Œå½“ãŸã‚Šã®åˆ—æ•°ç®—å‡º
 	auto log2 = [](std::size_t val) -> std::size_t
 	{
 		std::size_t result = 0;
@@ -432,11 +460,11 @@ std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 			++result;
 		return result;
 	};
-	const int sorting_count = log2(rows) + 1;//ƒ\[ƒgÀs‰ñ”‚ğZo
+	const int sorting_count = log2(rows) + 1;//ã‚½ãƒ¼ãƒˆå®Ÿè¡Œå›æ•°ã‚’ç®—å‡º
 	for (int i = 0; i < sorting_count; ++i)
 	{
-		//Šes‚²‚Æ‚ÉA—ñ•ûŒü‚Éƒ\[ƒg
-		//¦‹ô”s‚Í¬‚³‚¢‡AŠï”s‚Í‘å‚«‚¢‡‚Éƒ\[ƒg
+		//å„è¡Œã”ã¨ã«ã€åˆ—æ–¹å‘ã«ã‚½ãƒ¼ãƒˆ
+		//â€»å¶æ•°è¡Œã¯å°ã•ã„é †ã€å¥‡æ•°è¡Œã¯å¤§ãã„é †ã«ã‚½ãƒ¼ãƒˆ
 #if defined(SHEAR_SORT_USE_OPENMP_NEST)
 	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, is_swapped, col_odd_even, is_odd)
 #elif defined(SHEAR_SORT_USE_OPENMP)
@@ -448,7 +476,7 @@ std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 			if (cols_row > 1)
 			{
 				is_odd = ((row & 0x1) == 0x1);
-				//Šï‹ö“]’uƒ\[ƒg
+				//å¥‡é‡è»¢ç½®ã‚½ãƒ¼ãƒˆ
 				cols_1_row = cols_row - 1;
 				is_swapped = true;
 				while (is_swapped)
@@ -463,8 +491,8 @@ std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 						{
 							now = array + row * cols + col;
 							next = now + 1;
-							if ((!is_odd && predicate(*next, *now)) ||//‹ô”s‚Í¬‚³‚¢‡
-								( is_odd && predicate(*now, *next)))  //Šï”s‚Í‘å‚«‚¢‡
+							if ((!is_odd && predicate(*next, *now)) ||//å¶æ•°è¡Œã¯å°ã•ã„é †
+								( is_odd && predicate(*now, *next)))  //å¥‡æ•°è¡Œã¯å¤§ãã„é †
 							{
 								swapValues(*next, *now);
 								is_swapped = true;
@@ -475,8 +503,8 @@ std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 				}
 			}
 		}
-		//Še—ñ‚²‚Æ‚ÉAs•ûŒü‚Éƒ\[ƒg
-		//¦¬‚³‚¢‡‚Éƒ\[ƒg
+		//å„åˆ—ã”ã¨ã«ã€è¡Œæ–¹å‘ã«ã‚½ãƒ¼ãƒˆ
+		//â€»å°ã•ã„é †ã«ã‚½ãƒ¼ãƒˆ
 #if defined(SHEAR_SORT_USE_OPENMP_NEST)
 	#pragma omp parallel for reduction(+:swapped_count) private(rows_col, rows_1_col, row_odd_even, is_swapped)
 #elif defined(SHEAR_SORT_USE_OPENMP)
@@ -485,7 +513,7 @@ std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 		for (col = 0; col < static_cast<int>(cols); ++col)
 		{
 			rows_col = rows + (col < static_cast<int>(over) ? 1 : 0);
-			//Šï‹ö“]’uƒ\[ƒg
+			//å¥‡é‡è»¢ç½®ã‚½ãƒ¼ãƒˆ
 			rows_1_col = rows_col - 1;
 			is_swapped = true;
 			while (is_swapped)
@@ -512,8 +540,8 @@ std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 		}
 	}
 	{
-		//Šes‚²‚Æ‚ÉA—ñ•ûŒü‚Éƒ\[ƒg
-		//¦¬‚³‚¢‡‚Éƒ\[ƒg
+		//å„è¡Œã”ã¨ã«ã€åˆ—æ–¹å‘ã«ã‚½ãƒ¼ãƒˆ
+		//â€»å°ã•ã„é †ã«ã‚½ãƒ¼ãƒˆ
 #if defined(SHEAR_SORT_USE_OPENMP_NEST)
 	#pragma omp parallel for reduction(+:swapped_count) private(cols_row, cols_1_row, col_odd_even, is_swapped)
 #elif defined(SHEAR_SORT_USE_OPENMP)
@@ -524,7 +552,7 @@ std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 			cols_row = row == static_cast<int>(rows) ? over : cols;
 			if (cols_row > 1)
 			{
-				//Šï‹ö“]’uƒ\[ƒg
+				//å¥‡é‡è»¢ç½®ã‚½ãƒ¼ãƒˆ
 				cols_1_row = cols_row - 1;
 				is_swapped = true;
 				while (is_swapped)
@@ -559,12 +587,12 @@ std::size_t shearSort(T* array, const std::size_t size, PREDICATE predicate)
 sortFuncSet(shearSort);
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€FƒRƒ€ƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚³ãƒ ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔFO(n log n)
-//EÅˆ«ŒvZŠÔFO(n^2)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@~
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(n log n)
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n^2)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€Ã—
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t combSort(T* array, const std::size_t size, PREDICATE predicate)
@@ -599,12 +627,12 @@ std::size_t combSort(T* array, const std::size_t size, PREDICATE predicate)
 sortFuncSet(combSort);
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€Fƒm[ƒ€ƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šãƒãƒ¼ãƒ ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔF-
-//EÅˆ«ŒvZŠÔFO(n^2)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@›
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼š-
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n^2)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€â—‹
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t gnomeSort(T* array, const std::size_t size, PREDICATE predicate)
@@ -642,30 +670,30 @@ std::size_t gnomeSort(T* array, const std::size_t size, PREDICATE predicate)
 sortFuncSet(gnomeSort);
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€FƒNƒCƒbƒNƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔFO(n log n)
-//EÅˆ«ŒvZŠÔFO(n^2)
-//Eƒƒ‚ƒŠg—p—ÊFO(log n) ¦Ä‹Aˆ—‚ğg—p‚µ‚È‚¯‚ê‚Î O(1)
-//EˆÀ’è«F@@@~
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(n log n)
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n^2)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(log n) â€»å†å¸°å‡¦ç†ã‚’ä½¿ç”¨ã—ãªã‘ã‚Œã° O(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€Ã—
 //----------------------------------------
-//¦Ä‹Aˆ—‚ğg—p‚¹‚¸AƒXƒ^ƒbƒN‚ğg—p‚µ‚½ƒ‹[ƒvˆ—‚É‚µ‚ÄÅ“K‰»‚·‚éB
-//@iÅ‘åŒ”‚ğ log2(4294967296) = 32 ‚Æ‚·‚éj
+//â€»å†å¸°å‡¦ç†ã‚’ä½¿ç”¨ã›ãšã€ã‚¹ã‚¿ãƒƒã‚¯ã‚’ä½¿ç”¨ã—ãŸãƒ«ãƒ¼ãƒ—å‡¦ç†ã«ã—ã¦æœ€é©åŒ–ã™ã‚‹ã€‚
+//ã€€ï¼ˆæœ€å¤§ä»¶æ•°ã‚’ log2(4294967296) = 32 ã¨ã™ã‚‹ï¼‰
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 #ifndef QUICK_SORT_NO_USE_RECURSIVE_CALL
 	//--------------------
-	//Ä‹Aˆ—”Å
+	//å†å¸°å‡¦ç†ç‰ˆ
 	if (size <= 1)
 		return 0;
 	std::size_t swapped_count = 0;
-	//”z—ñ‚Ì”ÍˆÍî•ñ
+	//é…åˆ—ã®ç¯„å›²æƒ…å ±
 	const T* term = array + size;
 	T* begin = array;
 	T* end = array + size - 1;
-	//’†‰›’l‚ğŒˆ’è
+	//ä¸­å¤®å€¤ã‚’æ±ºå®š
 	const T* med = array + (size >> 1);
 	const T* pivot =
 		predicate(*begin, *med) ?
@@ -679,7 +707,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 				predicate(*begin, *end) ?
 					begin :
 					end;
-	//’†‰›’l–¢–‚Ì”z—ñ‚Æ’†‰›’lˆÈã‚Ì”z—ñ‚É“ñ•ª
+	//ä¸­å¤®å€¤æœªæº€ã®é…åˆ—ã¨ä¸­å¤®å€¤ä»¥ä¸Šã®é…åˆ—ã«äºŒåˆ†
 	while (true)
 	{
 		while (predicate(*begin, *pivot))
@@ -689,19 +717,19 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 		if (begin >= end)
 			break;
 		swapValues(*begin, *end);
-		pivot = pivot == begin ? end : pivot == end ? begin : pivot;//’†‰›’l‚ÌˆÊ’u’²®i’†‰›’l‚ÌˆÊ’u‚à“ü‚ê‘Ö‚í‚é‚½‚ßj
+		pivot = pivot == begin ? end : pivot == end ? begin : pivot;//ä¸­å¤®å€¤ã®ä½ç½®èª¿æ•´ï¼ˆä¸­å¤®å€¤ã®ä½ç½®ã‚‚å…¥ã‚Œæ›¿ã‚ã‚‹ãŸã‚ï¼‰
 		++swapped_count;
 		++begin;
 		--end;
 	}
-	//Ä‹Aˆ—
-	swapped_count += _quickSort(array, begin - array, predicate);//’†‰›’l–¢–‚Ì”z—ñ
-	swapped_count += _quickSort(end + 1, term - end - 1, predicate);//’†‰›’lˆÈã‚Ì”z—ñ
+	//å†å¸°å‡¦ç†
+	swapped_count += _quickSort(array, begin - array, predicate);//ä¸­å¤®å€¤æœªæº€ã®é…åˆ—
+	swapped_count += _quickSort(end + 1, term - end - 1, predicate);//ä¸­å¤®å€¤ä»¥ä¸Šã®é…åˆ—
 	return swapped_count;
 #else//QUICK_SORT_NO_USE_RECURSIVE_CALL
 #ifndef QUICK_SORT_USE_OPENMP
 	//--------------------
-	//ƒXƒ^ƒbƒNˆ—”Å
+	//ã‚¹ã‚¿ãƒƒã‚¯å‡¦ç†ç‰ˆ
 	std::size_t swapped_count = 0;
 	struct stack_t
 	{
@@ -710,22 +738,22 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 	};
 	static const int STACK_MAX = 32 * 2;
 	stack_t stack[STACK_MAX];
-	//Å‰‚Ì”z—ñ‚ğƒXƒ^ƒbƒN‚ÉƒvƒbƒVƒ…
+	//æœ€åˆã®é…åˆ—ã‚’ã‚¹ã‚¿ãƒƒã‚¯ã«ãƒ—ãƒƒã‚·ãƒ¥
 	stack_t* stack_p = &stack[0];
 	stack_p->array = array;
 	stack_p->size = size;
-	int stack_curr = 1;//ƒXƒ^ƒbƒNˆÊ’u
+	int stack_curr = 1;//ã‚¹ã‚¿ãƒƒã‚¯ä½ç½®
 	while (stack_curr > 0)
 	{
-		//”z—ñ‚ğƒXƒ^ƒbƒN‚©‚çæ“¾
+		//é…åˆ—ã‚’ã‚¹ã‚¿ãƒƒã‚¯ã‹ã‚‰å–å¾—
 		stack_p = &stack[--stack_curr];
 		T* _array = stack_p->array;
 		const size_t _size = stack_p->size;
-		//”z—ñ‚Ì”ÍˆÍî•ñ
+		//é…åˆ—ã®ç¯„å›²æƒ…å ±
 		const T* term = _array + _size;
 		T* begin = _array;
 		T* end = _array + _size - 1;
-		//’†‰›’l‚ğŒˆ’è
+		//ä¸­å¤®å€¤ã‚’æ±ºå®š
 		const T* med = _array + (_size >> 1);
 		const T* pivot =
 			predicate(*begin, *med) ?
@@ -739,7 +767,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 					predicate(*begin, *end) ?
 						begin :
 						end;
-		//’†‰›’l–¢–‚Ì”z—ñ‚Æ’†‰›’lˆÈã‚Ì”z—ñ‚É“ñ•ª
+		//ä¸­å¤®å€¤æœªæº€ã®é…åˆ—ã¨ä¸­å¤®å€¤ä»¥ä¸Šã®é…åˆ—ã«äºŒåˆ†
 		while (true)
 		{
 			while (predicate(*begin, *pivot))
@@ -749,13 +777,13 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 			if (begin >= end)
 				break;
 			swapValues(*begin, *end);
-			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//’†‰›’l‚ÌˆÊ’u’²®i’†‰›’l‚ÌˆÊ’u‚à“ü‚ê‘Ö‚í‚é‚½‚ßj
+			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//ä¸­å¤®å€¤ã®ä½ç½®èª¿æ•´ï¼ˆä¸­å¤®å€¤ã®ä½ç½®ã‚‚å…¥ã‚Œæ›¿ã‚ã‚‹ãŸã‚ï¼‰
 			++swapped_count;
 			++begin;
 			--end;
 		}
-		//recursive = 0 : ’†‰›’l–¢–‚Ì”z—ñ‚ğƒvƒbƒVƒ…
-		//            1 : ’†‰›’lˆÈã‚Ì”z—ñ‚ğƒvƒbƒVƒ…
+		//recursive = 0 : ä¸­å¤®å€¤æœªæº€ã®é…åˆ—ã‚’ãƒ—ãƒƒã‚·ãƒ¥
+		//            1 : ä¸­å¤®å€¤ä»¥ä¸Šã®é…åˆ—ã‚’ãƒ—ãƒƒã‚·ãƒ¥
 		for (int recursive = 0; recursive < 2; ++recursive)
 		{
 			T* new_array = recursive == 0 ? _array : end + 1;
@@ -772,10 +800,10 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 	return swapped_count;
 #else//QUICK_SORT_USE_OPENMP
 	//--------------------
-	//OpenMP•ƒLƒ…[ˆ—”Å
-	//¦•À—ñ‰»‚Ì‚½‚ß‚ÉƒXƒ^ƒbƒN‚Å‚Í‚È‚­ƒLƒ…[‚ğg—pB
-	//@‚»‚Ì‚½‚ßA‘SŒ•ª‚ÌƒLƒ…[iƒƒ‚ƒŠj‚ª•K—vB
-	//@ƒpƒtƒH[ƒ}ƒ“ƒX‚à¡‚Ğ‚Æ‚ÂB
+	//OpenMPï¼†ã‚­ãƒ¥ãƒ¼å‡¦ç†ç‰ˆ
+	//â€»ä¸¦åˆ—åŒ–ã®ãŸã‚ã«ã‚¹ã‚¿ãƒƒã‚¯ã§ã¯ãªãã‚­ãƒ¥ãƒ¼ã‚’ä½¿ç”¨ã€‚
+	//ã€€ãã®ãŸã‚ã€å…¨ä»¶åˆ†ã®ã‚­ãƒ¥ãƒ¼ï¼ˆãƒ¡ãƒ¢ãƒªï¼‰ãŒå¿…è¦ã€‚
+	//ã€€ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹ã‚‚ä»Šã²ã¨ã¤ã€‚
 	std::size_t swapped_count = 0;
 	struct queue_t
 	{
@@ -783,12 +811,12 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 		std::size_t size;
 	};
 	queue_t* queue = new queue_t[size];
-	//Å‰‚Ì”z—ñ‚ğƒLƒ…[‚ÉƒvƒbƒVƒ…
+	//æœ€åˆã®é…åˆ—ã‚’ã‚­ãƒ¥ãƒ¼ã«ãƒ—ãƒƒã‚·ãƒ¥
 	queue_t* queue_p = &queue[0];
 	queue_p->array = array;
 	queue_p->size = size;
-	unsigned int queue_write = 1;//ƒLƒ…[‘‚«‚İˆÊ’u
-	unsigned int queue_read = 0;//ƒLƒ…[“Ç‚İ‚İˆÊ’u
+	unsigned int queue_write = 1;//ã‚­ãƒ¥ãƒ¼æ›¸ãè¾¼ã¿ä½ç½®
+	unsigned int queue_read = 0;//ã‚­ãƒ¥ãƒ¼èª­ã¿è¾¼ã¿ä½ç½®
 	unsigned int queue_read_tmp;
 	unsigned int queue_write_tmp;
 	T* _array;
@@ -813,15 +841,15 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 			{ queue_read_tmp = queue_read++; }
 			//if (true)
 			{
-				//”z—ñ‚ğƒLƒ…[‚©‚çæ“¾
+				//é…åˆ—ã‚’ã‚­ãƒ¥ãƒ¼ã‹ã‚‰å–å¾—
 				queue_p = &queue[queue_read_tmp % size];
 				_array = queue_p->array;
 				_size = queue_p->size;
-				//”z—ñ‚Ì”ÍˆÍî•ñ
+				//é…åˆ—ã®ç¯„å›²æƒ…å ±
 				term = _array + _size;
 				begin = _array;
 				end = _array + _size - 1;
-				//’†‰›’l‚ğŒˆ’è
+				//ä¸­å¤®å€¤ã‚’æ±ºå®š
 				med = _array + (_size >> 1);
 				pivot =
 					predicate(*begin, *med) ?
@@ -835,7 +863,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 							predicate(*begin, *end) ?
 								begin :
 								end;
-				//’†‰›’l–¢–‚Ì”z—ñ‚Æ’†‰›’lˆÈã‚Ì”z—ñ‚É“ñ•ª
+				//ä¸­å¤®å€¤æœªæº€ã®é…åˆ—ã¨ä¸­å¤®å€¤ä»¥ä¸Šã®é…åˆ—ã«äºŒåˆ†
 				while (true)
 				{
 					while (predicate(*begin, *pivot))
@@ -845,13 +873,13 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 					if (begin >= end)
 						break;
 					swapValues(*begin, *end);
-					pivot = pivot == begin ? end : pivot == end ? begin : pivot;//’†‰›’l‚ÌˆÊ’u’²®i’†‰›’l‚ÌˆÊ’u‚à“ü‚ê‘Ö‚í‚é‚½‚ßj
+					pivot = pivot == begin ? end : pivot == end ? begin : pivot;//ä¸­å¤®å€¤ã®ä½ç½®èª¿æ•´ï¼ˆä¸­å¤®å€¤ã®ä½ç½®ã‚‚å…¥ã‚Œæ›¿ã‚ã‚‹ãŸã‚ï¼‰
 					++swapped_count;
 					++begin;
 					--end;
 				}
-				//recursive = 0 : ’†‰›’l–¢–‚Ì”z—ñ‚ğƒvƒbƒVƒ…
-				//            1 : ’†‰›’lˆÈã‚Ì”z—ñ‚ğƒvƒbƒVƒ…
+				//recursive = 0 : ä¸­å¤®å€¤æœªæº€ã®é…åˆ—ã‚’ãƒ—ãƒƒã‚·ãƒ¥
+				//            1 : ä¸­å¤®å€¤ä»¥ä¸Šã®é…åˆ—ã‚’ãƒ—ãƒƒã‚·ãƒ¥
 				for (recursive = 0; recursive < 2; ++recursive)
 				{
 					new_array = recursive == 0 ? _array : end + 1;
@@ -884,16 +912,16 @@ inline std::size_t quickSort(T* array, const std::size_t size, PREDICATE predica
 sortFuncSet(quickSort);
 
 //========================================
-//ƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€•ª—ŞF‘I‘ğƒ\[ƒg
+//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ åˆ†é¡ï¼šé¸æŠã‚½ãƒ¼ãƒˆ
 //========================================
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€F‘I‘ğƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šé¸æŠã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔFO(n^2)
-//EÅˆ«ŒvZŠÔFO(n^2)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@~
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(n^2)
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n^2)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€Ã—
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t selectionSort(T* array, const std::size_t size, PREDICATE predicate)
@@ -924,12 +952,12 @@ std::size_t selectionSort(T* array, const std::size_t size, PREDICATE predicate)
 sortFuncSet(selectionSort);
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€Fƒq[ƒvƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šãƒ’ãƒ¼ãƒ—ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔFO(n log n)
-//EÅˆ«ŒvZŠÔFO(n log n)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@~
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(n log n)
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n log n)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€Ã—
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t heapSort(T* array, const std::size_t size, PREDICATE predicate)
@@ -937,11 +965,11 @@ std::size_t heapSort(T* array, const std::size_t size, PREDICATE predicate)
 	if (!array || size <= 1)
 		return 0;
 	std::size_t swapped_count = 0;
-	//“ñ•ªƒq[ƒv“o˜^
+	//äºŒåˆ†ãƒ’ãƒ¼ãƒ—ç™»éŒ²
 	for (std::size_t heap_size = 1; heap_size < size; ++heap_size)
 	{
 		T* now = array + heap_size;
-		//ƒAƒbƒvƒq[ƒv
+		//ã‚¢ãƒƒãƒ—ãƒ’ãƒ¼ãƒ—
 		std::size_t parent_i = heap_size;
 		while (parent_i > 0)
 		{
@@ -957,11 +985,11 @@ std::size_t heapSort(T* array, const std::size_t size, PREDICATE predicate)
 			now = parent;
 		}
 	}
-	//“ñ•ªƒq[ƒvæ‚èo‚µ
+	//äºŒåˆ†ãƒ’ãƒ¼ãƒ—å–ã‚Šå‡ºã—
 	for (std::size_t heap_size = size - 1; heap_size > 0; --heap_size)
 	{
 		T* now = array + heap_size;
-		//ƒ_ƒEƒ“ƒq[ƒv
+		//ãƒ€ã‚¦ãƒ³ãƒ’ãƒ¼ãƒ—
 		{
 			swapValues(*array, *now);
 			++swapped_count;
@@ -995,16 +1023,16 @@ std::size_t heapSort(T* array, const std::size_t size, PREDICATE predicate)
 sortFuncSet(heapSort);
 
 //========================================
-//ƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€•ª—ŞF‘}“üƒ\[ƒg
+//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ åˆ†é¡ï¼šæŒ¿å…¥ã‚½ãƒ¼ãƒˆ
 //========================================
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€F‘}“üƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šæŒ¿å…¥ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔFO(n + d) ¦d = O(n^2)
-//EÅˆ«ŒvZŠÔFO(n^2)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@›
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(n + d) â€»d = O(n^2)
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n^2)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€â—‹
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t insertionSort(T* array, const std::size_t size, PREDICATE predicate)
@@ -1040,12 +1068,12 @@ std::size_t insertionSort(T* array, const std::size_t size, PREDICATE predicate)
 sortFuncSet(insertionSort);
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€FƒVƒFƒ‹ƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚·ã‚§ãƒ«ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔF-
-//EÅˆ«ŒvZŠÔFO(n log^2 n)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@~
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼š-
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n log^2 n)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€Ã—
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t shellSort(T* array, const std::size_t size, PREDICATE predicate)
@@ -1089,20 +1117,20 @@ std::size_t shellSort(T* array, const std::size_t size, PREDICATE predicate)
 sortFuncSet(shellSort);
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€FƒCƒ“ƒvƒŒ[ƒXƒ}[ƒWƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚¤ãƒ³ãƒ—ãƒ¬ãƒ¼ã‚¹ãƒãƒ¼ã‚¸ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔF-
-//EÅˆ«ŒvZŠÔFO(n log n)
-//Eƒƒ‚ƒŠg—p—ÊFO(1)
-//EˆÀ’è«F@@@›
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼š-
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n log n)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€â—‹
 //----------------------------------------
-//¦OpenMP‚ğg—p‚µA•À—ñ‰»‚ª‰Â”\B
+//â€»OpenMPã‚’ä½¿ç”¨ã—ã€ä¸¦åˆ—åŒ–ãŒå¯èƒ½ã€‚
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t inplaceMergeSort(T* array, const std::size_t size, PREDICATE predicate)
 {
 #ifndef INPLACE_MERGE_SORT_USE_OPENMP
-	//’Êí”Å
+	//é€šå¸¸ç‰ˆ
 	if (!array || size <= 1)
 		return 0;
 	std::size_t swapped_count = 0;
@@ -1122,16 +1150,16 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, PREDICATE predica
 			T* left_ins_prev = nullptr;
 			while (right < right_end)
 			{
-				if (predicate(*right, *left))//¶ƒuƒƒbƒN‚Ì‰E’[‚Æ‰EƒuƒƒbƒN‚Ì¶’[‚ğƒ`ƒFƒbƒN
+				if (predicate(*right, *left))//å·¦ãƒ–ãƒ­ãƒƒã‚¯ã®å³ç«¯ã¨å³ãƒ–ãƒ­ãƒƒã‚¯ã®å·¦ç«¯ã‚’ãƒã‚§ãƒƒã‚¯
 				{
 				#if 0
-					//‘}“üˆÊ’uŒŸõ ¦üŒ`ŒŸõ
+					//æŒ¿å…¥ä½ç½®æ¤œç´¢ â€»ç·šå½¢æ¤œç´¢
 					T* left_ins = left;
 					while (left_ins >= left_begin && predicate(*right, *left_ins))
 						--left_ins;
 					++left_ins;
 				#else
-					//‘}“üˆÊ’uŒŸõ ¦“ñ•ªŒŸõ
+					//æŒ¿å…¥ä½ç½®æ¤œç´¢ â€»äºŒåˆ†æ¤œç´¢
 					T* left_ins;
 					{
 						T* search_begin = left_ins_prev ? left_ins_prev + 1 : left_begin;
@@ -1155,7 +1183,7 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, PREDICATE predica
 						left_ins_prev = left_ins;
 					}
 				#endif
-					//‘}“ü
+					//æŒ¿å…¥
 					rotateValues(left_ins, right, 1);
 					++swapped_count;
 					++left;
@@ -1168,7 +1196,7 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, PREDICATE predica
 	}
 	return swapped_count;
 #else//INPLACE_MERGE_SORT_USE_OPENMP
-	//OpenMP”Å
+	//OpenMPç‰ˆ
 	if (!array || size <= 1)
 		return 0;
 	std::size_t swapped_count = 0;
@@ -1204,16 +1232,16 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, PREDICATE predica
 			left_ins_prev = nullptr;
 			while (right < right_end)
 			{
-				if (predicate(*right, *left))//¶ƒuƒƒbƒN‚Ì‰E’[‚Æ‰EƒuƒƒbƒN‚Ì¶’[‚ğƒ`ƒFƒbƒN
+				if (predicate(*right, *left))//å·¦ãƒ–ãƒ­ãƒƒã‚¯ã®å³ç«¯ã¨å³ãƒ–ãƒ­ãƒƒã‚¯ã®å·¦ç«¯ã‚’ãƒã‚§ãƒƒã‚¯
 				{
 				#if 0
-					//‘}“üˆÊ’uŒŸõ ¦üŒ`ŒŸõ
+					//æŒ¿å…¥ä½ç½®æ¤œç´¢ â€»ç·šå½¢æ¤œç´¢
 					left_ins = left;
 					while (left_ins >= left_begin && predicate(*right, *left_ins))
 						--left_ins;
 					++left_ins;
 				#else
-					//‘}“üˆÊ’uŒŸõ ¦“ñ•ªŒŸõ
+					//æŒ¿å…¥ä½ç½®æ¤œç´¢ â€»äºŒåˆ†æ¤œç´¢
 					{
 						search_begin = left_ins_prev ? left_ins_prev + 1 : left_begin;
 						search_range_half = (right - search_begin) >> 1;
@@ -1236,7 +1264,7 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, PREDICATE predica
 						left_ins_prev = left_ins;
 					}
 				#endif
-					//‘}“ü
+					//æŒ¿å…¥
 					rotateValues(left_ins, right, 1);
 					++swapped_count;
 					++left;
@@ -1253,42 +1281,42 @@ std::size_t inplaceMergeSort(T* array, const std::size_t size, PREDICATE predica
 sortFuncSet(inplaceMergeSort);
 
 //========================================
-//ƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€•ª—ŞF¬¬ƒ\[ƒg
+//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ åˆ†é¡ï¼šæ··æˆã‚½ãƒ¼ãƒˆ
 //========================================
 
 //----------------------------------------
-//ƒAƒ‹ƒSƒŠƒYƒ€FƒCƒ“ƒgƒƒ\[ƒg
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚¤ãƒ³ãƒˆãƒ­ã‚½ãƒ¼ãƒˆ
 //----------------------------------------
-//E•½‹ÏŒvZŠÔFO(n log n)
-//EÅˆ«ŒvZŠÔFO(n log n)
-//Eƒƒ‚ƒŠg—p—ÊFO(n log n) ¦ƒNƒCƒbƒNƒ\[ƒg‚ÅÄ‹Aˆ—‚ğg—p‚µ‚È‚¯‚ê‚Î O(1)
-//EˆÀ’è«F@@@~
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(n log n)
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n log n)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(n log n) â€»ã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆã§å†å¸°å‡¦ç†ã‚’ä½¿ç”¨ã—ãªã‘ã‚Œã° O(1)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€Ã—
 //----------------------------------------
-//¦ƒNƒCƒbƒNƒ\[ƒg‚ÌÄ‹AƒŒƒxƒ‹‚ª log n ‚É’B‚µ‚½‚çA
-//@ƒq[ƒvƒ\[ƒg‚ÉØ‚è‘Ö‚¦‚éB
-//@‚Ü‚½AÄ‹N‚Ì––Aƒ\[ƒg‚Ì‘ÎÛŒ”‚ªˆê’è”i32‚È‚Çj–¢–‚É
-//@‚È‚Á‚½‚çA‘}“üƒ\[ƒg‚ÉØ‚è‘Ö‚¦‚éB
-//¦STL‚Ìstd::sort()‚Æ“¯—l‚Ìè–@B
+//â€»ã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆã®å†å¸°ãƒ¬ãƒ™ãƒ«ãŒ log n ã«é”ã—ãŸã‚‰ã€
+//ã€€ãƒ’ãƒ¼ãƒ—ã‚½ãƒ¼ãƒˆã«åˆ‡ã‚Šæ›¿ãˆã‚‹ã€‚
+//ã€€ã¾ãŸã€å†èµ·ã®æœ«ã€ã‚½ãƒ¼ãƒˆã®å¯¾è±¡ä»¶æ•°ãŒä¸€å®šæ•°ï¼ˆ32ãªã©ï¼‰æœªæº€ã«
+//ã€€ãªã£ãŸã‚‰ã€æŒ¿å…¥ã‚½ãƒ¼ãƒˆã«åˆ‡ã‚Šæ›¿ãˆã‚‹ã€‚
+//â€»STLã®std::sort()ã¨åŒæ§˜ã®æ‰‹æ³•ã€‚
 //----------------------------------------
-//¦Ä‹Aˆ—‚ğg—p‚¹‚¸Aƒ‹[ƒvˆ—‚É‚µ‚ÄÅ“K‰»‚·‚éB
-//@iÅ‘åŒ”‚ğ log2(4294967296) = 32 ‚Æ‚·‚éj
-//¦‘}“üƒ\[ƒgØ‚è‘Ö‚¦ƒ^ƒCƒ~ƒ“ƒO‚ğ16‚Éİ’è‚·‚éB
-//@iVC++2013‚ÌSTL std::sort‚Å‚Í32j
-//¦iÄ‹A‚Ì––j‘ÎÛŒ”‚ªˆê’èˆÈ‰º‚É‚È‚Á‚½‚Æ‚«‚ÉØ‚è‘Ö‚¦‚éƒAƒ‹ƒSƒŠƒYƒ€‚ÍA
-//@–{—ˆ‚Ì‘}“üƒ\[ƒg‚Å‚Í‚È‚­AƒVƒFƒ‹ƒ\[ƒg‚ğg—p‚·‚éƒXƒ^ƒCƒ‹‚É‰ü—ÇB
-//¦Ä‹A‚ªˆê’èˆÈã[‚­‚È‚Á‚½‚Æ‚«‚ÉØ‚è‘Ö‚¦‚éƒAƒ‹ƒSƒŠƒYƒ€‚ÍA
-//@–{—ˆ‚Ìƒq[ƒvƒ\[ƒg‚Å‚Í‚È‚­AƒVƒFƒ‹ƒ\[ƒg‚ğg—p‚·‚éƒXƒ^ƒCƒ‹‚É‰ü—ÇB
-//¦®—ñÏ‚İ”»’è‚ğÅ‰‚Éˆê“xs‚¤‚±‚Æ‚ÅÅ“K‰»‚·‚éB
+//â€»å†å¸°å‡¦ç†ã‚’ä½¿ç”¨ã›ãšã€ãƒ«ãƒ¼ãƒ—å‡¦ç†ã«ã—ã¦æœ€é©åŒ–ã™ã‚‹ã€‚
+//ã€€ï¼ˆæœ€å¤§ä»¶æ•°ã‚’ log2(4294967296) = 32 ã¨ã™ã‚‹ï¼‰
+//â€»æŒ¿å…¥ã‚½ãƒ¼ãƒˆåˆ‡ã‚Šæ›¿ãˆã‚¿ã‚¤ãƒŸãƒ³ã‚°ã‚’16ã«è¨­å®šã™ã‚‹ã€‚
+//ã€€ï¼ˆVC++2013ã®STL std::sortã§ã¯32ï¼‰
+//â€»ï¼ˆå†å¸°ã®æœ«ï¼‰å¯¾è±¡ä»¶æ•°ãŒä¸€å®šä»¥ä¸‹ã«ãªã£ãŸã¨ãã«åˆ‡ã‚Šæ›¿ãˆã‚‹ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã¯ã€
+//ã€€æœ¬æ¥ã®æŒ¿å…¥ã‚½ãƒ¼ãƒˆã§ã¯ãªãã€ã‚·ã‚§ãƒ«ã‚½ãƒ¼ãƒˆã‚’ä½¿ç”¨ã™ã‚‹ã‚¹ã‚¿ã‚¤ãƒ«ã«æ”¹è‰¯ã€‚
+//â€»å†å¸°ãŒä¸€å®šä»¥ä¸Šæ·±ããªã£ãŸã¨ãã«åˆ‡ã‚Šæ›¿ãˆã‚‹ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã¯ã€
+//ã€€æœ¬æ¥ã®ãƒ’ãƒ¼ãƒ—ã‚½ãƒ¼ãƒˆã§ã¯ãªãã€ã‚·ã‚§ãƒ«ã‚½ãƒ¼ãƒˆã‚’ä½¿ç”¨ã™ã‚‹ã‚¹ã‚¿ã‚¤ãƒ«ã«æ”¹è‰¯ã€‚
+//â€»æ•´åˆ—æ¸ˆã¿åˆ¤å®šã‚’æœ€åˆã«ä¸€åº¦è¡Œã†ã“ã¨ã§æœ€é©åŒ–ã™ã‚‹ã€‚
 //----------------------------------------
 template<class T, class PREDICATE>
 std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 {
-	int depth_max = 0;//ƒq[ƒvƒ\[ƒg‚ÉØ‚è‘Ö‚¦‚éÄ‹AiƒXƒ^ƒbƒNj‚Ì[‚³
+	int depth_max = 0;//ãƒ’ãƒ¼ãƒ—ã‚½ãƒ¼ãƒˆã«åˆ‡ã‚Šæ›¿ãˆã‚‹å†å¸°ï¼ˆã‚¹ã‚¿ãƒƒã‚¯ï¼‰ã®æ·±ã•
 	for (std::size_t size_tmp = size; size_tmp > 1; size_tmp >>= 1, ++depth_max);
 	//--------------------
-	//ƒNƒCƒbƒNƒ\[ƒgFƒXƒ^ƒbƒNˆ—”Å
-	//¦Ä‹Aˆ—”Å‚ÍÈ—ª
-	static const std::size_t SIZE_THRESHOLD = 16;//32;//‘}“üƒ\[ƒg‚ÉØ‚è‘Ö‚¦‚éŒ”
+	//ã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆï¼šã‚¹ã‚¿ãƒƒã‚¯å‡¦ç†ç‰ˆ
+	//â€»å†å¸°å‡¦ç†ç‰ˆã¯çœç•¥
+	static const std::size_t SIZE_THRESHOLD = 16;//32;//æŒ¿å…¥ã‚½ãƒ¼ãƒˆã«åˆ‡ã‚Šæ›¿ãˆã‚‹ä»¶æ•°
 	std::size_t swapped_count = 0;
 	struct stack_t
 	{
@@ -1298,24 +1326,24 @@ std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 	};
 	static const int STACK_MAX = 32 * 2;
 	stack_t stack[STACK_MAX];
-	//Å‰‚Ì”z—ñ‚ğƒXƒ^ƒbƒN‚ÉƒvƒbƒVƒ…
+	//æœ€åˆã®é…åˆ—ã‚’ã‚¹ã‚¿ãƒƒã‚¯ã«ãƒ—ãƒƒã‚·ãƒ¥
 	stack_t* stack_p = &stack[0];
 	stack_p->array = array;
 	stack_p->size = size;
 	stack_p->depth = depth_max;
-	int stack_curr = 1;//ƒXƒ^ƒbƒNˆÊ’u
+	int stack_curr = 1;//ã‚¹ã‚¿ãƒƒã‚¯ä½ç½®
 	while (stack_curr > 0)
 	{
-		//”z—ñ‚ğƒXƒ^ƒbƒN‚©‚çæ“¾
+		//é…åˆ—ã‚’ã‚¹ã‚¿ãƒƒã‚¯ã‹ã‚‰å–å¾—
 		stack_p = &stack[--stack_curr];
 		T* _array = stack_p->array;
 		const size_t _size = stack_p->size;
 		const int _depth = stack_p->depth;
-		//”z—ñ‚Ì”ÍˆÍî•ñ
+		//é…åˆ—ã®ç¯„å›²æƒ…å ±
 		const T* term = _array + _size;
 		T* begin = _array;
 		T* end = _array + _size - 1;
-		//’†‰›’l‚ğŒˆ’è
+		//ä¸­å¤®å€¤ã‚’æ±ºå®š
 		const T* med = _array + (_size >> 1);
 		const T* pivot =
 			predicate(*begin, *med) ?
@@ -1329,7 +1357,7 @@ std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 					predicate(*begin, *end) ?
 						begin :
 						end;
-		//’†‰›’l–¢–‚Ì”z—ñ‚Æ’†‰›’lˆÈã‚Ì”z—ñ‚É“ñ•ª
+		//ä¸­å¤®å€¤æœªæº€ã®é…åˆ—ã¨ä¸­å¤®å€¤ä»¥ä¸Šã®é…åˆ—ã«äºŒåˆ†
 		while (true)
 		{
 			while (predicate(*begin, *pivot))
@@ -1339,13 +1367,13 @@ std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 			if (begin >= end)
 				break;
 			swapValues(*begin, *end);
-			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//’†‰›’l‚ÌˆÊ’u’²®i’†‰›’l‚ÌˆÊ’u‚à“ü‚ê‘Ö‚í‚é‚½‚ßj
+			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//ä¸­å¤®å€¤ã®ä½ç½®èª¿æ•´ï¼ˆä¸­å¤®å€¤ã®ä½ç½®ã‚‚å…¥ã‚Œæ›¿ã‚ã‚‹ãŸã‚ï¼‰
 			++swapped_count;
 			++begin;
 			--end;
 		}
-		//recursive = 0 : ’†‰›’l–¢–‚Ì”z—ñ‚ğƒvƒbƒVƒ…
-		//            1 : ’†‰›’lˆÈã‚Ì”z—ñ‚ğƒvƒbƒVƒ…
+		//recursive = 0 : ä¸­å¤®å€¤æœªæº€ã®é…åˆ—ã‚’ãƒ—ãƒƒã‚·ãƒ¥
+		//            1 : ä¸­å¤®å€¤ä»¥ä¸Šã®é…åˆ—ã‚’ãƒ—ãƒƒã‚·ãƒ¥
 		for (int recursive = 0; recursive < 2; ++recursive)
 		{
 			T* new_array = recursive == 0 ? _array : end + 1;
@@ -1355,19 +1383,19 @@ std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 			{
 				if (new_size < SIZE_THRESHOLD)
 				{
-					//swapped_count += insertionSort(new_array, new_size, predicate);//y–{—ˆ‚Ìˆ—z‘}“üƒ\[ƒg‚ÉØ‚è‘Ö‚¦
-					//swapped_count += combSort(new_array, new_size, predicate);//y‰ü—ÇzƒRƒ€ƒ\[ƒg‚ÉØ‚è‘Ö‚¦
-					swapped_count += shellSort(new_array, new_size, predicate);//y‰ü—ÇzƒVƒFƒ‹ƒ\[ƒg‚ÉØ‚è‘Ö‚¦
+					//swapped_count += insertionSort(new_array, new_size, predicate);//ã€æœ¬æ¥ã®å‡¦ç†ã€‘æŒ¿å…¥ã‚½ãƒ¼ãƒˆã«åˆ‡ã‚Šæ›¿ãˆ
+					//swapped_count += combSort(new_array, new_size, predicate);//ã€æ”¹è‰¯ã€‘ã‚³ãƒ ã‚½ãƒ¼ãƒˆã«åˆ‡ã‚Šæ›¿ãˆ
+					swapped_count += shellSort(new_array, new_size, predicate);//ã€æ”¹è‰¯ã€‘ã‚·ã‚§ãƒ«ã‚½ãƒ¼ãƒˆã«åˆ‡ã‚Šæ›¿ãˆ
 				}
 				else if (new_depth == 0)
 				{
-					//swapped_count += heapSort(new_array, new_size, predicate);//y–{—ˆ‚Ìˆ—zƒq[ƒvƒ\[ƒg‚ÉØ‚è‘Ö‚¦
-					//swapped_count += combSort(new_array, new_size, predicate);//y‰ü—ÇzƒRƒ€ƒ\[ƒg‚ÉØ‚è‘Ö‚¦
-					swapped_count += shellSort(new_array, new_size, predicate);//y‰ü—ÇzƒVƒFƒ‹ƒ\[ƒg‚ÉØ‚è‘Ö‚¦
+					//swapped_count += heapSort(new_array, new_size, predicate);//ã€æœ¬æ¥ã®å‡¦ç†ã€‘ãƒ’ãƒ¼ãƒ—ã‚½ãƒ¼ãƒˆã«åˆ‡ã‚Šæ›¿ãˆ
+					//swapped_count += combSort(new_array, new_size, predicate);//ã€æ”¹è‰¯ã€‘ã‚³ãƒ ã‚½ãƒ¼ãƒˆã«åˆ‡ã‚Šæ›¿ãˆ
+					swapped_count += shellSort(new_array, new_size, predicate);//ã€æ”¹è‰¯ã€‘ã‚·ã‚§ãƒ«ã‚½ãƒ¼ãƒˆã«åˆ‡ã‚Šæ›¿ãˆ
 				}
 				else
 				{
-					//Ä‹A
+					//å†å¸°
 					stack_p = &stack[stack_curr++];
 					stack_p->array = new_array;
 					stack_p->size = new_size;
@@ -1389,21 +1417,489 @@ inline std::size_t introSort(T* array, const std::size_t size, PREDICATE predica
 }
 sortFuncSet(introSort);
 
+//========================================
+//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ åˆ†é¡ï¼šéæ¯”è¼ƒã‚½ãƒ¼ãƒˆ
+//========================================
+
+//----------------------------------------
+//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šåŸºæ•°ã‚½ãƒ¼ãƒˆ
+//----------------------------------------
+//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(nk/s)
+//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(nk/s)
+//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(n) â€»å®Ÿéš›ã¯ O(n * 2) ã®ã‚­ãƒ¼æƒ…å ±(12 byte) + O(256 * 8) ã®ã‚­ãƒ¼å‚ç…§æƒ…å ±(8 byte)
+//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€â—‹
+//----------------------------------------
+#include <climits>//***_MAXç”¨
+#include <type_traits>//C++11 std::conditional, std::integral_constantç”¨
+#include <memory.h>//memset()ç”¨
+//ã‚­ãƒ¼ã®æœ€å¤§å€¤å–å¾—
+template<typename KEY_TYPE>
+struct _radix_key{
+	typedef
+		typename std::conditional <
+			std::is_same<KEY_TYPE, unsigned char>::value,
+			std::integral_constant<unsigned char, UCHAR_MAX>,
+			typename std::conditional <
+				std::is_same<KEY_TYPE, signed char>::value,
+				std::integral_constant<signed char, SCHAR_MAX>,
+				typename std::conditional <
+					std::is_same<KEY_TYPE, unsigned short>::value,
+					std::integral_constant<unsigned short, USHRT_MAX>,
+					typename std::conditional <
+						std::is_same<KEY_TYPE, signed short>::value,
+						std::integral_constant<signed short, SHRT_MAX>,
+						typename std::conditional <
+							std::is_same<KEY_TYPE, unsigned int>::value,
+							std::integral_constant<unsigned int, UINT_MAX>,
+							typename std::conditional <
+								std::is_same<KEY_TYPE, signed int>::value,
+								std::integral_constant<signed int, INT_MAX>,
+								typename std::conditional <
+									std::is_same<KEY_TYPE, unsigned long>::value,
+									std::integral_constant<unsigned long, ULONG_MAX>,
+									typename std::conditional <
+										std::is_same<KEY_TYPE, signed long>::value,
+										std::integral_constant<signed long, LONG_MAX>,
+										typename std::conditional <
+											std::is_same<KEY_TYPE, unsigned long long>::value,
+											std::integral_constant<unsigned long long, ULLONG_MAX>,
+											typename std::conditional <
+												std::is_same<KEY_TYPE, signed long long>::value,
+												std::integral_constant<signed long long, LLONG_MAX>,
+												std::integral_constant<std::size_t, UINT_MAX>
+											>::type
+										>::type
+									>::type
+								>::type
+							>::type
+						>::type
+					>::type
+				>::type
+			>::type
+		>::type
+			max_t;
+	static const KEY_TYPE MAX = max_t::value;
+};
+//ã‚­ãƒ¼ã‚’å–å¾—ã€€â€»ã‚­ãƒ¼ãŒç¬¦å·ä»˜å‹ã®å ´åˆ
+template<class T, class GET_KEY_FUNCTOR>
+struct _radix_key_s{
+	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;
+	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;
+	inline static KEY_TYPE_U getKey(const T& obj, GET_KEY_FUNCTOR get_key_functor)
+	{
+		KEY_TYPE key = get_key_functor(obj);
+		return key >= 0 ?
+					static_cast<KEY_TYPE_U>(key) + _radix_key<KEY_TYPE>::MAX + 1:
+					static_cast<KEY_TYPE_U>(key  + _radix_key<KEY_TYPE>::MAX + 1);
+	}
+};
+//ã‚­ãƒ¼ã‚’å–å¾—ã€€â€»ã‚­ãƒ¼ãŒç¬¦å·ãªã—å‹ã®å ´åˆ
+template<class T, class GET_KEY_FUNCTOR>
+struct _radix_key_u{
+	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;
+	typedef KEY_TYPE KEY_TYPE_U;
+	inline static KEY_TYPE_U getKey(const T& obj, GET_KEY_FUNCTOR get_key_functor)
+	{
+		return get_key_functor(obj);
+	}
+};
+//ã‚­ãƒ¼ã‚’å–å¾—
+template<class T, class GET_KEY_FUNCTOR>
+struct radix_key{
+	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;
+	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;
+	typedef
+		typename std::conditional<
+			std::is_signed<KEY_TYPE>::value,
+			_radix_key_s<T, GET_KEY_FUNCTOR>,
+			_radix_key_u<T, GET_KEY_FUNCTOR>
+		>::type
+			get_key_t;
+	inline static KEY_TYPE_U getKey(const T& obj, GET_KEY_FUNCTOR get_key_functor){ return get_key_t::getKey(obj, get_key_functor); }
+};
+//åŸºæ•°ã‚½ãƒ¼ãƒˆæœ¬ä½“
+template<class T, class GET_KEY_FUNCTOR>
+inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR get_key_functor)
+{
+	if (!array || size <= 1)
+		return 0;
+
+#if 0//å†å¸°å‡¦ç†ç‰ˆ
+	std::size_t swapped_count = 0;
+
+	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;//ã‚­ãƒ¼å‹
+	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;//ç¬¦å·ãªã—ã‚­ãƒ¼å‹
+
+	static const std::size_t RADIX = 256;//åŸºæ•°
+
+	//ã‚­ãƒ¼æƒ…å ±å®šç¾©
+	struct key_t
+	{
+		mutable const key_t* next;//æ¬¡ã®ã‚­ãƒ¼æƒ…å ±
+		const T* ref;//å®Ÿãƒ‡ãƒ¼ã‚¿ã®å‚ç…§
+		KEY_TYPE_U key;//ã‚­ãƒ¼
+		inline KEY_TYPE_U set(const T* _ref, const KEY_TYPE_U _key)//å€¤ã®ã‚»ãƒƒãƒˆ
+		{
+			next = nullptr;
+			ref = _ref;
+			key = _key;
+			return key;
+		}
+	};
+	//ã‚­ãƒ¼æƒ…å ±ç”Ÿæˆ
+	KEY_TYPE_U key_max = 0;//ã‚­ãƒ¼ã®æœ€å¤§å€¤
+	key_t* key_tbl = new key_t[size];//â€»newã§ãƒ¡ãƒ¢ãƒªç¢ºä¿
+	{
+		T* elem_p = array;
+		key_t* key_p = key_tbl;
+		for (std::size_t index = 0; index < size; ++index, ++elem_p, ++key_p)
+			key_max = std::max(key_max, key_p->set(elem_p, radix_key<T, GET_KEY_FUNCTOR>::getKey(*elem_p, get_key_functor)));
+	}
+	//ã‚­ãƒ¼ã®æœ€å¤§å€¤ã‹ã‚‰æœ€å¤§ã®é•·ã•ã‚’ç®—å‡º
+	std::size_t key_len =
+		(key_max & 0xff00000000000000llu) != 0 ? 8 :
+		(key_max & 0x00ff000000000000llu) != 0 ? 7 :
+		(key_max & 0x0000ff0000000000llu) != 0 ? 6 :
+		(key_max & 0x000000ff00000000llu) != 0 ? 5 :
+		(key_max & 0xff000000) != 0 ? 4 :
+		(key_max & 0x00ff0000) != 0 ? 3 :
+		(key_max & 0xff00) != 0 ? 2 :
+		(key_max & 0xff) != 0 ? 1 :
+		0;
+	if (key_len == 0)//ã‚­ãƒ¼ãŒ 0 ã—ã‹ãªã‘ã‚Œã°ã“ã®æ™‚ç‚¹ã§çµ‚äº†
+	{
+		delete key_tbl;//ãƒ¡ãƒ¢ãƒªç ´æ£„
+		return 0;
+	}
+	
+	//ã‚½ãƒ¼ãƒˆç”¨é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+	struct sort_functor
+	{
+		//ã‚«ã‚¦ãƒ³ãƒˆæ•°æƒ…å ±
+		struct counter_t
+		{
+			const key_t* keys;//ã‚­ãƒ¼æƒ…å ±ã®é€£çµãƒªã‚¹ãƒˆ
+			std::size_t count;//ã‚­ãƒ¼æƒ…å ±æ•°
+			inline void add(const key_t* key_p)//ã‚­ãƒ¼è¿½åŠ ï¼ˆé€£çµï¼‰
+			{
+				key_p->next = keys;
+				keys = key_p;
+				++count;
+			}
+		};
+		//ã‚«ã‚¦ãƒ³ãƒˆãƒ†ãƒ¼ãƒ–ãƒ«å‹
+		typedef counter_t counter_tbl_t[RADIX];
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹è¨ˆç®—
+		inline static unsigned char calcDigit(const KEY_TYPE_U key, const std::size_t key_len)
+		{
+			return (key >> (key_len << 3)) & 0xff;
+		}
+		//ã‚½ãƒ¼ãƒˆå†…éƒ¨å‡¦ç†ç”¨é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+		//â€»æ¬¡ã®åŸºæ•°åˆ¥ã«ã‚­ãƒ¼ã‚’é›†ã‚ã‚‹ï¼ã‚½ãƒ¼ãƒˆæ¸ˆã¿é…åˆ—ã«ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
+		struct inner_functor
+		{
+			void operator()(T* sorted_array, std::size_t& array_index, const key_t* key_list, const std::size_t key_list_count, std::size_t key_len, const bool is_odd)
+			{
+				//ã‚­ãƒ¼ãŒãªã‘ã‚Œã°ã€ã‚½ãƒ¼ãƒˆæ¸ˆã¿é…åˆ—ã«ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
+				if (key_len == 0)
+				{
+					if (is_odd)//å¥‡æ•°å›ç›®ã®å®Ÿè¡Œã®å ´åˆ
+					{
+						T* sorted_p = sorted_array + array_index + key_list_count;
+						const key_t* key_p = key_list;
+						while (key_p)
+						{
+							*(--sorted_p) = std::move(*key_p->ref);
+							++array_index;
+							key_p = key_p->next;
+						}
+					}
+					else//if(!is_odd)//å¶æ•°å›ç›®ã®å®Ÿè¡Œã®å ´åˆ
+					{
+						T* sorted_p = sorted_array + array_index;
+						const key_t* key_p = key_list;
+						while (key_p)
+						{
+							*(sorted_p++) = std::move(*key_p->ref);
+							++array_index;
+							key_p = key_p->next;
+						}
+					}
+					return;//çµ‚äº†
+				}
+				//æ¬¡ã®åŸºæ•°åˆ¥ã«ã‚­ãƒ¼ã‚’é›†ã‚ã‚‹
+				--key_len;
+				counter_tbl_t child_tbl;
+				memset(child_tbl, 0, sizeof(child_tbl));
+				const key_t* key_p = key_list;
+				while (key_p)
+				{
+					const key_t* next_p = key_p->next;
+					child_tbl[calcDigit(key_p->key, key_len)].add(key_p);
+					key_p = next_p;
+				}
+				//ã•ã‚‰ã«æ¬¡ã®åŸºæ•°åˆ¥ã«ã‚­ãƒ¼ã‚’é›†ã‚ã‚‹
+				for (auto& child : child_tbl)
+				{
+					if (child.keys)
+						inner_functor()(sorted_array, array_index, child.keys, child.count, key_len, !is_odd);
+				}
+			}
+		};
+		//ã‚½ãƒ¼ãƒˆåˆå›å‡¦ç†
+		//â€»åŸºæ•°åˆ¥ã«ã‚­ãƒ¼ã‚’é›†ã‚ã‚‹
+		inline void operator()(T* sorted_array, std::size_t& array_index, const key_t* key_tbl, std::size_t size, std::size_t key_len)
+		{
+			//åŸºæ•°åˆ¥ã«ã‚­ãƒ¼ã‚’é›†ã‚ã‚‹
+			--key_len;
+			counter_tbl_t child_tbl;
+			memset(child_tbl, 0, sizeof(child_tbl));
+			const key_t* key_p = key_tbl;
+			for (std::size_t index = 0; index < size; ++index, ++key_p)
+				child_tbl[calcDigit(key_p->key, key_len)].add(key_p);
+			//æ¬¡ã®åŸºæ•°åˆ¥ã«ã‚­ãƒ¼ã‚’é›†ã‚ã‚‹ï¼ã‚½ãƒ¼ãƒˆæ¸ˆã¿é…åˆ—ã«ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
+			for (auto& child : child_tbl)
+			{
+				if (child.keys)
+					inner_functor()(sorted_array, array_index, child.keys, child.count, key_len, true);
+			}
+		}
+	};
+	//ã‚½ãƒ¼ãƒˆæ¸ˆã¿ãƒ‡ãƒ¼ã‚¿é…åˆ—ä½œæˆ
+	T* sorted_array = static_cast<T*>(_aligned_malloc(sizeof(T)* size, alignof(T)));//â€»_aligned_mallocã§ãƒ¡ãƒ¢ãƒªç¢ºä¿
+	std::size_t array_index = 0;
+	//ã‚½ãƒ¼ãƒˆ
+	sort_functor()(sorted_array, array_index, key_tbl, size, key_len);
+	//ã‚½ãƒ¼ãƒˆæ¸ˆã¿ãƒ‡ãƒ¼ã‚¿ã‚’å…ƒã®é…åˆ—ã«ã‚³ãƒ”ãƒ¼
+	{
+		const T* src_p = sorted_array;
+		T* dst_p = array;
+		for (std::size_t index = 0; index < size; ++index, ++src_p, ++dst_p)
+			*dst_p = std::move(*src_p);
+	}
+	delete key_tbl;//ãƒ¡ãƒ¢ãƒªç ´æ£„
+	_aligned_free(sorted_array);//ãƒ¡ãƒ¢ãƒªç ´æ£„
+#else//ãƒ«ãƒ¼ãƒ—å‡¦ç†ç‰ˆ
+	std::size_t swapped_count = 0;
+	
+	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;//ã‚­ãƒ¼å‹
+	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;//ç¬¦å·ãªã—ã‚­ãƒ¼å‹
+
+	static const std::size_t RADIX = 256;//åŸºæ•°
+
+	//ã‚­ãƒ¼æƒ…å ±å®šç¾©
+	struct key_t
+	{
+		mutable const key_t* next;//æ¬¡ã®ã‚­ãƒ¼æƒ…å ±
+		const T* ref;//å®Ÿãƒ‡ãƒ¼ã‚¿ã®å‚ç…§
+		KEY_TYPE_U key;//ã‚­ãƒ¼
+		inline KEY_TYPE_U set(const T* _ref, const KEY_TYPE_U _key)//å€¤ã®ã‚»ãƒƒãƒˆ
+		{
+			next = nullptr;
+			ref = _ref;
+			key = _key;
+			return key;
+		}
+	};
+	//ã‚­ãƒ¼æƒ…å ±ç”Ÿæˆ
+	KEY_TYPE_U key_max = 0;//ã‚­ãƒ¼ã®æœ€å¤§å€¤
+	key_t* key_tbl = new key_t[size];//â€»newã§ãƒ¡ãƒ¢ãƒªç¢ºä¿
+	{
+		T* elem_p = array;
+		key_t* key_p = key_tbl;
+		for (std::size_t index = 0; index < size; ++index, ++elem_p, ++key_p)
+			key_max = std::max(key_max, key_p->set(elem_p, radix_key<T, GET_KEY_FUNCTOR>::getKey(*elem_p, get_key_functor)));
+	}
+	//ã‚­ãƒ¼ã®æœ€å¤§å€¤ã‹ã‚‰æœ€å¤§ã®é•·ã•ã‚’ç®—å‡º
+	std::size_t key_len_first =
+		(key_max & 0xff00000000000000llu) != 0 ? 8 :
+		(key_max & 0x00ff000000000000llu) != 0 ? 7 :
+		(key_max & 0x0000ff0000000000llu) != 0 ? 6 :
+		(key_max & 0x000000ff00000000llu) != 0 ? 5 :
+		(key_max & 0xff000000) != 0 ? 4 :
+		(key_max & 0x00ff0000) != 0 ? 3 :
+		(key_max & 0xff00) != 0 ? 2 :
+		(key_max & 0xff) != 0 ? 1 :
+		0;
+	if (key_len_first == 0)//ã‚­ãƒ¼ãŒ 0 ã—ã‹ãªã‘ã‚Œã°ã“ã®æ™‚ç‚¹ã§çµ‚äº†
+	{
+		delete key_tbl;//ãƒ¡ãƒ¢ãƒªç ´æ£„
+		return 0;
+	}
+	--key_len_first;
+
+	//ã‚½ãƒ¼ãƒˆæ¸ˆã¿ãƒ‡ãƒ¼ã‚¿é…åˆ—ä½œæˆ
+	const key_t** sorted_key_tbl = new const key_t*[size];//â€»newã§ãƒ¡ãƒ¢ãƒªç¢ºä¿
+	std::size_t array_index = 0;
+	//ã‚«ã‚¦ãƒ³ãƒˆæ•°æƒ…å ±å®šç¾©
+	struct counter_t
+	{
+		const key_t* keys;//ã‚­ãƒ¼æƒ…å ±ã®é€£çµãƒªã‚¹ãƒˆ
+		std::size_t keys_count;//ã‚­ãƒ¼æƒ…å ±æ•°
+		inline const key_t* add(const key_t* key_p)//ã‚­ãƒ¼è¿½åŠ ï¼ˆé€£çµï¼‰
+		{
+			const key_t* next_p = key_p->next;
+			key_p->next = keys;
+			keys = key_p;
+			++keys_count;
+			return next_p;
+		}
+	};
+	//ã‚¹ã‚¿ãƒƒã‚¯å‹å®šç¾©
+	struct stack_t
+	{
+		counter_t* counter_tbl_p;
+		std::size_t key_len;
+		std::size_t index;
+		bool is_odd;
+	};
+	static const std::size_t STACK_MAX = 8;//ã‚¹ã‚¿ãƒƒã‚¯ã®æœ€å¤§ã®æ·±ã•
+	counter_t counter_tbl[STACK_MAX][RADIX];//ã‚«ã‚¦ãƒ³ãƒˆæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
+	stack_t stack[STACK_MAX];//ã‚¹ã‚¿ãƒƒã‚¯
+	//åŸºæ•°ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹è¨ˆç®—ç”¨ãƒ©ãƒ ãƒ€é–¢æ•°
+	auto calcDigit = [](const KEY_TYPE_U key, const std::size_t key_len) -> unsigned char { return (key >> (key_len << 3)) & 0xff; };
+	//æœ€åˆã®åŸºæ•°åˆ¥ã«ã‚­ãƒ¼ã®ã‚«ã‚¦ãƒ³ãƒˆæ•°ã‚’é›†è¨ˆ
+	{
+		counter_t* counter_tbl_p = counter_tbl[0];
+		memset(counter_tbl_p, 0, sizeof(counter_tbl[0]));
+		const key_t* key_p = key_tbl;
+		for (std::size_t index = 0; index < size; ++index, ++key_p)
+			counter_tbl_p[calcDigit(key_p->key, key_len_first)].add(key_p);
+	}
+	//ã‚¹ã‚¿ãƒƒã‚¯ã«æœ€åˆã®ã‚«ã‚¦ãƒ³ãƒˆæ•°æƒ…å ±ã‚’è¨˜éŒ²
+	{
+		stack_t* stack_p = &stack[0];
+		stack_p->counter_tbl_p = counter_tbl[0];
+		stack_p->key_len = key_len_first;
+		stack_p->is_odd = true;
+		stack_p->index = 0;
+	}
+	std::size_t stack_depth = 1;//ã‚¹ã‚¿ãƒƒã‚¯ã®æ·±ã•
+	//ã‚½ãƒ¼ãƒˆå‡¦ç†ãƒ¡ã‚¤ãƒ³
+	while (stack_depth != 0)
+	{
+		//ã‚¹ã‚¿ãƒƒã‚¯å–ã‚Šå‡ºã—ï¼ˆå‰åŠï¼‰
+		stack_t* stack_p = &stack[stack_depth - 1];
+		const std::size_t index = stack_p->index++;
+		if (index == RADIX)
+		{
+			stack_p = &stack[--stack_depth];
+			continue;
+		}
+		counter_t* counter_tbl_p = stack_p->counter_tbl_p;
+		const counter_t* counter_p = &counter_tbl_p[index];
+		const key_t* keys = counter_p->keys;
+		if (keys)
+		{
+			//ã‚¹ã‚¿ãƒƒã‚¯å–ã‚Šå‡ºã—ï¼ˆå¾ŒåŠï¼‰
+			std::size_t key_len = stack_p->key_len;
+			const bool is_odd = stack_p->is_odd;
+			const std::size_t keys_count = counter_tbl_p->keys_count;
+			
+			//ã“ã‚Œä»¥ä¸Šã‚­ãƒ¼ãŒãªã‘ã‚Œã°ã€ã‚½ãƒ¼ãƒˆæ¸ˆã¿é…åˆ—ã«ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
+			if (key_len == 0)
+			{
+				if (is_odd)//å¥‡æ•°å›ç›®ã®å®Ÿè¡Œã®å ´åˆï¼šãƒªãƒ³ã‚¯ãƒªã‚¹ãƒˆã‚’é€†é †ã«ã‚³ãƒ”ãƒ¼
+				{
+					const key_t** sorted_key_p = sorted_key_tbl + array_index + keys_count;
+					const key_t* key_p = keys;
+					while (key_p)
+					{
+						//*(--sorted_p) = std::move(*key_p->ref);
+						*(--sorted_key_p) = key_p;
+						++array_index;
+						key_p = key_p->next;
+					}
+				}
+				else//if(!is_odd)//å¶æ•°å›ç›®ã®å®Ÿè¡Œã®å ´åˆï¼šãƒªãƒ³ã‚¯ãƒªã‚¹ãƒˆã‚’é †ã«ã‚³ãƒ”ãƒ¼
+				{
+					const key_t**  sorted_key_p = sorted_key_tbl + array_index;
+					const key_t* key_p = keys;
+					while (key_p)
+					{
+						//*(sorted_p++) = std::move(*key_p->ref);
+						*(sorted_key_p++) = key_p;
+						++array_index;
+						key_p = key_p->next;
+					}
+				}
+			}
+			else
+			{
+				//æ¬¡ã®åŸºæ•°åˆ¥ã«ã‚­ãƒ¼ã®ã‚«ã‚¦ãƒ³ãƒˆæ•°ã‚’é›†è¨ˆï¼ˆæº–å‚™ï¼‰
+				counter_tbl_p = counter_tbl[stack_depth];
+				memset(counter_tbl_p, 0, sizeof(counter_tbl[0]));
+				//æ¬¡ã®åŸºæ•°åˆ¥ã«ã‚­ãƒ¼ã®ã‚«ã‚¦ãƒ³ãƒˆæ•°ã‚’é›†è¨ˆ
+				--key_len;
+				const key_t* key_p = keys;
+				while (key_p)
+					key_p = counter_tbl_p[calcDigit(key_p->key, key_len)].add(key_p);
+				//ã‚¹ã‚¿ãƒƒã‚¯ã«è¨˜éŒ²
+				stack_p = &stack[stack_depth];
+				stack_p->counter_tbl_p = counter_tbl_p;
+				stack_p->key_len = key_len;
+				stack_p->is_odd = !is_odd;
+				stack_p->index = 0;
+				++stack_depth;
+			}
+		}
+	}
+	//ã‚½ãƒ¼ãƒˆæ¸ˆã¿ãƒ‡ãƒ¼ã‚¿ã‚’å…ƒã«é…åˆ—ã®å…¥ã‚Œæ›¿ãˆ
+	{
+		const key_t** sorted_key_pp = sorted_key_tbl;//ã‚½ãƒ¼ãƒˆæ¸ˆã¿ä½ç½®ï¼ˆç§»å‹•å…ˆï¼‰ã®ã‚­ãƒ¼æƒ…å ±ã‚’å‚ç…§
+		T* dst_p = array;//å®Ÿéš›ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‚ç…§
+		for (std::size_t dst_index = 0; dst_index < size; ++dst_index, ++sorted_key_pp, ++dst_p)
+		{
+			const key_t** dst_tmp_key_pp = sorted_key_pp;//ã‚½ãƒ¼ãƒˆæ¸ˆã¿ä½ç½®ï¼ˆç§»å‹•å…ˆï¼‰ã®ã‚­ãƒ¼æƒ…å ±ã‚’å‚ç…§
+			const key_t* dst_tmp_key_p = *dst_tmp_key_pp;//ã‚½ãƒ¼ãƒˆæ¸ˆã¿ä½ç½®ï¼ˆç§»å‹•å…ˆï¼‰ã®ã‚­ãƒ¼æƒ…å ±ã‚’å–å¾—
+			if (!dst_tmp_key_p || dst_tmp_key_p->ref == dst_p)//ä¸¦ã³æ›¿ãˆæ¸ˆã¿ã€ã‚‚ã—ãã¯ã€æœ€åˆã‹ã‚‰æ­£ã—ã„ä½ç½®ã«ã‚ã‚‹ãªã‚‰å‡¦ç†ã—ãªã„
+				continue;
+			T* dst_tmp_p = dst_p;//æœ€åˆã®ç§»å‹•å…ˆ
+			T tmp = std::move(*dst_tmp_p);//ã‚½ãƒ¼ãƒˆæ¸ˆã¿ä½ç½®ã®å€¤ã‚’é€€é¿ã€€â€»é€£é–çš„ãªå€¤ã®ç§»å‹•ã®æœ€å¾Œã«ä½¿ç”¨ã™ã‚‹å€¤
+			while (dst_tmp_key_p)//ç§»å‹•æ¸ˆã¿ã®ã‚­ãƒ¼ã‚’å‚ç…§ã—ãŸã‚‰çµ‚äº†
+			{
+				const T* src_p = dst_tmp_key_p->ref;//ç§»å‹•å…ƒã®å€¤ã‚’å‚ç…§ â€»ã‚½ãƒ¼ãƒˆå‰ã®ä½ç½®
+				if (src_p == dst_p)//é€€é¿ã—ãŸå€¤ã®ä½ç½®ã‚’æŒ‡ã—ãŸã‚‰ãƒ«ãƒ¼ãƒ—çµ‚äº†
+					break;
+				*dst_tmp_p = std::move(*src_p);//å…ƒã®ä½ç½®ã‹ã‚‰ã‚½ãƒ¼ãƒˆæ¸ˆã¿ä½ç½®ã«å€¤ã‚’ã‚³ãƒ”ãƒ¼
+				++swapped_count;
+
+				//é€£é–çš„ãªå€¤ã®ç§»å‹•
+				*dst_tmp_key_pp = nullptr;//ç§»å‹•æ¸ˆã¿ã«ã™ã‚‹
+				dst_tmp_p = const_cast<T*>(src_p);//ç§»å‹•å…ƒã®ä½ç½®ã‚’æ¬¡ã®ãƒ«ãƒ¼ãƒ—ã§ã®ç§»å‹•å…ˆã«ã™ã‚‹
+				std::size_t dst_tmp_index = dst_tmp_p - array;//ç§»å‹•å…ˆã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ç®—å‡º
+				dst_tmp_key_pp = sorted_key_tbl + dst_tmp_index;//ã‚½ãƒ¼ãƒˆæ¸ˆã¿ä½ç½®ï¼ˆç§»å‹•å…ˆï¼‰ã®ã‚­ãƒ¼æƒ…å ±ã‚’å‚ç…§
+				dst_tmp_key_p = *(dst_tmp_key_pp);//ã‚½ãƒ¼ãƒˆæ¸ˆã¿ä½ç½®ï¼ˆç§»å‹•å…ˆï¼‰ã®ã‚­ãƒ¼æƒ…å ±ã‚’å–å¾—
+			}
+			*dst_tmp_p = std::move(tmp);//ãƒ«ãƒ¼ãƒ—å‰ã«é€€é¿ã—ãŸå€¤ã‚’æœ€å¾Œã®ä½ç½®ã«ã‚³ãƒ”ãƒ¼
+			*dst_tmp_key_pp = nullptr;//ç§»å‹•æ¸ˆã¿ã«ã™ã‚‹
+			++swapped_count;
+		}
+	}
+	//ãƒ¡ãƒ¢ãƒªç ´æ£„
+	delete key_tbl;
+	delete sorted_key_tbl;
+#endif
+	return swapped_count;
+}
+distributedSortFuncSet(radixSort);
+
 //--------------------------------------------------------------------------------
-//Šeíƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€ƒeƒXƒg
+//å„ç¨®ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ãƒ†ã‚¹ãƒˆ
 //--------------------------------------------------------------------------------
 
-#include <memory.h>//_aligned_malloc,memalign—p
-#include <algorithm>//std::sort, std::for_each—p
-#include <array>//C++11 std::array—p
-#include <random>//C++11 random—p
-#include <chrono>//C++11 std::chrono—p
-#include <bitset>//std::bitset—p
+#include <memory.h>//_aligned_malloc,memalignç”¨
+#include <algorithm>//std::sort, std::for_eachç”¨
+#include <array>//C++11 std::arrayç”¨
+#include <random>//C++11 randomç”¨
+#include <chrono>//C++11 std::chronoç”¨
+#include <bitset>//std::bitsetç”¨
+#include <functional>//C++11 std::functionç”¨
 
 #include "sub.h"
 
 //----------------------------------------
-//ƒeƒXƒg—p\‘¢‘Ì‚Ì”z—ñŒ^
+//ãƒ†ã‚¹ãƒˆç”¨æ§‹é€ ä½“ã®é…åˆ—å‹
 class array_t : public std::array<data_t, TEST_DATA_COUNT>
 {
 public:
@@ -1418,52 +1914,52 @@ public:
 };
 
 //----------------------------------------
-//ƒeƒXƒg—p‚Ì”äŠrˆ—
-//qsort—pŠÖ”
+//ãƒ†ã‚¹ãƒˆç”¨ã®æ¯”è¼ƒå‡¦ç†
+//qsortç”¨é–¢æ•°
 inline int predicate_func_qsort(const void*lhs, const void*rhs)
 {
 	return reinterpret_cast<const data_t*>(lhs)->m_key - reinterpret_cast<const data_t*>(rhs)->m_key;
 }
-//’ÊíŠÖ”
+//é€šå¸¸é–¢æ•°
 extern bool predicate_func(const data_t& lhs, const data_t& rhs);
-//ƒCƒ“ƒ‰ƒCƒ“ŠÖ”
+//ã‚¤ãƒ³ãƒ©ã‚¤ãƒ³é–¢æ•°
 inline bool predicate_func_inline(const data_t& lhs, const data_t& rhs)
 {
 	return lhs.m_key < rhs.m_key;
 }
-//ŠÖ”ƒIƒuƒWƒFƒNƒg
+//é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 struct predicate_functor{
 	inline bool operator()(const data_t& lhs, const data_t& rhs)
 	{
 		return lhs.m_key < rhs.m_key;
 	}
 };
-//ƒ‰ƒ€ƒ_ŠÖ”
+//ãƒ©ãƒ ãƒ€é–¢æ•°
 auto predicate_lambda = [](const data_t& lhs, const data_t& rhs) -> bool
 {
 	return lhs.m_key < rhs.m_key;
 };
-//“ñ€”äŠrƒIƒyƒŒ[ƒ^
-//¦sortŠÖ”‚É”äŠrŠÖ”‚Ìw’è‚ğÈ—ª‚µ‚½ê‡A‚±‚ÌƒIƒyƒŒ[ƒ^‚ªg—p‚³‚ê‚é
+//äºŒé …æ¯”è¼ƒã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+//â€»sorté–¢æ•°ã«æ¯”è¼ƒé–¢æ•°ã®æŒ‡å®šã‚’çœç•¥ã—ãŸå ´åˆã€ã“ã®ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ãŒä½¿ç”¨ã•ã‚Œã‚‹
 inline bool operator <(const data_t& lhs, const data_t& rhs){ return lhs.m_key < rhs.m_key; }
-//¦sortŠÖ”‚Éstd::greater<T>()‚ğw’è‚µ‚½ê‡A‚±‚ÌƒIƒyƒŒ[ƒ^‚ªg—p‚³‚ê‚é
+//â€»sorté–¢æ•°ã«std::greater<T>()ã‚’æŒ‡å®šã—ãŸå ´åˆã€ã“ã®ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ãŒä½¿ç”¨ã•ã‚Œã‚‹
 inline bool operator >(const data_t& lhs, const data_t& rhs){ return lhs.m_key > rhs.m_key; }
 
-//ƒfƒtƒHƒ‹ƒg
+//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ
 //#define predicate_default predicate_func
 //#define predicate_default predicate_func_inline
 //#define predicate_default predicate_functor()
 #define predicate_default predicate_lambda
 
 //----------------------------------------
-//ƒƒCƒ“
+//ãƒ¡ã‚¤ãƒ³
 int main(const int argc, const char* argv[])
 {
-	//ŠÔŒv‘ª
+	//æ™‚é–“è¨ˆæ¸¬
 	auto begin_time = std::chrono::system_clock::now();
 	auto prev_time = begin_time;
 
-	//ˆ—ŠÔŒv‘ª
+	//å‡¦ç†æ™‚é–“è¨ˆæ¸¬
 	auto calcElapsedTime = [](const std::chrono::system_clock::time_point& now_time, const std::chrono::system_clock::time_point& prev_time) -> double
 	{
 		const auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(now_time - prev_time);
@@ -1475,7 +1971,7 @@ int main(const int argc, const char* argv[])
 		return calcElapsedTime(std::chrono::system_clock::now(), prev_time);
 	};
 
-	//ˆ—ŠÔ•\¦
+	//å‡¦ç†æ™‚é–“è¡¨ç¤º
 	auto printElapsedTimeDirect = [&calcElapsedTime](const double elapsed_time, const bool is_preint) -> std::chrono::system_clock::time_point
 	{
 		if (is_preint)
@@ -1489,7 +1985,7 @@ int main(const int argc, const char* argv[])
 		return printElapsedTimeDirect(elapsed_time, is_print);
 	};
 
-	//”z—ñó‘Ô•\¦
+	//é…åˆ—çŠ¶æ…‹è¡¨ç¤º
 	auto showArrayCondition = [&prev_time, &printElapsedTime](const array_t* array)
 	{
 		int ng = calcUnordered(*array, predicate_default);
@@ -1524,17 +2020,17 @@ int main(const int argc, const char* argv[])
 		prev_time = printElapsedTime(prev_time, is_print);
 	};
 
-	//”z—ñ‰Šú‰»
+	//é…åˆ—åˆæœŸåŒ–
 	enum init_type_t
 	{
-		init_shuffle1 = 0,//ƒVƒƒƒbƒtƒ‹ƒpƒ^[ƒ“1
-		init_shuffle2,//ƒVƒƒƒbƒtƒ‹ƒpƒ^[ƒ“2
-		init_shuffle3,//ƒVƒƒƒbƒtƒ‹ƒpƒ^[ƒ“3
-		init_ordered,//®—ñÏ‚İƒpƒ^[ƒ“
-		init_reversed,//‹t‡®—ñÏ‚İƒpƒ^[ƒ“
-		init_ordered_without_both_ends,//®—ñÏ‚İƒpƒ^[ƒ“i‚½‚¾‚µAn’[‚ÆI’[‚Ì‚İ“ü‚ê‘Ö‚¦j
-		init_hard_with_quick_sort,//ƒNƒCƒbƒNƒ\[ƒg‚ÉŒµ‚µ‚¢ƒpƒ^[ƒ“
-		init_pattern_num//‰Šú‰»ƒpƒ^[ƒ“”
+		init_shuffle1 = 0,//ã‚·ãƒ£ãƒƒãƒ•ãƒ«ãƒ‘ã‚¿ãƒ¼ãƒ³1
+		init_shuffle2,//ã‚·ãƒ£ãƒƒãƒ•ãƒ«ãƒ‘ã‚¿ãƒ¼ãƒ³2
+		init_shuffle3,//ã‚·ãƒ£ãƒƒãƒ•ãƒ«ãƒ‘ã‚¿ãƒ¼ãƒ³3
+		init_ordered,//æ•´åˆ—æ¸ˆã¿ãƒ‘ã‚¿ãƒ¼ãƒ³
+		init_reversed,//é€†é †æ•´åˆ—æ¸ˆã¿ãƒ‘ã‚¿ãƒ¼ãƒ³
+		init_ordered_without_both_ends,//æ•´åˆ—æ¸ˆã¿ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼ˆãŸã ã—ã€å§‹ç«¯ã¨çµ‚ç«¯ã®ã¿å…¥ã‚Œæ›¿ãˆï¼‰
+		init_hard_with_quick_sort,//ã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆã«å³ã—ã„ãƒ‘ã‚¿ãƒ¼ãƒ³
+		init_pattern_num//åˆæœŸåŒ–ãƒ‘ã‚¿ãƒ¼ãƒ³æ•°
 	};
 	auto makeArray = [&prev_time, &printElapsedTime, &showArrayCondition](array_t*& array, const init_type_t type, const char* type_name)
 	{
@@ -1624,7 +2120,7 @@ int main(const int argc, const char* argv[])
 		const bool is_print = false;
 		prev_time = printElapsedTime(prev_time, is_print);
 		showArrayCondition(array);
-	#if 0//”z—ñî•ñ•\¦iƒfƒoƒbƒOŠm”F—pj
+	#if 0//é…åˆ—æƒ…å ±è¡¨ç¤ºï¼ˆãƒ‡ãƒãƒƒã‚°ç¢ºèªç”¨ï¼‰
 		const data_t* element0_p = &(*array)[0];
 		const data_t* element1_p = &(*array)[1];
 		const std::size_t data_size = sizeof(data_t);
@@ -1675,7 +2171,7 @@ int main(const int argc, const char* argv[])
 		prev_time = printElapsedTime(prev_time, is_print);
 	};
 
-	//”z—ñíœ
+	//é…åˆ—å‰Šé™¤
 	auto deleteArray = [&prev_time, &printElapsedTime](array_t*& array, const char* type_name)
 	{
 		printf("----- Delete array(%s) -----\n", type_name);
@@ -1707,7 +2203,7 @@ int main(const int argc, const char* argv[])
 		prev_time = printElapsedTime(prev_time, is_print);
 	};
 
-	//ƒ\[ƒg
+	//ã‚½ãƒ¼ãƒˆ
 	typedef std::function<std::size_t(array_t*)> sort_procedure;
 	auto sort = [&prev_time, &getElapsedTime, &printElapsedTimeDirect, &showArrayCondition](array_t*& array, sort_procedure sort_proc, double& elapsed_time, std::size_t& swapped_count)
 	{
@@ -1724,20 +2220,20 @@ int main(const int argc, const char* argv[])
 			printf("[swapped=%d count(s)]\n", swapped_count);
 	};
 	
-	//Œv‘ª
+	//è¨ˆæ¸¬
 	auto measure = [&copyWorkArray, &sort, &deleteWorkArray](const init_type_t type, const char* type_name, sort_procedure sort_proc, double& elapsed_time, std::size_t& swapped_count)
 	{
 		printf("\n");
 		printf("------------------------------\n");
 		printf("Sort array(%s)\n", type_name);
 		printf("------------------------------\n");
-		array_t* array = nullptr;//”z—ñ
-		copyWorkArray(array, type, type_name);//”z—ñ‰Šú‰»
-		sort(array, sort_proc, elapsed_time, swapped_count);//ƒ\[ƒg
-		deleteWorkArray(array, type_name);//”z—ñíœ
+		array_t* array = nullptr;//é…åˆ—
+		copyWorkArray(array, type, type_name);//é…åˆ—åˆæœŸåŒ–
+		sort(array, sort_proc, elapsed_time, swapped_count);//ã‚½ãƒ¼ãƒˆ
+		deleteWorkArray(array, type_name);//é…åˆ—å‰Šé™¤
 	};
 
-	//ƒ\[ƒgˆ—ŠÔWŒv—p\‘¢‘Ì
+	//ã‚½ãƒ¼ãƒˆå‡¦ç†æ™‚é–“é›†è¨ˆç”¨æ§‹é€ ä½“
 	struct sum_t
 	{
 		int count;
@@ -1785,7 +2281,7 @@ int main(const int argc, const char* argv[])
 		{}
 	};
 	
-	//‚Ü‚Æ‚ß‚ÄŒv‘ª
+	//ã¾ã¨ã‚ã¦è¨ˆæ¸¬
 	auto measureAll = [&measure](const char* sort_type_name, sort_procedure sort_proc) -> sum_t
 	{
 		printf("============================================================\n");
@@ -1794,36 +2290,36 @@ int main(const int argc, const char* argv[])
 
 		#define PARAM(x) init_##x, #x
 
-		//ƒ\[ƒgˆ—ŠÔWŒv
+		//ã‚½ãƒ¼ãƒˆå‡¦ç†æ™‚é–“é›†è¨ˆ
 		sum_t sum;
 		double elapsed_time;
 		std::size_t swapped_count;
 
-		//ƒVƒƒƒbƒtƒ‹ƒpƒ^[ƒ“‚P
+		//ã‚·ãƒ£ãƒƒãƒ•ãƒ«ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼‘
 		measure(PARAM(shuffle1), sort_proc, elapsed_time, swapped_count);
 		sum.add(elapsed_time, swapped_count);
 
-		//ƒVƒƒƒbƒtƒ‹ƒpƒ^[ƒ“‚Q
+		//ã‚·ãƒ£ãƒƒãƒ•ãƒ«ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼’
 		measure(PARAM(shuffle2), sort_proc, elapsed_time, swapped_count);
 		sum.add(elapsed_time, swapped_count);
 
-		//ƒVƒƒƒbƒtƒ‹ƒpƒ^[ƒ“‚R
+		//ã‚·ãƒ£ãƒƒãƒ•ãƒ«ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼“
 		measure(PARAM(shuffle3), sort_proc, elapsed_time, swapped_count);
 		sum.add(elapsed_time, swapped_count);
 
-		//®—ñÏ‚İƒpƒ^[ƒ“
+		//æ•´åˆ—æ¸ˆã¿ãƒ‘ã‚¿ãƒ¼ãƒ³
 		measure(PARAM(ordered), sort_proc, elapsed_time, swapped_count);
 		sum.add(elapsed_time, swapped_count);
 
-		//‹t‡®—ñÏ‚İƒpƒ^[ƒ“
+		//é€†é †æ•´åˆ—æ¸ˆã¿ãƒ‘ã‚¿ãƒ¼ãƒ³
 		measure(PARAM(reversed), sort_proc, elapsed_time, swapped_count);
 		sum.add(elapsed_time, swapped_count);
 
-		//®—ñÏ‚İƒpƒ^[ƒ“i‚½‚¾‚µAn’[‚ÆI’[‚Ì‚İ“ü‚ê‘Ö‚¦j
+		//æ•´åˆ—æ¸ˆã¿ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼ˆãŸã ã—ã€å§‹ç«¯ã¨çµ‚ç«¯ã®ã¿å…¥ã‚Œæ›¿ãˆï¼‰
 		measure(PARAM(ordered_without_both_ends), sort_proc, elapsed_time, swapped_count);
 		sum.add(elapsed_time, swapped_count);
 
-		//ƒNƒCƒbƒNƒ\[ƒg‚ÉŒµ‚µ‚¢ƒpƒ^[ƒ“
+		//ã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆã«å³ã—ã„ãƒ‘ã‚¿ãƒ¼ãƒ³
 		measure(PARAM(hard_with_quick_sort), sort_proc, elapsed_time, swapped_count);
 		sum.add(elapsed_time, swapped_count);
 
@@ -1849,7 +2345,7 @@ int main(const int argc, const char* argv[])
 	};
 	
 	//----------------------------------------
-	//‘ª’èŠJn
+	//æ¸¬å®šé–‹å§‹
 	printf("============================================================\n");
 	printf("Initialize\n");
 	printf("============================================================\n");
@@ -1858,11 +2354,11 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	//----------------------------------------
-	//•W€ƒ‰ƒCƒuƒ‰ƒŠ‚É‚æ‚éƒ\[ƒg
+	//æ¨™æº–ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã«ã‚ˆã‚‹ã‚½ãƒ¼ãƒˆ
 
 	//--------------------
-	//Cƒ‰ƒCƒuƒ‰ƒŠFqsortŠÖ”
-	//ƒAƒ‹ƒSƒŠƒYƒ€FƒNƒCƒbƒNƒ\[ƒg
+	//Cãƒ©ã‚¤ãƒ–ãƒ©ãƒªï¼šqsorté–¢æ•°
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆ
 	auto clib_qsort = [](array_t* array) -> std::size_t
 	{
 		qsort(&array->at(0), array->size(),sizeof(data_t), predicate_func_qsort);
@@ -1873,8 +2369,8 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	//--------------------
-	//STLƒ\[ƒg1F’ÊíŠÖ”‚Å”äŠr
-	//ƒAƒ‹ƒSƒŠƒYƒ€FƒCƒ“ƒgƒƒ\[ƒgiƒNƒCƒbƒNƒ\[ƒg{ƒq[ƒvƒ\[ƒg{‘}“üƒ\[ƒgj
+	//STLã‚½ãƒ¼ãƒˆ1ï¼šé€šå¸¸é–¢æ•°ã§æ¯”è¼ƒ
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚¤ãƒ³ãƒˆãƒ­ã‚½ãƒ¼ãƒˆï¼ˆã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆï¼‹ãƒ’ãƒ¼ãƒ—ã‚½ãƒ¼ãƒˆï¼‹æŒ¿å…¥ã‚½ãƒ¼ãƒˆï¼‰
 	auto stl_sort1 = [](array_t* array) -> std::size_t
 	{
 		std::sort(array->begin(), array->end(), predicate_func);
@@ -1884,8 +2380,8 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("\n");
 
-	//STLƒ\[ƒg2FƒCƒ“ƒ‰ƒCƒ“ŠÖ”‚Å”äŠr
-	//ƒAƒ‹ƒSƒŠƒYƒ€Fi“¯ãj
+	//STLã‚½ãƒ¼ãƒˆ2ï¼šã‚¤ãƒ³ãƒ©ã‚¤ãƒ³é–¢æ•°ã§æ¯”è¼ƒ
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šï¼ˆåŒä¸Šï¼‰
 	auto stl_sort2 = [](array_t* array) -> std::size_t
 	{
 		std::sort(array->begin(), array->end(), predicate_func_inline);
@@ -1895,8 +2391,8 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("\n");
 
-	//STLƒ\[ƒg3FŠÖ”ƒIƒuƒWƒFƒNƒg‚Å”äŠr
-	//ƒAƒ‹ƒSƒŠƒYƒ€Fi“¯ãj
+	//STLã‚½ãƒ¼ãƒˆ3ï¼šé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã§æ¯”è¼ƒ
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šï¼ˆåŒä¸Šï¼‰
 	auto stl_sort3 = [](array_t* array) -> std::size_t
 	{
 		std::sort(array->begin(), array->end(), predicate_functor());
@@ -1906,8 +2402,8 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("\n");
 
-	//STLƒ\[ƒg4Fƒ‰ƒ€ƒ_ŠÖ”‚Å”äŠr
-	//ƒAƒ‹ƒSƒŠƒYƒ€Fi“¯ãj
+	//STLã‚½ãƒ¼ãƒˆ4ï¼šãƒ©ãƒ ãƒ€é–¢æ•°ã§æ¯”è¼ƒ
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šï¼ˆåŒä¸Šï¼‰
 	auto stl_sort4 = [](array_t* array) -> std::size_t
 	{
 		std::sort(array->begin(), array->end(), predicate_lambda);
@@ -1918,8 +2414,8 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	//--------------------
-	//STLˆÀ’èƒ\[ƒg
-	//ƒAƒ‹ƒSƒŠƒYƒ€Fƒ}[ƒWƒ\[ƒg ¦ŠO•”ƒƒ‚ƒŠg—p‚ ‚è
+	//STLå®‰å®šã‚½ãƒ¼ãƒˆ
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šãƒãƒ¼ã‚¸ã‚½ãƒ¼ãƒˆ â€»å¤–éƒ¨ãƒ¡ãƒ¢ãƒªä½¿ç”¨ã‚ã‚Š
 	auto stl_stable_sort = [](array_t* array) -> std::size_t
 	{
 		std::stable_sort(array->begin(), array->end(), predicate_func);
@@ -1930,33 +2426,33 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	//----------------------------------------
-	//ŒğŠ·ƒ\[ƒg
+	//äº¤æ›ã‚½ãƒ¼ãƒˆ
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€Fƒoƒuƒ‹ƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šãƒãƒ–ãƒ«ã‚½ãƒ¼ãƒˆ
 	auto bubble_sort = [](array_t* array) -> std::size_t
 	{
 		return bubbleSort(*array, predicate_default);
 		
-		//‚»‚Ì‘¼‚Ìƒ\[ƒgw’è•û–@
+		//ãã®ä»–ã®ã‚½ãƒ¼ãƒˆæŒ‡å®šæ–¹æ³•
 		//return bubbleSort(&array->at(0), array->size(), predicate_default);
 		//return bubbleSort(array->_Elems, predicate_default);
 		//return bubbleSort(&array->at(0), &array->at(array->size() - 1) + 1, predicate_default);
 		//return bubbleSort(array->begin(), array->end(), predicate_default);
 		//return bubbleSort(*array, predicate_default);
-		//”äŠrŠÖ”‚ğÈ—ª‚·‚é•û–@ ¦ operator<(const T&, const T&) ‚ª’è‹`‚³‚ê‚Ä‚¢‚é•K—v‚ ‚è
+		//æ¯”è¼ƒé–¢æ•°ã‚’çœç•¥ã™ã‚‹æ–¹æ³• â€» operator<(const T&, const T&) ãŒå®šç¾©ã•ã‚Œã¦ã„ã‚‹å¿…è¦ã‚ã‚Š
 		//return bubbleSort(&array->at(0), array->size());
 		//return bubbleSort(array->_Elems);
 		//return bubbleSort(&array->at(0), &array->at(array->size() - 1) + 1);
 		//return bubbleSort(array->begin(), array->end());
 		//return bubbleSort(*array);
-		//ê—p‚Ì”äŠrŠÖ”‚ğİ‚¯‚¸A”äŠr‚ğ‹t“]‚·‚é•û–@ ¦ operator>(const T&, const T&) ‚ª’è‹`‚³‚ê‚Ä‚¢‚é•K—v‚ ‚è
+		//å°‚ç”¨ã®æ¯”è¼ƒé–¢æ•°ã‚’è¨­ã‘ãšã€æ¯”è¼ƒã‚’é€†è»¢ã™ã‚‹æ–¹æ³• â€» operator>(const T&, const T&) ãŒå®šç¾©ã•ã‚Œã¦ã„ã‚‹å¿…è¦ã‚ã‚Š
 		//return bubbleSort(*array, std::greater<data_t>());
 	};
 	const sum_t sum_bubble = measureAll("Bubble sort", bubble_sort);
 	printf("\n");
 	printf("\n");
 	
-	//ƒAƒ‹ƒSƒŠƒYƒ€FƒVƒF[ƒJ[ƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚·ã‚§ãƒ¼ã‚«ãƒ¼ã‚½ãƒ¼ãƒˆ
 	auto shaker_sort = [](array_t* array) -> std::size_t
 	{
 		return shakerSort(*array, predicate_default);
@@ -1965,7 +2461,7 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("\n");
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€FŠï‹ö“]’uƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šå¥‡é‡è»¢ç½®ã‚½ãƒ¼ãƒˆ
 	auto odd_even_sort = [](array_t* array) -> std::size_t
 	{
 		return oddEvenSort(*array, predicate_default);
@@ -1974,7 +2470,7 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("\n");
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€FƒVƒFƒAƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚·ã‚§ã‚¢ã‚½ãƒ¼ãƒˆ
 	auto shear_sort = [](array_t* array) -> std::size_t
 	{
 		return shearSort(*array, predicate_default);
@@ -1983,7 +2479,7 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("\n");
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€FƒRƒ€ƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚³ãƒ ã‚½ãƒ¼ãƒˆ
 	auto comb_sort = [](array_t* array) -> std::size_t
 	{
 		return combSort(*array, predicate_default);
@@ -1992,7 +2488,7 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("\n");
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€Fƒm[ƒ€ƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šãƒãƒ¼ãƒ ã‚½ãƒ¼ãƒˆ
 	auto gnome_sort = [](array_t* array) -> std::size_t
 	{
 		return gnomeSort(*array, predicate_default);
@@ -2001,7 +2497,7 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("\n");
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€FƒNƒCƒbƒNƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚¯ã‚¤ãƒƒã‚¯ã‚½ãƒ¼ãƒˆ
 	auto quick_sort = [](array_t* array) -> std::size_t
 	{
 		return quickSort(*array, predicate_default);
@@ -2011,9 +2507,9 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	//----------------------------------------
-	//‘I‘ğƒ\[ƒg
+	//é¸æŠã‚½ãƒ¼ãƒˆ
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€F‘I‘ğƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šé¸æŠã‚½ãƒ¼ãƒˆ
 	auto selection_sort = [](array_t* array) -> std::size_t
 	{
 		return selectionSort(*array, predicate_default);
@@ -2022,7 +2518,7 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("\n");
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€Fƒq[ƒvƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šãƒ’ãƒ¼ãƒ—ã‚½ãƒ¼ãƒˆ
 	auto heap_sort = [](array_t* array) -> std::size_t
 	{
 		return heapSort(*array, predicate_default);
@@ -2032,9 +2528,9 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	//----------------------------------------
-	//‘}“üƒ\[ƒg
+	//æŒ¿å…¥ã‚½ãƒ¼ãƒˆ
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€F‘}“üƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šæŒ¿å…¥ã‚½ãƒ¼ãƒˆ
 	auto insertion_sort = [](array_t* array) -> std::size_t
 	{
 		return insertionSort(*array, predicate_default);
@@ -2043,7 +2539,7 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("\n");
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€FƒVƒFƒ‹ƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚·ã‚§ãƒ«ã‚½ãƒ¼ãƒˆ
 	auto shell_sort = [](array_t* array) -> std::size_t
 	{
 		return shellSort(*array, predicate_default);
@@ -2053,9 +2549,9 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	//----------------------------------------
-	//ƒ}[ƒWƒ\[ƒg
+	//ãƒãƒ¼ã‚¸ã‚½ãƒ¼ãƒˆ
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€FƒCƒ“ƒvƒŒ[ƒXƒ}[ƒWƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚¤ãƒ³ãƒ—ãƒ¬ãƒ¼ã‚¹ãƒãƒ¼ã‚¸ã‚½ãƒ¼ãƒˆ
 	auto inplace_merge_sort = [](array_t* array) -> std::size_t
 	{
 		return inplaceMergeSort(*array, predicate_default);
@@ -2065,9 +2561,9 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	//----------------------------------------
-	//¬¬ƒ\[ƒg
+	//æ··æˆã‚½ãƒ¼ãƒˆ
 
-	//ƒAƒ‹ƒSƒŠƒYƒ€FƒCƒ“ƒgƒƒ\[ƒg
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚¤ãƒ³ãƒˆãƒ­ã‚½ãƒ¼ãƒˆ
 	auto intro_sort = [](array_t* array) -> std::size_t
 	{
 		return introSort(*array, predicate_default);
@@ -2077,9 +2573,25 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	//----------------------------------------
-	//‘ª’èI—¹
+	//éæ¯”è¼ƒã‚½ãƒ¼ãƒˆ
 
-	//Œ‹‰Ê‚ğ•\¦
+	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šåŸºæ•°ã‚½ãƒ¼ãƒˆ
+	auto radix_sort = [](array_t* array) -> std::size_t
+	{
+		struct getKey{
+			typedef int key_type;
+			inline key_type operator()(const data_t& obj){ return obj.m_key; }
+		};
+		return radixSort(*array, getKey());
+	};
+	const sum_t sum_radix = measureAll("Radix sort", radix_sort);
+	printf("\n");
+	printf("\n");
+
+	//----------------------------------------
+	//æ¸¬å®šçµ‚äº†
+
+	//çµæœã‚’è¡¨ç¤º
 	auto printLine = [](const char* name, const sum_t& sum)
 	{
 		printf("- %-23s %13.9llf/%13.9llf/%13.9llf/%13.9llf",
@@ -2116,7 +2628,7 @@ int main(const int argc, const char* argv[])
 	printLine("std::sort(functor):", sum_stl3);
 	printLine("std::sort(lambda):", sum_stl4);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
-	printf("[STL stable sort](Merge sort) *Not inplace\n");
+	printf("[STL stable sort](Merge sort) *Not In-place sort\n");
 	printLine("std::stable_sort<S>:", sum_stl_stable);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("[Exchange sorts]\n");
@@ -2142,11 +2654,14 @@ int main(const int argc, const char* argv[])
 	printf("[Hybrid sorts]\n");
 	printLine("Intro sort:", sum_intro);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
+	printf("[Distribution sorts] *Not In-place sort\n");
+	printLine("Radix sort<S>:", sum_radix);
+	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("* <S> ... Stable sort algorithm.\n");
 	printf("\n");
 
 	//----------------------------------------
-	//‘ª’èI—¹
+	//æ¸¬å®šçµ‚äº†
 	printf("============================================================\n");
 	printf("Finalize\n");
 	printf("============================================================\n");
@@ -2156,14 +2671,14 @@ int main(const int argc, const char* argv[])
 	printf("============================================================\n");
 	printf("End\n");
 	printf("============================================================\n");
-	printElapsedTime(begin_time, true);//ˆ—ŠÔ•\¦
+	printElapsedTime(begin_time, true);//å‡¦ç†æ™‚é–“è¡¨ç¤º
 
-#if 0
-	//ƒ|ƒCƒ“ƒ^•Ï”‚Ìƒ\[ƒgˆ—“®ìŠm”F
+#if 1
+	//ãƒã‚¤ãƒ³ã‚¿å¤‰æ•°ã®ã‚½ãƒ¼ãƒˆå‡¦ç†å‹•ä½œç¢ºèª
 	{
 		printf("\n");
 		printf("\n");
-		printf("--- Test for pointer sort ---\n");
+		printf("--- Test for sort with pointer ---\n");
 		static const std::size_t data_num = 10;
 		std::array<data_t, data_num> d_arr;
 		std::array<data_t*, data_num> p_arr;
@@ -2180,12 +2695,16 @@ int main(const int argc, const char* argv[])
 			}
 			printf("\n");
 		};
+		auto predicate = [](data_t* val1, data_t* val2){ return val1->m_key < val2->m_key; };
+		std::size_t unordered = calcUnordered(p_arr, predicate);
 		printf("[Before]\n");
 		printData();
-		auto predicate = [](data_t* val1, data_t* val2){ return val1->m_key < val2->m_key; };
+		printf("unordered=%d\n", unordered);
 		introSort(p_arr, predicate);
+		unordered = calcUnordered(p_arr, predicate);
 		printf("[After]\n");
 		printData();
+		printf("unordered=%d\n", unordered);
 		printf("--- End ---\n");
 	}
 #endif

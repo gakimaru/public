@@ -1906,14 +1906,14 @@ struct data_t
 	data_t& operator=(const data_t&& rhs)
 	{
 		memcpy(this, &rhs, sizeof(*this));
-		printf("data_t::move_assignment_operator\n");
+		printf("data_t::move_operator\n");
 		return *this;
 	}
 	//コピーオペレータ
 	data_t& operator=(const data_t& rhs)
 	{
 		memcpy(this, &rhs, sizeof(*this));
-		printf("data_t::copy_assignment_operator\n");
+		printf("data_t::copy_operator\n");
 		return *this;
 	}
 	//ムーブコンストラクタ

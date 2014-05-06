@@ -44,8 +44,8 @@ template<class T>
 struct _swapObjects{
 	inline static void exec(T& val1, T& val2)
 	{
-#if 1//ムーブコンストラクタとムーブオペレータを使用して入れ替え（STLと同じ）
-		T tmp(std::move(val2));
+#if 1//ムーブオペレータを使用して入れ替え（#include <utility> の std::swap() と同じ）
+		T tmp = std::move(std::move(val2));
 		val2 = std::move(val1);
 		val1 = std::move(tmp);
 #else//コンストラクタ／オペレータの呼び出しを避けて単純なメモリコピー
@@ -1103,14 +1103,14 @@ struct data_t
 	data_t& operator=(const data_t&& rhs)
 	{
 		memcpy(this, &rhs, sizeof(*this));
-		printf("data_t::move_assignment_operator\n");
+		printf("data_t::move_operator\n");
 		return *this;
 	}
 	//コピーオペレータ
 	data_t& operator=(const data_t& rhs)
 	{
 		memcpy(this, &rhs, sizeof(*this));
-		printf("data_t::copy_assignment_operator\n");
+		printf("data_t::copy_operator\n");
 		return *this;
 	}
 	//ムーブコンストラクタ

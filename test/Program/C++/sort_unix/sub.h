@@ -1,73 +1,47 @@
 //--------------------------------------------------------------------------------
-//ƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€ƒeƒXƒg—pÝ’è‚ÆƒRƒ“ƒpƒCƒ‰ƒXƒCƒbƒ`
+//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ãƒ†ã‚¹ãƒˆç”¨è¨­å®šã¨ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã‚¹ã‚¤ãƒƒãƒ
 
-#define USE_GCC//GCC‚ðŽg—p
+#include "basic.h"
 
-//#define TEST_DATA_WATCH_CONSTRUCTOR//ƒRƒ“ƒXƒgƒ‰ƒNƒ^^ƒfƒXƒgƒ‰ƒNƒ^^‘ã“ü‰‰ŽZŽq‚Ì“®ì‚ðŠm”F‚·‚éê‡A‚±‚Ìƒ}ƒNƒ‚ð—LŒø‰»‚·‚é
+//#define TEST_DATA_WATCH_CONSTRUCTOR//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ä»£å…¥æ¼”ç®—å­ã®å‹•ä½œã‚’ç¢ºèªã™ã‚‹å ´åˆã€ã“ã®ãƒžã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
 
-//static const int TEST_DATA_COUNT = 500000;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 100000;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 50000;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-static const int TEST_DATA_COUNT = 20000;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 10000;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 5000;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 1000;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 100;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 32;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 10;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 5;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 3;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 2;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
-//static const int TEST_DATA_COUNT = 1;//ƒeƒXƒgƒf[ƒ^Œ”iÅ‘åj
+//static const int TEST_DATA_COUNT = 500000;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 100000;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 50000;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+static const int TEST_DATA_COUNT = 20000;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 10000;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 5000;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 1000;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 100;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 32;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 10;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 5;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 3;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 2;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
+//static const int TEST_DATA_COUNT = 1;//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä»¶æ•°ï¼ˆæœ€å¤§ï¼‰
 
-//#define TEST_DATA_SAME_KEY_NUM 1//ƒeƒXƒgƒf[ƒ^‚É“o˜^‚·‚é“¯ˆêƒL[ƒf[ƒ^‚Ì”iŠeƒL[‚Ìƒf[ƒ^‚ðŽw’è”‚¸‚Â“o˜^j ¦ˆÀ’èƒ\[ƒg‚Ì‹““®Šm”F—p
-#define TEST_DATA_SAME_KEY_NUM 3//ƒeƒXƒgƒf[ƒ^‚É“o˜^‚·‚é“¯ˆêƒL[ƒf[ƒ^‚Ì”iŠeƒL[‚Ìƒf[ƒ^‚ðŽw’è”‚¸‚Â“o˜^j ¦ˆÀ’èƒ\[ƒg‚Ì‹““®Šm”F—p
+//#define TEST_DATA_SAME_KEY_NUM 1//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã«ç™»éŒ²ã™ã‚‹åŒä¸€ã‚­ãƒ¼ãƒ‡ãƒ¼ã‚¿ã®æ•°ï¼ˆå„ã‚­ãƒ¼ã®ãƒ‡ãƒ¼ã‚¿ã‚’æŒ‡å®šæ•°ãšã¤ç™»éŒ²ï¼‰ â€»å®‰å®šã‚½ãƒ¼ãƒˆã®æŒ™å‹•ç¢ºèªç”¨
+#define TEST_DATA_SAME_KEY_NUM 3//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã«ç™»éŒ²ã™ã‚‹åŒä¸€ã‚­ãƒ¼ãƒ‡ãƒ¼ã‚¿ã®æ•°ï¼ˆå„ã‚­ãƒ¼ã®ãƒ‡ãƒ¼ã‚¿ã‚’æŒ‡å®šæ•°ãšã¤ç™»éŒ²ï¼‰ â€»å®‰å®šã‚½ãƒ¼ãƒˆã®æŒ™å‹•ç¢ºèªç”¨
 
-//#define TEST_DATA_SIZE 512//ƒeƒXƒgƒf[ƒ^ˆêŒ‚ÌƒTƒCƒY
-//#define TEST_DATA_SIZE 256//ƒeƒXƒgƒf[ƒ^ˆêŒ‚ÌƒTƒCƒY
-#define TEST_DATA_SIZE 64//ƒeƒXƒgƒf[ƒ^ˆêŒ‚ÌƒTƒCƒY
-//#define TEST_DATA_SIZE 4//ƒeƒXƒgƒf[ƒ^ˆêŒ‚ÌƒTƒCƒY
+//#define TEST_DATA_SIZE 512//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä¸€ä»¶ã®ã‚µã‚¤ã‚º
+//#define TEST_DATA_SIZE 256//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä¸€ä»¶ã®ã‚µã‚¤ã‚º
+#define TEST_DATA_SIZE 64//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä¸€ä»¶ã®ã‚µã‚¤ã‚º
+//#define TEST_DATA_SIZE 4//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä¸€ä»¶ã®ã‚µã‚¤ã‚º
 
-#define TEST_DATA_ALIGN 16//ƒeƒXƒgƒf[ƒ^ˆêŒ‚ÌƒAƒ‰ƒCƒ“ƒƒ“ƒg
-//#define TEST_DATA_ALIGN 4//ƒeƒXƒgƒf[ƒ^ˆêŒ‚ÌƒAƒ‰ƒCƒ“ƒƒ“ƒg
-
-//ƒAƒ‰ƒCƒ“ƒƒ“ƒg‘®«
-#ifdef USE_GCC
-//#define alignas(n) __attribute__((aligned(n)))//for GCC
-//#define alignof(T) __alignof__(T)//for GCC
-#else//USE_GCC
-#define alignas(n) __declspec(align(n))//for Visual C++
-#define alignof(T) __alignof(T)//for Visual C++
-#endif//USE_GCC
-
-//ƒAƒ‰ƒCƒ“ƒƒ“ƒgŽw’è•t‚«ƒƒ‚ƒŠŠm•ÛŠÖ”
-#ifdef USE_GCC
-#include <stdlib.h>//posix_memalign()—p
-#include <memory.h>//free()—p
-inline void* _aligned_malloc(size_t size, size_t alignment)
-{
-	void *p;
-	int ret = posix_memalign(&p, alignment, size);
-	return (ret == 0) ? p : 0;
-}
-#define _aligned_free(p) free(p)
-#else//USE_GCC
-#include <memory.h>//_aligned_malloc(), _aligned_free()—p
-//void* _aligned_malloc(size_t size, size_t alignment);
-//void _aligned_free(void* p);
-#endif//USE_GCC
+#define TEST_DATA_ALIGN 16//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä¸€ä»¶ã®ã‚¢ãƒ©ã‚¤ãƒ³ãƒ¡ãƒ³ãƒˆ
+//#define TEST_DATA_ALIGN 4//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä¸€ä»¶ã®ã‚¢ãƒ©ã‚¤ãƒ³ãƒ¡ãƒ³ãƒˆ
 
 //----------------------------------------
-//ƒeƒXƒg—p\‘¢‘Ì
+//ãƒ†ã‚¹ãƒˆç”¨æ§‹é€ ä½“
 #ifdef TEST_DATA_WATCH_CONSTRUCTOR
 #include <stdio.h>
-#include <memory.h>//memcpy—p
+#include <memory.h>//memcpyç”¨
 #endif//TEST_DATA_WATCH_CONSTRUCTOR
 struct alignas(TEST_DATA_ALIGN) data_t
 {
-	int m_key;//ƒL[
-	int m_seqNo;//ƒV[ƒPƒ“ƒX”Ô†
-	char m_data[TEST_DATA_SIZE];//ƒf[ƒ^i‘å‚«–Ú‚ÌƒTƒCƒY‚É‚·‚éj
+	int m_key;//ã‚­ãƒ¼
+	int m_seqNo;//ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·
+	char m_data[TEST_DATA_SIZE];//ãƒ‡ãƒ¼ã‚¿ï¼ˆå¤§ãç›®ã®ã‚µã‚¤ã‚ºã«ã™ã‚‹ï¼‰
 
 #ifdef TEST_DATA_WATCH_CONSTRUCTOR
 	data_t& operator=(const data_t&& rhs)

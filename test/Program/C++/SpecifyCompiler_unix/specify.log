@@ -11,19 +11,19 @@ Plataform: "Cygin"(x86 32bits, little-endian), Ver=[0(0x00000000).0(0x00000000)]
     Target plarform is "Cygwin"
 
 __FILE__="specify.cpp"
-__LINE__=448
+__LINE__=452
 __FUNCTION__="func"
 __PRETTY_FUNCTION__="static void main(int, const char**)::test::func()"
 __FUNCSIG__="static void main(int, const char**)::test::func()"
 __func__="func"
 __FUNCDNAME__=""
-__DATE__="May  5 2014"
-__TIME__="09:03:13"
-__TIMESTAMP__="Mon May  5 09:03:09 2014"
+__DATE__="May  7 2014"
+__TIME__="01:01:47"
+__TIMESTAMP__="Tue May  6 19:59:13 2014"
 
 GET_FUNC_NAME()="static void main(int, const char**)::test::func()"
-GET_FILE_LINE()="specify.cpp(459)"
-GET_FILE_LINE_TIME()="specify.cpp(460)[Mon May  5 09:03:09 2014]"
+GET_FILE_LINE()="specify.cpp(463)"
+GET_FILE_LINE_TIME()="specify.cpp(464)[Tue May  6 19:59:13 2014]"
 
 nullptr_var=0x0
     'nullptr' is featured.

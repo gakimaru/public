@@ -18,10 +18,12 @@
 #include <stdint.h>//intptr_t用
 #include <crtdefs.h>//ptrdiff_t用
 #include <cstddef>//std::size_t用
-#include <functional>//C++11 std::function用
 #include <type_traits>//C++11 std::is_class, std::conditional用
+#include <functional>//std::less, std::greater用
 #include <utility>//C++11 std::move用
 #include <assert.h>//assert用
+
+#include "basic.h"
 
 //--------------------------------------------------------------------------------
 //様々なソートアルゴリズム
@@ -83,6 +85,32 @@
 	}
 
 //----------------------------------------
+//非比較ソート処理オーバーロード関数用マクロ
+#define distributedSortFuncSet(func_name) \
+	template<class T, std::size_t N, class GET_KEY_FUNCTOR> \
+	inline std::size_t func_name(T(&array)[N], GET_KEY_FUNCTOR get_key_functor) \
+	{ \
+		return func_name(array, N, get_key_functor); \
+	} \
+	template<class T, class GET_KEY_FUNCTOR> \
+	inline std::size_t func_name(T* begin, T* end, GET_KEY_FUNCTOR get_key_functor) \
+	{ \
+		return func_name(begin, end - begin, get_key_functor); \
+	} \
+	template<class ITERATOR, class GET_KEY_FUNCTOR> \
+	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end, GET_KEY_FUNCTOR get_key_functor) \
+	{ \
+		const std::size_t size = end - begin; \
+		return size == 0 ? 0 : func_name(&begin[0], size, get_key_functor); \
+	} \
+	template<class CONTAINER, class GET_KEY_FUNCTOR> \
+	inline std::size_t func_name(CONTAINER& con, GET_KEY_FUNCTOR get_key_functor) \
+	{ \
+		std::size_t size = con.size(); \
+		return size == 0 ? 0 : func_name(&(con.at(0)), size, get_key_functor); \
+	}
+
+//----------------------------------------
 //整列状態確認
 template<class T, class PREDICATE>
 inline std::size_t calcUnordered(const T* array, const std::size_t size, PREDICATE predicate)
@@ -125,8 +153,8 @@ template<class T>
 struct _swapObjects{
 	inline static void exec(T& val1, T& val2)
 	{
-	#if 1//ムーブコンストラクタとムーブオペレータを使用して入れ替え（STLと同じ）
-		T tmp(std::move(val2));
+	#if 1//ムーブコンストラクタとムーブオペレータを使用して入れ替え（#include <utility> の std::swap() と同じ）
+		T tmp = std::move(val2);
 		val2 = std::move(val1);
 		val1 = std::move(tmp);
 	#else//コンストラクタ／オペレータの呼び出しを避けて単純なメモリコピー
@@ -1389,6 +1417,473 @@ inline std::size_t introSort(T* array, const std::size_t size, PREDICATE predica
 }
 sortFuncSet(introSort);
 
+//========================================
+//ソートアルゴリズム分類：非比較ソート
+//========================================
+
+//----------------------------------------
+//アルゴリズム：基数ソート
+//----------------------------------------
+//・平均計算時間：O(nk/s)
+//・最悪計算時間：O(nk/s)
+//・メモリ使用量：O(n) ※実際は O(n * 2) のキー情報(12 byte) + O(256 * 8) のキー参照情報(8 byte)
+//・安定性：　　　○
+//----------------------------------------
+#include <climits>//***_MAX用
+#include <type_traits>//C++11 std::conditional, std::integral_constant用
+#include <memory.h>//memset()用
+//キーの最大値取得
+template<typename KEY_TYPE>
+struct _radix_key{
+	typedef
+		typename std::conditional <
+			std::is_same<KEY_TYPE, unsigned char>::value,
+			std::integral_constant<unsigned char, UCHAR_MAX>,
+			typename std::conditional <
+				std::is_same<KEY_TYPE, signed char>::value,
+				std::integral_constant<signed char, SCHAR_MAX>,
+				typename std::conditional <
+					std::is_same<KEY_TYPE, unsigned short>::value,
+					std::integral_constant<unsigned short, USHRT_MAX>,
+					typename std::conditional <
+						std::is_same<KEY_TYPE, signed short>::value,
+						std::integral_constant<signed short, SHRT_MAX>,
+						typename std::conditional <
+							std::is_same<KEY_TYPE, unsigned int>::value,
+							std::integral_constant<unsigned int, UINT_MAX>,
+							typename std::conditional <
+								std::is_same<KEY_TYPE, signed int>::value,
+								std::integral_constant<signed int, INT_MAX>,
+								typename std::conditional <
+									std::is_same<KEY_TYPE, unsigned long>::value,
+									std::integral_constant<unsigned long, ULONG_MAX>,
+									typename std::conditional <
+										std::is_same<KEY_TYPE, signed long>::value,
+										std::integral_constant<signed long, LONG_MAX>,
+										typename std::conditional <
+											std::is_same<KEY_TYPE, unsigned long long>::value,
+											std::integral_constant<unsigned long long, ULLONG_MAX>,
+											typename std::conditional <
+												std::is_same<KEY_TYPE, signed long long>::value,
+												std::integral_constant<signed long long, LLONG_MAX>,
+												std::integral_constant<std::size_t, UINT_MAX>
+											>::type
+										>::type
+									>::type
+								>::type
+							>::type
+						>::type
+					>::type
+				>::type
+			>::type
+		>::type
+			max_t;
+	static const KEY_TYPE MAX = max_t::value;
+};
+//キーを取得　※キーが符号付型の場合
+template<class T, class GET_KEY_FUNCTOR>
+struct _radix_key_s{
+	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;
+	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;
+	inline static KEY_TYPE_U getKey(const T& obj, GET_KEY_FUNCTOR get_key_functor)
+	{
+		KEY_TYPE key = get_key_functor(obj);
+		return key >= 0 ?
+					static_cast<KEY_TYPE_U>(key) + _radix_key<KEY_TYPE>::MAX + 1:
+					static_cast<KEY_TYPE_U>(key  + _radix_key<KEY_TYPE>::MAX + 1);
+	}
+};
+//キーを取得　※キーが符号なし型の場合
+template<class T, class GET_KEY_FUNCTOR>
+struct _radix_key_u{
+	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;
+	typedef KEY_TYPE KEY_TYPE_U;
+	inline static KEY_TYPE_U getKey(const T& obj, GET_KEY_FUNCTOR get_key_functor)
+	{
+		return get_key_functor(obj);
+	}
+};
+//キーを取得
+template<class T, class GET_KEY_FUNCTOR>
+struct radix_key{
+	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;
+	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;
+	typedef
+		typename std::conditional<
+			std::is_signed<KEY_TYPE>::value,
+			_radix_key_s<T, GET_KEY_FUNCTOR>,
+			_radix_key_u<T, GET_KEY_FUNCTOR>
+		>::type
+			get_key_t;
+	inline static KEY_TYPE_U getKey(const T& obj, GET_KEY_FUNCTOR get_key_functor){ return get_key_t::getKey(obj, get_key_functor); }
+};
+//基数ソート本体
+template<class T, class GET_KEY_FUNCTOR>
+inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR get_key_functor)
+{
+	if (!array || size <= 1)
+		return 0;
+
+#if 0//再帰処理版
+	std::size_t swapped_count = 0;
+
+	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;//キー型
+	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;//符号なしキー型
+
+	static const std::size_t RADIX = 256;//基数
+
+	//キー情報定義
+	struct key_t
+	{
+		mutable const key_t* next;//次のキー情報
+		const T* ref;//実データの参照
+		KEY_TYPE_U key;//キー
+		inline KEY_TYPE_U set(const T* _ref, const KEY_TYPE_U _key)//値のセット
+		{
+			next = nullptr;
+			ref = _ref;
+			key = _key;
+			return key;
+		}
+	};
+	//キー情報生成
+	KEY_TYPE_U key_max = 0;//キーの最大値
+	key_t* key_tbl = new key_t[size];//※newでメモリ確保
+	{
+		T* elem_p = array;
+		key_t* key_p = key_tbl;
+		for (std::size_t index = 0; index < size; ++index, ++elem_p, ++key_p)
+			key_max = std::max(key_max, key_p->set(elem_p, radix_key<T, GET_KEY_FUNCTOR>::getKey(*elem_p, get_key_functor)));
+	}
+	//キーの最大値から最大の長さを算出
+	std::size_t key_len =
+		(key_max & 0xff00000000000000llu) != 0 ? 8 :
+		(key_max & 0x00ff000000000000llu) != 0 ? 7 :
+		(key_max & 0x0000ff0000000000llu) != 0 ? 6 :
+		(key_max & 0x000000ff00000000llu) != 0 ? 5 :
+		(key_max & 0xff000000) != 0 ? 4 :
+		(key_max & 0x00ff0000) != 0 ? 3 :
+		(key_max & 0xff00) != 0 ? 2 :
+		(key_max & 0xff) != 0 ? 1 :
+		0;
+	if (key_len == 0)//キーが 0 しかなければこの時点で終了
+	{
+		delete key_tbl;//メモリ破棄
+		return 0;
+	}
+	
+	//ソート用関数オブジェクト
+	struct sort_functor
+	{
+		//カウント数情報
+		struct counter_t
+		{
+			const key_t* keys;//キー情報の連結リスト
+			std::size_t count;//キー情報数
+			inline void add(const key_t* key_p)//キー追加（連結）
+			{
+				key_p->next = keys;
+				keys = key_p;
+				++count;
+			}
+		};
+		//カウントテーブル型
+		typedef counter_t counter_tbl_t[RADIX];
+		//インデックス計算
+		inline static unsigned char calcDigit(const KEY_TYPE_U key, const std::size_t key_len)
+		{
+			return (key >> (key_len << 3)) & 0xff;
+		}
+		//ソート内部処理用関数オブジェクト
+		//※次の基数別にキーを集める／ソート済み配列にデータをコピー
+		struct inner_functor
+		{
+			void operator()(T* sorted_array, std::size_t& array_index, const key_t* key_list, const std::size_t key_list_count, std::size_t key_len, const bool is_odd)
+			{
+				//キーがなければ、ソート済み配列にデータをコピー
+				if (key_len == 0)
+				{
+					if (is_odd)//奇数回目の実行の場合
+					{
+						T* sorted_p = sorted_array + array_index + key_list_count;
+						const key_t* key_p = key_list;
+						while (key_p)
+						{
+							*(--sorted_p) = std::move(*key_p->ref);
+							++array_index;
+							key_p = key_p->next;
+						}
+					}
+					else//if(!is_odd)//偶数回目の実行の場合
+					{
+						T* sorted_p = sorted_array + array_index;
+						const key_t* key_p = key_list;
+						while (key_p)
+						{
+							*(sorted_p++) = std::move(*key_p->ref);
+							++array_index;
+							key_p = key_p->next;
+						}
+					}
+					return;//終了
+				}
+				//次の基数別にキーを集める
+				--key_len;
+				counter_tbl_t child_tbl;
+				memset(child_tbl, 0, sizeof(child_tbl));
+				const key_t* key_p = key_list;
+				while (key_p)
+				{
+					const key_t* next_p = key_p->next;
+					child_tbl[calcDigit(key_p->key, key_len)].add(key_p);
+					key_p = next_p;
+				}
+				//さらに次の基数別にキーを集める
+				for (auto& child : child_tbl)
+				{
+					if (child.keys)
+						inner_functor()(sorted_array, array_index, child.keys, child.count, key_len, !is_odd);
+				}
+			}
+		};
+		//ソート初回処理
+		//※基数別にキーを集める
+		inline void operator()(T* sorted_array, std::size_t& array_index, const key_t* key_tbl, std::size_t size, std::size_t key_len)
+		{
+			//基数別にキーを集める
+			--key_len;
+			counter_tbl_t child_tbl;
+			memset(child_tbl, 0, sizeof(child_tbl));
+			const key_t* key_p = key_tbl;
+			for (std::size_t index = 0; index < size; ++index, ++key_p)
+				child_tbl[calcDigit(key_p->key, key_len)].add(key_p);
+			//次の基数別にキーを集める／ソート済み配列にデータをコピー
+			for (auto& child : child_tbl)
+			{
+				if (child.keys)
+					inner_functor()(sorted_array, array_index, child.keys, child.count, key_len, true);
+			}
+		}
+	};
+	//ソート済みデータ配列作成
+	T* sorted_array = static_cast<T*>(_aligned_malloc(sizeof(T)* size, alignof(T)));//※_aligned_mallocでメモリ確保
+	std::size_t array_index = 0;
+	//ソート
+	sort_functor()(sorted_array, array_index, key_tbl, size, key_len);
+	//ソート済みデータを元の配列にコピー
+	{
+		const T* src_p = sorted_array;
+		T* dst_p = array;
+		for (std::size_t index = 0; index < size; ++index, ++src_p, ++dst_p)
+			*dst_p = std::move(*src_p);
+	}
+	delete key_tbl;//メモリ破棄
+	_aligned_free(sorted_array);//メモリ破棄
+#else//ループ処理版
+	std::size_t swapped_count = 0;
+	
+	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;//キー型
+	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;//符号なしキー型
+
+	static const std::size_t RADIX = 256;//基数
+
+	//キー情報定義
+	struct key_t
+	{
+		mutable const key_t* next;//次のキー情報
+		const T* ref;//実データの参照
+		KEY_TYPE_U key;//キー
+		inline KEY_TYPE_U set(const T* _ref, const KEY_TYPE_U _key)//値のセット
+		{
+			next = nullptr;
+			ref = _ref;
+			key = _key;
+			return key;
+		}
+	};
+	//キー情報生成
+	KEY_TYPE_U key_max = 0;//キーの最大値
+	key_t* key_tbl = new key_t[size];//※newでメモリ確保
+	{
+		T* elem_p = array;
+		key_t* key_p = key_tbl;
+		for (std::size_t index = 0; index < size; ++index, ++elem_p, ++key_p)
+			key_max = std::max(key_max, key_p->set(elem_p, radix_key<T, GET_KEY_FUNCTOR>::getKey(*elem_p, get_key_functor)));
+	}
+	//キーの最大値から最大の長さを算出
+	std::size_t key_len_first =
+		(key_max & 0xff00000000000000llu) != 0 ? 8 :
+		(key_max & 0x00ff000000000000llu) != 0 ? 7 :
+		(key_max & 0x0000ff0000000000llu) != 0 ? 6 :
+		(key_max & 0x000000ff00000000llu) != 0 ? 5 :
+		(key_max & 0xff000000) != 0 ? 4 :
+		(key_max & 0x00ff0000) != 0 ? 3 :
+		(key_max & 0xff00) != 0 ? 2 :
+		(key_max & 0xff) != 0 ? 1 :
+		0;
+	if (key_len_first == 0)//キーが 0 しかなければこの時点で終了
+	{
+		delete key_tbl;//メモリ破棄
+		return 0;
+	}
+	--key_len_first;
+
+	//ソート済みデータ配列作成
+	const key_t** sorted_key_tbl = new const key_t*[size];//※newでメモリ確保
+	std::size_t array_index = 0;
+	//カウント数情報定義
+	struct counter_t
+	{
+		const key_t* keys;//キー情報の連結リスト
+		std::size_t keys_count;//キー情報数
+		inline const key_t* add(const key_t* key_p)//キー追加（連結）
+		{
+			const key_t* next_p = key_p->next;
+			key_p->next = keys;
+			keys = key_p;
+			++keys_count;
+			return next_p;
+		}
+	};
+	//スタック型定義
+	struct stack_t
+	{
+		counter_t* counter_tbl_p;
+		std::size_t key_len;
+		std::size_t index;
+		bool is_odd;
+	};
+	static const std::size_t STACK_MAX = 8;//スタックの最大の深さ
+	counter_t counter_tbl[STACK_MAX][RADIX];//カウント数テーブル
+	stack_t stack[STACK_MAX];//スタック
+	//基数のインデックス計算用ラムダ関数
+	auto calcDigit = [](const KEY_TYPE_U key, const std::size_t key_len) -> unsigned char { return (key >> (key_len << 3)) & 0xff; };
+	//最初の基数別にキーのカウント数を集計
+	{
+		counter_t* counter_tbl_p = counter_tbl[0];
+		memset(counter_tbl_p, 0, sizeof(counter_tbl[0]));
+		const key_t* key_p = key_tbl;
+		for (std::size_t index = 0; index < size; ++index, ++key_p)
+			counter_tbl_p[calcDigit(key_p->key, key_len_first)].add(key_p);
+	}
+	//スタックに最初のカウント数情報を記録
+	{
+		stack_t* stack_p = &stack[0];
+		stack_p->counter_tbl_p = counter_tbl[0];
+		stack_p->key_len = key_len_first;
+		stack_p->is_odd = true;
+		stack_p->index = 0;
+	}
+	std::size_t stack_depth = 1;//スタックの深さ
+	//ソート処理メイン
+	while (stack_depth != 0)
+	{
+		//スタック取り出し（前半）
+		stack_t* stack_p = &stack[stack_depth - 1];
+		const std::size_t index = stack_p->index++;
+		if (index == RADIX)
+		{
+			stack_p = &stack[--stack_depth];
+			continue;
+		}
+		counter_t* counter_tbl_p = stack_p->counter_tbl_p;
+		const counter_t* counter_p = &counter_tbl_p[index];
+		const key_t* keys = counter_p->keys;
+		if (keys)
+		{
+			//スタック取り出し（後半）
+			std::size_t key_len = stack_p->key_len;
+			const bool is_odd = stack_p->is_odd;
+			const std::size_t keys_count = counter_tbl_p->keys_count;
+			
+			//これ以上キーがなければ、ソート済み配列にデータをコピー
+			if (key_len == 0)
+			{
+				if (is_odd)//奇数回目の実行の場合：リンクリストを逆順にコピー
+				{
+					const key_t** sorted_key_p = sorted_key_tbl + array_index + keys_count;
+					const key_t* key_p = keys;
+					while (key_p)
+					{
+						//*(--sorted_p) = std::move(*key_p->ref);
+						*(--sorted_key_p) = key_p;
+						++array_index;
+						key_p = key_p->next;
+					}
+				}
+				else//if(!is_odd)//偶数回目の実行の場合：リンクリストを順にコピー
+				{
+					const key_t**  sorted_key_p = sorted_key_tbl + array_index;
+					const key_t* key_p = keys;
+					while (key_p)
+					{
+						//*(sorted_p++) = std::move(*key_p->ref);
+						*(sorted_key_p++) = key_p;
+						++array_index;
+						key_p = key_p->next;
+					}
+				}
+			}
+			else
+			{
+				//次の基数別にキーのカウント数を集計（準備）
+				counter_tbl_p = counter_tbl[stack_depth];
+				memset(counter_tbl_p, 0, sizeof(counter_tbl[0]));
+				//次の基数別にキーのカウント数を集計
+				--key_len;
+				const key_t* key_p = keys;
+				while (key_p)
+					key_p = counter_tbl_p[calcDigit(key_p->key, key_len)].add(key_p);
+				//スタックに記録
+				stack_p = &stack[stack_depth];
+				stack_p->counter_tbl_p = counter_tbl_p;
+				stack_p->key_len = key_len;
+				stack_p->is_odd = !is_odd;
+				stack_p->index = 0;
+				++stack_depth;
+			}
+		}
+	}
+	//ソート済みデータを元に配列の入れ替え
+	{
+		const key_t** sorted_key_pp = sorted_key_tbl;//ソート済み位置（移動先）のキー情報を参照
+		T* dst_p = array;//実際のデータを参照
+		for (std::size_t dst_index = 0; dst_index < size; ++dst_index, ++sorted_key_pp, ++dst_p)
+		{
+			const key_t** dst_tmp_key_pp = sorted_key_pp;//ソート済み位置（移動先）のキー情報を参照
+			const key_t* dst_tmp_key_p = *dst_tmp_key_pp;//ソート済み位置（移動先）のキー情報を取得
+			if (!dst_tmp_key_p || dst_tmp_key_p->ref == dst_p)//並び替え済み、もしくは、最初から正しい位置にあるなら処理しない
+				continue;
+			T* dst_tmp_p = dst_p;//最初の移動先
+			T tmp = std::move(*dst_tmp_p);//ソート済み位置の値を退避　※連鎖的な値の移動の最後に使用する値
+			while (dst_tmp_key_p)//移動済みのキーを参照したら終了
+			{
+				const T* src_p = dst_tmp_key_p->ref;//移動元の値を参照 ※ソート前の位置
+				if (src_p == dst_p)//退避した値の位置を指したらループ終了
+					break;
+				*dst_tmp_p = std::move(*src_p);//元の位置からソート済み位置に値をコピー
+				++swapped_count;
+
+				//連鎖的な値の移動
+				*dst_tmp_key_pp = nullptr;//移動済みにする
+				dst_tmp_p = const_cast<T*>(src_p);//移動元の位置を次のループでの移動先にする
+				std::size_t dst_tmp_index = dst_tmp_p - array;//移動先のインデックスを算出
+				dst_tmp_key_pp = sorted_key_tbl + dst_tmp_index;//ソート済み位置（移動先）のキー情報を参照
+				dst_tmp_key_p = *(dst_tmp_key_pp);//ソート済み位置（移動先）のキー情報を取得
+			}
+			*dst_tmp_p = std::move(tmp);//ループ前に退避した値を最後の位置にコピー
+			*dst_tmp_key_pp = nullptr;//移動済みにする
+			++swapped_count;
+		}
+	}
+	//メモリ破棄
+	delete key_tbl;
+	delete sorted_key_tbl;
+#endif
+	return swapped_count;
+}
+distributedSortFuncSet(radixSort);
+
 //--------------------------------------------------------------------------------
 //各種ソートアルゴリズムテスト
 //--------------------------------------------------------------------------------
@@ -1399,6 +1894,7 @@ sortFuncSet(introSort);
 #include <random>//C++11 random用
 #include <chrono>//C++11 std::chrono用
 #include <bitset>//std::bitset用
+#include <functional>//C++11 std::function用
 
 #include "sub.h"
 
@@ -2077,6 +2573,22 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	//----------------------------------------
+	//非比較ソート
+
+	//アルゴリズム：基数ソート
+	auto radix_sort = [](array_t* array) -> std::size_t
+	{
+		struct getKey{
+			typedef int key_type;
+			inline key_type operator()(const data_t& obj){ return obj.m_key; }
+		};
+		return radixSort(*array, getKey());
+	};
+	const sum_t sum_radix = measureAll("Radix sort", radix_sort);
+	printf("\n");
+	printf("\n");
+
+	//----------------------------------------
 	//測定終了
 
 	//結果を表示
@@ -2116,7 +2628,7 @@ int main(const int argc, const char* argv[])
 	printLine("std::sort(functor):", sum_stl3);
 	printLine("std::sort(lambda):", sum_stl4);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
-	printf("[STL stable sort](Merge sort) *Not inplace\n");
+	printf("[STL stable sort](Merge sort) *Not In-place sort\n");
 	printLine("std::stable_sort<S>:", sum_stl_stable);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("[Exchange sorts]\n");
@@ -2142,6 +2654,9 @@ int main(const int argc, const char* argv[])
 	printf("[Hybrid sorts]\n");
 	printLine("Intro sort:", sum_intro);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
+	printf("[Distribution sorts] *Not In-place sort\n");
+	printLine("Radix sort<S>:", sum_radix);
+	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("* <S> ... Stable sort algorithm.\n");
 	printf("\n");
 
@@ -2158,12 +2673,12 @@ int main(const int argc, const char* argv[])
 	printf("============================================================\n");
 	printElapsedTime(begin_time, true);//処理時間表示
 
-#if 0
+#if 1
 	//ポインタ変数のソート処理動作確認
 	{
 		printf("\n");
 		printf("\n");
-		printf("--- Test for pointer sort ---\n");
+		printf("--- Test for sort with pointer ---\n");
 		static const std::size_t data_num = 10;
 		std::array<data_t, data_num> d_arr;
 		std::array<data_t*, data_num> p_arr;
@@ -2180,12 +2695,16 @@ int main(const int argc, const char* argv[])
 			}
 			printf("\n");
 		};
+		auto predicate = [](data_t* val1, data_t* val2){ return val1->m_key < val2->m_key; };
+		std::size_t unordered = calcUnordered(p_arr, predicate);
 		printf("[Before]\n");
 		printData();
-		auto predicate = [](data_t* val1, data_t* val2){ return val1->m_key < val2->m_key; };
+		printf("unordered=%d\n", unordered);
 		introSort(p_arr, predicate);
+		unordered = calcUnordered(p_arr, predicate);
 		printf("[After]\n");
 		printData();
+		printf("unordered=%d\n", unordered);
 		printf("--- End ---\n");
 	}
 #endif

@@ -1754,14 +1754,14 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		bool is_odd;
 	};
 	static const std::size_t STACK_MAX = 8;//スタックの最大の深さ
-	counter_t counter_tbl[STACK_MAX][RADIX];//カウント数テーブル
-	stack_t stack[STACK_MAX];//スタック
+	counter_t* counter_tbl = new counter_t[STACK_MAX * RADIX];//カウント数テーブル
+	stack_t* stack = new stack_t[STACK_MAX];//スタック
 	//基数のインデックス計算用ラムダ関数
 	auto calcDigit = [](const KEY_TYPE_U key, const std::size_t key_len) -> unsigned char { return (key >> (key_len << 3)) & 0xff; };
 	//最初の基数別にキーのカウント数を集計
 	{
-		counter_t* counter_tbl_p = counter_tbl[0];
-		memset(counter_tbl_p, 0, sizeof(counter_tbl[0]));
+		counter_t* counter_tbl_p = &counter_tbl[0 * RADIX];
+		memset(counter_tbl_p, 0, sizeof(counter_t)* RADIX);
 		const key_t* key_p = key_tbl;
 		for (std::size_t index = 0; index < size; ++index, ++key_p)
 			counter_tbl_p[calcDigit(key_p->key, key_len_first)].add(key_p);
@@ -1769,7 +1769,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 	//スタックに最初のカウント数情報を記録
 	{
 		stack_t* stack_p = &stack[0];
-		stack_p->counter_tbl_p = counter_tbl[0];
+		stack_p->counter_tbl_p = &counter_tbl[0 * RADIX];
 		stack_p->key_len = key_len_first;
 		stack_p->is_odd = true;
 		stack_p->index = 0;
@@ -1827,8 +1827,8 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 			else
 			{
 				//次の基数別にキーのカウント数を集計（準備）
-				counter_tbl_p = counter_tbl[stack_depth];
-				memset(counter_tbl_p, 0, sizeof(counter_tbl[0]));
+				counter_tbl_p = &counter_tbl[stack_depth * RADIX];
+				memset(counter_tbl_p, 0, sizeof(counter_t) * RADIX);
 				//次の基数別にキーのカウント数を集計
 				--key_len;
 				const key_t* key_p = keys;
@@ -1877,6 +1877,8 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		}
 	}
 	//メモリ破棄
+	delete stack;
+	delete counter_tbl;
 	delete key_tbl;
 	delete sorted_key_tbl;
 #endif

@@ -736,8 +736,8 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 		T* array;
 		std::size_t size;
 	};
-	static const int STACK_MAX = 32 * 2;
-	stack_t stack[STACK_MAX];
+	static const int STACK_DEPTH_MAX = 32 * 2;
+	stack_t stack[STACK_DEPTH_MAX];
 	//最初の配列をスタックにプッシュ
 	stack_t* stack_p = &stack[0];
 	stack_p->array = array;
@@ -791,7 +791,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 			if (new_size >= 1)
 			{
 				stack_p = &stack[stack_curr++];
-				assert(stack_curr <= STACK_MAX);
+				assert(stack_curr <= STACK_DEPTH_MAX);
 				stack_p->array = new_array;
 				stack_p->size = new_size;
 			}
@@ -1324,8 +1324,8 @@ std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 		std::size_t size;
 		int depth;
 	};
-	static const int STACK_MAX = 32 * 2;
-	stack_t stack[STACK_MAX];
+	static const int STACK_DEPTH_MAX = 32 * 2;
+	stack_t stack[STACK_DEPTH_MAX];
 	//最初の配列をスタックにプッシュ
 	stack_t* stack_p = &stack[0];
 	stack_p->array = array;
@@ -1426,12 +1426,12 @@ sortFuncSet(introSort);
 //----------------------------------------
 //・平均計算時間：O(nk/s)
 //・最悪計算時間：O(nk/s)
-//・メモリ使用量：O(n) ※実際は O(n * 2) のキー情報(12 byte) + O(256 * 8) のキー参照情報(8 byte)
+//・メモリ使用量：O(n) ※実際は O(n * 2) のキー情報(12 bytes) + O(16 * 16) のキー分布情報(4 bytes) + O(16) のスタック情報（4 bytes）
 //・安定性：　　　○
 //----------------------------------------
 #include <climits>//***_MAX用
-#include <type_traits>//C++11 std::conditional, std::integral_constant用
-#include <memory.h>//memset()用
+#include <type_traits>//C++11 std:is_same, std::is_signed, std::make_unsigned, std::conditional, std::integral_constant用
+#include <memory.h>//_aligned_malloc(), _aligned_free()用
 //キーの最大値取得
 template<typename KEY_TYPE>
 struct _radix_key{
@@ -1575,8 +1575,8 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 	//ソート用関数オブジェクト
 	struct sort_functor
 	{
-		//カウント数情報
-		struct counter_t
+		//分布情報
+		struct bucket_t
 		{
 			const key_t* keys;//キー情報の連結リスト
 			std::size_t count;//キー情報数
@@ -1588,7 +1588,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 			}
 		};
 		//カウントテーブル型
-		typedef counter_t counter_tbl_t[RADIX];
+		typedef bucket_t bucket_tbl_t[RADIX];
 		//インデックス計算
 		inline static unsigned char calcDigit(const KEY_TYPE_U key, const std::size_t key_len)
 		{
@@ -1629,7 +1629,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 				}
 				//次の基数別にキーを集める
 				--key_len;
-				counter_tbl_t child_tbl;
+				bucket_tbl_t child_tbl;
 				memset(child_tbl, 0, sizeof(child_tbl));
 				const key_t* key_p = key_list;
 				while (key_p)
@@ -1652,7 +1652,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		{
 			//基数別にキーを集める
 			--key_len;
-			counter_tbl_t child_tbl;
+			bucket_tbl_t child_tbl;
 			memset(child_tbl, 0, sizeof(child_tbl));
 			const key_t* key_p = key_tbl;
 			for (std::size_t index = 0; index < size; ++index, ++key_p)
@@ -1681,11 +1681,28 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 	_aligned_free(sorted_array);//メモリ破棄
 #else//ループ処理版
 	std::size_t swapped_count = 0;
-	
+
 	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;//キー型
 	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;//符号なしキー型
 
-	static const std::size_t RADIX = 256;//基数
+	typedef unsigned int size_type;//サイズ型
+	typedef unsigned int index_type;//インデックス型
+
+	static const index_type RADIX = 256;//基数が256(8bit)の場合 ※基数 = 分布数
+	//static const index_type RADIX = 16;//基数が16(4bit)の場合 ※基数 = 分布数
+	static const index_type KEY_LEN_MAX = sizeof(KEY_TYPE_U);//キーの長さの最大 ※基数が256(8bit)の場合 ※キーのバイト数が最大長
+	//static const index_type KEY_LEN_MAX = sizeof(KEY_TYPE_U) * 2;//キーの長さの最大 ※基数が16(4bit)の場合 ※キーのバイト数の2倍が最大長
+	static const index_type STACK_DEPTH_MAX = KEY_LEN_MAX;//スタックの最大の深さ
+	
+	//printf("KEY_LEN_MAX(STACK_DEPTH_MAX)=%d, KEY_TYPE=\"%s\", KEY_TYPE_U=\"%s\"\n", KEY_LEN_MAX, typeid(KEY_TYPE).name(), typeid(KEY_TYPE_U).name());
+
+	//CPUメモリキャッシュ境界計算
+	#define _CPU_CACHE_ALIGN 64//CPUキャッシュメモリアラインメント（ラインサイズ） ※マクロ
+	static const size_type CPU_CACHE_ALIGN = _CPU_CACHE_ALIGN;//CPUキャッシュメモリアラインメント（ラインサイズ）
+	auto ceil_mem_size = [](const size_type size) -> size_type//アラインメント切り上げ計算
+	{
+		return (size + (CPU_CACHE_ALIGN - 1)) & ~(CPU_CACHE_ALIGN - 1);
+	};
 
 	//キー情報定義
 	struct key_t
@@ -1693,7 +1710,9 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		mutable const key_t* next;//次のキー情報
 		const T* ref;//実データの参照
 		KEY_TYPE_U key;//キー
-		inline KEY_TYPE_U set(const T* _ref, const KEY_TYPE_U _key)//値のセット
+
+		//初期化
+		inline KEY_TYPE_U init(const T* _ref, const KEY_TYPE_U _key)
 		{
 			next = nullptr;
 			ref = _ref;
@@ -1701,154 +1720,214 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 			return key;
 		}
 	};
-	//キー情報生成
-	KEY_TYPE_U key_max = 0;//キーの最大値
-	key_t* key_tbl = new key_t[size];//※newでメモリ確保
-	{
-		T* elem_p = array;
-		key_t* key_p = key_tbl;
-		for (std::size_t index = 0; index < size; ++index, ++elem_p, ++key_p)
-			key_max = std::max(key_max, key_p->set(elem_p, radix_key<T, GET_KEY_FUNCTOR>::getKey(*elem_p, get_key_functor)));
-	}
-	//キーの最大値から最大の長さを算出
-	std::size_t key_len_first =
-		(key_max & 0xff00000000000000llu) != 0 ? 8 :
-		(key_max & 0x00ff000000000000llu) != 0 ? 7 :
-		(key_max & 0x0000ff0000000000llu) != 0 ? 6 :
-		(key_max & 0x000000ff00000000llu) != 0 ? 5 :
-		(key_max & 0xff000000) != 0 ? 4 :
-		(key_max & 0x00ff0000) != 0 ? 3 :
-		(key_max & 0xff00) != 0 ? 2 :
-		(key_max & 0xff) != 0 ? 1 :
-		0;
-	if (key_len_first == 0)//キーが 0 しかなければこの時点で終了
-	{
-		delete key_tbl;//メモリ破棄
-		return 0;
-	}
-	--key_len_first;
-
-	//ソート済みデータ配列作成
-	const key_t** sorted_key_tbl = new const key_t*[size];//※newでメモリ確保
-	std::size_t array_index = 0;
-	//カウント数情報定義
-	struct counter_t
+	//分布情報型定義
+	struct bucket_t
 	{
 		const key_t* keys;//キー情報の連結リスト
-		std::size_t keys_count;//キー情報数
-		inline const key_t* add(const key_t* key_p)//キー追加（連結）
+		//size_type count;//キー情報数
+
+		//キーを追加（連結）
+		inline const key_t* add(const key_t* key_p)
 		{
 			const key_t* next_p = key_p->next;
 			key_p->next = keys;
 			keys = key_p;
-			++keys_count;
+			//++count;
 			return next_p;
 		}
+	};
+	//分布情報セット型定義
+	struct alignas(_CPU_CACHE_ALIGN) bucket_set_t
+	{
+		bucket_t bucket_tbl[RADIX];//分布情報
+
+		//初期化
+		inline bucket_t* init()
+		{
+			memset(this, 0, sizeof(bucket_set_t));
+			//※64バイトごとに初期化した方が速いかと期待したが、普通にmemsetの方が速かった
+			//unsigned long long* p = reinterpret_cast<unsigned long long*>(this);
+			//for (size_type size = 0; size < sizeof(bucket_set_t); size += CPU_CACHE_ALIGN)
+			//{
+			//	*(p++) = 0;
+			//	*(p++) = 0;
+			//	*(p++) = 0;
+			//	*(p++) = 0;
+			//	*(p++) = 0;
+			//	*(p++) = 0;
+			//	*(p++) = 0;
+			//	*(p++) = 0;
+			//}
+			return bucket_tbl;
+		}
+		//指定の桁の分布位置計算
+		inline static unsigned char calcDigit(const KEY_TYPE_U key, const index_type key_column)
+		{
+			return (key >> (key_column << 3)) & 0xff;//基数が256(8bit)の場合の計算
+			//return (key >> (key_column << 2)) & 0xf;//基数が16(4bit)の場合の計算
+		};
 	};
 	//スタック型定義
 	struct stack_t
 	{
-		counter_t* counter_tbl_p;
-		std::size_t key_len;
-		std::size_t index;
-		bool is_odd;
+		index_type bucket_index;//分布情報のインデックス
+
+		//初期化
+		inline void init()
+		{
+			bucket_index = 0;
+		}
 	};
-	static const std::size_t STACK_MAX = 8;//スタックの最大の深さ
-	counter_t* counter_tbl = new counter_t[STACK_MAX * RADIX];//カウント数テーブル
-	stack_t* stack = new stack_t[STACK_MAX];//スタック
-	//基数のインデックス計算用ラムダ関数
-	auto calcDigit = [](const KEY_TYPE_U key, const std::size_t key_len) -> unsigned char { return (key >> (key_len << 3)) & 0xff; };
-	//最初の基数別にキーのカウント数を集計
+	#undef _CPU_CACHE_ALIGN//マクロ破棄
+
+	//ワークメモリ配分計算と確保
+	const size_type KEY_TBL_SIZE = ceil_mem_size(sizeof(key_t)* size);//キー情報のメモリサイズ
+	const size_type SORTED_KEY_TBL_SIZE = ceil_mem_size(sizeof(key_t*) * size);//ソート済みキー情報のメモリサイズ
+	const size_type BUCKET_TBL_SET_SIZE = ceil_mem_size(sizeof(bucket_set_t) * KEY_LEN_MAX);//分布情報セットのメモリサイズ
+	const size_type STACK_SIZE = ceil_mem_size(sizeof(stack_t) * STACK_DEPTH_MAX);//スタック情報のメモリサイズ
+	const size_type WORK_MEM_SIZE = KEY_TBL_SIZE + SORTED_KEY_TBL_SIZE + BUCKET_TBL_SET_SIZE + STACK_SIZE;//ワークメモリのサイズ
+	const size_type KEY_TBL_POS = 0;//キー情報のメモリ位置
+	const size_type SORTED_KEY_TBL_POS = KEY_TBL_POS + KEY_TBL_SIZE;//ソート済みキー情報のメモリ位置
+	const size_type BUCKET_TBL_SET_POS = SORTED_KEY_TBL_POS + SORTED_KEY_TBL_SIZE;//分布情報セットのメモリ位置
+	const size_type STACK_POS = BUCKET_TBL_SET_POS + BUCKET_TBL_SET_SIZE;//スタック情報のメモリ位置
+	char* work_mem = reinterpret_cast<char*>(_aligned_malloc(WORK_MEM_SIZE, CPU_CACHE_ALIGN));//ワークメモリ確保
+	if (!work_mem)//メモリ確保に失敗したら終了
+		return 0;
+	//ワークメモリ割り当て
+	key_t* key_tbl = reinterpret_cast<key_t*>(&work_mem[KEY_TBL_POS]);//キー情報
+	const key_t** sorted_key_tbl = reinterpret_cast<const key_t**>(&work_mem[SORTED_KEY_TBL_POS]);//ソート済みキー情報
+	bucket_set_t* bucket_tbl_set = reinterpret_cast<bucket_set_t*>(&work_mem[BUCKET_TBL_SET_POS]);//分布情報セット
+	stack_t* stack = reinterpret_cast<stack_t*>(&work_mem[STACK_POS]);//スタック
+
+	//キー情報生成
+	KEY_TYPE_U key_max = 0;//キーの最大値
 	{
-		counter_t* counter_tbl_p = &counter_tbl[0 * RADIX];
-		memset(counter_tbl_p, 0, sizeof(counter_t)* RADIX);
+		T* elem_p = array;
+		key_t* key_p = key_tbl;
+		for (index_type index = 0; index < size; ++index, ++elem_p, ++key_p)
+			key_max = std::max(key_max, key_p->init(elem_p, radix_key<T, GET_KEY_FUNCTOR>::getKey(*elem_p, get_key_functor)));
+	}
+	//キーの最大値から最大の長さを算出
+	const index_type key_len = (//基数が256(8bit)の場合の計算
+		(key_max & 0xff00000000000000llu) != 0llu ? 8 :
+		(key_max & 0x00ff000000000000llu) != 0llu ? 7 :
+		(key_max & 0x0000ff0000000000llu) != 0llu ? 6 :
+		(key_max & 0x000000ff00000000llu) != 0llu ? 5 :
+		(key_max & 0x00000000ff000000u)   != 0u   ? 4 :
+		(key_max & 0x0000000000ff0000u)   != 0u   ? 3 :
+		(key_max & 0x000000000000ff00u)   != 0u   ? 2 :
+		(key_max & 0x00000000000000ffu)   != 0u   ? 1 :
+		0);
+	//const index_type key_len = (//基数が16(4bit)の場合の計算
+	//	(key_max & 0xf000000000000000llu) != 0llu ? 16 :
+	//	(key_max & 0x0f00000000000000llu) != 0llu ? 15 :
+	//	(key_max & 0x00f0000000000000llu) != 0llu ? 14 :
+	//	(key_max & 0x000f000000000000llu) != 0llu ? 13 :
+	//	(key_max & 0x0000f00000000000llu) != 0llu ? 12 :
+	//	(key_max & 0x00000f0000000000llu) != 0llu ? 11 :
+	//	(key_max & 0x000000f000000000llu) != 0llu ? 10 :
+	//	(key_max & 0x0000000f00000000llu) != 0llu ?  9 :
+	//	(key_max & 0x00000000f0000000u)   != 0u   ?  8 :
+	//	(key_max & 0x000000000f000000u)   != 0u   ?  7 :
+	//	(key_max & 0x0000000000f00000u)   != 0u   ?  6 :
+	//	(key_max & 0x00000000000f0000u)   != 0u   ?  5 :
+	//	(key_max & 0x000000000000f000u)   != 0u   ?  4 :
+	//	(key_max & 0x0000000000000f00u)   != 0u   ?  3 :
+	//	(key_max & 0x00000000000000f0u)   != 0u   ?  2 :
+	//	(key_max & 0x000000000000000fu)   != 0u   ?  1 :
+	//	0);
+	if (key_len == 0)//キーの桁数が 0 ならこの時点で終了
+	{
+		_aligned_free(work_mem);//メモリ破棄
+		return 0;
+	}
+	
+	//最初の桁（最上位の桁）の分布を集計
+	index_type stack_depth = 1;//スタックの深さ
+	{
+		const index_type stack_index = stack_depth - 1;//スタックインデックス
+		const index_type key_column = key_len - 1;//処理対象桁
+		//最初の桁用の分布情報初期化
+		bucket_t* bucket_tbl = bucket_tbl_set[stack_index].init();
+		//最初の桁用の分布情報にキーを追加
 		const key_t* key_p = key_tbl;
-		for (std::size_t index = 0; index < size; ++index, ++key_p)
-			counter_tbl_p[calcDigit(key_p->key, key_len_first)].add(key_p);
+		for (index_type index = 0; index < size; ++index, ++key_p)
+			bucket_tbl[bucket_set_t::calcDigit(key_p->key, key_column)].add(key_p);
+		//最初の桁用のスタック初期化
+		stack[stack_index].init();
 	}
-	//スタックに最初のカウント数情報を記録
-	{
-		stack_t* stack_p = &stack[0];
-		stack_p->counter_tbl_p = &counter_tbl[0 * RADIX];
-		stack_p->key_len = key_len_first;
-		stack_p->is_odd = true;
-		stack_p->index = 0;
-	}
-	std::size_t stack_depth = 1;//スタックの深さ
+	
 	//ソート処理メイン
+	index_type sorted_key_index = 0;//ソート済みキー情報のインデックス（コピー先の位置）初期化
 	while (stack_depth != 0)
 	{
-		//スタック取り出し（前半）
-		stack_t* stack_p = &stack[stack_depth - 1];
-		const std::size_t index = stack_p->index++;
-		if (index == RADIX)
+		const index_type stack_index = stack_depth - 1;//スタックインデックス
+
+		//スタック取り出し
+		stack_t* stack_p = &stack[stack_index];
+		const index_type bucket_index = stack_p->bucket_index++;
+		if (bucket_index == RADIX)//分布情報の終端に達したら前の桁に戻る
 		{
-			stack_p = &stack[--stack_depth];
+			--stack_depth;
 			continue;
 		}
-		counter_t* counter_tbl_p = stack_p->counter_tbl_p;
-		const counter_t* counter_p = &counter_tbl_p[index];
-		const key_t* keys = counter_p->keys;
+		//分布情報取得
+		bucket_t* bucket_tbl = bucket_tbl_set[stack_index].bucket_tbl;
+		const bucket_t* bucket_p = &bucket_tbl[bucket_index];
+		const key_t* keys = bucket_p->keys;
 		if (keys)
 		{
-			//スタック取り出し（後半）
-			std::size_t key_len = stack_p->key_len;
-			const bool is_odd = stack_p->is_odd;
-			const std::size_t keys_count = counter_tbl_p->keys_count;
-			
-			//これ以上キーがなければ、ソート済み配列にデータをコピー
-			if (key_len == 0)
+			//末端（最下位）の桁なら、ソート済み配列にキーをコピー
+			if (stack_depth == key_len)
 			{
-				if (is_odd)//奇数回目の実行の場合：リンクリストを逆順にコピー
+				const key_t** sorted_key_p = sorted_key_tbl + sorted_key_index;//キーコピーの初期位置
+				if ((stack_depth & 0x1) != 0x0)//奇数回目の実行か？　※基数回目ではリンクリストが逆順に連結されている
 				{
-					const key_t** sorted_key_p = sorted_key_tbl + array_index + keys_count;
-					const key_t* key_p = keys;
-					while (key_p)
+					//コピー開始位置を移動
+					for (const key_t* key_p = keys; key_p; key_p = key_p->next)
+						++sorted_key_p;
+					//逆順にコピー
+					for (const key_t* key_p = keys; key_p; key_p = key_p->next)
 					{
-						//*(--sorted_p) = std::move(*key_p->ref);
 						*(--sorted_key_p) = key_p;
-						++array_index;
-						key_p = key_p->next;
+						++sorted_key_index;
 					}
 				}
-				else//if(!is_odd)//偶数回目の実行の場合：リンクリストを順にコピー
+				else
 				{
-					const key_t**  sorted_key_p = sorted_key_tbl + array_index;
-					const key_t* key_p = keys;
-					while (key_p)
+					//正順にコピー
+					for (const key_t* key_p = keys; key_p; key_p = key_p->next)
 					{
-						//*(sorted_p++) = std::move(*key_p->ref);
 						*(sorted_key_p++) = key_p;
-						++array_index;
-						key_p = key_p->next;
+						++sorted_key_index;
 					}
 				}
 			}
-			else
+			//次の桁の分布を集計
+			else//if(stack_depth < key_len_real)
 			{
-				//次の基数別にキーのカウント数を集計（準備）
-				counter_tbl_p = &counter_tbl[stack_depth * RADIX];
-				memset(counter_tbl_p, 0, sizeof(counter_t) * RADIX);
-				//次の基数別にキーのカウント数を集計
-				--key_len;
-				const key_t* key_p = keys;
-				while (key_p)
-					key_p = counter_tbl_p[calcDigit(key_p->key, key_len)].add(key_p);
-				//スタックに記録
-				stack_p = &stack[stack_depth];
-				stack_p->counter_tbl_p = counter_tbl_p;
-				stack_p->key_len = key_len;
-				stack_p->is_odd = !is_odd;
-				stack_p->index = 0;
-				++stack_depth;
+				//スタックの深さを次に進める
+				const index_type next_stack_index = stack_depth;//次のスタックインデックス
+				++stack_depth;//スタックの深さ
+				const index_type next_key_column = key_len - stack_depth;//次の処理対象桁
+				//分布情報初期化
+				bucket_tbl = bucket_tbl_set[next_stack_index].init();
+				//次の桁の分布情報にキーを追加 ※キー情報を使いまわすため、リンクリストがつなぎ直される
+				for (const key_t* key_p = keys; key_p;)
+					key_p = bucket_tbl[bucket_set_t::calcDigit(key_p->key, next_key_column)].add(key_p);
+				//次の桁の処理用スタックを初期化
+				stack[next_stack_index].init();
 			}
 		}
 	}
+
 	//ソート済みデータを元に配列の入れ替え
+	auto copyToArray = [&array, &size, &sorted_key_tbl]() -> std::size_t
 	{
+		std::size_t swapped_count = 0;
 		const key_t** sorted_key_pp = sorted_key_tbl;//ソート済み位置（移動先）のキー情報を参照
 		T* dst_p = array;//実際のデータを参照
-		for (std::size_t dst_index = 0; dst_index < size; ++dst_index, ++sorted_key_pp, ++dst_p)
+		for (index_type dst_index = 0; dst_index < size; ++dst_index, ++sorted_key_pp, ++dst_p)
 		{
 			const key_t** dst_tmp_key_pp = sorted_key_pp;//ソート済み位置（移動先）のキー情報を参照
 			const key_t* dst_tmp_key_p = *dst_tmp_key_pp;//ソート済み位置（移動先）のキー情報を取得
@@ -1867,7 +1946,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 				//連鎖的な値の移動
 				*dst_tmp_key_pp = nullptr;//移動済みにする
 				dst_tmp_p = const_cast<T*>(src_p);//移動元の位置を次のループでの移動先にする
-				std::size_t dst_tmp_index = dst_tmp_p - array;//移動先のインデックスを算出
+				index_type dst_tmp_index = dst_tmp_p - array;//移動先のインデックスを算出
 				dst_tmp_key_pp = sorted_key_tbl + dst_tmp_index;//ソート済み位置（移動先）のキー情報を参照
 				dst_tmp_key_p = *(dst_tmp_key_pp);//ソート済み位置（移動先）のキー情報を取得
 			}
@@ -1875,12 +1954,11 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 			*dst_tmp_key_pp = nullptr;//移動済みにする
 			++swapped_count;
 		}
-	}
+		return swapped_count;
+	};
+	swapped_count = copyToArray();
 	//メモリ破棄
-	delete stack;
-	delete counter_tbl;
-	delete key_tbl;
-	delete sorted_key_tbl;
+	_aligned_free(work_mem);
 #endif
 	return swapped_count;
 }
@@ -2582,6 +2660,7 @@ int main(const int argc, const char* argv[])
 	{
 		struct getKey{
 			typedef int key_type;
+			//typedef unsigned char key_type;
 			inline key_type operator()(const data_t& obj){ return obj.m_key; }
 		};
 		return radixSort(*array, getKey());

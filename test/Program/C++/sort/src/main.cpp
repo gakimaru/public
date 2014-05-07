@@ -1682,27 +1682,14 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 #else//ループ処理版
 	std::size_t swapped_count = 0;
 
+	//#define RADIX_IS_16//基数を16にする場合は、このマクロを有効化する（無効化時の基数は256)
+	//※基数は256の方が速い
+
 	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;//キー型
 	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;//符号なしキー型
 
 	typedef unsigned int size_type;//サイズ型
 	typedef unsigned int index_type;//インデックス型
-
-	static const index_type RADIX = 256;//基数が256(8bit)の場合 ※基数 = 分布数
-	//static const index_type RADIX = 16;//基数が16(4bit)の場合 ※基数 = 分布数
-	static const index_type KEY_LEN_MAX = sizeof(KEY_TYPE_U);//キーの長さの最大 ※基数が256(8bit)の場合 ※キーのバイト数が最大長
-	//static const index_type KEY_LEN_MAX = sizeof(KEY_TYPE_U) * 2;//キーの長さの最大 ※基数が16(4bit)の場合 ※キーのバイト数の2倍が最大長
-	static const index_type STACK_DEPTH_MAX = KEY_LEN_MAX;//スタックの最大の深さ
-	
-	//printf("KEY_LEN_MAX(STACK_DEPTH_MAX)=%d, KEY_TYPE=\"%s\", KEY_TYPE_U=\"%s\"\n", KEY_LEN_MAX, typeid(KEY_TYPE).name(), typeid(KEY_TYPE_U).name());
-
-	//CPUメモリキャッシュ境界計算
-	#define _CPU_CACHE_ALIGN 64//CPUキャッシュメモリアラインメント（ラインサイズ） ※マクロ
-	static const size_type CPU_CACHE_ALIGN = _CPU_CACHE_ALIGN;//CPUキャッシュメモリアラインメント（ラインサイズ）
-	auto ceil_mem_size = [](const size_type size) -> size_type//アラインメント切り上げ計算
-	{
-		return (size + (CPU_CACHE_ALIGN - 1)) & ~(CPU_CACHE_ALIGN - 1);
-	};
 
 	//キー情報定義
 	struct key_t
@@ -1720,11 +1707,66 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 			return key;
 		}
 	};
+
+	//キー情報メモリ確保
+	key_t* key_tbl = new key_t[size];
+	if (!key_tbl)//メモリ確保に失敗したら終了
+		return 0;
+
+	//キー情報生成
+	KEY_TYPE_U key_max = 0;//キーの最大値
+	{
+		T* elem_p = array;
+		key_t* key_p = key_tbl;
+		for (index_type index = 0; index < size; ++index, ++elem_p, ++key_p)
+			key_max = std::max(key_max, key_p->init(elem_p, radix_key<T, GET_KEY_FUNCTOR>::getKey(*elem_p, get_key_functor)));
+	}
+	//キーの最大値から最大の長さを算出
+	const index_type KEY_LEN = (
+#ifndef RADIX_IS_16//基数が256(8bit)の場合の計算
+		(key_max & 0xff00000000000000llu) != 0llu ? 8 :
+		(key_max & 0x00ff000000000000llu) != 0llu ? 7 :
+		(key_max & 0x0000ff0000000000llu) != 0llu ? 6 :
+		(key_max & 0x000000ff00000000llu) != 0llu ? 5 :
+		(key_max & 0x00000000ff000000u)   != 0u   ? 4 :
+		(key_max & 0x0000000000ff0000u)   != 0u   ? 3 :
+		(key_max & 0x000000000000ff00u)   != 0u   ? 2 :
+		(key_max & 0x00000000000000ffu)   != 0u   ? 1 :
+#else//RADIX_IS_16//基数が16(4bit)の場合の計算
+		(key_max & 0xf000000000000000llu) != 0llu ? 16 :
+		(key_max & 0x0f00000000000000llu) != 0llu ? 15 :
+		(key_max & 0x00f0000000000000llu) != 0llu ? 14 :
+		(key_max & 0x000f000000000000llu) != 0llu ? 13 :
+		(key_max & 0x0000f00000000000llu) != 0llu ? 12 :
+		(key_max & 0x00000f0000000000llu) != 0llu ? 11 :
+		(key_max & 0x000000f000000000llu) != 0llu ? 10 :
+		(key_max & 0x0000000f00000000llu) != 0llu ?  9 :
+		(key_max & 0x00000000f0000000u)   != 0u   ?  8 :
+		(key_max & 0x000000000f000000u)   != 0u   ?  7 :
+		(key_max & 0x0000000000f00000u)   != 0u   ?  6 :
+		(key_max & 0x00000000000f0000u)   != 0u   ?  5 :
+		(key_max & 0x000000000000f000u)   != 0u   ?  4 :
+		(key_max & 0x0000000000000f00u)   != 0u   ?  3 :
+		(key_max & 0x00000000000000f0u)   != 0u   ?  2 :
+		(key_max & 0x000000000000000fu)   != 0u   ?  1 :
+#endif//RADIX_IS_16
+		0);
+	if (KEY_LEN == 0)//キーの桁数が 0 ならこの時点で終了
+	{
+		delete[] key_tbl;//メモリ破棄
+		return 0;
+	}
+
+#ifndef RADIX_IS_16//基数が256(8bit)の場合の計算
+	static const index_type RADIX = 256;//基数が256(8bit)の場合 ※基数 = 分布数
+#else//RADIX_IS_16//基数が16(4bit)の場合の計算
+	static const index_type RADIX = 16;//基数が16(4bit)の場合 ※基数 = 分布数
+#endif//RADIX_IS_16
+
 	//分布情報型定義
 	struct bucket_t
 	{
 		const key_t* keys;//キー情報の連結リスト
-		//size_type count;//キー情報数
 
 		//キーを追加（連結）
 		inline const key_t* add(const key_t* key_p)
@@ -1732,12 +1774,11 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 			const key_t* next_p = key_p->next;
 			key_p->next = keys;
 			keys = key_p;
-			//++count;
 			return next_p;
 		}
 	};
 	//分布情報セット型定義
-	struct alignas(_CPU_CACHE_ALIGN) bucket_set_t
+	struct bucket_set_t
 	{
 		bucket_t bucket_tbl[RADIX];//分布情報
 
@@ -1745,26 +1786,16 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		inline bucket_t* init()
 		{
 			memset(this, 0, sizeof(bucket_set_t));
-			//※64バイトごとに初期化した方が速いかと期待したが、普通にmemsetの方が速かった
-			//unsigned long long* p = reinterpret_cast<unsigned long long*>(this);
-			//for (size_type size = 0; size < sizeof(bucket_set_t); size += CPU_CACHE_ALIGN)
-			//{
-			//	*(p++) = 0;
-			//	*(p++) = 0;
-			//	*(p++) = 0;
-			//	*(p++) = 0;
-			//	*(p++) = 0;
-			//	*(p++) = 0;
-			//	*(p++) = 0;
-			//	*(p++) = 0;
-			//}
 			return bucket_tbl;
 		}
 		//指定の桁の分布位置計算
 		inline static unsigned char calcDigit(const KEY_TYPE_U key, const index_type key_column)
 		{
+		#ifndef RADIX_IS_16//基数が256(8bit)の場合の計算
 			return (key >> (key_column << 3)) & 0xff;//基数が256(8bit)の場合の計算
-			//return (key >> (key_column << 2)) & 0xf;//基数が16(4bit)の場合の計算
+		#else//RADIX_IS_16//基数が16(4bit)の場合の計算
+			return (key >> (key_column << 2)) & 0xf;//基数が16(4bit)の場合の計算
+		#endif//RADIX_IS_16
 		};
 	};
 	//スタック型定義
@@ -1778,75 +1809,27 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 			bucket_index = 0;
 		}
 	};
-	#undef _CPU_CACHE_ALIGN//マクロ破棄
-
-	//ワークメモリ配分計算と確保
-	const size_type KEY_TBL_SIZE = ceil_mem_size(sizeof(key_t)* size);//キー情報のメモリサイズ
-	const size_type SORTED_KEY_TBL_SIZE = ceil_mem_size(sizeof(key_t*) * size);//ソート済みキー情報のメモリサイズ
-	const size_type BUCKET_TBL_SET_SIZE = ceil_mem_size(sizeof(bucket_set_t) * KEY_LEN_MAX);//分布情報セットのメモリサイズ
-	const size_type STACK_SIZE = ceil_mem_size(sizeof(stack_t) * STACK_DEPTH_MAX);//スタック情報のメモリサイズ
-	const size_type WORK_MEM_SIZE = KEY_TBL_SIZE + SORTED_KEY_TBL_SIZE + BUCKET_TBL_SET_SIZE + STACK_SIZE;//ワークメモリのサイズ
-	const size_type KEY_TBL_POS = 0;//キー情報のメモリ位置
-	const size_type SORTED_KEY_TBL_POS = KEY_TBL_POS + KEY_TBL_SIZE;//ソート済みキー情報のメモリ位置
-	const size_type BUCKET_TBL_SET_POS = SORTED_KEY_TBL_POS + SORTED_KEY_TBL_SIZE;//分布情報セットのメモリ位置
-	const size_type STACK_POS = BUCKET_TBL_SET_POS + BUCKET_TBL_SET_SIZE;//スタック情報のメモリ位置
-	char* work_mem = reinterpret_cast<char*>(_aligned_malloc(WORK_MEM_SIZE, CPU_CACHE_ALIGN));//ワークメモリ確保
-	if (!work_mem)//メモリ確保に失敗したら終了
-		return 0;
-	//ワークメモリ割り当て
-	key_t* key_tbl = reinterpret_cast<key_t*>(&work_mem[KEY_TBL_POS]);//キー情報
-	const key_t** sorted_key_tbl = reinterpret_cast<const key_t**>(&work_mem[SORTED_KEY_TBL_POS]);//ソート済みキー情報
-	bucket_set_t* bucket_tbl_set = reinterpret_cast<bucket_set_t*>(&work_mem[BUCKET_TBL_SET_POS]);//分布情報セット
-	stack_t* stack = reinterpret_cast<stack_t*>(&work_mem[STACK_POS]);//スタック
-
-	//キー情報生成
-	KEY_TYPE_U key_max = 0;//キーの最大値
-	{
-		T* elem_p = array;
-		key_t* key_p = key_tbl;
-		for (index_type index = 0; index < size; ++index, ++elem_p, ++key_p)
-			key_max = std::max(key_max, key_p->init(elem_p, radix_key<T, GET_KEY_FUNCTOR>::getKey(*elem_p, get_key_functor)));
-	}
-	//キーの最大値から最大の長さを算出
-	const index_type key_len = (//基数が256(8bit)の場合の計算
-		(key_max & 0xff00000000000000llu) != 0llu ? 8 :
-		(key_max & 0x00ff000000000000llu) != 0llu ? 7 :
-		(key_max & 0x0000ff0000000000llu) != 0llu ? 6 :
-		(key_max & 0x000000ff00000000llu) != 0llu ? 5 :
-		(key_max & 0x00000000ff000000u)   != 0u   ? 4 :
-		(key_max & 0x0000000000ff0000u)   != 0u   ? 3 :
-		(key_max & 0x000000000000ff00u)   != 0u   ? 2 :
-		(key_max & 0x00000000000000ffu)   != 0u   ? 1 :
-		0);
-	//const index_type key_len = (//基数が16(4bit)の場合の計算
-	//	(key_max & 0xf000000000000000llu) != 0llu ? 16 :
-	//	(key_max & 0x0f00000000000000llu) != 0llu ? 15 :
-	//	(key_max & 0x00f0000000000000llu) != 0llu ? 14 :
-	//	(key_max & 0x000f000000000000llu) != 0llu ? 13 :
-	//	(key_max & 0x0000f00000000000llu) != 0llu ? 12 :
-	//	(key_max & 0x00000f0000000000llu) != 0llu ? 11 :
-	//	(key_max & 0x000000f000000000llu) != 0llu ? 10 :
-	//	(key_max & 0x0000000f00000000llu) != 0llu ?  9 :
-	//	(key_max & 0x00000000f0000000u)   != 0u   ?  8 :
-	//	(key_max & 0x000000000f000000u)   != 0u   ?  7 :
-	//	(key_max & 0x0000000000f00000u)   != 0u   ?  6 :
-	//	(key_max & 0x00000000000f0000u)   != 0u   ?  5 :
-	//	(key_max & 0x000000000000f000u)   != 0u   ?  4 :
-	//	(key_max & 0x0000000000000f00u)   != 0u   ?  3 :
-	//	(key_max & 0x00000000000000f0u)   != 0u   ?  2 :
-	//	(key_max & 0x000000000000000fu)   != 0u   ?  1 :
-	//	0);
-	if (key_len == 0)//キーの桁数が 0 ならこの時点で終了
-	{
-		_aligned_free(work_mem);//メモリ破棄
-		return 0;
-	}
 	
+	//メモリ確保
+	const key_t** sorted_key_tbl = new const key_t*[size];//ソート済みキー情報
+	bucket_set_t* bucket_tbl_set = new bucket_set_t[KEY_LEN];//分布情報セット
+	stack_t* stack = new stack_t[KEY_LEN];//スタック
+	if (!sorted_key_tbl)//メモリ確保に失敗したら終了
+	{
+		if (key_tbl)
+			delete[] key_tbl;//メモリ破棄
+		if (bucket_tbl_set)
+			delete[] sorted_key_tbl;//メモリ破棄
+		if (bucket_tbl_set)
+			delete[] bucket_tbl_set;//メモリ破棄
+		return 0;
+	}
+
 	//最初の桁（最上位の桁）の分布を集計
 	index_type stack_depth = 1;//スタックの深さ
 	{
 		const index_type stack_index = stack_depth - 1;//スタックインデックス
-		const index_type key_column = key_len - 1;//処理対象桁
+		const index_type key_column = KEY_LEN - 1;//処理対象桁
 		//最初の桁用の分布情報初期化
 		bucket_t* bucket_tbl = bucket_tbl_set[stack_index].init();
 		//最初の桁用の分布情報にキーを追加
@@ -1878,7 +1861,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		if (keys)
 		{
 			//末端（最下位）の桁なら、ソート済み配列にキーをコピー
-			if (stack_depth == key_len)
+			if (stack_depth == KEY_LEN)
 			{
 				const key_t** sorted_key_p = sorted_key_tbl + sorted_key_index;//キーコピーの初期位置
 				if ((stack_depth & 0x1) != 0x0)//奇数回目の実行か？　※基数回目ではリンクリストが逆順に連結されている
@@ -1909,7 +1892,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 				//スタックの深さを次に進める
 				const index_type next_stack_index = stack_depth;//次のスタックインデックス
 				++stack_depth;//スタックの深さ
-				const index_type next_key_column = key_len - stack_depth;//次の処理対象桁
+				const index_type next_key_column = KEY_LEN - stack_depth;//次の処理対象桁
 				//分布情報初期化
 				bucket_tbl = bucket_tbl_set[next_stack_index].init();
 				//次の桁の分布情報にキーを追加 ※キー情報を使いまわすため、リンクリストがつなぎ直される
@@ -1957,8 +1940,12 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		return swapped_count;
 	};
 	swapped_count = copyToArray();
+	
 	//メモリ破棄
-	_aligned_free(work_mem);
+	delete[] key_tbl;//メモリ破棄
+	delete[] sorted_key_tbl;//メモリ破棄
+	delete[] bucket_tbl_set;//メモリ破棄
+	delete[] stack;//メモリ破棄
 #endif
 	return swapped_count;
 }
@@ -2436,6 +2423,7 @@ int main(const int argc, const char* argv[])
 	//----------------------------------------
 	//標準ライブラリによるソート
 
+#if 1
 	//--------------------
 	//Cライブラリ：qsort関数
 	//アルゴリズム：クイックソート
@@ -2639,6 +2627,7 @@ int main(const int argc, const char* argv[])
 	const sum_t sum_inplace_merge = measureAll("Inplace Merge sort", inplace_merge_sort);
 	printf("\n");
 	printf("\n");
+#endif
 
 	//----------------------------------------
 	//混成ソート
@@ -2660,6 +2649,7 @@ int main(const int argc, const char* argv[])
 	{
 		struct getKey{
 			typedef int key_type;
+			//typedef unsigned int key_type;
 			//typedef unsigned char key_type;
 			inline key_type operator()(const data_t& obj){ return obj.m_key; }
 		};
@@ -2700,6 +2690,7 @@ int main(const int argc, const char* argv[])
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("- Sort name:                Elapsed Time (Sum/Average/Min/Max) [sec.]             Swapped (Sum/Average/Min/Max) [count(s)]\n");
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
+#if 1
 	printf("[C-Library sort](Quick sort)\n");
 	printLine("qsort(inline-function):", sum_clib_qsort);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
@@ -2732,6 +2723,7 @@ int main(const int argc, const char* argv[])
 	printf("[Merge sorts]\n");
 	printLine("Inplace-Merge sort<S>:", sum_inplace_merge);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
+#endif
 	printf("[Hybrid sorts]\n");
 	printLine("Intro sort:", sum_intro);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");

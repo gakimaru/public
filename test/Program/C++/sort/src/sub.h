@@ -5,6 +5,7 @@
 
 //#define TEST_DATA_WATCH_CONSTRUCTOR//コンストラクタ／デストラクタ／代入演算子の動作を確認する場合、このマクロを有効化する
 
+//static const int TEST_DATA_COUNT = 1000000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 500000;//テストデータ件数（最大）
 static const int TEST_DATA_COUNT = 100000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 50000;//テストデータ件数（最大）

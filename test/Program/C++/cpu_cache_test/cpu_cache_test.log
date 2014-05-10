@@ -1,0 +1,21 @@
+
+--- Init: Case 1 ---
+*elapsed time=0.001032800 sec
+--- Test: Case 1 [Bad] ---
+*elapsed time=1.795098000 sec
+--- Test: Case 1 [Improved] ---
+*elapsed time=0.173009500 sec
+
+--- Init: Case 2 ---
+*elapsed time=0.001000900 sec
+--- Test: Case 2 [Bad] ---
+*elapsed time=1.746077400 sec
+--- Test: Case 2 [Improved] ---
+*elapsed time=0.335020100 sec
+
+--- Init: Case 3 ---
+*elapsed time=0.000000000 sec
+--- Test: Case 3 [Bad] ---
+*elapsed time=1.176101300 sec
+--- Test: Case 3 [Improved] ---
+*elapsed time=0.377010400 sec

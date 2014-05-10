@@ -156,6 +156,9 @@
      |  |  |
      |  |  |-[constexpr]              ... constexpr のテスト
      |  |  |
+     |  |  |-[cpu_cache_test]         ... ★CPUキャッシュを効率的に使用する方法のテスト
+     |  |  |-[cpu_cache_test_unix]    ... ★CPUキャッシュを効率的に使用する方法のテスト（unix系＋GCC）
+     |  |  |
      |  |  |-[DebugPrint]             ... 【失敗作】デバッグ用ロギング処理／boost::backtraceのテスト
      |  |  |                              ※マルチスレッドの考慮が不完全でダメ
      |  |  |-[DebugPrintTest]         ... 【失敗作】デバッグ用ロギング処理の試作

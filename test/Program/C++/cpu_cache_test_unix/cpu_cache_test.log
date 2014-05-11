@@ -1,21 +1,21 @@
 
---- Init: Case 1 ---
-*elapsed time=0.000806000 sec
---- Test: Case 1 [Bad] ---
-*elapsed time=0.491365000 sec
---- Test: Case 1 [Improved] ---
-*elapsed time=0.080941000 sec
+--- Test: Case 1 ---
+test: x2000 times.
+[Bad]      *elapsed time=1.767086000 sec
+[Improved] *elapsed time=0.179616000 sec
 
---- Init: Case 2 ---
-*elapsed time=0.000151000 sec
---- Test: Case 2 [Bad] ---
-*elapsed time=18.329940000 sec
---- Test: Case 2 [Improved] ---
-*elapsed time=0.246300000 sec
+--- Test: Case 2 ---
+test: x10000 times.
+[Bad]      *elapsed time=1.793648000 sec
+[Improved] *elapsed time=0.025061000 sec
 
---- Init: Case 3 ---
-*elapsed time=0.000041000 sec
---- Test: Case 3 [Bad] ---
-*elapsed time=1.144219000 sec
---- Test: Case 3 [Improved] ---
-*elapsed time=0.289805000 sec
+--- Test: Case 3 ---
+test: x20000 times.
+[Bad]      *elapsed time=2.035243000 sec
+[Improved] *elapsed time=0.413720000 sec
+
+--- Test: Case 3 ---
+*Buffer is adjusted location for cahce-line address.
+test: x20000 times.
+[Bad]      *elapsed time=0.182344000 sec
+[Improved] *elapsed time=0.167336000 sec

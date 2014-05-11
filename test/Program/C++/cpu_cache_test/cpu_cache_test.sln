@@ -8,15 +8,21 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Release_WithDummy|Win32 = Release_WithDummy|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{13D17B37-2631-4E5E-BC52-F959AEE8FE07}.Debug|Win32.ActiveCfg = Debug|Win32
 		{13D17B37-2631-4E5E-BC52-F959AEE8FE07}.Debug|Win32.Build.0 = Debug|Win32
+		{13D17B37-2631-4E5E-BC52-F959AEE8FE07}.Release_WithDummy|Win32.ActiveCfg = Release_WithDummy|Win32
+		{13D17B37-2631-4E5E-BC52-F959AEE8FE07}.Release_WithDummy|Win32.Build.0 = Release_WithDummy|Win32
 		{13D17B37-2631-4E5E-BC52-F959AEE8FE07}.Release|Win32.ActiveCfg = Release|Win32
 		{13D17B37-2631-4E5E-BC52-F959AEE8FE07}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

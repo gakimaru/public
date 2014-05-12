@@ -1,21 +1,21 @@
 
 --- Test: Case 1 ---
 test: x2000 times.
-[Bad]      *elapsed time=1.767086000 sec
-[Improved] *elapsed time=0.179616000 sec
+[Bad]      *elapsed time=1.741952000 sec
+[Improved] *elapsed time=0.177011000 sec
 
 --- Test: Case 2 ---
 test: x10000 times.
-[Bad]      *elapsed time=1.793648000 sec
-[Improved] *elapsed time=0.025061000 sec
+[Bad]      *elapsed time=1.774168000 sec
+[Improved] *elapsed time=0.024013000 sec
 
 --- Test: Case 3 ---
 test: x20000 times.
-[Bad]      *elapsed time=2.035243000 sec
-[Improved] *elapsed time=0.413720000 sec
+[Bad]      *elapsed time=1.976219000 sec
+[Improved] *elapsed time=0.365525000 sec
 
 --- Test: Case 3 ---
 *Buffer is adjusted location for cahce-line address.
 test: x20000 times.
-[Bad]      *elapsed time=0.182344000 sec
-[Improved] *elapsed time=0.167336000 sec
+[Bad]      *elapsed time=0.177756000 sec
+[Improved] *elapsed time=0.165467000 sec

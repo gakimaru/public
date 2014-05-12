@@ -130,53 +130,53 @@ void testCase2Improved(int)
 #endif//ENABLE_DUMMY
 
 //バッファ
-static int s_buff01[1024];//1024 * sizoef(int) = 4KB
+static int s_buff01[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(01);
-static int s_buff02[1024];//1024 * sizoef(int) = 4KB
+static int s_buff02[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(02);
-static int s_buff03[1024];//1024 * sizoef(int) = 4KB
+static int s_buff03[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(03);
-static int s_buff04[1024];//1024 * sizoef(int) = 4KB
+static int s_buff04[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(04);
-static int s_buff05[1024];//1024 * sizoef(int) = 4KB
+static int s_buff05[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(05);
-static int s_buff06[1024];//1024 * sizoef(int) = 4KB
+static int s_buff06[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(06);
-static int s_buff07[1024];//1024 * sizoef(int) = 4KB
+static int s_buff07[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(07);
-static int s_buff08[1024];//1024 * sizoef(int) = 4KB
+static int s_buff08[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(08);
-static int s_buff09[1024];//1024 * sizoef(int) = 4KB
+static int s_buff09[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(09);
-static int s_buff10[1024];//1024 * sizoef(int) = 4KB
+static int s_buff10[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(10);
-static int s_buff11[1024];//1024 * sizoef(int) = 4KB
+static int s_buff11[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(11);
-static int s_buff12[1024];//1024 * sizoef(int) = 4KB
+static int s_buff12[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(12);
-static int s_buff13[1024];//1024 * sizoef(int) = 4KB
+static int s_buff13[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(13);
-static int s_buff14[1024];//1024 * sizoef(int) = 4KB
+static int s_buff14[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(14);
-static int s_buff15[1024];//1024 * sizoef(int) = 4KB
+static int s_buff15[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(15);
-static int s_buff16[1024];//1024 * sizoef(int) = 4KB
+static int s_buff16[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(16);
-static int s_buff17[1024];//1024 * sizoef(int) = 4KB
+static int s_buff17[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(17);
-static int s_buff18[1024];//1024 * sizoef(int) = 4KB
+static int s_buff18[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(18);
-static int s_buff19[1024];//1024 * sizoef(int) = 4KB
+static int s_buff19[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(19);
-static int s_buff20[1024];//1024 * sizoef(int) = 4KB
+static int s_buff20[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(20);
-static int s_buff21[1024];//1024 * sizoef(int) = 4KB
+static int s_buff21[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(21);
-static int s_buff22[1024];//1024 * sizoef(int) = 4KB
+static int s_buff22[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(22);
-static int s_buff23[1024];//1024 * sizoef(int) = 4KB
+static int s_buff23[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(23);
-static int s_buff24[1024];//1024 * sizoef(int) = 4KB
+static int s_buff24[1024];//1024 * sizoef(int) = 4KB (L1 Cacheの1Wayのサイズ)
 DUMMY(24);
 
 //初期化
@@ -291,16 +291,19 @@ void testCase3Improved(int)
 		s_buff13[i] += s_buff12[i];
 		s_buff14[i] += s_buff13[i];
 		s_buff15[i] += s_buff14[i];
-		s_buff16[i] += s_buff15[i];
 	}
 	for (int i = 0; i < std::extent<decltype(s_buff01), 0>::value; ++i)
 	{
+		s_buff16[i] += s_buff15[i];
 		s_buff17[i] += s_buff16[i];
 		s_buff18[i] += s_buff17[i];
 		s_buff19[i] += s_buff18[i];
 		s_buff20[i] += s_buff19[i];
 		s_buff21[i] += s_buff20[i];
 		s_buff22[i] += s_buff21[i];
+	}
+	for (int i = 0; i < std::extent<decltype(s_buff01), 0>::value; ++i)
+	{
 		s_buff23[i] += s_buff22[i];
 		s_buff24[i] += s_buff23[i];
 	}

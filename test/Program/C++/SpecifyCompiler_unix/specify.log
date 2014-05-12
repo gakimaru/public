@@ -11,19 +11,23 @@ Plataform: "Cygin"(x86 32bits, little-endian), Ver=[0(0x00000000).0(0x00000000)]
     Target plarform is "Cygwin"
 
 __FILE__="specify.cpp"
-__LINE__=452
+__LINE__=483
 __FUNCTION__="func"
 __PRETTY_FUNCTION__="static void main(int, const char**)::test::func()"
 __FUNCSIG__="static void main(int, const char**)::test::func()"
 __func__="func"
 __FUNCDNAME__=""
-__DATE__="May  7 2014"
-__TIME__="01:01:47"
-__TIMESTAMP__="Tue May  6 19:59:13 2014"
+__DATE__="May 12 2014"
+__TIME__="07:54:02"
+__TIMESTAMP__="Mon May 12 07:53:59 2014"
 
 GET_FUNC_NAME()="static void main(int, const char**)::test::func()"
-GET_FILE_LINE()="specify.cpp(463)"
-GET_FILE_LINE_TIME()="specify.cpp(464)[Tue May  6 19:59:13 2014]"
+GET_FILE_LINE()="specify.cpp(494)"
+GET_FILE_LINE_TIME()="specify.cpp(495)[Mon May 12 07:53:59 2014]"
+This is normal func.
+This is inline func.
+This is noinline func.
+This is always inline func.
 
 nullptr_var=0x0
     'nullptr' is featured.

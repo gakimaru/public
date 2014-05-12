@@ -33,7 +33,7 @@ rem VSPerfCmd /Start:SAMPLE /Output:%2.vsp
 rem VSPerfCmd /Launch:%CUR_DIR%%1\%2 /Args:"%3 %4" /Counter:DCULinesIn
 rem VSPerfCmd /Shutdown
 rem VSPerf /launch:%CUR_DIR%%1\%2 /args:"%3 %4"
-VSINSTR %2
+VSInstr %2
 rem START /REALTIME VSPerfMon /TRACE /OUTPUT:%2.vsp /COUNTER:DCUModifiedLinesIn /COUNTER:InstructionsRetired /COUNTER:NonHaltedCycles /COUNTER:L2Misses /COUNTER:L2References /COUNTER:ITLBMisses /COUNTER:BranchesRetired /COUNTER:MispredictedBranches
 START /REALTIME VSPerfMon /TRACE /OUTPUT:%2.vsp /COUNTER:L2Misses
 TIMEOUT 2 >NUL

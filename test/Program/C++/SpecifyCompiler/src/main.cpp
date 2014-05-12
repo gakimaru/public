@@ -161,6 +161,19 @@
 #define GET_FILE_LINE_TIME() __FILE__ "(" TO_STRING_EX(__LINE__) ")[" __TIMESTAMP__ "]"
 
 //----------------------------------------
+//非言語仕様対応　※方言吸収
+
+//noinline / always_inline
+#ifdef IS_VC
+	#define noinline __declspec(noinline)
+	#define always_inline __forceinline
+#endif//IS_VC
+#ifdef IS_GCC
+	#define noinline __attribute__ ((noinline))
+	#define always_inline __attribute__ ((always_inline)) inline
+#endif//IS_GCC
+
+//----------------------------------------
 //C++11仕様対応
 //参考：https://sites.google.com/site/cpprefjp/implementation-status
 //参考(VC++)：http://msdn.microsoft.com/ja-jp/library/hh567368.aspx
@@ -358,6 +371,24 @@ inline void _aligned_free(void* p)
 
 #include <cstddef>//std::size_t用
 
+//noinline/always_inlineテスト
+void func_normal()
+{
+	printf("This is normal func.\n");
+}
+inline void func_inline()
+{
+	printf("This is inline func.\n");
+}
+noinline void func_noinline()
+{
+	printf("This is noinline func.\n");
+}
+always_inline void func_always_inline()
+{
+	printf("This is always inline func.\n");
+}
+
 //【C++11仕様】nullptrテスト
 void* nullptr_var = nullptr;
 
@@ -404,7 +435,7 @@ struct alignas(16) data_t
 //テストメイン
 int main(const int argc, const char* argv[])
 {
-	//コンパイラー確認テスト
+	//コンパイラ確認テスト
 	printf("Compiler: name=\"%s\", Ver=[%d(0x%08x).%d(0x%08x)]\n", COMPILER_NAME, COMPILER_VER, COMPILER_VER, COMPILER_MINOR, COMPILER_MINOR);
 #ifdef IS_VC
 	printf("    This compiler is \"Visual C++\"\n");
@@ -465,6 +496,12 @@ int main(const int argc, const char* argv[])
 		}
 	};
 	test::func();
+
+	//noinline/always_inlineテスト
+	func_normal();
+	func_inline();
+	func_noinline();
+	func_always_inline();
 
 	//【C++11仕様】nullptrテスト
 	printf("\n");

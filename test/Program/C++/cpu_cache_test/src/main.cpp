@@ -11,7 +11,7 @@ static const int CASE3_LOOP_COUNT = 10000;
 #else//_DEBUG
 static const int CASE1_LOOP_COUNT = 2000;
 static const int CASE2_LOOP_COUNT = 10000;
-static const int CASE3_LOOP_COUNT = 20000;
+static const int CASE3_LOOP_COUNT = 50000;
 #endif//_DEBUG
 
 //----------------------------------------

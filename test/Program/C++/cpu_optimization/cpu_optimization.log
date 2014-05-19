@@ -1,0 +1,48 @@
+----------------------------------------
+[Optimize Test 01]
+Type1: *repeated * 10000 times.
+  Before   ... *elapsed time=0.092088100
+  After1   ... *elapsed time=0.026024100
+  After2   ... *elapsed time=0.027026300
+  Appendix ... *elapsed time=0.197187700  *Appendix is most brief style with C++11
+----------------------------------------
+[Optimize Test 02]
+Type1: *repeated * 10000 times.
+  Before   ... *elapsed time=0.087081700
+  After1   ... *elapsed time=0.057054200
+  After2   ... *elapsed time=0.057054400
+----------------------------------------
+[Optimize Test 03]
+Type1: *repeated * 100000000 times.
+  Before   ... *elapsed time=0.176168100  sum=1974919424
+  After    ... *elapsed time=0.056054500  sum=1974919424
+Type2: *repeated * 100000000 times.
+  Before   ... *elapsed time=0.448424600  sum=-525080576
+  After    ... *elapsed time=0.058055100  sum=-525080576
+Type3: *repeated * 10000 times.
+  Before   ... *elapsed time=0.579551100  count=36760000
+  After    ... *elapsed time=0.528502500  count=36760000
+----------------------------------------
+[Optimize Test 04]
+Type1: *repeated * 10000 times.
+  Before   ... *elapsed time=0.274260900
+  After1   ... *elapsed time=0.124118900
+  After2   ... *elapsed time=0.073069700
+----------------------------------------
+[Test for Lambda with closure]
+for lambda1: external_counter=0
+for lambda2: local_counter=0
+for lambda3: static_counter=0
+Call lambda in block with counter in setLambda().
+lambda1()=1, lambda2()=1, lambda3()=1
+lambda1()=2, lambda2()=2, lambda3()=2
+lambda1()=3, lambda2()=3, lambda3()=3
+dummy=999
+Call lambda in block without counter in setLambda().
+lambda1()=4, lambda2()=4, lambda3()=4
+lambda1()=5, lambda2()=5, lambda3()=5
+lambda1()=6, lambda2()=6, lambda3()=6
+Call lambda in main().
+lambda1()=7, lambda2()=NG!, lambda3()=7
+lambda1()=8, lambda2()=NG!, lambda3()=8
+lambda1()=9, lambda2()=NG!, lambda3()=9

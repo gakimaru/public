@@ -561,8 +561,22 @@ void runTestOpt07()
 	runTestOpt07_Type1();
 
 	//ÅyÉ^ÉCÉvÇQÅz
-	extern void runTestOpt07_Type2();
-	runTestOpt07_Type2();
+	extern void runTestOpt07_Type2_strlen();
+	extern void runTestOpt07_Type2_strcmp();
+	extern void runTestOpt07_Type2_strncmp();
+	extern void runTestOpt07_Type2_strchr();
+	extern void runTestOpt07_Type2_strrchr();
+	extern void runTestOpt07_Type2_strstr();
+	extern void runTestOpt07_Type2_strcpy();
+	extern void runTestOpt07_Type2_strncpy();
+	runTestOpt07_Type2_strlen();
+	runTestOpt07_Type2_strcmp();
+	runTestOpt07_Type2_strncmp();
+	runTestOpt07_Type2_strchr();
+	runTestOpt07_Type2_strrchr();
+	runTestOpt07_Type2_strstr();
+	runTestOpt07_Type2_strcpy();
+	runTestOpt07_Type2_strncpy();
 }
 //ÅyÉ^ÉCÉvÇPÅz
 void runTestOpt07_Type1()
@@ -755,65 +769,918 @@ void runTestOpt07_Type1_After()
 	}
 	printElapsedTime(prev_time);
 }
-//ÅyÉ^ÉCÉvÇQÅz
-void runTestOpt07_Type2()
+//ÅyÉ^ÉCÉvÇQÅz(strlen)
+void runTestOpt07_Type2_strlen()
 {
-	printf("Type2: *repeated * %d times.\n", LOOP_OPT07_TYPE2);
-	extern void runTestOpt07_Type2_Before(char* str0_a, const char* str1_a, const char* str2_a, const char* str3_a, const char c_a,
-	                                      char* str0_b, const char* str1_b, const char* str2_b, const char* str3_b, const char c_b,
-	                                      char* str0_c, const char* str1_c, const char* str2_c, const char* str3_c, const char c_c);
-	extern void runTestOpt07_Type2_After(char* str0_a, const char* str1_a, const char* str2_a, const char* str3_a, const char c_a,
-	                                     char* str0_b, const char* str1_b, const char* str2_b, const char* str3_b, const char c_b,
-	                                     char* str0_c, const char* str1_c, const char* str2_c, const char* str3_c, const char c_c);
-	char str0_a[128];
-	char str0_b[128];
-	char str0_c[128];
-	const char* str1_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
-	const char* str2_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
-	const char* str3_a = "ABC";
-	const char c_a = '!';
-	const char* str1_b = "1234567890abcdef";
-	const char* str2_b = "1234567890abcdefg";
-	const char* str3_b = "efgh";
-	const char c_b = '!';
-	const char* str1_c = "";
-	const char* str2_c = "";
-	const char* str3_c = "";
-	const char c_c = '\0';
-	runTestOpt07_Type2_Before(str0_a, str1_a, str2_a, str3_a, c_a,
-	                          str0_b, str1_b, str2_b, str3_b, c_b,
-	                          str0_c, str1_c, str2_c, str3_c, c_c);
-	runTestOpt07_Type2_After(str0_a, str1_a, str2_a, str3_a, c_a,
-	                         str0_b, str1_b, str2_b, str3_b, c_b,
-	                         str0_c, str1_c, str2_c, str3_c, c_c);
+	printf("Type2(strlen): *repeated * %d times.\n", LOOP_OPT07_TYPE2);
+	
+	const char* str_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str_b = "1234567890abcdefg";
+	const char* str_c = "1234567890abcdef";
+	const char* str_d = "123";
+	const char* str_e = "";
+	
+	extern void runTestOpt07_Type2_strlen_Before(const char* str_a,
+		                                         const char* str_b,
+												 const char* str_c,
+												 const char* str_d,
+												 const char* str_e);
+	extern void runTestOpt07_Type2_strlen_After(const char* str_a,
+		                                        const char* str_b,
+												const char* str_c,
+												const char* str_d,
+												const char* str_e);
+	runTestOpt07_Type2_strlen_Before(str_a,
+		                             str_b,
+									 str_c,
+									 str_d,
+									 str_e);
+	runTestOpt07_Type2_strlen_After(str_a,
+		                            str_b,
+									str_c,
+									str_d,
+									str_e);
 }
 //ç≈ìKâªëO
-void runTestOpt07_Type2_Before(char* str0_a, const char* str1_a, const char* str2_a, const char* str3_a, const char c_a,
-                               char* str0_b, const char* str1_b, const char* str2_b, const char* str3_b, const char c_b,
-                               char* str0_c, const char* str1_c, const char* str2_c, const char* str3_c, const char c_c)
+void runTestOpt07_Type2_strlen_Before(const char* str_a, const char* str_b, const char* str_c, const char* str_d, const char* str_e)
 {
 	printf("  Before   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
 	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
 	{
-		testOpt07_Type2_Before(loop, str0_a, str1_a, str2_a, str3_a, c_a);
-		testOpt07_Type2_Before(loop, str0_b, str1_b, str2_b, str3_b, c_b);
-		testOpt07_Type2_Before(loop, str0_c, str1_c, str2_c, str3_c, c_c);
+		testOpt07_Type2_strlen_Before(loop, str_a);
+		testOpt07_Type2_strlen_Before(loop, str_b);
+		testOpt07_Type2_strlen_Before(loop, str_c);
+		testOpt07_Type2_strlen_Before(loop, str_d);
+		testOpt07_Type2_strlen_Before(loop, str_e);
 	}
 	printElapsedTime(prev_time);
 }
 //ç≈ìKâªå„
-void runTestOpt07_Type2_After(char* str0_a, const char* str1_a, const char* str2_a, const char* str3_a, const char c_a,
-                              char* str0_b, const char* str1_b, const char* str2_b, const char* str3_b, const char c_b,
-                              char* str0_c, const char* str1_c, const char* str2_c, const char* str3_c, const char c_c)
+void runTestOpt07_Type2_strlen_After(const char* str_a, const char* str_b, const char* str_c, const char* str_d, const char* str_e)
 {
 	printf("  After    ... ");
 	const auto prev_time = std::chrono::system_clock::now();
 	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
 	{
-		testOpt07_Type2_After(loop, str0_a, str1_a, str2_a, str3_a, c_a);
-		testOpt07_Type2_After(loop, str0_b, str1_b, str2_b, str3_b, c_b);
-		testOpt07_Type2_After(loop, str0_c, str1_c, str2_c, str3_c, c_c);
+		testOpt07_Type2_strlen_After(loop, str_a);
+		testOpt07_Type2_strlen_After(loop, str_b);
+		testOpt07_Type2_strlen_After(loop, str_c);
+		testOpt07_Type2_strlen_After(loop, str_d);
+		testOpt07_Type2_strlen_After(loop, str_e);
+	}
+	printElapsedTime(prev_time);
+}
+//ÅyÉ^ÉCÉvÇQÅz(strcmp)
+void runTestOpt07_Type2_strcmp()
+{
+	printf("Type2(strcmp): *repeated * %d times.\n", LOOP_OPT07_TYPE2);
+
+	const char* str_a1 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str_a2 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str_b1 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str_b2 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_!";
+	const char* str_c1 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_!";
+	const char* str_c2 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str_d1 = "1234567890abcdef";
+	const char* str_d2 = "1234567890abcdef";
+	const char* str_e1 = "1234567890abcdef";
+	const char* str_e2 = "1234567890abcdef!";
+	const char* str_f1 = "1234567890abcdef!";
+	const char* str_f2 = "1234567890abcdef";
+	const char* str_g1 = "123";
+	const char* str_g2 = "123";
+	const char* str_h1 = "123";
+	const char* str_h2 = "123!";
+	const char* str_i1 = "123!";
+	const char* str_i2 = "123";
+	const char* str_j1 = "";
+	const char* str_j2 = "";
+
+	extern void runTestOpt07_Type2_strcmp_Before(const char* str_a1, const char* str_a2,
+		                                         const char* str_b1, const char* str_b2,
+												 const char* str_c1, const char* str_c2,
+												 const char* str_d1, const char* str_d2,
+												 const char* str_e1, const char* str_e2,
+												 const char* str_f1, const char* str_f2,
+												 const char* str_g1, const char* str_g2,
+												 const char* str_h1, const char* str_h2,
+												 const char* str_i1, const char* str_i2,
+												 const char* str_j1, const char* str_j2);
+	extern void runTestOpt07_Type2_strcmp_After(const char* str_a1, const char* str_a2,
+		                                        const char* str_b1, const char* str_b2,
+												const char* str_c1, const char* str_c2,
+												const char* str_d1, const char* str_d2,
+												const char* str_e1, const char* str_e2,
+												const char* str_f1, const char* str_f2,
+												const char* str_g1, const char* str_g2,
+												const char* str_h1, const char* str_h2,
+												const char* str_i1, const char* str_i2,
+												const char* str_j1, const char* str_j2);
+	runTestOpt07_Type2_strcmp_Before(str_a1, str_a2,
+		                             str_b1, str_b2,
+									 str_c1, str_c2,
+									 str_d1, str_d2,
+									 str_e1, str_e2,
+									 str_f1, str_f2,
+									 str_g1, str_g2,
+									 str_h1, str_h2,
+									 str_i1, str_i2,
+									 str_j1, str_j2);
+	runTestOpt07_Type2_strcmp_After(str_a1, str_a2,
+		                            str_b1, str_b2,
+									str_c1, str_c2,
+									str_d1, str_d2,
+									str_e1, str_e2,
+									str_f1, str_f2,
+									str_g1, str_g2,
+									str_h1, str_h2,
+									str_i1, str_i2,
+									str_j1, str_j2);
+}
+//ç≈ìKâªëO
+void runTestOpt07_Type2_strcmp_Before(const char* str_a1, const char* str_a2,
+	                                  const char* str_b1, const char* str_b2,
+									  const char* str_c1, const char* str_c2,
+									  const char* str_d1, const char* str_d2,
+									  const char* str_e1, const char* str_e2,
+									  const char* str_f1, const char* str_f2,
+									  const char* str_g1, const char* str_g2,
+									  const char* str_h1, const char* str_h2,
+									  const char* str_i1, const char* str_i2,
+									  const char* str_j1, const char* str_j2)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strcmp_Before(loop, str_a1, str_a2);
+		testOpt07_Type2_strcmp_Before(loop, str_b1, str_b2);
+		testOpt07_Type2_strcmp_Before(loop, str_c1, str_c2);
+		testOpt07_Type2_strcmp_Before(loop, str_d1, str_d2);
+		testOpt07_Type2_strcmp_Before(loop, str_e1, str_e2);
+		testOpt07_Type2_strcmp_Before(loop, str_f1, str_f2);
+		testOpt07_Type2_strcmp_Before(loop, str_g1, str_g2);
+		testOpt07_Type2_strcmp_Before(loop, str_h1, str_h2);
+		testOpt07_Type2_strcmp_Before(loop, str_i1, str_i2);
+		testOpt07_Type2_strcmp_Before(loop, str_j1, str_j2);
+	}
+	printElapsedTime(prev_time);
+}
+//ç≈ìKâªå„
+void runTestOpt07_Type2_strcmp_After(const char* str_a1, const char* str_a2,
+	                                 const char* str_b1, const char* str_b2,
+									 const char* str_c1, const char* str_c2,
+									 const char* str_d1, const char* str_d2,
+									 const char* str_e1, const char* str_e2,
+									 const char* str_f1, const char* str_f2,
+									 const char* str_g1, const char* str_g2,
+									 const char* str_h1, const char* str_h2,
+									 const char* str_i1, const char* str_i2,
+									 const char* str_j1, const char* str_j2)
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strcmp_After(loop, str_a1, str_a2);
+		testOpt07_Type2_strcmp_After(loop, str_b1, str_b2);
+		testOpt07_Type2_strcmp_After(loop, str_c1, str_c2);
+		testOpt07_Type2_strcmp_After(loop, str_d1, str_d2);
+		testOpt07_Type2_strcmp_After(loop, str_e1, str_e2);
+		testOpt07_Type2_strcmp_After(loop, str_f1, str_f2);
+		testOpt07_Type2_strcmp_After(loop, str_g1, str_g2);
+		testOpt07_Type2_strcmp_After(loop, str_h1, str_h2);
+		testOpt07_Type2_strcmp_After(loop, str_i1, str_i2);
+		testOpt07_Type2_strcmp_After(loop, str_j1, str_j2);
+	}
+	printElapsedTime(prev_time);
+}
+//ÅyÉ^ÉCÉvÇQÅz(strncmp)
+void runTestOpt07_Type2_strncmp()
+{
+	printf("Type2(strncmp): *repeated * %d times.\n", LOOP_OPT07_TYPE2);
+
+	const char* str_a1 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str_a2 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const std::size_t max_len_a1 = 171;
+	const std::size_t max_len_a2 = 170;
+	const std::size_t max_len_a3 = 169;
+	const char* str_b1 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str_b2 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_!";
+	const std::size_t max_len_b1 = 171;
+	const std::size_t max_len_b2 = 170;
+	const std::size_t max_len_b3 = 169;
+	const char* str_c1 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_!";
+	const char* str_c2 = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const std::size_t max_len_c1 = 171;
+	const std::size_t max_len_c2 = 170;
+	const std::size_t max_len_c3 = 169;
+	const char* str_d1 = "1234567890abcdef";
+	const char* str_d2 = "1234567890abcdef";
+	const std::size_t max_len_d1 = 17;
+	const std::size_t max_len_d2 = 16;
+	const std::size_t max_len_d3 = 15;
+	const char* str_e1 = "1234567890abcdef";
+	const char* str_e2 = "1234567890abcdef!";
+	const std::size_t max_len_e1 = 17;
+	const std::size_t max_len_e2 = 16;
+	const std::size_t max_len_e3 = 15;
+	const char* str_f1 = "1234567890abcdef!";
+	const char* str_f2 = "1234567890abcdef";
+	const std::size_t max_len_f1 = 17;
+	const std::size_t max_len_f2 = 16;
+	const std::size_t max_len_f3 = 15;
+	const char* str_g1 = "123";
+	const char* str_g2 = "123";
+	const std::size_t max_len_g1 = 4;
+	const std::size_t max_len_g2 = 3;
+	const std::size_t max_len_g3 = 2;
+	const char* str_h1 = "123";
+	const char* str_h2 = "123!";
+	const std::size_t max_len_h1 = 4;
+	const std::size_t max_len_h2 = 3;
+	const std::size_t max_len_h3 = 2;
+	const char* str_i1 = "123!";
+	const char* str_i2 = "123";
+	const std::size_t max_len_i1 = 4;
+	const std::size_t max_len_i2 = 3;
+	const std::size_t max_len_i3 = 2;
+	const char* str_j1 = "";
+	const char* str_j2 = "";
+	const std::size_t max_len_j1 = 2;
+	const std::size_t max_len_j2 = 1;
+	const std::size_t max_len_j3 = 0;
+
+	extern void runTestOpt07_Type2_strncmp_Before(const char* str_a1, const char* str_a2, const std::size_t max_len_a1, const std::size_t max_len_a2, const std::size_t max_len_a3,
+		                                          const char* str_b1, const char* str_b2, const std::size_t max_len_b1, const std::size_t max_len_b2, const std::size_t max_len_b3,
+												  const char* str_c1, const char* str_c2, const std::size_t max_len_c1, const std::size_t max_len_c2, const std::size_t max_len_c3,
+												  const char* str_d1, const char* str_d2, const std::size_t max_len_d1, const std::size_t max_len_d2, const std::size_t max_len_d3,
+												  const char* str_e1, const char* str_e2, const std::size_t max_len_e1, const std::size_t max_len_e2, const std::size_t max_len_e3,
+												  const char* str_f1, const char* str_f2, const std::size_t max_len_f1, const std::size_t max_len_f2, const std::size_t max_len_f3,
+												  const char* str_g1, const char* str_g2, const std::size_t max_len_g1, const std::size_t max_len_g2, const std::size_t max_len_g3,
+												  const char* str_h1, const char* str_h2, const std::size_t max_len_h1, const std::size_t max_len_h2, const std::size_t max_len_h3,
+												  const char* str_i1, const char* str_i2, const std::size_t max_len_i1, const std::size_t max_len_i2, const std::size_t max_len_i3,
+												  const char* str_j1, const char* str_j2, const std::size_t max_len_j1, const std::size_t max_len_j2, const std::size_t max_len_j3);
+	extern void runTestOpt07_Type2_strncmp_After(const char* str_a1, const char* str_a2, const std::size_t max_len_a1, const std::size_t max_len_a2, const std::size_t max_len_a3,
+		                                         const char* str_b1, const char* str_b2, const std::size_t max_len_b1, const std::size_t max_len_b2, const std::size_t max_len_b3,
+												 const char* str_c1, const char* str_c2, const std::size_t max_len_c1, const std::size_t max_len_c2, const std::size_t max_len_c3,
+												 const char* str_d1, const char* str_d2, const std::size_t max_len_d1, const std::size_t max_len_d2, const std::size_t max_len_d3,
+												 const char* str_e1, const char* str_e2, const std::size_t max_len_e1, const std::size_t max_len_e2, const std::size_t max_len_e3,
+												 const char* str_f1, const char* str_f2, const std::size_t max_len_f1, const std::size_t max_len_f2, const std::size_t max_len_f3,
+												 const char* str_g1, const char* str_g2, const std::size_t max_len_g1, const std::size_t max_len_g2, const std::size_t max_len_g3,
+												 const char* str_h1, const char* str_h2, const std::size_t max_len_h1, const std::size_t max_len_h2, const std::size_t max_len_h3,
+												 const char* str_i1, const char* str_i2, const std::size_t max_len_i1, const std::size_t max_len_i2, const std::size_t max_len_i3,
+												 const char* str_j1, const char* str_j2, const std::size_t max_len_j1, const std::size_t max_len_j2, const std::size_t max_len_j3);
+	runTestOpt07_Type2_strncmp_Before(str_a1, str_a2, max_len_a1, max_len_a2, max_len_a3,
+	                                  str_b1, str_b2, max_len_b1, max_len_b2, max_len_b3,
+									  str_c1, str_c2, max_len_c1, max_len_c2, max_len_c3,
+									  str_d1, str_d2, max_len_d1, max_len_d2, max_len_d3,
+									  str_e1, str_e2, max_len_e1, max_len_e2, max_len_e3,
+									  str_f1, str_f2, max_len_f1, max_len_f2, max_len_f3,
+									  str_g1, str_g2, max_len_g1, max_len_g2, max_len_g3,
+									  str_h1, str_h2, max_len_h1, max_len_h2, max_len_h3,
+									  str_i1, str_i2, max_len_i1, max_len_i2, max_len_i3,
+									  str_j1, str_j2, max_len_j1, max_len_j2, max_len_j3);
+	runTestOpt07_Type2_strncmp_After(str_a1, str_a2, max_len_a1, max_len_a2, max_len_a3,
+	                                 str_b1, str_b2, max_len_b1, max_len_b2, max_len_b3,
+									 str_c1, str_c2, max_len_c1, max_len_c2, max_len_c3,
+									 str_d1, str_d2, max_len_d1, max_len_d2, max_len_d3,
+									 str_e1, str_e2, max_len_e1, max_len_e2, max_len_e3,
+									 str_f1, str_f2, max_len_f1, max_len_f2, max_len_f3,
+									 str_g1, str_g2, max_len_g1, max_len_g2, max_len_g3,
+									 str_h1, str_h2, max_len_h1, max_len_h2, max_len_h3,
+									 str_i1, str_i2, max_len_i1, max_len_i2, max_len_i3,
+									 str_j1, str_j2, max_len_j1, max_len_j2, max_len_j3);
+}
+//ç≈ìKâªëO
+void runTestOpt07_Type2_strncmp_Before(const char* str_a1, const char* str_a2, const std::size_t max_len_a1, const std::size_t max_len_a2, const std::size_t max_len_a3,
+	                                   const char* str_b1, const char* str_b2, const std::size_t max_len_b1, const std::size_t max_len_b2, const std::size_t max_len_b3,
+									   const char* str_c1, const char* str_c2, const std::size_t max_len_c1, const std::size_t max_len_c2, const std::size_t max_len_c3,
+									   const char* str_d1, const char* str_d2, const std::size_t max_len_d1, const std::size_t max_len_d2, const std::size_t max_len_d3,
+									   const char* str_e1, const char* str_e2, const std::size_t max_len_e1, const std::size_t max_len_e2, const std::size_t max_len_e3,
+									   const char* str_f1, const char* str_f2, const std::size_t max_len_f1, const std::size_t max_len_f2, const std::size_t max_len_f3,
+									   const char* str_g1, const char* str_g2, const std::size_t max_len_g1, const std::size_t max_len_g2, const std::size_t max_len_g3,
+									   const char* str_h1, const char* str_h2, const std::size_t max_len_h1, const std::size_t max_len_h2, const std::size_t max_len_h3,
+									   const char* str_i1, const char* str_i2, const std::size_t max_len_i1, const std::size_t max_len_i2, const std::size_t max_len_i3,
+									   const char* str_j1, const char* str_j2, const std::size_t max_len_j1, const std::size_t max_len_j2, const std::size_t max_len_j3)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strncmp_Before(loop, str_a1, str_a2, max_len_a1);
+		testOpt07_Type2_strncmp_Before(loop, str_a1, str_a2, max_len_a2);
+		testOpt07_Type2_strncmp_Before(loop, str_a1, str_a2, max_len_a3);
+		testOpt07_Type2_strncmp_Before(loop, str_b1, str_b2, max_len_b1);
+		testOpt07_Type2_strncmp_Before(loop, str_b1, str_b2, max_len_b2);
+		testOpt07_Type2_strncmp_Before(loop, str_b1, str_b2, max_len_b3);
+		testOpt07_Type2_strncmp_Before(loop, str_c1, str_c2, max_len_c1);
+		testOpt07_Type2_strncmp_Before(loop, str_c1, str_c2, max_len_c2);
+		testOpt07_Type2_strncmp_Before(loop, str_c1, str_c2, max_len_c3);
+		testOpt07_Type2_strncmp_Before(loop, str_d1, str_d2, max_len_d1);
+		testOpt07_Type2_strncmp_Before(loop, str_d1, str_d2, max_len_d2);
+		testOpt07_Type2_strncmp_Before(loop, str_d1, str_d2, max_len_d3);
+		testOpt07_Type2_strncmp_Before(loop, str_e1, str_e2, max_len_e1);
+		testOpt07_Type2_strncmp_Before(loop, str_e1, str_e2, max_len_e2);
+		testOpt07_Type2_strncmp_Before(loop, str_e1, str_e2, max_len_e3);
+		testOpt07_Type2_strncmp_Before(loop, str_f1, str_f2, max_len_f1);
+		testOpt07_Type2_strncmp_Before(loop, str_f1, str_f2, max_len_f2);
+		testOpt07_Type2_strncmp_Before(loop, str_f1, str_f2, max_len_f3);
+		testOpt07_Type2_strncmp_Before(loop, str_g1, str_g2, max_len_g1);
+		testOpt07_Type2_strncmp_Before(loop, str_g1, str_g2, max_len_g2);
+		testOpt07_Type2_strncmp_Before(loop, str_g1, str_g2, max_len_g3);
+		testOpt07_Type2_strncmp_Before(loop, str_h1, str_h2, max_len_h1);
+		testOpt07_Type2_strncmp_Before(loop, str_h1, str_h2, max_len_h2);
+		testOpt07_Type2_strncmp_Before(loop, str_h1, str_h2, max_len_h3);
+		testOpt07_Type2_strncmp_Before(loop, str_i1, str_i2, max_len_i1);
+		testOpt07_Type2_strncmp_Before(loop, str_i1, str_i2, max_len_i2);
+		testOpt07_Type2_strncmp_Before(loop, str_i1, str_i2, max_len_i3);
+		testOpt07_Type2_strncmp_Before(loop, str_j1, str_j2, max_len_j1);
+		testOpt07_Type2_strncmp_Before(loop, str_j1, str_j2, max_len_j2);
+		testOpt07_Type2_strncmp_Before(loop, str_j1, str_j2, max_len_j3);
+	}
+	printElapsedTime(prev_time);
+}
+//ç≈ìKâªå„
+void runTestOpt07_Type2_strncmp_After(const char* str_a1, const char* str_a2, const std::size_t max_len_a1, const std::size_t max_len_a2, const std::size_t max_len_a3,
+	                                  const char* str_b1, const char* str_b2, const std::size_t max_len_b1, const std::size_t max_len_b2, const std::size_t max_len_b3,
+									  const char* str_c1, const char* str_c2, const std::size_t max_len_c1, const std::size_t max_len_c2, const std::size_t max_len_c3,
+									  const char* str_d1, const char* str_d2, const std::size_t max_len_d1, const std::size_t max_len_d2, const std::size_t max_len_d3,
+									  const char* str_e1, const char* str_e2, const std::size_t max_len_e1, const std::size_t max_len_e2, const std::size_t max_len_e3,
+									  const char* str_f1, const char* str_f2, const std::size_t max_len_f1, const std::size_t max_len_f2, const std::size_t max_len_f3,
+									  const char* str_g1, const char* str_g2, const std::size_t max_len_g1, const std::size_t max_len_g2, const std::size_t max_len_g3,
+									  const char* str_h1, const char* str_h2, const std::size_t max_len_h1, const std::size_t max_len_h2, const std::size_t max_len_h3,
+									  const char* str_i1, const char* str_i2, const std::size_t max_len_i1, const std::size_t max_len_i2, const std::size_t max_len_i3,
+									  const char* str_j1, const char* str_j2, const std::size_t max_len_j1, const std::size_t max_len_j2, const std::size_t max_len_j3)
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strncmp_After(loop, str_a1, str_a2, max_len_a1);
+		testOpt07_Type2_strncmp_After(loop, str_a1, str_a2, max_len_a2);
+		testOpt07_Type2_strncmp_After(loop, str_a1, str_a2, max_len_a3);
+		testOpt07_Type2_strncmp_After(loop, str_b1, str_b2, max_len_b1);
+		testOpt07_Type2_strncmp_After(loop, str_b1, str_b2, max_len_b2);
+		testOpt07_Type2_strncmp_After(loop, str_b1, str_b2, max_len_b3);
+		testOpt07_Type2_strncmp_After(loop, str_c1, str_c2, max_len_c1);
+		testOpt07_Type2_strncmp_After(loop, str_c1, str_c2, max_len_c2);
+		testOpt07_Type2_strncmp_After(loop, str_c1, str_c2, max_len_c3);
+		testOpt07_Type2_strncmp_After(loop, str_d1, str_d2, max_len_d1);
+		testOpt07_Type2_strncmp_After(loop, str_d1, str_d2, max_len_d2);
+		testOpt07_Type2_strncmp_After(loop, str_d1, str_d2, max_len_d3);
+		testOpt07_Type2_strncmp_After(loop, str_e1, str_e2, max_len_e1);
+		testOpt07_Type2_strncmp_After(loop, str_e1, str_e2, max_len_e2);
+		testOpt07_Type2_strncmp_After(loop, str_e1, str_e2, max_len_e3);
+		testOpt07_Type2_strncmp_After(loop, str_f1, str_f2, max_len_f1);
+		testOpt07_Type2_strncmp_After(loop, str_f1, str_f2, max_len_f2);
+		testOpt07_Type2_strncmp_After(loop, str_f1, str_f2, max_len_f3);
+		testOpt07_Type2_strncmp_After(loop, str_g1, str_g2, max_len_g1);
+		testOpt07_Type2_strncmp_After(loop, str_g1, str_g2, max_len_g2);
+		testOpt07_Type2_strncmp_After(loop, str_g1, str_g2, max_len_g3);
+		testOpt07_Type2_strncmp_After(loop, str_h1, str_h2, max_len_h1);
+		testOpt07_Type2_strncmp_After(loop, str_h1, str_h2, max_len_h2);
+		testOpt07_Type2_strncmp_After(loop, str_h1, str_h2, max_len_h3);
+		testOpt07_Type2_strncmp_After(loop, str_i1, str_i2, max_len_i1);
+		testOpt07_Type2_strncmp_After(loop, str_i1, str_i2, max_len_i2);
+		testOpt07_Type2_strncmp_After(loop, str_i1, str_i2, max_len_i3);
+		testOpt07_Type2_strncmp_After(loop, str_j1, str_j2, max_len_j1);
+		testOpt07_Type2_strncmp_After(loop, str_j1, str_j2, max_len_j2);
+		testOpt07_Type2_strncmp_After(loop, str_j1, str_j2, max_len_j3);
+	}
+	printElapsedTime(prev_time);
+}
+//ÅyÉ^ÉCÉvÇQÅz(strchr)
+void runTestOpt07_Type2_strchr()
+{
+	printf("Type2(strchr): *repeated * %d times.\n", LOOP_OPT07_TYPE2);
+
+	const char* str_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char c_a1 = '1';
+	const char c_a2 = '!';
+	const char c_a3 = '_';
+	const char c_a4 = '.';
+	const char* str_b = "1234567812345678";
+	const char c_b1 = '1';
+	const char c_b2 = '5';
+	const char c_b3 = '8';
+	const char c_b4 = '.';
+	const char* str_c = "123123";
+	const char c_c1 = '1';
+	const char c_c2 = '2';
+	const char c_c3 = '3';
+	const char c_c4 = '.';
+	const char* str_d = "";
+	const char c_d1 = '1';
+	const char c_d2 = '2';
+	const char c_d3 = '3';
+	const char c_d4 = '.';
+
+	extern void runTestOpt07_Type2_strchr_Before(const char* str_a, const char c_a1, const char c_a2, const char c_a3, const char c_a4,
+		                                         const char* str_b, const char c_b1, const char c_b2, const char c_b3, const char c_b4,
+												 const char* str_c, const char c_c1, const char c_c2, const char c_c3, const char c_c4,
+												 const char* str_d, const char c_d1, const char c_d2, const char c_d3, const char c_d4);
+	extern void runTestOpt07_Type2_strchr_After(const char* str_a, const char c_a1, const char c_a2, const char c_a3, const char c_a4,
+		                                        const char* str_b, const char c_b1, const char c_b2, const char c_b3, const char c_b4,
+												const char* str_c, const char c_c1, const char c_c2, const char c_c3, const char c_c4,
+												const char* str_d, const char c_d1, const char c_d2, const char c_d3, const char c_d4);
+	runTestOpt07_Type2_strchr_Before(str_a, c_a1, c_a2, c_a3, c_a4,
+		                             str_b, c_b1, c_b2, c_b3, c_b4,
+									 str_c, c_c1, c_c2, c_c3, c_c4,
+									 str_d, c_d1, c_d2, c_d3, c_d4);
+	runTestOpt07_Type2_strchr_After(str_a, c_a1, c_a2, c_a3, c_a4,
+		                            str_b, c_b1, c_b2, c_b3, c_b4,
+									str_c, c_c1, c_c2, c_c3, c_c4,
+									str_d, c_d1, c_d2, c_d3, c_d4);
+}
+//ç≈ìKâªëO
+void runTestOpt07_Type2_strchr_Before(const char* str_a, const char c_a1, const char c_a2, const char c_a3, const char c_a4,
+		                              const char* str_b, const char c_b1, const char c_b2, const char c_b3, const char c_b4,
+									  const char* str_c, const char c_c1, const char c_c2, const char c_c3, const char c_c4,
+									  const char* str_d, const char c_d1, const char c_d2, const char c_d3, const char c_d4)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strchr_Before(loop, str_a, c_a1);
+		testOpt07_Type2_strchr_Before(loop, str_a, c_a2);
+		testOpt07_Type2_strchr_Before(loop, str_a, c_a3);
+		testOpt07_Type2_strchr_Before(loop, str_a, c_a4);
+		testOpt07_Type2_strchr_Before(loop, str_b, c_b1);
+		testOpt07_Type2_strchr_Before(loop, str_b, c_b2);
+		testOpt07_Type2_strchr_Before(loop, str_b, c_b3);
+		testOpt07_Type2_strchr_Before(loop, str_b, c_b4);
+		testOpt07_Type2_strchr_Before(loop, str_c, c_c1);
+		testOpt07_Type2_strchr_Before(loop, str_c, c_c2);
+		testOpt07_Type2_strchr_Before(loop, str_c, c_c3);
+		testOpt07_Type2_strchr_Before(loop, str_c, c_c4);
+		testOpt07_Type2_strchr_Before(loop, str_d, c_d1);
+		testOpt07_Type2_strchr_Before(loop, str_d, c_d2);
+		testOpt07_Type2_strchr_Before(loop, str_d, c_d3);
+		testOpt07_Type2_strchr_Before(loop, str_d, c_d4);
+	}
+	printElapsedTime(prev_time);
+}
+//ç≈ìKâªå„
+void runTestOpt07_Type2_strchr_After(const char* str_a, const char c_a1, const char c_a2, const char c_a3, const char c_a4,
+		                             const char* str_b, const char c_b1, const char c_b2, const char c_b3, const char c_b4,
+									 const char* str_c, const char c_c1, const char c_c2, const char c_c3, const char c_c4,
+									 const char* str_d, const char c_d1, const char c_d2, const char c_d3, const char c_d4)
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strchr_After(loop, str_a, c_a1);
+		testOpt07_Type2_strchr_After(loop, str_a, c_a2);
+		testOpt07_Type2_strchr_After(loop, str_a, c_a3);
+		testOpt07_Type2_strchr_After(loop, str_a, c_a4);
+		testOpt07_Type2_strchr_After(loop, str_b, c_b1);
+		testOpt07_Type2_strchr_After(loop, str_b, c_b2);
+		testOpt07_Type2_strchr_After(loop, str_b, c_b3);
+		testOpt07_Type2_strchr_After(loop, str_b, c_b4);
+		testOpt07_Type2_strchr_After(loop, str_c, c_c1);
+		testOpt07_Type2_strchr_After(loop, str_c, c_c2);
+		testOpt07_Type2_strchr_After(loop, str_c, c_c3);
+		testOpt07_Type2_strchr_After(loop, str_c, c_c4);
+		testOpt07_Type2_strchr_After(loop, str_d, c_d1);
+		testOpt07_Type2_strchr_After(loop, str_d, c_d2);
+		testOpt07_Type2_strchr_After(loop, str_d, c_d3);
+		testOpt07_Type2_strchr_After(loop, str_d, c_d4);
+	}
+	printElapsedTime(prev_time);
+}
+//ÅyÉ^ÉCÉvÇQÅz(strrchr)
+void runTestOpt07_Type2_strrchr()
+{
+	printf("Type2(strrchr): *repeated * %d times.\n", LOOP_OPT07_TYPE2);
+
+	const char* str_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char c_a1 = '1';
+	const char c_a2 = '!';
+	const char c_a3 = '_';
+	const char c_a4 = '.';
+	const char* str_b = "1234567812345678";
+	const char c_b1 = '1';
+	const char c_b2 = '5';
+	const char c_b3 = '8';
+	const char c_b4 = '.';
+	const char* str_c = "123123";
+	const char c_c1 = '1';
+	const char c_c2 = '2';
+	const char c_c3 = '3';
+	const char c_c4 = '.';
+	const char* str_d = "";
+	const char c_d1 = '1';
+	const char c_d2 = '2';
+	const char c_d3 = '3';
+	const char c_d4 = '.';
+
+	extern void runTestOpt07_Type2_strrchr_Before(const char* str_a, const char c_a1, const char c_a2, const char c_a3, const char c_a4,
+		                                          const char* str_b, const char c_b1, const char c_b2, const char c_b3, const char c_b4,
+										 	 	  const char* str_c, const char c_c1, const char c_c2, const char c_c3, const char c_c4,
+										 		  const char* str_d, const char c_d1, const char c_d2, const char c_d3, const char c_d4);
+	extern void runTestOpt07_Type2_strrchr_After(const char* str_a, const char c_a1, const char c_a2, const char c_a3, const char c_a4,
+		                                         const char* str_b, const char c_b1, const char c_b2, const char c_b3, const char c_b4,
+												 const char* str_c, const char c_c1, const char c_c2, const char c_c3, const char c_c4,
+												 const char* str_d, const char c_d1, const char c_d2, const char c_d3, const char c_d4);
+	runTestOpt07_Type2_strrchr_Before(str_a, c_a1, c_a2, c_a3, c_a4,
+		                              str_b, c_b1, c_b2, c_b3, c_b4,
+									  str_c, c_c1, c_c2, c_c3, c_c4,
+									  str_d, c_d1, c_d2, c_d3, c_d4);
+	runTestOpt07_Type2_strrchr_After(str_a, c_a1, c_a2, c_a3, c_a4,
+		                             str_b, c_b1, c_b2, c_b3, c_b4,
+									 str_c, c_c1, c_c2, c_c3, c_c4,
+									 str_d, c_d1, c_d2, c_d3, c_d4);
+}
+//ç≈ìKâªëO
+void runTestOpt07_Type2_strrchr_Before(const char* str_a, const char c_a1, const char c_a2, const char c_a3, const char c_a4,
+		                               const char* str_b, const char c_b1, const char c_b2, const char c_b3, const char c_b4,
+									   const char* str_c, const char c_c1, const char c_c2, const char c_c3, const char c_c4,
+									   const char* str_d, const char c_d1, const char c_d2, const char c_d3, const char c_d4)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strrchr_Before(loop, str_a, c_a1);
+		testOpt07_Type2_strrchr_Before(loop, str_a, c_a2);
+		testOpt07_Type2_strrchr_Before(loop, str_a, c_a3);
+		testOpt07_Type2_strrchr_Before(loop, str_a, c_a4);
+		testOpt07_Type2_strrchr_Before(loop, str_b, c_b1);
+		testOpt07_Type2_strrchr_Before(loop, str_b, c_b2);
+		testOpt07_Type2_strrchr_Before(loop, str_b, c_b3);
+		testOpt07_Type2_strrchr_Before(loop, str_b, c_b4);
+		testOpt07_Type2_strrchr_Before(loop, str_c, c_c1);
+		testOpt07_Type2_strrchr_Before(loop, str_c, c_c2);
+		testOpt07_Type2_strrchr_Before(loop, str_c, c_c3);
+		testOpt07_Type2_strrchr_Before(loop, str_c, c_c4);
+		testOpt07_Type2_strrchr_Before(loop, str_d, c_d1);
+		testOpt07_Type2_strrchr_Before(loop, str_d, c_d2);
+		testOpt07_Type2_strrchr_Before(loop, str_d, c_d3);
+		testOpt07_Type2_strrchr_Before(loop, str_d, c_d4);
+	}
+	printElapsedTime(prev_time);
+}
+//ç≈ìKâªå„
+void runTestOpt07_Type2_strrchr_After(const char* str_a, const char c_a1, const char c_a2, const char c_a3, const char c_a4,
+		                              const char* str_b, const char c_b1, const char c_b2, const char c_b3, const char c_b4,
+									  const char* str_c, const char c_c1, const char c_c2, const char c_c3, const char c_c4,
+									  const char* str_d, const char c_d1, const char c_d2, const char c_d3, const char c_d4)
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strrchr_After(loop, str_a, c_a1);
+		testOpt07_Type2_strrchr_After(loop, str_a, c_a2);
+		testOpt07_Type2_strrchr_After(loop, str_a, c_a3);
+		testOpt07_Type2_strrchr_After(loop, str_a, c_a4);
+		testOpt07_Type2_strrchr_After(loop, str_b, c_b1);
+		testOpt07_Type2_strrchr_After(loop, str_b, c_b2);
+		testOpt07_Type2_strrchr_After(loop, str_b, c_b3);
+		testOpt07_Type2_strrchr_After(loop, str_b, c_b4);
+		testOpt07_Type2_strrchr_After(loop, str_c, c_c1);
+		testOpt07_Type2_strrchr_After(loop, str_c, c_c2);
+		testOpt07_Type2_strrchr_After(loop, str_c, c_c3);
+		testOpt07_Type2_strrchr_After(loop, str_c, c_c4);
+		testOpt07_Type2_strrchr_After(loop, str_d, c_d1);
+		testOpt07_Type2_strrchr_After(loop, str_d, c_d2);
+		testOpt07_Type2_strrchr_After(loop, str_d, c_d3);
+		testOpt07_Type2_strrchr_After(loop, str_d, c_d4);
+	}
+	printElapsedTime(prev_time);
+}
+//ÅyÉ^ÉCÉvÇQÅz(strstr)
+void runTestOpt07_Type2_strstr()
+{
+	printf("Type2(strstr): *repeated * %d times.\n", LOOP_OPT07_TYPE2);
+
+	const char* str_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str_a1 = "1";
+	const char* str_a2 = "12";
+	const char* str_a3 = "1x";
+	const char* str_a4 = "1234567980!abcde";
+	const char* str_a5 = "1234567980!abcdef";
+	const char* str_a6 = "1234567980!abcdx";
+	const char* str_a7 = "1234567980!abcdefx";
+	const char* str_a8 = "A";
+	const char* str_a9 = "AB";
+	const char* str_a10 = "ABCDEFGHIJKLMNOP";
+	const char* str_a11 = "ABCDEFGHIJKLMNOPQ";
+	const char* str_a12 = "ABCDEFGHIJKLMNOx";
+	const char* str_a13 = "ABCDEFGHIJKLMNOPx";
+	const char* str_a14 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&(";
+	const char* str_a15 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&(.";
+	const char* str_a16 = ".";
+	const char* str_b = "1234567812345678";
+	const char* str_b1 = "1";
+	const char* str_b2 = "12";
+	const char* str_b3 = "1x";
+	const char* str_b4 = "1234567812345678";
+	const char* str_b5 = "1234567812345678x";
+	const char* str_b6 = "8";
+	const char* str_b7 = "78";
+	const char* str_b8 = "678";
+	const char* str_b9 = "7x";
+	const char* str_b10 = "234567812345678";
+	const char* str_b11 = ".";
+	const char* str_c = "123123";
+	const char* str_c1 = "1";
+	const char* str_c2 = "12";
+	const char* str_c3 = "1x";
+	const char* str_c4 = "23";
+	const char* str_c5 = ".";
+	const char* str_d = "";
+	const char* str_d1 = ".";
+
+	extern void runTestOpt07_Type2_strstr_Before(const char* str_a, const char* str_a1, const char* str_a2, const char* str_a3, const char* str_a4, const char* str_a5, const char* str_a6, const char* str_a7, const char* str_a8, const char* str_a9, const char* str_a10, const char* str_a11, const char* str_a12, const char* str_a13, const char* str_a14, const char* str_a15, const char* str_a16,
+	                                             const char* str_b, const char* str_b1, const char* str_b2, const char* str_b3, const char* str_b4, const char* str_b5, const char* str_b6, const char* str_b7, const char* str_b8, const char* str_b9, const char* str_b10, const char* str_b11,
+												 const char* str_c, const char* str_c1, const char* str_c2, const char* str_c3, const char* str_c4, const char* str_c5,
+										 		 const char* str_d, const char* str_d1);
+	extern void runTestOpt07_Type2_strstr_After(const char* str_a, const char* str_a1, const char* str_a2, const char* str_a3, const char* str_a4, const char* str_a5, const char* str_a6, const char* str_a7, const char* str_a8, const char* str_a9, const char* str_a10, const char* str_a11, const char* str_a12, const char* str_a13, const char* str_a14, const char* str_a15, const char* str_a16,
+	                                            const char* str_b, const char* str_b1, const char* str_b2, const char* str_b3, const char* str_b4, const char* str_b5, const char* str_b6, const char* str_b7, const char* str_b8, const char* str_b9, const char* str_b10, const char* str_b11,
+												const char* str_c, const char* str_c1, const char* str_c2, const char* str_c3, const char* str_c4, const char* str_c5,
+										 		const char* str_d, const char* str_d1);
+	runTestOpt07_Type2_strstr_Before(str_a, str_a1, str_a2, str_a3, str_a4, str_a5, str_a6, str_a7, str_a8, str_a9, str_a10, str_a11, str_a12, str_a13, str_a14, str_a15, str_a16,
+	                                 str_b, str_b1, str_b2, str_b3, str_b4, str_b5, str_b6, str_b7, str_b8, str_b9, str_b10, str_b11,
+									 str_c, str_c1, str_c2, str_c3, str_c4, str_c5,
+									 str_d, str_d1);
+	runTestOpt07_Type2_strstr_After(str_a, str_a1, str_a2, str_a3, str_a4, str_a5, str_a6, str_a7, str_a8, str_a9, str_a10, str_a11, str_a12, str_a13, str_a14, str_a15, str_a16,
+	                                str_b, str_b1, str_b2, str_b3, str_b4, str_b5, str_b6, str_b7, str_b8, str_b9, str_b10, str_b11,
+									str_c, str_c1, str_c2, str_c3, str_c4, str_c5,
+									str_d, str_d1);
+}
+//ç≈ìKâªëO
+void runTestOpt07_Type2_strstr_Before(const char* str_a, const char* str_a1, const char* str_a2, const char* str_a3, const char* str_a4, const char* str_a5, const char* str_a6, const char* str_a7, const char* str_a8, const char* str_a9, const char* str_a10, const char* str_a11, const char* str_a12, const char* str_a13, const char* str_a14, const char* str_a15, const char* str_a16,
+	                                  const char* str_b, const char* str_b1, const char* str_b2, const char* str_b3, const char* str_b4, const char* str_b5, const char* str_b6, const char* str_b7, const char* str_b8, const char* str_b9, const char* str_b10, const char* str_b11,
+									  const char* str_c, const char* str_c1, const char* str_c2, const char* str_c3, const char* str_c4, const char* str_c5,
+									  const char* str_d, const char* str_d1)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a1);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a2);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a3);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a4);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a5);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a6);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a7);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a8);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a9);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a10);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a11);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a12);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a13);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a14);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a15);
+		testOpt07_Type2_strstr_Before(loop, str_a, str_a16);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b1);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b2);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b3);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b4);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b5);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b6);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b7);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b8);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b9);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b10);
+		testOpt07_Type2_strstr_Before(loop, str_b, str_b11);
+		testOpt07_Type2_strstr_Before(loop, str_c, str_c1);
+		testOpt07_Type2_strstr_Before(loop, str_c, str_c2);
+		testOpt07_Type2_strstr_Before(loop, str_c, str_c3);
+		testOpt07_Type2_strstr_Before(loop, str_c, str_c4);
+		testOpt07_Type2_strstr_Before(loop, str_c, str_c5);
+		testOpt07_Type2_strstr_Before(loop, str_d, str_d1);
+	}
+	printElapsedTime(prev_time);
+}
+//ç≈ìKâªå„
+void runTestOpt07_Type2_strstr_After(const char* str_a, const char* str_a1, const char* str_a2, const char* str_a3, const char* str_a4, const char* str_a5, const char* str_a6, const char* str_a7, const char* str_a8, const char* str_a9, const char* str_a10, const char* str_a11, const char* str_a12, const char* str_a13, const char* str_a14, const char* str_a15, const char* str_a16,
+	                                 const char* str_b, const char* str_b1, const char* str_b2, const char* str_b3, const char* str_b4, const char* str_b5, const char* str_b6, const char* str_b7, const char* str_b8, const char* str_b9, const char* str_b10, const char* str_b11,
+									 const char* str_c, const char* str_c1, const char* str_c2, const char* str_c3, const char* str_c4, const char* str_c5,
+									 const char* str_d, const char* str_d1)
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strstr_After(loop, str_a, str_a1);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a2);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a3);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a4);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a5);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a6);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a7);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a8);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a9);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a10);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a11);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a12);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a13);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a14);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a15);
+		testOpt07_Type2_strstr_After(loop, str_a, str_a16);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b1);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b2);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b3);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b4);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b5);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b6);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b7);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b8);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b9);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b10);
+		testOpt07_Type2_strstr_After(loop, str_b, str_b11);
+		testOpt07_Type2_strstr_After(loop, str_c, str_c1);
+		testOpt07_Type2_strstr_After(loop, str_c, str_c2);
+		testOpt07_Type2_strstr_After(loop, str_c, str_c3);
+		testOpt07_Type2_strstr_After(loop, str_c, str_c4);
+		testOpt07_Type2_strstr_After(loop, str_c, str_c5);
+		testOpt07_Type2_strstr_After(loop, str_d, str_d1);
+	}
+	printElapsedTime(prev_time);
+}
+//ÅyÉ^ÉCÉvÇQÅz(strcpy)
+void runTestOpt07_Type2_strcpy()
+{
+	printf("Type2(strcpy): *repeated * %d times.\n", LOOP_OPT07_TYPE2);
+
+	char dst[1024];
+	const char* src_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* src_b = "1234567890abcdefg";
+	const char* src_c = "1234567890abcdef";
+	const char* src_d = "123";
+	const char* src_e = "";
+
+	extern void runTestOpt07_Type2_strcpy_Before(char* dst,
+		                                         const char* src_a,
+												 const char* src_b,
+												 const char* src_c,
+												 const char* src_d,
+												 const char* src_e);
+	extern void runTestOpt07_Type2_strcpy_After(char* dst,
+		                                        const char* src_a,
+												const char* src_b,
+												const char* src_c,
+												const char* src_d,
+												const char* src_e);
+	runTestOpt07_Type2_strcpy_Before(dst,
+		                             src_a,
+									 src_b,
+									 src_c,
+									 src_d,
+									 src_e);
+	runTestOpt07_Type2_strcpy_After(dst,
+		                            src_a,
+									src_b,
+									src_c,
+									src_d,
+									src_e);
+}
+//ç≈ìKâªëO
+void runTestOpt07_Type2_strcpy_Before(char* dst, const char* src_a, const char* src_b, const char* src_c, const char* src_d, const char* src_e)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strcpy_Before(loop, dst, src_a);
+		testOpt07_Type2_strcpy_Before(loop, dst, src_b);
+		testOpt07_Type2_strcpy_Before(loop, dst, src_c);
+		testOpt07_Type2_strcpy_Before(loop, dst, src_d);
+		testOpt07_Type2_strcpy_Before(loop, dst, src_e);
+	}
+	printElapsedTime(prev_time);
+}
+//ç≈ìKâªå„
+void runTestOpt07_Type2_strcpy_After(char* dst, const char* src_a, const char* src_b, const char* src_c, const char* src_d, const char* src_e)
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strcpy_After(loop, dst, src_a);
+		testOpt07_Type2_strcpy_After(loop, dst, src_b);
+		testOpt07_Type2_strcpy_After(loop, dst, src_c);
+		testOpt07_Type2_strcpy_After(loop, dst, src_d);
+		testOpt07_Type2_strcpy_After(loop, dst, src_e);
+	}
+	printElapsedTime(prev_time);
+}
+//ÅyÉ^ÉCÉvÇQÅz(strncpy)
+void runTestOpt07_Type2_strncpy()
+{
+	printf("Type2(strncpy): *repeated * %d times.\n", LOOP_OPT07_TYPE2);
+
+	char dst[1024];
+	const char* src_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const std::size_t max_len_a1 = 171;
+	const std::size_t max_len_a2 = 170;
+	const std::size_t max_len_a3 = 169;
+	const char* src_b = "1234567890abcdefg";
+	const std::size_t max_len_b1 = 18;
+	const std::size_t max_len_b2 = 17;
+	const std::size_t max_len_b3 = 16;
+	const char* src_c = "1234567890abcdef";
+	const std::size_t max_len_c1 = 17;
+	const std::size_t max_len_c2 = 16;
+	const std::size_t max_len_c3 = 15;
+	const char* src_d = "123";
+	const std::size_t max_len_d1 = 4;
+	const std::size_t max_len_d2 = 3;
+	const std::size_t max_len_d3 = 2;
+	const char* src_e = "";
+	const std::size_t max_len_e1 = 2;
+	const std::size_t max_len_e2 = 1;
+	const std::size_t max_len_e3 = 0;
+
+	extern void runTestOpt07_Type2_strncpy_Before(char* dst,
+	                                              const char* src_a, const std::size_t max_len_a1, const std::size_t max_len_a2, const std::size_t max_len_a3,
+												  const char* src_b, const std::size_t max_len_b1, const std::size_t max_len_b2, const std::size_t max_len_b3,
+												  const char* src_c, const std::size_t max_len_c1, const std::size_t max_len_c2, const std::size_t max_len_c3,
+												  const char* src_d, const std::size_t max_len_d1, const std::size_t max_len_d2, const std::size_t max_len_d3,
+												  const char* src_e, const std::size_t max_len_e1, const std::size_t max_len_e2, const std::size_t max_len_e3);
+	extern void runTestOpt07_Type2_strncpy_After(char* dst,
+	                                              const char* src_a, const std::size_t max_len_a1, const std::size_t max_len_a2, const std::size_t max_len_a3,
+												  const char* src_b, const std::size_t max_len_b1, const std::size_t max_len_b2, const std::size_t max_len_b3,
+												  const char* src_c, const std::size_t max_len_c1, const std::size_t max_len_c2, const std::size_t max_len_c3,
+												  const char* src_d, const std::size_t max_len_d1, const std::size_t max_len_d2, const std::size_t max_len_d3,
+												  const char* src_e, const std::size_t max_len_e1, const std::size_t max_len_e2, const std::size_t max_len_e3);
+	runTestOpt07_Type2_strncpy_Before(dst,
+	                                  src_a, max_len_a1, max_len_a2, max_len_a3,
+									  src_b, max_len_b1, max_len_b2, max_len_b3,
+									  src_c, max_len_c1, max_len_c2, max_len_c3,
+									  src_d, max_len_d1, max_len_d2, max_len_d3,
+									  src_e, max_len_e1, max_len_e2, max_len_e3);
+	runTestOpt07_Type2_strncpy_After(dst,
+	                                 src_a, max_len_a1, max_len_a2, max_len_a3,
+									 src_b, max_len_b1, max_len_b2, max_len_b3,
+									 src_c, max_len_c1, max_len_c2, max_len_c3,
+									 src_d, max_len_d1, max_len_d2, max_len_d3,
+									 src_e, max_len_e1, max_len_e2, max_len_e3);
+}
+//ç≈ìKâªëO
+void runTestOpt07_Type2_strncpy_Before(char* dst,
+	                                   const char* src_a, const std::size_t max_len_a1, const std::size_t max_len_a2, const std::size_t max_len_a3,
+									   const char* src_b, const std::size_t max_len_b1, const std::size_t max_len_b2, const std::size_t max_len_b3,
+									   const char* src_c, const std::size_t max_len_c1, const std::size_t max_len_c2, const std::size_t max_len_c3,
+									   const char* src_d, const std::size_t max_len_d1, const std::size_t max_len_d2, const std::size_t max_len_d3,
+									   const char* src_e, const std::size_t max_len_e1, const std::size_t max_len_e2, const std::size_t max_len_e3)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strncpy_Before(loop, dst, src_a, max_len_a1);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_a, max_len_a2);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_a, max_len_a3);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_b, max_len_b1);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_b, max_len_b2);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_b, max_len_b3);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_c, max_len_c1);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_c, max_len_c2);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_c, max_len_c3);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_d, max_len_d1);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_d, max_len_d2);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_d, max_len_d3);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_e, max_len_e1);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_e, max_len_e2);
+		testOpt07_Type2_strncpy_Before(loop, dst, src_e, max_len_e3);
+	}
+	printElapsedTime(prev_time);
+}
+//ç≈ìKâªå„
+void runTestOpt07_Type2_strncpy_After(char* dst,
+	                                  const char* src_a, const std::size_t max_len_a1, const std::size_t max_len_a2, const std::size_t max_len_a3,
+									  const char* src_b, const std::size_t max_len_b1, const std::size_t max_len_b2, const std::size_t max_len_b3,
+									  const char* src_c, const std::size_t max_len_c1, const std::size_t max_len_c2, const std::size_t max_len_c3,
+									  const char* src_d, const std::size_t max_len_d1, const std::size_t max_len_d2, const std::size_t max_len_d3,
+									  const char* src_e, const std::size_t max_len_e1, const std::size_t max_len_e2, const std::size_t max_len_e3)
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_strncpy_After(loop, dst, src_a, max_len_a1);
+		testOpt07_Type2_strncpy_After(loop, dst, src_a, max_len_a2);
+		testOpt07_Type2_strncpy_After(loop, dst, src_a, max_len_a3);
+		testOpt07_Type2_strncpy_After(loop, dst, src_b, max_len_b1);
+		testOpt07_Type2_strncpy_After(loop, dst, src_b, max_len_b2);
+		testOpt07_Type2_strncpy_After(loop, dst, src_b, max_len_b3);
+		testOpt07_Type2_strncpy_After(loop, dst, src_c, max_len_c1);
+		testOpt07_Type2_strncpy_After(loop, dst, src_c, max_len_c2);
+		testOpt07_Type2_strncpy_After(loop, dst, src_c, max_len_c3);
+		testOpt07_Type2_strncpy_After(loop, dst, src_d, max_len_d1);
+		testOpt07_Type2_strncpy_After(loop, dst, src_d, max_len_d2);
+		testOpt07_Type2_strncpy_After(loop, dst, src_d, max_len_d3);
+		testOpt07_Type2_strncpy_After(loop, dst, src_e, max_len_e1);
+		testOpt07_Type2_strncpy_After(loop, dst, src_e, max_len_e2);
+		testOpt07_Type2_strncpy_After(loop, dst, src_e, max_len_e3);
 	}
 	printElapsedTime(prev_time);
 }

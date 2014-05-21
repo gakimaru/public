@@ -1,51 +1,72 @@
 ----------------------------------------
 [Optimize Test 01]
 Type1: *repeated * 10000 times.
-  Before   ... *elapsed time=0.095092200
-  After1   ... *elapsed time=0.026024300
-  After2   ... *elapsed time=0.026023800
-  Appendix ... *elapsed time=0.194183900  *Appendix is most brief style with C++11
+  Before   ... *elapsed time=0.093088800
+  After1   ... *elapsed time=0.026025100
+  After2   ... *elapsed time=0.027025800
+  Appendix ... *elapsed time=0.196186500  *Appendix is most brief style with C++11
 ----------------------------------------
 [Optimize Test 02]
 Type1: *repeated * 10000 times.
-  Before   ... *elapsed time=0.061059200
-  After1   ... *elapsed time=0.059056200
-  After2   ... *elapsed time=0.059056200
+  Before   ... *elapsed time=0.066061800
+  After1   ... *elapsed time=0.058055400
+  After2   ... *elapsed time=0.087083400
 ----------------------------------------
 [Optimize Test 03]
 Type1: *repeated * 100000000 times.
-  Before   ... *elapsed time=0.176167500  sum=1974919424
-  After    ... *elapsed time=0.056053000  sum=1974919424
+  Before   ... *elapsed time=0.178169600  sum=1974919424
+  After    ... *elapsed time=0.056053300  sum=1974919424
 Type2: *repeated * 100000000 times.
-  Before   ... *elapsed time=0.402382800  sum=-525080576
-  After    ... *elapsed time=0.058055300  sum=-525080576
+  Before   ... *elapsed time=0.406387100  sum=-525080576
+  After    ... *elapsed time=0.059055400  sum=-525080576
 Type3: *repeated * 10000 times.
-  Before   ... *elapsed time=0.649616800  count=36760000
-  After    ... *elapsed time=0.533508000  count=36760000
+  Before   ... *elapsed time=0.637605900  count=36760000
+  After    ... *elapsed time=0.545519200  count=36760000
 ----------------------------------------
 [Optimize Test 04]
 Type1: *repeated * 10000 times.
-  Before   ... *elapsed time=0.271256800
-  After1   ... *elapsed time=0.153146800
-  After2   ... *elapsed time=0.123116800
+  Before   ... *elapsed time=0.272259400
+  After1   ... *elapsed time=0.125119200
+  After2   ... *elapsed time=0.089084600
 ----------------------------------------
 [Optimize Test 05]
 Type1: *repeated * 10000000 times.
-  Before   ... *elapsed time=0.216205900
-  After    ... *elapsed time=0.207197000
+  Before   ... *elapsed time=0.245232000
+  After    ... *elapsed time=0.208199400
 ----------------------------------------
 [Optimize Test 06]
 Type1: *repeated * 10000 times.
-  Before   ... *elapsed time=0.192181600
-  After    ... *elapsed time=0.058055600
+  Before   ... *elapsed time=0.195184500
+  After    ... *elapsed time=0.037035100
 ----------------------------------------
 [Optimize Test 07]
 Type1: *repeated * 10000000 times.
-  Before   ... *elapsed time=0.927883800
-  After    ... *elapsed time=0.471446300
-Type2: *repeated * 1000000 times.
-  Before   ... *elapsed time=0.224214400
-  After    ... *elapsed time=0.180171300
+  Before   ... *elapsed time=0.887843100
+  After    ... *elapsed time=0.367351400
+Type2(strlen): *repeated * 1000000 times.
+  Before   ... *elapsed time=0.106099600
+  After    ... *elapsed time=0.018018400
+Type2(strcmp): *repeated * 1000000 times.
+  Before   ... *elapsed time=0.356338800
+  After    ... *elapsed time=0.101096100
+Type2(strncmp): *repeated * 1000000 times.
+  Before   ... *elapsed time=0.701667100
+  After    ... *elapsed time=0.505479600
+Type2(strchr): *repeated * 1000000 times.
+  Before   ... *elapsed time=0.108103700
+  After    ... *elapsed time=0.088083800
+Type2(strrchr): *repeated * 1000000 times.
+  Before   ... *elapsed time=0.191181800
+  After    ... *elapsed time=0.148139100
+Type2(strstr): *repeated * 1000000 times.
+  Before   ... *elapsed time=0.438418800
+  After    ... *elapsed time=1.015964000
+Type2(strcpy): *repeated * 1000000 times.
+  Before   ... *elapsed time=0.127122700
+  After    ... *elapsed time=0.119112200
+Type2(strncpy): *repeated * 1000000 times.
+  Before   ... *elapsed time=0.261248900
+  After    ... *elapsed time=0.443420200
 ----------------------------------------
 [Test for Lambda with closure]
 for lambda1: external_counter=0

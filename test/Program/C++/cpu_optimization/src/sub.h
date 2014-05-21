@@ -194,9 +194,23 @@ template<std::size_t N, std::size_t M, std::size_t NM>
 void testOpt07_Type1_After(const int dummy, matrix<N, M>& add0, matrix<N, M>& mul0a, matrix<N, M>& mul0b, const matrix<N, M>& add1, const matrix<N, M>& add2, const matrix<N, M>& mul1a, const float mul2a, const matrix<N, NM>& mul1b, const matrix<NM, M>& mul2b);
 
 //ÅyÉ^ÉCÉvÇQÅzç≈ìKâªëO
-std::size_t testOpt07_Type2_Before(const int dummy, char* str0, const char* str1, const char* str2, const char* str3, const char c);
+std::size_t testOpt07_Type2_strlen_Before(const int dummy, const char* str);
+int testOpt07_Type2_strcmp_Before(const int dummy, const char* str1, const char* str2);
+int testOpt07_Type2_strncmp_Before(const int dummy, const char* str1, const char* str2, const std::size_t max_len);
+const char* testOpt07_Type2_strchr_Before(const int dummy, const char* str, const char c);
+const char* testOpt07_Type2_strrchr_Before(const int dummy, const char* str, const char c);
+const char* testOpt07_Type2_strstr_Before(const int dummy, const char* str1, const char* str2);
+const char* testOpt07_Type2_strcpy_Before(const int dummy, char* dst, const char* src);
+const char* testOpt07_Type2_strncpy_Before(const int dummy, char* dst, const char* src, const std::size_t max_len);
 //ÅyÉ^ÉCÉvÇQÅzç≈ìKâªå„
-std::size_t testOpt07_Type2_After(const int dummy, char* str0, const char* str1, const char* str2, const char* str3, const char c);
+std::size_t testOpt07_Type2_strlen_After(const int dummy, const char* str);
+int testOpt07_Type2_strcmp_After(const int dummy, const char* str1, const char* str2);
+int testOpt07_Type2_strncmp_After(const int dummy, const char* str1, const char* str2, const std::size_t max_len);
+const char* testOpt07_Type2_strchr_After(const int dummy, const char* str, const char c);
+const char* testOpt07_Type2_strrchr_After(const int dummy, const char* str, const char c);
+const char* testOpt07_Type2_strstr_After(const int dummy, const char* str1, const char* str2);
+const char* testOpt07_Type2_strcpy_After(const int dummy, char* dst, const char* src);
+const char* testOpt07_Type2_strncpy_After(const int dummy, char* dst, const char* src, const std::size_t max_len);
 
 //----------------------------------------
 //ã§í ä÷êî

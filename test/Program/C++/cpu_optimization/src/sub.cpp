@@ -907,23 +907,42 @@ void testOpt07_Type1_After<1, 4, 3>(const int dummy, matrix1x4& add0, matrix1x4&
 
 //【タイプ２】最適化前
 #pragma warning(disable: 4996)//strcpy, strncpy用
-#include <string.h>
-std::size_t testOpt07_Type2_Before(const int dummy, char* str0, const char* str1, const char* str2, const char* str3, const char c)
+#include <string.h>//strlen, strcmp, strncmp, strchr, strrchr, strcpy, strncpy用
+std::size_t testOpt07_Type2_strlen_Before(const int dummy, const char* str)
 {
-	const std::size_t result1 = strlen(str1);
-	const int result2 = strcmp(str1, str2);
-	const int result3 = strncmp(str1, str2, 18);
-	const char* result4 = strchr(str1, c);
-	const char* result5 = strrchr(str1, c);
-	const char* result6 = strstr(str1, str3);
-	const char* result7 = strcpy(str0, str1);
-	const char* result8 = strncpy(str0, str1, 18);
-	return result1;
+	return strlen(str);
+}
+int testOpt07_Type2_strcmp_Before(const int dummy, const char* str1, const char* str2)
+{
+	return strcmp(str1, str2);
+}
+int testOpt07_Type2_strncmp_Before(const int dummy, const char* str1, const char* str2, const std::size_t max_len)
+{
+	return strncmp(str1, str2, max_len);
+}
+const char* testOpt07_Type2_strchr_Before(const int dummy, const char* str, const char c)
+{
+	return strchr(str, c);
+}
+const char* testOpt07_Type2_strrchr_Before(const int dummy, const char* str, const char c)
+{
+	return strrchr(str, c);
+}
+const char* testOpt07_Type2_strstr_Before(const int dummy, const char* str1, const char* str2)
+{
+	return strstr(str1, str2);
+}
+const char* testOpt07_Type2_strcpy_Before(const int dummy, char* dst, const char* src)
+{
+	return strcpy(dst, src);
+}
+const char* testOpt07_Type2_strncpy_Before(const int dummy, char* dst, const char* src, const std::size_t max_len)
+{
+	return strncpy(dst, src, max_len);
 }
 //【タイプ２】最適化後
 #include <nmmintrin.h>//SSE4.2用
 #include <cstdint>//intptr_t用
-#define SSESTR_BRANCH_FOR_ALIGN16//16バイトアラインメントで処理を振り分ける場合はこのマクロを有効にする
 //SSE版strlen
 std::size_t strlen_fast(const char* str)
 {
@@ -935,36 +954,44 @@ std::size_t strlen_fast(const char* str)
 //		return 0;
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
 	const __m128i null = _mm_setzero_si128();
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
-	if ((reinterpret_cast<intptr_t>(str)& 0xf) == 0)
-	{
-		//16バイトアライメント時
-		const __m128i* p = reinterpret_cast<const __m128i*>(str);
-		while (!_mm_cmpistrz(null, *p, flags))
-			++p;
-		return (reinterpret_cast<const char*>(p) - str) + _mm_cmpistri(null, *p, flags);
-	}
-	else//if ((reinterpret_cast<intptr_t>(str) & 0xf) != 0)
-#endif//SSESTR_BRANCH_FOR_ALIGN16
+	const char* p = str;
+	if ((reinterpret_cast<intptr_t>(str) & 0xf) != 0)
 	{
 		//非16バイトアライメント時
-		const char* p = str;
-		__m128i str16;
-		while (true)
+		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
+		if (_mm_cmpistrz(null, str16, flags))
 		{
-			str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
-			if (_mm_cmpistrz(null, str16, flags))
-				break;
-			p += 16;
+			const std::size_t pos = _mm_cmpistri(null, str16, flags);
+			return (p - str) + pos;
 		}
-		return (p - str) + _mm_cmpistri(null, str16, flags);
+		p = reinterpret_cast<const char*>(((reinterpret_cast<intptr_t>(p) + 0xf) & ~0xf));
 	}
+	//16バイトアライメント時
+	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
+	while (true)
+	{
+		const __m128i str16 = _mm_load_si128(p128);
+		if (_mm_cmpistrz(null, str16, flags))
+		{
+			const std::size_t pos = _mm_cmpistri(null, str16, flags);
+			return (reinterpret_cast<const char*>(p128) - str) + pos;
+		}
+		++p128;
+	}
+	return 0;//dummy
 #endif
+}
+//SSE版strcmp補助関数
+inline int _compare(const int val1, const int val2)
+{
+	const int val = val1 - val2;
+//	return (val >> 31) | (val != 0 ? 1 : 0);
+	return (val >> 31) | (val != 0);//判定式の結果 true が事実上整数の1であるものとする
 }
 //SSE版strcmp
 int strcmp_fast(const char* str1, const char* str2)
 {
-#if 1
+#if 0
 	return strcmp(str1, str2);
 #else
 	//nullチェックしない
@@ -972,120 +999,115 @@ int strcmp_fast(const char* str1, const char* str2)
 //	           else       return -1;
 //	else       if (!str2) return 1;
 //	//         else       continue...
-	static const int flags1 = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const int flags2 = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
-	const int case_val = (((reinterpret_cast<intptr_t>(str1)& 0xf) == 0 ? 0 : 1) * 1) +
-	                     (((reinterpret_cast<intptr_t>(str2)& 0xf) == 0 ? 0 : 1) * 2);
+	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+	const int case_val = (((reinterpret_cast<intptr_t>(str1) & 0xf) != 0) << 0) |
+	                     (((reinterpret_cast<intptr_t>(str2) & 0xf) != 0) << 1);
 	switch (case_val)
 	{
 	case 0://16バイトアライメント＋16バイトアライメント時
 		{
-		   const __m128i* p1 = reinterpret_cast<const __m128i*>(str1);
-		   const __m128i* p2 = reinterpret_cast<const __m128i*>(str2);
-		   while (true)
-		   {
-			   if (_mm_cmpistrc(*p1, *p2, flags2) ||
-				   _mm_cmpistrz(null, *p1, flags1))
-				   break;
-			   ++p1;
-			   ++p2;
-		   }
-		   const std::size_t pos = _mm_cmpistri(*p1, *p2, flags2);
-		   if (pos == 16)
-			   return 0;
-		   const char c1 = *(reinterpret_cast<const char*>(p1) + pos);
-		   const char c2 = *(reinterpret_cast<const char*>(p2) + pos);
-		   if (c1 < c2) return -1;
-		   else if (c1 > c2) return 1;
-		   return 0;
+			const __m128i* p1 = reinterpret_cast<const __m128i*>(str1);
+			const __m128i* p2 = reinterpret_cast<const __m128i*>(str2);
+			while (true)
+			{
+				const __m128i str16_1 = _mm_load_si128(p1);
+				const __m128i str16_2 = _mm_load_si128(p2);
+				const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+				const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+				const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+				if (cf)
+				{
+					const char c1 = *(reinterpret_cast<const char*>(p1) + pos);
+					const char c2 = *(reinterpret_cast<const char*>(p2) + pos);
+					return _compare(c1, c2);
+				}
+				if (zf)
+					return 0;
+				++p1;
+				++p2;
+			}
 		}
 		break;
 	case 1://非16バイトアライメント＋16バイトアライメント時
 		{
-		   const char* p1 = str1;
-		   const __m128i* p2 = reinterpret_cast<const __m128i*>(str2);
-		   __m128i str16_1;
-		   while (true)
-		   {
-			   str16_1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1));
-			   if (_mm_cmpistrc(str16_1, *p2, flags2) ||
-				   _mm_cmpistrz(null, str16_1, flags1))
-				   break;
-			   p1 += 16;
-			   ++p2;
-		   }
-		   const std::size_t pos = _mm_cmpistri(str16_1, *p2, flags2);
-		   if (pos == 16)
-			   return 0;
-		   const char c1 = *(p1 + pos);
-		   const char c2 = *(reinterpret_cast<const char*>(p2) + pos);
-		   if (c1 < c2) return -1;
-		   else if (c1 > c2) return 1;
-		   return 0;
+			const char* p1 = str1;
+			const __m128i* p2 = reinterpret_cast<const __m128i*>(str2);
+			while (true)
+			{
+				const __m128i str16_1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1));
+				const __m128i str16_2 = _mm_load_si128(p2);
+				const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+				const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+				const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+				if (cf)
+				{
+					const char c1 = *(p1 + pos);
+					const char c2 = *(reinterpret_cast<const char*>(p2) + pos);
+					return _compare(c1, c2);
+				}
+				if (zf)
+					return 0;
+				p1 += 16;
+				++p2;
+			}
 		}
 		break;
 	case 2://16バイトアライメント＋非16バイトアライメント時
 		{
-		   const __m128i* p1 = reinterpret_cast<const __m128i*>(str1);
-		   const char* p2 = str2;
-		   __m128i str16_2;
-		   while (true)
-		   {
-			   str16_2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2));
-			   if (_mm_cmpistrc(*p1, str16_2, flags2) ||
-				   _mm_cmpistrz(null, *p1, flags1))
-				   break;
-			   ++p1;
-			   p2 += 16;
-		   }
-		   const std::size_t pos = _mm_cmpistri(*p1, str16_2, flags2);
-		   if (pos == 16)
-			   return 0;
-		   const char c1 = *(reinterpret_cast<const char*>(p1) + pos);
-		   const char c2 = *(p2 + pos);
-		   if (c1 < c2) return -1;
-		   else if (c1 > c2) return 1;
-		   return 0;
+			const __m128i* p1 = reinterpret_cast<const __m128i*>(str1);
+			const char* p2 = str2;
+			while (true)
+			{
+				const __m128i str16_1 = _mm_load_si128(p1);
+				const __m128i str16_2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2));
+				const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+				const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+				const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+				if (cf)
+				{
+					const char c1 = *(reinterpret_cast<const char*>(p1) + pos);
+					const char c2 = *(p2 + pos);
+					return _compare(c1, c2);
+				}
+				if (zf)
+					return 0;
+				++p1;
+				p2 += 16;
+			}
 		}
 		break;
 	default://case 3://16バイトアライメント＋非16バイトアライメント時
-#endif//SSESTR_BRANCH_FOR_ALIGN16
 		{
 			const char* p1 = str1;
 			const char* p2 = str2;
-			__m128i str16_1;
-			__m128i str16_2;
 			while (true)
 			{
-				str16_1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1));
-				str16_2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2));
-				if (_mm_cmpistrc(str16_1, str16_2, flags2) ||
-					_mm_cmpistrz(null, str16_1, flags1))
-					break;
+				const __m128i str16_1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1));
+				const __m128i str16_2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2));
+				const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+				const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+				const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+				if (cf)
+				{
+					const char c1 = *(reinterpret_cast<const char*>(p1) + pos);
+					const char c2 = *(reinterpret_cast<const char*>(p2) + pos);
+					return _compare(c1, c2);
+				}
+				if (zf)
+					return 0;
 				p1 += 16;
 				p2 += 16;
 			}
-			const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags2);
-			if (pos == 16)
-				return 0;
-			const char c1 = *(p1 + pos);
-			const char c2 = *(p2 + pos);
-			if (c1 < c2) return -1;
-			else if (c1 > c2) return 1;
-			return 0;
 		}
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
 		break;
 	}
-#endif//SSESTR_BRANCH_FOR_ALIGN16
+	return 0;//dummy
 #endif
 }
 //SSE版strncmp
 int strncmp_fast(const char* str1, const char* str2, const std::size_t max_len)
 {
-#if 1
+#if 0
 	return strncmp(str1, str2, max_len);
 #else
 //nullチェックしない
@@ -1093,262 +1115,239 @@ int strncmp_fast(const char* str1, const char* str2, const std::size_t max_len)
 //	           else       return -1;
 //	else       if (!str2) return 1;
 //	//         else       continue...
-	static const int flags1 = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const int flags2 = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
 	const __m128i null = _mm_setzero_si128();
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
-	const int case_val = (((reinterpret_cast<intptr_t>(str1)& 0xf) == 0 ? 0 : 1) * 1) +
-	                     (((reinterpret_cast<intptr_t>(str2)& 0xf) == 0 ? 0 : 1) * 2);
+	const int case_val = (((reinterpret_cast<intptr_t>(str1) & 0xf) != 0) << 0) |
+	                     (((reinterpret_cast<intptr_t>(str2) & 0xf) != 0) << 1);
 	switch (case_val)
 	{
 	case 0://16バイトアライメント＋16バイトアライメント時
 		{
-			std::size_t remain = max_len;
 			const __m128i* p1 = reinterpret_cast<const __m128i*>(str1);
 			const __m128i* p2 = reinterpret_cast<const __m128i*>(str2);
-			while (remain >= 16)
+			std::size_t remain = max_len;
+			while (true)
 			{
-				if (_mm_cmpistrc(*p1, *p2, flags2) ||
-					_mm_cmpistrz(null, *p1, flags1))
-					break;
+				const __m128i str16_1 = _mm_load_si128(p1);
+				const __m128i str16_2 = _mm_load_si128(p2);
+				const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+				const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+				const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+				if (remain <= 16 && pos >= remain)
+					return 0;
+				if (cf)
+				{
+					const std::size_t _pos = pos < remain ? pos : remain;
+					const char c1 = *(reinterpret_cast<const char*>(p1) + _pos);
+					const char c2 = *(reinterpret_cast<const char*>(p2) + _pos);
+					return _compare(c1, c2);
+				}
+				if (zf)
+					return 0;
 				++p1;
 				++p2;
 				remain -= 16;
 			}
-			const std::size_t pos = _mm_cmpistri(*p1, *p2, flags2);
-			if (pos == 16 || pos >= remain)
-				return 0;
-			const char c1 = *(reinterpret_cast<const char*>(p1) + pos);
-			const char c2 = *(reinterpret_cast<const char*>(p2) + pos);
-			if (c1 < c2) return -1;
-			else if (c1 > c2) return 1;
-			return 0;
 		}
 		break;
 	case 1://非16バイトアライメント＋16バイトアライメント時
 		{
-			std::size_t remain = max_len;
 			const char* p1 = str1;
 			const __m128i* p2 = reinterpret_cast<const __m128i*>(str2);
-			__m128i str16_1;
+			std::size_t remain = max_len;
 			while (true)
 			{
-				str16_1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1));
-				if (remain < 16)
-					break;
-				if (_mm_cmpistrc(str16_1, *p2, flags2) ||
-					_mm_cmpistrz(null, str16_1, flags1))
-					break;
+				const __m128i str16_1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1));
+				const __m128i str16_2 = _mm_load_si128(p2);
+				const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+				const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+				const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+				if (remain <= 16 && pos >= remain)
+					return 0;
+				if (cf)
+				{
+					const std::size_t _pos = pos < remain ? pos : remain;
+					const char c1 = *(p1 + _pos);
+					const char c2 = *(reinterpret_cast<const char*>(p2) + _pos);
+					return _compare(c1, c2);
+				}
+				if (zf)
+					return 0;
 				p1 += 16;
 				++p2;
 				remain -= 16;
 			}
-			const std::size_t pos = _mm_cmpistri(str16_1, *p2, flags2);
-			if (pos == 16 || pos >= remain)
-				return 0;
-			const char c1 = *(p1 + pos);
-			const char c2 = *(reinterpret_cast<const char*>(p2)+pos);
-			if (c1 < c2) return -1;
-			else if (c1 > c2) return 1;
-			return 0;
 		}
 		break;
 	case 2://16バイトアライメント＋非16バイトアライメント時
 		{
-			std::size_t remain = max_len;
 			const __m128i* p1 = reinterpret_cast<const __m128i*>(str1);
 			const char* p2 = str2;
-			__m128i str16_2;
+			std::size_t remain = max_len;
 			while (true)
 			{
-				str16_2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2));
-				if (remain < 16)
-					break;
-				if (_mm_cmpistrc(*p1, str16_2, flags2) ||
-					_mm_cmpistrz(null, *p1, flags1))
-					break;
+				const __m128i str16_1 = _mm_load_si128(p1);
+				const __m128i str16_2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2));
+				const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+				const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+				const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+				if (remain <= 16 && pos >= remain)
+					return 0;
+				if (cf)
+				{
+					const std::size_t _pos = pos < remain ? pos : remain;
+					const char c1 = *(reinterpret_cast<const char*>(p1) + _pos);
+					const char c2 = *(p2 +_pos);
+					return _compare(c1, c2);
+				}
+				if (zf)
+					return 0;
 				++p1;
 				p2 += 16;
 				remain -= 16;
 			}
-			const std::size_t pos = _mm_cmpistri(*p1, str16_2, flags2);
-			if (pos == 16 || pos >= remain)
-				return 0;
-			const char c1 = *(reinterpret_cast<const char*>(p1)+pos);
-			const char c2 = *(p2 + pos);
-			if (c1 < c2) return -1;
-			else if (c1 > c2) return 1;
-			return 0;
 		}
 		break;
 	default://case 3://16バイトアライメント＋非16バイトアライメント時
-#endif//SSESTR_BRANCH_FOR_ALIGN16
 		{
-			std::size_t remain = max_len;
 			const char* p1 = str1;
 			const char* p2 = str2;
-			__m128i str16_1;
-			__m128i str16_2;
+			std::size_t remain = max_len;
 			while (true)
 			{
-				str16_1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1));
-				str16_2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2));
-				if (remain < 16)
-					break;
-				if (_mm_cmpistrc(str16_1, str16_2, flags2) ||
-					_mm_cmpistrz(null, str16_1, flags1))
-					break;
+				const __m128i str16_1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1));
+				const __m128i str16_2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2));
+				const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+				const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+				const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+				if (remain <= 16 && pos >= remain)
+					return 0;
+				if (cf)
+				{
+					const std::size_t _pos = pos < remain ? pos : remain;
+					const char c1 = *(p1 + _pos);
+					const char c2 = *(p2 + _pos);
+					return _compare(c1, c2);
+				}
+				if (zf)
+					return 0;
 				p1 += 16;
 				p2 += 16;
 				remain -= 16;
 			}
-			const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags2);
-			if (pos == 16 || pos >= remain)
-				return 0;
-			const char c1 = *(p1 + pos);
-			const char c2 = *(p2 + pos);
-			if (c1 < c2) return -1;
-			else if (c1 > c2) return 1;
-			return 0;
 		}
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
 		break;
 	}
-#endif//SSESTR_BRANCH_FOR_ALIGN16
+	return 0;//dummy
 #endif
 }
 //SSE版strchr
 const char* strchr_fast(const char* str, const char c)
 {
-#if 1
+#if 0
 	return strchr(str, c);
 #else
-	//nullチェックしない
-	//	if (!str)
-	//		return 0;
+//nullチェックしない
+//	if (!str)
+//		return 0;
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i _c = _mm_set1_epi8(c);
-	const __m128i null = _mm_setzero_si128();
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
-	if ((reinterpret_cast<intptr_t>(str)& 0xf) == 0)
-	{
-		//16バイトアライメント時
-		const __m128i* p = reinterpret_cast<const __m128i*>(str);
-		int pos;
-		while (true)
-		{
-			pos = _mm_cmpistri(_c, *p, flags);
-			if (pos != 16)
-				break;
-			if (_mm_cmpistrz(null, *p, flags))
-				break;
-			++p;
-		}
-		if (pos != 16)
-			return reinterpret_cast<const char*>(p) + pos;
-		return nullptr;
-	}
-	else//if ((reinterpret_cast<intptr_t>(str) & 0xf) != 0)
-#endif//SSESTR_BRANCH_FOR_ALIGN16
+	const __m128i c16 = _mm_set1_epi8(c);
+	const char* p = str;
+	if ((reinterpret_cast<intptr_t>(str)& 0xf) != 0)
 	{
 		//非16バイトアライメント時
-		const char* p = str;
-		__m128i str16;
-		int pos;
-		while (true)
-		{
-			str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
-			pos = _mm_cmpistri(_c, str16, flags);
-			if (pos != 16)
-				break;
-			if (_mm_cmpistrz(null, str16, flags))
-				break;
-			p += 16;
-		}
-		if (pos != 16)
+		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
+		const int cf          = _mm_cmpistrc(c16, str16, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+		const int zf          = _mm_cmpistrz(c16, str16, flags);
+		const std::size_t pos = _mm_cmpistri(c16, str16, flags);
+		if (cf)
 			return reinterpret_cast<const char*>(p) + pos;
-		return nullptr;
+		if (zf)
+			return nullptr;
+		p = reinterpret_cast<const char*>(((reinterpret_cast<intptr_t>(p) + 0xf) & ~0xf));
 	}
+	//16バイトアライメント時
+	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
+	while (true)
+	{
+		const __m128i str16 = _mm_load_si128(p128);
+		const int cf          = _mm_cmpistrc(c16, str16, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+		const int zf          = _mm_cmpistrz(c16, str16, flags);
+		const std::size_t pos = _mm_cmpistri(c16, str16, flags);
+		if (cf)
+			return reinterpret_cast<const char*>(p128) + pos;
+		if (zf)
+			return nullptr;
+		++p128;
+	}
+	return nullptr;//dummy
 #endif
 }
 //SSE版strrchr
 const char* strrchr_fast(const char* str, const char c)
 {
-#if 1
+#if 0
 	return strrchr(str, c);
 #else
-	//nullチェックしない
-	//	if (!str)
-	//		return 0;
-	static const int flags1 = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const int flags2 = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_MOST_SIGNIFICANT;
-	const __m128i _c = _mm_set1_epi8(c);
-	const __m128i null = _mm_setzero_si128();
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
-	if ((reinterpret_cast<intptr_t>(str)& 0xf) == 0)
-	{
-		//16バイトアライメント時
-		const __m128i* p = reinterpret_cast<const __m128i*>(str);
-		const char* found_p = nullptr;
-		while (true)
-		{
-			const int pos = _mm_cmpistri(_c, *p, flags2);
-			if (pos != 16)
-				found_p = reinterpret_cast<const char*>(p) + pos;
-			if (_mm_cmpistrz(null, *p, flags1))
-				break;
-			++p;
-		}
-		if (found_p)
-			return found_p;
-		return nullptr;
-	}
-	else//if ((reinterpret_cast<intptr_t>(str) & 0xf) != 0)
-#endif//SSESTR_BRANCH_FOR_ALIGN16
+//nullチェックしない
+//	if (!str)
+//		return 0;
+	const char* found_p = nullptr;
+	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_MOST_SIGNIFICANT;
+	const __m128i c16 = _mm_set1_epi8(c);
+	const char* p = str;
+	if ((reinterpret_cast<intptr_t>(str)& 0xf) != 0)
 	{
 		//非16バイトアライメント時
-		const char* p = str;
-		__m128i str16;
-		const char* found_p = nullptr;
-		while (true)
-		{
-			str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
-			const int pos = _mm_cmpistri(_c, str16, flags2);
-			if (pos != 16)
-				found_p = p + pos;
-			if (_mm_cmpistrz(null, str16, flags1))
-				break;
-			p += 16;
-		}
-		if (found_p)
+		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
+		const int cf          = _mm_cmpistrc(c16, str16, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+		const int zf          = _mm_cmpistrz(c16, str16, flags);
+		const std::size_t pos = _mm_cmpistri(c16, str16, flags);
+		if (cf)
+			found_p = p + pos;
+		if (zf)
 			return found_p;
-		return nullptr;
+		p = reinterpret_cast<const char*>(((reinterpret_cast<intptr_t>(p) + 0xf) & ~0xf));
 	}
+	//16バイトアライメント時
+	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
+	while (true)
+	{
+		const __m128i str16 = _mm_load_si128(p128);
+		const int cf          = _mm_cmpistrc(c16, str16, flags);//※この三行は、アセンブラでは1回の cmpistri になる（はず）
+		const int zf          = _mm_cmpistrz(c16, str16, flags);
+		const std::size_t pos = _mm_cmpistri(c16, str16, flags);
+		if (cf)
+			found_p = reinterpret_cast<const char*>(p128) + pos;
+		if (zf)
+			return found_p;
+		++p128;
+	}
+	return nullptr;//dummy
 #endif
 }
 //SSE版strstr
 const char* strstr_fast(const char* str1, const char* str2)
 {
-#if 1
+#if 0
 	return strstr(str1, str2);
 #else
 //nullチェックしない
 //	if (!str1 || !str2)
 //		return nullptr;
 	const std::size_t str2_len = strlen_fast(str2);
+	const char str2_c = *str2;
 	const char* p = str1;
-	const char c = *str2;
-	const char* found = nullptr;
 	while(true)
 	{
-		found = strchr_fast(p, c);
+		const char* found = strchr_fast(p, str2_c);
 		if (!found)
-			break;
-		if (strncmp_fast(found, str2, str2_len) == 0)
-			break;;
+			return nullptr;
+		if(strncmp_fast(found, str2, str2_len) == 0)
+			return found;
 		p = found + 1;
 	}
-	return found;
+	return nullptr;//dummy
 #endif
 }
 //SSE版strcpy用補助関数
@@ -1356,7 +1355,7 @@ inline void _memcpy_m128i(char* dst, const __m128i src, const std::size_t len)
 {
 #if 1
 	memcpy(dst, reinterpret_cast<const char*>(&src), len);
-#else//このやり方では遅かった
+#else//↓このやり方では遅かった
 	static const __m128i ALL_ON = _mm_set1_epi8(0x80u);
 	switch (len)
 	{
@@ -1384,7 +1383,7 @@ inline void _memcpy_m128i(char* dst, const __m128i src, const std::size_t len)
 //SSE版strcpy
 const char* strcpy_fast(char* dst, const char* src)
 {
-#if 1
+#if 0
 	return strcpy(dst, src);
 #else
 //nullチェックしない
@@ -1392,41 +1391,52 @@ const char* strcpy_fast(char* dst, const char* src)
 //		return nullptr;
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
 	const __m128i null = _mm_setzero_si128();
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
-	const int case_val = (((reinterpret_cast<intptr_t>(dst)& 0xf) == 0 ? 0 : 1) * 1) +
-		                 (((reinterpret_cast<intptr_t>(src)& 0xf) == 0 ? 0 : 1) * 2);
+	const int case_val = (((reinterpret_cast<intptr_t>(dst)& 0xf) != 0) << 0) |
+	                     (((reinterpret_cast<intptr_t>(src)& 0xf) != 0) << 1);
 	switch (case_val)
 	{
 	case 0://16バイトアライメント＋16バイトアライメント時
 		{
 			__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 			const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
+			__m128i str16;
+			std::size_t pos;
 			while (true)
 			{
-				if (_mm_cmpistrz(null, *src_p, flags))
-					break;
-				*dst_p = *src_p;
+				str16 = _mm_load_si128(src_p);
+				const int zf = _mm_cmpistrz(null, str16, flags);//※この二行は、アセンブラでは1回の cmpistri になる（はず）
+				pos          = _mm_cmpistri(null, str16, flags);
+				if (zf)
+				{
+					_memcpy_m128i(reinterpret_cast<char*>(dst_p), str16, pos + 1);
+					return dst;
+				}
+				_mm_store_si128(dst_p, str16);
 				++dst_p;
 				++src_p;
 			}
-			_memcpy_m128i(reinterpret_cast<char*>(dst_p), *src_p, _mm_cmpistri(null, *src_p, flags) + 1);
-			return dst;
 		}
 		break;
 	case 1://非16バイトアライメント＋16バイトアライメント時
 		{
 			char* dst_p = dst;
 			const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
+			__m128i str16;
+			std::size_t pos;
 			while (true)
 			{
-				if (_mm_cmpistrz(null, *src_p, flags))
-					break;
-				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst_p), *src_p);
+				str16 = _mm_load_si128(src_p);
+				const int zf = _mm_cmpistrz(null, str16, flags);//※この二行は、アセンブラでは1回の cmpistri になる（はず）
+				pos          = _mm_cmpistri(null, str16, flags);
+				if (zf)
+				{
+					_memcpy_m128i(dst_p, str16, pos + 1);
+					return dst;
+				}
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst_p), str16);
 				dst_p += 16;
 				++src_p;
 			}
-			_memcpy_m128i(dst_p, *src_p, _mm_cmpistri(null, *src_p, flags) + 1);
-			return dst;
 		}
 		break;
 	case 2://16バイトアライメント＋非16バイトアライメント時
@@ -1434,68 +1444,74 @@ const char* strcpy_fast(char* dst, const char* src)
 			__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 			const char* src_p = src;
 			__m128i str16;
+			std::size_t pos;
 			while (true)
 			{
 				str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(src_p));
-				if (_mm_cmpistrz(null, str16, flags))
-					break;
-				*dst_p = str16;
+				const int zf = _mm_cmpistrz(null, str16, flags);//※この二行は、アセンブラでは1回の cmpistri になる（はず）
+				pos          = _mm_cmpistri(null, str16, flags);
+				if (zf)
+				{
+					_memcpy_m128i(reinterpret_cast<char*>(dst_p), str16, pos + 1);
+					return dst;
+				}
+				_mm_store_si128(dst_p, str16);
 				++dst_p;
 				src_p += 16;
 			}
-			_memcpy_m128i(reinterpret_cast<char*>(dst_p), str16, _mm_cmpistri(null, str16, flags) + 1);
-			return dst;
 		}
 		break;
 	default://case 3://16バイトアライメント＋非16バイトアライメント時
-#endif//SSESTR_BRANCH_FOR_ALIGN16
 		{
 			char* dst_p = dst;
 			const char* src_p = src;
 			__m128i str16;
+			std::size_t pos;
 			while (true)
 			{
 				str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(src_p));
-				if (_mm_cmpistrz(null, str16, flags))
-					break;
+				const int zf = _mm_cmpistrz(null, str16, flags);//※この二行は、アセンブラでは1回の cmpistri になる（はず）
+				pos          = _mm_cmpistri(null, str16, flags);
+				if (zf)
+				{
+					_memcpy_m128i(dst_p, str16, pos + 1);
+					return dst;
+				}
 				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst_p), str16);
 				dst_p += 16;
 				src_p += 16;
 			}
-			_memcpy_m128i(dst_p, str16, _mm_cmpistri(null, str16, flags) + 1);
-			return dst;
 		}
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
 		break;
 	}
-#endif//SSESTR_BRANCH_FOR_ALIGN16
+	return nullptr;//dummy
 #endif
 }
 //SSE版strncpy用補助関数
-inline void _memcpy_m128i(char* dst, const __m128i src, const std::size_t len, const std::size_t remain)
+inline void _memncpy_m128i(char* dst, const __m128i src, const std::size_t len, const std::size_t max_len)
 {
 #if 1
+	memset(dst, '\0', max_len);
 	memcpy(dst, reinterpret_cast<const char*>(&src), len);
-	memset(dst + len, '\0', remain - len);
-#else//このやり方では遅かった
+#else//↓このやり方では遅かった
 	switch (len)
 	{
 	case  0: break;
-	case  1: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 15), 15), remain); break;
-	case  2: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 14), 14), remain); break;
-	case  3: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 13), 13), remain); break;
-	case  4: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 12), 12), remain); break;
-	case  5: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 11), 11), remain); break;
-	case  6: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 10), 10), remain); break;
-	case  7: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  9),  9), remain); break;
-	case  8: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  8),  8), remain); break;
-	case  9: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  7),  7), remain); break;
-	case 10: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  6),  6), remain); break;
-	case 11: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  5),  5), remain); break;
-	case 12: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  4),  4), remain); break;
-	case 13: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  3),  3), remain); break;
-	case 14: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  2),  2), remain); break;
-	case 15: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  1),  1), remain); break;
+	case  1: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 15), 15), max_len); break;
+	case  2: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 14), 14), max_len); break;
+	case  3: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 13), 13), max_len); break;
+	case  4: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 12), 12), max_len); break;
+	case  5: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 11), 11), max_len); break;
+	case  6: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src, 10), 10), max_len); break;
+	case  7: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  9),  9), max_len); break;
+	case  8: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  8),  8), max_len); break;
+	case  9: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  7),  7), max_len); break;
+	case 10: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  6),  6), max_len); break;
+	case 11: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  5),  5), max_len); break;
+	case 12: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  4),  4), max_len); break;
+	case 13: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  3),  3), max_len); break;
+	case 14: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  2),  2), max_len); break;
+	case 15: _memcpy_m128i(dst, _mm_srli_si128(_mm_slli_si128(src,  1),  1), max_len); break;
 	case 16: _mm_storeu_si128(reinterpret_cast<__m128i*>(dst), src); break;
 	default: break;
 	}
@@ -1504,7 +1520,7 @@ inline void _memcpy_m128i(char* dst, const __m128i src, const std::size_t len, c
 //SSE版strncpy
 const char* strncpy_fast(char* dst, const char* src, const std::size_t max_len)
 {
-#if 1
+#if 0
 	return strncpy(dst, src, max_len);
 #else
 	//nullチェックしない
@@ -1512,115 +1528,131 @@ const char* strncpy_fast(char* dst, const char* src, const std::size_t max_len)
 	//		return nullptr;
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
 	const __m128i null = _mm_setzero_si128();
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
-	const int case_val = (((reinterpret_cast<intptr_t>(dst)& 0xf) == 0 ? 0 : 1) * 1) +
-	                     (((reinterpret_cast<intptr_t>(src)& 0xf) == 0 ? 0 : 1) * 2);
+	const int case_val = (((reinterpret_cast<intptr_t>(dst)& 0xf) != 0) << 0) |
+	                     (((reinterpret_cast<intptr_t>(src)& 0xf) != 0) << 1);
 	switch (case_val)
 	{
 	case 0://16バイトアライメント＋16バイトアライメント時
 		{
-			std::size_t remain = max_len;
 			__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 			const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
-			while (remain >= 16)
+			std::size_t remain = max_len;
+			__m128i str16;
+			std::size_t pos;
+			while (true)
 			{
-				if (_mm_cmpistrz(null, *src_p, flags))
-					break;
-				*dst_p = *src_p;
+				str16 = _mm_load_si128(src_p);
+				const int zf = _mm_cmpistrz(null, str16, flags);//※この二行は、アセンブラでは1回の cmpistri になる（はず）
+				pos          = _mm_cmpistri(null, str16, flags);
+				if(remain <= pos)
+				{
+					_memcpy_m128i(reinterpret_cast<char*>(dst_p), str16, remain);
+					return dst;
+				}
+				if (zf)
+				{
+					_memncpy_m128i(reinterpret_cast<char*>(dst_p), str16, pos + 1, remain);
+					return dst;
+				}
+				_mm_store_si128(dst_p, str16);
 				++dst_p;
 				++src_p;
 				remain -= 16;
 			}
-			const std::size_t len = _mm_cmpistri(null, *src_p, flags) + 1;
-			if (len >= remain)
-				_memcpy_m128i(reinterpret_cast<char*>(dst_p), *src_p, remain);
-			else
-				_memcpy_m128i(reinterpret_cast<char*>(dst_p), *src_p, len, remain);
-			return dst;
 		}
 		break;
 	case 1://非16バイトアライメント＋16バイトアライメント時
 		{
-			std::size_t remain = max_len;
 			char* dst_p = dst;
 			const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
-			while (remain >= 16)
+			std::size_t remain = max_len;
+			__m128i str16;
+			std::size_t pos;
+			while (true)
 			{
-				if (_mm_cmpistrz(null, *src_p, flags))
-					break;
-				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst_p), *src_p);
+				str16 = _mm_load_si128(src_p);
+				const int zf = _mm_cmpistrz(null, str16, flags);//※この二行は、アセンブラでは1回の cmpistri になる（はず）
+				pos = _mm_cmpistri(null, str16, flags);
+				if(remain <= pos)
+				{
+					_memcpy_m128i(dst_p, str16, remain);
+					return dst;
+				}
+				if (zf)
+				{
+					_memncpy_m128i(dst_p, str16, pos + 1, remain);
+					return dst;
+				}
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst_p), str16);
 				dst_p += 16;
 				++src_p;
 				remain -= 16;
 			}
-			const std::size_t len = _mm_cmpistri(null, *src_p, flags) + 1;
-			if (len >= remain)
-				_memcpy_m128i(dst_p, *src_p, remain);
-			else
-				_memcpy_m128i(dst_p, *src_p, len, remain);
-			return dst;
 		}
 		break;
 	case 2://16バイトアライメント＋非16バイトアライメント時
 		{
-			std::size_t remain = max_len;
 			__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 			const char* src_p = src;
+			std::size_t remain = max_len;
 			__m128i str16;
+			std::size_t pos;
 			while (true)
 			{
 				str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(src_p));
-				if (remain < 16)
-					break;
-				if (_mm_cmpistrz(null, str16, flags))
-					break;
-				*dst_p = str16;
+				const int zf = _mm_cmpistrz(null, str16, flags);//※この二行は、アセンブラでは1回の cmpistri になる（はず）
+				pos          = _mm_cmpistri(null, str16, flags);
+				if(remain <= pos)
+				{
+					_memcpy_m128i(reinterpret_cast<char*>(dst_p), str16, remain);
+					return dst;
+				}
+				if (zf)
+				{
+					_memncpy_m128i(reinterpret_cast<char*>(dst_p), str16, pos + 1, remain);
+					return dst;
+				}
+				_mm_store_si128(dst_p, str16);
 				++dst_p;
 				src_p += 16;
 				remain -= 16;
 			}
-			const std::size_t len = _mm_cmpistri(null, str16, flags) + 1;
-			if (len >= remain)
-				_memcpy_m128i(reinterpret_cast<char*>(dst_p), str16, remain);
-			else
-				_memcpy_m128i(reinterpret_cast<char*>(dst_p), str16, len, remain);
-			return dst;
 		}
 		break;
 	default://case 3://16バイトアライメント＋非16バイトアライメント時
-#endif//SSESTR_BRANCH_FOR_ALIGN16
 		{
-			std::size_t remain = max_len;
 			char* dst_p = dst;
 			const char* src_p = src;
+			std::size_t remain = max_len;
 			__m128i str16;
+			std::size_t pos;
 			while (true)
 			{
 				str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(src_p));
-				if (remain < 16)
-					break;
-				if (_mm_cmpistrz(null, str16, flags))
-					break;
+				const int zf = _mm_cmpistrz(null, str16, flags);//※この二行は、アセンブラでは1回の cmpistri になる（はず）
+				pos = _mm_cmpistri(null, str16, flags);
+				if(remain <= pos)
+				{
+					_memcpy_m128i(dst_p, str16, remain);
+					return dst;
+				}
+				if (zf)
+				{
+					_memncpy_m128i(dst_p, str16, pos + 1, remain);
+					return dst;
+				}
 				_mm_storeu_si128(reinterpret_cast<__m128i*>(dst_p), str16);
 				dst_p += 16;
 				src_p += 16;
 				remain -= 16;
 			}
-			const std::size_t len = _mm_cmpistri(null, str16, flags) + 1;
-			if (len >= remain)
-				_memcpy_m128i(dst_p, str16, remain);
-			else
-				_memcpy_m128i(dst_p, str16, len, remain);
-			return dst;
 		}
-#ifdef SSESTR_BRANCH_FOR_ALIGN16
 		break;
 	}
-#endif//SSESTR_BRANCH_FOR_ALIGN16
 #endif
 }
 //テスト
-std::size_t testOpt07_Type2_After(const int dummy, char* str0, const char* str1, const char* str2, const char* str3, const char c)
+std::size_t testOpt07_Type2_strlen_After(const int dummy, const char* str)
 {
 #if 0
 {
@@ -1640,6 +1672,10 @@ LEN("123456789012345678901234567890123456789012345678901234567890123456789012345
 #undef LEN
 }
 #endif
+	return strlen_fast(str);
+}
+int testOpt07_Type2_strcmp_After(const int dummy, const char* str1, const char* str2)
+{
 #if 0
 {
 #define CMP(s1, s2) printf("cmp(\"%s\", \"%s\")=%d(%d)\n", s1, s2, strcmp_fast(s1, s2), strcmp(s1, s2));
@@ -1655,16 +1691,33 @@ CMP("1234567890abcdef", "1234567890abcdefg");
 CMP("1234567890abcdefg", "1234567890abcdef");
 CMP("1234567890abcde", "1234567890abcdef");
 CMP("1234567890abcdef", "1234567890abcde");
+CMP("1234567890abcdef1234567890abcdef", "1234567890abcdef1234567890abcdef");
+CMP("1234567890abcdef1234567890abcde0", "1234567890abcdef1234567890abcdef");
+CMP("1234567890abcdef1234567890abcdef", "1234567890abcdef1234567890abcde0");
+CMP("1234567890abcdef1234567890abcdef", "1234567890abcdef1234567890abcde");
+CMP("1234567890abcdef1234567890abcdef", "1234567890abcdef1234567890abcdef1");
+CMP("1234567890abcdef1234567890abcde", "1234567890abcdef1234567890abcdef");
+CMP("1234567890abcdef1234567890abcdef1", "1234567890abcdef1234567890abcdef");
+CMP("1234567890abcdef1234567890abcdef1", "1234567890abcdef1234567890abcdef1");
+CMP("1234567890abcdef1234567890abcdef0", "1234567890abcdef1234567890abcdef1");
+CMP("1234567890abcdef1234567890abcdef1", "1234567890abcdef1234567890abcdef0");
 CMP("\0a", "\0b");
 #undef CMP
 }
 #endif
+	return strcmp_fast(str1, str2);
+}
+int testOpt07_Type2_strncmp_After(const int dummy, const char* str1, const char* str2, const std::size_t max_len)
+{
 #if 0
 {
 #define NCMP(s1, s2, n) printf("ncmp(\"%s\", \"%s\", %d)=%d(%d)\n", s1, s2, n, strncmp_fast(s1, s2, n), strncmp(s1, s2, n));
 NCMP("a", "a", 16);
 NCMP("a", "b", 16);
 NCMP("b", "a", 16);
+NCMP("aaa", "aaa", 16);
+NCMP("aab", "aaa", 16);
+NCMP("aaa", "aab", 16);
 NCMP("aba", "aaa", 16);
 NCMP("aaa", "aba", 16);
 NCMP("abc", "acb", 16);
@@ -1672,6 +1725,9 @@ NCMP("acb", "abc", 16);
 NCMP("a", "a", 2);
 NCMP("a", "b", 2);
 NCMP("b", "a", 2);
+NCMP("aaa", "aaa", 2);
+NCMP("aab", "aaa", 2);
+NCMP("aaa", "aab", 2);
 NCMP("aba", "aaa", 2);
 NCMP("aaa", "aba", 2);
 NCMP("abc", "acb", 2);
@@ -1702,6 +1758,10 @@ NCMP("1234567890abcdef0234567890abcdef1", "1234567890abcdef1034567890abcdef1", 3
 #undef NCMP
 }
 #endif
+	return strncmp_fast(str1, str2, max_len);
+}
+const char* testOpt07_Type2_strchr_After(const int dummy, const char* str, const char c)
+{
 #if 0
 {
 #define CHR(s, c) printf("chr(\"%s\", \'%c\')=\"%s\"(\"%s\")\n", s, c, strchr_fast(s, c), strchr(s, c));
@@ -1717,9 +1777,20 @@ CHR("123132", '3');
 CHR("123132", '4');
 CHR("123x\0x123", 'x');
 CHR("1234567890abcdef1234567890abcdef", '0');
+CHR("1234567890abcdef", 'f');
+CHR("1234567890abcdef", 'x');
+CHR("1234567890abcdefx", 'f');
+CHR("1234567890abcdefx", 'x');
+CHR("1234567890abcdefx", 'z');
+CHR("1234567890abcdefxy", 'x');
+CHR("1234567890abcdefxy", 'z');
 #undef CHR
 }
 #endif
+	return strchr_fast(str, c);
+}
+const char* testOpt07_Type2_strrchr_After(const int dummy, const char* str, const char c)
+{
 #if 0
 {
 #define CHRR(s, c) printf("rchr(\"%s\", \'%c\')=\"%s\"(\"%s\")\n", s, c, strrchr_fast(s, c), strrchr(s, c));
@@ -1735,9 +1806,20 @@ CHRR("123132", '3');
 CHRR("123132", '4');
 CHRR("123x\0x123", 'x');
 CHRR("1234567890abcdef1234567890abcdef", '0');
+CHRR("1234567890abcdef", 'f');
+CHRR("1234567890abcdef", 'x');
+CHRR("1234567890abcdefx", 'f');
+CHRR("1234567890abcdefx", 'x');
+CHRR("1234567890abcdefx", 'z');
+CHRR("1234567890abcdefxy", 'x');
+CHRR("1234567890abcdefxy", 'z');
 #undef CHRR
 }
 #endif
+	return strrchr_fast(str, c);
+}
+const char* testOpt07_Type2_strstr_After(const int dummy, const char* str1, const char* str2)
+{
 #if 0
 {
 #define STR(s1, s2) printf("str(\"%s\", \"%s\")=\"%s\"(\"%s\")\n", s1, s2, strstr_fast(s1, s2), strstr(s1, s2));
@@ -1754,6 +1836,10 @@ STR("!1234567890!abcdef!!1234567890!abcdef!", "!!");
 #undef STR
 }
 #endif
+	return strstr_fast(str1, str2);
+}
+const char* testOpt07_Type2_strcpy_After(const int dummy, char* dst, const char* src)
+{
 #if 0
 {
 char alignas(16) buff1[32] = { 0 };
@@ -1780,6 +1866,10 @@ CPY(buff2, "1234567890abcdef1234567890abcde");
 #undef CPY
 }
 #endif
+	return strcpy_fast(dst, src);
+}
+const char* testOpt07_Type2_strncpy_After(const int dummy, char* dst, const char* src, const std::size_t max_len)
+{
 #if 0
 {
 char alignas(16) buff1[34] = { 0 };
@@ -1822,15 +1912,7 @@ NCPY(buff2, "abc", 1);
 #undef NCPY
 }
 #endif
-	const std::size_t result1 = strlen_fast(str1);
-	const int result2 = strcmp_fast(str1, str2);
-	const int result3 = strncmp_fast(str1, str2, 18);
-	const char* result4 = strchr_fast(str1, c);
-	const char* result5 = strrchr_fast(str1, c);
-	const char* result6 = strstr_fast(str1, str3);
-	const char* result7 = strcpy_fast(str0, str1);
-	const char* result8 = strncpy_fast(str0, str1, 18);
-	return result1;
+	return strncpy_fast(dst, src, max_len);
 }
 
 //----------------------------------------

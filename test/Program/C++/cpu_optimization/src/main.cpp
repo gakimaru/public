@@ -13,6 +13,13 @@
 	static const int LOOP_OPT03_TYPE3 = 1;
 	//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
 	static const int LOOP_OPT04_TYPE1 = 1;
+	//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
+	static const int LOOP_OPT05_TYPE1 = 1;
+	//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
+	static const int LOOP_OPT06_TYPE1 = 1;
+	//Å“K‰»‡FFSIMD‰‰Z‚ğŠˆ—p‚·‚é
+	static const int LOOP_OPT07_TYPE1 = 1;
+	static const int LOOP_OPT07_TYPE2 = 1;
 #else//NOLOOP
 	#if _ELEMENT_SIZE >= 10000
 		#ifdef _DEBUG
@@ -26,6 +33,13 @@
 			static const int LOOP_OPT03_TYPE3 = 1000;
 			//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
 			static const int LOOP_OPT04_TYPE1 = 1000;
+			//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
+			static const int LOOP_OPT05_TYPE1 = 100000;
+			//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
+			static const int LOOP_OPT06_TYPE1 = 1000;
+			//Å“K‰»‡FFSIMD‰‰Z‚ğŠˆ—p‚·‚é
+			static const int LOOP_OPT07_TYPE1 = 100000;
+			static const int LOOP_OPT07_TYPE2 = 10000;
 		#else//_DEBUG
 			//Å“K‰»‡@Fƒƒ‚ƒŠƒAƒNƒZƒX‚Ì—}§Fˆê•Ï”‚ÌŠˆ—p
 			static const int LOOP_OPT01_TYPE1 = 10000;
@@ -37,6 +51,13 @@
 			static const int LOOP_OPT03_TYPE3 = 10000;
 			//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
 			static const int LOOP_OPT04_TYPE1 = 10000;
+			//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
+			static const int LOOP_OPT05_TYPE1 = 10000000;
+			//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
+			static const int LOOP_OPT06_TYPE1 = 10000;
+			//Å“K‰»‡FFSIMD‰‰Z‚ğŠˆ—p‚·‚é
+			static const int LOOP_OPT07_TYPE1 = 10000000;
+			static const int LOOP_OPT07_TYPE2 = 1000000;
 		#endif//_DEBUG
 	#else//_ELEMENT_SIZE < 1000
 		#ifdef _DEBUG
@@ -50,6 +71,13 @@
 			static const int LOOP_OPT03_TYPE3 = 100000;
 			//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
 			static const int LOOP_OPT04_TYPE1 = 100000;
+			//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
+			static const int LOOP_OPT05_TYPE1 = 1000000;
+			//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
+			static const int LOOP_OPT06_TYPE1 = 100000;
+			//Å“K‰»‡FFSIMD‰‰Z‚ğŠˆ—p‚·‚é
+			static const int LOOP_OPT07_TYPE1 = 100000;
+			static const int LOOP_OPT07_TYPE2 = 10000;
 		#else//_DEBUG
 			//Å“K‰»‡@Fƒƒ‚ƒŠƒAƒNƒZƒX‚Ì—}§Fˆê•Ï”‚ÌŠˆ—p
 			static const int LOOP_OPT01_TYPE1 = 1000000;
@@ -61,6 +89,13 @@
 			static const int LOOP_OPT03_TYPE3 = 1000000;
 			//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
 			static const int LOOP_OPT04_TYPE1 = 1000000;
+			//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
+			static const int LOOP_OPT05_TYPE1 = 10000000;
+			//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
+			static const int LOOP_OPT06_TYPE1 = 1000000;
+			//Å“K‰»‡FFSIMD‰‰Z‚ğŠˆ—p‚·‚é
+			static const int LOOP_OPT07_TYPE1 = 100000000;
+			static const int LOOP_OPT07_TYPE2 = 10000000;
 		#endif//_DEBUG
 	#endif//_ELEMENT_SIZE < 1000
 #endif//NOLOOP
@@ -406,6 +441,384 @@ void runTestOpt04_Type1_After2(dataOpt04_t& data)
 }
 
 //----------------------------------------
+//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
+void runTestOpt05()
+{
+	printf("----------------------------------------\n");
+	printf("[Optimize Test 05]\n");
+
+	//yƒ^ƒCƒv‚Pz
+	extern void runTestOpt05_Type1();
+	runTestOpt05_Type1();
+}
+//yƒ^ƒCƒv‚Pz
+void runTestOpt05_Type1()
+{
+	printf("Type1: *repeated * %d times.\n", LOOP_OPT05_TYPE1);
+	extern void runTestOpt05_Type1_Before();
+	extern void runTestOpt05_Type1_After();
+	runTestOpt05_Type1_Before();
+	runTestOpt05_Type1_After();
+}
+//Å“K‰»‘O
+void runTestOpt05_Type1_Before()
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT05_TYPE1; ++loop)
+	{
+		int m2, m3, m4, m5, m10, m16, m24;
+		int d2, d3, d4, d5, d10, d16, d24;
+		int r2, r3, r4, r5, r10, r16, r24;
+		sum += testOpt05_Type1_Before(loop, m2, m3, m4, m5, m10, m16, m24,
+		                                    d2, d3, d4, d5, d10, d16, d24,
+		                                    r2, r3, r4, r5, r10, r16, r24);
+	}
+	printElapsedTime(prev_time);
+}
+//Å“K‰»Œã
+void runTestOpt05_Type1_After()
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT05_TYPE1; ++loop)
+	{
+		int m2, m3, m4, m5, m10, m16, m24;
+		int d2, d3, d4, d5, d10, d16, d24;
+		int r2, r3, r4, r5, r10, r16, r24;
+		sum += testOpt05_Type1_After(loop, m2, m3, m4, m5, m10, m16, m24,
+		                                   d2, d3, d4, d5, d10, d16, d24,
+		                                   r2, r3, r4, r5, r10, r16, r24);
+	}
+	printElapsedTime(prev_time);
+}
+
+//----------------------------------------
+//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
+void runTestOpt06()
+{
+	printf("----------------------------------------\n");
+	printf("[Optimize Test 06]\n");
+
+	//‰Šú‰»
+	dataOpt06_t data;
+	initOpt06(data);
+	
+	//ŒW”‰Šú‰»
+	std::mt19937 rnd_engine;
+	auto rnd = [&rnd_engine]() -> float
+	{
+		std::uniform_real_distribution<float> dist(0.f, 10.f);
+		return dist(rnd_engine);
+	};
+	const float mul1 = rnd();
+	const float mul2 = rnd();
+	const float div = rnd();
+
+	//yƒ^ƒCƒv‚Pz
+	extern void runTestOpt06_Type1(dataOpt06_t& data, const float mul1, const float mul2, const float div);
+	runTestOpt06_Type1(data, mul1, mul2, div);
+}
+//yƒ^ƒCƒv‚Pz
+void runTestOpt06_Type1(dataOpt06_t& data, const float mul1, const float mul2, const float div)
+{
+	printf("Type1: *repeated * %d times.\n", LOOP_OPT06_TYPE1);
+	extern void runTestOpt06_Type1_Before(dataOpt06_t& data, const float mul1, const float mul2, const float div);
+	extern void runTestOpt06_Type1_After(dataOpt06_t& data, const float mul1, const float mul2, const float div);
+	runTestOpt06_Type1_Before(data, mul1, mul2, div);
+	runTestOpt06_Type1_After(data, mul1, mul2, div);
+}
+//Å“K‰»‘O
+void runTestOpt06_Type1_Before(dataOpt06_t& data, const float mul1, const float mul2, const float div)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT06_TYPE1; ++loop)
+		testOpt06_Type1_Before(data, mul1, mul2, div);
+	printElapsedTime(prev_time);
+}
+//Å“K‰»Œã
+void runTestOpt06_Type1_After(dataOpt06_t& data, const float mul1, const float mul2, const float div)
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT06_TYPE1; ++loop)
+		testOpt06_Type1_After(data, mul1, mul2, div);
+	printElapsedTime(prev_time);
+}
+
+//----------------------------------------
+//Å“K‰»‡FFSIMD‰‰Z‚ğŠˆ—p‚·‚é
+void runTestOpt07()
+{
+	printf("----------------------------------------\n");
+	printf("[Optimize Test 07]\n");
+
+	//yƒ^ƒCƒv‚Pz
+	extern void runTestOpt07_Type1();
+	runTestOpt07_Type1();
+
+	//yƒ^ƒCƒv‚Qz
+	extern void runTestOpt07_Type2();
+	runTestOpt07_Type2();
+}
+//yƒ^ƒCƒv‚Pz
+void runTestOpt07_Type1()
+{
+	printf("Type1: *repeated * %d times.\n", LOOP_OPT07_TYPE1);
+	extern void runTestOpt07_Type1_Before();
+	extern void runTestOpt07_Type1_After();
+	runTestOpt07_Type1_Before();
+	runTestOpt07_Type1_After();
+}
+//Å“K‰»‘O
+void runTestOpt07_Type1_Before()
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	{
+		matrix4x4 add0;
+		matrix4x4 mul0a;
+		matrix4x4 mul0b;
+		matrix4x4 add1;
+		matrix4x4 add2;
+		matrix4x4 mul1a;
+		const float mul2a = 5.f;
+		matrix4x4 mul1b;
+		matrix4x4 mul2b;
+		float _add1 = 0.f;
+		float _add2 = 100.f;
+		float _mul1a = 0.f;
+		float _mul1b = 0.f;
+		float _mul2b = 100.f;
+		for (int n = 0; n < 4; ++n)
+		{
+			for (int m = 0; m < 4; ++m)
+			{
+				add1(n, m) = _add1;
+				add2(n, m) = _add2;
+				mul1a(n, m) = _mul1a;
+				mul1b(n, m) = _mul1b;
+				mul2b(n, m) = _mul2b;
+				_add1 += 1.f;
+				_add2 += 1.f;
+				_mul1a += 1.f;
+				_mul1b += 1.f;
+				_mul2b += 1.f;
+			}
+		}
+		for (int loop = 0; loop < LOOP_OPT07_TYPE1; ++loop)
+		{
+			testOpt07_Type1_Before(loop, add0, mul0a, mul0b, add1, add2, mul1a, mul2a, mul1b, mul2b);
+		}
+	}
+	{
+		matrix1x4 add0;
+		matrix1x4 mul0a;
+		matrix1x4 mul0b;
+		matrix1x4 add1;
+		matrix1x4 add2;
+		matrix1x4 mul1a;
+		const float mul2a = 5.f;
+		matrix1x3 mul1b;
+		matrix3x4 mul2b;
+		float _add1 = 0.f;
+		float _add2 = 100.f;
+		float _mul1a = 0.f;
+		float _mul1b = 0.f;
+		float _mul2b = 100.f;
+		for (int n = 0; n < 1; ++n)
+		{
+			for (int m = 0; m < 4; ++m)
+			{
+				add1(n, m) = _add1;
+				add2(n, m) = _add2;
+				mul1a(n, m) = _mul1a;
+				_add1 += 1.f;
+				_add2 += 1.f;
+				_mul1a += 1.f;
+			}
+		}
+		for (int n = 0; n < 1; ++n)
+		{
+			for (int m = 0; m < 3; ++m)
+			{
+				mul1b(n, m) = _mul1b;
+				_mul1b += 1.f;
+			}
+		}
+		for (int n = 0; n < 3; ++n)
+		{
+			for (int m = 0; m < 4; ++m)
+			{
+				mul2b(n, m) = _mul2b;
+				_mul2b += 1.f;
+			}
+		}
+		for (int loop = 0; loop < LOOP_OPT07_TYPE1; ++loop)
+		{
+			testOpt07_Type1_Before(loop, add0, mul0a, mul0b, add1, add2, mul1a, mul2a, mul1b, mul2b);
+		}
+	}
+	printElapsedTime(prev_time);
+}
+//Å“K‰»Œã
+void runTestOpt07_Type1_After()
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	{
+		matrix4x4 add0;
+		matrix4x4 mul0a;
+		matrix4x4 mul0b;
+		matrix4x4 add1;
+		matrix4x4 add2;
+		matrix4x4 mul1a;
+		const float mul2a = 5.f;
+		matrix4x4 mul1b;
+		matrix4x4 mul2b;
+		float _add1 = 0.f;
+		float _add2 = 100.f;
+		float _mul1a = 0.f;
+		float _mul1b = 0.f;
+		float _mul2b = 100.f;
+		for (int n = 0; n < 4; ++n)
+		{
+			for (int m = 0; m < 4; ++m)
+			{
+				add1(n, m) = _add1;
+				add2(n, m) = _add2;
+				mul1a(n, m) = _mul1a;
+				mul1b(n, m) = _mul1b;
+				mul2b(n, m) = _mul2b;
+				_add1 += 1.f;
+				_add2 += 1.f;
+				_mul1a += 1.f;
+				_mul1b += 1.f;
+				_mul2b += 1.f;
+			}
+		}
+		for (int loop = 0; loop < LOOP_OPT07_TYPE1; ++loop)
+		{
+			testOpt07_Type1_After(loop, add0, mul0a, mul0b, add1, add2, mul1a, mul2a, mul1b, mul2b);
+		}
+	}
+	{
+		matrix1x4 add0;
+		matrix1x4 mul0a;
+		matrix1x4 mul0b;
+		matrix1x4 add1;
+		matrix1x4 add2;
+		matrix1x4 mul1a;
+		const float mul2a = 5.f;
+		matrix1x3 mul1b;
+		matrix3x4 mul2b;
+		float _add1 = 0.f;
+		float _add2 = 100.f;
+		float _mul1a = 0.f;
+		float _mul1b = 0.f;
+		float _mul2b = 100.f;
+		for (int n = 0; n < 1; ++n)
+		{
+			for (int m = 0; m < 4; ++m)
+			{
+				add1(n, m) = _add1;
+				add2(n, m) = _add2;
+				mul1a(n, m) = _mul1a;
+				_add1 += 1.f;
+				_add2 += 1.f;
+				_mul1a += 1.f;
+			}
+		}
+		for (int n = 0; n < 1; ++n)
+		{
+			for (int m = 0; m < 3; ++m)
+			{
+				mul1b(n, m) = _mul1b;
+				_mul1b += 1.f;
+			}
+		}
+		for (int n = 0; n < 3; ++n)
+		{
+			for (int m = 0; m < 4; ++m)
+			{
+				mul2b(n, m) = _mul2b;
+				_mul2b += 1.f;
+			}
+		}
+		for (int loop = 0; loop < LOOP_OPT07_TYPE1; ++loop)
+		{
+			testOpt07_Type1_After(loop, add0, mul0a, mul0b, add1, add2, mul1a, mul2a, mul1b, mul2b);
+		}
+	}
+	printElapsedTime(prev_time);
+}
+//yƒ^ƒCƒv‚Qz
+void runTestOpt07_Type2()
+{
+	printf("Type2: *repeated * %d times.\n", LOOP_OPT07_TYPE2);
+	extern void runTestOpt07_Type2_Before(char* str0_a, const char* str1_a, const char* str2_a, const char* str3_a, const char c_a,
+	                                      char* str0_b, const char* str1_b, const char* str2_b, const char* str3_b, const char c_b,
+	                                      char* str0_c, const char* str1_c, const char* str2_c, const char* str3_c, const char c_c);
+	extern void runTestOpt07_Type2_After(char* str0_a, const char* str1_a, const char* str2_a, const char* str3_a, const char c_a,
+	                                     char* str0_b, const char* str1_b, const char* str2_b, const char* str3_b, const char c_b,
+	                                     char* str0_c, const char* str1_c, const char* str2_c, const char* str3_c, const char c_c);
+	char str0_a[128];
+	char str0_b[128];
+	char str0_c[128];
+	const char* str1_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str2_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str3_a = "ABC";
+	const char c_a = '!';
+	const char* str1_b = "1234567890abcdef";
+	const char* str2_b = "1234567890abcdefg";
+	const char* str3_b = "efgh";
+	const char c_b = '!';
+	const char* str1_c = "";
+	const char* str2_c = "";
+	const char* str3_c = "";
+	const char c_c = '\0';
+	runTestOpt07_Type2_Before(str0_a, str1_a, str2_a, str3_a, c_a,
+	                          str0_b, str1_b, str2_b, str3_b, c_b,
+	                          str0_c, str1_c, str2_c, str3_c, c_c);
+	runTestOpt07_Type2_After(str0_a, str1_a, str2_a, str3_a, c_a,
+	                         str0_b, str1_b, str2_b, str3_b, c_b,
+	                         str0_c, str1_c, str2_c, str3_c, c_c);
+}
+//Å“K‰»‘O
+void runTestOpt07_Type2_Before(char* str0_a, const char* str1_a, const char* str2_a, const char* str3_a, const char c_a,
+                               char* str0_b, const char* str1_b, const char* str2_b, const char* str3_b, const char c_b,
+                               char* str0_c, const char* str1_c, const char* str2_c, const char* str3_c, const char c_c)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_Before(loop, str0_a, str1_a, str2_a, str3_a, c_a);
+		testOpt07_Type2_Before(loop, str0_b, str1_b, str2_b, str3_b, c_b);
+		testOpt07_Type2_Before(loop, str0_c, str1_c, str2_c, str3_c, c_c);
+	}
+	printElapsedTime(prev_time);
+}
+//Å“K‰»Œã
+void runTestOpt07_Type2_After(char* str0_a, const char* str1_a, const char* str2_a, const char* str3_a, const char c_a,
+                              char* str0_b, const char* str1_b, const char* str2_b, const char* str3_b, const char c_b,
+                              char* str0_c, const char* str1_c, const char* str2_c, const char* str3_c, const char c_c)
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT07_TYPE2; ++loop)
+	{
+		testOpt07_Type2_After(loop, str0_a, str1_a, str2_a, str3_a, c_a);
+		testOpt07_Type2_After(loop, str0_b, str1_b, str2_b, str3_b, c_b);
+		testOpt07_Type2_After(loop, str0_c, str1_c, str2_c, str3_c, c_c);
+	}
+	printElapsedTime(prev_time);
+}
+
+//----------------------------------------
 //’Ç‰ÁƒeƒXƒgFƒ‰ƒ_ƒ€ƒ_®‚ÌƒLƒƒƒvƒ`ƒƒ[ƒeƒXƒgiƒNƒ[ƒWƒƒ‚Æ‚µ‚Ä‚Ç‚±‚Ü‚Åg‚¦‚é‚©Hj
 void testForClosure()
 {
@@ -443,6 +856,15 @@ int main(const int argc, const char* argv[])
 
 	//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
 	runTestOpt04();
+
+	//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
+	runTestOpt05();
+
+	//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
+	runTestOpt06();
+
+	//Å“K‰»‡FFSIMD‰‰Z‚ğŠˆ—p‚·‚é
+	runTestOpt07();
 
 	//’Ç‰ÁƒeƒXƒgFƒ‰ƒ_ƒ€ƒ_®‚ÌƒLƒƒƒvƒ`ƒƒ[ƒeƒXƒgiƒNƒ[ƒWƒƒ‚Æ‚µ‚Ä‚Ç‚±‚Ü‚Åg‚¦‚é‚©Hj
 	testForClosure();

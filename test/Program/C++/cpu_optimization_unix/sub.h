@@ -2,18 +2,27 @@
 #ifndef __SUB_H_
 #define __SUB_H_
 
-#define _VALUE_RANGE (10 + 1)//’l‚Ì•@¦•ª•zWŒv‚Ìƒ‹[ƒvˆ—‚É‰e‹¿‚ ‚è
-//#define _VALUE_RANGE (1000 + 1)//’l‚Ì•@¦i“¯ãj
+#define USE_GCC//GCCã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
 
-//#define _ELEMENT_SIZE 100//”z—ñ—v‘f”@¦WŒv‚Ìƒ‹[ƒvˆ—‚É‰e‹¿‚ ‚è
-#define _ELEMENT_SIZE 10000//”z—ñ—v‘f”@¦i“¯ãj
+#define _VALUE_RANGE (10 + 1)//å€¤ã®å¹…ã€€â€»åˆ†å¸ƒé›†è¨ˆæ™‚ã®ãƒ«ãƒ¼ãƒ—å‡¦ç†ã«å½±éŸ¿ã‚ã‚Š
+//#define _VALUE_RANGE (1000 + 1)//å€¤ã®å¹…ã€€â€»ï¼ˆåŒä¸Šï¼‰
 
-#include <cstddef>//std::szie_t—p
+//#define _ELEMENT_SIZE 100//é…åˆ—è¦ç´ æ•°ã€€â€»é›†è¨ˆæ™‚ã®ãƒ«ãƒ¼ãƒ—å‡¦ç†ã«å½±éŸ¿ã‚ã‚Š
+#define _ELEMENT_SIZE 10000//é…åˆ—è¦ç´ æ•°ã€€â€»ï¼ˆåŒä¸Šï¼‰
+
+#include <cstddef>//std::szie_tç”¨
+
+#ifndef USE_GCC
+#define alignas(n) __declspec(align(n))
+#define constexpr//ãƒ€ãƒŸãƒ¼
+#else//USE_GCC
+#define alignas(n) __attribute__((aligned(n)))
+#endif//USE_GCC
 
 //----------------------------------------
-//Å“K‰»‡@Fƒƒ‚ƒŠƒAƒNƒZƒX‚Ì—}§Fˆê•Ï”‚ÌŠˆ—p
+//æœ€é©åŒ–â‘ ï¼šãƒ¡ãƒ¢ãƒªã‚¢ã‚¯ã‚»ã‚¹ã®æŠ‘åˆ¶ï¼šä¸€æ™‚å¤‰æ•°ã®æ´»ç”¨
 
-//ƒeƒXƒg—p\‘¢‘Ì
+//ãƒ†ã‚¹ãƒˆç”¨æ§‹é€ ä½“
 struct dataOpt01_t
 {
 	struct elem_t
@@ -26,21 +35,21 @@ struct dataOpt01_t
 	elem_t elems[_ELEMENT_SIZE];
 };
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 void initOpt01(dataOpt01_t& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»‘O
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å‰
 void testOpt01_Type1_Before(dataOpt01_t& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚P
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å¾Œï¼‘
 void testOpt01_Type1_After1(dataOpt01_t& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚Q
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å¾Œï¼’
 void testOpt01_Type1_After2(dataOpt01_t& data);
-//yƒ^ƒCƒv‚PzyQlzC++11‚Å‚à‚Á‚Æ‚àŠÈŒ‰‚È‹Lq
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘ã€å‚è€ƒã€‘C++11ã§ã‚‚ã£ã¨ã‚‚ç°¡æ½”ãªè¨˜è¿°
 void testOpt01_Type1_Appendix(dataOpt01_t& data);
 
 //----------------------------------------
-//Å“K‰»‡AFƒƒ‚ƒŠƒAƒNƒZƒX‚Ì—}§FƒAƒhƒŒƒXŒvZ‚ÌíŒ¸
+//æœ€é©åŒ–â‘¡ï¼šãƒ¡ãƒ¢ãƒªã‚¢ã‚¯ã‚»ã‚¹ã®æŠ‘åˆ¶ï¼šã‚¢ãƒ‰ãƒ¬ã‚¹è¨ˆç®—ã®å‰Šæ¸›
 
-//ƒeƒXƒg—p\‘¢‘Ì
+//ãƒ†ã‚¹ãƒˆç”¨æ§‹é€ ä½“
 struct dataOpt02_t
 {
 	struct elem_t
@@ -51,52 +60,52 @@ struct dataOpt02_t
 	elem_t elems[_ELEMENT_SIZE];
 };
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 void initOpt02(dataOpt02_t& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»‘O
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å‰
 int testOpt02_Type1_Before(dataOpt02_t& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚P
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å¾Œï¼‘
 int testOpt02_Type1_After1(dataOpt02_t& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚Q
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å¾Œï¼’
 int testOpt02_Type1_After2(dataOpt02_t& data);
 
 //----------------------------------------
-//Å“K‰»‡BFƒƒ‚ƒŠƒAƒNƒZƒX‚Ì—}§FŠÖ”ŒÄ‚Ño‚µ‚ÌíŒ¸
+//æœ€é©åŒ–â‘¢ï¼šãƒ¡ãƒ¢ãƒªã‚¢ã‚¯ã‚»ã‚¹ã®æŠ‘åˆ¶ï¼šé–¢æ•°å‘¼ã³å‡ºã—ã®å‰Šæ¸›
 
-//ƒeƒXƒg—p\‘¢‘Ì
+//ãƒ†ã‚¹ãƒˆç”¨æ§‹é€ ä½“
 struct dataOpt03_t
 {
 	static const std::size_t VALUE_RANGE = _VALUE_RANGE;
 	int values[_ELEMENT_SIZE];
 };
 
-//yƒ^ƒCƒv‚PzÅ“K‰»‘O
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å‰
 int testOpt03_Type1_Before(int a, int b, int c);
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å¾Œ
 inline int testOpt03_Type1_After(int a, int b, int c)
 {
 	return a * b + c;
 }
 
-//yƒ^ƒCƒv‚QzÅ“K‰»‘O
+//ã€ã‚¿ã‚¤ãƒ—ï¼’ã€‘æœ€é©åŒ–å‰
 int testOpt03_Type2_Before(int a, int b, int c, int d, int e, int f, int g, int h);
-//yƒ^ƒCƒv‚QzÅ“K‰»Œã
+//ã€ã‚¿ã‚¤ãƒ—ï¼’ã€‘æœ€é©åŒ–å¾Œ
 inline int testOpt03_Type2_After(int a, int b, int c, int d, int e, int f, int g, int h)
 {
 	return a * b + c - d * e + f - g * h;
 }
 
-//yƒ^ƒCƒv‚Rz‰Šú‰»
+//ã€ã‚¿ã‚¤ãƒ—ï¼“ã€‘åˆæœŸåŒ–
 void initOpt03_Type3(dataOpt03_t& data);
-//yƒ^ƒCƒv‚RzÅ“K‰»‘O
+//ã€ã‚¿ã‚¤ãƒ—ï¼“ã€‘æœ€é©åŒ–å‰
 int testOpt03_Type3_Before(dataOpt03_t& data);
-//yƒ^ƒCƒv‚RzÅ“K‰»Œã
+//ã€ã‚¿ã‚¤ãƒ—ï¼“ã€‘æœ€é©åŒ–å¾Œ
 int testOpt03_Type3_After(dataOpt03_t& data);
 
 //----------------------------------------
-//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
+//æœ€é©åŒ–â‘£ï¼šé™¤ç®—ã®æŠ‘åˆ¶ï¼šä¹—ç®—ã«å¤‰æ›´
 
-//ƒeƒXƒg—p\‘¢‘Ì
+//ãƒ†ã‚¹ãƒˆç”¨æ§‹é€ ä½“
 struct dataOpt04_t
 {
 	struct elem_t
@@ -108,20 +117,91 @@ struct dataOpt04_t
 	elem_t elems[_ELEMENT_SIZE];
 };
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 void initOpt04(dataOpt04_t& data);
 
-//yƒ^ƒCƒv‚PzÅ“K‰»‘O
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å‰
 void testOpt04_Type1_Before(dataOpt04_t& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚P
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å¾Œï¼‘
 void testOpt04_Type1_After1(dataOpt04_t& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚Q
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å¾Œï¼’
 void testOpt04_Type1_After2(dataOpt04_t& data);
 
 //----------------------------------------
-//‹¤’ÊŠÖ”
+//æœ€é©åŒ–â‘¤ï¼šä¹—ç®—ï¼é™¤ç®—ã®æŠ‘åˆ¶ï¼šã‚·ãƒ•ãƒˆæ¼”ç®—ã‚„åŠ æ¸›ç®—ã«å¤‰æ›´
 
-//”z—ñî•ñæ“¾
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å‰
+int testOpt05_Type1_Before(const int val,
+                           int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
+						   int& d2, int& d3, int& d4, int& d5, int& d10, int& d16, int& d24,
+						   int& r2, int& r3, int& r4, int& r5, int& r10, int& r16, int& r24);
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å¾Œ
+int testOpt05_Type1_After(const int val,
+                          int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
+						  int& d2, int& d3, int& d4, int& d5, int& d10, int& d16, int& d24,
+						  int& r2, int& r3, int& r4, int& r5, int& r10, int& r16, int& r24);
+
+//----------------------------------------
+//æœ€é©åŒ–â‘¥ï¼šä¹—ç®—ï¼é™¤ç®—ã®æŠ‘åˆ¶ï¼šæ¼”ç®—ã®å…±é€šåŒ–
+
+//ãƒ†ã‚¹ãƒˆç”¨æ§‹é€ ä½“
+struct dataOpt06_t
+{
+	struct elem_t
+	{
+		static const std::size_t VALUE_RANGE = _VALUE_RANGE;
+		float value;
+		float result;
+	};
+	elem_t elems[_ELEMENT_SIZE];
+};
+
+//åˆæœŸåŒ–
+void initOpt06(dataOpt06_t& data);
+
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å‰
+void testOpt06_Type1_Before(dataOpt06_t& data, const float mul1, const float mul2, const float div);
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å¾Œï¼‘
+void testOpt06_Type1_After(dataOpt06_t& data, const float mul1, const float mul2, const float div);
+
+//----------------------------------------
+//æœ€é©åŒ–â‘¦ï¼šSIMDæ¼”ç®—ã‚’æ´»ç”¨ã™ã‚‹
+
+template<std::size_t N, std::size_t M>
+struct matrix
+{
+	float value[N][M];
+	inline float& operator()(const std::size_t row, const std::size_t col){ return value[row][col]; }
+	inline const float& operator()(const std::size_t row, const std::size_t col) const { return value[row][col]; }
+};
+template<>
+struct matrix<4, 4>
+{
+	float alignas(16) value[4][4];
+	inline float& operator()(const std::size_t row, const std::size_t col){ return value[row][col]; }
+	inline const float& operator()(const std::size_t row, const std::size_t col) const { return value[row][col]; }
+};
+using matrix4x4 = matrix<4, 4>;
+using matrix1x4 = matrix<1, 4>;
+using matrix1x3 = matrix<1, 3>;
+using matrix3x4 = matrix<3, 4>;
+
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å‰
+template<std::size_t N, std::size_t M, std::size_t NM>
+void testOpt07_Type1_Before(const int dummy, matrix<N, M>& add0, matrix<N, M>& mul0a, matrix<N, M>& mul0b, const matrix<N, M>& add1, const matrix<N, M>& add2, const matrix<N, M>& mul1a, const float mul2a, const matrix<N, NM>& mul1b, const matrix<NM, M>& mul2b);
+//ã€ã‚¿ã‚¤ãƒ—ï¼‘ã€‘æœ€é©åŒ–å¾Œ
+template<std::size_t N, std::size_t M, std::size_t NM>
+void testOpt07_Type1_After(const int dummy, matrix<N, M>& add0, matrix<N, M>& mul0a, matrix<N, M>& mul0b, const matrix<N, M>& add1, const matrix<N, M>& add2, const matrix<N, M>& mul1a, const float mul2a, const matrix<N, NM>& mul1b, const matrix<NM, M>& mul2b);
+
+//ã€ã‚¿ã‚¤ãƒ—ï¼’ã€‘æœ€é©åŒ–å‰
+std::size_t testOpt07_Type2_Before(const int dummy, char* str0, const char* str1, const char* str2, const char* str3, const char c);
+//ã€ã‚¿ã‚¤ãƒ—ï¼’ã€‘æœ€é©åŒ–å¾Œ
+std::size_t testOpt07_Type2_After(const int dummy, char* str0, const char* str1, const char* str2, const char* str3, const char c);
+
+//----------------------------------------
+//å…±é€šé–¢æ•°
+
+//é…åˆ—æƒ…å ±å–å¾—
 template<typename T> inline std::size_t rankof(const T& data){ return 0; }
 template<typename T> inline std::size_t esizeof(const T& data){ return sizeof(T); }
 template<typename T> inline std::size_t extentof(const T& data){ return 0; }

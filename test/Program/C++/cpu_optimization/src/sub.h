@@ -203,6 +203,79 @@ const char* testOpt07_Type2_strstr_Before(const int dummy, const char* str1, con
 const char* testOpt07_Type2_strcpy_Before(const int dummy, char* dst, const char* src);
 const char* testOpt07_Type2_strncpy_Before(const int dummy, char* dst, const char* src, const std::size_t max_len);
 //yƒ^ƒCƒv‚QzÅ“K‰»Œã
+inline std::size_t strlen_fast(const char* str)
+{
+#if 0
+	return strlen(str);
+#else
+	extern std::size_t _strlen_fast(const char* str);
+	return _strlen_fast(str);
+#endif
+}
+inline int strcmp_fast(const char* str1, const char* str2)
+{
+#if 0
+	return strcmp(str1, str2);
+#else
+	extern int _strcmp_fast(const char* str1, const char* str2);
+	return _strcmp_fast(str1, str2);
+#endif
+}
+inline int strncmp_fast(const char* str1, const char* str2, const std::size_t max_len)
+{
+#if 0
+	return strncmp(str1, str2, max_len);
+#else
+	extern int _strncmp_fast(const char* str1, const char* str2, const std::size_t max_len);
+	return _strncmp_fast(str1, str2, max_len);
+#endif
+}
+inline const char* strchr_fast(const char* str, const char c)
+{
+#if 0
+	return strchr(str, c);
+#else
+	extern const char* _strchr_fast(const char* str, const char c);
+	return _strchr_fast(str, c);
+#endif
+}
+inline const char* strrchr_fast(const char* str, const char c)
+{
+#if 0
+	return strrchr(str, c);
+#else
+	const char* _strrchr_fast(const char* str, const char c);
+	return _strrchr_fast(str, c);
+#endif
+}
+inline const char* strstr_fast(const char* str1, const char* str2)
+{
+#if 0
+	return strstr(str1, str2);
+#else
+	extern const char* _strstr_fast(const char* str1, const char* str2);
+	return _strstr_fast(str1, str2);
+#endif
+}
+inline const char* strcpy_fast(char* dst, const char* src)
+{
+#if 0
+	return strcpy(dst, src);
+#else
+	extern const char* _strcpy_fast(char* dst, const char* src);
+	return _strcpy_fast(dst, src);
+#endif
+}
+inline const char* strncpy_fast(char* dst, const char* src, const std::size_t max_len)
+{
+#if 0
+	return strncpy(dst, src, max_len);
+#else
+	extern const char* _strncpy_fast(char* dst, const char* src, const std::size_t max_len);
+	return _strncpy_fast(dst, src, max_len);
+#endif
+}
+void testOpt07_Type2_After_1time();
 std::size_t testOpt07_Type2_strlen_After(const int dummy, const char* str);
 int testOpt07_Type2_strcmp_After(const int dummy, const char* str1, const char* str2);
 int testOpt07_Type2_strncmp_After(const int dummy, const char* str1, const char* str2, const std::size_t max_len);

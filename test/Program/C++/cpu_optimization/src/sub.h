@@ -248,13 +248,13 @@ inline const char* strrchr_fast(const char* str, const char c)
 	return _strrchr_fast(str, c);
 #endif
 }
-inline const char* strstr_fast(const char* str1, const char* str2)
+inline const char* strstr_fast(const char* str, const char* pattern)
 {
 #if 0
-	return strstr(str1, str2);
+	return strstr(str, pattern);
 #else
-	extern const char* _strstr_fast(const char* str1, const char* str2);
-	return _strstr_fast(str1, str2);
+	extern const char* _strstr_fast(const char* str, const char* pattern);
+	return _strstr_fast(str, pattern);
 #endif
 }
 inline const char* strcpy_fast(char* dst, const char* src)

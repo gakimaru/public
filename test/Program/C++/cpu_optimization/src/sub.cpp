@@ -981,26 +981,13 @@ std::size_t _strlen_fast(const char* str)
 //SSE版strcmp補助関数
 static inline int _str_case(const char* str1, const char* str2)
 {
-#if 1
 	return (((reinterpret_cast<intptr_t>(str1) & 0xf) != 0) << 0) |
 	       (((reinterpret_cast<intptr_t>(str2) & 0xf) != 0) << 1);
-#else//ビット演算で算出するとかえって遅い
-	intptr_t str1_i = reinterpret_cast<intptr_t>(str1);
-	intptr_t str2_i = reinterpret_cast<intptr_t>(str2);
-	str1_i |= (str1_i >> 1);
-	str1_i |= (str1_i >> 2);
-	str1_i &= 1;
-	str2_i |= (str2_i << 1);
-	str2_i |= (str2_i >> 2);
-	str2_i &= 2;
-	return str1_i | str2_i;
-#endif
 }
 static inline int _strcmp_compare(const int val1, const int val2)
 {
 	const int val = val1 - val2;
-//	return (val >> 31) | (val != 0 ? 1 : 0);
-	return (val >> 31) | (val != 0);//判定式の結果 true が事実上整数の1であるものとする
+	return (val >> 31) | (val != 0);
 }
 //SSE版strcmp:16バイトアライメント＋16バイトアライメント時
 static int _strcmp_fast_case0(const char* str1, const char* str2)
@@ -1355,19 +1342,98 @@ const char* _strrchr_fast(const char* str, const char c)
 	return nullptr;//dummy
 }
 //----------
+//SSE版strstr用補助関数:パターンが2文字専用
+static const char* _strstr2_fast(const char* str, const char* pattern)
+{
+//	if (*str == '\0' || *(str + 1) == '\0')//←この判定は呼び出し元で行っている
+//		return nullptr;
+	static const std::size_t pattern_max = 1;
+	const char* pattern_end = pattern + pattern_max;
+	const char pattern_top_c = *pattern;//先頭の文字
+	const char pattern_end_c = *pattern_end;//末尾の文字
+	const __m128i pattern_end_c16 = _mm_set1_epi8(pattern_end_c);
+	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+	const int skip = 1 + (pattern_top_c != pattern_end_c);//文字列の照合に失敗した場合にスキップする文字数
+	const char* p = str + 1;
+	const std::size_t str_over = reinterpret_cast<intptr_t>(p) & 0xf;
+	if (str_over != 0)
+	{
+		//非16バイトアライメント時
+		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
+		const int zf = _mm_cmpistrz(pattern_end_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+		const int cf = _mm_cmpistrc(pattern_end_c16, str16, flags);
+		if (cf)
+		{
+			const __m128i mask = _mm_cmpistrm(pattern_end_c16, str16, flags);
+			int found_bits = *reinterpret_cast<const int*>(&mask);
+			const char* _p = p - pattern_max;
+			while (found_bits)
+			{
+				if (found_bits & 1)
+				{
+					if (*_p == pattern_top_c)
+						return _p;
+					found_bits >>= skip;
+					_p += skip;
+				}
+				else
+				{
+					found_bits >>= 1;
+					++_p;
+				}
+			}
+		}
+		if (zf)
+			return nullptr;
+		p += (16 - str_over);
+	}
+	//16バイトアライメント時
+	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
+	while (true)
+	{
+		const __m128i str16 = _mm_load_si128(p128);
+		const int zf = _mm_cmpistrz(pattern_end_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+		const int cf = _mm_cmpistrc(pattern_end_c16, str16, flags);
+		if (cf)
+		{
+			const __m128i mask = _mm_cmpistrm(pattern_end_c16, str16, flags);
+			int found_bits = *reinterpret_cast<const int*>(&mask);
+			const char* _p = reinterpret_cast<const char*>(p128) - pattern_max;
+			while (found_bits)
+			{
+				if (found_bits & 1)
+				{
+					if (*_p == pattern_top_c)
+						return _p;
+					found_bits >>= skip;
+					_p += skip;
+				}
+				else
+				{
+					found_bits >>= 1;
+					++_p;
+				}
+			}
+		}
+		if (zf)
+			return nullptr;
+		++p128;
+	}
+	return nullptr;//dummy
+}
 //SSE版strstr
-const char* _strstr_fast(const char* str1, const char* str2)
+const char* _strstr_fast(const char* str, const char* pattern)
 {
 #if 0//他の関数を使用した単純な処理（遅いのでNG）
-	const std::size_t str2_len = strlen_fast(str2);
-	const char str2_c = *str2;
-	const char* p = str1;
+	const std::size_t pattern_len = strlen_fast(pattern);
+	const char pattern_c = *pattern;
+	const char* p = str;
 	while(true)
 	{
-		const char* found = strchr_fast(p, str2_c);
+		const char* found = strchr_fast(p, pattern_c);
 		if (!found)
 			return nullptr;
-		if(strncmp_fast(found, str2, str2_len) == 0)
+		if(strncmp_fast(found, pattern, pattern_len) == 0)
 			return found;
 		p = found + 1;
 	}
@@ -1376,22 +1442,32 @@ const char* _strstr_fast(const char* str1, const char* str2)
 //nullチェックしない
 //	if (!str)
 //		return 0;
-	//str2の長さに基づいて、処理を振り分ける
-	const std::size_t str2_len = strlen_fast(str2);
-	if (str2_len == 0)
-		return str1;
-	if (str2_len == 1)
-		return strchr(str1, *str2);
-	const std::size_t str2_max = str2_len - 1;
-	//str2の長さに基づいて、検索開始位置を得る
-	const char* str1_begin = str1 + str2_max;
+	//patternの長さに基づいて、処理を振り分ける
+	const std::size_t pattern_len = strlen_fast(pattern);
+	if (pattern_len == 0)//パターンが0文字の時
+		return str;
+	if (pattern_len == 1)//パターンが1文字の時
+	{
+		if (*str == '\0')
+			return nullptr;
+		return strchr(str, *pattern);
+	}
+	if (pattern_len == 2)//パターンが2文字の時
+	{
+		if (*str == '\0' || *(str + 1) == '\0')
+			return nullptr;
+		return _strstr2_fast(str, pattern);
+	}
+	const std::size_t pattern_max = pattern_len - 1;
+	//patternの長さに基づいて、検索開始位置を得る
+	const char* str_begin = str + pattern_max;
 	{
 		//検索開始位置までに文字列の終端があったら終了
 		static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
 		static const __m128i null = _mm_setzero_si128();
-		const char* p = str1;
-		const std::size_t str1_over = reinterpret_cast<intptr_t>(p) & 0xf;
-		if (str1_over != 0)
+		const char* p = str;
+		const std::size_t str_over = reinterpret_cast<intptr_t>(p) & 0xf;
+		if (str_over != 0)
 		{
 			//非16バイトアライメント時
 			const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
@@ -1399,21 +1475,21 @@ const char* _strstr_fast(const char* str1, const char* str2)
 			const std::size_t pos = _mm_cmpistri(null, str16, flags);
 			if (zf)
 			{
-				if (pos <= str2_max)
+				if (pos <= pattern_max)
 					return nullptr;
 			}
-			p += (16 - str1_over);
+			p += (16 - str_over);
 		}
 		//16バイトアライメント時
 		const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
-		while (reinterpret_cast<const char*>(p128) < str1_begin)
+		while (reinterpret_cast<const char*>(p128) < str_begin)
 		{
 			const __m128i str16 = _mm_load_si128(p128);
 			const int zf          = _mm_cmpistrz(null, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
 			const std::size_t pos = _mm_cmpistri(null, str16, flags);
 			if (zf)
 			{
-				if ((reinterpret_cast<const char*>(p128) - str1) + pos <= str2_max)
+				if ((reinterpret_cast<const char*>(p128) - str) + pos <= pattern_max)
 					return nullptr;
 				break;
 			}
@@ -1422,51 +1498,74 @@ const char* _strstr_fast(const char* str1, const char* str2)
 	}
 	//検索開始
 	{
+		const std::size_t pattern_max = pattern_len - 1;
+		const char* pattern_end = pattern + pattern_max;
+		const char* pattern_end_1 = pattern_end - 1;
+		const char pattern_top_c = *pattern;//先頭の文字
+		const char pattern_end_c = *pattern_end;//末尾の文字
+		const char pattern_end_1_c = *pattern_end_1;//末尾の一つ前の文字
+		const __m128i pattern_end_c16 = _mm_set1_epi8(pattern_end_c);
 		static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-		const __m128i c16 = _mm_set1_epi8(*(str2 + str2_len - 1));//末尾の文字
-		const char* p = str1_begin;
-		const std::size_t str1_over = reinterpret_cast<intptr_t>(p)& 0xf;
-		if (str1_over != 0)
+		const int skip = 1 + (pattern_end_1_c != pattern_end_c);//文字列の照合に失敗した場合にスキップする文字数
+		const char* p = str_begin;
+		const std::size_t str_over = reinterpret_cast<intptr_t>(p)& 0xf;
+		if (str_over != 0)
 		{
 			//非16バイトアライメント時
 			const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
-			const int zf = _mm_cmpistrz(c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
-			const int cf = _mm_cmpistrc(c16, str16, flags);
+			const int zf = _mm_cmpistrz(pattern_end_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+			const int cf = _mm_cmpistrc(pattern_end_c16, str16, flags);
 			if (cf)
 			{
-				const __m128i mask = _mm_cmpistrm(c16, str16, flags);
+				const __m128i mask = _mm_cmpistrm(pattern_end_c16, str16, flags);
 				int found_bits = *reinterpret_cast<const int*>(&mask);
-				const char* _p = p - str2_max;
+				const char* _p = p - pattern_max;
 				while (found_bits)
 				{
-					if ((found_bits & 1) && strncmp_fast(_p, str2, str2_len) == 0)
-						return _p;
-					found_bits >>= 1;
-					++_p;
+					if (found_bits & 1)
+					{
+						if (*_p == pattern_top_c && strncmp_fast(_p, pattern, pattern_len) == 0)
+							return _p;
+						found_bits >>= skip;
+						_p += skip;
+					}
+					else
+					{
+						found_bits >>= 1;
+						++_p;
+					}
 				}
 			}
 			if (zf)
 				return nullptr;
-			p += (16 - str1_over);
+			p += (16 - str_over);
 		}
 		//16バイトアライメント時
 		const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
 		while (true)
 		{
 			const __m128i str16 = _mm_load_si128(p128);
-			const int zf = _mm_cmpistrz(c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
-			const int cf = _mm_cmpistrc(c16, str16, flags);
+			const int zf = _mm_cmpistrz(pattern_end_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+			const int cf = _mm_cmpistrc(pattern_end_c16, str16, flags);
 			if (cf)
 			{
-				const __m128i mask = _mm_cmpistrm(c16, str16, flags);
+				const __m128i mask = _mm_cmpistrm(pattern_end_c16, str16, flags);
 				int found_bits = *reinterpret_cast<const int*>(&mask);
-				const char* _p = reinterpret_cast<const char*>(p128) - str2_max;
+				const char* _p = reinterpret_cast<const char*>(p128)-pattern_max;
 				while (found_bits)
 				{
-					if ((found_bits & 1) && strncmp_fast(_p, str2, str2_len) == 0)
-						return _p;
-					found_bits >>= 1;
-					++_p;
+					if (found_bits & 1)
+					{
+						if (*_p == pattern_top_c && strncmp_fast(_p, pattern, pattern_len) == 0)
+							return _p;
+						found_bits >>= skip;
+						_p += skip;
+					}
+					else
+					{
+						found_bits >>= 1;
+						++_p;
+					}
 				}
 			}
 			if (zf)
@@ -1485,49 +1584,49 @@ const char* _strstr_fast(const char* str1, const char* str2)
                             // 3 ... _mm_maskmoveu_si128() 使用
 //SSE版strcpy用補助関数:_m128iからメモリへのコピー用関数
 //【OK】コピーサイズごとの関数を用意するやり方は、memcpy()を使うよりも速かった
-static void _memcpy_m128i_00(char* dst, const __m128i src)
+static void _memcpy_m128i_00_a(char* dst, const __m128i src)
 {
 	//なにもしない
 }
-static void _memcpy_m128i_00u(char* dst, const __m128i src)
+static void _memcpy_m128i_00_u(char* dst, const __m128i src)
 {
 	//なにもしない
 }
-static void _memcpy_m128i_01(char* dst, const __m128i src)
+static void _memcpy_m128i_01_a(char* dst, const __m128i src)
 {
 	*dst = *reinterpret_cast<const char*>(&src);
 }
-static void _memcpy_m128i_01u(char* dst, const __m128i src)
+static void _memcpy_m128i_01_u(char* dst, const __m128i src)
 {
 	*dst = *reinterpret_cast<const char*>(&src);
 }
-static void _memcpy_m128i_02(char* dst, const __m128i src)
+static void _memcpy_m128i_02_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<short*>(dst) = *reinterpret_cast<const short*>(&src);
 }
-static void _memcpy_m128i_02u(char* dst, const __m128i src)
+static void _memcpy_m128i_02_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_03(char* dst, const __m128i src)
+static void _memcpy_m128i_03_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<short*>(dst) = *reinterpret_cast<const short*>(&src);
 	*reinterpret_cast<char*>(reinterpret_cast<short*>(dst)+1) = *reinterpret_cast<const char*>(reinterpret_cast<const short*>(&src) + 1);
 }
-static void _memcpy_m128i_03u(char* dst, const __m128i src)
+static void _memcpy_m128i_03_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_04(char* dst, const __m128i src)
+static void _memcpy_m128i_04_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<int*>(dst) = *reinterpret_cast<const int*>(&src);
 }
-static void _memcpy_m128i_04u(char* dst, const __m128i src)
+static void _memcpy_m128i_04_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1535,12 +1634,12 @@ static void _memcpy_m128i_04u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_05(char* dst, const __m128i src)
+static void _memcpy_m128i_05_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<int*>(dst) = *reinterpret_cast<const int*>(&src);
 	*reinterpret_cast<char*>(reinterpret_cast<int*>(dst)+1) = *reinterpret_cast<const char*>(reinterpret_cast<const int*>(&src) + 1);
 }
-static void _memcpy_m128i_05u(char* dst, const __m128i src)
+static void _memcpy_m128i_05_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1549,12 +1648,12 @@ static void _memcpy_m128i_05u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_06(char* dst, const __m128i src)
+static void _memcpy_m128i_06_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<int*>(dst) = *reinterpret_cast<const int*>(&src);
 	*reinterpret_cast<short*>(reinterpret_cast<int*>(dst)+1) = *reinterpret_cast<const short*>(reinterpret_cast<const int*>(&src) + 1);
 }
-static void _memcpy_m128i_06u(char* dst, const __m128i src)
+static void _memcpy_m128i_06_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1564,13 +1663,13 @@ static void _memcpy_m128i_06u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_07(char* dst, const __m128i src)
+static void _memcpy_m128i_07_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<int*>(dst) = *reinterpret_cast<const int*>(&src);
 	*reinterpret_cast<short*>(reinterpret_cast<int*>(dst)+1) = *reinterpret_cast<const short*>(reinterpret_cast<const int*>(&src) + 1);
 	*reinterpret_cast<char*>(reinterpret_cast<short*>(reinterpret_cast<int*>(dst)+1) + 1) = *reinterpret_cast<const char*>(reinterpret_cast<const short*>(reinterpret_cast<const int*>(&src) + 1) + 1);
 }
-static void _memcpy_m128i_07u(char* dst, const __m128i src)
+static void _memcpy_m128i_07_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1581,11 +1680,11 @@ static void _memcpy_m128i_07u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_08(char* dst, const __m128i src)
+static void _memcpy_m128i_08_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<long long*>(dst) = *reinterpret_cast<const long long*>(&src);
 }
-static void _memcpy_m128i_08u(char* dst, const __m128i src)
+static void _memcpy_m128i_08_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1597,12 +1696,12 @@ static void _memcpy_m128i_08u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_09(char* dst, const __m128i src)
+static void _memcpy_m128i_09_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<long long*>(dst) = *reinterpret_cast<const long long*>(&src);
 	*reinterpret_cast<char*>(reinterpret_cast<long long*>(dst)+1) = *reinterpret_cast<const char*>(reinterpret_cast<const long long*>(&src) + 1);
 }
-static void _memcpy_m128i_09u(char* dst, const __m128i src)
+static void _memcpy_m128i_09_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1615,12 +1714,12 @@ static void _memcpy_m128i_09u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_10(char* dst, const __m128i src)
+static void _memcpy_m128i_10_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<long long*>(dst) = *reinterpret_cast<const long long*>(&src);
 	*reinterpret_cast<short*>(reinterpret_cast<long long*>(dst)+1) = *reinterpret_cast<const short*>(reinterpret_cast<const long long*>(&src) + 1);
 }
-static void _memcpy_m128i_10u(char* dst, const __m128i src)
+static void _memcpy_m128i_10_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1634,13 +1733,13 @@ static void _memcpy_m128i_10u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_11(char* dst, const __m128i src)
+static void _memcpy_m128i_11_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<long long*>(dst) = *reinterpret_cast<const long long*>(&src);
 	*reinterpret_cast<short*>(reinterpret_cast<long long*>(dst)+1) = *reinterpret_cast<const short*>(reinterpret_cast<const long long*>(&src) + 1);
 	*reinterpret_cast<char*>(reinterpret_cast<short*>(reinterpret_cast<long long*>(dst)+1) + 1) = *reinterpret_cast<const char*>(reinterpret_cast<const short*>(reinterpret_cast<const long long*>(&src) + 1) + 1);
 }
-static void _memcpy_m128i_11u(char* dst, const __m128i src)
+static void _memcpy_m128i_11_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1655,12 +1754,12 @@ static void _memcpy_m128i_11u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_12(char* dst, const __m128i src)
+static void _memcpy_m128i_12_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<long long*>(dst) = *reinterpret_cast<const long long*>(&src);
 	*reinterpret_cast<int*>(reinterpret_cast<long long*>(dst)+1) = *reinterpret_cast<const int*>(reinterpret_cast<const long long*>(&src) + 1);
 }
-static void _memcpy_m128i_12u(char* dst, const __m128i src)
+static void _memcpy_m128i_12_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1676,13 +1775,13 @@ static void _memcpy_m128i_12u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_13(char* dst, const __m128i src)
+static void _memcpy_m128i_13_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<long long*>(dst) = *reinterpret_cast<const long long*>(&src);
 	*reinterpret_cast<int*>(reinterpret_cast<long long*>(dst)+1) = *reinterpret_cast<const int*>(reinterpret_cast<const long long*>(&src) + 1);
 	*reinterpret_cast<char*>(reinterpret_cast<int*>(reinterpret_cast<long long*>(dst)+1) + 1) = *reinterpret_cast<const char*>(reinterpret_cast<const int*>(reinterpret_cast<const long long*>(&src) + 1) + 1);
 }
-static void _memcpy_m128i_13u(char* dst, const __m128i src)
+static void _memcpy_m128i_13_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1699,13 +1798,13 @@ static void _memcpy_m128i_13u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_14(char* dst, const __m128i src)
+static void _memcpy_m128i_14_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<long long*>(dst) = *reinterpret_cast<const long long*>(&src);
 	*reinterpret_cast<int*>(reinterpret_cast<long long*>(dst)+1) = *reinterpret_cast<const int*>(reinterpret_cast<const long long*>(&src) + 1);
 	*reinterpret_cast<short*>(reinterpret_cast<int*>(reinterpret_cast<long long*>(dst)+1) + 1) = *reinterpret_cast<const short*>(reinterpret_cast<const int*>(reinterpret_cast<const long long*>(&src) + 1) + 1);
 }
-static void _memcpy_m128i_14u(char* dst, const __m128i src)
+static void _memcpy_m128i_14_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1723,14 +1822,14 @@ static void _memcpy_m128i_14u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_15(char* dst, const __m128i src)
+static void _memcpy_m128i_15_a(char* dst, const __m128i src)
 {
 	*reinterpret_cast<long long*>(dst) = *reinterpret_cast<const long long*>(&src);
 	*reinterpret_cast<int*>(reinterpret_cast<long long*>(dst)+1) = *reinterpret_cast<const int*>(reinterpret_cast<const long long*>(&src) + 1);
 	*reinterpret_cast<short*>(reinterpret_cast<int*>(reinterpret_cast<long long*>(dst)+1) + 1) = *reinterpret_cast<const short*>(reinterpret_cast<const int*>(reinterpret_cast<const long long*>(&src) + 1) + 1);
 	*reinterpret_cast<char*>(reinterpret_cast<short*>(reinterpret_cast<int*>(reinterpret_cast<long long*>(dst)+1) + 1) + 1) = *reinterpret_cast<const char*>(reinterpret_cast<const short*>(reinterpret_cast<const int*>(reinterpret_cast<const long long*>(&src) + 1) + 1) + 1);
 }
-static void _memcpy_m128i_15u(char* dst, const __m128i src)
+static void _memcpy_m128i_15_u(char* dst, const __m128i src)
 {
 	const char* src_p = reinterpret_cast<const char*>(&src);
 	*(dst++) = *(src_p++);
@@ -1749,11 +1848,11 @@ static void _memcpy_m128i_15u(char* dst, const __m128i src)
 	*(dst++) = *(src_p++);
 	*dst = *src_p;
 }
-static void _memcpy_m128i_16(char* dst, const __m128i src)
+static void _memcpy_m128i_16_a(char* dst, const __m128i src)
 {
 	_mm_store_si128(reinterpret_cast<__m128i*>(dst), src);
 }
-static void _memcpy_m128i_16u(char* dst, const __m128i src)
+static void _memcpy_m128i_16_u(char* dst, const __m128i src)
 {
 	_mm_storeu_si128(reinterpret_cast<__m128i*>(dst), src);
 }
@@ -1761,65 +1860,65 @@ static void _memcpy_m128i_16u(char* dst, const __m128i src)
 typedef void(*_memcpy_m128i_x_t)(char* dst, const __m128i src);
 static const _memcpy_m128i_x_t _memcpy_m128i_a_x[17] =
 {
-	_memcpy_m128i_00,
-	_memcpy_m128i_01,
-	_memcpy_m128i_02,
-	_memcpy_m128i_03,
-	_memcpy_m128i_04,
-	_memcpy_m128i_05,
-	_memcpy_m128i_06,
-	_memcpy_m128i_07,
-	_memcpy_m128i_08,
-	_memcpy_m128i_09,
-	_memcpy_m128i_10,
-	_memcpy_m128i_11,
-	_memcpy_m128i_12,
-	_memcpy_m128i_13,
-	_memcpy_m128i_14,
-	_memcpy_m128i_15,
-	_memcpy_m128i_16,
+	_memcpy_m128i_00_a,
+	_memcpy_m128i_01_a,
+	_memcpy_m128i_02_a,
+	_memcpy_m128i_03_a,
+	_memcpy_m128i_04_a,
+	_memcpy_m128i_05_a,
+	_memcpy_m128i_06_a,
+	_memcpy_m128i_07_a,
+	_memcpy_m128i_08_a,
+	_memcpy_m128i_09_a,
+	_memcpy_m128i_10_a,
+	_memcpy_m128i_11_a,
+	_memcpy_m128i_12_a,
+	_memcpy_m128i_13_a,
+	_memcpy_m128i_14_a,
+	_memcpy_m128i_15_a,
+	_memcpy_m128i_16_a,
 };
 #if _MEMCPY_M128I_TYPE == 1
 static const _memcpy_m128i_x_t _memcpy_m128i_u_x[17] =
 {
-	_memcpy_m128i_00u,
-	_memcpy_m128i_01u,
-	_memcpy_m128i_02u,
-	_memcpy_m128i_03u,
-	_memcpy_m128i_04u,
-	_memcpy_m128i_05u,
-	_memcpy_m128i_06u,
-	_memcpy_m128i_07u,
-	_memcpy_m128i_08u,
-	_memcpy_m128i_09u,
-	_memcpy_m128i_10u,
-	_memcpy_m128i_11u,
-	_memcpy_m128i_12u,
-	_memcpy_m128i_13u,
-	_memcpy_m128i_14u,
-	_memcpy_m128i_15u,
-	_memcpy_m128i_16u,
+	_memcpy_m128i_00_u,
+	_memcpy_m128i_01_u,
+	_memcpy_m128i_02_u,
+	_memcpy_m128i_03_u,
+	_memcpy_m128i_04_u,
+	_memcpy_m128i_05_u,
+	_memcpy_m128i_06_u,
+	_memcpy_m128i_07_u,
+	_memcpy_m128i_08_u,
+	_memcpy_m128i_09_u,
+	_memcpy_m128i_10_u,
+	_memcpy_m128i_11_u,
+	_memcpy_m128i_12_u,
+	_memcpy_m128i_13_u,
+	_memcpy_m128i_14_u,
+	_memcpy_m128i_15_u,
+	_memcpy_m128i_16_u,
 };
 #elif _MEMCPY_M128I_TYPE == 2
 static const _memcpy_m128i_x_t _memcpy_m128i_u_x[17] =
 {
-	_memcpy_m128i_00,
-	_memcpy_m128i_01,
-	_memcpy_m128i_02,
-	_memcpy_m128i_03,
-	_memcpy_m128i_04,
-	_memcpy_m128i_05,
-	_memcpy_m128i_06,
-	_memcpy_m128i_07,
-	_memcpy_m128i_08,
-	_memcpy_m128i_09,
-	_memcpy_m128i_10,
-	_memcpy_m128i_11,
-	_memcpy_m128i_12,
-	_memcpy_m128i_13,
-	_memcpy_m128i_14,
-	_memcpy_m128i_15,
-	_memcpy_m128i_16u,
+	_memcpy_m128i_00_a,
+	_memcpy_m128i_01_a,
+	_memcpy_m128i_02_a,
+	_memcpy_m128i_03_a,
+	_memcpy_m128i_04_a,
+	_memcpy_m128i_05_a,
+	_memcpy_m128i_06_a,
+	_memcpy_m128i_07_a,
+	_memcpy_m128i_08_a,
+	_memcpy_m128i_09_a,
+	_memcpy_m128i_10_a,
+	_memcpy_m128i_11_a,
+	_memcpy_m128i_12_a,
+	_memcpy_m128i_13_a,
+	_memcpy_m128i_14_a,
+	_memcpy_m128i_15_a,
+	_memcpy_m128i_16_u,
 };
 #endif
 //SSE版strcpy用補助関数:_m128iからメモリへのコピー用定数：_mm_maskmoveu_si128()用
@@ -1845,16 +1944,16 @@ static const __m128i _memcpy_m128i_flags[17] =
 	_mm_set_epi8(0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u, 0x80u),
 };
 //SSE版strcpy用補助関数:_m128iからメモリへのコピー用関数
-static inline void _memcpy_m128i_a(char* dst, const __m128i src, const std::size_t len)
+static inline void _memcpy_m128i_a(__m128i* dst, const __m128i src, const std::size_t len)
 {
 #if _MEMCPY_M128I_TYPE == 1//↓速い
-	_memcpy_m128i_a_x[len](dst, src);
+	_memcpy_m128i_a_x[len](reinterpret_cast<char*>(dst), src);
 #elif _MEMCPY_M128I_TYPE == 2//↓最速
-	_memcpy_m128i_a_x[len](dst, src);
+	_memcpy_m128i_a_x[len](reinterpret_cast<char*>(dst), src);
 #elif _MEMCPY_M128I_TYPE == 3//↓かなり遅い
-	_mm_maskmoveu_si128(src, _memcpy_m128i_flags[len], dst);
+	_mm_maskmoveu_si128(src, _memcpy_m128i_flags[len], reinterpret_cast<const char*>(dst));
 #else//_MEMCPY_M128I_TYPE == 0//↓割と速い
-	memcpy(dst, reinterpret_cast<const char*>(&src), len);
+	memcpy(reinterpret_cast<const char*>(dst), reinterpret_cast<const char*>(&src), len);
 #endif
 }
 static inline void _memcpy_m128i_u(char* dst, const __m128i src, const std::size_t len)
@@ -1885,7 +1984,7 @@ static const char* _strcpy_fast_case0(char* dst, const char* src)
 		pos          = _mm_cmpistri(null, str16, flags);
 		if (zf)
 		{
-			_memcpy_m128i_a(reinterpret_cast<char*>(dst_p), str16, pos + 1);
+			_memcpy_m128i_a(dst_p, str16, pos + 1);
 			return dst;
 		}
 		_mm_store_si128(dst_p, str16);
@@ -1935,7 +2034,7 @@ static const char* _strcpy_fast_case2(char* dst, const char* src)
 		pos          = _mm_cmpistri(null, str16, flags);
 		if (zf)
 		{
-			_memcpy_m128i_a(reinterpret_cast<char*>(dst_p), str16, pos + 1);
+			_memcpy_m128i_a(dst_p, str16, pos + 1);
 			return dst;
 		}
 		_mm_store_si128(dst_p, str16);
@@ -1996,11 +2095,11 @@ const char* _strcpy_fast(char* dst, const char* src)
 //SSE版strncpy用補助関数
 //※前提：この処理は、max_len > len の時にしか呼び出されないものとする。
 //　　　　max_len >= len の時は、_memcpy_m128i() を使用する。
-static inline void _memncpy_m128i_a(char* dst, const __m128i src, const std::size_t len, const std::size_t max_len)
+static inline void _memncpy_m128i_a(__m128i* dst, const __m128i src, const std::size_t len, const std::size_t max_len)
 {
 	_memcpy_m128i_a(dst, src, len);
-	//memset(dst + len, '\0', max_len - len);//strncpy本来の仕様
-	dst[len] = '\0';//これでも十分
+	//memset(reinterpret_cast<char*>(dst) + len, '\0', max_len - len);//strncpy本来の仕様
+	*(reinterpret_cast<char*>(dst) + len) = '\0';//これでも十分
 }
 static inline void _memncpy_m128i_u(char* dst, const __m128i src, const std::size_t len, const std::size_t max_len)
 {
@@ -2026,12 +2125,12 @@ static const char* _strncpy_fast_case0(char* dst, const char* src, const std::si
 		const std::size_t remain = src_end - reinterpret_cast<const char*>(src_p);
 		if (pos >= remain)//※nullが見つからなかった時の pos は 16
 		{
-			_memcpy_m128i_a(reinterpret_cast<char*>(dst_p), str16, remain);
+			_memcpy_m128i_a(dst_p, str16, remain);
 			return dst;
 		}
 		if (zf)
 		{
-			_memncpy_m128i_a(reinterpret_cast<char*>(dst_p), str16, pos, remain);
+			_memncpy_m128i_a(dst_p, str16, pos, remain);
 			return dst;
 		}
 		_mm_store_si128(dst_p, str16);
@@ -2090,12 +2189,12 @@ static const char* _strncpy_fast_case2(char* dst, const char* src, const std::si
 		const std::size_t remain = src_end - src_p;
 		if (pos >= remain)//※nullが見つからなかった時の pos は 16
 		{
-			_memcpy_m128i_a(reinterpret_cast<char*>(dst_p), str16, remain);
+			_memcpy_m128i_a(dst_p, str16, remain);
 			return dst;
 		}
 		if (zf)
 		{
-			_memncpy_m128i_a(reinterpret_cast<char*>(dst_p), str16, pos, remain);
+			_memncpy_m128i_a(dst_p, str16, pos, remain);
 			return dst;
 		}
 		_mm_store_si128(dst_p, str16);
@@ -2336,6 +2435,7 @@ void testOpt07_Type2_After_1time()
 		STR("12341234", "");
 		STR("12312312313132132123x23123132", "x");
 		STR("12312312313132132123x23123132", "");
+		STR("12312312313132132123x23123132", "123x23");
 		STR("1234567890abcdef1234567890abcdefx234567890abcdef", "x234567890abcdef");
 		STR("1234567890abcde!!234567890abcdef", "!!");
 		STR("!1234567890!abcdef!!1234567890!abcdef!", "!!");
@@ -2353,23 +2453,23 @@ void testOpt07_Type2_After_1time()
 		char buffu[20];
 		const __m128i str16 = _mm_setr_epi8('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
 		printf("(dummy_for_align=%d)\n", dummy_for_align);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16,  0); printf("_memcpy_m128i_a(buff, str16,  0)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16,  1); printf("_memcpy_m128i_a(buff, str16,  1)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16,  2); printf("_memcpy_m128i_a(buff, str16,  2)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16,  3); printf("_memcpy_m128i_a(buff, str16,  3)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16,  4); printf("_memcpy_m128i_a(buff, str16,  4)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16,  5); printf("_memcpy_m128i_a(buff, str16,  5)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16,  6); printf("_memcpy_m128i_a(buff, str16,  6)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16,  7); printf("_memcpy_m128i_a(buff, str16,  7)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16,  8); printf("_memcpy_m128i_a(buff, str16,  8)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16,  9); printf("_memcpy_m128i_a(buff, str16,  9)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16, 10); printf("_memcpy_m128i_a(buff, str16, 10)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16, 11); printf("_memcpy_m128i_a(buff, str16, 11)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16, 12); printf("_memcpy_m128i_a(buff, str16, 12)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16, 13); printf("_memcpy_m128i_a(buff, str16, 13)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16, 14); printf("_memcpy_m128i_a(buff, str16, 14)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16, 15); printf("_memcpy_m128i_a(buff, str16, 15)=\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(buff, str16, 16); printf("_memcpy_m128i_a(buff, str16, 16)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16,  0); printf("_memcpy_m128i_a(buff, str16,  0)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16,  1); printf("_memcpy_m128i_a(buff, str16,  1)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16,  2); printf("_memcpy_m128i_a(buff, str16,  2)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16,  3); printf("_memcpy_m128i_a(buff, str16,  3)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16,  4); printf("_memcpy_m128i_a(buff, str16,  4)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16,  5); printf("_memcpy_m128i_a(buff, str16,  5)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16,  6); printf("_memcpy_m128i_a(buff, str16,  6)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16,  7); printf("_memcpy_m128i_a(buff, str16,  7)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16,  8); printf("_memcpy_m128i_a(buff, str16,  8)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16,  9); printf("_memcpy_m128i_a(buff, str16,  9)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16, 10); printf("_memcpy_m128i_a(buff, str16, 10)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16, 11); printf("_memcpy_m128i_a(buff, str16, 11)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16, 12); printf("_memcpy_m128i_a(buff, str16, 12)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16, 13); printf("_memcpy_m128i_a(buff, str16, 13)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16, 14); printf("_memcpy_m128i_a(buff, str16, 14)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16, 15); printf("_memcpy_m128i_a(buff, str16, 15)=\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_a(reinterpret_cast<__m128i*>(buff), str16, 16); printf("_memcpy_m128i_a(buff, str16, 16)=\"%s\"\n", buff);
 		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_u(buffu, str16,  0); printf("_memcpy_m128i_u(buffu, str16,  0)=\"%s\"\n", buffu);
 		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_u(buffu, str16,  1); printf("_memcpy_m128i_u(buffu, str16,  1)=\"%s\"\n", buffu);
 		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_u(buffu, str16,  2); printf("_memcpy_m128i_u(buffu, str16,  2)=\"%s\"\n", buffu);
@@ -2387,57 +2487,57 @@ void testOpt07_Type2_After_1time()
 		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_u(buffu, str16, 14); printf("_memcpy_m128i_u(buffu, str16, 14)=\"%s\"\n", buffu);
 		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_u(buffu, str16, 15); printf("_memcpy_m128i_u(buffu, str16, 15)=\"%s\"\n", buffu);
 		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_u(buffu, str16, 16); printf("_memcpy_m128i_u(buffu, str16, 16)=\"%s\"\n", buffu);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_00(buff, str16); printf("_memcpy_m128i_00(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_01(buff, str16); printf("_memcpy_m128i_01(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_02(buff, str16); printf("_memcpy_m128i_02(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_03(buff, str16); printf("_memcpy_m128i_03(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_04(buff, str16); printf("_memcpy_m128i_04(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_05(buff, str16); printf("_memcpy_m128i_05(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_06(buff, str16); printf("_memcpy_m128i_06(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_07(buff, str16); printf("_memcpy_m128i_07(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_08(buff, str16); printf("_memcpy_m128i_08(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_09(buff, str16); printf("_memcpy_m128i_09(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_10(buff, str16); printf("_memcpy_m128i_10(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_11(buff, str16); printf("_memcpy_m128i_11(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_12(buff, str16); printf("_memcpy_m128i_12(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_13(buff, str16); printf("_memcpy_m128i_13(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_14(buff, str16); printf("_memcpy_m128i_14(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_15(buff, str16); printf("_memcpy_m128i_15(buff, str16) =\"%s\"\n", buff);
-		memset(buff, 0, sizeof(buff)); _memcpy_m128i_16(buff, str16); printf("_memcpy_m128i_16(buff, str16) =\"%s\"\n", buff);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_00u(buffu, str16); printf("_memcpy_m128i_00u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_01u(buffu, str16); printf("_memcpy_m128i_01u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_02u(buffu, str16); printf("_memcpy_m128i_02u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_03u(buffu, str16); printf("_memcpy_m128i_03u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_04u(buffu, str16); printf("_memcpy_m128i_04u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_05u(buffu, str16); printf("_memcpy_m128i_05u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_06u(buffu, str16); printf("_memcpy_m128i_06u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_07u(buffu, str16); printf("_memcpy_m128i_07u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_08u(buffu, str16); printf("_memcpy_m128i_08u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_09u(buffu, str16); printf("_memcpy_m128i_09u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_10u(buffu, str16); printf("_memcpy_m128i_10u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_11u(buffu, str16); printf("_memcpy_m128i_11u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_12u(buffu, str16); printf("_memcpy_m128i_12u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_13u(buffu, str16); printf("_memcpy_m128i_13u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_14u(buffu, str16); printf("_memcpy_m128i_14u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_15u(buffu, str16); printf("_memcpy_m128i_15u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_16u(buffu, str16); printf("_memcpy_m128i_16u(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_00(buffu, str16); printf("_memcpy_m128i_00(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_01(buffu, str16); printf("_memcpy_m128i_01(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_02(buffu, str16); printf("_memcpy_m128i_02(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_03(buffu, str16); printf("_memcpy_m128i_03(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_04(buffu, str16); printf("_memcpy_m128i_04(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_05(buffu, str16); printf("_memcpy_m128i_05(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_06(buffu, str16); printf("_memcpy_m128i_06(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_07(buffu, str16); printf("_memcpy_m128i_07(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_08(buffu, str16); printf("_memcpy_m128i_08(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_09(buffu, str16); printf("_memcpy_m128i_09(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_10(buffu, str16); printf("_memcpy_m128i_10(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_11(buffu, str16); printf("_memcpy_m128i_11(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_12(buffu, str16); printf("_memcpy_m128i_12(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_13(buffu, str16); printf("_memcpy_m128i_13(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_14(buffu, str16); printf("_memcpy_m128i_14(buffu, str16)=\"%s\"\n", buffu);
-		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_15(buffu, str16); printf("_memcpy_m128i_15(buffu, str16)=\"%s\"\n", buffu);
-		//memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_16(buffu, str16); printf("_memcpy_m128i_16(buffu, str16)=\"%s\"\n", buffu);//←エラー
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_00_a(buff, str16); printf("_memcpy_m128i_00_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_01_a(buff, str16); printf("_memcpy_m128i_01_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_02_a(buff, str16); printf("_memcpy_m128i_02_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_03_a(buff, str16); printf("_memcpy_m128i_03_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_04_a(buff, str16); printf("_memcpy_m128i_04_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_05_a(buff, str16); printf("_memcpy_m128i_05_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_06_a(buff, str16); printf("_memcpy_m128i_06_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_07_a(buff, str16); printf("_memcpy_m128i_07_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_08_a(buff, str16); printf("_memcpy_m128i_08_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_09_a(buff, str16); printf("_memcpy_m128i_09_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_10_a(buff, str16); printf("_memcpy_m128i_10_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_11_a(buff, str16); printf("_memcpy_m128i_11_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_12_a(buff, str16); printf("_memcpy_m128i_12_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_13_a(buff, str16); printf("_memcpy_m128i_13_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_14_a(buff, str16); printf("_memcpy_m128i_14_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_15_a(buff, str16); printf("_memcpy_m128i_15_a(buff, str16) =\"%s\"\n", buff);
+		memset(buff, 0, sizeof(buff)); _memcpy_m128i_16_a(buff, str16); printf("_memcpy_m128i_16_a(buff, str16) =\"%s\"\n", buff);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_00_u(buffu, str16); printf("_memcpy_m128i_00_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_01_u(buffu, str16); printf("_memcpy_m128i_01_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_02_u(buffu, str16); printf("_memcpy_m128i_02_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_03_u(buffu, str16); printf("_memcpy_m128i_03_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_04_u(buffu, str16); printf("_memcpy_m128i_04_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_05_u(buffu, str16); printf("_memcpy_m128i_05_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_06_u(buffu, str16); printf("_memcpy_m128i_06_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_07_u(buffu, str16); printf("_memcpy_m128i_07_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_08_u(buffu, str16); printf("_memcpy_m128i_08_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_09_u(buffu, str16); printf("_memcpy_m128i_09_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_10_u(buffu, str16); printf("_memcpy_m128i_10_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_11_u(buffu, str16); printf("_memcpy_m128i_11_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_12_u(buffu, str16); printf("_memcpy_m128i_12_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_13_u(buffu, str16); printf("_memcpy_m128i_13_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_14_u(buffu, str16); printf("_memcpy_m128i_14_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_15_u(buffu, str16); printf("_memcpy_m128i_15_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_16_u(buffu, str16); printf("_memcpy_m128i_16_u(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_00_a(buffu, str16); printf("_memcpy_m128i_00_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_01_a(buffu, str16); printf("_memcpy_m128i_01_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_02_a(buffu, str16); printf("_memcpy_m128i_02_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_03_a(buffu, str16); printf("_memcpy_m128i_03_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_04_a(buffu, str16); printf("_memcpy_m128i_04_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_05_a(buffu, str16); printf("_memcpy_m128i_05_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_06_a(buffu, str16); printf("_memcpy_m128i_06_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_07_a(buffu, str16); printf("_memcpy_m128i_07_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_08_a(buffu, str16); printf("_memcpy_m128i_08_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_09_a(buffu, str16); printf("_memcpy_m128i_09_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_10_a(buffu, str16); printf("_memcpy_m128i_10_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_11_a(buffu, str16); printf("_memcpy_m128i_11_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_12_a(buffu, str16); printf("_memcpy_m128i_12_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_13_a(buffu, str16); printf("_memcpy_m128i_13_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_14_a(buffu, str16); printf("_memcpy_m128i_14_a(buffu, str16)=\"%s\"\n", buffu);
+		memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_15_a(buffu, str16); printf("_memcpy_m128i_15_a(buffu, str16)=\"%s\"\n", buffu);
+		//memset(buffu, 0, sizeof(buffu)); _memcpy_m128i_16_a(buffu, str16); printf("_memcpy_m128i_16_a(buffu, str16)=\"%s\"\n", buffu);//←エラー
 	}
 #endif
 #if 1

@@ -951,7 +951,7 @@ std::size_t _strlen_fast(const char* str)
 //	if (!str)
 //		return 0;
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	const char* p = str;
 	const std::size_t str_over = reinterpret_cast<intptr_t>(str) & 0xf;
 	if (str_over != 0)
@@ -979,6 +979,23 @@ std::size_t _strlen_fast(const char* str)
 }
 //----------
 //SSE版strcmp補助関数
+static inline int _str_case(const char* str1, const char* str2)
+{
+#if 1
+	return (((reinterpret_cast<intptr_t>(str1) & 0xf) != 0) << 0) |
+	       (((reinterpret_cast<intptr_t>(str2) & 0xf) != 0) << 1);
+#else//ビット演算で算出するとかえって遅い
+	intptr_t str1_i = reinterpret_cast<intptr_t>(str1);
+	intptr_t str2_i = reinterpret_cast<intptr_t>(str2);
+	str1_i |= (str1_i >> 1);
+	str1_i |= (str1_i >> 2);
+	str1_i &= 1;
+	str2_i |= (str2_i << 1);
+	str2_i |= (str2_i >> 2);
+	str2_i &= 2;
+	return str1_i | str2_i;
+#endif
+}
 static inline int _strcmp_compare(const int val1, const int val2)
 {
 	const int val = val1 - val2;
@@ -1106,16 +1123,14 @@ int _strcmp_fast(const char* str1, const char* str2)
 //	           else       return -1;
 //	else       if (!str2) return 1;
 //	//         else       continue...
-	const int case_val = (((reinterpret_cast<intptr_t>(str1) & 0xf) != 0) << 0) |
-	                     (((reinterpret_cast<intptr_t>(str2) & 0xf) != 0) << 1);
-	return _strcmp_fast_casex[case_val](str1, str2);
+	return _strcmp_fast_casex[_str_case(str1, str2)](str1, str2);
 }
 //----------
 //SSE版strncmp:16バイトアライメント＋16バイトアライメント時
 static int _strncmp_fast_case0(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	const __m128i* p1 = reinterpret_cast<const __m128i*>(str1);
 	const __m128i* p2 = reinterpret_cast<const __m128i*>(str2);
 	std::size_t remain = max_len;
@@ -1147,7 +1162,7 @@ static int _strncmp_fast_case0(const char* str1, const char* str2, const std::si
 static int _strncmp_fast_case1(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	const char* p1 = str1;
 	const __m128i* p2 = reinterpret_cast<const __m128i*>(str2);
 	std::size_t remain = max_len;
@@ -1179,7 +1194,7 @@ static int _strncmp_fast_case1(const char* str1, const char* str2, const std::si
 static int _strncmp_fast_case2(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	const __m128i* p1 = reinterpret_cast<const __m128i*>(str1);
 	const char* p2 = str2;
 	std::size_t remain = max_len;
@@ -1211,7 +1226,7 @@ static int _strncmp_fast_case2(const char* str1, const char* str2, const std::si
 static int _strncmp_fast_case3(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	const char* p1 = str1;
 	const char* p2 = str2;
 	std::size_t remain = max_len;
@@ -1256,9 +1271,7 @@ int _strncmp_fast(const char* str1, const char* str2, const std::size_t max_len)
 //	           else       return -1;
 //	else       if (!str2) return 1;
 //	//         else       continue...
-	const int case_val = (((reinterpret_cast<intptr_t>(str1) & 0xf) != 0) << 0) |
-	                     (((reinterpret_cast<intptr_t>(str2) & 0xf) != 0) << 1);
-	return _strncmp_fast_casex[case_val](str1, str2, max_len);
+	return _strncmp_fast_casex[_str_case(str1, str2)](str1, str2, max_len);
 }
 //----------
 //SSE版strchr
@@ -1345,10 +1358,7 @@ const char* _strrchr_fast(const char* str, const char c)
 //SSE版strstr
 const char* _strstr_fast(const char* str1, const char* str2)
 {
-#if 0//単純な処理
-//nullチェックしない
-//	if (!str1 || !str2)
-//		return nullptr;
+#if 0//他の関数を使用した単純な処理（遅いのでNG）
 	const std::size_t str2_len = strlen_fast(str2);
 	const char str2_c = *str2;
 	const char* p = str1;
@@ -1366,68 +1376,67 @@ const char* _strstr_fast(const char* str1, const char* str2)
 //nullチェックしない
 //	if (!str)
 //		return 0;
-	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+	//str2の長さに基づいて、処理を振り分ける
 	const std::size_t str2_len = strlen_fast(str2);
 	if (str2_len == 0)
 		return str1;
-	else if (str2_len == 1)
+	if (str2_len == 1)
 		return strchr(str1, *str2);
-	const std::size_t str2_end = str2_len - 1;
-	const __m128i null = _mm_setzero_si128();
-	const __m128i c16 = _mm_set1_epi8(*(str2 + str2_len - 1));//末尾の文字
-	const char* p = str1;
-	std::size_t str1_len = 0;
-	const std::size_t str1_over = reinterpret_cast<intptr_t>(p) & 0xf;
-	if (str1_over != 0)
+	const std::size_t str2_max = str2_len - 1;
+	//str2の長さに基づいて、検索開始位置を得る
+	const char* str1_begin = str1 + str2_max;
 	{
-		//非16バイトアライメント時
-		//const std::size_t str1_now = 0;//str1_pos_begin = str1_len;
-		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
-		const int zf          = _mm_cmpistrz(null, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
-		const std::size_t pos = _mm_cmpistri(null, str16, flags);
-		const std::size_t remain = zf ? pos : 16 - str1_over;
-		str1_len = remain;//str1_len += remain;
-		if (str1_len >= str2_len)
+		//検索開始位置までに文字列の終端があったら終了
+		static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+		static const __m128i null = _mm_setzero_si128();
+		const char* p = str1;
+		const std::size_t str1_over = reinterpret_cast<intptr_t>(p) & 0xf;
+		if (str1_over != 0)
 		{
-			const int cf       = _mm_cmpistrc(c16, str16, flags);//※この二行は、コンパイルしても cmpistri と cmpistrm のそれぞれに分かれる
-			const __m128i mask = _mm_cmpistrm(c16, str16, flags);
-			if (cf)
+			//非16バイトアライメント時
+			const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
+			const int zf          = _mm_cmpistrz(null, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+			const std::size_t pos = _mm_cmpistri(null, str16, flags);
+			if (zf)
 			{
-				const std::size_t reach = str2_end;//reach = str2_end > str1_now ? str2_end - str1_pos_begin : 0;
-				int found_bits = *reinterpret_cast<const int*>(&mask) >> reach;
-				const char* _p = p;//_p = p + reach - str2_end;
-				while (found_bits)
-				{
-					if ((found_bits & 1) && strncmp_fast(_p, str2, str2_len) == 0)
-						return _p;
-					found_bits >>= 1;
-					++_p;
-				}
+				if (pos <= str2_max)
+					return nullptr;
 			}
+			p += (16 - str1_over);
 		}
-		if (zf)
-			return nullptr;
-		p += str1_len;
+		//16バイトアライメント時
+		const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
+		while (reinterpret_cast<const char*>(p128) < str1_begin)
+		{
+			const __m128i str16 = _mm_load_si128(p128);
+			const int zf          = _mm_cmpistrz(null, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+			const std::size_t pos = _mm_cmpistri(null, str16, flags);
+			if (zf)
+			{
+				if ((reinterpret_cast<const char*>(p128) - str1) + pos <= str2_max)
+					return nullptr;
+				break;
+			}
+			++p128;
+		}
 	}
-	//16バイトアライメント時
-	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
-	while (true)
+	//検索開始
 	{
-		const std::size_t str1_now = str1_len;
-		const __m128i str16 = _mm_load_si128(p128);
-		const int zf          = _mm_cmpistrz(null, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
-		const std::size_t pos = _mm_cmpistri(null, str16, flags);
-		const std::size_t remain = pos;//remain = zf ? pos : 16;
-		str1_len += remain;
-		if (str1_len >= str2_len)
+		static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+		const __m128i c16 = _mm_set1_epi8(*(str2 + str2_len - 1));//末尾の文字
+		const char* p = str1_begin;
+		const std::size_t str1_over = reinterpret_cast<intptr_t>(p)& 0xf;
+		if (str1_over != 0)
 		{
-			const int cf       = _mm_cmpistrc(c16, str16, flags);//※この二行は、コンパイルしても cmpistri と cmpistrm のそれぞれに分かれる
-			const __m128i mask = _mm_cmpistrm(c16, str16, flags);
+			//非16バイトアライメント時
+			const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
+			const int zf = _mm_cmpistrz(c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+			const int cf = _mm_cmpistrc(c16, str16, flags);
 			if (cf)
 			{
-				const std::size_t reach = str2_end > str1_now ? str2_end - str1_now : 0;
-				int found_bits = *reinterpret_cast<const int*>(&mask) >> reach;
-				const char* _p = reinterpret_cast<const char*>(p128) + reach - str2_end;
+				const __m128i mask = _mm_cmpistrm(c16, str16, flags);
+				int found_bits = *reinterpret_cast<const int*>(&mask);
+				const char* _p = p - str2_max;
 				while (found_bits)
 				{
 					if ((found_bits & 1) && strncmp_fast(_p, str2, str2_len) == 0)
@@ -1436,10 +1445,34 @@ const char* _strstr_fast(const char* str1, const char* str2)
 					++_p;
 				}
 			}
+			if (zf)
+				return nullptr;
+			p += (16 - str1_over);
 		}
-		if (zf)
-			return nullptr;
-		++p128;
+		//16バイトアライメント時
+		const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
+		while (true)
+		{
+			const __m128i str16 = _mm_load_si128(p128);
+			const int zf = _mm_cmpistrz(c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+			const int cf = _mm_cmpistrc(c16, str16, flags);
+			if (cf)
+			{
+				const __m128i mask = _mm_cmpistrm(c16, str16, flags);
+				int found_bits = *reinterpret_cast<const int*>(&mask);
+				const char* _p = reinterpret_cast<const char*>(p128) - str2_max;
+				while (found_bits)
+				{
+					if ((found_bits & 1) && strncmp_fast(_p, str2, str2_len) == 0)
+						return _p;
+					found_bits >>= 1;
+					++_p;
+				}
+			}
+			if (zf)
+				return nullptr;
+			++p128;
+		}
 	}
 	return nullptr;//dummy
 #endif
@@ -1840,7 +1873,7 @@ static inline void _memcpy_m128i_u(char* dst, const __m128i src, const std::size
 static const char* _strcpy_fast_case0(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 	const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
 	__m128i str16;
@@ -1865,7 +1898,7 @@ static const char* _strcpy_fast_case0(char* dst, const char* src)
 static const char* _strcpy_fast_case1(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	char* dst_p = dst;
 	const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
 	__m128i str16;
@@ -1890,7 +1923,7 @@ static const char* _strcpy_fast_case1(char* dst, const char* src)
 static const char* _strcpy_fast_case2(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 	const char* src_p = src;
 	__m128i str16;
@@ -1915,7 +1948,7 @@ static const char* _strcpy_fast_case2(char* dst, const char* src)
 static const char* _strcpy_fast_case3(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	char* dst_p = dst;
 	const char* src_p = src;
 	__m128i str16;
@@ -1948,8 +1981,7 @@ static const _strcpy_fast_casex_t _strcpy_fast_casex[] =
 //SSE版strcpy
 const char* _strcpy_fast(char* dst, const char* src)
 {
-#if 0
-	//strlen_fastを活用して単純化した処理
+#if 0//strlen_fastを活用して単純化した処理（遅いのでNG）
 	//※もし、memcpyがsseのストアよりも高速であるならこの方が速い（かもしれない）
 	memcpy(dst, src, strlen_fast(src));
 	return dst;
@@ -1957,9 +1989,7 @@ const char* _strcpy_fast(char* dst, const char* src)
 //nullチェックしない
 //	if (!dst || !src)
 //		return nullptr;
-	const int case_val = (((reinterpret_cast<intptr_t>(dst) & 0xf) != 0) << 0) |
-	                     (((reinterpret_cast<intptr_t>(src) & 0xf) != 0) << 1);
-	return _strcpy_fast_casex[case_val](dst, src);
+	return _strcpy_fast_casex[_str_case(dst, src)](dst, src);
 #endif
 }
 //----------
@@ -1982,7 +2012,7 @@ static inline void _memncpy_m128i_u(char* dst, const __m128i src, const std::siz
 static const char* _strncpy_fast_case0(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 	const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
 	const char* src_end = src + max_len;
@@ -2014,7 +2044,7 @@ static const char* _strncpy_fast_case0(char* dst, const char* src, const std::si
 static const char* _strncpy_fast_case1(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	char* dst_p = dst;
 	const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
 	const char* src_end = src + max_len;
@@ -2046,7 +2076,7 @@ static const char* _strncpy_fast_case1(char* dst, const char* src, const std::si
 static const char* _strncpy_fast_case2(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 	const char* src_p = src;
 	const char* src_end = src + max_len;
@@ -2078,7 +2108,7 @@ static const char* _strncpy_fast_case2(char* dst, const char* src, const std::si
 static const char* _strncpy_fast_case3(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const __m128i null = _mm_setzero_si128();
+	static const __m128i null = _mm_setzero_si128();
 	char* dst_p = dst;
 	const char* src_p = src;
 	const char* src_end = src + max_len;
@@ -2118,8 +2148,7 @@ static const _strncpy_fast_casex_t _strncpy_fast_casex[] =
 //SSE版strncpy
 const char* _strncpy_fast(char* dst, const char* src, const std::size_t max_len)
 {
-#if 0
-	//strlen_fastを活用して単純化した処理
+#if 0//strlen_fastを活用して単純化した処理（遅いのでNG）
 	//※もし、memcpyがsseのストアよりも高速であるならこの方が速い（かもしれない）
 	const std::size_t len = strlen_fast(src);
 	if (len >= max_len)
@@ -2139,9 +2168,7 @@ const char* _strncpy_fast(char* dst, const char* src, const std::size_t max_len)
 //nullチェックしない
 //	if (!dst || !src)
 //		return nullptr;
-	const int case_val = (((reinterpret_cast<intptr_t>(dst) & 0xf) != 0) << 0) |
-	                     (((reinterpret_cast<intptr_t>(src) & 0xf) != 0) << 1);
-	return _strncpy_fast_casex[case_val](dst, src, max_len);
+	return _strncpy_fast_casex[_str_case(dst, src)](dst, src, max_len);
 #endif
 }
 //テスト

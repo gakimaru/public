@@ -6586,29 +6586,4758 @@ L214:
 	.cfi_endproc
 LFE2832:
 	.section .rdata,"dr"
-	.align 4
 LC83:
-	.ascii "[Test for Lambda with closure]\0"
+	.ascii "[Optimize Test 08]\0"
+	.text
+	.p2align 4,,15
+	.globl	__Z12runTestOpt08v
+	.def	__Z12runTestOpt08v;	.scl	2;	.type	32;	.endef
+__Z12runTestOpt08v:
+LFB2833:
+	.cfi_startproc
+	subl	$28, %esp
+	.cfi_def_cfa_offset 32
+	movl	$LC3, (%esp)
+	call	_puts
+	movl	$LC83, (%esp)
+	call	_puts
+	call	__Z18runTestOpt08_Type1v
+	call	__Z18runTestOpt08_Type2v
+	.p2align 4,,5
+	call	__Z18runTestOpt08_Type3v
+	.p2align 4,,5
+	call	__Z18runTestOpt08_Type4v
+	.p2align 4,,5
+	call	__Z18runTestOpt08_Type5v
+	.p2align 4,,5
+	call	__Z18runTestOpt08_Type6v
+	.p2align 4,,5
+	call	__Z18runTestOpt08_Type7v
+	.p2align 4,,5
+	call	__Z18runTestOpt08_Type8v
+	addl	$28, %esp
+	.cfi_def_cfa_offset 4
+	jmp	__Z18runTestOpt08_Type9v
+	.cfi_endproc
+LFE2833:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type1_Beforeiiii
+	.def	__Z25runTestOpt08_Type1_Beforeiiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type1_Beforeiiii:
+LFB2835:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC6, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L220:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	subl	$1, %ebx
+	jne	L220
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2835:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type1_After1iiii
+	.def	__Z25runTestOpt08_Type1_After1iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type1_After1iiii:
+LFB2836:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC7, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L224:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type1_After1i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type1_After1i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type1_After1i
+	subl	$1, %ebx
+	jne	L224
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2836:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type1_After2iiii
+	.def	__Z25runTestOpt08_Type1_After2iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type1_After2iiii:
+LFB2837:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC8, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L228:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type1_After2i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type1_After2i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type1_After2i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type1_After2i
+	subl	$1, %ebx
+	jne	L228
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2837:
+	.section .rdata,"dr"
 LC84:
+	.ascii "  After3   ... \0"
+	.text
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type1_After3iiii
+	.def	__Z25runTestOpt08_Type1_After3iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type1_After3iiii:
+LFB2838:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC84, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L232:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type1_After3i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type1_After3i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type1_After3i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type1_After3i
+	subl	$1, %ebx
+	jne	L232
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2838:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type2_Beforeiiii
+	.def	__Z25runTestOpt08_Type2_Beforeiiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type2_Beforeiiii:
+LFB2840:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC6, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L236:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type2_Beforei
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type2_Beforei
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type2_Beforei
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type2_Beforei
+	subl	$1, %ebx
+	jne	L236
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2840:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type2_After1iiii
+	.def	__Z25runTestOpt08_Type2_After1iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type2_After1iiii:
+LFB2841:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC7, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L240:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type2_After1i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type2_After1i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type2_After1i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type2_After1i
+	subl	$1, %ebx
+	jne	L240
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2841:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type2_After2iiii
+	.def	__Z25runTestOpt08_Type2_After2iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type2_After2iiii:
+LFB2842:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC8, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L244:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type2_After2i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type2_After2i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type2_After2i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type2_After2i
+	subl	$1, %ebx
+	jne	L244
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2842:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type2_After3iiii
+	.def	__Z25runTestOpt08_Type2_After3iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type2_After3iiii:
+LFB2843:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC84, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L248:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type2_After3i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type2_After3i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type2_After3i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type2_After3i
+	subl	$1, %ebx
+	jne	L248
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2843:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type3_Beforeiiii
+	.def	__Z25runTestOpt08_Type3_Beforeiiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type3_Beforeiiii:
+LFB2845:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC6, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L252:
+	movl	%edi, 4(%esp)
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type3_Beforeii
+	movl	12(%esp), %eax
+	movl	%esi, (%esp)
+	movl	%eax, 4(%esp)
+	call	__Z22testOpt08_Type3_Beforeii
+	subl	$1, %ebx
+	jne	L252
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2845:
+	.p2align 4,,15
+	.globl	__Z24runTestOpt08_Type3_Afteriiii
+	.def	__Z24runTestOpt08_Type3_Afteriiii;	.scl	2;	.type	32;	.endef
+__Z24runTestOpt08_Type3_Afteriiii:
+LFB2846:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC7, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L256:
+	movl	%edi, 4(%esp)
+	movl	%ebp, (%esp)
+	call	__Z21testOpt08_Type3_Afterii
+	movl	12(%esp), %eax
+	movl	%esi, (%esp)
+	movl	%eax, 4(%esp)
+	call	__Z21testOpt08_Type3_Afterii
+	subl	$1, %ebx
+	jne	L256
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2846:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type4_Beforeiiii
+	.def	__Z25runTestOpt08_Type4_Beforeiiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type4_Beforeiiii:
+LFB2848:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC6, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L260:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	subl	$1, %ebx
+	jne	L260
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2848:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type4_After1iiii
+	.def	__Z25runTestOpt08_Type4_After1iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type4_After1iiii:
+LFB2849:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC7, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L264:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type4_After1i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type4_After1i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type4_After1i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type4_After1i
+	subl	$1, %ebx
+	jne	L264
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2849:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type4_After2iiii
+	.def	__Z25runTestOpt08_Type4_After2iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type4_After2iiii:
+LFB2850:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC8, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L268:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type4_After2i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type4_After2i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type4_After2i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type4_After2i
+	subl	$1, %ebx
+	jne	L268
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2850:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type5_Beforeiiii
+	.def	__Z25runTestOpt08_Type5_Beforeiiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type5_Beforeiiii:
+LFB2852:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$10000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC6, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L272:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	subl	$1, %ebx
+	jne	L272
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2852:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type5_After1iiii
+	.def	__Z25runTestOpt08_Type5_After1iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type5_After1iiii:
+LFB2853:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$10000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC7, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L276:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type5_After1i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type5_After1i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type5_After1i
+	subl	$1, %ebx
+	jne	L276
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2853:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type5_After2iiii
+	.def	__Z25runTestOpt08_Type5_After2iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type5_After2iiii:
+LFB2854:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$10000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC8, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L280:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type5_After2i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type5_After2i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type5_After2i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type5_After2i
+	subl	$1, %ebx
+	jne	L280
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2854:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type6_Beforeiiii
+	.def	__Z25runTestOpt08_Type6_Beforeiiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type6_Beforeiiii:
+LFB2856:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$10000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC6, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L284:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	subl	$1, %ebx
+	jne	L284
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2856:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type6_After1iiii
+	.def	__Z25runTestOpt08_Type6_After1iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type6_After1iiii:
+LFB2857:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$10000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC7, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L288:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type6_After1i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type6_After1i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type6_After1i
+	subl	$1, %ebx
+	jne	L288
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2857:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type6_After2iiii
+	.def	__Z25runTestOpt08_Type6_After2iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type6_After2iiii:
+LFB2858:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$10000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC8, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L292:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type6_After2i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type6_After2i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type6_After2i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type6_After2i
+	subl	$1, %ebx
+	jne	L292
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2858:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type7_Beforeiiii
+	.def	__Z25runTestOpt08_Type7_Beforeiiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type7_Beforeiiii:
+LFB2860:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$10000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC6, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L296:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	subl	$1, %ebx
+	jne	L296
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2860:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type7_After1iiii
+	.def	__Z25runTestOpt08_Type7_After1iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type7_After1iiii:
+LFB2861:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$10000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC7, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L300:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type7_After1i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type7_After1i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type7_After1i
+	subl	$1, %ebx
+	jne	L300
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2861:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type7_After2iiii
+	.def	__Z25runTestOpt08_Type7_After2iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type7_After2iiii:
+LFB2862:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$10000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC8, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L304:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type7_After2i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type7_After2i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type7_After2i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type7_After2i
+	subl	$1, %ebx
+	jne	L304
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2862:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type8_Beforeiiii
+	.def	__Z25runTestOpt08_Type8_Beforeiiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type8_Beforeiiii:
+LFB2864:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC6, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L308:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	subl	$1, %ebx
+	jne	L308
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2864:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type8_After1iiii
+	.def	__Z25runTestOpt08_Type8_After1iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type8_After1iiii:
+LFB2865:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC7, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L312:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type8_After1i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type8_After1i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type8_After1i
+	subl	$1, %ebx
+	jne	L312
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2865:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type8_After2iiii
+	.def	__Z25runTestOpt08_Type8_After2iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type8_After2iiii:
+LFB2866:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC8, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L316:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type8_After2i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type8_After2i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type8_After2i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type8_After2i
+	subl	$1, %ebx
+	jne	L316
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2866:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type9_Beforeiiii
+	.def	__Z25runTestOpt08_Type9_Beforeiiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type9_Beforeiiii:
+LFB2868:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC6, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L320:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	subl	$1, %ebx
+	jne	L320
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2868:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type9_After1iiii
+	.def	__Z25runTestOpt08_Type9_After1iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type9_After1iiii:
+LFB2869:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC7, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L324:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type9_After1i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type9_After1i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type9_After1i
+	subl	$1, %ebx
+	jne	L324
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2869:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt08_Type9_After2iiii
+	.def	__Z25runTestOpt08_Type9_After2iiii;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt08_Type9_After2iiii:
+LFB2870:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	movl	$100000000, %ebx
+	subl	$44, %esp
+	.cfi_def_cfa_offset 64
+	movl	76(%esp), %eax
+	movl	$LC8, (%esp)
+	movl	64(%esp), %ebp
+	movl	68(%esp), %edi
+	movl	72(%esp), %esi
+	movl	%eax, 12(%esp)
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L328:
+	movl	%ebp, (%esp)
+	call	__Z22testOpt08_Type9_After2i
+	movl	%edi, (%esp)
+	call	__Z22testOpt08_Type9_After2i
+	movl	%esi, (%esp)
+	call	__Z22testOpt08_Type9_After2i
+	movl	12(%esp), %eax
+	movl	%eax, (%esp)
+	call	__Z22testOpt08_Type9_After2i
+	subl	$1, %ebx
+	jne	L328
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 64(%esp)
+	addl	$44, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2870:
+	.section .rdata,"dr"
+	.align 4
+LC85:
+	.ascii "Judge1(%d) ... %d / %d / %d (%d)\12\0"
+	.align 4
+LC86:
+	.ascii "Judge2(%d) ... %d / %d / %d (%d)\12\0"
+LC87:
+	.ascii "Judge3(%d, %d) ... %d (%d)\12\0"
+LC88:
+	.ascii "Align64(%d) ... %d / %d (%d)\12\0"
+	.align 4
+LC89:
+	.ascii "CountBits(0x%08x) ... %d / %d (%d)\12\0"
+LC90:
+	.ascii "MSB(0x%08x) ... %d / %d (%d)\12\0"
+LC91:
+	.ascii "LSB(0x%08x) ... %d / %d (%d)\12\0"
+LC92:
+	.ascii "Abs(%d) ... %d / %d (%d)\12\0"
+LC93:
+	.ascii "Sign(%d) ... %d / %d (%d)\12\0"
+	.text
+	.p2align 4,,15
+	.globl	__Z18runTestOpt08_1timev
+	.def	__Z18runTestOpt08_1timev;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt08_1timev:
+LFB2871:
+	.cfi_startproc
+	pushl	%edi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 7, -8
+	pushl	%esi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 6, -12
+	pushl	%ebx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	subl	$32, %esp
+	.cfi_def_cfa_offset 48
+	movl	$0, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	$0, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type1_After3i
+	movl	$0, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type1_After2i
+	movl	$0, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$0, 4(%esp)
+	movl	$LC85, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$10, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	$10, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type1_After3i
+	movl	$10, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type1_After2i
+	movl	$10, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$10, 4(%esp)
+	movl	$LC85, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$100, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	$100, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type1_After3i
+	movl	$100, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type1_After2i
+	movl	$100, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$100, 4(%esp)
+	movl	$LC85, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$150, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	$150, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type1_After3i
+	movl	$150, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type1_After2i
+	movl	$150, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$150, 4(%esp)
+	movl	$LC85, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$200, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	$200, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type1_After3i
+	movl	$200, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type1_After2i
+	movl	$200, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$200, 4(%esp)
+	movl	$LC85, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$250, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	$250, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type1_After3i
+	movl	$250, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type1_After2i
+	movl	$250, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$250, 4(%esp)
+	movl	$LC85, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$300, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	$300, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type1_After3i
+	movl	$300, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type1_After2i
+	movl	$300, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$300, 4(%esp)
+	movl	$LC85, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$350, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	$350, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type1_After3i
+	movl	$350, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type1_After2i
+	movl	$350, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$350, 4(%esp)
+	movl	$LC85, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$400, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	$400, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type1_After3i
+	movl	$400, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type1_After2i
+	movl	$400, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$400, 4(%esp)
+	movl	$LC85, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$450, (%esp)
+	call	__Z22testOpt08_Type1_Beforei
+	movl	$450, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type1_After3i
+	movl	$450, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type1_After2i
+	movl	$450, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type1_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$450, 4(%esp)
+	movl	$LC85, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$0, (%esp)
+	call	__Z22testOpt08_Type2_Beforei
+	movl	$0, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type2_After3i
+	movl	$0, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type2_After2i
+	movl	$0, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type2_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$0, 4(%esp)
+	movl	$LC86, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$10, (%esp)
+	call	__Z22testOpt08_Type2_Beforei
+	movl	$10, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type2_After3i
+	movl	$10, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type2_After2i
+	movl	$10, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type2_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$10, 4(%esp)
+	movl	$LC86, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$100, (%esp)
+	call	__Z22testOpt08_Type2_Beforei
+	movl	$100, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type2_After3i
+	movl	$100, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type2_After2i
+	movl	$100, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type2_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$100, 4(%esp)
+	movl	$LC86, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$150, (%esp)
+	call	__Z22testOpt08_Type2_Beforei
+	movl	$150, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type2_After3i
+	movl	$150, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type2_After2i
+	movl	$150, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type2_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$150, 4(%esp)
+	movl	$LC86, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$200, (%esp)
+	call	__Z22testOpt08_Type2_Beforei
+	movl	$200, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type2_After3i
+	movl	$200, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type2_After2i
+	movl	$200, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type2_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$200, 4(%esp)
+	movl	$LC86, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$250, (%esp)
+	call	__Z22testOpt08_Type2_Beforei
+	movl	$250, (%esp)
+	movl	%eax, %edi
+	call	__Z22testOpt08_Type2_After3i
+	movl	$250, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type2_After2i
+	movl	$250, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type2_After1i
+	movl	%edi, 20(%esp)
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$250, 4(%esp)
+	movl	$LC86, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$0, 4(%esp)
+	movl	$0, (%esp)
+	call	__Z22testOpt08_Type3_Beforeii
+	movl	$0, 4(%esp)
+	movl	$0, (%esp)
+	movzbl	%al, %ebx
+	call	__Z21testOpt08_Type3_Afterii
+	movl	%ebx, 16(%esp)
+	movl	$0, 8(%esp)
+	movl	$0, 4(%esp)
+	movl	$LC87, (%esp)
+	movzbl	%al, %eax
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$0, 4(%esp)
+	movl	$100, (%esp)
+	call	__Z22testOpt08_Type3_Beforeii
+	movl	$0, 4(%esp)
+	movl	$100, (%esp)
+	movzbl	%al, %ebx
+	call	__Z21testOpt08_Type3_Afterii
+	movl	%ebx, 16(%esp)
+	movl	$0, 8(%esp)
+	movl	$100, 4(%esp)
+	movl	$LC87, (%esp)
+	movzbl	%al, %eax
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$100, 4(%esp)
+	movl	$0, (%esp)
+	call	__Z22testOpt08_Type3_Beforeii
+	movl	$100, 4(%esp)
+	movl	$0, (%esp)
+	movzbl	%al, %ebx
+	call	__Z21testOpt08_Type3_Afterii
+	movl	%ebx, 16(%esp)
+	movl	$100, 8(%esp)
+	movl	$0, 4(%esp)
+	movl	$LC87, (%esp)
+	movzbl	%al, %eax
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$100, 4(%esp)
+	movl	$100, (%esp)
+	call	__Z22testOpt08_Type3_Beforeii
+	movl	$100, 4(%esp)
+	movl	$100, (%esp)
+	movzbl	%al, %ebx
+	call	__Z21testOpt08_Type3_Afterii
+	movl	%ebx, 16(%esp)
+	movl	$100, 8(%esp)
+	movl	$100, 4(%esp)
+	movl	$LC87, (%esp)
+	movzbl	%al, %eax
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$0, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	movl	$0, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type4_After2i
+	movl	$0, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type4_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$0, 4(%esp)
+	movl	$LC88, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$63, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	movl	$63, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type4_After2i
+	movl	$63, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type4_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$63, 4(%esp)
+	movl	$LC88, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$64, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	movl	$64, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type4_After2i
+	movl	$64, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type4_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$64, 4(%esp)
+	movl	$LC88, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$65, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	movl	$65, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type4_After2i
+	movl	$65, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type4_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$65, 4(%esp)
+	movl	$LC88, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$127, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	movl	$127, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type4_After2i
+	movl	$127, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type4_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$127, 4(%esp)
+	movl	$LC88, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$128, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	movl	$128, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type4_After2i
+	movl	$128, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type4_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$128, 4(%esp)
+	movl	$LC88, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$129, (%esp)
+	call	__Z22testOpt08_Type4_Beforei
+	movl	$129, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type4_After2i
+	movl	$129, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type4_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$129, 4(%esp)
+	movl	$LC88, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$0, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$0, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$0, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$0, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$1, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$1, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2147483648, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$-2147483648, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$-2147483648, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2147483648, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2147483647, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$-2147483647, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$-2147483647, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2147483647, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$98304, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$98304, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$98304, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$98304, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$528384, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$528384, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$528384, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$528384, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1050624, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$1050624, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$1050624, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1050624, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$8388864, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$8388864, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$8388864, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$8388864, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$16777344, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$16777344, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$16777344, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$16777344, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$134217744, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$134217744, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$134217744, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$134217744, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$268435464, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$268435464, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$268435464, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$268435464, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$286331153, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$286331153, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$286331153, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$286331153, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2004318072, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$-2004318072, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$-2004318072, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2004318072, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1431655765, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$1431655765, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$1431655765, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1431655765, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1431655766, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$-1431655766, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$-1431655766, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1431655766, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$305419896, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$305419896, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$305419896, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$305419896, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1698898192, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$-1698898192, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$-1698898192, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1698898192, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1, (%esp)
+	call	__Z22testOpt08_Type5_Beforei
+	movl	$-1, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type5_After2i
+	movl	$-1, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type5_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1, 4(%esp)
+	movl	$LC89, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$0, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$0, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$0, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$0, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$1, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$1, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2147483648, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$-2147483648, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$-2147483648, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2147483648, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$286331153, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$286331153, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$286331153, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$286331153, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2004318072, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$-2004318072, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$-2004318072, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2004318072, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$98304, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$98304, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$98304, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$98304, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$528384, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$528384, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$528384, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$528384, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1050624, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$1050624, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$1050624, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1050624, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$8388864, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$8388864, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$8388864, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$8388864, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$16777344, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$16777344, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$16777344, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$16777344, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$134217744, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$134217744, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$134217744, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$134217744, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$268435464, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$268435464, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$268435464, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$268435464, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1431655765, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$1431655765, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$1431655765, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1431655765, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1431655766, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$-1431655766, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$-1431655766, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1431655766, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$305419896, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$305419896, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$305419896, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$305419896, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1698898192, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$-1698898192, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$-1698898192, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1698898192, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1, (%esp)
+	call	__Z22testOpt08_Type6_Beforei
+	movl	$-1, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type6_After2i
+	movl	$-1, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type6_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1, 4(%esp)
+	movl	$LC90, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$0, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$0, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$0, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$0, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$1, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$1, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2147483648, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$-2147483648, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$-2147483648, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2147483648, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$286331153, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$286331153, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$286331153, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$286331153, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2004318072, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$-2004318072, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$-2004318072, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2004318072, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$98304, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$98304, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$98304, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$98304, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$528384, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$528384, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$528384, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$528384, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1050624, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$1050624, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$1050624, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1050624, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$8388864, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$8388864, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$8388864, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$8388864, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$16777344, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$16777344, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$16777344, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$16777344, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$134217744, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$134217744, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$134217744, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$134217744, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$268435464, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$268435464, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$268435464, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$268435464, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1431655765, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$1431655765, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$1431655765, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1431655765, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1431655766, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$-1431655766, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$-1431655766, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1431655766, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$305419896, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$305419896, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$305419896, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$305419896, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1698898192, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$-1698898192, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$-1698898192, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1698898192, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1, (%esp)
+	call	__Z22testOpt08_Type7_Beforei
+	movl	$-1, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type7_After2i
+	movl	$-1, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type7_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1, 4(%esp)
+	movl	$LC91, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$0, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$0, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$0, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$0, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$1, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$1, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$-1, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$-1, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$2, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$2, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$2, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$2, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$-2, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$-2, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$100, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$100, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$100, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$100, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-100, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$-100, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$-100, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-100, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$65536, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$65536, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$65536, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$65536, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-65536, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$-65536, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$-65536, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-65536, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$2147483647, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$2147483647, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$2147483647, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$2147483647, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2147483648, (%esp)
+	call	__Z22testOpt08_Type8_Beforei
+	movl	$-2147483648, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type8_After2i
+	movl	$-2147483648, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type8_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2147483648, 4(%esp)
+	movl	$LC92, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$0, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$0, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$0, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$0, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$1, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$1, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$1, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$1, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-1, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$-1, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$-1, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-1, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$2, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$2, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$2, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$2, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$-2, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$-2, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$100, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$100, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$100, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$100, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-100, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$-100, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$-100, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-100, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$65536, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$65536, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$65536, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$65536, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-65536, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$-65536, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$-65536, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-65536, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$2147483647, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$2147483647, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$2147483647, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$2147483647, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	movl	$-2147483648, (%esp)
+	call	__Z22testOpt08_Type9_Beforei
+	movl	$-2147483648, (%esp)
+	movl	%eax, %esi
+	call	__Z22testOpt08_Type9_After2i
+	movl	$-2147483648, (%esp)
+	movl	%eax, %ebx
+	call	__Z22testOpt08_Type9_After1i
+	movl	%esi, 16(%esp)
+	movl	%ebx, 12(%esp)
+	movl	$-2147483648, 4(%esp)
+	movl	$LC93, (%esp)
+	movl	%eax, 8(%esp)
+	call	_printf
+	addl	$32, %esp
+	.cfi_def_cfa_offset 16
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 12
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 8
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2871:
+	.section .rdata,"dr"
+LC94:
+	.ascii "[Optimize Test 09]\0"
+	.text
+	.p2align 4,,15
+	.globl	__Z12runTestOpt09v
+	.def	__Z12runTestOpt09v;	.scl	2;	.type	32;	.endef
+__Z12runTestOpt09v:
+LFB2872:
+	.cfi_startproc
+	subl	$28, %esp
+	.cfi_def_cfa_offset 32
+	movl	$LC3, (%esp)
+	call	_puts
+	movl	$LC94, (%esp)
+	call	_puts
+	call	__Z18runTestOpt09_Type1v
+	call	__Z18runTestOpt09_Type2v
+	addl	$28, %esp
+	.cfi_def_cfa_offset 4
+	jmp	__Z18runTestOpt09_Type3v
+	.cfi_endproc
+LFE2872:
+	.p2align 4,,15
+	.globl	__Z18runTestOpt09_Type1v
+	.def	__Z18runTestOpt09_Type1v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt09_Type1v:
+LFB2873:
+	.cfi_startproc
+	pushl	%ebx
+	.cfi_def_cfa_offset 8
+	.cfi_offset 3, -8
+	movl	$40024, %eax
+	call	___chkstk_ms
+	subl	%eax, %esp
+	.cfi_def_cfa_offset 40032
+	leal	16(%esp), %ebx
+	movl	$100000, 4(%esp)
+	movl	$LC5, (%esp)
+	call	_printf
+	movl	%ebx, (%esp)
+	call	__Z12initOpt08_t1R12dataOpt08_t1
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type1_BeforeR12dataOpt08_t1
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type1_After1R12dataOpt08_t1
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type1_After2R12dataOpt08_t1
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type1_After3R12dataOpt08_t1
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type1_After4R12dataOpt08_t1
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type1_After5R12dataOpt08_t1
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type1_After6R12dataOpt08_t1
+	addl	$40024, %esp
+	.cfi_def_cfa_offset 8
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2873:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type1_BeforeR12dataOpt08_t1
+	.def	__Z25runTestOpt09_Type1_BeforeR12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type1_BeforeR12dataOpt08_t1:
+LFB2874:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$100000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC6, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L338:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type1_BeforeR12dataOpt08_t1
+	subl	$1, %ebx
+	jne	L338
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2874:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type1_After1R12dataOpt08_t1
+	.def	__Z25runTestOpt09_Type1_After1R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type1_After1R12dataOpt08_t1:
+LFB2875:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$100000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC7, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L342:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type1_After1R12dataOpt08_t1
+	subl	$1, %ebx
+	jne	L342
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2875:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type1_After2R12dataOpt08_t1
+	.def	__Z25runTestOpt09_Type1_After2R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type1_After2R12dataOpt08_t1:
+LFB2876:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$100000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC8, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L346:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type1_After2R12dataOpt08_t1
+	subl	$1, %ebx
+	jne	L346
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2876:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type1_After3R12dataOpt08_t1
+	.def	__Z25runTestOpt09_Type1_After3R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type1_After3R12dataOpt08_t1:
+LFB2877:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$100000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC84, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L350:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type1_After3R12dataOpt08_t1
+	subl	$1, %ebx
+	jne	L350
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2877:
+	.section .rdata,"dr"
+LC95:
+	.ascii "  After4   ... \0"
+	.text
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type1_After4R12dataOpt08_t1
+	.def	__Z25runTestOpt09_Type1_After4R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type1_After4R12dataOpt08_t1:
+LFB2878:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$100000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC95, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L354:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type1_After4R12dataOpt08_t1
+	subl	$1, %ebx
+	jne	L354
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2878:
+	.section .rdata,"dr"
+LC96:
+	.ascii "  After5   ... \0"
+	.text
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type1_After5R12dataOpt08_t1
+	.def	__Z25runTestOpt09_Type1_After5R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type1_After5R12dataOpt08_t1:
+LFB2879:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$100000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC96, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L358:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type1_After5R12dataOpt08_t1
+	subl	$1, %ebx
+	jne	L358
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2879:
+	.section .rdata,"dr"
+LC97:
+	.ascii "  After6   ... \0"
+	.text
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type1_After6R12dataOpt08_t1
+	.def	__Z25runTestOpt09_Type1_After6R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type1_After6R12dataOpt08_t1:
+LFB2880:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$100000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC97, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L362:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type1_After6R12dataOpt08_t1
+	subl	$1, %ebx
+	jne	L362
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2880:
+	.section .rdata,"dr"
+LC98:
+	.ascii "Type2: *repeated * %d times.\12\0"
+	.text
+	.p2align 4,,15
+	.globl	__Z18runTestOpt09_Type2v
+	.def	__Z18runTestOpt09_Type2v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt09_Type2v:
+LFB2881:
+	.cfi_startproc
+	pushl	%ebx
+	.cfi_def_cfa_offset 8
+	.cfi_offset 3, -8
+	movl	$480024, %eax
+	call	___chkstk_ms
+	subl	%eax, %esp
+	.cfi_def_cfa_offset 480032
+	leal	16(%esp), %ebx
+	movl	$50000, 4(%esp)
+	movl	$LC98, (%esp)
+	call	_printf
+	movl	%ebx, (%esp)
+	call	__Z12initOpt08_t2R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type2_BeforeR12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type2_After1R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type2_After2R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type2_After3R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type2_After4R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type2_After5R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type2_After6R12dataOpt08_t2
+	addl	$480024, %esp
+	.cfi_def_cfa_offset 8
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2881:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type2_BeforeR12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type2_BeforeR12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type2_BeforeR12dataOpt08_t2:
+LFB2882:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC6, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L368:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type2_BeforeR12dataOpt08_t2
+	subl	$1, %ebx
+	jne	L368
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2882:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type2_After1R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type2_After1R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type2_After1R12dataOpt08_t2:
+LFB2883:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC7, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L372:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type2_After1R12dataOpt08_t2
+	subl	$1, %ebx
+	jne	L372
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2883:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type2_After2R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type2_After2R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type2_After2R12dataOpt08_t2:
+LFB2884:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC8, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L376:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type2_After2R12dataOpt08_t2
+	subl	$1, %ebx
+	jne	L376
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2884:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type2_After3R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type2_After3R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type2_After3R12dataOpt08_t2:
+LFB2885:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC84, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L380:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type2_After3R12dataOpt08_t2
+	subl	$1, %ebx
+	jne	L380
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2885:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type2_After4R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type2_After4R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type2_After4R12dataOpt08_t2:
+LFB2886:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC95, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L384:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type2_After4R12dataOpt08_t2
+	subl	$1, %ebx
+	jne	L384
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2886:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type2_After5R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type2_After5R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type2_After5R12dataOpt08_t2:
+LFB2887:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC96, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L388:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type2_After5R12dataOpt08_t2
+	subl	$1, %ebx
+	jne	L388
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2887:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type2_After6R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type2_After6R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type2_After6R12dataOpt08_t2:
+LFB2888:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC97, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L392:
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type2_After6R12dataOpt08_t2
+	subl	$1, %ebx
+	jne	L392
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2888:
+	.p2align 4,,15
+	.globl	__Z18runTestOpt09_Type3v
+	.def	__Z18runTestOpt09_Type3v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt09_Type3v:
+LFB2889:
+	.cfi_startproc
+	pushl	%ebx
+	.cfi_def_cfa_offset 8
+	.cfi_offset 3, -8
+	movl	$480024, %eax
+	call	___chkstk_ms
+	subl	%eax, %esp
+	.cfi_def_cfa_offset 480032
+	leal	16(%esp), %ebx
+	movl	$50000, 4(%esp)
+	movl	$LC17, (%esp)
+	call	_printf
+	movl	%ebx, (%esp)
+	call	__Z12initOpt08_t2R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type3_BeforeR12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type3_After1R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type3_After2R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type3_After3R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type3_After4R12dataOpt08_t2
+	movl	%ebx, (%esp)
+	call	__Z25runTestOpt09_Type3_After5R12dataOpt08_t2
+	addl	$480024, %esp
+	.cfi_def_cfa_offset 8
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2889:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type3_BeforeR12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type3_BeforeR12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type3_BeforeR12dataOpt08_t2:
+LFB2890:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC6, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L398:
+	movl	$10000, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type3_BeforePN12dataOpt08_t26elem_tEj
+	subl	$1, %ebx
+	jne	L398
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2890:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type3_After1R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type3_After1R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type3_After1R12dataOpt08_t2:
+LFB2891:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC7, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L402:
+	movl	$10000, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type3_After1PN12dataOpt08_t26elem_tEj
+	subl	$1, %ebx
+	jne	L402
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2891:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type3_After2R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type3_After2R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type3_After2R12dataOpt08_t2:
+LFB2892:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC8, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L406:
+	movl	$10000, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type3_After2PN12dataOpt08_t26elem_tEj
+	subl	$1, %ebx
+	jne	L406
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2892:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type3_After3R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type3_After3R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type3_After3R12dataOpt08_t2:
+LFB2893:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC84, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L410:
+	movl	$10000, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type3_After3PN12dataOpt08_t26elem_tEj
+	subl	$1, %ebx
+	jne	L410
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2893:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type3_After4R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type3_After4R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type3_After4R12dataOpt08_t2:
+LFB2894:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC95, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L414:
+	movl	$10000, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type3_After4PN12dataOpt08_t26elem_tEj
+	subl	$1, %ebx
+	jne	L414
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2894:
+	.p2align 4,,15
+	.globl	__Z25runTestOpt09_Type3_After5R12dataOpt08_t2
+	.def	__Z25runTestOpt09_Type3_After5R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+__Z25runTestOpt09_Type3_After5R12dataOpt08_t2:
+LFB2895:
+	.cfi_startproc
+	pushl	%esi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 6, -8
+	pushl	%ebx
+	.cfi_def_cfa_offset 12
+	.cfi_offset 3, -12
+	movl	$50000, %ebx
+	subl	$36, %esp
+	.cfi_def_cfa_offset 48
+	movl	$LC96, (%esp)
+	movl	48(%esp), %esi
+	call	_printf
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	%eax, 16(%esp)
+	movl	%edx, 20(%esp)
+	.p2align 4,,7
+L418:
+	movl	$10000, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z22testOpt09_Type3_After5PN12dataOpt08_t26elem_tEj
+	subl	$1, %ebx
+	jne	L418
+	call	__ZNSt6chrono3_V212system_clock3nowEv
+	movl	$LC1, (%esp)
+	subl	16(%esp), %eax
+	sbbl	20(%esp), %edx
+	movl	%eax, 24(%esp)
+	movl	%edx, 28(%esp)
+	fildq	24(%esp)
+	fdivs	LC0
+	fstpl	4(%esp)
+	call	_printf
+	movl	$10, 48(%esp)
+	addl	$36, %esp
+	.cfi_def_cfa_offset 12
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 4
+	jmp	_putchar
+	.cfi_endproc
+LFE2895:
+	.section .rdata,"dr"
+	.align 4
+LC99:
+	.ascii "[Test for Lambda with closure]\0"
+LC100:
 	.ascii "Call lambda in main().\0"
 	.text
 	.p2align 4,,15
 	.globl	__Z14testForClosurev
 	.def	__Z14testForClosurev;	.scl	2;	.type	32;	.endef
 __Z14testForClosurev:
-LFB2833:
+LFB2896:
 	.cfi_startproc
 	subl	$44, %esp
 	.cfi_def_cfa_offset 48
 	movl	$LC3, (%esp)
 	call	_puts
-	movl	$LC83, (%esp)
+	movl	$LC99, (%esp)
 	call	_puts
 	leal	28(%esp), %eax
 	movl	%eax, (%esp)
 	movl	$0, 28(%esp)
 	call	__Z9setLambdaRi
-	movl	$LC84, (%esp)
+	movl	$LC100, (%esp)
 	call	_puts
 	call	__Z12callLambda13v
 	call	__Z12callLambda13v
@@ -6619,7 +11348,7 @@ LFB2833:
 	.p2align 4,,2
 	ret
 	.cfi_endproc
-LFE2833:
+LFE2896:
 	.section	.text$_ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv,"x"
 	.linkonce discard
 	.align 2
@@ -6627,7 +11356,7 @@ LFE2833:
 	.globl	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	.def	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv;	.scl	2;	.type	32;	.endef
 __ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv:
-LFB2912:
+LFB2976:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -6646,10 +11375,10 @@ LFB2912:
 	movl	48(%esp), %edx
 	movl	2496(%edx), %eax
 	cmpl	$623, %eax
-	ja	L219
+	ja	L423
 	leal	1(%eax), %ecx
 	movl	(%edx,%eax,4), %eax
-L220:
+L424:
 	movl	%ecx, 2496(%edx)
 	movl	%eax, %edx
 	addl	$28, %esp
@@ -6682,14 +11411,14 @@ L220:
 	.cfi_def_cfa_offset 4
 	ret
 	.p2align 4,,7
-L219:
+L423:
 	.cfi_restore_state
 	movl	%edx, %eax
 	andl	$15, %eax
 	shrl	$2, %eax
 	negl	%eax
 	andl	$3, %eax
-	je	L236
+	je	L440
 	movl	4(%edx), %esi
 	movl	(%edx), %ecx
 	movl	%esi, %ebx
@@ -6705,7 +11434,7 @@ L219:
 	xorl	%ebx, %ecx
 	cmpl	$1, %eax
 	movl	%ecx, (%edx)
-	jbe	L237
+	jbe	L441
 	movl	8(%edx), %edi
 	andl	$-2147483648, %esi
 	movl	%edi, %ebx
@@ -6720,7 +11449,7 @@ L219:
 	xorl	%ebx, %ecx
 	cmpl	$2, %eax
 	movl	%ecx, 4(%edx)
-	jbe	L238
+	jbe	L442
 	movl	12(%edx), %ebx
 	andl	$-2147483648, %edi
 	movl	$3, %ebp
@@ -6735,22 +11464,22 @@ L219:
 	shrl	%ebx
 	xorl	%ebx, %ecx
 	movl	%ecx, 8(%edx)
-L221:
+L425:
 	movl	$227, 4(%esp)
 	xorl	%ecx, %ecx
-	movdqa	LC85, %xmm2
+	movdqa	LC101, %xmm2
 	subl	%eax, 4(%esp)
-	movdqa	LC86, %xmm3
-	movdqa	LC87, %xmm4
+	movdqa	LC102, %xmm3
+	movdqa	LC103, %xmm4
 	sall	$2, %eax
-	movdqa	LC88, %xmm5
+	movdqa	LC104, %xmm5
 	pxor	%xmm6, %xmm6
 	leal	(%edx,%eax), %ebx
 	leal	4(%edx,%eax), %edi
 	leal	1588(%edx,%eax), %esi
 	xorl	%eax, %eax
 	.p2align 4,,7
-L227:
+L431:
 	movdqu	(%edi,%eax), %xmm1
 	movdqa	(%ebx,%eax), %xmm0
 	pand	%xmm2, %xmm1
@@ -6768,10 +11497,10 @@ L227:
 	movdqa	%xmm0, (%ebx,%eax)
 	addl	$16, %eax
 	cmpl	$55, %ecx
-	jbe	L227
+	jbe	L431
 	cmpl	$224, 4(%esp)
 	leal	224(%ebp), %eax
-	je	L225
+	je	L429
 	leal	225(%ebp), %ebx
 	leal	(%edx,%eax,4), %edi
 	movl	(%edx,%ebx,4), %eax
@@ -6789,7 +11518,7 @@ L227:
 	xorl	%esi, %ecx
 	cmpl	$225, (%esp)
 	movl	%ecx, (%edi)
-	je	L225
+	je	L429
 	leal	226(%ebp), %edi
 	andl	$-2147483648, %eax
 	movl	(%edx,%edi,4), %esi
@@ -6805,7 +11534,7 @@ L227:
 	xorl	%ecx, %eax
 	cmpl	$226, (%esp)
 	movl	%eax, (%edx,%ebx,4)
-	je	L225
+	je	L429
 	movl	908(%edx,%ebp,4), %ecx
 	andl	$-2147483648, %esi
 	andl	$2147483647, %ecx
@@ -6818,13 +11547,13 @@ L227:
 	shrl	%ecx
 	xorl	%ecx, %eax
 	movl	%eax, (%edx,%edi,4)
-L225:
+L429:
 	leal	908(%edx), %eax
 	andl	$15, %eax
 	shrl	$2, %eax
 	negl	%eax
 	andl	$3, %eax
-	je	L239
+	je	L443
 	movl	912(%edx), %esi
 	movl	908(%edx), %ecx
 	movl	%esi, %ebx
@@ -6840,7 +11569,7 @@ L225:
 	xorl	%ebx, %ecx
 	cmpl	$1, %eax
 	movl	%ecx, 908(%edx)
-	jbe	L240
+	jbe	L444
 	movl	916(%edx), %edi
 	andl	$-2147483648, %esi
 	movl	%edi, %ebx
@@ -6855,7 +11584,7 @@ L225:
 	xorl	%ebx, %ecx
 	cmpl	$2, %eax
 	movl	%ecx, 912(%edx)
-	jbe	L241
+	jbe	L445
 	movl	920(%edx), %ebx
 	andl	$-2147483648, %edi
 	movl	$393, 4(%esp)
@@ -6870,7 +11599,7 @@ L225:
 	shrl	%ebx
 	xorl	%ebx, %ecx
 	movl	%ecx, 916(%edx)
-L228:
+L432:
 	movl	$396, (%esp)
 	xorl	%ecx, %ecx
 	pxor	%xmm6, %xmm6
@@ -6885,7 +11614,7 @@ L228:
 	leal	-908(%edx,%eax), %edi
 	xorl	%eax, %eax
 	.p2align 4,,7
-L234:
+L438:
 	movdqu	0(%ebp,%eax), %xmm1
 	movdqa	(%ebx,%eax), %xmm0
 	pand	%xmm2, %xmm1
@@ -6903,7 +11632,7 @@ L234:
 	movdqa	%xmm0, (%ebx,%eax)
 	addl	$16, %eax
 	cmpl	%ecx, %esi
-	ja	L234
+	ja	L438
 	movl	12(%esp), %edi
 	movl	4(%esp), %eax
 	movl	8(%esp), %ecx
@@ -6912,7 +11641,7 @@ L234:
 	addl	%edi, %ecx
 	cmpl	%esi, %edi
 	movl	%eax, 4(%esp)
-	je	L232
+	je	L436
 	leal	1(%ecx), %esi
 	leal	(%edx,%ecx,4), %ebp
 	movl	(%edx,%esi,4), %eax
@@ -6930,7 +11659,7 @@ L234:
 	xorl	%edi, %ebx
 	cmpl	$1, 4(%esp)
 	movl	%ebx, 0(%ebp)
-	je	L232
+	je	L436
 	leal	2(%ecx), %ebp
 	andl	$-2147483648, %eax
 	movl	(%edx,%ebp,4), %edi
@@ -6946,7 +11675,7 @@ L234:
 	xorl	%ebx, %eax
 	cmpl	$2, 4(%esp)
 	movl	%eax, (%edx,%esi,4)
-	je	L232
+	je	L436
 	movl	12(%edx,%ecx,4), %ebx
 	andl	$-2147483648, %edi
 	andl	$2147483647, %ebx
@@ -6959,7 +11688,7 @@ L234:
 	shrl	%ebx
 	xorl	%ebx, %eax
 	movl	%eax, (%edx,%ebp,4)
-L232:
+L436:
 	movl	(%edx), %eax
 	movl	2492(%edx), %ecx
 	movl	%eax, %ebx
@@ -6975,41 +11704,41 @@ L232:
 	xorl	%ebx, %ecx
 	movl	%ecx, 2492(%edx)
 	movl	$1, %ecx
-	jmp	L220
+	jmp	L424
 	.p2align 4,,7
-L238:
+L442:
 	movl	$225, (%esp)
 	movl	$2, %ebp
-	jmp	L221
+	jmp	L425
 	.p2align 4,,7
-L237:
+L441:
 	movl	$226, (%esp)
 	movl	$1, %ebp
-	jmp	L221
+	jmp	L425
 	.p2align 4,,7
-L236:
+L440:
 	movl	$227, (%esp)
 	xorl	%ebp, %ebp
-	jmp	L221
+	jmp	L425
 	.p2align 4,,7
-L239:
+L443:
 	movl	$396, 4(%esp)
 	movl	$227, 8(%esp)
-	jmp	L228
+	jmp	L432
 	.p2align 4,,7
-L241:
+L445:
 	movl	$394, 4(%esp)
 	movl	$229, 8(%esp)
-	jmp	L228
+	jmp	L432
 	.p2align 4,,7
-L240:
+L444:
 	movl	$395, 4(%esp)
 	movl	$228, 8(%esp)
-	jmp	L228
+	jmp	L432
 	.cfi_endproc
-LFE2912:
+LFE2976:
 	.section .rdata,"dr"
-LC89:
+LC105:
 	.ascii "[Optimize Test 06]\0"
 	.text
 	.p2align 4,,15
@@ -7040,14 +11769,14 @@ LFB2799:
 	leal	2560(%esp), %edi
 	call	_puts
 	leal	48(%esp), %esi
-	movl	$LC89, (%esp)
+	movl	$LC105, (%esp)
 	call	_puts
 	movl	%edi, (%esp)
 	call	__Z9initOpt06R11dataOpt06_t
 	movl	$1, %ecx
 	movl	$5489, 48(%esp)
 	.p2align 4,,7
-L259:
+L463:
 	movl	%ebx, %eax
 	movl	%ecx, %edx
 	shrl	$30, %eax
@@ -7064,7 +11793,7 @@ L259:
 	movl	%ebx, (%esi,%ecx,4)
 	addl	$1, %ecx
 	cmpl	$624, %ecx
-	jne	L259
+	jne	L463
 	movl	%esi, (%esp)
 	movl	$624, 2544(%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
@@ -7084,9 +11813,9 @@ L259:
 	fldz
 	movq	%xmm1, 40(%esp)
 	fadd	%st, %st(1)
-	flds	LC90
+	flds	LC106
 	fmul	%st, %st(2)
-	flds	LC91
+	flds	LC107
 	fmul	%st, %st(3)
 	fxch	%st(3)
 	fadd	%st(2), %st
@@ -7128,7 +11857,7 @@ LFE2799:
 	.globl	_main
 	.def	_main;	.scl	2;	.type	32;	.endef
 _main:
-LFB2834:
+LFB2897:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -7150,6 +11879,10 @@ LFB2834:
 	.p2align 4,,5
 	call	__Z12runTestOpt07v
 	.p2align 4,,5
+	call	__Z12runTestOpt08v
+	.p2align 4,,5
+	call	__Z12runTestOpt09v
+	.p2align 4,,5
 	call	__Z14testForClosurev
 	xorl	%eax, %eax
 	leave
@@ -7158,7 +11891,7 @@ LFB2834:
 	.p2align 4,,2
 	ret
 	.cfi_endproc
-LFE2834:
+LFE2897:
 	.text
 	.p2align 4,,15
 	.globl	__Z18runTestOpt03_Type1v
@@ -7183,7 +11916,7 @@ LFB2779:
 	movl	$5489, 16(%esp)
 	leal	16(%esp), %ebx
 	.p2align 4,,7
-L265:
+L469:
 	movl	%edx, %eax
 	shrl	$30, %eax
 	xorl	%edx, %eax
@@ -7201,24 +11934,24 @@ L265:
 	movl	%edx, (%ebx,%ecx,4)
 	addl	$1, %ecx
 	cmpl	$624, %ecx
-	jne	L265
+	jne	L469
 	movl	$624, 2512(%esp)
 	.p2align 4,,7
-L267:
+L471:
 	movl	%ebx, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-7, %eax
-	ja	L267
+	ja	L471
 	movl	$671088641, %esi
 	mull	%esi
 	movl	%edx, %esi
 	shrl	$26, %esi
 	.p2align 4,,7
-L269:
+L473:
 	movl	%ebx, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-7, %eax
-	ja	L269
+	ja	L473
 	movl	$671088641, %ebx
 	mull	%ebx
 	movl	$100000000, 4(%esp)
@@ -7246,10 +11979,6 @@ L269:
 	ret
 	.cfi_endproc
 LFE2779:
-	.section .rdata,"dr"
-LC92:
-	.ascii "Type2: *repeated * %d times.\12\0"
-	.text
 	.p2align 4,,15
 	.globl	__Z18runTestOpt03_Type2v
 	.def	__Z18runTestOpt03_Type2v;	.scl	2;	.type	32;	.endef
@@ -7276,7 +12005,7 @@ LFB2783:
 	movl	$5489, 48(%esp)
 	leal	48(%esp), %ebp
 	.p2align 4,,7
-L273:
+L477:
 	movl	%edx, %eax
 	shrl	$30, %eax
 	xorl	%edx, %eax
@@ -7294,78 +12023,78 @@ L273:
 	movl	%edx, 0(%ebp,%ebx,4)
 	addl	$1, %ebx
 	cmpl	$624, %ebx
-	jne	L273
+	jne	L477
 	movl	$624, 2544(%esp)
 	.p2align 4,,7
-L275:
+L479:
 	movl	%ebp, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-7, %eax
-	ja	L275
+	ja	L479
 	movl	$671088641, %edx
 	mull	%edx
 	movl	%edx, 32(%esp)
 	shrl	$26, 32(%esp)
 	.p2align 4,,7
-L277:
+L481:
 	movl	%ebp, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-7, %eax
-	ja	L277
+	ja	L481
 	movl	$671088641, %edx
 	mull	%edx
 	movl	%edx, 36(%esp)
 	shrl	$26, 36(%esp)
 	.p2align 4,,7
-L279:
+L483:
 	movl	%ebp, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-7, %eax
-	ja	L279
+	ja	L483
 	movl	$671088641, %ebx
 	mull	%ebx
 	movl	%edx, %ebx
 	shrl	$26, %ebx
 	.p2align 4,,7
-L281:
+L485:
 	movl	%ebp, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-7, %eax
-	ja	L281
+	ja	L485
 	movl	$671088641, %esi
 	mull	%esi
 	movl	%edx, %esi
 	shrl	$26, %esi
 	.p2align 4,,7
-L283:
+L487:
 	movl	%ebp, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-7, %eax
-	ja	L283
+	ja	L487
 	movl	$671088641, %edx
 	mull	%edx
 	movl	%edx, %edi
 	shrl	$26, %edi
 	.p2align 4,,7
-L285:
+L489:
 	movl	%ebp, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-7, %eax
-	ja	L285
+	ja	L489
 	movl	$671088641, %edx
 	mull	%edx
 	movl	%edx, 40(%esp)
 	shrl	$26, 40(%esp)
 	.p2align 4,,7
-L287:
+L491:
 	movl	%ebp, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-7, %eax
-	ja	L287
+	ja	L491
 	movl	$671088641, %edx
 	mull	%edx
 	movl	$100000000, 4(%esp)
-	movl	$LC92, (%esp)
+	movl	$LC98, (%esp)
 	shrl	$26, %edx
 	movl	%edx, 44(%esp)
 	call	_printf
@@ -7409,6 +12138,1092 @@ L287:
 	ret
 	.cfi_endproc
 LFE2783:
+	.p2align 4,,15
+	.globl	__Z18runTestOpt08_Type2v
+	.def	__Z18runTestOpt08_Type2v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt08_Type2v:
+LFB2839:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movl	$440509467, %esi
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	subl	$2540, %esp
+	.cfi_def_cfa_offset 2560
+	movl	$100000000, 4(%esp)
+	leal	16(%esp), %ebx
+	movl	$LC98, (%esp)
+	call	_printf
+	movl	$5489, %edx
+	movl	$1, %ecx
+	movl	$5489, 16(%esp)
+	.p2align 4,,7
+L495:
+	movl	%edx, %eax
+	shrl	$30, %eax
+	xorl	%edx, %eax
+	movl	%ecx, %edx
+	shrl	$4, %edx
+	imull	$1812433253, %eax, %edi
+	movl	%edx, %eax
+	mull	%esi
+	movl	%ecx, %eax
+	shrl	$2, %edx
+	imull	$624, %edx, %edx
+	subl	%edx, %eax
+	movl	%eax, %edx
+	addl	%edi, %edx
+	movl	%edx, (%ebx,%ecx,4)
+	addl	$1, %ecx
+	cmpl	$624, %ecx
+	jne	L495
+	movl	$624, 2512(%esp)
+	.p2align 4,,7
+L497:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-197, %eax
+	ja	L497
+	movl	$-1778384781, %esi
+	mull	%esi
+	movl	%edx, %esi
+	shrl	$23, %esi
+	.p2align 4,,7
+L499:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-197, %eax
+	ja	L499
+	movl	$-1778384781, %edi
+	mull	%edi
+	movl	%edx, %edi
+	shrl	$23, %edi
+	.p2align 4,,7
+L501:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-197, %eax
+	ja	L501
+	movl	$-1778384781, %ebp
+	mull	%ebp
+	movl	%edx, %ebp
+	shrl	$23, %ebp
+	.p2align 4,,7
+L503:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-197, %eax
+	ja	L503
+	movl	$-1778384781, %ebx
+	mull	%ebx
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	movl	%edx, %ebx
+	shrl	$23, %ebx
+	movl	%ebx, 12(%esp)
+	call	__Z25runTestOpt08_Type2_Beforeiiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type2_After1iiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type2_After2iiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type2_After3iiii
+	addl	$2540, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2839:
+	.p2align 4,,15
+	.globl	__Z18runTestOpt08_Type3v
+	.def	__Z18runTestOpt08_Type3v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt08_Type3v:
+LFB2844:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movl	$440509467, %esi
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	subl	$2540, %esp
+	.cfi_def_cfa_offset 2560
+	movl	$100000000, 4(%esp)
+	leal	16(%esp), %ebx
+	movl	$LC17, (%esp)
+	call	_printf
+	movl	$5489, %edx
+	movl	$1, %ecx
+	movl	$5489, 16(%esp)
+	.p2align 4,,7
+L507:
+	movl	%edx, %eax
+	shrl	$30, %eax
+	xorl	%edx, %eax
+	movl	%ecx, %edx
+	shrl	$4, %edx
+	imull	$1812433253, %eax, %edi
+	movl	%edx, %eax
+	mull	%esi
+	movl	%ecx, %eax
+	shrl	$2, %edx
+	imull	$624, %edx, %edx
+	subl	%edx, %eax
+	movl	%eax, %edx
+	addl	%edi, %edx
+	movl	%edx, (%ebx,%ecx,4)
+	addl	$1, %ecx
+	cmpl	$624, %ecx
+	jne	L507
+	movl	$624, 2512(%esp)
+	.p2align 4,,7
+L509:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-97, %eax
+	ja	L509
+	shrl	$2, %eax
+	movl	$838860819, %edx
+	mull	%edx
+	movl	%edx, %esi
+	shrl	$20, %esi
+	.p2align 4,,7
+L511:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-97, %eax
+	ja	L511
+	shrl	$2, %eax
+	movl	$838860819, %edx
+	mull	%edx
+	movl	%edx, %edi
+	shrl	$20, %edi
+	.p2align 4,,7
+L513:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-97, %eax
+	ja	L513
+	shrl	$2, %eax
+	movl	$838860819, %edx
+	mull	%edx
+	movl	%edx, %ebp
+	shrl	$20, %ebp
+	.p2align 4,,7
+L515:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-97, %eax
+	ja	L515
+	shrl	$2, %eax
+	movl	$838860819, %edx
+	mull	%edx
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	movl	%edx, %ebx
+	shrl	$20, %ebx
+	movl	%ebx, 12(%esp)
+	call	__Z25runTestOpt08_Type3_Beforeiiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z24runTestOpt08_Type3_Afteriiii
+	addl	$2540, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2844:
+	.section .rdata,"dr"
+LC108:
+	.ascii "Type8: *repeated * %d times.\12\0"
+	.text
+	.p2align 4,,15
+	.globl	__Z18runTestOpt08_Type8v
+	.def	__Z18runTestOpt08_Type8v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt08_Type8v:
+LFB2863:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movl	$440509467, %esi
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	subl	$2540, %esp
+	.cfi_def_cfa_offset 2560
+	movl	$100000000, 4(%esp)
+	leal	16(%esp), %ebx
+	movl	$LC108, (%esp)
+	call	_printf
+	movl	$5489, %edx
+	movl	$1, %ecx
+	movl	$5489, 16(%esp)
+	.p2align 4,,7
+L519:
+	movl	%edx, %eax
+	shrl	$30, %eax
+	xorl	%edx, %eax
+	movl	%ecx, %edx
+	shrl	$4, %edx
+	imull	$1812433253, %eax, %edi
+	movl	%edx, %eax
+	mull	%esi
+	movl	%ecx, %eax
+	shrl	$2, %edx
+	imull	$624, %edx, %edx
+	subl	%edx, %eax
+	movl	%eax, %edx
+	addl	%edi, %edx
+	movl	%edx, (%ebx,%ecx,4)
+	addl	$1, %ecx
+	cmpl	$624, %ecx
+	jne	L519
+	movl	$624, 2512(%esp)
+	.p2align 4,,7
+L521:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-101, %eax
+	ja	L521
+	movl	$-922746801, %edx
+	mull	%edx
+	shrl	$24, %edx
+	leal	-100(%edx), %esi
+	.p2align 4,,7
+L523:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-101, %eax
+	ja	L523
+	movl	$-922746801, %edx
+	mull	%edx
+	shrl	$24, %edx
+	leal	-100(%edx), %edi
+	.p2align 4,,7
+L525:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-101, %eax
+	ja	L525
+	movl	$-922746801, %edx
+	mull	%edx
+	shrl	$24, %edx
+	leal	-100(%edx), %ebp
+	.p2align 4,,7
+L527:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-101, %eax
+	ja	L527
+	movl	$-922746801, %edx
+	mull	%edx
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	shrl	$24, %edx
+	leal	-100(%edx), %ebx
+	movl	%ebx, 12(%esp)
+	call	__Z25runTestOpt08_Type8_Beforeiiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type8_After1iiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type8_After2iiii
+	addl	$2540, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2863:
+	.section .rdata,"dr"
+LC109:
+	.ascii "Type9: *repeated * %d times.\12\0"
+	.text
+	.p2align 4,,15
+	.globl	__Z18runTestOpt08_Type9v
+	.def	__Z18runTestOpt08_Type9v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt08_Type9v:
+LFB2867:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movl	$440509467, %esi
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	subl	$2540, %esp
+	.cfi_def_cfa_offset 2560
+	movl	$100000000, 4(%esp)
+	leal	16(%esp), %ebx
+	movl	$LC109, (%esp)
+	call	_printf
+	movl	$5489, %edx
+	movl	$1, %ecx
+	movl	$5489, 16(%esp)
+	.p2align 4,,7
+L531:
+	movl	%edx, %eax
+	shrl	$30, %eax
+	xorl	%edx, %eax
+	movl	%ecx, %edx
+	shrl	$4, %edx
+	imull	$1812433253, %eax, %edi
+	movl	%edx, %eax
+	mull	%esi
+	movl	%ecx, %eax
+	shrl	$2, %edx
+	imull	$624, %edx, %edx
+	subl	%edx, %eax
+	movl	%eax, %edx
+	addl	%edi, %edx
+	movl	%edx, (%ebx,%ecx,4)
+	addl	$1, %ecx
+	cmpl	$624, %ecx
+	jne	L531
+	movl	$624, 2512(%esp)
+	.p2align 4,,7
+L533:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-101, %eax
+	ja	L533
+	movl	$-922746801, %edx
+	mull	%edx
+	shrl	$24, %edx
+	leal	-100(%edx), %esi
+	.p2align 4,,7
+L535:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-101, %eax
+	ja	L535
+	movl	$-922746801, %edx
+	mull	%edx
+	shrl	$24, %edx
+	leal	-100(%edx), %edi
+	.p2align 4,,7
+L537:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-101, %eax
+	ja	L537
+	movl	$-922746801, %edx
+	mull	%edx
+	shrl	$24, %edx
+	leal	-100(%edx), %ebp
+	.p2align 4,,7
+L539:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-101, %eax
+	ja	L539
+	movl	$-922746801, %edx
+	mull	%edx
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	shrl	$24, %edx
+	leal	-100(%edx), %ebx
+	movl	%ebx, 12(%esp)
+	call	__Z25runTestOpt08_Type9_Beforeiiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type9_After1iiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type9_After2iiii
+	addl	$2540, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2867:
+	.section .rdata,"dr"
+LC110:
+	.ascii "Type5: *repeated * %d times.\12\0"
+	.text
+	.p2align 4,,15
+	.globl	__Z18runTestOpt08_Type5v
+	.def	__Z18runTestOpt08_Type5v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt08_Type5v:
+LFB2851:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movl	$440509467, %esi
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	subl	$2540, %esp
+	.cfi_def_cfa_offset 2560
+	movl	$10000000, 4(%esp)
+	leal	16(%esp), %ebx
+	movl	$LC110, (%esp)
+	call	_printf
+	movl	$5489, %edx
+	movl	$1, %ecx
+	movl	$5489, 16(%esp)
+	.p2align 4,,7
+L543:
+	movl	%edx, %eax
+	shrl	$30, %eax
+	xorl	%edx, %eax
+	movl	%ecx, %edx
+	shrl	$4, %edx
+	imull	$1812433253, %eax, %edi
+	movl	%edx, %eax
+	mull	%esi
+	movl	%ecx, %eax
+	shrl	$2, %edx
+	imull	$624, %edx, %edx
+	subl	%edx, %eax
+	movl	%eax, %edx
+	addl	%edi, %edx
+	movl	%edx, (%ebx,%ecx,4)
+	addl	$1, %ecx
+	cmpl	$624, %ecx
+	jne	L543
+	movl	$624, 2512(%esp)
+	.p2align 4,,7
+L545:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L545
+	leal	-1(%eax), %esi
+	.p2align 4,,7
+L547:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L547
+	leal	-1(%eax), %edi
+	.p2align 4,,7
+L551:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L551
+	leal	-1(%eax), %ebp
+	.p2align 4,,7
+L552:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L552
+	leal	-1(%eax), %ebx
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type5_Beforeiiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type5_After1iiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type5_After2iiii
+	addl	$2540, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2851:
+	.section .rdata,"dr"
+LC111:
+	.ascii "Type6: *repeated * %d times.\12\0"
+	.text
+	.p2align 4,,15
+	.globl	__Z18runTestOpt08_Type6v
+	.def	__Z18runTestOpt08_Type6v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt08_Type6v:
+LFB2855:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movl	$440509467, %esi
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	subl	$2540, %esp
+	.cfi_def_cfa_offset 2560
+	movl	$10000000, 4(%esp)
+	leal	16(%esp), %ebx
+	movl	$LC111, (%esp)
+	call	_printf
+	movl	$5489, %edx
+	movl	$1, %ecx
+	movl	$5489, 16(%esp)
+	.p2align 4,,7
+L558:
+	movl	%edx, %eax
+	shrl	$30, %eax
+	xorl	%edx, %eax
+	movl	%ecx, %edx
+	shrl	$4, %edx
+	imull	$1812433253, %eax, %edi
+	movl	%edx, %eax
+	mull	%esi
+	movl	%ecx, %eax
+	shrl	$2, %edx
+	imull	$624, %edx, %edx
+	subl	%edx, %eax
+	movl	%eax, %edx
+	addl	%edi, %edx
+	movl	%edx, (%ebx,%ecx,4)
+	addl	$1, %ecx
+	cmpl	$624, %ecx
+	jne	L558
+	movl	$624, 2512(%esp)
+	.p2align 4,,7
+L560:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L560
+	leal	-1(%eax), %esi
+	.p2align 4,,7
+L562:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L562
+	leal	-1(%eax), %edi
+	.p2align 4,,7
+L566:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L566
+	leal	-1(%eax), %ebp
+	.p2align 4,,7
+L567:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L567
+	leal	-1(%eax), %ebx
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type6_Beforeiiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type6_After1iiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type6_After2iiii
+	addl	$2540, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2855:
+	.section .rdata,"dr"
+LC112:
+	.ascii "Type7: *repeated * %d times.\12\0"
+	.text
+	.p2align 4,,15
+	.globl	__Z18runTestOpt08_Type7v
+	.def	__Z18runTestOpt08_Type7v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt08_Type7v:
+LFB2859:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movl	$440509467, %esi
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	subl	$2540, %esp
+	.cfi_def_cfa_offset 2560
+	movl	$10000000, 4(%esp)
+	leal	16(%esp), %ebx
+	movl	$LC112, (%esp)
+	call	_printf
+	movl	$5489, %edx
+	movl	$1, %ecx
+	movl	$5489, 16(%esp)
+	.p2align 4,,7
+L573:
+	movl	%edx, %eax
+	shrl	$30, %eax
+	xorl	%edx, %eax
+	movl	%ecx, %edx
+	shrl	$4, %edx
+	imull	$1812433253, %eax, %edi
+	movl	%edx, %eax
+	mull	%esi
+	movl	%ecx, %eax
+	shrl	$2, %edx
+	imull	$624, %edx, %edx
+	subl	%edx, %eax
+	movl	%eax, %edx
+	addl	%edi, %edx
+	movl	%edx, (%ebx,%ecx,4)
+	addl	$1, %ecx
+	cmpl	$624, %ecx
+	jne	L573
+	movl	$624, 2512(%esp)
+	.p2align 4,,7
+L575:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L575
+	leal	-1(%eax), %esi
+	.p2align 4,,7
+L577:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L577
+	leal	-1(%eax), %edi
+	.p2align 4,,7
+L581:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L581
+	leal	-1(%eax), %ebp
+	.p2align 4,,7
+L582:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-2147483648, %eax
+	ja	L582
+	leal	-1(%eax), %ebx
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type7_Beforeiiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type7_After1iiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type7_After2iiii
+	addl	$2540, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2859:
+	.section .rdata,"dr"
+LC113:
+	.ascii "Type4: *repeated * %d times.\12\0"
+	.text
+	.p2align 4,,15
+	.globl	__Z18runTestOpt08_Type4v
+	.def	__Z18runTestOpt08_Type4v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt08_Type4v:
+LFB2847:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movl	$440509467, %esi
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	subl	$2540, %esp
+	.cfi_def_cfa_offset 2560
+	movl	$100000000, 4(%esp)
+	leal	16(%esp), %ebx
+	movl	$LC113, (%esp)
+	call	_printf
+	movl	$5489, %edx
+	movl	$1, %ecx
+	movl	$5489, 16(%esp)
+	.p2align 4,,7
+L588:
+	movl	%edx, %eax
+	shrl	$30, %eax
+	xorl	%edx, %eax
+	movl	%ecx, %edx
+	shrl	$4, %edx
+	imull	$1812433253, %eax, %edi
+	movl	%edx, %eax
+	mull	%esi
+	movl	%ecx, %eax
+	shrl	$2, %edx
+	imull	$624, %edx, %edx
+	subl	%edx, %eax
+	movl	%eax, %edx
+	addl	%edi, %edx
+	movl	%edx, (%ebx,%ecx,4)
+	addl	$1, %ecx
+	cmpl	$624, %ecx
+	jne	L588
+	movl	$624, 2512(%esp)
+	.p2align 4,,7
+L590:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-1022, %eax
+	ja	L590
+	movl	$-2145385985, %esi
+	mull	%esi
+	movl	%edx, %esi
+	shrl	$21, %esi
+	.p2align 4,,7
+L592:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-1022, %eax
+	ja	L592
+	movl	$-2145385985, %edi
+	mull	%edi
+	movl	%edx, %edi
+	shrl	$21, %edi
+	.p2align 4,,7
+L594:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-1022, %eax
+	ja	L594
+	movl	$-2145385985, %ebp
+	mull	%ebp
+	movl	%edx, %ebp
+	shrl	$21, %ebp
+	.p2align 4,,7
+L596:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-1022, %eax
+	ja	L596
+	movl	$-2145385985, %ebx
+	mull	%ebx
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	movl	%edx, %ebx
+	shrl	$21, %ebx
+	movl	%ebx, 12(%esp)
+	call	__Z25runTestOpt08_Type4_Beforeiiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type4_After1iiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type4_After2iiii
+	addl	$2540, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2847:
+	.p2align 4,,15
+	.globl	__Z18runTestOpt08_Type1v
+	.def	__Z18runTestOpt08_Type1v;	.scl	2;	.type	32;	.endef
+__Z18runTestOpt08_Type1v:
+LFB2834:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movl	$440509467, %esi
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	subl	$2540, %esp
+	.cfi_def_cfa_offset 2560
+	movl	$100000000, 4(%esp)
+	leal	16(%esp), %ebx
+	movl	$LC5, (%esp)
+	call	_printf
+	movl	$5489, %edx
+	movl	$1, %ecx
+	movl	$5489, 16(%esp)
+	.p2align 4,,7
+L600:
+	movl	%edx, %eax
+	shrl	$30, %eax
+	xorl	%edx, %eax
+	movl	%ecx, %edx
+	shrl	$4, %edx
+	imull	$1812433253, %eax, %edi
+	movl	%edx, %eax
+	mull	%esi
+	movl	%ecx, %eax
+	shrl	$2, %edx
+	imull	$624, %edx, %edx
+	subl	%edx, %eax
+	movl	%eax, %edx
+	addl	%edi, %edx
+	movl	%edx, (%ebx,%ecx,4)
+	addl	$1, %ecx
+	cmpl	$624, %ecx
+	jne	L600
+	movl	$624, 2512(%esp)
+	.p2align 4,,7
+L602:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-197, %eax
+	ja	L602
+	movl	$-1778384781, %esi
+	mull	%esi
+	movl	%edx, %esi
+	shrl	$23, %esi
+	.p2align 4,,7
+L604:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-197, %eax
+	ja	L604
+	movl	$-1778384781, %edi
+	mull	%edi
+	movl	%edx, %edi
+	shrl	$23, %edi
+	.p2align 4,,7
+L606:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-197, %eax
+	ja	L606
+	movl	$-1778384781, %ebp
+	mull	%ebp
+	movl	%edx, %ebp
+	shrl	$23, %ebp
+	.p2align 4,,7
+L608:
+	movl	%ebx, (%esp)
+	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
+	cmpl	$-197, %eax
+	ja	L608
+	movl	$-1778384781, %ebx
+	mull	%ebx
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	movl	%edx, %ebx
+	shrl	$23, %ebx
+	movl	%ebx, 12(%esp)
+	call	__Z25runTestOpt08_Type1_Beforeiiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type1_After1iiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type1_After2iiii
+	movl	%ebx, 12(%esp)
+	movl	%ebp, 8(%esp)
+	movl	%edi, 4(%esp)
+	movl	%esi, (%esp)
+	call	__Z25runTestOpt08_Type1_After3iiii
+	addl	$2540, %esp
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+LFE2834:
 	.section .rdata,"dr"
 	.align 4
 LC0:
@@ -7429,34 +13244,34 @@ LC16:
 LC22:
 	.long	1120403456
 	.align 16
-LC85:
+LC101:
 	.long	2147483647
 	.long	2147483647
 	.long	2147483647
 	.long	2147483647
 	.align 16
-LC86:
+LC102:
 	.long	-2147483648
 	.long	-2147483648
 	.long	-2147483648
 	.long	-2147483648
 	.align 16
-LC87:
+LC103:
 	.long	1
 	.long	1
 	.long	1
 	.long	1
 	.align 16
-LC88:
+LC104:
 	.long	-1727483681
 	.long	-1727483681
 	.long	-1727483681
 	.long	-1727483681
 	.align 4
-LC90:
+LC106:
 	.long	796917760
 	.align 4
-LC91:
+LC107:
 	.long	1092616192
 	.ident	"GCC: (GNU) 4.8.2"
 	.def	__ZNSt6chrono3_V212system_clock3nowEv;	.scl	2;	.type	32;	.endef
@@ -7557,6 +13372,88 @@ LC91:
 	.def	__Z32runTestOpt07_Type2_strncpy_AfterPcPKcjjjS1_jjjS1_jjjS1_jjjS1_jjj;	.scl	2;	.type	32;	.endef
 	.def	__Z30testOpt07_Type2_strncpy_BeforeiPcPKcj;	.scl	2;	.type	32;	.endef
 	.def	__Z29testOpt07_Type2_strncpy_AfteriPcPKcj;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt08_Type1v;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt08_Type2v;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt08_Type3v;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt08_Type4v;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt08_Type5v;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt08_Type6v;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt08_Type7v;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt08_Type8v;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt08_Type9v;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type1_Beforei;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type1_After1i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type1_After2i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type1_After3i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type2_Beforei;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type2_After1i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type2_After2i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type2_After3i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type3_Beforeii;	.scl	2;	.type	32;	.endef
+	.def	__Z21testOpt08_Type3_Afterii;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type4_Beforei;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type4_After1i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type4_After2i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type5_Beforei;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type5_After1i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type5_After2i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type6_Beforei;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type6_After1i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type6_After2i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type7_Beforei;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type7_After1i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type7_After2i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type8_Beforei;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type8_After1i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type8_After2i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type9_Beforei;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type9_After1i;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt08_Type9_After2i;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt09_Type1v;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt09_Type2v;	.scl	2;	.type	32;	.endef
+	.def	__Z18runTestOpt09_Type3v;	.scl	2;	.type	32;	.endef
+	.def	__Z12initOpt08_t1R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type1_BeforeR12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type1_After1R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type1_After2R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type1_After3R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type1_After4R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type1_After5R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type1_After6R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type1_BeforeR12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type1_After1R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type1_After2R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type1_After3R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type1_After4R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type1_After5R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type1_After6R12dataOpt08_t1;	.scl	2;	.type	32;	.endef
+	.def	__Z12initOpt08_t2R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type2_BeforeR12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type2_After1R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type2_After2R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type2_After3R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type2_After4R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type2_After5R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type2_After6R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type2_BeforeR12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type2_After1R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type2_After2R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type2_After3R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type2_After4R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type2_After5R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type2_After6R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type3_BeforeR12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type3_After1R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type3_After2R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type3_After3R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type3_After4R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt09_Type3_After5R12dataOpt08_t2;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type3_BeforePN12dataOpt08_t26elem_tEj;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type3_After1PN12dataOpt08_t26elem_tEj;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type3_After2PN12dataOpt08_t26elem_tEj;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type3_After3PN12dataOpt08_t26elem_tEj;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type3_After4PN12dataOpt08_t26elem_tEj;	.scl	2;	.type	32;	.endef
+	.def	__Z22testOpt09_Type3_After5PN12dataOpt08_t26elem_tEj;	.scl	2;	.type	32;	.endef
 	.def	__Z9setLambdaRi;	.scl	2;	.type	32;	.endef
 	.def	__Z12callLambda13v;	.scl	2;	.type	32;	.endef
 	.def	__Z9initOpt06R11dataOpt06_t;	.scl	2;	.type	32;	.endef
@@ -7565,3 +13462,31 @@ LC91:
 	.def	__Z24runTestOpt03_Type1_Afterii;	.scl	2;	.type	32;	.endef
 	.def	__Z25runTestOpt03_Type2_Beforeiiiiiii;	.scl	2;	.type	32;	.endef
 	.def	__Z24runTestOpt03_Type2_Afteriiiiiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type2_Beforeiiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type2_After1iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type2_After2iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type2_After3iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type3_Beforeiiii;	.scl	2;	.type	32;	.endef
+	.def	__Z24runTestOpt08_Type3_Afteriiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type8_Beforeiiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type8_After1iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type8_After2iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type9_Beforeiiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type9_After1iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type9_After2iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type5_Beforeiiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type5_After1iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type5_After2iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type6_Beforeiiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type6_After1iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type6_After2iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type7_Beforeiiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type7_After1iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type7_After2iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type4_Beforeiiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type4_After1iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type4_After2iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type1_Beforeiiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type1_After1iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type1_After2iiii;	.scl	2;	.type	32;	.endef
+	.def	__Z25runTestOpt08_Type1_After3iiii;	.scl	2;	.type	32;	.endef

@@ -11,9 +11,9 @@ void initOpt01(dataOpt01_t& data)
 	std::mt19937 rnd_engine;
 	std::uniform_int_distribution<int> rnd_dist(0, dataOpt01_t::elem_t::VALUE_RANGE - 1);
 	data.sum = 0;
-	for (auto& elems : data.elems)
+	for (auto& elem : data.elems)
 	{
-		elems.value = rnd_dist(rnd_engine);
+		elem.value = rnd_dist(rnd_engine);
 	}
 }
 
@@ -50,8 +50,8 @@ void testOpt01_Type1_After2(dataOpt01_t& data)
 //※C++11の範囲に基づくforループを使用し、最も簡潔に記述したコード（遅い）
 void testOpt01_Type1_Appendix(dataOpt01_t& data)
 {
-	for (auto elems : data.elems)
-		data.sum += elems.value;
+	for (auto elem : data.elems)
+		data.sum += elem.value;
 }
 
 //----------------------------------------
@@ -62,9 +62,9 @@ void initOpt02(dataOpt02_t& data)
 {
 	std::mt19937 rnd_engine;
 	std::uniform_int_distribution<int> rnd_dist(0, dataOpt02_t::elem_t::VALUE_RANGE - 1);
-	for (auto& elems : data.elems)
+	for (auto& elem : data.elems)
 	{
-		elems.value = rnd_dist(rnd_engine);
+		elem.value = rnd_dist(rnd_engine);
 	}
 }
 
@@ -313,10 +313,10 @@ void initOpt04(dataOpt04_t& data)
 {
 	std::mt19937 rnd_engine;
 	std::uniform_int_distribution<int> rnd_dist(0, dataOpt04_t::elem_t::VALUE_RANGE - 1);
-	for (auto& elems : data.elems)
+	for (auto& elem : data.elems)
 	{
-		elems.value = rnd_dist(rnd_engine);
-		elems.ratio = 0.f;
+		elem.value = rnd_dist(rnd_engine);
+		elem.ratio = 0.f;
 	}
 }
 
@@ -529,10 +529,10 @@ void initOpt06(dataOpt06_t& data)
 {
 	std::mt19937 rnd_engine;
 	std::uniform_real_distribution<float> rnd_dist(0.f, static_cast<float>(dataOpt06_t::elem_t::VALUE_RANGE));
-	for (auto& elems : data.elems)
+	for (auto& elem : data.elems)
 	{
-		elems.value = rnd_dist(rnd_engine);
-		elems.result = 0.f;
+		elem.value = rnd_dist(rnd_engine);
+		elem.result = 0.f;
 	}
 }
 
@@ -558,7 +558,7 @@ void testOpt06_Type1_After(dataOpt06_t& data, const float mul1, const float mul2
 }
 
 //----------------------------------------
-//最適化⑦：SIMD演算を活用する
+//最適化⑦：SIMD演算の活用
 #include <memory.h>//memset用
 
 //【タイプ１】最適化前
@@ -3222,6 +3222,673 @@ const char* testOpt07_Type2_strcpy_After(const int dummy, char* dst, const char*
 const char* testOpt07_Type2_strncpy_After(const int dummy, char* dst, const char* src, const std::size_t max_len)
 {
 	return strncpy_fast(dst, src, max_len);
+}
+
+//----------------------------------------
+//最適化⑧：条件分岐の削減
+
+//【タイプ１】最適化前
+//※if文を使った分かり易い処理
+int testOpt08_Type1_Before(const int value)
+{
+	//前提：value = 0 ～ 499
+	if (value >= 400)
+		return 4;
+	else if (value >= 300)
+		return 3;
+	else if (value >= 200)
+		return 2;
+	else if (value >= 100)
+		return 1;
+	return 0;
+}
+//【タイプ１】最適化後１
+//※分岐を計算式に変更
+int testOpt08_Type1_After1(const int value)
+{
+	//前提：value = 0 ～ 499
+	return value >= 400 ? 4 :
+				value >= 300 ? 3 :
+					value >= 200 ? 2 :
+						value >= 100 ? 1 :
+							0;
+}
+//【タイプ１】最適化後２
+//※分岐を更に最適化した計算式に変更
+int testOpt08_Type1_After2(const int value)
+{
+	//前提：value = 0 ～ 499
+	return value / 100;
+}
+//【タイプ１】最適化後３
+//※分岐を更に最適化した計算式に変更
+int testOpt08_Type1_After3(const int value)
+{
+	//前提：value = 0 ～ 499
+	return (value >= 100) +
+	       (value >= 200) +
+		   (value >= 300) +
+		   (value >= 400);
+}
+
+//【タイプ２】最適化前
+//※if文を使った分かり易い処理
+int testOpt08_Type2_Before(const int value)
+{
+	//前提：value = 0 ～ 299
+	if (value >= 200)
+		return 2;
+	else if (value >= 100)
+		return 1;
+	return 0;
+}
+//【タイプ２】最適化後１
+//※分岐を計算式に変更
+int testOpt08_Type2_After1(const int value)
+{
+	//前提：value = 0 ～ 299
+	return value >= 200 ? 2 :
+				value >= 100 ? 1 :
+					0;
+}
+//【タイプ２】最適化後２
+//※分岐を更に最適化した計算式に変更
+int testOpt08_Type2_After2(const int value)
+{
+	//前提：value = 0 ～ 299
+	return value / 100;
+}
+//【タイプ２】最適化後３
+//※分岐を更に最適化した計算式に変更
+int testOpt08_Type2_After3(const int value)
+{
+	//前提：value = 0 ～ 299
+	return (value >= 100) +
+		(value >= 200);
+}
+
+//【タイプ３】最適化前
+//※論理演算
+bool testOpt08_Type3_Before(const int value1, const int value2)
+{
+	return (value1 >= 100) && (value2 >= 100);
+}
+//【タイプ３】最適化後
+//※ビット演算
+bool testOpt08_Type3_After(const int value1, const int value2)
+{
+	return (value1 >= 100) & (value2 >= 100);
+}
+
+//【タイプ４】最適化前
+//※if文による64バイトアラインメント計算
+int testOpt08_Type4_Before(const int value)
+{
+	if (value % 64 == 0)
+		return value;
+	return value + (64 - (value % 64));
+}
+//【タイプ４】最適化後１
+//※三項演算子によるアラインメント計算
+int testOpt08_Type4_After1(const int value)
+{
+	const int over = value % 64;
+	return (over == 0) ? value : value + (64 - over);
+}
+//【タイプ４】最適化後２
+//※計算式のみによるアラインメント計算
+int testOpt08_Type4_After2(const int value)
+{
+	return (value + 63) & ~63;
+}
+
+//【タイプ５】最適化前
+//※ループとif文によるビット数計測
+int testOpt08_Type5_Before(const int value)
+{
+	int _value = value;
+	int bits = 0;
+	for (int i = 0; i < 32; ++i)
+	{
+		if (_value & 1)
+			++bits;
+		_value >>= 1;
+	}
+	return bits;
+}
+//【タイプ５】最適化後１
+//※計算式のみによるビット数計測
+int testOpt08_Type5_After1(const int value)
+{
+	unsigned int bits = static_cast<unsigned int>(value);
+	bits = ((bits >> 1) & 0x55555555) + (bits & 0x55555555);
+	bits = ((bits >>  2) & 0x33333333) + (bits & 0x33333333);
+	bits = ((bits >>  4) & 0x0f0f0f0f) + (bits & 0x0f0f0f0f);
+	bits = ((bits >>  8) & 0x00ff00ff) + (bits & 0x00ff00ff);
+	bits = ((bits >> 16) & 0x0000ffff) + (bits & 0x0000ffff);
+	return static_cast<int>(bits);
+}
+//【タイプ５】最適化後２
+//※ベタ書きでビット数計測
+int testOpt08_Type5_After2(const int value)
+{
+	unsigned int bits =
+		((value & 0x00000001) != 0) +
+		((value & 0x00000002) != 0) +
+		((value & 0x00000004) != 0) +
+		((value & 0x00000008) != 0) +
+		((value & 0x00000010) != 0) +
+		((value & 0x00000020) != 0) +
+		((value & 0x00000040) != 0) +
+		((value & 0x00000080) != 0) +
+		((value & 0x00000100) != 0) +
+		((value & 0x00000200) != 0) +
+		((value & 0x00000400) != 0) +
+		((value & 0x00000800) != 0) +
+		((value & 0x00001000) != 0) +
+		((value & 0x00002000) != 0) +
+		((value & 0x00004000) != 0) +
+		((value & 0x00008000) != 0) +
+		((value & 0x00010000) != 0) +
+		((value & 0x00020000) != 0) +
+		((value & 0x00040000) != 0) +
+		((value & 0x00080000) != 0) +
+		((value & 0x00100000) != 0) +
+		((value & 0x00200000) != 0) +
+		((value & 0x00400000) != 0) +
+		((value & 0x00800000) != 0) +
+		((value & 0x01000000) != 0) +
+		((value & 0x02000000) != 0) +
+		((value & 0x04000000) != 0) +
+		((value & 0x08000000) != 0) +
+		((value & 0x10000000) != 0) +
+		((value & 0x20000000) != 0) +
+		((value & 0x40000000) != 0) +
+		((value & 0x80000000) != 0);
+	return bits;
+}
+
+//【タイプ６】最適化前
+//※ループとif文によるMSB(Most Significant Bit)数計測
+int testOpt08_Type6_Before(const int value)
+{
+	int _value = value;
+	for (int i = 31; i >= 0; --i)
+	{
+		if (_value & 0x80000000)
+			return i;
+		_value <<= 1;
+	}
+	return -1;
+}
+//【タイプ６】最適化後１
+//※計算式のみによるMSB(Most Significant Bit)計測
+int testOpt08_Type6_After1(const int value)
+{
+	unsigned int bits = static_cast<unsigned int>(value);
+	bits = bits | (bits >> 16);
+	bits = bits | (bits >>  8);
+	bits = bits | (bits >>  4);
+	bits = bits | (bits >>  2);
+	bits = bits | (bits >>  1);
+	return bits == 0 ? -1 : testOpt08_Type5_After1(bits) - 1;
+}
+//【タイプ６】最適化後２
+//※ベタ書きでMSB(Most Significant Bit)計測
+int testOpt08_Type6_After2(const int value)
+{
+	if (value & 0x80000000) return 31;
+	if (value & 0x40000000) return 30;
+	if (value & 0x20000000) return 29;
+	if (value & 0x10000000) return 28;
+	if (value & 0x08000000) return 27;
+	if (value & 0x04000000) return 26;
+	if (value & 0x02000000) return 25;
+	if (value & 0x01000000) return 24;
+	if (value & 0x00800000) return 23;
+	if (value & 0x00400000) return 22;
+	if (value & 0x00200000) return 21;
+	if (value & 0x00100000) return 20;
+	if (value & 0x00080000) return 19;
+	if (value & 0x00040000) return 18;
+	if (value & 0x00020000) return 17;
+	if (value & 0x00010000) return 16;
+	if (value & 0x00008000) return 15;
+	if (value & 0x00004000) return 14;
+	if (value & 0x00002000) return 13;
+	if (value & 0x00001000) return 12;
+	if (value & 0x00000800) return 11;
+	if (value & 0x00000400) return 10;
+	if (value & 0x00000200) return 9;
+	if (value & 0x00000100) return 8;
+	if (value & 0x00000080) return 7;
+	if (value & 0x00000040) return 6;
+	if (value & 0x00000020) return 5;
+	if (value & 0x00000010) return 4;
+	if (value & 0x00000008) return 3;
+	if (value & 0x00000004) return 2;
+	if (value & 0x00000002) return 1;
+	if (value & 0x00000001) return 0;
+	return -1;
+}
+
+//【タイプ７】最適化前
+//※ループとif文によるLSB(Last Significant Bit)数計測
+int testOpt08_Type7_Before(const int value)
+{
+	int _value = value;
+	for (int i = 0; i < 32; ++i)
+	{
+		if (_value & 1)
+			return i;
+		_value >>= 1;
+	}
+	return -1;
+}
+//【タイプ７】最適化後１
+//※計算式のみによるLSB(Last Significant Bit)計測
+int testOpt08_Type7_After1(const int value)
+{
+	unsigned int bits = static_cast<unsigned int>(value);
+	bits = bits | (bits << 16);
+	bits = bits | (bits <<  8);
+	bits = bits | (bits <<  4);
+	bits = bits | (bits <<  2);
+	bits = bits | (bits <<  1);
+	return bits == 0 ? -1 : testOpt08_Type5_After1(~bits);
+}
+//【タイプ７】最適化後２
+//※計算式のみによるLSB(Last Significant Bit)計測
+int testOpt08_Type7_After2(const int value)
+{
+	if (value & 0x00000001) return 0;
+	if (value & 0x00000002) return 1;
+	if (value & 0x00000004) return 2;
+	if (value & 0x00000008) return 3;
+	if (value & 0x00000010) return 4;
+	if (value & 0x00000020) return 5;
+	if (value & 0x00000040) return 6;
+	if (value & 0x00000080) return 7;
+	if (value & 0x00000100) return 8;
+	if (value & 0x00000200) return 9;
+	if (value & 0x00000400) return 10;
+	if (value & 0x00000800) return 11;
+	if (value & 0x00001000) return 12;
+	if (value & 0x00002000) return 13;
+	if (value & 0x00004000) return 14;
+	if (value & 0x00008000) return 15;
+	if (value & 0x00010000) return 16;
+	if (value & 0x00020000) return 17;
+	if (value & 0x00040000) return 18;
+	if (value & 0x00080000) return 19;
+	if (value & 0x00100000) return 20;
+	if (value & 0x00200000) return 21;
+	if (value & 0x00400000) return 22;
+	if (value & 0x00800000) return 23;
+	if (value & 0x01000000) return 24;
+	if (value & 0x02000000) return 25;
+	if (value & 0x04000000) return 26;
+	if (value & 0x08000000) return 27;
+	if (value & 0x10000000) return 28;
+	if (value & 0x20000000) return 29;
+	if (value & 0x40000000) return 30;
+	if (value & 0x80000000) return 31;
+	return -1;
+}
+
+//【タイプ８】最適化前
+//※if文による絶対値計算
+int testOpt08_Type8_Before(const int value)
+{
+	if (value < 0)
+		return -value;
+	return value;
+}
+//【タイプ８】最適化後１
+//※三項演算子による絶対値計算
+int testOpt08_Type8_After1(const int value)
+{
+	return value < 0 ? -value : value;
+}
+//【タイプ８】最適化後２
+//※計算式のみによる絶対値計算
+int testOpt08_Type8_After2(const int value)
+{
+	const int _value = value >> 31;
+	return (_value ^ value) - _value;
+	//  mov   ecx, eax
+	//  sar   eax, 31
+	//  xor   ecx, eax
+	//  sub   ecx, eax
+	//[for P6]
+	//  mov   ecx, eax
+	//  neg   eax
+	//  cmovs eax, ecx
+}
+
+//【タイプ９】最適化前
+//※if文による符号取得
+int testOpt08_Type9_Before(const int value)
+{
+	if (value < 0)
+		return -1;
+	else if (value > 0)
+		return 1;
+	return 0;
+}
+//【タイプ９】最適化後１
+//※三項演算子による符号取得
+int testOpt08_Type9_After1(const int value)
+{
+	return value < 0 ? -1 : value > 0 ? 1 : 0;
+}
+//【タイプ９】最適化後２
+//※計算式のみによる符号取得
+int testOpt08_Type9_After2(const int value)
+{
+	return (value >> 31) | (value != 0);
+}
+
+//----------------------------------------
+//最適化⑨：ループ回数の削減：ループアンローリング
+
+//【タイプ１】初期化
+void initOpt08_t1(dataOpt08_t1& data)
+{
+	std::mt19937 rnd_engine;
+	std::uniform_int_distribution<int> rnd_dist(0, dataOpt08_t1::elem_t::VALUE_RANGE - 1);
+	for (auto& elem : data.elems)
+	{
+		elem.value = rnd_dist(rnd_engine);
+	}
+}
+
+//【タイプ１】最適化前
+//※加算ループ
+int testOpt09_Type1_Before(dataOpt08_t1& data)
+{
+	int sum = 0;
+	for (int i = 0; i < static_cast<int>(extentof(data.elems)); ++i)
+	{
+		sum += data.elems[i].value;
+	}
+	return sum;
+}
+//【タイプ１】最適化後１
+//※減算ループ
+int testOpt09_Type1_After1(dataOpt08_t1& data)
+{
+	int sum = 0;
+	for (int i = static_cast<int>(extentof(data.elems)) - 1; i >= 0; --i)
+	{
+		sum += data.elems[i].value;
+	}
+	return sum;
+}
+//【タイプ１】最適化後２
+//※ポインタループ展開
+int testOpt09_Type1_After2(dataOpt08_t1& data)
+{
+	int sum = 0;
+	const dataOpt08_t1::elem_t* elem_end = data.elems + extentof(data.elems);
+	for (const dataOpt08_t1::elem_t* elem = data.elems; elem < elem_end; ++elem)
+	{
+		sum += elem->value;
+	}
+	return sum;
+}
+//【タイプ１】最適化後３
+//※自前ループアンローリング×２
+int testOpt09_Type1_After3(dataOpt08_t1& data)
+{
+	int sum = 0;
+	const dataOpt08_t1::elem_t* elem_end = data.elems + extentof(data.elems);
+	for (const dataOpt08_t1::elem_t* elem = data.elems; elem < elem_end;)
+	{
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+	}
+	return sum;
+}
+//【タイプ１】最適化後４
+//※自前ループアンローリング×４
+int testOpt09_Type1_After4(dataOpt08_t1& data)
+{
+	int sum = 0;
+	const dataOpt08_t1::elem_t* elem_end = data.elems + extentof(data.elems);
+	for (const dataOpt08_t1::elem_t* elem = data.elems; elem < elem_end;)
+	{
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+	}
+	return sum;
+}
+//【タイプ１】最適化後５
+//※自前ループアンローリング×１０
+int testOpt09_Type1_After5(dataOpt08_t1& data)
+{
+	int sum = 0;
+	const dataOpt08_t1::elem_t* elem_end = data.elems + extentof(data.elems);
+	for (const dataOpt08_t1::elem_t* elem = data.elems; elem < elem_end;)
+	{
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+		sum += elem->value; ++elem;
+	}
+	return sum;
+}
+//【タイプ１】最適化後６
+//※範囲に基づく for ループ
+int testOpt09_Type1_After6(dataOpt08_t1& data)
+{
+	int sum = 0;
+	for (const dataOpt08_t1::elem_t& elem : data.elems)
+	{
+		sum += elem.value;
+	}
+	return sum;
+}
+
+//【タイプ２】初期化
+void initOpt08_t2(dataOpt08_t2& data)
+{
+	std::mt19937 rnd_engine;
+	std::uniform_int_distribution<int> rnd_dist(0, dataOpt08_t2::elem_t::VALUE_RANGE - 1);
+	for (auto& elem : data.elems)
+	{
+		elem.value1 = rnd_dist(rnd_engine);
+		elem.value2 = rnd_dist(rnd_engine);
+		for(auto& other : elem.others)
+			other = rnd_dist(rnd_engine);
+	}
+}
+
+//【タイプ２】最適化前
+//※加算ループ
+int testOpt09_Type2_Before(dataOpt08_t2& data)
+{
+	int sum = 0;
+	for (int i = 0; i < static_cast<int>(extentof(data.elems)); ++i)
+	{
+		sum += (data.elems[i].value2 - data.elems[i].value1);
+	}
+	return sum;
+}
+//【タイプ２】最適化後２
+//※減算ループ
+int testOpt09_Type2_After1(dataOpt08_t2& data)
+{
+	int sum = 0;
+	for (int i = static_cast<int>(extentof(data.elems)) - 1; i >= 0; --i)
+	{
+		sum += (data.elems[i].value2 - data.elems[i].value1);
+	}
+	return sum;
+}
+//【タイプ２】最適化後２
+//※ポインタループ展開
+int testOpt09_Type2_After2(dataOpt08_t2& data)
+{
+	int sum = 0;
+	const dataOpt08_t2::elem_t* elem_end = data.elems + extentof(data.elems);
+	for (const dataOpt08_t2::elem_t* elem = data.elems; elem < elem_end; ++elem)
+	{
+		sum += (elem->value2 - elem->value1);
+	}
+	return sum;
+}
+//【タイプ２】最適化後３
+//※自前ループアンローリング×２
+int testOpt09_Type2_After3(dataOpt08_t2& data)
+{
+	int sum = 0;
+	const dataOpt08_t2::elem_t* elem_end = data.elems + extentof(data.elems);
+	for (const dataOpt08_t2::elem_t* elem = data.elems; elem < elem_end;)
+	{
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+	}
+	return sum;
+}
+//【タイプ２】最適化後４
+//※自前ループアンローリング×４
+int testOpt09_Type2_After4(dataOpt08_t2& data)
+{
+	int sum = 0;
+	const dataOpt08_t2::elem_t* elem_end = data.elems + extentof(data.elems);
+	for (const dataOpt08_t2::elem_t* elem = data.elems; elem < elem_end;)
+	{
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+	}
+	return sum;
+}
+//【タイプ２】最適化後５
+//※自前ループアンローリング×２０
+int testOpt09_Type2_After5(dataOpt08_t2& data)
+{
+	int sum = 0;
+	const dataOpt08_t2::elem_t* elem_end = data.elems + extentof(data.elems);
+	for (const dataOpt08_t2::elem_t* elem = data.elems; elem < elem_end;)
+	{
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+	}
+	return sum;
+}
+//【タイプ２】最適化後６
+//※範囲に基づく for ループ
+int testOpt09_Type2_After6(dataOpt08_t2& data)
+{
+	int sum = 0;
+	for (const dataOpt08_t2::elem_t& elem : data.elems)
+	{
+		sum += (elem.value2 - elem.value1);
+	}
+	return sum;
+}
+
+//【タイプ３】最適化前
+//※加算ループ
+int testOpt09_Type3_Before(dataOpt08_t2::elem_t* elems, const std::size_t num)
+{
+	int sum = 0;
+	for (int i = 0; i < num; ++i)
+	{
+		sum += (elems[i].value2 - elems[i].value1);
+	}
+	return sum;
+}
+//【タイプ３】最適化後３
+//※減算ループ
+int testOpt09_Type3_After1(dataOpt08_t2::elem_t* elems, const std::size_t num)
+{
+	int sum = 0;
+	for (int i = num - 1; i >= 0; --i)
+	{
+		sum += (elems[i].value2 - elems[i].value1);
+	}
+	return sum;
+}
+//【タイプ３】最適化後３
+//※ポインタループ展開
+int testOpt09_Type3_After2(dataOpt08_t2::elem_t* elems, const std::size_t num)
+{
+	int sum = 0;
+	const dataOpt08_t2::elem_t* elem_end = elems + num;
+	for (const dataOpt08_t2::elem_t* elem = elems; elem < elem_end; ++elem)
+	{
+		sum += (elem->value2 - elem->value1);
+	}
+	return sum;
+}
+//【タイプ３】最適化後３
+//※自前ループアンローリング×３
+int testOpt09_Type3_After3(dataOpt08_t2::elem_t* elems, const std::size_t num)
+{
+	int sum = 0;
+	const dataOpt08_t2::elem_t* elem_end = elems + num;
+	for (const dataOpt08_t2::elem_t* elem = elems; elem < elem_end;)
+	{
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+	}
+	return sum;
+}
+//【タイプ３】最適化後４
+//※自前ループアンローリング×４
+int testOpt09_Type3_After4(dataOpt08_t2::elem_t* elems, const std::size_t num)
+{
+	int sum = 0;
+	const dataOpt08_t2::elem_t* elem_end = elems + num;
+	for (const dataOpt08_t2::elem_t* elem = elems; elem < elem_end;)
+	{
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+	}
+	return sum;
+}
+//【タイプ３】最適化後５
+//※自前ループアンローリング×３０
+int testOpt09_Type3_After5(dataOpt08_t2::elem_t* elems, const std::size_t num)
+{
+	int sum = 0;
+	const dataOpt08_t2::elem_t* elem_end = elems + num;
+	for (const dataOpt08_t2::elem_t* elem = elems; elem < elem_end;)
+	{
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+		sum += (elem->value2 - elem->value1); ++elem;
+	}
+	return sum;
 }
 
 //----------------------------------------

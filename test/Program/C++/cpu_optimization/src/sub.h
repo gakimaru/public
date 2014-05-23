@@ -180,7 +180,7 @@ void testOpt06_Type1_Before(dataOpt06_t& data, const float mul1, const float mul
 void testOpt06_Type1_After(dataOpt06_t& data, const float mul1, const float mul2, const float div);
 
 //----------------------------------------
-//Å“K‰»‡FFSIMD‰‰Z‚ğŠˆ—p‚·‚é
+//Å“K‰»‡FFSIMD‰‰Z‚ÌŠˆ—p
 
 template<std::size_t N, std::size_t M>
 struct matrix
@@ -315,6 +315,148 @@ const char* testOpt07_Type2_strstr_After1(const int dummy, const char* str1, con
 const char* testOpt07_Type2_strstr_After2(const int dummy, const char* str1, const char* str2);
 const char* testOpt07_Type2_strcpy_After(const int dummy, char* dst, const char* src);
 const char* testOpt07_Type2_strncpy_After(const int dummy, char* dst, const char* src, const std::size_t max_len);
+
+//----------------------------------------
+//Å“K‰»‡GFğŒ•ªŠò‚ÌíŒ¸
+
+//yƒ^ƒCƒv‚PzÅ“K‰»‘O
+int testOpt08_Type1_Before(const int value);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚P
+int testOpt08_Type1_After1(const int value);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚Q
+int testOpt08_Type1_After2(const int value);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚R
+int testOpt08_Type1_After3(const int value);
+
+//yƒ^ƒCƒv‚QzÅ“K‰»‘O
+int testOpt08_Type2_Before(const int value);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚P
+int testOpt08_Type2_After1(const int value);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚Q
+int testOpt08_Type2_After2(const int value);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚R
+int testOpt08_Type2_After3(const int value);
+
+//yƒ^ƒCƒv‚RzÅ“K‰»‘O
+bool testOpt08_Type3_Before(const int value1, const int value2);
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã
+bool testOpt08_Type3_After(const int value1, const int value2);
+
+//yƒ^ƒCƒv‚SzÅ“K‰»‘O
+int testOpt08_Type4_Before(const int value);
+//yƒ^ƒCƒv‚SzÅ“K‰»Œã‚P
+int testOpt08_Type4_After1(const int value);
+//yƒ^ƒCƒv‚SzÅ“K‰»Œã‚Q
+int testOpt08_Type4_After2(const int value);
+
+//yƒ^ƒCƒv‚TzÅ“K‰»‘O
+int testOpt08_Type5_Before(const int value);
+//yƒ^ƒCƒv‚TzÅ“K‰»Œã‚P
+int testOpt08_Type5_After1(const int value);
+//yƒ^ƒCƒv‚TzÅ“K‰»Œã‚Q
+int testOpt08_Type5_After2(const int value);
+
+//yƒ^ƒCƒv‚UzÅ“K‰»‘O
+int testOpt08_Type6_Before(const int value);
+//yƒ^ƒCƒv‚UzÅ“K‰»Œã‚P
+int testOpt08_Type6_After1(const int value);
+//yƒ^ƒCƒv‚UzÅ“K‰»Œã‚Q
+int testOpt08_Type6_After2(const int value);
+
+//yƒ^ƒCƒv‚VzÅ“K‰»‘O
+int testOpt08_Type7_Before(const int value);
+//yƒ^ƒCƒv‚VzÅ“K‰»Œã‚P
+int testOpt08_Type7_After1(const int value);
+//yƒ^ƒCƒv‚VzÅ“K‰»Œã‚Q
+int testOpt08_Type7_After2(const int value);
+
+//yƒ^ƒCƒv‚WzÅ“K‰»‘O
+int testOpt08_Type8_Before(const int value);
+//yƒ^ƒCƒv‚WzÅ“K‰»Œã‚P
+int testOpt08_Type8_After1(const int value);
+//yƒ^ƒCƒv‚WzÅ“K‰»Œã‚Q
+int testOpt08_Type8_After2(const int value);
+
+//yƒ^ƒCƒv‚XzÅ“K‰»‘O
+int testOpt08_Type9_Before(const int value);
+//yƒ^ƒCƒv‚XzÅ“K‰»Œã‚P
+int testOpt08_Type9_After1(const int value);
+//yƒ^ƒCƒv‚XzÅ“K‰»Œã‚Q
+int testOpt08_Type9_After2(const int value);
+
+//----------------------------------------
+//Å“K‰»‡HFƒ‹[ƒv‰ñ”‚ÌíŒ¸Fƒ‹[ƒvƒAƒ“ƒ[ƒŠƒ“ƒO
+
+//ƒeƒXƒg—p\‘¢‘Ì
+struct dataOpt08_t1
+{
+	struct elem_t
+	{
+		static const std::size_t VALUE_RANGE = _VALUE_RANGE;
+		int value;
+	};
+
+	elem_t elems[_ELEMENT_SIZE];
+};
+struct dataOpt08_t2
+{
+	struct elem_t
+	{
+		static const std::size_t VALUE_RANGE = _VALUE_RANGE;
+		int value1;
+		int value2;
+		int others[10];
+	};
+
+	elem_t elems[_ELEMENT_SIZE];
+};
+
+//‰Šú‰»
+void initOpt08_t1(dataOpt08_t1& data);
+void initOpt08_t2(dataOpt08_t2& data);
+
+//yƒ^ƒCƒv‚PzÅ“K‰»‘O
+int testOpt09_Type1_Before(dataOpt08_t1& data);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚P
+int testOpt09_Type1_After1(dataOpt08_t1& data);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚Q
+int testOpt09_Type1_After2(dataOpt08_t1& data);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚R
+int testOpt09_Type1_After3(dataOpt08_t1& data);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚S
+int testOpt09_Type1_After4(dataOpt08_t1& data);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚T
+int testOpt09_Type1_After5(dataOpt08_t1& data);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚U
+int testOpt09_Type1_After6(dataOpt08_t1& data);
+
+//yƒ^ƒCƒv‚QzÅ“K‰»‘O
+int testOpt09_Type2_Before(dataOpt08_t2& data);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚P
+int testOpt09_Type2_After1(dataOpt08_t2& data);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚Q
+int testOpt09_Type2_After2(dataOpt08_t2& data);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚R
+int testOpt09_Type2_After3(dataOpt08_t2& data);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚S
+int testOpt09_Type2_After4(dataOpt08_t2& data);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚T
+int testOpt09_Type2_After5(dataOpt08_t2& data);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚U
+int testOpt09_Type2_After6(dataOpt08_t2& data);
+
+//yƒ^ƒCƒv‚RzÅ“K‰»‘O
+int testOpt09_Type3_Before(dataOpt08_t2::elem_t* elems, const std::size_t num);
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã‚P
+int testOpt09_Type3_After1(dataOpt08_t2::elem_t* elems, const std::size_t num);
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã‚Q
+int testOpt09_Type3_After2(dataOpt08_t2::elem_t* elems, const std::size_t num);
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã‚R
+int testOpt09_Type3_After3(dataOpt08_t2::elem_t* elems, const std::size_t num);
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã‚S
+int testOpt09_Type3_After4(dataOpt08_t2::elem_t* elems, const std::size_t num);
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã‚T
+int testOpt09_Type3_After5(dataOpt08_t2::elem_t* elems, const std::size_t num);
 
 //----------------------------------------
 //‹¤’ÊŠÖ”

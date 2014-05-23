@@ -1,73 +1,137 @@
 ----------------------------------------
 [Optimize Test 01]
 Type1: *repeated * 10000 times.
-  Before   ... *elapsed time=0.013541000
-  After1   ... *elapsed time=0.012313000
-  After2   ... *elapsed time=0.014043000
-  Appendix ... *elapsed time=0.055249000  *Appendix is most brief style with C++11
+  Before   ... *elapsed time=0.013100000
+  After1   ... *elapsed time=0.012206000
+  After2   ... *elapsed time=0.013746000
+  Appendix ... *elapsed time=0.055301000  *Appendix is most brief style with C++11
 ----------------------------------------
 [Optimize Test 02]
 Type1: *repeated * 10000 times.
-  Before   ... *elapsed time=0.059403000
-  After1   ... *elapsed time=0.062853000
-  After2   ... *elapsed time=0.058188000
+  Before   ... *elapsed time=0.060514000
+  After1   ... *elapsed time=0.059081000
+  After2   ... *elapsed time=0.089762000
 ----------------------------------------
 [Optimize Test 03]
 Type1: *repeated * 100000000 times.
-  Before   ... *elapsed time=0.180336000  sum=-1390256896
-  After    ... *elapsed time=0.020344000  sum=-1390256896
+  Before   ... *elapsed time=0.177780000  sum=-1390256896
+  After    ... *elapsed time=0.020465000  sum=-1390256896
 Type2: *repeated * 100000000 times.
-  Before   ... *elapsed time=0.327174000  sum=589612288
-  After    ... *elapsed time=0.025287000  sum=589612288
+  Before   ... *elapsed time=0.363796000  sum=589612288
+  After    ... *elapsed time=0.025198000  sum=589612288
 Type3: *repeated * 10000 times.
-  Before   ... *elapsed time=0.499333000  count=35860000
-  After    ... *elapsed time=0.299304000  count=35860000
+  Before   ... *elapsed time=0.501317000  count=35860000
+  After    ... *elapsed time=0.298498000  count=35860000
 ----------------------------------------
 [Optimize Test 04]
 Type1: *repeated * 10000 times.
-  Before   ... *elapsed time=0.546972000
-  After1   ... *elapsed time=0.136914000
-  After2   ... *elapsed time=0.075313000
+  Before   ... *elapsed time=0.547596000
+  After1   ... *elapsed time=0.138011000
+  After2   ... *elapsed time=0.084177000
 ----------------------------------------
 [Optimize Test 05]
 Type1: *repeated * 10000000 times.
-  Before   ... *elapsed time=0.196543000
-  After    ... *elapsed time=0.184819000
+  Before   ... *elapsed time=0.195328000
+  After    ... *elapsed time=0.181306000
 ----------------------------------------
 [Optimize Test 06]
 Type1: *repeated * 10000 times.
-  Before   ... *elapsed time=0.494975000
-  After    ... *elapsed time=0.054296000
+  Before   ... *elapsed time=0.497197000
+  After    ... *elapsed time=0.054906000
 ----------------------------------------
 [Optimize Test 07]
 Type1: *repeated * 10000000 times.
-  Before   ... *elapsed time=0.861886000
-  After    ... *elapsed time=0.327824000
+  Before   ... *elapsed time=0.758139000
+  After    ... *elapsed time=0.324673000
 Type2(strlen): *repeated * 1000000 times.
-  Before   ... *elapsed time=0.065502000
-  After    ... *elapsed time=0.022314000
+  Before   ... *elapsed time=0.064292000
+  After    ... *elapsed time=0.021986000
 Type2(strcmp): *repeated * 1000000 times.
-  Before   ... *elapsed time=0.170423000
-  After    ... *elapsed time=0.102092000
+  Before   ... *elapsed time=0.166603000
+  After    ... *elapsed time=0.115590000
 Type2(strncmp): *repeated * 1000000 times.
-  Before   ... *elapsed time=0.759192000
-  After    ... *elapsed time=0.382091000
+  Before   ... *elapsed time=0.726130000
+  After    ... *elapsed time=0.352600000
 Type2(strchr): *repeated * 1000000 times.
-  Before   ... *elapsed time=0.180955000
-  After    ... *elapsed time=0.073686000
+  Before   ... *elapsed time=0.187170000
+  After    ... *elapsed time=0.073751000
 Type2(strrchr): *repeated * 1000000 times.
-  Before   ... *elapsed time=0.498556000
-  After    ... *elapsed time=0.137608000
+  Before   ... *elapsed time=0.438982000
+  After    ... *elapsed time=0.135248000
 Type2(strstr): *repeated * 1000000 times.
-  Before   ... *elapsed time=7.253789000
-  After1   ... *elapsed time=0.783437000
-  After2(bm).. *elapsed time=1.932970000
+  Before   ... *elapsed time=7.427499000
+  After1   ... *elapsed time=0.789489000
+  After2(bm).. *elapsed time=1.878619000
 Type2(strcpy): *repeated * 1000000 times.
-  Before   ... *elapsed time=0.064874000
-  After    ... *elapsed time=0.041784000
+  Before   ... *elapsed time=0.064625000
+  After    ... *elapsed time=0.041607000
 Type2(strncpy): *repeated * 1000000 times.
-  Before   ... *elapsed time=0.253207000
-  After    ... *elapsed time=0.142759000
+  Before   ... *elapsed time=0.249291000
+  After    ... *elapsed time=0.141431000
+----------------------------------------
+[Optimize Test 08]
+Type1: *repeated * 100000000 times.
+  Before   ... *elapsed time=0.966965000
+  After1   ... *elapsed time=0.992410000
+  After2   ... *elapsed time=0.599791000
+  After3   ... *elapsed time=0.852185000
+Type2: *repeated * 100000000 times.
+  Before   ... *elapsed time=0.616466000
+  After1   ... *elapsed time=0.647120000
+  After2   ... *elapsed time=0.600749000
+  After3   ... *elapsed time=0.645326000
+Type3: *repeated * 100000000 times.
+  Before   ... *elapsed time=0.346621000
+  After1   ... *elapsed time=0.348454000
+Type4: *repeated * 100000000 times.
+  Before   ... *elapsed time=0.644723000
+  After1   ... *elapsed time=0.653058000
+  After2   ... *elapsed time=0.496271000
+Type5: *repeated * 10000000 times.
+  Before   ... *elapsed time=0.908639000
+  After1   ... *elapsed time=0.114341000
+  After2   ... *elapsed time=0.432753000
+Type6: *repeated * 10000000 times.
+  Before   ... *elapsed time=0.097117000
+  After1   ... *elapsed time=0.200170000
+  After2   ... *elapsed time=0.091403000
+Type7: *repeated * 10000000 times.
+  Before   ... *elapsed time=0.111100000
+  After1   ... *elapsed time=0.194947000
+  After2   ... *elapsed time=0.081063000
+Type8: *repeated * 100000000 times.
+  Before   ... *elapsed time=0.483437000
+  After1   ... *elapsed time=0.522247000
+  After2   ... *elapsed time=0.482565000
+Type9: *repeated * 100000000 times.
+  Before   ... *elapsed time=0.571116000
+  After1   ... *elapsed time=0.539222000
+  After2   ... *elapsed time=0.527728000
+----------------------------------------
+[Optimize Test 09]
+Type1: *repeated * 100000 times.
+  Before   ... *elapsed time=0.118842000
+  After1   ... *elapsed time=0.173258000
+  After2   ... *elapsed time=0.120802000
+  After3   ... *elapsed time=0.149250000
+  After4   ... *elapsed time=0.149393000
+  After5   ... *elapsed time=0.084295000
+  After6   ... *elapsed time=0.120592000
+Type2: *repeated * 50000 times.
+  Before   ... *elapsed time=0.540075000
+  After1   ... *elapsed time=0.547008000
+  After2   ... *elapsed time=0.546049000
+  After3   ... *elapsed time=0.538321000
+  After4   ... *elapsed time=0.546689000
+  After5   ... *elapsed time=0.564044000
+  After6   ... *elapsed time=0.542393000
+Type3: *repeated * 50000 times.
+  Before   ... *elapsed time=0.582767000
+  After1   ... *elapsed time=0.544867000
+  After2   ... *elapsed time=0.547338000
+  After3   ... *elapsed time=0.540806000
+  After4   ... *elapsed time=0.542816000
+  After5   ... *elapsed time=0.561658000
 ----------------------------------------
 [Test for Lambda with closure]
 for lambda1: external_counter=0

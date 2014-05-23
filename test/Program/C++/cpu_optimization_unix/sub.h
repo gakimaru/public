@@ -180,7 +180,7 @@ void testOpt06_Type1_Before(dataOpt06_t& data, const float mul1, const float mul
 void testOpt06_Type1_After(dataOpt06_t& data, const float mul1, const float mul2, const float div);
 
 //----------------------------------------
-//最適化⑦：SIMD演算を活用する
+//最適化⑦：SIMD演算の活用
 
 template<std::size_t N, std::size_t M>
 struct matrix
@@ -315,6 +315,148 @@ const char* testOpt07_Type2_strstr_After1(const int dummy, const char* str1, con
 const char* testOpt07_Type2_strstr_After2(const int dummy, const char* str1, const char* str2);
 const char* testOpt07_Type2_strcpy_After(const int dummy, char* dst, const char* src);
 const char* testOpt07_Type2_strncpy_After(const int dummy, char* dst, const char* src, const std::size_t max_len);
+
+//----------------------------------------
+//最適化⑧：条件分岐の削減
+
+//【タイプ１】最適化前
+int testOpt08_Type1_Before(const int value);
+//【タイプ１】最適化後１
+int testOpt08_Type1_After1(const int value);
+//【タイプ１】最適化後２
+int testOpt08_Type1_After2(const int value);
+//【タイプ１】最適化後３
+int testOpt08_Type1_After3(const int value);
+
+//【タイプ２】最適化前
+int testOpt08_Type2_Before(const int value);
+//【タイプ２】最適化後１
+int testOpt08_Type2_After1(const int value);
+//【タイプ２】最適化後２
+int testOpt08_Type2_After2(const int value);
+//【タイプ２】最適化後３
+int testOpt08_Type2_After3(const int value);
+
+//【タイプ３】最適化前
+bool testOpt08_Type3_Before(const int value1, const int value2);
+//【タイプ３】最適化後
+bool testOpt08_Type3_After(const int value1, const int value2);
+
+//【タイプ４】最適化前
+int testOpt08_Type4_Before(const int value);
+//【タイプ４】最適化後１
+int testOpt08_Type4_After1(const int value);
+//【タイプ４】最適化後２
+int testOpt08_Type4_After2(const int value);
+
+//【タイプ５】最適化前
+int testOpt08_Type5_Before(const int value);
+//【タイプ５】最適化後１
+int testOpt08_Type5_After1(const int value);
+//【タイプ５】最適化後２
+int testOpt08_Type5_After2(const int value);
+
+//【タイプ６】最適化前
+int testOpt08_Type6_Before(const int value);
+//【タイプ６】最適化後１
+int testOpt08_Type6_After1(const int value);
+//【タイプ６】最適化後２
+int testOpt08_Type6_After2(const int value);
+
+//【タイプ７】最適化前
+int testOpt08_Type7_Before(const int value);
+//【タイプ７】最適化後１
+int testOpt08_Type7_After1(const int value);
+//【タイプ７】最適化後２
+int testOpt08_Type7_After2(const int value);
+
+//【タイプ８】最適化前
+int testOpt08_Type8_Before(const int value);
+//【タイプ８】最適化後１
+int testOpt08_Type8_After1(const int value);
+//【タイプ８】最適化後２
+int testOpt08_Type8_After2(const int value);
+
+//【タイプ９】最適化前
+int testOpt08_Type9_Before(const int value);
+//【タイプ９】最適化後１
+int testOpt08_Type9_After1(const int value);
+//【タイプ９】最適化後２
+int testOpt08_Type9_After2(const int value);
+
+//----------------------------------------
+//最適化⑨：ループ回数の削減：ループアンローリング
+
+//テスト用構造体
+struct dataOpt08_t1
+{
+	struct elem_t
+	{
+		static const std::size_t VALUE_RANGE = _VALUE_RANGE;
+		int value;
+	};
+
+	elem_t elems[_ELEMENT_SIZE];
+};
+struct dataOpt08_t2
+{
+	struct elem_t
+	{
+		static const std::size_t VALUE_RANGE = _VALUE_RANGE;
+		int value1;
+		int value2;
+		int others[10];
+	};
+
+	elem_t elems[_ELEMENT_SIZE];
+};
+
+//初期化
+void initOpt08_t1(dataOpt08_t1& data);
+void initOpt08_t2(dataOpt08_t2& data);
+
+//【タイプ１】最適化前
+int testOpt09_Type1_Before(dataOpt08_t1& data);
+//【タイプ１】最適化後１
+int testOpt09_Type1_After1(dataOpt08_t1& data);
+//【タイプ１】最適化後２
+int testOpt09_Type1_After2(dataOpt08_t1& data);
+//【タイプ１】最適化後３
+int testOpt09_Type1_After3(dataOpt08_t1& data);
+//【タイプ１】最適化後４
+int testOpt09_Type1_After4(dataOpt08_t1& data);
+//【タイプ１】最適化後５
+int testOpt09_Type1_After5(dataOpt08_t1& data);
+//【タイプ１】最適化後６
+int testOpt09_Type1_After6(dataOpt08_t1& data);
+
+//【タイプ２】最適化前
+int testOpt09_Type2_Before(dataOpt08_t2& data);
+//【タイプ２】最適化後１
+int testOpt09_Type2_After1(dataOpt08_t2& data);
+//【タイプ２】最適化後２
+int testOpt09_Type2_After2(dataOpt08_t2& data);
+//【タイプ２】最適化後３
+int testOpt09_Type2_After3(dataOpt08_t2& data);
+//【タイプ２】最適化後４
+int testOpt09_Type2_After4(dataOpt08_t2& data);
+//【タイプ２】最適化後５
+int testOpt09_Type2_After5(dataOpt08_t2& data);
+//【タイプ２】最適化後６
+int testOpt09_Type2_After6(dataOpt08_t2& data);
+
+//【タイプ３】最適化前
+int testOpt09_Type3_Before(dataOpt08_t2::elem_t* elems, const std::size_t num);
+//【タイプ３】最適化後１
+int testOpt09_Type3_After1(dataOpt08_t2::elem_t* elems, const std::size_t num);
+//【タイプ３】最適化後２
+int testOpt09_Type3_After2(dataOpt08_t2::elem_t* elems, const std::size_t num);
+//【タイプ３】最適化後３
+int testOpt09_Type3_After3(dataOpt08_t2::elem_t* elems, const std::size_t num);
+//【タイプ３】最適化後４
+int testOpt09_Type3_After4(dataOpt08_t2::elem_t* elems, const std::size_t num);
+//【タイプ３】最適化後５
+int testOpt09_Type3_After5(dataOpt08_t2::elem_t* elems, const std::size_t num);
 
 //----------------------------------------
 //共通関数

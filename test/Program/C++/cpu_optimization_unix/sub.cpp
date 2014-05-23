@@ -951,7 +951,7 @@ std::size_t _strlen_fast(const char* str)
 //	if (!str)
 //		return 0;
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	const char* p = str;
 	const std::size_t str_over = reinterpret_cast<intptr_t>(str) & 0xf;
 	if (str_over != 0)
@@ -985,7 +985,7 @@ std::size_t _strnlen_fast(const char* str, const std::size_t max_len)
 //	if (!str)
 //		return 0;
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	const char* p_end = str + max_len;
 	const char* p_end_16 = p_end - 16;
 	const char* p = str;
@@ -1169,7 +1169,7 @@ int _strcmp_fast(const char* str1, const char* str2)
 static int _strncmp_fast_case0(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	const __m128i* p1 = reinterpret_cast<const __m128i*>(str1);
 	const __m128i* p2 = reinterpret_cast<const __m128i*>(str2);
 	const char* p1_end = str1 + max_len;
@@ -1219,7 +1219,7 @@ static int _strncmp_fast_case0(const char* str1, const char* str2, const std::si
 static int _strncmp_fast_case1(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	const char* p1 = str1;
 	const __m128i* p2 = reinterpret_cast<const __m128i*>(str2);
 	const char* p1_end = str1 + max_len;
@@ -1269,7 +1269,7 @@ static int _strncmp_fast_case1(const char* str1, const char* str2, const std::si
 static int _strncmp_fast_case2(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	const __m128i* p1 = reinterpret_cast<const __m128i*>(str1);
 	const char* p2 = str2;
 	const char* p1_end = str1 + max_len;
@@ -1319,7 +1319,7 @@ static int _strncmp_fast_case2(const char* str1, const char* str2, const std::si
 static int _strncmp_fast_case3(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	const char* p1 = str1;
 	const char* p2 = str2;
 	const char* p1_end = str1 + max_len;
@@ -2343,7 +2343,7 @@ static inline void _memcpy_m128i_u(char* dst, const __m128i src, const std::size
 static const char* _strcpy_fast_case0(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 	const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
 	while (true)
@@ -2366,7 +2366,7 @@ static const char* _strcpy_fast_case0(char* dst, const char* src)
 static const char* _strcpy_fast_case1(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	char* dst_p = dst;
 	const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
 	while (true)
@@ -2389,7 +2389,7 @@ static const char* _strcpy_fast_case1(char* dst, const char* src)
 static const char* _strcpy_fast_case2(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 	const char* src_p = src;
 	while (true)
@@ -2412,7 +2412,7 @@ static const char* _strcpy_fast_case2(char* dst, const char* src)
 static const char* _strcpy_fast_case3(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	char* dst_p = dst;
 	const char* src_p = src;
 	while (true)
@@ -2485,7 +2485,7 @@ static inline void _memncpy_m128i_u(char* dst, const __m128i src, const std::siz
 static const char* _strncpy_fast_case0(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 	const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
 	const char* src_end = src + max_len;
@@ -2523,7 +2523,7 @@ static const char* _strncpy_fast_case0(char* dst, const char* src, const std::si
 static const char* _strncpy_fast_case1(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	char* dst_p = dst;
 	const __m128i* src_p = reinterpret_cast<const __m128i*>(src);
 	const char* src_end = src + max_len;
@@ -2561,7 +2561,7 @@ static const char* _strncpy_fast_case1(char* dst, const char* src, const std::si
 static const char* _strncpy_fast_case2(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	__m128i* dst_p = reinterpret_cast<__m128i*>(dst);
 	const char* src_p = src;
 	const char* src_end = src + max_len;
@@ -2599,7 +2599,7 @@ static const char* _strncpy_fast_case2(char* dst, const char* src, const std::si
 static const char* _strncpy_fast_case3(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	static const __m128i null = _mm_setzero_si128();
+	const __m128i null = _mm_setzero_si128();
 	char* dst_p = dst;
 	const char* src_p = src;
 	const char* src_end = src + max_len;

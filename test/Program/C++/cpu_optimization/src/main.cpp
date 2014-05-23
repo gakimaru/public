@@ -1361,7 +1361,7 @@ void runTestOpt07_Type2_strstr()
 {
 	printf("Type2(strstr): *repeated * %d times.\n", LOOP_OPT07_TYPE2);
 
-	const char* str_a = "1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
+	const char* str_a = "1111222233334444555566667777888899990000!1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980!abcdefghijklmnopqrstuvwxyz!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_";
 	const char* pattern_a1 = "1";
 	const char* pattern_a2 = "12";
 	const char* pattern_a3 = "1x";
@@ -1377,8 +1377,9 @@ void runTestOpt07_Type2_strstr()
 	const char* pattern_a13 = "ABCDEFGHIJKLMNOPx";
 	const char* pattern_a14 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&(";
 	const char* pattern_a15 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&(.";
-	const char* pattern_a16 = ".";
-	const char* pattern_a17 = "";
+	const char* pattern_a16 = "!ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&()<>[]{}|~-=+*?_1234567980";
+	const char* pattern_a17 = ".";
+	const char* pattern_a18 = "";
 	const char* str_b = "1234567812345678";
 	const char* pattern_b1 = "1";
 	const char* pattern_b2 = "12";
@@ -1403,25 +1404,25 @@ void runTestOpt07_Type2_strstr()
 	const char* pattern_d1 = ".";
 	const char* pattern_d2 = "";
 
-	extern void runTestOpt07_Type2_strstr_Before(const char* str_a, const char* pattern_a1, const char* pattern_a2, const char* pattern_a3, const char* pattern_a4, const char* pattern_a5, const char* pattern_a6, const char* pattern_a7, const char* pattern_a8, const char* pattern_a9, const char* pattern_a10, const char* pattern_a11, const char* pattern_a12, const char* pattern_a13, const char* pattern_a14, const char* pattern_a15, const char* pattern_a16, const char* pattern_a17,
+	extern void runTestOpt07_Type2_strstr_Before(const char* str_a, const char* pattern_a1, const char* pattern_a2, const char* pattern_a3, const char* pattern_a4, const char* pattern_a5, const char* pattern_a6, const char* pattern_a7, const char* pattern_a8, const char* pattern_a9, const char* pattern_a10, const char* pattern_a11, const char* pattern_a12, const char* pattern_a13, const char* pattern_a14, const char* pattern_a15, const char* pattern_a16, const char* pattern_a17, const char* pattern_a18,
 	                                             const char* str_b, const char* pattern_b1, const char* pattern_b2, const char* pattern_b3, const char* pattern_b4, const char* pattern_b5, const char* pattern_b6, const char* pattern_b7, const char* pattern_b8, const char* pattern_b9, const char* pattern_b10, const char* pattern_b11, const char* pattern_b12,
 												 const char* str_c, const char* pattern_c1, const char* pattern_c2, const char* pattern_c3, const char* pattern_c4, const char* pattern_c5, const char* pattern_c6,
 												 const char* str_d, const char* pattern_d1, const char* pattern_d2);
-	extern void runTestOpt07_Type2_strstr_After(const char* str_a, const char* pattern_a1, const char* pattern_a2, const char* pattern_a3, const char* pattern_a4, const char* pattern_a5, const char* pattern_a6, const char* pattern_a7, const char* pattern_a8, const char* pattern_a9, const char* pattern_a10, const char* pattern_a11, const char* pattern_a12, const char* pattern_a13, const char* pattern_a14, const char* pattern_a15, const char* pattern_a16, const char* pattern_a17,
+	extern void runTestOpt07_Type2_strstr_After(const char* str_a, const char* pattern_a1, const char* pattern_a2, const char* pattern_a3, const char* pattern_a4, const char* pattern_a5, const char* pattern_a6, const char* pattern_a7, const char* pattern_a8, const char* pattern_a9, const char* pattern_a10, const char* pattern_a11, const char* pattern_a12, const char* pattern_a13, const char* pattern_a14, const char* pattern_a15, const char* pattern_a16, const char* pattern_a17, const char* pattern_a18,
 	                                            const char* str_b, const char* pattern_b1, const char* pattern_b2, const char* pattern_b3, const char* pattern_b4, const char* pattern_b5, const char* pattern_b6, const char* pattern_b7, const char* pattern_b8, const char* pattern_b9, const char* pattern_b10, const char* pattern_b11, const char* pattern_b12,
 												const char* str_c, const char* pattern_c1, const char* pattern_c2, const char* pattern_c3, const char* pattern_c4, const char* pattern_c5, const char* pattern_c6,
 												const char* str_d, const char* pattern_d1, const char* pattern_d2);
-	runTestOpt07_Type2_strstr_Before(str_a, pattern_a1, pattern_a2, pattern_a3, pattern_a4, pattern_a5, pattern_a6, pattern_a7, pattern_a8, pattern_a9, pattern_a10, pattern_a11, pattern_a12, pattern_a13, pattern_a14, pattern_a15, pattern_a16, pattern_a17,
+	runTestOpt07_Type2_strstr_Before(str_a, pattern_a1, pattern_a2, pattern_a3, pattern_a4, pattern_a5, pattern_a6, pattern_a7, pattern_a8, pattern_a9, pattern_a10, pattern_a11, pattern_a12, pattern_a13, pattern_a14, pattern_a15, pattern_a16, pattern_a17, pattern_a18,
 	                                 str_b, pattern_b1, pattern_b2, pattern_b3, pattern_b4, pattern_b5, pattern_b6, pattern_b7, pattern_b8, pattern_b9, pattern_b10, pattern_b11, pattern_b12,
 	                                 str_c, pattern_c1, pattern_c2, pattern_c3, pattern_c4, pattern_c5, pattern_c6,
 	                                 str_d, pattern_d1, pattern_d2);
-	runTestOpt07_Type2_strstr_After(str_a, pattern_a1, pattern_a2, pattern_a3, pattern_a4, pattern_a5, pattern_a6, pattern_a7, pattern_a8, pattern_a9, pattern_a10, pattern_a11, pattern_a12, pattern_a13, pattern_a14, pattern_a15, pattern_a16, pattern_a17,
+	runTestOpt07_Type2_strstr_After(str_a, pattern_a1, pattern_a2, pattern_a3, pattern_a4, pattern_a5, pattern_a6, pattern_a7, pattern_a8, pattern_a9, pattern_a10, pattern_a11, pattern_a12, pattern_a13, pattern_a14, pattern_a15, pattern_a16, pattern_a17, pattern_a18,
 	                                str_b, pattern_b1, pattern_b2, pattern_b3, pattern_b4, pattern_b5, pattern_b6, pattern_b7, pattern_b8, pattern_b9, pattern_b10, pattern_b11, pattern_b12,
 	                                str_c, pattern_c1, pattern_c2, pattern_c3, pattern_c4, pattern_c5, pattern_c6,
 	                                str_d, pattern_d1, pattern_d2);
 }
 //Å“K‰»‘O
-void runTestOpt07_Type2_strstr_Before(const char* str_a, const char* pattern_a1, const char* pattern_a2, const char* pattern_a3, const char* pattern_a4, const char* pattern_a5, const char* pattern_a6, const char* pattern_a7, const char* pattern_a8, const char* pattern_a9, const char* pattern_a10, const char* pattern_a11, const char* pattern_a12, const char* pattern_a13, const char* pattern_a14, const char* pattern_a15, const char* pattern_a16, const char* pattern_a17,
+void runTestOpt07_Type2_strstr_Before(const char* str_a, const char* pattern_a1, const char* pattern_a2, const char* pattern_a3, const char* pattern_a4, const char* pattern_a5, const char* pattern_a6, const char* pattern_a7, const char* pattern_a8, const char* pattern_a9, const char* pattern_a10, const char* pattern_a11, const char* pattern_a12, const char* pattern_a13, const char* pattern_a14, const char* pattern_a15, const char* pattern_a16, const char* pattern_a17, const char* pattern_a18,
 	                                  const char* str_b, const char* pattern_b1, const char* pattern_b2, const char* pattern_b3, const char* pattern_b4, const char* pattern_b5, const char* pattern_b6, const char* pattern_b7, const char* pattern_b8, const char* pattern_b9, const char* pattern_b10, const char* pattern_b11, const char* pattern_b12,
 									  const char* str_c, const char* pattern_c1, const char* pattern_c2, const char* pattern_c3, const char* pattern_c4, const char* pattern_c5, const char* pattern_c6,
 									  const char* str_d, const char* pattern_d1, const char* pattern_d2)
@@ -1447,6 +1448,7 @@ void runTestOpt07_Type2_strstr_Before(const char* str_a, const char* pattern_a1,
 		testOpt07_Type2_strstr_Before(loop, str_a, pattern_a15);
 		testOpt07_Type2_strstr_Before(loop, str_a, pattern_a16);
 		testOpt07_Type2_strstr_Before(loop, str_a, pattern_a17);
+		testOpt07_Type2_strstr_Before(loop, str_a, pattern_a18);
 		testOpt07_Type2_strstr_Before(loop, str_b, pattern_b1);
 		testOpt07_Type2_strstr_Before(loop, str_b, pattern_b2);
 		testOpt07_Type2_strstr_Before(loop, str_b, pattern_b3);
@@ -1471,7 +1473,7 @@ void runTestOpt07_Type2_strstr_Before(const char* str_a, const char* pattern_a1,
 	printElapsedTime(prev_time);
 }
 //Å“K‰»Œã
-void runTestOpt07_Type2_strstr_After(const char* str_a, const char* pattern_a1, const char* pattern_a2, const char* pattern_a3, const char* pattern_a4, const char* pattern_a5, const char* pattern_a6, const char* pattern_a7, const char* pattern_a8, const char* pattern_a9, const char* pattern_a10, const char* pattern_a11, const char* pattern_a12, const char* pattern_a13, const char* pattern_a14, const char* pattern_a15, const char* pattern_a16, const char* pattern_a17,
+void runTestOpt07_Type2_strstr_After(const char* str_a, const char* pattern_a1, const char* pattern_a2, const char* pattern_a3, const char* pattern_a4, const char* pattern_a5, const char* pattern_a6, const char* pattern_a7, const char* pattern_a8, const char* pattern_a9, const char* pattern_a10, const char* pattern_a11, const char* pattern_a12, const char* pattern_a13, const char* pattern_a14, const char* pattern_a15, const char* pattern_a16, const char* pattern_a17, const char* pattern_a18,
 	                                 const char* str_b, const char* pattern_b1, const char* pattern_b2, const char* pattern_b3, const char* pattern_b4, const char* pattern_b5, const char* pattern_b6, const char* pattern_b7, const char* pattern_b8, const char* pattern_b9, const char* pattern_b10, const char* pattern_b11, const char* pattern_b12,
 									 const char* str_c, const char* pattern_c1, const char* pattern_c2, const char* pattern_c3, const char* pattern_c4, const char* pattern_c5, const char* pattern_c6,
 									 const char* str_d, const char* pattern_d1, const char* pattern_d2)
@@ -1497,6 +1499,7 @@ void runTestOpt07_Type2_strstr_After(const char* str_a, const char* pattern_a1, 
 		testOpt07_Type2_strstr_After(loop, str_a, pattern_a15);
 		testOpt07_Type2_strstr_After(loop, str_a, pattern_a16);
 		testOpt07_Type2_strstr_After(loop, str_a, pattern_a17);
+		testOpt07_Type2_strstr_After(loop, str_a, pattern_a18);
 		testOpt07_Type2_strstr_After(loop, str_b, pattern_b1);
 		testOpt07_Type2_strstr_After(loop, str_b, pattern_b2);
 		testOpt07_Type2_strstr_After(loop, str_b, pattern_b3);

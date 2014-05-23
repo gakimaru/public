@@ -2,13 +2,19 @@
 #ifndef __SUB_H_
 #define __SUB_H_
 
+//--------------------------------------------------------------------------------
+//コンパイラスイッチ
+
 //#define USE_GCC//GCCを使用する場合、このマクロを有効化する
 
-#define _VALUE_RANGE (10 + 1)//値の幅　※分布集計時のループ処理に影響あり
-//#define _VALUE_RANGE (1000 + 1)//値の幅　※（同上）
-
-//#define _ELEMENT_SIZE 100//配列要素数　※集計時のループ処理に影響あり
-#define _ELEMENT_SIZE 10000//配列要素数　※（同上）
+//#define STRLEN_FAST_IS_NOT_FAST//strlen_fastの実体を標準ライブラリの関数にする場合は、このマクロを有効化する
+//#define STRCMP_FAST_IS_NOT_FAST//strcmp_fastの実体を標準ライブラリの関数にする場合は、このマクロを有効化する
+//#define STRNCMP_FAST_IS_NOT_FAST//strncmp_fastの実体を標準ライブラリの関数にする場合は、このマクロを有効化する
+//#define STRCHR_FAST_IS_NOT_FAST//strchr_fastの実体を標準ライブラリの関数にする場合は、このマクロを有効化する
+//#define STRRCHR_FAST_IS_NOT_FAST//strrchr_fastの実体を標準ライブラリの関数にする場合は、このマクロを有効化する
+//#define STRSTR_FAST_IS_NOT_FAST//strstr_fastの実体を標準ライブラリの関数にする場合は、このマクロを有効化する
+//#define STRNCPY_PADDING_ZERO//strncpy_fastを本来の仕様（余りを0で埋める）で実装する場合は、このマクロを有効化する
+                              //※無効化時は、最後にターミネータを一つ付加するだけ（高速）
 
 #include <cstddef>//std::szie_t用
 
@@ -18,6 +24,15 @@
 #else//USE_GCC
 #define alignas(n) __attribute__((aligned(n)))
 #endif//USE_GCC
+
+//--------------------------------------------------------------------------------
+//テスト用定数
+
+#define _VALUE_RANGE (10 + 1)//値の幅　※分布集計時のループ処理に影響あり
+//#define _VALUE_RANGE (1000 + 1)//値の幅　※（同上）
+
+//#define _ELEMENT_SIZE 100//配列要素数　※集計時のループ処理に影響あり
+#define _ELEMENT_SIZE 10000//配列要素数　※（同上）
 
 //----------------------------------------
 //最適化①：メモリアクセスの抑制：一時変数の活用
@@ -205,75 +220,75 @@ const char* testOpt07_Type2_strncpy_Before(const int dummy, char* dst, const cha
 //【タイプ２】最適化後
 inline std::size_t strlen_fast(const char* str)
 {
-#if 0
+#ifdef STRLEN_FAST_IS_NOT_FAST
 	return strlen(str);
-#else
+#else//STRLEN_FAST_IS_NOT_FAST
 	extern std::size_t _strlen_fast(const char* str);
 	return _strlen_fast(str);
-#endif
+#endif//STRLEN_FAST_IS_NOT_FAST
 }
 inline int strcmp_fast(const char* str1, const char* str2)
 {
-#if 0
+#ifdef STRCMP_FAST_IS_NOT_FAST
 	return strcmp(str1, str2);
-#else
+#else//STRCMP_FAST_IS_NOT_FAST
 	extern int _strcmp_fast(const char* str1, const char* str2);
 	return _strcmp_fast(str1, str2);
-#endif
+#endif//STRCMP_FAST_IS_NOT_FAST
 }
 inline int strncmp_fast(const char* str1, const char* str2, const std::size_t max_len)
 {
-#if 0
+#ifdef STRNCMP_FAST_IS_NOT_FAST
 	return strncmp(str1, str2, max_len);
-#else
+#else//STRNCMP_FAST_IS_NOT_FAST
 	extern int _strncmp_fast(const char* str1, const char* str2, const std::size_t max_len);
 	return _strncmp_fast(str1, str2, max_len);
-#endif
+#endif//STRNCMP_FAST_IS_NOT_FAST
 }
 inline const char* strchr_fast(const char* str, const char c)
 {
-#if 0
+#ifdef STRCHR_FAST_IS_NOT_FAST
 	return strchr(str, c);
-#else
+#else//STRCHR_FAST_IS_NOT_FAST
 	extern const char* _strchr_fast(const char* str, const char c);
 	return _strchr_fast(str, c);
-#endif
+#endif//STRCHR_FAST_IS_NOT_FAST
 }
 inline const char* strrchr_fast(const char* str, const char c)
 {
-#if 0
+#ifdef STRRCHR_FAST_IS_NOT_FAST
 	return strrchr(str, c);
-#else
+#else//STRRCHR_FAST_IS_NOT_FAST
 	const char* _strrchr_fast(const char* str, const char c);
 	return _strrchr_fast(str, c);
-#endif
+#endif//STRRCHR_FAST_IS_NOT_FAST
 }
 inline const char* strstr_fast(const char* str, const char* pattern)
 {
-#if 0
+#ifdef STRSTR_FAST_IS_NOT_FAST
 	return strstr(str, pattern);
-#else
+#else//STRSTR_FAST_IS_NOT_FAST
 	extern const char* _strstr_fast(const char* str, const char* pattern);
 	return _strstr_fast(str, pattern);
-#endif
+#endif//STRSTR_FAST_IS_NOT_FAST
 }
 inline const char* strcpy_fast(char* dst, const char* src)
 {
-#if 0
+#ifdef STRCPY_FAST_IS_NOT_FAST
 	return strcpy(dst, src);
-#else
+#else//STRCPY_FAST_IS_NOT_FAST
 	extern const char* _strcpy_fast(char* dst, const char* src);
 	return _strcpy_fast(dst, src);
-#endif
+#endif//STRCPY_FAST_IS_NOT_FAST
 }
 inline const char* strncpy_fast(char* dst, const char* src, const std::size_t max_len)
 {
-#if 0
+#ifdef STRNCPY_FAST_IS_NOT_FAST
 	return strncpy(dst, src, max_len);
-#else
+#else//STRNCPY_FAST_IS_NOT_FAST
 	extern const char* _strncpy_fast(char* dst, const char* src, const std::size_t max_len);
 	return _strncpy_fast(dst, src, max_len);
-#endif
+#endif//STRNCPY_FAST_IS_NOT_FAST
 }
 void testOpt07_Type2_After_1time();
 std::size_t testOpt07_Type2_strlen_After(const int dummy, const char* str);

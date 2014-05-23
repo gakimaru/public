@@ -961,7 +961,7 @@ std::size_t _strlen_fast(const char* str)
 		const int zf          = _mm_cmpistrz(null, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
 		const std::size_t pos = _mm_cmpistri(null, str16, flags);
 		if (zf)
-			return (p - str) + pos;
+			return pos;
 		p += (16 - str_over);
 	}
 	//16バイトアライメント時
@@ -1105,7 +1105,7 @@ static const _strcmp_fast_casex_t _strcmp_fast_casex[] =
 //SSE版strcmp
 int _strcmp_fast(const char* str1, const char* str2)
 {
-	//nullチェックしない
+//nullチェックしない
 //	if (!str1) if (!str2) return 0;
 //	           else       return -1;
 //	else       if (!str2) return 1;
@@ -1415,44 +1415,33 @@ const char* _strrchr_fast(const char* str, const char c)
 }
 //----------
 //SSE版strstr用補助関数:パターンが2文字専用
-static const char* _strstr2_fast(const char* str, const char* pattern)
+static const char* _strstr_fast_2(const char* str, const char* pattern)
 {
 //	if (*str == '\0' || *(str + 1) == '\0')//←この判定は呼び出し元で行っている
 //		return nullptr;
-	static const std::size_t pattern_max = 1;
-	const char* pattern_end = pattern + pattern_max;
 	const char pattern_top_c = *pattern;//先頭の文字
-	const char pattern_end_c = *pattern_end;//末尾の文字
-	const __m128i pattern_end_c16 = _mm_set1_epi8(pattern_end_c);
+	const char pattern_2nd_c = *(pattern + 1);//2文字目の文字
+	const __m128i pattern_top_c16 = _mm_set1_epi8(pattern_top_c);
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-	const int skip = 1 + (pattern_top_c != pattern_end_c);//文字列の照合に失敗した場合にスキップする文字数
-	const char* p = str + 1;
+	const char* p = str;
 	const std::size_t str_over = reinterpret_cast<intptr_t>(p) & 0xf;
 	if (str_over != 0)
 	{
 		//非16バイトアライメント時
 		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
-		const int zf = _mm_cmpistrz(pattern_end_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
-		const int cf = _mm_cmpistrc(pattern_end_c16, str16, flags);
+		const int zf = _mm_cmpistrz(pattern_top_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+		const int cf = _mm_cmpistrc(pattern_top_c16, str16, flags);
 		if (cf)
 		{
-			const __m128i mask = _mm_cmpistrm(pattern_end_c16, str16, flags);
-			int found_bits = *reinterpret_cast<const int*>(&mask);
-			const char* _p = p - pattern_max;
+			const __m128i mask = _mm_cmpistrm(pattern_top_c16, str16, flags);
+			unsigned int found_bits = *reinterpret_cast<const int*>(&mask);
+			const char* _p = p;
 			while (found_bits)
 			{
-				if (found_bits & 1)
-				{
-					if (*_p == pattern_top_c)
-						return _p;
-					found_bits >>= skip;
-					_p += skip;
-				}
-				else
-				{
-					found_bits >>= 1;
-					++_p;
-				}
+				if ((found_bits & 1) && *_p == pattern_top_c && *(_p + 1) == pattern_2nd_c)
+					return _p;
+				found_bits >>= 1;
+				++_p;
 			}
 		}
 		if (zf)
@@ -1464,27 +1453,19 @@ static const char* _strstr2_fast(const char* str, const char* pattern)
 	while (true)
 	{
 		const __m128i str16 = _mm_load_si128(p128);
-		const int zf = _mm_cmpistrz(pattern_end_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
-		const int cf = _mm_cmpistrc(pattern_end_c16, str16, flags);
+		const int zf = _mm_cmpistrz(pattern_top_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+		const int cf = _mm_cmpistrc(pattern_top_c16, str16, flags);
 		if (cf)
 		{
-			const __m128i mask = _mm_cmpistrm(pattern_end_c16, str16, flags);
-			int found_bits = *reinterpret_cast<const int*>(&mask);
-			const char* _p = reinterpret_cast<const char*>(p128) - pattern_max;
+			const __m128i mask = _mm_cmpistrm(pattern_top_c16, str16, flags);
+			unsigned int found_bits = *reinterpret_cast<const int*>(&mask);
+			const char* _p = reinterpret_cast<const char*>(p128);
 			while (found_bits)
 			{
-				if (found_bits & 1)
-				{
-					if (*_p == pattern_top_c)
-						return _p;
-					found_bits >>= skip;
-					_p += skip;
-				}
-				else
-				{
-					found_bits >>= 1;
-					++_p;
-				}
+				if ((found_bits & 1) && *_p == pattern_top_c && *(_p + 1) == pattern_2nd_c)
+					return _p;
+				found_bits >>= 1;
+				++_p;
 			}
 		}
 		if (zf)
@@ -1492,6 +1473,129 @@ static const char* _strstr2_fast(const char* str, const char* pattern)
 		++p128;
 	}
 	return nullptr;//dummy
+}
+//SSE版strstr補助関数:16バイトアライメント＋16バイトアライメント時
+//戻り値: 0 ... 不一致, 1 ... 一致, 2 ... strの方が短い
+static int _strstr_fast_cmp_case0(const char* str, const char* pattern)
+{
+	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+	const __m128i* p1 = reinterpret_cast<const __m128i*>(str);
+	const __m128i* p2 = reinterpret_cast<const __m128i*>(pattern);
+	while (true)
+	{
+		const __m128i str16_1 = _mm_load_si128(p1);
+		const __m128i str16_2 = _mm_load_si128(p2);
+		const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、コンパイル後は1回の cmpistri になる（はず）
+		const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+		const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+		if (cf)
+		{
+			const char c1 = *(reinterpret_cast<const char*>(p1) + pos);
+			const char c2 = *(reinterpret_cast<const char*>(p2) + pos);
+			return (c2 == '\0') | ((c1 == '\0') << 1);
+		}
+		if (zf)
+			return 1;
+		++p1;
+		++p2;
+	}
+	return 0;//dummy
+}
+//SSE版strstr補助関数:非16バイトアライメント＋16バイトアライメント時
+//戻り値: 0 ... 不一致, 1 ... 一致, 2 ... strの方が短い
+static int _strstr_fast_cmp_case1(const char* str, const char* pattern)
+{
+	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+	const char* p1 = str;
+	const __m128i* p2 = reinterpret_cast<const __m128i*>(pattern);
+	while (true)
+	{
+		const __m128i str16_1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1));
+		const __m128i str16_2 = _mm_load_si128(p2);
+		const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、コンパイル後は1回の cmpistri になる（はず）
+		const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+		const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+		if (cf)
+		{
+			const char c1 = *(p1 + pos);
+			const char c2 = *(reinterpret_cast<const char*>(p2)+pos);
+			return (c2 == '\0') | ((c1 == '\0') << 1);
+		}
+		if (zf)
+			return 1;
+		p1 += 16;
+		++p2;
+	}
+	return 0;//dummy
+}
+//SSE版strstr補助関数:16バイトアライメント＋非16バイトアライメント時
+//戻り値: 0 ... 不一致, 1 ... 一致, 2 ... strの方が短い
+static int _strstr_fast_cmp_case2(const char* str, const char* pattern)
+{
+	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+	const __m128i* p1 = reinterpret_cast<const __m128i*>(str);
+	const char* p2 = pattern;
+	while (true)
+	{
+		const __m128i str16_1 = _mm_load_si128(p1);
+		const __m128i str16_2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2));
+		const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、コンパイル後は1回の cmpistri になる（はず）
+		const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+		const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+		if (cf)
+		{
+			const char c1 = *(reinterpret_cast<const char*>(p1)+pos);
+			const char c2 = *(p2 + pos);
+			return (c2 == '\0') | ((c1 == '\0') << 1);
+		}
+		if (zf)
+			return 1;
+		++p1;
+		p2 += 16;
+	}
+	return 0;//dummy
+}
+//SSE版strstr補助関数:16バイトアライメント＋非16バイトアライメント時
+//戻り値: 0 ... 不一致, 1 ... 一致, 2 ... strの方が短い
+static int _strstr_fast_cmp_case3(const char* str, const char* pattern)
+{
+	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+	const char* p1 = str;
+	const char* p2 = pattern;
+	while (true)
+	{
+		const __m128i str16_1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1));
+		const __m128i str16_2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2));
+		const int cf          = _mm_cmpistrc(str16_1, str16_2, flags);//※この三行は、コンパイル後は1回の cmpistri になる（はず）
+		const int zf          = _mm_cmpistrz(str16_1, str16_2, flags);
+		const std::size_t pos = _mm_cmpistri(str16_1, str16_2, flags);
+		if (cf)
+		{
+			const char c1 = *(reinterpret_cast<const char*>(p1)+pos);
+			const char c2 = *(reinterpret_cast<const char*>(p2)+pos);
+			return (c2 == '\0') | ((c1 == '\0') << 1);
+		}
+		if (zf)
+			return 1;
+		p1 += 16;
+		p2 += 16;
+	}
+	return 0;//dummy
+}
+//SSE版strstr:補助関数テーブル
+typedef int(*_strstr_fast_cmp_casex_t)(const char* str, const char* pattern);
+static const _strstr_fast_cmp_casex_t _strstr_fast_cmp_casex[] =
+{
+	_strstr_fast_cmp_case0,
+	_strstr_fast_cmp_case1,
+	_strstr_fast_cmp_case2,
+	_strstr_fast_cmp_case3
+};
+//SSE版strstr補助関数
+//戻り値: 0 ... 不一致, 1 ... 一致, 2 ... strの方が短い
+static inline int _strstr_fast_cmp(const char* str, const char* pattern)
+{
+	return _strstr_fast_cmp_casex[_str_case(str, pattern)](str, pattern);
 }
 //SSE版strstr
 const char* _strstr_fast(const char* str, const char* pattern)
@@ -1510,142 +1614,101 @@ const char* _strstr_fast(const char* str, const char* pattern)
 		p = found + 1;
 	}
 	return nullptr;//dummy
-#else//BM法に近い手法
+#else
 //nullチェックしない
 //	if (!str)
 //		return 0;
 	//patternの長さに基づいて、処理を振り分ける
-	const std::size_t pattern_len = strlen_fast(pattern);
-	if (pattern_len < 3)
+	if (*pattern == '\0')//パターンが0文字の時
+		return str;
+	if (*(pattern + 1) == '\0')//パターンが1文字の時
 	{
-		switch (pattern_len)
-		{
-		case 0://パターンが0文字の時
-			return str;
-		case 1://パターンが1文字の時
-			if (*str == '\0')
-				return nullptr;
-			return strchr(str, *pattern);
-		default://case 2://パターンが2文字の時
-			if (*str == '\0' || *(str + 1) == '\0')
-				return nullptr;
-			return _strstr2_fast(str, pattern);
-		}
+		if (*str == '\0')
+			return nullptr;
+		return strchr(str, *pattern);
 	}
-	const std::size_t pattern_max = pattern_len - 1;
-	//patternの長さに基づいて、検索開始位置を得る
-	const char* str_begin = str + pattern_max;
+	if (*(pattern + 2) == '\0')//パターンが2文字の時
 	{
-		//検索開始位置までに文字列の終端があったら終了
-		static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-		static const __m128i null = _mm_setzero_si128();
-		const char* p = str;
-		const std::size_t str_over = reinterpret_cast<intptr_t>(p) & 0xf;
-		if (str_over != 0)
-		{
-			//非16バイトアライメント時
-			const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
-			const int zf          = _mm_cmpistrz(null, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
-			const std::size_t pos = _mm_cmpistri(null, str16, flags);
-			if (zf)
-			{
-				if (pos <= pattern_max)
-					return nullptr;
-			}
-			p += (16 - str_over);
-		}
-		//16バイトアライメント時
-		const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
-		while (reinterpret_cast<const char*>(p128) < str_begin)
-		{
-			const __m128i str16 = _mm_load_si128(p128);
-			const int zf          = _mm_cmpistrz(null, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
-			const std::size_t pos = _mm_cmpistri(null, str16, flags);
-			if (zf)
-			{
-				if (reinterpret_cast<const char*>(p128) + pos <= str_begin)
-					return nullptr;
-				break;
-			}
-			++p128;
-		}
+		if (*str == '\0' || *(str + 1) == '\0')
+			return nullptr;
+		return _strstr_fast_2(str, pattern);
 	}
-	//検索開始
+	const char pattern_top_c = *pattern;//先頭の文字
+	const char pattern_2nd_c = *(pattern + 1);//2文字目の文字
+	const __m128i pattern_top_c16 = _mm_set1_epi8(pattern_top_c);
+	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+	const char* p = str;
+	const std::size_t str_over = reinterpret_cast<intptr_t>(p) & 0xf;
+	if (str_over != 0)
 	{
-		const std::size_t pattern_max = pattern_len - 1;
-		const char* pattern_end = pattern + pattern_max;
-		const char* pattern_end_1 = pattern_end - 1;
-		const char pattern_top_c = *pattern;//先頭の文字
-		const char pattern_end_c = *pattern_end;//末尾の文字
-		const char pattern_end_1_c = *pattern_end_1;//末尾の一つ前の文字
-		const __m128i pattern_end_c16 = _mm_set1_epi8(pattern_end_c);
-		static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
-		const int skip = 1 + (pattern_end_1_c != pattern_end_c);//文字列の照合に失敗した場合にスキップする文字数
-		const char* p = str_begin;
-		const std::size_t str_over = reinterpret_cast<intptr_t>(p)& 0xf;
-		if (str_over != 0)
+		//非16バイトアライメント時
+		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
+		const int zf = _mm_cmpistrz(pattern_top_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+		const int cf = _mm_cmpistrc(pattern_top_c16, str16, flags);
+		if (cf)
 		{
-			//非16バイトアライメント時
-			const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
-			const int zf = _mm_cmpistrz(pattern_end_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
-			const int cf = _mm_cmpistrc(pattern_end_c16, str16, flags);
-			if (cf)
+			const __m128i mask = _mm_cmpistrm(pattern_top_c16, str16, flags);
+			unsigned int found_bits = *reinterpret_cast<const int*>(&mask);
+			const char* _p = p;
+			while (found_bits)
 			{
-				const __m128i mask = _mm_cmpistrm(pattern_end_c16, str16, flags);
-				int found_bits = *reinterpret_cast<const int*>(&mask);
-				const char* _p = p - pattern_max;
-				while (found_bits)
+				if (found_bits & 1)
 				{
-					if (found_bits & 1)
+					if (*_p == pattern_top_c && *(_p + 1) == pattern_2nd_c)
 					{
-						if (*_p == pattern_top_c && strncmp_fast(_p, pattern, pattern_len) == 0)
-							return _p;
-						found_bits >>= skip;
-						_p += skip;
-					}
-					else
-					{
-						found_bits >>= 1;
-						++_p;
+						const int cmp = _strstr_fast_cmp(_p, pattern);
+						if (cmp != 0)
+						{
+							if (cmp == 1)
+								return _p;
+							else
+								return nullptr;
+						}
 					}
 				}
+				found_bits >>= 1;
+				++_p;
 			}
-			if (zf)
-				return nullptr;
-			p += (16 - str_over);
 		}
-		//16バイトアライメント時
-		const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
-		while (true)
+		if (zf)
+			return nullptr;
+		p += (16 - str_over);
+	}
+	//16バイトアライメント時
+	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
+	while (true)
+	{
+		const __m128i str16 = _mm_load_si128(p128);
+		const int zf = _mm_cmpistrz(pattern_top_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
+		const int cf = _mm_cmpistrc(pattern_top_c16, str16, flags);
+		if (cf)
 		{
-			const __m128i str16 = _mm_load_si128(p128);
-			const int zf = _mm_cmpistrz(pattern_end_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
-			const int cf = _mm_cmpistrc(pattern_end_c16, str16, flags);
-			if (cf)
+			const __m128i mask = _mm_cmpistrm(pattern_top_c16, str16, flags);
+			unsigned int found_bits = *reinterpret_cast<const int*>(&mask);
+			const char* _p = reinterpret_cast<const char*>(p128);
+			while (found_bits)
 			{
-				const __m128i mask = _mm_cmpistrm(pattern_end_c16, str16, flags);
-				int found_bits = *reinterpret_cast<const int*>(&mask);
-				const char* _p = reinterpret_cast<const char*>(p128) - pattern_max;
-				while (found_bits)
+				if (found_bits & 1)
 				{
-					if (found_bits & 1)
+					if (*_p == pattern_top_c && *(_p + 1) == pattern_2nd_c)
 					{
-						if (*_p == pattern_top_c && strncmp_fast(_p, pattern, pattern_len) == 0)
-							return _p;
-						found_bits >>= skip;
-						_p += skip;
-					}
-					else
-					{
-						found_bits >>= 1;
-						++_p;
+						const int cmp = _strstr_fast_cmp(_p, pattern);
+						if (cmp != 0)
+						{
+							if (cmp == 1)
+								return _p;
+							else
+								return nullptr;
+						}
 					}
 				}
+				found_bits >>= 1;
+				++_p;
 			}
-			if (zf)
-				return nullptr;
-			++p128;
 		}
+		if (zf)
+			return nullptr;
+		++p128;
 	}
 	return nullptr;//dummy
 #endif
@@ -2535,10 +2598,16 @@ void testOpt07_Type2_After_1time()
 		STR("12312312313132132123x23123132", "x23");
 		STR("12341234", "4");
 		STR("12341234", "");
-		STR("12312312313132132123x23123132", "x");
-		STR("12312312313132132123x23123132", "");
-		STR("12312312313132132123x23123132", "123x23");
+		STR("12312312313132132123x123123132", "x");
+		STR("12312312313132132123x123123132", "");
+		STR("12312312313132132123x123123132", "123x123");
 		STR("1234567890abcdef1234567890abcdefx234567890abcdef", "x234567890abcdef");
+		STR("1234567890abcdef1234567890abcdefx234567890abcdef", "x234567890abcdefg");
+		STR("1234567890abcdef1234567890abcdefx234567890abcdefg", "x234567890abcdefg");
+		STR("1234567890abcdef1234567890abcdefx234567890abcdefgh", "x234567890abcdefg");
+		STR("1234567890abcdef1234567890abcdefx234567890abcdefg", "x234567890abcdefx");
+		STR("1234567890abcdef1234567890abcdefx234567890abcdefx", "x234567890abcdefx");
+		STR("1234567890abcdef1234567890abcdefx234567890abcdefxy", "x234567890abcdefx");
 		STR("1234567890abcde!!234567890abcdef", "!!");
 		STR("!1234567890!abcdef!!1234567890!abcdef!", "!!");
 		STR("1234567890abcdef", "1234567890abcdef");

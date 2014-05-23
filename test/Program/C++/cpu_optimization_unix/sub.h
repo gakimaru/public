@@ -227,6 +227,11 @@ inline std::size_t strlen_fast(const char* str)
 	return _strlen_fast(str);
 #endif//STRLEN_FAST_IS_NOT_FAST
 }
+inline std::size_t strnlen_fast(const char* str, const std::size_t max_len)
+{
+	extern std::size_t _strnlen_fast(const char* str, const std::size_t max_len);
+	return _strnlen_fast(str, max_len);
+}
 inline int strcmp_fast(const char* str1, const char* str2)
 {
 #ifdef STRCMP_FAST_IS_NOT_FAST
@@ -271,6 +276,11 @@ inline const char* strstr_fast(const char* str, const char* pattern)
 	extern const char* _strstr_fast(const char* str, const char* pattern);
 	return _strstr_fast(str, pattern);
 #endif//STRSTR_FAST_IS_NOT_FAST
+}
+inline const char* strstr0_fast(const char* str, const char* pattern)
+{
+	extern const char* _strstr0_fast(const char* str, const char* pattern);
+	return _strstr0_fast(str, pattern);
 }
 inline const char* strcpy_fast(char* dst, const char* src)
 {

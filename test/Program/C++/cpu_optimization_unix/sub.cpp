@@ -1666,10 +1666,10 @@ const char* _strstr_fast(const char* str, const char* pattern)
 		p = found + 1;
 	}
 	return nullptr;//dummy
-#elif 1//SSE命令使用 ※このやり方がベストだが、VC++のstrstrよりもはるかに遅い（GCCのstrstrよりは速い）
-//nullチェックしない
-//	if (!str)
-//		return 0;
+#else//SSE命令使用 ※このやり方がベストだが、VC++のstrstrよりもはるかに遅い（GCCのstrstrよりは速い）
+	//nullチェックしない
+	//	if (!str)
+	//		return 0;
 	//patternの長さに基づいて、処理を振り分ける
 	if (*pattern == '\0')//パターンが0文字の時
 		return str;
@@ -1690,7 +1690,7 @@ const char* _strstr_fast(const char* str, const char* pattern)
 	const __m128i pattern_top_c16 = _mm_set1_epi8(pattern_top_c);
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
 	const char* p = str;
-	const std::size_t str_over = reinterpret_cast<intptr_t>(p) & 0xf;
+	const std::size_t str_over = reinterpret_cast<intptr_t>(p)& 0xf;
 	if (str_over != 0)
 	{
 		//非16バイトアライメント時
@@ -1763,8 +1763,16 @@ const char* _strstr_fast(const char* str, const char* pattern)
 		++p128;
 	}
 	return nullptr;//dummy
-#elif 0//【参考】BM法（Boyer-Moore法）※SSE命令未使用
-	const std::size_t pattern_len = strlen_fast(pattern);
+#endif
+}
+//SSE版strstr_bm
+//※BM（Boyer-Moore）法バージョン
+//※文字列が長い時（とくにパターンが長い時）には有利なアルゴリズムだが、
+//　短い場合は、スキップ文字数を事前計算する分遅くなる
+const char* _strstrbm_fast(const char* str, const char* pattern)
+{
+#if 0//※SSE命令未使用版
+	std::size_t pattern_len = strlen_fast(pattern);
 	if (*pattern == '\0')//パターンが0文字の時
 		return str;
 	if (*(pattern + 1) == '\0')//パターンが1文字の時
@@ -1776,6 +1784,11 @@ const char* _strstr_fast(const char* str, const char* pattern)
 	const std::size_t str_len = strlen_fast(str);
 	if (str_len < pattern_len)
 		return nullptr;
+	int skip[256];
+	for (std::size_t i = 0; i < 256; ++i)
+		skip[i] = pattern_len;
+	for (std::size_t i = 0; i < pattern_len; ++i)
+		skip[static_cast<unsigned char>(pattern[i])] = pattern_len - i - 1;
 	const std::size_t pattern_term = pattern_len - 1;
 	const char* pattern_term_p = pattern + pattern_term;
 	const char* pattern_term_1_p = pattern_term_p - 1;
@@ -1801,6 +1814,7 @@ const char* _strstr_fast(const char* str, const char* pattern)
 				--_str_p;
 				_str_c = *_str_p;
 			}
+		#if 0
 			//パターンの途中の文字が不一致 ... パターンの中に _str_c が見つかる位置まで移動
 			--_pattern_p;
 			++str_p;
@@ -1811,23 +1825,22 @@ const char* _strstr_fast(const char* str, const char* pattern)
 				--_pattern_p;
 				++str_p;
 			}
+		#else
+			//パターンの途中の文字が不一致 ... パターンの中に次の文字が見つかる位置まで移動
+			_str_c = *(++str_p);
+			const int _skip = skip[static_cast<unsigned char>(_str_c)];
+			str_p += _skip;
+		#endif
 		}
 		else
 		{
 			//パターンの末尾の文字が不一致 ... パターンの中に str_c が見つかる位置まで移動
-			++str_p;
-			const char* _pattern_p = pattern_term_1_p;
-			while (_pattern_p > pattern)
-			{
-				if (*_pattern_p == str_c)
-					break;
-				--_pattern_p;
-				++str_p;
-			}
+			const int _skip = skip[static_cast<unsigned char>(str_c)];
+			str_p += _skip;
 		}
 	}
 	return nullptr;
-#elif 0//【参考】BM法（Boyer-Moore法）※SSE命令使用
+#else//※SSE命令使用版
 	const std::size_t pattern_len = strlen_fast(pattern);
 	if (*pattern == '\0')//パターンが0文字の時
 		return str;
@@ -1840,6 +1853,11 @@ const char* _strstr_fast(const char* str, const char* pattern)
 	const std::size_t str_len = strnlen_fast(str, pattern_len);
 	if (str_len < pattern_len)
 		return nullptr;
+	int skip[256];
+	for (std::size_t i = 0; i < 256; ++i)
+		skip[i] = pattern_len;
+	for (std::size_t i = 0; i < pattern_len; ++i)
+		skip[pattern[i]] = pattern_len - i - 1;
 	const std::size_t pattern_term = pattern_len - 1;
 	const char* pattern_term_p = pattern + pattern_term;
 	const char* pattern_term_1_p = pattern_term_p - 1;
@@ -1875,6 +1893,7 @@ const char* _strstr_fast(const char* str, const char* pattern)
 						--_str_p;
 						_str_c = *_str_p;
 					}
+				#if 0
 					//パターンの途中の文字が不一致 ... パターンの中に _str_c が見つかる位置まで移動
 					--_pattern_p;
 					++str_p;
@@ -1887,6 +1906,14 @@ const char* _strstr_fast(const char* str, const char* pattern)
 						++str_p;
 						found_bits >>= 1;
 					}
+				#else
+					//パターンの途中の文字が不一致 ... パターンの中に次の文字が見つかる位置まで移動
+					_str_c = *(++str_p);
+					found_bits >>= 1;
+					const int _skip = skip[static_cast<unsigned char>(_str_c)];
+					str_p += _skip;
+					found_bits >>= _skip;
+				#endif
 				}
 				else
 				{
@@ -1901,17 +1928,9 @@ const char* _strstr_fast(const char* str, const char* pattern)
 		{
 			if (zf)
 				return nullptr;
-			//パターンの末尾の文字が不一致 ... パターンの中に str_c が見つかる位置まで移動
-			str_p += 16;
-			const char str_c = *str_p;
-			const char* _pattern_p = pattern_term_1_p;
-			while (_pattern_p > pattern)
-			{
-				if (*_pattern_p == str_c)
-					break;
-				--_pattern_p;
-				++str_p;
-			}
+			//パターンの末尾の文字が不一致 ... パターンの中に次の文字が見つかる位置まで移動
+			const char str_c = *(str_p += 16);
+			const int _skip = skip[static_cast<unsigned char>(str_c)];
 		}
 	}
 	return nullptr;
@@ -2907,6 +2926,7 @@ void testOpt07_Type2_After_1time()
 		STR("123a123b123c123d123e123f123x123h123i123j", "x");
 		STR("123a123b123c123d123e123f123x123h123i123j", "");
 		STR("a123b1123c2123d3123e1123f2123g3123x123h1123i2123jk", "123x123");
+		STR("123aあ123bあい123cあいう123dあいうえ123eいうえお123fあいうえおか123x", "あいうえお");
 		STR("1234567890abcdef1234567890abcdefx234567890abcdef", "x234567890abcdef");
 		STR("1234567890abcdef1234567890abcdefx234567890abcdef", "x234567890abcdefg");
 		STR("1234567890abcdef1234567890abcdefx234567890abcdefg", "x234567890abcdefg");
@@ -2916,13 +2936,65 @@ void testOpt07_Type2_After_1time()
 		STR("1234567890abcdef1234567890abcdefx234567890abcdefxy", "x234567890abcdefx");
 		STR("1234567890abcde!!234567890abcdef", "!!");
 		STR("!1234567890!abcdef!!1234567890!abcdef!", "!!");
+		STR("1234567890abcd!!!!34567890abcdef", "!!!!");
+		STR("1234567890abcdef!!!!1234567890abcdef", "!!!!");
+		STR("!12345678!90abcdef!!!!12345678!90abcdef!", "!!!!");
+		STR("!!12345678!!90abcdef!!!!12345678!!90abcdef!!", "!!!!");
+		STR("!!!12345678!!!90abcdef!!!!12345678!!!90abcdef!!!", "!!!!");
+		STR("!!!12345678!!!90abcdef!!!12345678!!!90abcdef!!!", "!!!!");
+		STR("!!!12345678!!!90abcdef!!!12345678!!!90abcdef!!!!", "!!!!");
 		STR("1234567890abcdef", "1234567890abcdef");
 		STR("1234567890abcdefgh", "1234567890abcdefg");
 		STR("1234567890abcdef1234567890abcdefgh", "1234567890abcdefg");
 		STR("10234567890abcdefgh1234567890abcdefgh", "1234567890abcdefg");
 		STR("aaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabcdefghijklmnopqrstuvwxyz", "abcdefghijklmnopqrstuvwxyz");
 		STR("abcdefghijklmnopqrstuvwxyzaaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabcdefghijklmnopqrstuvwxyz", "bbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabc");
-#undef STR
+		#undef STR
+	}
+#endif
+#if 1
+	{
+		#define STRBM(s1, s2) printf("strbm(\"%s\", \"%s\")=\"%s\"(\"%s\")\n", s1, s2, strstrbm_fast(s1, s2), strstr(s1, s2));
+		STRBM("1", "23");
+		STRBM("12", "23");
+		STRBM("123", "23");
+		STRBM("1234", "23");
+		STRBM("12341", "23");
+		STRBM("123412", "23");
+		STRBM("1234123", "23");
+		STRBM("12341234", "12x");
+		STRBM("12341234", "x23");
+		STRBM("12312312313132132123x23123132", "12x");
+		STRBM("12312312313132132123x23123132", "x23");
+		STRBM("12341234", "4");
+		STRBM("12341234", "");
+		STRBM("123a123b123c123d123e123f123x123h123i123j", "x");
+		STRBM("123a123b123c123d123e123f123x123h123i123j", "");
+		STRBM("a123b1123c2123d3123e1123f2123g3123x123h1123i2123jk", "123x123");
+		STRBM("123aあ123bあい123cあいう123dあいうえ123eいうえお123fあいうえおか123x", "あいうえお");
+		STRBM("1234567890abcdef1234567890abcdefx234567890abcdef", "x234567890abcdef");
+		STRBM("1234567890abcdef1234567890abcdefx234567890abcdef", "x234567890abcdefg");
+		STRBM("1234567890abcdef1234567890abcdefx234567890abcdefg", "x234567890abcdefg");
+		STRBM("1234567890abcdef1234567890abcdefx234567890abcdefgh", "x234567890abcdefg");
+		STRBM("1234567890abcdef1234567890abcdefx234567890abcdefg", "x234567890abcdefx");
+		STRBM("1234567890abcdef1234567890abcdefx234567890abcdefx", "x234567890abcdefx");
+		STRBM("1234567890abcdef1234567890abcdefx234567890abcdefxy", "x234567890abcdefx");
+		STRBM("1234567890abcde!!234567890abcdef", "!!");
+		STRBM("!1234567890!abcdef!!1234567890!abcdef!", "!!");
+		STRBM("1234567890abcd!!!!34567890abcdef", "!!!!");
+		STRBM("1234567890abcdef!!!!1234567890abcdef", "!!!!");
+		STRBM("!12345678!90abcdef!!!!12345678!90abcdef!", "!!!!");
+		STRBM("!!12345678!!90abcdef!!!!12345678!!90abcdef!!", "!!!!");
+		STRBM("!!!12345678!!!90abcdef!!!!12345678!!!90abcdef!!!", "!!!!");
+		STRBM("!!!12345678!!!90abcdef!!!12345678!!!90abcdef!!!", "!!!!");
+		STRBM("!!!12345678!!!90abcdef!!!12345678!!!90abcdef!!!!", "!!!!");
+		STRBM("1234567890abcdef", "1234567890abcdef");
+		STRBM("1234567890abcdefgh", "1234567890abcdefg");
+		STRBM("1234567890abcdef1234567890abcdefgh", "1234567890abcdefg");
+		STRBM("10234567890abcdefgh1234567890abcdefgh", "1234567890abcdefg");
+		STRBM("aaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabcdefghijklmnopqrstuvwxyz", "abcdefghijklmnopqrstuvwxyz");
+		STRBM("abcdefghijklmnopqrstuvwxyzaaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabcdefghijklmnopqrstuvwxyz", "bbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabc");
+		#undef STRBM
 	}
 #endif
 #if 1
@@ -3135,9 +3207,13 @@ const char* testOpt07_Type2_strrchr_After(const int dummy, const char* str, cons
 {
 	return strrchr_fast(str, c);
 }
-const char* testOpt07_Type2_strstr_After(const int dummy, const char* str1, const char* str2)
+const char* testOpt07_Type2_strstr_After1(const int dummy, const char* str1, const char* str2)
 {
 	return strstr_fast(str1, str2);
+}
+const char* testOpt07_Type2_strstr_After2(const int dummy, const char* str1, const char* str2)
+{
+	return strstrbm_fast(str1, str2);
 }
 const char* testOpt07_Type2_strcpy_After(const int dummy, char* dst, const char* src)
 {

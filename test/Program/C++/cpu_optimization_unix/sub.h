@@ -277,6 +277,11 @@ inline const char* strstr_fast(const char* str, const char* pattern)
 	return _strstr_fast(str, pattern);
 #endif//STRSTR_FAST_IS_NOT_FAST
 }
+inline const char* strstrbm_fast(const char* str, const char* pattern)
+{
+	extern const char* _strstrbm_fast(const char* str, const char* pattern);
+	return _strstrbm_fast(str, pattern);
+}
 inline const char* strstr0_fast(const char* str, const char* pattern)
 {
 	extern const char* _strstr0_fast(const char* str, const char* pattern);
@@ -306,7 +311,8 @@ int testOpt07_Type2_strcmp_After(const int dummy, const char* str1, const char* 
 int testOpt07_Type2_strncmp_After(const int dummy, const char* str1, const char* str2, const std::size_t max_len);
 const char* testOpt07_Type2_strchr_After(const int dummy, const char* str, const char c);
 const char* testOpt07_Type2_strrchr_After(const int dummy, const char* str, const char c);
-const char* testOpt07_Type2_strstr_After(const int dummy, const char* str1, const char* str2);
+const char* testOpt07_Type2_strstr_After1(const int dummy, const char* str1, const char* str2);
+const char* testOpt07_Type2_strstr_After2(const int dummy, const char* str1, const char* str2);
 const char* testOpt07_Type2_strcpy_After(const int dummy, char* dst, const char* src);
 const char* testOpt07_Type2_strncpy_After(const int dummy, char* dst, const char* src, const std::size_t max_len);
 

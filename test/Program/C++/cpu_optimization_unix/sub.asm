@@ -3,25 +3,25 @@
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_00_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_00_aPcU8__vectorx:
-LFB3571:
+LFB3573:
 	.cfi_startproc
 	rep ret
 	.cfi_endproc
-LFE3571:
+LFE3573:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_01_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_01_aPcU8__vectorx:
-LFB3573:
+LFB3575:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	pextrb	$0, %xmm0, (%eax)
 	ret
 	.cfi_endproc
-LFE3573:
+LFE3575:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_02_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_02_aPcU8__vectorx:
-LFB3575:
+LFB3577:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -33,11 +33,11 @@ LFB3575:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3575:
+LFE3577:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_03_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_03_aPcU8__vectorx:
-LFB3577:
+LFB3579:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -51,11 +51,11 @@ LFB3577:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3577:
+LFE3579:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_04_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_04_aPcU8__vectorx:
-LFB3579:
+LFB3581:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -67,11 +67,11 @@ LFB3579:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3579:
+LFE3581:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_05_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_05_aPcU8__vectorx:
-LFB3581:
+LFB3583:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -85,11 +85,11 @@ LFB3581:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3581:
+LFE3583:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_06_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_06_aPcU8__vectorx:
-LFB3583:
+LFB3585:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -103,11 +103,11 @@ LFB3583:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3583:
+LFE3585:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_07_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_07_aPcU8__vectorx:
-LFB3585:
+LFB3587:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -123,32 +123,32 @@ LFB3585:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3585:
+LFE3587:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_08_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_08_aPcU8__vectorx:
-LFB3587:
+LFB3589:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	movq	%xmm0, (%eax)
 	ret
 	.cfi_endproc
-LFE3587:
+LFE3589:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_09_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_09_aPcU8__vectorx:
-LFB3589:
+LFB3591:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	movq	%xmm0, (%eax)
 	pextrb	$8, %xmm0, 8(%eax)
 	ret
 	.cfi_endproc
-LFE3589:
+LFE3591:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_10_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_10_aPcU8__vectorx:
-LFB3591:
+LFB3593:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -162,11 +162,11 @@ LFB3591:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3591:
+LFE3593:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_11_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_11_aPcU8__vectorx:
-LFB3593:
+LFB3595:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -182,11 +182,11 @@ LFB3593:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3593:
+LFE3595:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_12_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_12_aPcU8__vectorx:
-LFB3595:
+LFB3597:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -200,11 +200,11 @@ LFB3595:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3595:
+LFE3597:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_13_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_13_aPcU8__vectorx:
-LFB3597:
+LFB3599:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -220,11 +220,11 @@ LFB3597:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3597:
+LFE3599:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_14_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_14_aPcU8__vectorx:
-LFB3599:
+LFB3601:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -240,11 +240,11 @@ LFB3599:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3599:
+LFE3601:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_15_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_15_aPcU8__vectorx:
-LFB3601:
+LFB3603:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -262,21 +262,21 @@ LFB3601:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3601:
+LFE3603:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_16_aPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_16_aPcU8__vectorx:
-LFB3603:
+LFB3605:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	movdqa	%xmm0, (%eax)
 	ret
 	.cfi_endproc
-LFE3603:
+LFE3605:
 	.p2align 4,,15
 	.def	__ZNSt17_Function_handlerIFvRiEZZ22testOpt03_Type3_BeforeR11dataOpt03_tENKUliiE_clEiiEUlS0_E_E9_M_invokeERKSt9_Any_dataS0_;	.scl	3;	.type	32;	.endef
 __ZNSt17_Function_handlerIFvRiEZZ22testOpt03_Type3_BeforeR11dataOpt03_tENKUliiE_clEiiEUlS0_E_E9_M_invokeERKSt9_Any_dataS0_:
-LFB3789:
+LFB3792:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	movl	(%eax), %eax
@@ -286,11 +286,11 @@ LFB3789:
 	movl	%edx, (%eax)
 	ret
 	.cfi_endproc
-LFE3789:
+LFE3792:
 	.p2align 4,,15
 	.def	__ZNSt17_Function_handlerIFvRiEZZ22testOpt03_Type3_BeforeR11dataOpt03_tENKUliE0_clEiEUlS0_E_E9_M_invokeERKSt9_Any_dataS0_;	.scl	3;	.type	32;	.endef
 __ZNSt17_Function_handlerIFvRiEZZ22testOpt03_Type3_BeforeR11dataOpt03_tENKUliE0_clEiEUlS0_E_E9_M_invokeERKSt9_Any_dataS0_:
-LFB3796:
+LFB3799:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	movl	(%eax), %eax
@@ -298,11 +298,11 @@ LFB3796:
 	addl	$1, (%eax)
 	ret
 	.cfi_endproc
-LFE3796:
+LFE3799:
 	.p2align 4,,15
 	.def	__ZNSt17_Function_handlerIFivEZ9setLambdaRiEUlvE_E9_M_invokeERKSt9_Any_data;	.scl	3;	.type	32;	.endef
 __ZNSt17_Function_handlerIFivEZ9setLambdaRiEUlvE_E9_M_invokeERKSt9_Any_data:
-LFB3881:
+LFB3884:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	movl	(%eax), %eax
@@ -312,11 +312,11 @@ LFB3881:
 	movl	%eax, (%edx)
 	ret
 	.cfi_endproc
-LFE3881:
+LFE3884:
 	.p2align 4,,15
 	.def	__ZNSt17_Function_handlerIFivEZ9setLambdaRiEUlvE0_E9_M_invokeERKSt9_Any_data;	.scl	3;	.type	32;	.endef
 __ZNSt17_Function_handlerIFivEZ9setLambdaRiEUlvE0_E9_M_invokeERKSt9_Any_data:
-LFB3885:
+LFB3888:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	movl	(%eax), %eax
@@ -326,22 +326,22 @@ LFB3885:
 	movl	%eax, (%edx)
 	ret
 	.cfi_endproc
-LFE3885:
+LFE3888:
 	.p2align 4,,15
 	.def	__ZNSt17_Function_handlerIFivEZ9setLambdaRiEUlvE1_E9_M_invokeERKSt9_Any_data;	.scl	3;	.type	32;	.endef
 __ZNSt17_Function_handlerIFivEZ9setLambdaRiEUlvE1_E9_M_invokeERKSt9_Any_data:
-LFB3889:
+LFB3892:
 	.cfi_startproc
 	movl	__ZZ9setLambdaRiE14static_counter, %eax
 	addl	$1, %eax
 	movl	%eax, __ZZ9setLambdaRiE14static_counter
 	ret
 	.cfi_endproc
-LFE3889:
+LFE3892:
 	.p2align 4,,15
 	.def	__ZL18_strcpy_fast_case2PcPKc;	.scl	3;	.type	32;	.endef
 __ZL18_strcpy_fast_case2PcPKc:
-LFB3609:
+LFB3611:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -394,11 +394,11 @@ L48:
 	call	___cxa_guard_release
 	jmp	L37
 	.cfi_endproc
-LFE3609:
+LFE3611:
 	.p2align 4,,15
 	.def	__ZL18_strcpy_fast_case0PcPKc;	.scl	3;	.type	32;	.endef
 __ZL18_strcpy_fast_case0PcPKc:
-LFB3607:
+LFB3609:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -451,11 +451,11 @@ L62:
 	call	___cxa_guard_release
 	jmp	L52
 	.cfi_endproc
-LFE3607:
+LFE3609:
 	.p2align 4,,15
 	.def	__ZL19_strncpy_fast_case2PcPKcj;	.scl	3;	.type	32;	.endef
 __ZL19_strncpy_fast_case2PcPKcj:
-LFB3616:
+LFB3618:
 	.cfi_startproc
 	pushl	%edi
 	.cfi_def_cfa_offset 8
@@ -547,11 +547,11 @@ L80:
 	call	___cxa_guard_release
 	jmp	L66
 	.cfi_endproc
-LFE3616:
+LFE3618:
 	.p2align 4,,15
 	.def	__ZL19_strncpy_fast_case0PcPKcj;	.scl	3;	.type	32;	.endef
 __ZL19_strncpy_fast_case0PcPKcj:
-LFB3614:
+LFB3616:
 	.cfi_startproc
 	pushl	%edi
 	.cfi_def_cfa_offset 8
@@ -645,11 +645,11 @@ L97:
 	call	___cxa_guard_release
 	jmp	L83
 	.cfi_endproc
-LFE3614:
+LFE3616:
 	.p2align 4,,15
 	.def	__ZL18_strcmp_fast_case0PKcS0_;	.scl	3;	.type	32;	.endef
 __ZL18_strcmp_fast_case0PKcS0_:
-LFB3551:
+LFB3552:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -695,11 +695,11 @@ L100:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3551:
+LFE3552:
 	.p2align 4,,15
 	.def	__ZL18_strcmp_fast_case1PKcS0_;	.scl	3;	.type	32;	.endef
 __ZL18_strcmp_fast_case1PKcS0_:
-LFB3552:
+LFB3553:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -745,11 +745,11 @@ L105:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3552:
+LFE3553:
 	.p2align 4,,15
 	.def	__ZL18_strcmp_fast_case2PKcS0_;	.scl	3;	.type	32;	.endef
 __ZL18_strcmp_fast_case2PKcS0_:
-LFB3553:
+LFB3554:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -795,11 +795,11 @@ L110:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3553:
+LFE3554:
 	.p2align 4,,15
 	.def	__ZL18_strcmp_fast_case3PKcS0_;	.scl	3;	.type	32;	.endef
 __ZL18_strcmp_fast_case3PKcS0_:
-LFB3554:
+LFB3555:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -845,11 +845,11 @@ L115:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3554:
+LFE3555:
 	.p2align 4,,15
 	.def	__ZL22_strstr_fast_cmp_case0PKcS0_;	.scl	3;	.type	32;	.endef
 __ZL22_strstr_fast_cmp_case0PKcS0_:
-LFB3564:
+LFB3565:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -904,11 +904,11 @@ L124:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3564:
+LFE3565:
 	.p2align 4,,15
 	.def	__ZL22_strstr_fast_cmp_case1PKcS0_;	.scl	3;	.type	32;	.endef
 __ZL22_strstr_fast_cmp_case1PKcS0_:
-LFB3565:
+LFB3566:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -963,11 +963,11 @@ L132:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3565:
+LFE3566:
 	.p2align 4,,15
 	.def	__ZL22_strstr_fast_cmp_case2PKcS0_;	.scl	3;	.type	32;	.endef
 __ZL22_strstr_fast_cmp_case2PKcS0_:
-LFB3566:
+LFB3567:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -1022,11 +1022,11 @@ L140:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3566:
+LFE3567:
 	.p2align 4,,15
 	.def	__ZL22_strstr_fast_cmp_case3PKcS0_;	.scl	3;	.type	32;	.endef
 __ZL22_strstr_fast_cmp_case3PKcS0_:
-LFB3567:
+LFB3568:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -1081,11 +1081,11 @@ L148:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3567:
+LFE3568:
 	.p2align 4,,15
 	.def	__ZL19_strncmp_fast_case3PKcS0_j;	.scl	3;	.type	32;	.endef
 __ZL19_strncmp_fast_case3PKcS0_j:
-LFB3559:
+LFB3560:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1198,11 +1198,11 @@ L172:
 	ja	L170
 	jmp	L159
 	.cfi_endproc
-LFE3559:
+LFE3560:
 	.p2align 4,,15
 	.def	__ZL19_strncmp_fast_case2PKcS0_j;	.scl	3;	.type	32;	.endef
 __ZL19_strncmp_fast_case2PKcS0_j:
-LFB3558:
+LFB3559:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1315,11 +1315,11 @@ L195:
 	ja	L193
 	jmp	L182
 	.cfi_endproc
-LFE3558:
+LFE3559:
 	.p2align 4,,15
 	.def	__ZL19_strncmp_fast_case1PKcS0_j;	.scl	3;	.type	32;	.endef
 __ZL19_strncmp_fast_case1PKcS0_j:
-LFB3557:
+LFB3558:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1432,11 +1432,11 @@ L218:
 	ja	L216
 	jmp	L205
 	.cfi_endproc
-LFE3557:
+LFE3558:
 	.p2align 4,,15
 	.def	__ZL19_strncmp_fast_case0PKcS0_j;	.scl	3;	.type	32;	.endef
 __ZL19_strncmp_fast_case0PKcS0_j:
-LFB3556:
+LFB3557:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -1533,21 +1533,21 @@ L238:
 	call	___cxa_guard_release
 	jmp	L221
 	.cfi_endproc
-LFE3556:
+LFE3557:
 	.p2align 4,,15
 	.def	__ZL18_memcpy_m128i_16_uPcU8__vectorx;	.scl	3;	.type	32;	.endef
 __ZL18_memcpy_m128i_16_uPcU8__vectorx:
-LFB3604:
+LFB3606:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	movdqu	%xmm0, (%eax)
 	ret
 	.cfi_endproc
-LFE3604:
+LFE3606:
 	.p2align 4,,15
 	.def	__ZL18_strcpy_fast_case3PcPKc;	.scl	3;	.type	32;	.endef
 __ZL18_strcpy_fast_case3PcPKc:
-LFB3610:
+LFB3612:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -1600,11 +1600,11 @@ L252:
 	call	___cxa_guard_release
 	jmp	L242
 	.cfi_endproc
-LFE3610:
+LFE3612:
 	.p2align 4,,15
 	.def	__ZL18_strcpy_fast_case1PcPKc;	.scl	3;	.type	32;	.endef
 __ZL18_strcpy_fast_case1PcPKc:
-LFB3608:
+LFB3610:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -1657,11 +1657,11 @@ L266:
 	call	___cxa_guard_release
 	jmp	L256
 	.cfi_endproc
-LFE3608:
+LFE3610:
 	.p2align 4,,15
 	.def	__ZL19_strncpy_fast_case3PcPKcj;	.scl	3;	.type	32;	.endef
 __ZL19_strncpy_fast_case3PcPKcj:
-LFB3617:
+LFB3619:
 	.cfi_startproc
 	pushl	%edi
 	.cfi_def_cfa_offset 8
@@ -1753,11 +1753,11 @@ L284:
 	call	___cxa_guard_release
 	jmp	L270
 	.cfi_endproc
-LFE3617:
+LFE3619:
 	.p2align 4,,15
 	.def	__ZL19_strncpy_fast_case1PcPKcj;	.scl	3;	.type	32;	.endef
 __ZL19_strncpy_fast_case1PcPKcj:
-LFB3615:
+LFB3617:
 	.cfi_startproc
 	pushl	%edi
 	.cfi_def_cfa_offset 8
@@ -1849,14 +1849,14 @@ L301:
 	call	___cxa_guard_release
 	jmp	L287
 	.cfi_endproc
-LFE3615:
+LFE3617:
 	.p2align 4,,15
 	.def	__Z41__static_initialization_and_destruction_0ii.part.35;	.scl	3;	.type	32;	.endef
 __Z41__static_initialization_and_destruction_0ii.part.35:
-LFB3979:
+LFB3982:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3979
+	.cfi_lsda 0,LLSDA3982
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
 	movl	_s_lambda3+8, %eax
@@ -1889,21 +1889,21 @@ L305:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3979:
+LFE3982:
 	.def	___gxx_personality_v0;	.scl	2;	.type	32;	.endef
 	.section	.gcc_except_table,"w"
-LLSDA3979:
+LLSDA3982:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3979-LLSDACSB3979
-LLSDACSB3979:
-LLSDACSE3979:
+	.uleb128 LLSDACSE3982-LLSDACSB3982
+LLSDACSB3982:
+LLSDACSE3982:
 	.text
 	.p2align 4,,15
 	.def	__ZNSt14_Function_base13_Base_managerIZZ22testOpt03_Type3_BeforeR11dataOpt03_tENKUliiE_clEiiEUlRiE_E10_M_managerERSt9_Any_dataRKS7_St18_Manager_operation;	.scl	3;	.type	32;	.endef
 __ZNSt14_Function_base13_Base_managerIZZ22testOpt03_Type3_BeforeR11dataOpt03_tENKUliiE_clEiiEUlRiE_E10_M_managerERSt9_Any_dataRKS7_St18_Manager_operation:
-LFB3791:
+LFB3794:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -1981,11 +1981,11 @@ L318:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3791:
+LFE3794:
 	.p2align 4,,15
 	.def	__ZNSt14_Function_base13_Base_managerIZZ22testOpt03_Type3_BeforeR11dataOpt03_tENKUliE0_clEiEUlRiE_E10_M_managerERSt9_Any_dataRKS7_St18_Manager_operation;	.scl	3;	.type	32;	.endef
 __ZNSt14_Function_base13_Base_managerIZZ22testOpt03_Type3_BeforeR11dataOpt03_tENKUliE0_clEiEUlRiE_E10_M_managerERSt9_Any_dataRKS7_St18_Manager_operation:
-LFB3797:
+LFB3800:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -2063,11 +2063,11 @@ L327:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3797:
+LFE3800:
 	.p2align 4,,15
 	.def	__ZNSt14_Function_base13_Base_managerIZ9setLambdaRiEUlvE_E10_M_managerERSt9_Any_dataRKS4_St18_Manager_operation;	.scl	3;	.type	32;	.endef
 __ZNSt14_Function_base13_Base_managerIZ9setLambdaRiEUlvE_E10_M_managerERSt9_Any_dataRKS4_St18_Manager_operation:
-LFB3882:
+LFB3885:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -2145,11 +2145,11 @@ L336:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3882:
+LFE3885:
 	.p2align 4,,15
 	.def	__ZNSt14_Function_base13_Base_managerIZ9setLambdaRiEUlvE0_E10_M_managerERSt9_Any_dataRKS4_St18_Manager_operation;	.scl	3;	.type	32;	.endef
 __ZNSt14_Function_base13_Base_managerIZ9setLambdaRiEUlvE0_E10_M_managerERSt9_Any_dataRKS4_St18_Manager_operation:
-LFB3886:
+LFB3889:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -2227,11 +2227,11 @@ L345:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3886:
+LFE3889:
 	.p2align 4,,15
 	.def	__ZNSt14_Function_base13_Base_managerIZ9setLambdaRiEUlvE1_E10_M_managerERSt9_Any_dataRKS4_St18_Manager_operation;	.scl	3;	.type	32;	.endef
 __ZNSt14_Function_base13_Base_managerIZ9setLambdaRiEUlvE1_E10_M_managerERSt9_Any_dataRKS4_St18_Manager_operation:
-LFB3890:
+LFB3893:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -2290,12 +2290,12 @@ L354:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3890:
+LFE3893:
 	.p2align 4,,15
 	.globl	__Z22testOpt01_Type1_BeforeR11dataOpt01_t
 	.def	__Z22testOpt01_Type1_BeforeR11dataOpt01_t;	.scl	2;	.type	32;	.endef
 __Z22testOpt01_Type1_BeforeR11dataOpt01_t:
-LFB2671:
+LFB2672:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2402,12 +2402,12 @@ L372:
 	movl	$2, (%esp)
 	jmp	L362
 	.cfi_endproc
-LFE2671:
+LFE2672:
 	.p2align 4,,15
 	.globl	__Z22testOpt01_Type1_After1R11dataOpt01_t
 	.def	__Z22testOpt01_Type1_After1R11dataOpt01_t;	.scl	2;	.type	32;	.endef
 __Z22testOpt01_Type1_After1R11dataOpt01_t:
-LFB2672:
+LFB2673:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2514,12 +2514,12 @@ L390:
 	movl	$2, (%esp)
 	jmp	L380
 	.cfi_endproc
-LFE2672:
+LFE2673:
 	.p2align 4,,15
 	.globl	__Z22testOpt01_Type1_After2R11dataOpt01_t
 	.def	__Z22testOpt01_Type1_After2R11dataOpt01_t;	.scl	2;	.type	32;	.endef
 __Z22testOpt01_Type1_After2R11dataOpt01_t:
-LFB2673:
+LFB2674:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -2663,12 +2663,12 @@ L411:
 	movl	%ebp, %ecx
 	jmp	L400
 	.cfi_endproc
-LFE2673:
+LFE2674:
 	.p2align 4,,15
 	.globl	__Z24testOpt01_Type1_AppendixR11dataOpt01_t
 	.def	__Z24testOpt01_Type1_AppendixR11dataOpt01_t;	.scl	2;	.type	32;	.endef
 __Z24testOpt01_Type1_AppendixR11dataOpt01_t:
-LFB2674:
+LFB2675:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -2692,12 +2692,12 @@ L419:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE2674:
+LFE2675:
 	.p2align 4,,15
 	.globl	__Z22testOpt02_Type1_BeforeR11dataOpt02_t
 	.def	__Z22testOpt02_Type1_BeforeR11dataOpt02_t;	.scl	2;	.type	32;	.endef
 __Z22testOpt02_Type1_BeforeR11dataOpt02_t:
-LFB2676:
+LFB2677:
 	.cfi_startproc
 	subl	$108, %esp
 	.cfi_def_cfa_offset 112
@@ -2782,12 +2782,12 @@ L436:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE2676:
+LFE2677:
 	.p2align 4,,15
 	.globl	__Z22testOpt02_Type1_After1R11dataOpt02_t
 	.def	__Z22testOpt02_Type1_After1R11dataOpt02_t;	.scl	2;	.type	32;	.endef
 __Z22testOpt02_Type1_After1R11dataOpt02_t:
-LFB2677:
+LFB2678:
 	.cfi_startproc
 	subl	$108, %esp
 	.cfi_def_cfa_offset 112
@@ -2872,12 +2872,12 @@ L452:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE2677:
+LFE2678:
 	.p2align 4,,15
 	.globl	__Z22testOpt02_Type1_After2R11dataOpt02_t
 	.def	__Z22testOpt02_Type1_After2R11dataOpt02_t;	.scl	2;	.type	32;	.endef
 __Z22testOpt02_Type1_After2R11dataOpt02_t:
-LFB2678:
+LFB2679:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3015,24 +3015,24 @@ L473:
 	jne	L457
 	jmp	L460
 	.cfi_endproc
-LFE2678:
+LFE2679:
 	.p2align 4,,15
 	.globl	__Z22testOpt03_Type1_Beforeiii
 	.def	__Z22testOpt03_Type1_Beforeiii;	.scl	2;	.type	32;	.endef
 __Z22testOpt03_Type1_Beforeiii:
-LFB2679:
+LFB2680:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	imull	4(%esp), %eax
 	addl	12(%esp), %eax
 	ret
 	.cfi_endproc
-LFE2679:
+LFE2680:
 	.p2align 4,,15
 	.globl	__Z22testOpt03_Type2_Beforeiiiiiiii
 	.def	__Z22testOpt03_Type2_Beforeiiiiiiii;	.scl	2;	.type	32;	.endef
 __Z22testOpt03_Type2_Beforeiiiiiiii:
-LFB2680:
+LFB2681:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	20(%esp), %edx
@@ -3046,15 +3046,15 @@ LFB2680:
 	subl	%edx, %eax
 	ret
 	.cfi_endproc
-LFE2680:
+LFE2681:
 	.p2align 4,,15
 	.globl	__Z22testOpt03_Type3_BeforeR11dataOpt03_t
 	.def	__Z22testOpt03_Type3_BeforeR11dataOpt03_t;	.scl	2;	.type	32;	.endef
 __Z22testOpt03_Type3_BeforeR11dataOpt03_t:
-LFB3027:
+LFB3028:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3027
+	.cfi_lsda 0,LLSDA3028
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
 	.cfi_offset 5, -8
@@ -3395,61 +3395,61 @@ L540:
 	call	*%edx
 	jmp	L528
 	.cfi_endproc
-LFE3027:
+LFE3028:
 	.section	.gcc_except_table,"w"
-LLSDA3027:
+LLSDA3028:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3027-LLSDACSB3027
-LLSDACSB3027:
-	.uleb128 LEHB0-LFB3027
+	.uleb128 LLSDACSE3028-LLSDACSB3028
+LLSDACSB3028:
+	.uleb128 LEHB0-LFB3028
 	.uleb128 LEHE0-LEHB0
-	.uleb128 L537-LFB3027
+	.uleb128 L537-LFB3028
 	.uleb128 0
-	.uleb128 LEHB1-LFB3027
+	.uleb128 LEHB1-LFB3028
 	.uleb128 LEHE1-LEHB1
-	.uleb128 L536-LFB3027
+	.uleb128 L536-LFB3028
 	.uleb128 0
-	.uleb128 LEHB2-LFB3027
+	.uleb128 LEHB2-LFB3028
 	.uleb128 LEHE2-LEHB2
-	.uleb128 L539-LFB3027
+	.uleb128 L539-LFB3028
 	.uleb128 0
-	.uleb128 LEHB3-LFB3027
+	.uleb128 LEHB3-LFB3028
 	.uleb128 LEHE3-LEHB3
-	.uleb128 L538-LFB3027
+	.uleb128 L538-LFB3028
 	.uleb128 0
-	.uleb128 LEHB4-LFB3027
+	.uleb128 LEHB4-LFB3028
 	.uleb128 LEHE4-LEHB4
-	.uleb128 L541-LFB3027
+	.uleb128 L541-LFB3028
 	.uleb128 0
-	.uleb128 LEHB5-LFB3027
+	.uleb128 LEHB5-LFB3028
 	.uleb128 LEHE5-LEHB5
-	.uleb128 L540-LFB3027
+	.uleb128 L540-LFB3028
 	.uleb128 0
-	.uleb128 LEHB6-LFB3027
+	.uleb128 LEHB6-LFB3028
 	.uleb128 LEHE6-LEHB6
-	.uleb128 L543-LFB3027
+	.uleb128 L543-LFB3028
 	.uleb128 0
-	.uleb128 LEHB7-LFB3027
+	.uleb128 LEHB7-LFB3028
 	.uleb128 LEHE7-LEHB7
-	.uleb128 L542-LFB3027
+	.uleb128 L542-LFB3028
 	.uleb128 0
-	.uleb128 LEHB8-LFB3027
+	.uleb128 LEHB8-LFB3028
 	.uleb128 LEHE8-LEHB8
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB9-LFB3027
+	.uleb128 LEHB9-LFB3028
 	.uleb128 LEHE9-LEHB9
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3027:
+LLSDACSE3028:
 	.text
 	.p2align 4,,15
 	.globl	__Z21testOpt03_Type3_AfterR11dataOpt03_t
 	.def	__Z21testOpt03_Type3_AfterR11dataOpt03_t;	.scl	2;	.type	32;	.endef
 __Z21testOpt03_Type3_AfterR11dataOpt03_t:
-LFB3035:
+LFB3036:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3530,12 +3530,12 @@ L598:
 	xorl	%eax, %eax
 	jmp	L599
 	.cfi_endproc
-LFE3035:
+LFE3036:
 	.p2align 4,,15
 	.globl	__Z22testOpt04_Type1_BeforeR11dataOpt04_t
 	.def	__Z22testOpt04_Type1_BeforeR11dataOpt04_t;	.scl	2;	.type	32;	.endef
 __Z22testOpt04_Type1_BeforeR11dataOpt04_t:
-LFB3041:
+LFB3042:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	fldz
@@ -3559,12 +3559,12 @@ L605:
 	fstp	%st(0)
 	ret
 	.cfi_endproc
-LFE3041:
+LFE3042:
 	.p2align 4,,15
 	.globl	__Z22testOpt04_Type1_After1R11dataOpt04_t
 	.def	__Z22testOpt04_Type1_After1R11dataOpt04_t;	.scl	2;	.type	32;	.endef
 __Z22testOpt04_Type1_After1R11dataOpt04_t:
-LFB3042:
+LFB3043:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	fldz
@@ -3589,12 +3589,12 @@ L610:
 	fstp	%st(0)
 	ret
 	.cfi_endproc
-LFE3042:
+LFE3043:
 	.p2align 4,,15
 	.globl	__Z22testOpt04_Type1_After2R11dataOpt04_t
 	.def	__Z22testOpt04_Type1_After2R11dataOpt04_t;	.scl	2;	.type	32;	.endef
 __Z22testOpt04_Type1_After2R11dataOpt04_t:
-LFB3043:
+LFB3044:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3733,12 +3733,12 @@ L622:
 	xorl	%ecx, %ecx
 	jmp	L613
 	.cfi_endproc
-LFE3043:
+LFE3044:
 	.p2align 4,,15
 	.globl	__Z22testOpt05_Type1_BeforeiRiS_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_
 	.def	__Z22testOpt05_Type1_BeforeiRiS_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_;	.scl	2;	.type	32;	.endef
 __Z22testOpt05_Type1_BeforeiRiS_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_:
-LFB3047:
+LFB3048:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -3928,12 +3928,12 @@ LFB3047:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3047:
+LFE3048:
 	.p2align 4,,15
 	.globl	__Z21testOpt05_Type1_AfteriRiS_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_
 	.def	__Z21testOpt05_Type1_AfteriRiS_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_;	.scl	2;	.type	32;	.endef
 __Z21testOpt05_Type1_AfteriRiS_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_S_:
-LFB3524:
+LFB3525:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4102,12 +4102,12 @@ LFB3524:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3524:
+LFE3525:
 	.p2align 4,,15
 	.globl	__Z22testOpt06_Type1_BeforeR11dataOpt06_tfff
 	.def	__Z22testOpt06_Type1_BeforeR11dataOpt06_tfff;	.scl	2;	.type	32;	.endef
 __Z22testOpt06_Type1_BeforeR11dataOpt06_tfff:
-LFB3526:
+LFB3527:
 	.cfi_startproc
 	movl	4(%esp), %eax
 	flds	8(%esp)
@@ -4129,12 +4129,12 @@ L633:
 	fstp	%st(0)
 	ret
 	.cfi_endproc
-LFE3526:
+LFE3527:
 	.p2align 4,,15
 	.globl	__Z21testOpt06_Type1_AfterR11dataOpt06_tfff
 	.def	__Z21testOpt06_Type1_AfterR11dataOpt06_tfff;	.scl	2;	.type	32;	.endef
 __Z21testOpt06_Type1_AfterR11dataOpt06_tfff:
-LFB3527:
+LFB3528:
 	.cfi_startproc
 	flds	12(%esp)
 	fmuls	8(%esp)
@@ -4152,12 +4152,12 @@ L636:
 	fstp	%st(0)
 	ret
 	.cfi_endproc
-LFE3527:
+LFE3528:
 	.p2align 4,,15
 	.globl	__Z12addMatrixOptILj4ELj4EEvR6matrixIXT_EXT0_EERKS1_S4_
 	.def	__Z12addMatrixOptILj4ELj4EEvR6matrixIXT_EXT0_EERKS1_S4_;	.scl	2;	.type	32;	.endef
 __Z12addMatrixOptILj4ELj4EEvR6matrixIXT_EXT0_EERKS1_S4_:
-LFB3533:
+LFB3534:
 	.cfi_startproc
 	movl	8(%esp), %ecx
 	movl	12(%esp), %edx
@@ -4179,12 +4179,12 @@ LFB3533:
 	movaps	%xmm0, 48(%eax)
 	ret
 	.cfi_endproc
-LFE3533:
+LFE3534:
 	.p2align 4,,15
 	.globl	__Z18mulMatrixScalarOptILj4ELj4EEvR6matrixIXT_EXT0_EERKS1_f
 	.def	__Z18mulMatrixScalarOptILj4ELj4EEvR6matrixIXT_EXT0_EERKS1_f;	.scl	2;	.type	32;	.endef
 __Z18mulMatrixScalarOptILj4ELj4EEvR6matrixIXT_EXT0_EERKS1_f:
-LFB3535:
+LFB3536:
 	.cfi_startproc
 	movl	8(%esp), %edx
 	movss	12(%esp), %xmm0
@@ -4204,12 +4204,12 @@ LFB3535:
 	movaps	%xmm4, (%eax)
 	ret
 	.cfi_endproc
-LFE3535:
+LFE3536:
 	.p2align 4,,15
 	.globl	__Z12mulMatrixOptILj4ELj4ELj4EEvR6matrixIXT_EXT0_EERKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE
 	.def	__Z12mulMatrixOptILj4ELj4ELj4EEvR6matrixIXT_EXT0_EERKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE;	.scl	2;	.type	32;	.endef
 __Z12mulMatrixOptILj4ELj4ELj4EEvR6matrixIXT_EXT0_EERKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE:
-LFB3537:
+LFB3538:
 	.cfi_startproc
 	subl	$44, %esp
 	.cfi_def_cfa_offset 48
@@ -4287,23 +4287,23 @@ LFB3537:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3537:
+LFE3538:
 	.p2align 4,,15
 	.globl	__Z29testOpt07_Type2_strlen_BeforeiPKc
 	.def	__Z29testOpt07_Type2_strlen_BeforeiPKc;	.scl	2;	.type	32;	.endef
 __Z29testOpt07_Type2_strlen_BeforeiPKc:
-LFB3539:
+LFB3540:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	%eax, 4(%esp)
 	jmp	_strlen
 	.cfi_endproc
-LFE3539:
+LFE3540:
 	.p2align 4,,15
 	.globl	__Z29testOpt07_Type2_strcmp_BeforeiPKcS0_
 	.def	__Z29testOpt07_Type2_strcmp_BeforeiPKcS0_;	.scl	2;	.type	32;	.endef
 __Z29testOpt07_Type2_strcmp_BeforeiPKcS0_:
-LFB3540:
+LFB3541:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	12(%esp), %edx
@@ -4311,12 +4311,12 @@ LFB3540:
 	movl	%edx, 8(%esp)
 	jmp	_strcmp
 	.cfi_endproc
-LFE3540:
+LFE3541:
 	.p2align 4,,15
 	.globl	__Z30testOpt07_Type2_strncmp_BeforeiPKcS0_j
 	.def	__Z30testOpt07_Type2_strncmp_BeforeiPKcS0_j;	.scl	2;	.type	32;	.endef
 __Z30testOpt07_Type2_strncmp_BeforeiPKcS0_j:
-LFB3541:
+LFB3542:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	12(%esp), %edx
@@ -4326,12 +4326,12 @@ LFB3541:
 	movl	%ecx, 12(%esp)
 	jmp	_strncmp
 	.cfi_endproc
-LFE3541:
+LFE3542:
 	.p2align 4,,15
 	.globl	__Z29testOpt07_Type2_strchr_BeforeiPKcc
 	.def	__Z29testOpt07_Type2_strchr_BeforeiPKcc;	.scl	2;	.type	32;	.endef
 __Z29testOpt07_Type2_strchr_BeforeiPKcc:
-LFB3542:
+LFB3543:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movsbl	12(%esp), %edx
@@ -4339,12 +4339,12 @@ LFB3542:
 	movl	%edx, 8(%esp)
 	jmp	_strchr
 	.cfi_endproc
-LFE3542:
+LFE3543:
 	.p2align 4,,15
 	.globl	__Z30testOpt07_Type2_strrchr_BeforeiPKcc
 	.def	__Z30testOpt07_Type2_strrchr_BeforeiPKcc;	.scl	2;	.type	32;	.endef
 __Z30testOpt07_Type2_strrchr_BeforeiPKcc:
-LFB3543:
+LFB3544:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movsbl	12(%esp), %edx
@@ -4352,12 +4352,12 @@ LFB3543:
 	movl	%edx, 8(%esp)
 	jmp	_strrchr
 	.cfi_endproc
-LFE3543:
+LFE3544:
 	.p2align 4,,15
 	.globl	__Z29testOpt07_Type2_strstr_BeforeiPKcS0_
 	.def	__Z29testOpt07_Type2_strstr_BeforeiPKcS0_;	.scl	2;	.type	32;	.endef
 __Z29testOpt07_Type2_strstr_BeforeiPKcS0_:
-LFB3544:
+LFB3545:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	12(%esp), %edx
@@ -4365,12 +4365,12 @@ LFB3544:
 	movl	%edx, 8(%esp)
 	jmp	_strstr
 	.cfi_endproc
-LFE3544:
+LFE3545:
 	.p2align 4,,15
 	.globl	__Z29testOpt07_Type2_strcpy_BeforeiPcPKc
 	.def	__Z29testOpt07_Type2_strcpy_BeforeiPcPKc;	.scl	2;	.type	32;	.endef
 __Z29testOpt07_Type2_strcpy_BeforeiPcPKc:
-LFB3545:
+LFB3546:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	12(%esp), %edx
@@ -4378,12 +4378,12 @@ LFB3545:
 	movl	%edx, 8(%esp)
 	jmp	_strcpy
 	.cfi_endproc
-LFE3545:
+LFE3546:
 	.p2align 4,,15
 	.globl	__Z30testOpt07_Type2_strncpy_BeforeiPcPKcj
 	.def	__Z30testOpt07_Type2_strncpy_BeforeiPcPKcj;	.scl	2;	.type	32;	.endef
 __Z30testOpt07_Type2_strncpy_BeforeiPcPKcj:
-LFB3546:
+LFB3547:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	12(%esp), %edx
@@ -4393,12 +4393,12 @@ LFB3546:
 	movl	%ecx, 12(%esp)
 	jmp	_strncpy
 	.cfi_endproc
-LFE3546:
+LFE3547:
 	.p2align 4,,15
 	.globl	__Z12_strlen_fastPKc
 	.def	__Z12_strlen_fastPKc;	.scl	2;	.type	32;	.endef
 __Z12_strlen_fastPKc:
-LFB3547:
+LFB3548:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -4453,12 +4453,12 @@ L653:
 	leal	16(%eax), %edx
 	jmp	L658
 	.cfi_endproc
-LFE3547:
+LFE3548:
 	.p2align 4,,15
 	.globl	__Z13_strnlen_fastPKcj
 	.def	__Z13_strnlen_fastPKcj;	.scl	2;	.type	32;	.endef
 __Z13_strnlen_fastPKcj:
-LFB3548:
+LFB3549:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -4590,12 +4590,12 @@ L669:
 	leal	16(%ecx), %edx
 	jmp	L668
 	.cfi_endproc
-LFE3548:
+LFE3549:
 	.p2align 4,,15
 	.globl	__Z12_strcmp_fastPKcS0_
 	.def	__Z12_strcmp_fastPKcS0_;	.scl	2;	.type	32;	.endef
 __Z12_strcmp_fastPKcS0_:
-LFB3555:
+LFB3556:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -4618,12 +4618,12 @@ LFB3555:
 	.cfi_def_cfa_offset 4
 	jmp	*%eax
 	.cfi_endproc
-LFE3555:
+LFE3556:
 	.p2align 4,,15
 	.globl	__Z13_strncmp_fastPKcS0_j
 	.def	__Z13_strncmp_fastPKcS0_j;	.scl	2;	.type	32;	.endef
 __Z13_strncmp_fastPKcS0_j:
-LFB3560:
+LFB3561:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -4646,12 +4646,12 @@ LFB3560:
 	.cfi_def_cfa_offset 4
 	jmp	*%eax
 	.cfi_endproc
-LFE3560:
+LFE3561:
 	.p2align 4,,15
 	.globl	__Z12_strchr_fastPKcc
 	.def	__Z12_strchr_fastPKcc;	.scl	2;	.type	32;	.endef
 __Z12_strchr_fastPKcc:
-LFB3561:
+LFB3562:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -4729,12 +4729,12 @@ L705:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3561:
+LFE3562:
 	.p2align 4,,15
 	.globl	__Z13_strrchr_fastPKcc
 	.def	__Z13_strrchr_fastPKcc;	.scl	2;	.type	32;	.endef
 __Z13_strrchr_fastPKcc:
-LFB3562:
+LFB3563:
 	.cfi_startproc
 	pushl	%edi
 	.cfi_def_cfa_offset 8
@@ -4800,12 +4800,12 @@ L721:
 	addl	$16, %edx
 	jmp	L712
 	.cfi_endproc
-LFE3562:
+LFE3563:
 	.p2align 4,,15
 	.globl	__Z12_strstr_fastPKcS0_
 	.def	__Z12_strstr_fastPKcS0_;	.scl	2;	.type	32;	.endef
 __Z12_strstr_fastPKcS0_:
-LFB3569:
+LFB3570:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -5174,12 +5174,212 @@ L732:
 	addl	$16, %edi
 	jmp	L741
 	.cfi_endproc
-LFE3569:
+LFE3570:
+	.p2align 4,,15
+	.globl	__Z14_strstrbm_fastPKcS0_
+	.def	__Z14_strstrbm_fastPKcS0_;	.scl	2;	.type	32;	.endef
+__Z14_strstrbm_fastPKcS0_:
+LFB3571:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	pushl	%edi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 7, -12
+	pushl	%esi
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushl	%ebx
+	.cfi_def_cfa_offset 20
+	.cfi_offset 3, -20
+	subl	$1084, %esp
+	.cfi_def_cfa_offset 1104
+	movl	1108(%esp), %ebx
+	movl	1104(%esp), %edi
+	movl	%ebx, (%esp)
+	call	__Z12_strlen_fastPKc
+	movl	%eax, %esi
+	movsbl	(%ebx), %eax
+	testb	%al, %al
+	je	L864
+	cmpb	$0, 1(%ebx)
+	jne	L846
+	cmpb	$0, (%edi)
+	je	L868
+	movl	%edi, 1104(%esp)
+	movl	%eax, 1108(%esp)
+	addl	$1084, %esp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	jmp	_strchr
+	.p2align 4,,7
+L864:
+	.cfi_restore_state
+	movl	%edi, %eax
+L845:
+	addl	$1084, %esp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 20
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+	.p2align 4,,7
+L846:
+	.cfi_restore_state
+	movl	%esi, 4(%esp)
+	movl	%edi, (%esp)
+	call	__Z13_strnlen_fastPKcj
+	cmpl	%eax, %esi
+	ja	L868
+	movl	%esi, 16(%esp)
+	leal	48(%esp), %edx
+	leal	1072(%esp), %ecx
+	movd	16(%esp), %xmm3
+	pshufd	$0, %xmm3, %xmm0
+	.p2align 4,,7
+L850:
+	movdqa	%xmm0, (%edx)
+	addl	$16, %edx
+	cmpl	%ecx, %edx
+	jne	L850
+	testl	%esi, %esi
+	je	L865
+	leal	-1(%esi), %eax
+	movl	%ebx, %edx
+	leal	(%ebx,%esi), %ebp
+	movl	%eax, %esi
+	.p2align 4,,7
+L852:
+	movsbl	(%edx), %ecx
+	addl	$1, %edx
+	movl	%esi, 48(%esp,%ecx,4)
+	subl	$1, %esi
+	cmpl	%ebp, %edx
+	jne	L852
+L851:
+	leal	(%ebx,%eax), %ebp
+	addl	%edi, %eax
+	pxor	%xmm0, %xmm0
+	movzbl	0(%ebp), %ecx
+	leal	-1(%ebp), %edi
+	movl	%edi, 44(%esp)
+	movb	%cl, 16(%esp)
+	movd	16(%esp), %xmm2
+	pshufb	%xmm0, %xmm2
+L853:
+	movl	$0, %edi
+	movdqu	(%eax), %xmm1
+	pcmpistrm	$10, %xmm1, %xmm2
+	movl	%edi, %ecx
+	movdqa	%xmm0, 16(%esp)
+	sete	%cl
+	movl	%ecx, %edi
+	jnc	L854
+	movl	16(%esp), %esi
+L876:
+	testl	%esi, %esi
+	je	L855
+	testl	$1, %esi
+	je	L856
+	movzbl	-1(%ebp), %edx
+	leal	-1(%eax), %ecx
+	cmpb	%dl, -1(%eax)
+	jne	L857
+	movl	44(%esp), %edx
+	cmpl	%edx, %ebx
+	je	L867
+	movl	%eax, 16(%esp)
+	jmp	L859
+	.p2align 4,,7
+L860:
+	cmpl	%edx, %ebx
+	je	L867
+L859:
+	subl	$1, %ecx
+	subl	$1, %edx
+	movzbl	(%ecx), %eax
+	cmpb	%al, (%edx)
+	je	L860
+	movl	16(%esp), %eax
+L857:
+	movzbl	1(%eax), %edx
+	shrl	%esi
+	movl	48(%esp,%edx,4), %ecx
+	leal	1(%eax,%ecx), %eax
+	shrl	%cl, %esi
+	jmp	L876
+	.p2align 4,,7
+L856:
+	shrl	%esi
+	addl	$1, %eax
+	jmp	L876
+	.p2align 4,,7
+L854:
+	testl	%edi, %edi
+	jne	L868
+	addl	$16, %eax
+	jmp	L853
+	.p2align 4,,7
+L867:
+	addl	$1084, %esp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 20
+	movl	%ecx, %eax
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 16
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 12
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 8
+	popl	%ebp
+	.cfi_restore 5
+	.cfi_def_cfa_offset 4
+	ret
+L855:
+	.cfi_restore_state
+	testl	%edi, %edi
+	je	L853
+	.p2align 4,,7
+L868:
+	xorl	%eax, %eax
+	jmp	L845
+L865:
+	movl	$-1, %eax
+	.p2align 4,,2
+	jmp	L851
+	.cfi_endproc
+LFE3571:
 	.p2align 4,,15
 	.globl	__Z13_strstr0_fastPKcS0_
 	.def	__Z13_strstr0_fastPKcS0_;	.scl	2;	.type	32;	.endef
 __Z13_strstr0_fastPKcS0_:
-LFB3570:
+LFB3572:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -5212,12 +5412,12 @@ LFB3570:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3570:
+LFE3572:
 	.p2align 4,,15
 	.globl	__Z12_strcpy_fastPcPKc
 	.def	__Z12_strcpy_fastPcPKc;	.scl	2;	.type	32;	.endef
 __Z12_strcpy_fastPcPKc:
-LFB3611:
+LFB3613:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -5240,12 +5440,12 @@ LFB3611:
 	.cfi_def_cfa_offset 4
 	jmp	*%eax
 	.cfi_endproc
-LFE3611:
+LFE3613:
 	.p2align 4,,15
 	.globl	__Z13_strncpy_fastPcPKcj
 	.def	__Z13_strncpy_fastPcPKcj;	.scl	2;	.type	32;	.endef
 __Z13_strncpy_fastPcPKcj:
-LFB3618:
+LFB3620:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -5268,7 +5468,7 @@ LFB3618:
 	.cfi_def_cfa_offset 4
 	jmp	*%eax
 	.cfi_endproc
-LFE3618:
+LFE3620:
 	.section .rdata,"dr"
 LC9:
 	.ascii "\0"
@@ -5400,355 +5600,391 @@ LC64:
 LC65:
 	.ascii "a123b1123c2123d3123e1123f2123g3123x123h1123i2123jk\0"
 LC66:
-	.ascii "x234567890abcdef\0"
+	.ascii "\343\201\202\343\201\204\343\201\206\343\201\210\343\201\212\0"
 	.align 4
 LC67:
-	.ascii "1234567890abcdef1234567890abcdefx234567890abcdef\0"
+	.ascii "123a\343\201\202"
+	.ascii "123b\343\201\202\343\201\204"
+	.ascii "123c\343\201\202\343\201\204\343\201\206"
+	.ascii "123d\343\201\202\343\201\204\343\201\206\343\201\210"
+	.ascii "123e\343\201\204\343\201\206\343\201\210\343\201\212"
+	.ascii "123f\343\201\202\343\201\204\343\201\206\343\201\210\343\201\212\343\201\213"
+	.ascii "123x\0"
 LC68:
-	.ascii "x234567890abcdefg\0"
+	.ascii "x234567890abcdef\0"
 	.align 4
 LC69:
+	.ascii "1234567890abcdef1234567890abcdefx234567890abcdef\0"
+LC70:
+	.ascii "x234567890abcdefg\0"
+	.align 4
+LC71:
 	.ascii "1234567890abcdef1234567890abcdefx234567890abcdefg\0"
 	.align 4
-LC70:
+LC72:
 	.ascii "1234567890abcdef1234567890abcdefx234567890abcdefgh\0"
-LC71:
+LC73:
 	.ascii "x234567890abcdefx\0"
 	.align 4
-LC72:
+LC74:
 	.ascii "1234567890abcdef1234567890abcdefx234567890abcdefx\0"
 	.align 4
-LC73:
+LC75:
 	.ascii "1234567890abcdef1234567890abcdefx234567890abcdefxy\0"
-LC74:
+LC76:
 	.ascii "!!\0"
 	.align 4
-LC75:
+LC77:
 	.ascii "1234567890abcde!!234567890abcdef\0"
 	.align 4
-LC76:
-	.ascii "!1234567890!abcdef!!1234567890!abcdef!\0"
-LC77:
-	.ascii "1234567890abcdefgh\0"
-	.align 4
 LC78:
-	.ascii "1234567890abcdef1234567890abcdefgh\0"
-	.align 4
+	.ascii "!1234567890!abcdef!!1234567890!abcdef!\0"
 LC79:
-	.ascii "10234567890abcdefgh1234567890abcdefgh\0"
+	.ascii "!!!!\0"
+	.align 4
 LC80:
-	.ascii "abcdefghijklmnopqrstuvwxyz\0"
+	.ascii "1234567890abcd!!!!34567890abcdef\0"
 	.align 4
 LC81:
-	.ascii "aaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabcdefghijklmnopqrstuvwxyz\0"
+	.ascii "1234567890abcdef!!!!1234567890abcdef\0"
 	.align 4
 LC82:
-	.ascii "bbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabc\0"
+	.ascii "!12345678!90abcdef!!!!12345678!90abcdef!\0"
 	.align 4
 LC83:
-	.ascii "abcdefghijklmnopqrstuvwxyzaaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabcdefghijklmnopqrstuvwxyz\0"
-LC84:
-	.ascii "str0(\"%s\", \"%s\")=\"%s\"(\"%s\")\12\0"
-LC85:
-	.ascii "x12341234\0"
-LC86:
-	.ascii "x1234567890abcdefgh\0"
+	.ascii "!!12345678!!90abcdef!!!!12345678!!90abcdef!!\0"
 	.align 4
+LC84:
+	.ascii "!!!12345678!!!90abcdef!!!!12345678!!!90abcdef!!!\0"
+	.align 4
+LC85:
+	.ascii "!!!12345678!!!90abcdef!!!12345678!!!90abcdef!!!\0"
+	.align 4
+LC86:
+	.ascii "!!!12345678!!!90abcdef!!!12345678!!!90abcdef!!!!\0"
 LC87:
-	.ascii "1234567890abcdefghijklmnopqrstuvwxyz\0"
+	.ascii "1234567890abcdefgh\0"
 	.align 4
 LC88:
-	.ascii "1234567890abcdefghijklmnopqrstuvwxyz!\0"
+	.ascii "1234567890abcdef1234567890abcdefgh\0"
 	.align 4
 LC89:
-	.ascii "1234567890abcdefghijklmnopqrstuvwxyz!!\0"
-	.align 4
+	.ascii "10234567890abcdefgh1234567890abcdefgh\0"
 LC90:
-	.ascii "x1234567890abcdefghijklmnopqrstuvwxyz!!\0"
+	.ascii "abcdefghijklmnopqrstuvwxyz\0"
+	.align 4
 LC91:
-	.ascii "(dummy_for_align=%d)\12\0"
+	.ascii "aaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabcdefghijklmnopqrstuvwxyz\0"
 	.align 4
 LC92:
+	.ascii "bbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabc\0"
+	.align 4
+LC93:
+	.ascii "abcdefghijklmnopqrstuvwxyzaaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmmooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzabcdefghijklmnopqrstuvwxyz\0"
+LC94:
+	.ascii "strbm(\"%s\", \"%s\")=\"%s\"(\"%s\")\12\0"
+LC95:
+	.ascii "str0(\"%s\", \"%s\")=\"%s\"(\"%s\")\12\0"
+LC96:
+	.ascii "x12341234\0"
+LC97:
+	.ascii "x1234567890abcdefgh\0"
+	.align 4
+LC98:
+	.ascii "1234567890abcdefghijklmnopqrstuvwxyz\0"
+	.align 4
+LC99:
+	.ascii "1234567890abcdefghijklmnopqrstuvwxyz!\0"
+	.align 4
+LC100:
+	.ascii "1234567890abcdefghijklmnopqrstuvwxyz!!\0"
+	.align 4
+LC101:
+	.ascii "x1234567890abcdefghijklmnopqrstuvwxyz!!\0"
+LC102:
+	.ascii "(dummy_for_align=%d)\12\0"
+	.align 4
+LC103:
 	.ascii "_memcpy_m128i_a(buff, str16,  0)=\"%s\"\12\0"
 	.align 16
-LC93:
+LC104:
 	.long	858927408
 	.long	926299444
 	.long	1650538808
 	.long	1717920867
 	.align 4
-LC94:
+LC105:
 	.ascii "_memcpy_m128i_a(buff, str16,  1)=\"%s\"\12\0"
 	.align 4
-LC95:
+LC106:
 	.ascii "_memcpy_m128i_a(buff, str16,  2)=\"%s\"\12\0"
 	.align 4
-LC96:
+LC107:
 	.ascii "_memcpy_m128i_a(buff, str16,  3)=\"%s\"\12\0"
 	.align 4
-LC97:
+LC108:
 	.ascii "_memcpy_m128i_a(buff, str16,  4)=\"%s\"\12\0"
 	.align 4
-LC98:
+LC109:
 	.ascii "_memcpy_m128i_a(buff, str16,  5)=\"%s\"\12\0"
 	.align 4
-LC99:
+LC110:
 	.ascii "_memcpy_m128i_a(buff, str16,  6)=\"%s\"\12\0"
 	.align 4
-LC100:
+LC111:
 	.ascii "_memcpy_m128i_a(buff, str16,  7)=\"%s\"\12\0"
 	.align 4
-LC101:
+LC112:
 	.ascii "_memcpy_m128i_a(buff, str16,  8)=\"%s\"\12\0"
 	.align 4
-LC102:
+LC113:
 	.ascii "_memcpy_m128i_a(buff, str16,  9)=\"%s\"\12\0"
 	.align 4
-LC103:
+LC114:
 	.ascii "_memcpy_m128i_a(buff, str16, 10)=\"%s\"\12\0"
 	.align 4
-LC104:
+LC115:
 	.ascii "_memcpy_m128i_a(buff, str16, 11)=\"%s\"\12\0"
 	.align 4
-LC105:
+LC116:
 	.ascii "_memcpy_m128i_a(buff, str16, 12)=\"%s\"\12\0"
 	.align 4
-LC106:
+LC117:
 	.ascii "_memcpy_m128i_a(buff, str16, 13)=\"%s\"\12\0"
 	.align 4
-LC107:
+LC118:
 	.ascii "_memcpy_m128i_a(buff, str16, 14)=\"%s\"\12\0"
 	.align 4
-LC108:
+LC119:
 	.ascii "_memcpy_m128i_a(buff, str16, 15)=\"%s\"\12\0"
 	.align 4
-LC110:
+LC121:
 	.ascii "_memcpy_m128i_a(buff, str16, 16)=\"%s\"\12\0"
 	.align 4
-LC111:
+LC122:
 	.ascii "_memcpy_m128i_u(buffu, str16,  0)=\"%s\"\12\0"
 	.align 4
-LC112:
+LC123:
 	.ascii "_memcpy_m128i_u(buffu, str16,  1)=\"%s\"\12\0"
 	.align 4
-LC113:
+LC124:
 	.ascii "_memcpy_m128i_u(buffu, str16,  2)=\"%s\"\12\0"
 	.align 4
-LC114:
+LC125:
 	.ascii "_memcpy_m128i_u(buffu, str16,  3)=\"%s\"\12\0"
 	.align 4
-LC115:
+LC126:
 	.ascii "_memcpy_m128i_u(buffu, str16,  4)=\"%s\"\12\0"
 	.align 4
-LC116:
+LC127:
 	.ascii "_memcpy_m128i_u(buffu, str16,  5)=\"%s\"\12\0"
 	.align 4
-LC117:
+LC128:
 	.ascii "_memcpy_m128i_u(buffu, str16,  6)=\"%s\"\12\0"
 	.align 4
-LC118:
+LC129:
 	.ascii "_memcpy_m128i_u(buffu, str16,  7)=\"%s\"\12\0"
 	.align 4
-LC119:
+LC130:
 	.ascii "_memcpy_m128i_u(buffu, str16,  8)=\"%s\"\12\0"
 	.align 4
-LC120:
+LC131:
 	.ascii "_memcpy_m128i_u(buffu, str16,  9)=\"%s\"\12\0"
 	.align 4
-LC121:
+LC132:
 	.ascii "_memcpy_m128i_u(buffu, str16, 10)=\"%s\"\12\0"
 	.align 4
-LC122:
+LC133:
 	.ascii "_memcpy_m128i_u(buffu, str16, 11)=\"%s\"\12\0"
 	.align 4
-LC123:
+LC134:
 	.ascii "_memcpy_m128i_u(buffu, str16, 12)=\"%s\"\12\0"
 	.align 4
-LC124:
+LC135:
 	.ascii "_memcpy_m128i_u(buffu, str16, 13)=\"%s\"\12\0"
 	.align 4
-LC125:
+LC136:
 	.ascii "_memcpy_m128i_u(buffu, str16, 14)=\"%s\"\12\0"
 	.align 4
-LC126:
+LC137:
 	.ascii "_memcpy_m128i_u(buffu, str16, 15)=\"%s\"\12\0"
 	.align 4
-LC128:
+LC139:
 	.ascii "_memcpy_m128i_u(buffu, str16, 16)=\"%s\"\12\0"
 	.align 4
-LC129:
+LC140:
 	.ascii "_memcpy_m128i_00_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC130:
+LC141:
 	.ascii "_memcpy_m128i_01_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC131:
+LC142:
 	.ascii "_memcpy_m128i_02_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC132:
+LC143:
 	.ascii "_memcpy_m128i_03_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC133:
+LC144:
 	.ascii "_memcpy_m128i_04_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC134:
+LC145:
 	.ascii "_memcpy_m128i_05_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC135:
+LC146:
 	.ascii "_memcpy_m128i_06_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC136:
+LC147:
 	.ascii "_memcpy_m128i_07_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC137:
+LC148:
 	.ascii "_memcpy_m128i_08_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC138:
+LC149:
 	.ascii "_memcpy_m128i_09_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC139:
+LC150:
 	.ascii "_memcpy_m128i_10_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC140:
+LC151:
 	.ascii "_memcpy_m128i_11_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC141:
+LC152:
 	.ascii "_memcpy_m128i_12_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC142:
+LC153:
 	.ascii "_memcpy_m128i_13_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC143:
+LC154:
 	.ascii "_memcpy_m128i_14_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC144:
+LC155:
 	.ascii "_memcpy_m128i_15_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC145:
+LC156:
 	.ascii "_memcpy_m128i_16_a(buff, str16) =\"%s\"\12\0"
 	.align 4
-LC146:
+LC157:
 	.ascii "_memcpy_m128i_00_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC147:
+LC158:
 	.ascii "_memcpy_m128i_01_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC148:
+LC159:
 	.ascii "_memcpy_m128i_02_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC149:
+LC160:
 	.ascii "_memcpy_m128i_03_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC150:
+LC161:
 	.ascii "_memcpy_m128i_04_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC151:
+LC162:
 	.ascii "_memcpy_m128i_05_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC152:
+LC163:
 	.ascii "_memcpy_m128i_06_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC153:
+LC164:
 	.ascii "_memcpy_m128i_07_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC154:
+LC165:
 	.ascii "_memcpy_m128i_08_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC155:
+LC166:
 	.ascii "_memcpy_m128i_09_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC156:
+LC167:
 	.ascii "_memcpy_m128i_10_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC157:
+LC168:
 	.ascii "_memcpy_m128i_11_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC158:
+LC169:
 	.ascii "_memcpy_m128i_12_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC159:
+LC170:
 	.ascii "_memcpy_m128i_13_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC160:
+LC171:
 	.ascii "_memcpy_m128i_14_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC161:
+LC172:
 	.ascii "_memcpy_m128i_15_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC162:
+LC173:
 	.ascii "_memcpy_m128i_16_u(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC163:
+LC174:
 	.ascii "_memcpy_m128i_00_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC164:
+LC175:
 	.ascii "_memcpy_m128i_01_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC165:
+LC176:
 	.ascii "_memcpy_m128i_02_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC166:
+LC177:
 	.ascii "_memcpy_m128i_03_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC167:
+LC178:
 	.ascii "_memcpy_m128i_04_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC168:
+LC179:
 	.ascii "_memcpy_m128i_05_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC169:
+LC180:
 	.ascii "_memcpy_m128i_06_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC170:
+LC181:
 	.ascii "_memcpy_m128i_07_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC171:
+LC182:
 	.ascii "_memcpy_m128i_08_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC172:
+LC183:
 	.ascii "_memcpy_m128i_09_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC173:
+LC184:
 	.ascii "_memcpy_m128i_10_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC174:
+LC185:
 	.ascii "_memcpy_m128i_11_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC175:
+LC186:
 	.ascii "_memcpy_m128i_12_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC176:
+LC187:
 	.ascii "_memcpy_m128i_13_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC177:
+LC188:
 	.ascii "_memcpy_m128i_14_a(buffu, str16)=\"%s\"\12\0"
 	.align 4
-LC178:
+LC189:
 	.ascii "_memcpy_m128i_15_a(buffu, str16)=\"%s\"\12\0"
-LC179:
+LC190:
 	.ascii "cpy(%p, \"%s\")=\"%s\"\12\0"
-LC180:
+LC191:
 	.ascii "ncpy(%p, \"%s\", %d)=\"%s\"\12\0"
-LC181:
+LC192:
 	.ascii "z\0"
-LC182:
+LC193:
 	.ascii "zy\0"
-LC183:
+LC194:
 	.ascii "zyx\0"
-LC184:
+LC195:
 	.ascii "zyxw\0"
-LC185:
+LC196:
 	.ascii "zyxwv\0"
-LC186:
+LC197:
 	.ascii "A\0B\0"
-LC187:
+LC198:
 	.ascii "\0C\0"
 	.text
 	.p2align 4,,15
 	.globl	__Z27testOpt07_Type2_After_1timev
 	.def	__Z27testOpt07_Type2_After_1timev;	.scl	2;	.type	32;	.endef
 __Z27testOpt07_Type2_After_1timev:
-LFB3619:
+LFB3621:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -7774,17 +8010,8 @@ LFB3619:
 	movl	$LC66, 4(%esp)
 	movl	$LC67, (%esp)
 	call	__Z12_strstr_fastPKcS0_
-	movl	$LC67+32, 16(%esp)
+	movl	$LC67+66, 16(%esp)
 	movl	$LC66, 8(%esp)
-	movl	$LC67, 4(%esp)
-	movl	$LC55, (%esp)
-	movl	%eax, 12(%esp)
-	call	_printf
-	movl	$LC68, 4(%esp)
-	movl	$LC67, (%esp)
-	call	__Z12_strstr_fastPKcS0_
-	movl	$0, 16(%esp)
-	movl	$LC68, 8(%esp)
 	movl	$LC67, 4(%esp)
 	movl	$LC55, (%esp)
 	movl	%eax, 12(%esp)
@@ -7798,57 +8025,138 @@ LFB3619:
 	movl	$LC55, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC68, 4(%esp)
-	movl	$LC70, (%esp)
-	call	__Z12_strstr_fastPKcS0_
-	movl	$LC70+32, 16(%esp)
-	movl	$LC68, 8(%esp)
 	movl	$LC70, 4(%esp)
-	movl	$LC55, (%esp)
-	movl	%eax, 12(%esp)
-	call	_printf
-	movl	$LC71, 4(%esp)
 	movl	$LC69, (%esp)
 	call	__Z12_strstr_fastPKcS0_
 	movl	$0, 16(%esp)
-	movl	$LC71, 8(%esp)
+	movl	$LC70, 8(%esp)
 	movl	$LC69, 4(%esp)
 	movl	$LC55, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
+	movl	$LC70, 4(%esp)
+	movl	$LC71, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC71+32, 16(%esp)
+	movl	$LC70, 8(%esp)
 	movl	$LC71, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC70, 4(%esp)
 	movl	$LC72, (%esp)
 	call	__Z12_strstr_fastPKcS0_
 	movl	$LC72+32, 16(%esp)
-	movl	$LC71, 8(%esp)
+	movl	$LC70, 8(%esp)
 	movl	$LC72, 4(%esp)
 	movl	$LC55, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC71, 4(%esp)
-	movl	$LC73, (%esp)
-	call	__Z12_strstr_fastPKcS0_
-	movl	$LC73+32, 16(%esp)
-	movl	$LC71, 8(%esp)
 	movl	$LC73, 4(%esp)
+	movl	$LC71, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$0, 16(%esp)
+	movl	$LC73, 8(%esp)
+	movl	$LC71, 4(%esp)
 	movl	$LC55, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
+	movl	$LC73, 4(%esp)
+	movl	$LC74, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC74+32, 16(%esp)
+	movl	$LC73, 8(%esp)
 	movl	$LC74, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC73, 4(%esp)
 	movl	$LC75, (%esp)
 	call	__Z12_strstr_fastPKcS0_
-	movl	$LC75+15, 16(%esp)
-	movl	$LC74, 8(%esp)
+	movl	$LC75+32, 16(%esp)
+	movl	$LC73, 8(%esp)
 	movl	$LC75, 4(%esp)
 	movl	$LC55, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC74, 4(%esp)
-	movl	$LC76, (%esp)
-	call	__Z12_strstr_fastPKcS0_
-	movl	$LC76+18, 16(%esp)
-	movl	$LC74, 8(%esp)
 	movl	$LC76, 4(%esp)
+	movl	$LC77, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC77+15, 16(%esp)
+	movl	$LC76, 8(%esp)
+	movl	$LC77, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC76, 4(%esp)
+	movl	$LC78, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC78+18, 16(%esp)
+	movl	$LC76, 8(%esp)
+	movl	$LC78, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC80, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC80+14, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC80, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC81, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC81+16, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC81, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC82, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC82+18, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC82, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC83, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC83+20, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC83, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC84, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC84+22, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC84, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC85, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$0, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC85, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC86, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC86+44, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC86, 4(%esp)
 	movl	$LC55, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
@@ -7862,48 +8170,399 @@ LFB3619:
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC20, 4(%esp)
+	movl	$LC87, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC87, 16(%esp)
+	movl	$LC20, 8(%esp)
+	movl	$LC87, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC20, 4(%esp)
+	movl	$LC88, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC88+16, 16(%esp)
+	movl	$LC20, 8(%esp)
+	movl	$LC88, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC20, 4(%esp)
+	movl	$LC89, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC89+19, 16(%esp)
+	movl	$LC20, 8(%esp)
+	movl	$LC89, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC90, 4(%esp)
+	movl	$LC91, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC91+100, 16(%esp)
+	movl	$LC90, 8(%esp)
+	movl	$LC91, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC92, 4(%esp)
+	movl	$LC93, (%esp)
+	call	__Z12_strstr_fastPKcS0_
+	movl	$LC93+30, 16(%esp)
+	movl	$LC92, 8(%esp)
+	movl	$LC93, 4(%esp)
+	movl	$LC55, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC54, 4(%esp)
+	movl	$LC42, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$0, 16(%esp)
+	movl	$LC54, 8(%esp)
+	movl	$LC42, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC54, 4(%esp)
+	movl	$LC44, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$0, 16(%esp)
+	movl	$LC54, 8(%esp)
+	movl	$LC44, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC54, 4(%esp)
+	movl	$LC45, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC45+1, 16(%esp)
+	movl	$LC54, 8(%esp)
+	movl	$LC45, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC54, 4(%esp)
+	movl	$LC46, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC46+1, 16(%esp)
+	movl	$LC54, 8(%esp)
+	movl	$LC46, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC54, 4(%esp)
+	movl	$LC47, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC47+1, 16(%esp)
+	movl	$LC54, 8(%esp)
+	movl	$LC47, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC54, 4(%esp)
+	movl	$LC48, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC48+1, 16(%esp)
+	movl	$LC54, 8(%esp)
+	movl	$LC48, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC54, 4(%esp)
+	movl	$LC56, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC56+1, 16(%esp)
+	movl	$LC54, 8(%esp)
+	movl	$LC56, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC57, 4(%esp)
+	movl	$LC58, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$0, 16(%esp)
+	movl	$LC57, 8(%esp)
+	movl	$LC58, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC59, 4(%esp)
+	movl	$LC58, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$0, 16(%esp)
+	movl	$LC59, 8(%esp)
+	movl	$LC58, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC57, 4(%esp)
+	movl	$LC60, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$0, 16(%esp)
+	movl	$LC57, 8(%esp)
+	movl	$LC60, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC59, 4(%esp)
+	movl	$LC60, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC60+20, 16(%esp)
+	movl	$LC59, 8(%esp)
+	movl	$LC60, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC61, 4(%esp)
+	movl	$LC58, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC58+3, 16(%esp)
+	movl	$LC61, 8(%esp)
+	movl	$LC58, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC9, 4(%esp)
+	movl	$LC58, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC58, 16(%esp)
+	movl	$LC9, 8(%esp)
+	movl	$LC58, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC62, 4(%esp)
+	movl	$LC63, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC63+27, 16(%esp)
+	movl	$LC62, 8(%esp)
+	movl	$LC63, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC9, 4(%esp)
+	movl	$LC63, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC63, 16(%esp)
+	movl	$LC9, 8(%esp)
+	movl	$LC63, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC64, 4(%esp)
+	movl	$LC65, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC65+31, 16(%esp)
+	movl	$LC64, 8(%esp)
+	movl	$LC65, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC66, 4(%esp)
+	movl	$LC67, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC67+66, 16(%esp)
+	movl	$LC66, 8(%esp)
+	movl	$LC67, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC68, 4(%esp)
+	movl	$LC69, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC69+32, 16(%esp)
+	movl	$LC68, 8(%esp)
+	movl	$LC69, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC70, 4(%esp)
+	movl	$LC69, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$0, 16(%esp)
+	movl	$LC70, 8(%esp)
+	movl	$LC69, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC70, 4(%esp)
+	movl	$LC71, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC71+32, 16(%esp)
+	movl	$LC70, 8(%esp)
+	movl	$LC71, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC70, 4(%esp)
+	movl	$LC72, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC72+32, 16(%esp)
+	movl	$LC70, 8(%esp)
+	movl	$LC72, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC73, 4(%esp)
+	movl	$LC71, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$0, 16(%esp)
+	movl	$LC73, 8(%esp)
+	movl	$LC71, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC73, 4(%esp)
+	movl	$LC74, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC74+32, 16(%esp)
+	movl	$LC73, 8(%esp)
+	movl	$LC74, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC73, 4(%esp)
+	movl	$LC75, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC75+32, 16(%esp)
+	movl	$LC73, 8(%esp)
+	movl	$LC75, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC76, 4(%esp)
 	movl	$LC77, (%esp)
-	call	__Z12_strstr_fastPKcS0_
-	movl	$LC77, 16(%esp)
-	movl	$LC20, 8(%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC77+15, 16(%esp)
+	movl	$LC76, 8(%esp)
 	movl	$LC77, 4(%esp)
-	movl	$LC55, (%esp)
+	movl	$LC94, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC20, 4(%esp)
+	movl	$LC76, 4(%esp)
 	movl	$LC78, (%esp)
-	call	__Z12_strstr_fastPKcS0_
-	movl	$LC78+16, 16(%esp)
-	movl	$LC20, 8(%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC78+18, 16(%esp)
+	movl	$LC76, 8(%esp)
 	movl	$LC78, 4(%esp)
-	movl	$LC55, (%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC80, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC80+14, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC80, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC81, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC81+16, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC81, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC82, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC82+18, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC82, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC83, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC83+20, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC83, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC84, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC84+22, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC84, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC85, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$0, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC85, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC79, 4(%esp)
+	movl	$LC86, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC86+44, 16(%esp)
+	movl	$LC79, 8(%esp)
+	movl	$LC86, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC19, 4(%esp)
+	movl	$LC19, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC19, 16(%esp)
+	movl	$LC19, 8(%esp)
+	movl	$LC19, 4(%esp)
+	movl	$LC94, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC20, 4(%esp)
-	movl	$LC79, (%esp)
-	call	__Z12_strstr_fastPKcS0_
-	movl	$LC79+19, 16(%esp)
+	movl	$LC87, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC87, 16(%esp)
 	movl	$LC20, 8(%esp)
-	movl	$LC79, 4(%esp)
-	movl	$LC55, (%esp)
+	movl	$LC87, 4(%esp)
+	movl	$LC94, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC80, 4(%esp)
-	movl	$LC81, (%esp)
-	call	__Z12_strstr_fastPKcS0_
-	movl	$LC81+100, 16(%esp)
-	movl	$LC80, 8(%esp)
-	movl	$LC81, 4(%esp)
-	movl	$LC55, (%esp)
+	movl	$LC20, 4(%esp)
+	movl	$LC88, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC88+16, 16(%esp)
+	movl	$LC20, 8(%esp)
+	movl	$LC88, 4(%esp)
+	movl	$LC94, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC82, 4(%esp)
-	movl	$LC83, (%esp)
-	call	__Z12_strstr_fastPKcS0_
-	movl	$LC83+30, 16(%esp)
-	movl	$LC82, 8(%esp)
-	movl	$LC83, 4(%esp)
-	movl	$LC55, (%esp)
+	movl	$LC20, 4(%esp)
+	movl	$LC89, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC89+19, 16(%esp)
+	movl	$LC20, 8(%esp)
+	movl	$LC89, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC90, 4(%esp)
+	movl	$LC91, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC91+100, 16(%esp)
+	movl	$LC90, 8(%esp)
+	movl	$LC91, 4(%esp)
+	movl	$LC94, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC92, 4(%esp)
+	movl	$LC93, (%esp)
+	call	__Z14_strstrbm_fastPKcS0_
+	movl	$LC93+30, 16(%esp)
+	movl	$LC92, 8(%esp)
+	movl	$LC93, 4(%esp)
+	movl	$LC94, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC45, 4(%esp)
@@ -7912,7 +8571,7 @@ LFB3619:
 	movl	$0, 16(%esp)
 	movl	$LC45, 8(%esp)
 	movl	$LC42, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC45, 4(%esp)
@@ -7921,7 +8580,7 @@ LFB3619:
 	movl	$0, 16(%esp)
 	movl	$LC45, 8(%esp)
 	movl	$LC44, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC45, 4(%esp)
@@ -7930,7 +8589,7 @@ LFB3619:
 	movl	$LC45, 16(%esp)
 	movl	$LC45, 8(%esp)
 	movl	$LC45, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC45, 4(%esp)
@@ -7939,7 +8598,7 @@ LFB3619:
 	movl	$LC46, 16(%esp)
 	movl	$LC45, 8(%esp)
 	movl	$LC46, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC45, 4(%esp)
@@ -7948,7 +8607,7 @@ LFB3619:
 	movl	$LC47, 16(%esp)
 	movl	$LC45, 8(%esp)
 	movl	$LC47, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC45, 4(%esp)
@@ -7957,7 +8616,7 @@ LFB3619:
 	movl	$LC48, 16(%esp)
 	movl	$LC45, 8(%esp)
 	movl	$LC48, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC45, 4(%esp)
@@ -7966,7 +8625,7 @@ LFB3619:
 	movl	$LC56, 16(%esp)
 	movl	$LC45, 8(%esp)
 	movl	$LC56, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC45, 4(%esp)
@@ -7975,16 +8634,16 @@ LFB3619:
 	movl	$LC58, 16(%esp)
 	movl	$LC45, 8(%esp)
 	movl	$LC58, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC45, 4(%esp)
-	movl	$LC85, (%esp)
+	movl	$LC96, (%esp)
 	call	__Z13_strstr0_fastPKcS0_
-	movl	$LC85+1, 16(%esp)
+	movl	$LC96+1, 16(%esp)
 	movl	$LC45, 8(%esp)
-	movl	$LC85, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC96, 4(%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC19, 4(%esp)
@@ -7993,7 +8652,7 @@ LFB3619:
 	movl	$LC19, 16(%esp)
 	movl	$LC19, 8(%esp)
 	movl	$LC19, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC19, 4(%esp)
@@ -8002,7 +8661,7 @@ LFB3619:
 	movl	$LC20, 16(%esp)
 	movl	$LC19, 8(%esp)
 	movl	$LC20, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC20, 4(%esp)
@@ -8011,7 +8670,7 @@ LFB3619:
 	movl	$0, 16(%esp)
 	movl	$LC20, 8(%esp)
 	movl	$LC19, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC20, 4(%esp)
@@ -8020,95 +8679,95 @@ LFB3619:
 	movl	$LC20, 16(%esp)
 	movl	$LC20, 8(%esp)
 	movl	$LC20, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC20, 4(%esp)
-	movl	$LC77, (%esp)
-	call	__Z13_strstr0_fastPKcS0_
-	movl	$LC77, 16(%esp)
-	movl	$LC20, 8(%esp)
-	movl	$LC77, 4(%esp)
-	movl	$LC84, (%esp)
-	movl	%eax, 12(%esp)
-	call	_printf
-	movl	$LC20, 4(%esp)
-	movl	$LC86, (%esp)
-	call	__Z13_strstr0_fastPKcS0_
-	movl	$LC86+1, 16(%esp)
-	movl	$LC20, 8(%esp)
-	movl	$LC86, 4(%esp)
-	movl	$LC84, (%esp)
-	movl	%eax, 12(%esp)
-	call	_printf
-	movl	$LC87, 4(%esp)
 	movl	$LC87, (%esp)
 	call	__Z13_strstr0_fastPKcS0_
 	movl	$LC87, 16(%esp)
-	movl	$LC87, 8(%esp)
+	movl	$LC20, 8(%esp)
 	movl	$LC87, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC87, 4(%esp)
-	movl	$LC88, (%esp)
+	movl	$LC20, 4(%esp)
+	movl	$LC97, (%esp)
 	call	__Z13_strstr0_fastPKcS0_
-	movl	$LC88, 16(%esp)
-	movl	$LC87, 8(%esp)
-	movl	$LC88, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC97+1, 16(%esp)
+	movl	$LC20, 8(%esp)
+	movl	$LC97, 4(%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC88, 4(%esp)
-	movl	$LC87, (%esp)
+	movl	$LC98, 4(%esp)
+	movl	$LC98, (%esp)
+	call	__Z13_strstr0_fastPKcS0_
+	movl	$LC98, 16(%esp)
+	movl	$LC98, 8(%esp)
+	movl	$LC98, 4(%esp)
+	movl	$LC95, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC98, 4(%esp)
+	movl	$LC99, (%esp)
+	call	__Z13_strstr0_fastPKcS0_
+	movl	$LC99, 16(%esp)
+	movl	$LC98, 8(%esp)
+	movl	$LC99, 4(%esp)
+	movl	$LC95, (%esp)
+	movl	%eax, 12(%esp)
+	call	_printf
+	movl	$LC99, 4(%esp)
+	movl	$LC98, (%esp)
 	call	__Z13_strstr0_fastPKcS0_
 	movl	$0, 16(%esp)
-	movl	$LC88, 8(%esp)
-	movl	$LC87, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC99, 8(%esp)
+	movl	$LC98, 4(%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC88, 4(%esp)
-	movl	$LC88, (%esp)
+	movl	$LC99, 4(%esp)
+	movl	$LC99, (%esp)
 	call	__Z13_strstr0_fastPKcS0_
-	movl	$LC88, 16(%esp)
-	movl	$LC88, 8(%esp)
-	movl	$LC88, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC99, 16(%esp)
+	movl	$LC99, 8(%esp)
+	movl	$LC99, 4(%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC88, 4(%esp)
-	movl	$LC89, (%esp)
+	movl	$LC99, 4(%esp)
+	movl	$LC100, (%esp)
 	call	__Z13_strstr0_fastPKcS0_
-	movl	$LC89, 16(%esp)
-	movl	$LC88, 8(%esp)
-	movl	$LC89, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC100, 16(%esp)
+	movl	$LC99, 8(%esp)
+	movl	$LC100, 4(%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
-	movl	$LC88, 4(%esp)
-	movl	$LC90, (%esp)
+	movl	$LC99, 4(%esp)
+	movl	$LC101, (%esp)
 	call	__Z13_strstr0_fastPKcS0_
-	movl	$LC90+1, 16(%esp)
-	movl	$LC88, 8(%esp)
-	movl	$LC90, 4(%esp)
-	movl	$LC84, (%esp)
+	movl	$LC101+1, 16(%esp)
+	movl	$LC99, 8(%esp)
+	movl	$LC101, 4(%esp)
+	movl	$LC95, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$123, 4(%esp)
-	movl	$LC91, (%esp)
+	movl	$LC102, (%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC92, (%esp)
+	movl	$LC103, (%esp)
 	movl	$0, 96(%esp)
 	movl	$0, 100(%esp)
 	movl	$0, 104(%esp)
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	call	_printf
-	movzbl	LC93, %ecx
+	movzbl	LC104, %ecx
 	movl	%esi, 4(%esp)
-	movl	$LC94, (%esp)
+	movl	$LC105, (%esp)
 	movl	$0, 96(%esp)
 	movl	%ecx, 92(%esp)
 	movb	%cl, 96(%esp)
@@ -8117,9 +8776,9 @@ LFB3619:
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	call	_printf
-	movzwl	LC93, %eax
+	movzwl	LC104, %eax
 	movl	%esi, 4(%esp)
-	movl	$LC95, (%esp)
+	movl	$LC106, (%esp)
 	movl	$0, 96(%esp)
 	movl	%eax, %edi
 	movl	$0, 100(%esp)
@@ -8128,9 +8787,9 @@ LFB3619:
 	movl	$0, 112(%esp)
 	movw	%ax, 96(%esp)
 	call	_printf
-	movzbl	LC93+2, %edx
+	movzbl	LC104+2, %edx
 	movl	%esi, 4(%esp)
-	movl	$LC96, (%esp)
+	movl	$LC107, (%esp)
 	movl	$0, 96(%esp)
 	movl	%edx, 88(%esp)
 	movb	%dl, 98(%esp)
@@ -8141,9 +8800,9 @@ LFB3619:
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	call	_printf
-	movl	LC93, %eax
+	movl	LC104, %eax
 	movl	%esi, 4(%esp)
-	movl	$LC97, (%esp)
+	movl	$LC108, (%esp)
 	movl	$0, 100(%esp)
 	movl	%eax, %edi
 	movl	$0, 104(%esp)
@@ -8151,9 +8810,9 @@ LFB3619:
 	movl	$0, 112(%esp)
 	movl	%eax, 96(%esp)
 	call	_printf
-	movzbl	LC93+4, %eax
+	movzbl	LC104+4, %eax
 	movl	%esi, 4(%esp)
-	movl	$LC98, (%esp)
+	movl	$LC109, (%esp)
 	movl	$0, 100(%esp)
 	movl	%edi, 96(%esp)
 	movl	$0, 104(%esp)
@@ -8162,9 +8821,9 @@ LFB3619:
 	movb	%al, 82(%esp)
 	movb	%al, 100(%esp)
 	call	_printf
-	movzwl	LC93+4, %edx
+	movzwl	LC104+4, %edx
 	movl	%esi, 4(%esp)
-	movl	$LC99, (%esp)
+	movl	$LC110, (%esp)
 	movl	$0, 100(%esp)
 	movl	%edx, %ebx
 	movl	%edi, 96(%esp)
@@ -8173,9 +8832,9 @@ LFB3619:
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	call	_printf
-	movzbl	LC93+6, %edx
+	movzbl	LC104+6, %edx
 	movl	%esi, 4(%esp)
-	movl	$LC100, (%esp)
+	movl	$LC111, (%esp)
 	movl	$0, 100(%esp)
 	movb	%dl, 83(%esp)
 	movb	%dl, 102(%esp)
@@ -8188,18 +8847,18 @@ LFB3619:
 	movl	$0, 112(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC101, (%esp)
+	movl	$LC112, (%esp)
 	movl	$0, 104(%esp)
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	movl	$858927408, 96(%esp)
 	movl	$926299444, 100(%esp)
 	call	_printf
-	movl	LC93, %edi
-	movl	LC93+4, %ebp
-	movzbl	LC93+8, %ecx
+	movl	LC104, %edi
+	movl	LC104+4, %ebp
+	movzbl	LC104+8, %ecx
 	movl	%esi, 4(%esp)
-	movl	$LC102, (%esp)
+	movl	$LC113, (%esp)
 	movl	$0, 104(%esp)
 	movb	%cl, 84(%esp)
 	movb	%cl, 104(%esp)
@@ -8208,9 +8867,9 @@ LFB3619:
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	call	_printf
-	movzwl	LC93+8, %ebx
+	movzwl	LC104+8, %ebx
 	movl	%esi, 4(%esp)
-	movl	$LC103, (%esp)
+	movl	$LC114, (%esp)
 	movl	$0, 104(%esp)
 	movl	%edi, 96(%esp)
 	movl	%ebp, 100(%esp)
@@ -8221,9 +8880,9 @@ LFB3619:
 	movl	$0, 104(%esp)
 	movw	%bx, 80(%esp)
 	movw	%bx, 104(%esp)
-	movzbl	LC93+10, %ebx
+	movzbl	LC104+10, %ebx
 	movl	%esi, 4(%esp)
-	movl	$LC104, (%esp)
+	movl	$LC115, (%esp)
 	movl	%edi, 96(%esp)
 	movl	%ebp, 100(%esp)
 	movb	%bl, 85(%esp)
@@ -8231,9 +8890,9 @@ LFB3619:
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	call	_printf
-	movl	LC93+8, %ebx
+	movl	LC104+8, %ebx
 	movl	%esi, 4(%esp)
-	movl	$LC105, (%esp)
+	movl	$LC116, (%esp)
 	movl	%edi, 96(%esp)
 	movl	%ebp, 100(%esp)
 	movl	%ebx, 104(%esp)
@@ -8242,9 +8901,9 @@ LFB3619:
 	call	_printf
 	movl	%ebx, 32(%esp)
 	movl	%ebx, 104(%esp)
-	movzbl	LC93+12, %ebx
+	movzbl	LC104+12, %ebx
 	movl	%esi, 4(%esp)
-	movl	$LC106, (%esp)
+	movl	$LC117, (%esp)
 	movl	$0, 108(%esp)
 	movl	%edi, 96(%esp)
 	movl	%ebp, 100(%esp)
@@ -8253,9 +8912,9 @@ LFB3619:
 	movl	$0, 112(%esp)
 	call	_printf
 	movl	32(%esp), %ebx
-	movzwl	LC93+12, %edx
+	movzwl	LC104+12, %edx
 	movl	%esi, 4(%esp)
-	movl	$LC107, (%esp)
+	movl	$LC118, (%esp)
 	movl	$0, 108(%esp)
 	movl	%edi, 96(%esp)
 	movl	%ebp, 100(%esp)
@@ -8267,9 +8926,9 @@ LFB3619:
 	movzwl	58(%esp), %edx
 	movl	$0, 108(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC108, (%esp)
+	movl	$LC119, (%esp)
 	movw	%dx, 108(%esp)
-	movzbl	LC93+14, %edx
+	movzbl	LC104+14, %edx
 	movl	%edi, 96(%esp)
 	movl	%ebp, 100(%esp)
 	movl	%ebx, 32(%esp)
@@ -8279,15 +8938,15 @@ LFB3619:
 	leal	142(%esp), %ebx
 	movl	$0, 112(%esp)
 	call	_printf
-	movdqa	LC109, %xmm1
+	movdqa	LC120, %xmm1
 	movdqa	%xmm1, 96(%esp)
 	movl	%esi, 4(%esp)
 	movdqa	%xmm1, 64(%esp)
-	movl	$LC110, (%esp)
+	movl	$LC121, (%esp)
 	movl	$0, 112(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC111, (%esp)
+	movl	$LC122, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8296,7 +8955,7 @@ LFB3619:
 	call	_printf
 	movl	92(%esp), %ecx
 	movl	%ebx, 4(%esp)
-	movl	$LC112, (%esp)
+	movl	$LC123, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movb	%cl, 142(%esp)
@@ -8306,7 +8965,7 @@ LFB3619:
 	call	_printf
 	movzwl	60(%esp), %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC113, (%esp)
+	movl	$LC124, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8317,7 +8976,7 @@ LFB3619:
 	movl	88(%esp), %edx
 	movzwl	60(%esp), %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC114, (%esp)
+	movl	$LC125, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movb	%dl, 144(%esp)
@@ -8328,7 +8987,7 @@ LFB3619:
 	call	_printf
 	movl	52(%esp), %ecx
 	movl	%ebx, 4(%esp)
-	movl	$LC115, (%esp)
+	movl	$LC126, (%esp)
 	movl	$0, 146(%esp)
 	movl	%ecx, 142(%esp)
 	movl	$0, 150(%esp)
@@ -8338,7 +8997,7 @@ LFB3619:
 	movl	52(%esp), %ecx
 	movzbl	82(%esp), %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC116, (%esp)
+	movl	$LC127, (%esp)
 	movl	%ecx, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8348,7 +9007,7 @@ LFB3619:
 	call	_printf
 	movl	52(%esp), %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC117, (%esp)
+	movl	$LC128, (%esp)
 	movl	$0, 146(%esp)
 	movl	%eax, 142(%esp)
 	movzwl	62(%esp), %eax
@@ -8360,7 +9019,7 @@ LFB3619:
 	movl	52(%esp), %eax
 	movzbl	83(%esp), %edx
 	movl	%ebx, 4(%esp)
-	movl	$LC118, (%esp)
+	movl	$LC129, (%esp)
 	movl	%eax, 142(%esp)
 	movzwl	62(%esp), %eax
 	movl	$0, 146(%esp)
@@ -8371,7 +9030,7 @@ LFB3619:
 	movw	%ax, 146(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC119, (%esp)
+	movl	$LC130, (%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
@@ -8380,7 +9039,7 @@ LFB3619:
 	call	_printf
 	movzbl	84(%esp), %ecx
 	movl	%ebx, 4(%esp)
-	movl	$LC120, (%esp)
+	movl	$LC131, (%esp)
 	movl	$0, 150(%esp)
 	movl	%edi, 142(%esp)
 	movl	%ebp, 146(%esp)
@@ -8390,7 +9049,7 @@ LFB3619:
 	call	_printf
 	movzwl	80(%esp), %ecx
 	movl	%ebx, 4(%esp)
-	movl	$LC121, (%esp)
+	movl	$LC132, (%esp)
 	movl	$0, 150(%esp)
 	movl	%edi, 142(%esp)
 	movl	%ebp, 146(%esp)
@@ -8401,7 +9060,7 @@ LFB3619:
 	movzwl	80(%esp), %ecx
 	movzbl	85(%esp), %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC122, (%esp)
+	movl	$LC133, (%esp)
 	movl	$0, 150(%esp)
 	movl	%edi, 142(%esp)
 	movl	%ebp, 146(%esp)
@@ -8412,7 +9071,7 @@ LFB3619:
 	call	_printf
 	movl	32(%esp), %ecx
 	movl	%ebx, 4(%esp)
-	movl	$LC123, (%esp)
+	movl	$LC134, (%esp)
 	movl	%edi, 142(%esp)
 	movl	%ebp, 146(%esp)
 	movl	%ecx, 150(%esp)
@@ -8422,7 +9081,7 @@ LFB3619:
 	movl	32(%esp), %ecx
 	movzbl	86(%esp), %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC124, (%esp)
+	movl	$LC135, (%esp)
 	movl	$0, 154(%esp)
 	movl	%edi, 142(%esp)
 	movl	%ebp, 146(%esp)
@@ -8433,7 +9092,7 @@ LFB3619:
 	movl	32(%esp), %ecx
 	movzwl	58(%esp), %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC125, (%esp)
+	movl	$LC136, (%esp)
 	movl	$0, 154(%esp)
 	movl	%edi, 142(%esp)
 	movl	%ebp, 146(%esp)
@@ -8445,7 +9104,7 @@ LFB3619:
 	movzbl	87(%esp), %edx
 	movzwl	58(%esp), %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC126, (%esp)
+	movl	$LC137, (%esp)
 	movl	%ecx, 150(%esp)
 	movl	$0, 154(%esp)
 	movl	%edi, 142(%esp)
@@ -8456,15 +9115,15 @@ LFB3619:
 	movl	$0, 158(%esp)
 	movw	%ax, 154(%esp)
 	call	_printf
-	movdqa	LC127, %xmm0
+	movdqa	LC138, %xmm0
 	movdqu	%xmm0, 142(%esp)
 	movl	%ebx, 4(%esp)
 	movdqa	%xmm0, 32(%esp)
-	movl	$LC128, (%esp)
+	movl	$LC139, (%esp)
 	movl	$0, 158(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC129, (%esp)
+	movl	$LC140, (%esp)
 	movl	$0, 96(%esp)
 	movl	$0, 100(%esp)
 	movl	$0, 104(%esp)
@@ -8472,7 +9131,7 @@ LFB3619:
 	movl	$0, 112(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC130, (%esp)
+	movl	$LC141, (%esp)
 	movl	$0, 96(%esp)
 	movl	$0, 100(%esp)
 	movl	$0, 104(%esp)
@@ -8482,7 +9141,7 @@ LFB3619:
 	call	_printf
 	movl	$12592, %edx
 	movl	%esi, 4(%esp)
-	movl	$LC131, (%esp)
+	movl	$LC142, (%esp)
 	movl	$0, 96(%esp)
 	movl	$0, 100(%esp)
 	movw	%dx, 96(%esp)
@@ -8492,7 +9151,7 @@ LFB3619:
 	call	_printf
 	movl	$12592, %ecx
 	movl	%esi, 4(%esp)
-	movl	$LC132, (%esp)
+	movl	$LC143, (%esp)
 	movl	$0, 96(%esp)
 	movl	$0, 100(%esp)
 	movw	%cx, 96(%esp)
@@ -8502,7 +9161,7 @@ LFB3619:
 	movb	$50, 98(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC133, (%esp)
+	movl	$LC144, (%esp)
 	movl	$0, 100(%esp)
 	movl	$0, 104(%esp)
 	movl	$0, 108(%esp)
@@ -8510,7 +9169,7 @@ LFB3619:
 	movl	$858927408, 96(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC134, (%esp)
+	movl	$LC145, (%esp)
 	movl	$0, 100(%esp)
 	movl	$0, 104(%esp)
 	movl	$0, 108(%esp)
@@ -8519,7 +9178,7 @@ LFB3619:
 	movb	$52, 100(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC135, (%esp)
+	movl	$LC146, (%esp)
 	movl	$0, 100(%esp)
 	movl	$0, 104(%esp)
 	movw	%di, 100(%esp)
@@ -8529,7 +9188,7 @@ LFB3619:
 	movl	$858927408, 96(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC136, (%esp)
+	movl	$LC147, (%esp)
 	movl	$0, 100(%esp)
 	movl	$0, 104(%esp)
 	movw	%bp, 100(%esp)
@@ -8540,7 +9199,7 @@ LFB3619:
 	movb	$54, 102(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC137, (%esp)
+	movl	$LC148, (%esp)
 	movl	$0, 104(%esp)
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
@@ -8548,7 +9207,7 @@ LFB3619:
 	movl	$926299444, 100(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC138, (%esp)
+	movl	$LC149, (%esp)
 	movl	$0, 104(%esp)
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
@@ -8558,7 +9217,7 @@ LFB3619:
 	call	_printf
 	movl	$14648, %eax
 	movl	%esi, 4(%esp)
-	movl	$LC139, (%esp)
+	movl	$LC150, (%esp)
 	movl	$0, 104(%esp)
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
@@ -8568,7 +9227,7 @@ LFB3619:
 	call	_printf
 	movl	$14648, %eax
 	movl	%esi, 4(%esp)
-	movl	$LC140, (%esp)
+	movl	$LC151, (%esp)
 	movl	$0, 104(%esp)
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
@@ -8578,7 +9237,7 @@ LFB3619:
 	movb	$97, 106(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC141, (%esp)
+	movl	$LC152, (%esp)
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	movl	$858927408, 96(%esp)
@@ -8586,7 +9245,7 @@ LFB3619:
 	movl	$1650538808, 104(%esp)
 	call	_printf
 	movl	%esi, 4(%esp)
-	movl	$LC142, (%esp)
+	movl	$LC153, (%esp)
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	movl	$858927408, 96(%esp)
@@ -8596,7 +9255,7 @@ LFB3619:
 	call	_printf
 	movl	$25699, %eax
 	movl	%esi, 4(%esp)
-	movl	$LC143, (%esp)
+	movl	$LC154, (%esp)
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	movl	$858927408, 96(%esp)
@@ -8606,7 +9265,7 @@ LFB3619:
 	call	_printf
 	movl	$25699, %eax
 	movl	%esi, 4(%esp)
-	movl	$LC144, (%esp)
+	movl	$LC155, (%esp)
 	movl	$0, 108(%esp)
 	movl	$0, 112(%esp)
 	movl	$858927408, 96(%esp)
@@ -8618,11 +9277,11 @@ LFB3619:
 	movdqa	64(%esp), %xmm1
 	movdqa	%xmm1, 96(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC145, (%esp)
+	movl	$LC156, (%esp)
 	movl	$0, 112(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC146, (%esp)
+	movl	$LC157, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8630,7 +9289,7 @@ LFB3619:
 	movl	$0, 158(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC147, (%esp)
+	movl	$LC158, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8639,7 +9298,7 @@ LFB3619:
 	movb	$48, 142(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC148, (%esp)
+	movl	$LC159, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8649,7 +9308,7 @@ LFB3619:
 	movb	$49, 143(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC149, (%esp)
+	movl	$LC160, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8660,7 +9319,7 @@ LFB3619:
 	movb	$50, 144(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC150, (%esp)
+	movl	$LC161, (%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
@@ -8671,7 +9330,7 @@ LFB3619:
 	movb	$51, 145(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC151, (%esp)
+	movl	$LC162, (%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
@@ -8683,7 +9342,7 @@ LFB3619:
 	movb	$52, 146(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC152, (%esp)
+	movl	$LC163, (%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
@@ -8696,7 +9355,7 @@ LFB3619:
 	movb	$53, 147(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC153, (%esp)
+	movl	$LC164, (%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
@@ -8710,7 +9369,7 @@ LFB3619:
 	movb	$54, 148(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC154, (%esp)
+	movl	$LC165, (%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
@@ -8724,7 +9383,7 @@ LFB3619:
 	movb	$55, 149(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC155, (%esp)
+	movl	$LC166, (%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
@@ -8739,7 +9398,7 @@ LFB3619:
 	movb	$56, 150(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC156, (%esp)
+	movl	$LC167, (%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
@@ -8755,7 +9414,7 @@ LFB3619:
 	movb	$57, 151(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC157, (%esp)
+	movl	$LC168, (%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
@@ -8772,7 +9431,7 @@ LFB3619:
 	movb	$97, 152(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC158, (%esp)
+	movl	$LC169, (%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
 	movb	$48, 142(%esp)
@@ -8789,7 +9448,7 @@ LFB3619:
 	movb	$98, 153(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC159, (%esp)
+	movl	$LC170, (%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
 	movb	$48, 142(%esp)
@@ -8807,7 +9466,7 @@ LFB3619:
 	movb	$99, 154(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC160, (%esp)
+	movl	$LC171, (%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
 	movb	$48, 142(%esp)
@@ -8826,7 +9485,7 @@ LFB3619:
 	movb	$100, 155(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC161, (%esp)
+	movl	$LC172, (%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
 	movb	$48, 142(%esp)
@@ -8848,11 +9507,11 @@ LFB3619:
 	movdqa	32(%esp), %xmm0
 	movdqu	%xmm0, 142(%esp)
 	movl	%ebx, 4(%esp)
-	movl	$LC162, (%esp)
+	movl	$LC173, (%esp)
 	movl	$0, 158(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC163, (%esp)
+	movl	$LC174, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8860,7 +9519,7 @@ LFB3619:
 	movl	$0, 158(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC164, (%esp)
+	movl	$LC175, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8870,7 +9529,7 @@ LFB3619:
 	call	_printf
 	movl	$12592, %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC165, (%esp)
+	movl	$LC176, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8880,7 +9539,7 @@ LFB3619:
 	call	_printf
 	movl	$12592, %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC166, (%esp)
+	movl	$LC177, (%esp)
 	movl	$0, 142(%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
@@ -8890,7 +9549,7 @@ LFB3619:
 	movb	$50, 144(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC167, (%esp)
+	movl	$LC178, (%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
@@ -8898,7 +9557,7 @@ LFB3619:
 	movl	$858927408, 142(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC168, (%esp)
+	movl	$LC179, (%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
@@ -8908,7 +9567,7 @@ LFB3619:
 	call	_printf
 	movl	$13620, %edx
 	movl	%ebx, 4(%esp)
-	movl	$LC169, (%esp)
+	movl	$LC180, (%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
 	movw	%dx, 146(%esp)
@@ -8918,7 +9577,7 @@ LFB3619:
 	call	_printf
 	movl	$13620, %ecx
 	movl	%ebx, 4(%esp)
-	movl	$LC170, (%esp)
+	movl	$LC181, (%esp)
 	movl	$0, 146(%esp)
 	movl	$0, 150(%esp)
 	movw	%cx, 146(%esp)
@@ -8928,7 +9587,7 @@ LFB3619:
 	movb	$54, 148(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC171, (%esp)
+	movl	$LC182, (%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
@@ -8936,7 +9595,7 @@ LFB3619:
 	movl	$926299444, 146(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC172, (%esp)
+	movl	$LC183, (%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
@@ -8945,7 +9604,7 @@ LFB3619:
 	movb	$56, 150(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC173, (%esp)
+	movl	$LC184, (%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
@@ -8954,7 +9613,7 @@ LFB3619:
 	movw	%di, 150(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC174, (%esp)
+	movl	$LC185, (%esp)
 	movl	$0, 150(%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
@@ -8964,7 +9623,7 @@ LFB3619:
 	movb	$97, 152(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC175, (%esp)
+	movl	$LC186, (%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
 	movl	$858927408, 142(%esp)
@@ -8972,7 +9631,7 @@ LFB3619:
 	movl	$1650538808, 150(%esp)
 	call	_printf
 	movl	%ebx, 4(%esp)
-	movl	$LC176, (%esp)
+	movl	$LC187, (%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
 	movl	$858927408, 142(%esp)
@@ -8982,7 +9641,7 @@ LFB3619:
 	call	_printf
 	movl	$25699, %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC177, (%esp)
+	movl	$LC188, (%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
 	movl	$858927408, 142(%esp)
@@ -8992,7 +9651,7 @@ LFB3619:
 	call	_printf
 	movl	$25699, %eax
 	movl	%ebx, 4(%esp)
-	movl	$LC178, (%esp)
+	movl	$LC189, (%esp)
 	movl	$0, 154(%esp)
 	movl	$0, 158(%esp)
 	movl	$858927408, 142(%esp)
@@ -9002,40 +9661,40 @@ LFB3619:
 	movb	$101, 156(%esp)
 	call	_printf
 	xorl	%eax, %eax
-L859:
+L892:
 	movl	$0, (%esi,%eax)
 	addl	$4, %eax
 	cmpl	$32, %eax
-	jb	L859
+	jb	L892
 	testb	$2, %bl
 	movl	%ebx, %edx
 	movl	$32, %ecx
-	jne	L890
-L861:
+	jne	L923
+L894:
 	movl	%ecx, %edi
 	xorl	%eax, %eax
 	andl	$-4, %edi
-L862:
+L895:
 	movl	$0, (%edx,%eax)
 	addl	$4, %eax
 	cmpl	%edi, %eax
-	jb	L862
+	jb	L895
 	addl	%eax, %edx
 	andl	$2, %ecx
-	je	L865
+	je	L898
 	xorl	%eax, %eax
 	movw	%ax, (%edx)
-L865:
+L898:
 	movl	$123, 4(%esp)
 	movl	%esi, %edi
-	movl	$LC91, (%esp)
+	movl	$LC102, (%esp)
 	call	_printf
 	movl	$LC9, 4(%esp)
 	movl	%esi, (%esp)
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC9, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC11, 4(%esp)
@@ -9043,7 +9702,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC11, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC12, 4(%esp)
@@ -9051,7 +9710,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC12, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC13, 4(%esp)
@@ -9059,7 +9718,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC13, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC14, 4(%esp)
@@ -9067,7 +9726,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC14, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC15, 4(%esp)
@@ -9075,7 +9734,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC15, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC16, 4(%esp)
@@ -9083,7 +9742,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC16, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC17, 4(%esp)
@@ -9091,7 +9750,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC17, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC18, 4(%esp)
@@ -9099,7 +9758,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC18, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC19, 4(%esp)
@@ -9107,7 +9766,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC19, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC20, 4(%esp)
@@ -9115,7 +9774,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC20, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC30, 4(%esp)
@@ -9123,7 +9782,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC30, 8(%esp)
 	movl	%esi, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC18, 4(%esp)
@@ -9131,7 +9790,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC18, 8(%esp)
 	movl	%ebx, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC19, 4(%esp)
@@ -9139,7 +9798,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC19, 8(%esp)
 	movl	%ebx, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC20, 4(%esp)
@@ -9147,7 +9806,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC20, 8(%esp)
 	movl	%ebx, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	movl	$LC30, 4(%esp)
@@ -9155,7 +9814,7 @@ L865:
 	call	__Z12_strcpy_fastPcPKc
 	movl	$LC30, 8(%esp)
 	movl	%ebx, 4(%esp)
-	movl	$LC179, (%esp)
+	movl	$LC190, (%esp)
 	movl	%eax, 12(%esp)
 	call	_printf
 	xorl	%eax, %eax
@@ -9166,19 +9825,19 @@ L865:
 	movl	$34, %edx
 	movw	%ax, (%edi)
 	movl	%ebx, %edi
-	jne	L891
-L866:
+	jne	L924
+L899:
 	movl	%edx, %ecx
 	xorl	%eax, %eax
 	shrl	$2, %ecx
 	andl	$2, %edx
 	rep stosl
-	je	L868
+	je	L901
 	xorl	%eax, %eax
 	movw	%ax, (%edi)
-L868:
+L901:
 	movl	$123, 4(%esp)
-	movl	$LC91, (%esp)
+	movl	$LC102, (%esp)
 	call	_printf
 	movl	%esi, (%esp)
 	movl	$16, 8(%esp)
@@ -9187,7 +9846,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC9, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9197,7 +9856,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC11, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9207,7 +9866,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC12, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9217,7 +9876,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC13, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9227,7 +9886,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC14, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9237,7 +9896,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC15, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9247,7 +9906,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC16, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9257,7 +9916,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC17, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9267,77 +9926,77 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$2, 12(%esp)
 	movl	$LC9, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
 	movl	$2, 8(%esp)
-	movl	$LC181, 4(%esp)
+	movl	$LC192, 4(%esp)
 	call	__Z13_strncpy_fastPcPKcj
 	movl	%esi, 4(%esp)
 	movl	$2, 12(%esp)
-	movl	$LC181, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC192, 8(%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
 	movl	$2, 8(%esp)
-	movl	$LC182, 4(%esp)
+	movl	$LC193, 4(%esp)
 	call	__Z13_strncpy_fastPcPKcj
 	movl	%esi, 4(%esp)
 	movl	$2, 12(%esp)
-	movl	$LC182, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC193, 8(%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
 	movl	$2, 8(%esp)
-	movl	$LC183, 4(%esp)
+	movl	$LC194, 4(%esp)
 	call	__Z13_strncpy_fastPcPKcj
 	movl	%esi, 4(%esp)
 	movl	$2, 12(%esp)
-	movl	$LC183, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC194, 8(%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
 	movl	$2, 8(%esp)
-	movl	$LC184, 4(%esp)
+	movl	$LC195, 4(%esp)
 	call	__Z13_strncpy_fastPcPKcj
 	movl	%esi, 4(%esp)
 	movl	$2, 12(%esp)
-	movl	$LC184, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC195, 8(%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
 	movl	$2, 8(%esp)
-	movl	$LC185, 4(%esp)
+	movl	$LC196, 4(%esp)
 	call	__Z13_strncpy_fastPcPKcj
 	movl	%esi, 4(%esp)
 	movl	$2, 12(%esp)
-	movl	$LC185, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC196, 8(%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
 	movl	$2, 8(%esp)
-	movl	$LC186, 4(%esp)
+	movl	$LC197, 4(%esp)
 	call	__Z13_strncpy_fastPcPKcj
 	movl	%esi, 4(%esp)
 	movl	$2, 12(%esp)
-	movl	$LC186, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC197, 8(%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
 	movl	$2, 8(%esp)
-	movl	$LC187, 4(%esp)
+	movl	$LC198, 4(%esp)
 	call	__Z13_strncpy_fastPcPKcj
 	movl	%esi, 4(%esp)
 	movl	$2, 12(%esp)
-	movl	$LC187, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC198, 8(%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9347,7 +10006,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC18, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9357,7 +10016,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC19, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9367,7 +10026,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC20, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9377,7 +10036,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC30, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%ebx, (%esp)
@@ -9387,7 +10046,7 @@ L868:
 	movl	%ebx, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC18, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%ebx, (%esp)
@@ -9397,7 +10056,7 @@ L868:
 	movl	%ebx, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC19, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%ebx, (%esp)
@@ -9407,7 +10066,7 @@ L868:
 	movl	%ebx, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC20, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%ebx, (%esp)
@@ -9417,7 +10076,7 @@ L868:
 	movl	%ebx, 4(%esp)
 	movl	$16, 12(%esp)
 	movl	$LC30, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9427,7 +10086,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$33, 12(%esp)
 	movl	$LC28, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9437,7 +10096,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$33, 12(%esp)
 	movl	$LC31, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9447,7 +10106,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$33, 12(%esp)
 	movl	$LC36, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%esi, (%esp)
@@ -9457,7 +10116,7 @@ L868:
 	movl	%esi, 4(%esp)
 	movl	$1, 12(%esp)
 	movl	$LC13, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%ebx, (%esp)
@@ -9467,7 +10126,7 @@ L868:
 	movl	%ebx, 4(%esp)
 	movl	$33, 12(%esp)
 	movl	$LC28, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%ebx, (%esp)
@@ -9477,7 +10136,7 @@ L868:
 	movl	%ebx, 4(%esp)
 	movl	$33, 12(%esp)
 	movl	$LC31, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%ebx, (%esp)
@@ -9487,7 +10146,7 @@ L868:
 	movl	%ebx, 4(%esp)
 	movl	$33, 12(%esp)
 	movl	$LC36, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	movl	%ebx, (%esp)
@@ -9497,7 +10156,7 @@ L868:
 	movl	%ebx, 4(%esp)
 	movl	$1, 12(%esp)
 	movl	$LC13, 8(%esp)
-	movl	$LC180, (%esp)
+	movl	$LC191, (%esp)
 	movl	%eax, 16(%esp)
 	call	_printf
 	addl	$188, %esp
@@ -9517,37 +10176,37 @@ L868:
 	.cfi_def_cfa_offset 4
 	ret
 	.p2align 4,,7
-L890:
+L923:
 	.cfi_restore_state
 	xorl	%eax, %eax
 	movb	$30, %cl
 	movw	%ax, 142(%esp)
 	leal	144(%esp), %edx
-	jmp	L861
-L891:
+	jmp	L894
+L924:
 	xorl	%eax, %eax
 	movb	$32, %dl
 	movw	%ax, 142(%esp)
 	leal	144(%esp), %edi
-	jmp	L866
+	jmp	L899
 	.cfi_endproc
-LFE3619:
+LFE3621:
 	.p2align 4,,15
 	.globl	__Z28testOpt07_Type2_strlen_AfteriPKc
 	.def	__Z28testOpt07_Type2_strlen_AfteriPKc;	.scl	2;	.type	32;	.endef
 __Z28testOpt07_Type2_strlen_AfteriPKc:
-LFB3620:
+LFB3622:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	%eax, 4(%esp)
 	jmp	__Z12_strlen_fastPKc
 	.cfi_endproc
-LFE3620:
+LFE3622:
 	.p2align 4,,15
 	.globl	__Z28testOpt07_Type2_strcmp_AfteriPKcS0_
 	.def	__Z28testOpt07_Type2_strcmp_AfteriPKcS0_;	.scl	2;	.type	32;	.endef
 __Z28testOpt07_Type2_strcmp_AfteriPKcS0_:
-LFB3621:
+LFB3623:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	12(%esp), %edx
@@ -9555,12 +10214,12 @@ LFB3621:
 	movl	%edx, 8(%esp)
 	jmp	__Z12_strcmp_fastPKcS0_
 	.cfi_endproc
-LFE3621:
+LFE3623:
 	.p2align 4,,15
 	.globl	__Z29testOpt07_Type2_strncmp_AfteriPKcS0_j
 	.def	__Z29testOpt07_Type2_strncmp_AfteriPKcS0_j;	.scl	2;	.type	32;	.endef
 __Z29testOpt07_Type2_strncmp_AfteriPKcS0_j:
-LFB3622:
+LFB3624:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	12(%esp), %edx
@@ -9570,12 +10229,12 @@ LFB3622:
 	movl	%ecx, 12(%esp)
 	jmp	__Z13_strncmp_fastPKcS0_j
 	.cfi_endproc
-LFE3622:
+LFE3624:
 	.p2align 4,,15
 	.globl	__Z28testOpt07_Type2_strchr_AfteriPKcc
 	.def	__Z28testOpt07_Type2_strchr_AfteriPKcc;	.scl	2;	.type	32;	.endef
 __Z28testOpt07_Type2_strchr_AfteriPKcc:
-LFB3623:
+LFB3625:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movsbl	12(%esp), %edx
@@ -9583,12 +10242,12 @@ LFB3623:
 	movl	%edx, 8(%esp)
 	jmp	__Z12_strchr_fastPKcc
 	.cfi_endproc
-LFE3623:
+LFE3625:
 	.p2align 4,,15
 	.globl	__Z29testOpt07_Type2_strrchr_AfteriPKcc
 	.def	__Z29testOpt07_Type2_strrchr_AfteriPKcc;	.scl	2;	.type	32;	.endef
 __Z29testOpt07_Type2_strrchr_AfteriPKcc:
-LFB3624:
+LFB3626:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movsbl	12(%esp), %edx
@@ -9596,12 +10255,12 @@ LFB3624:
 	movl	%edx, 8(%esp)
 	jmp	__Z13_strrchr_fastPKcc
 	.cfi_endproc
-LFE3624:
+LFE3626:
 	.p2align 4,,15
-	.globl	__Z28testOpt07_Type2_strstr_AfteriPKcS0_
-	.def	__Z28testOpt07_Type2_strstr_AfteriPKcS0_;	.scl	2;	.type	32;	.endef
-__Z28testOpt07_Type2_strstr_AfteriPKcS0_:
-LFB3625:
+	.globl	__Z29testOpt07_Type2_strstr_After1iPKcS0_
+	.def	__Z29testOpt07_Type2_strstr_After1iPKcS0_;	.scl	2;	.type	32;	.endef
+__Z29testOpt07_Type2_strstr_After1iPKcS0_:
+LFB3627:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	12(%esp), %edx
@@ -9609,12 +10268,25 @@ LFB3625:
 	movl	%edx, 8(%esp)
 	jmp	__Z12_strstr_fastPKcS0_
 	.cfi_endproc
-LFE3625:
+LFE3627:
+	.p2align 4,,15
+	.globl	__Z29testOpt07_Type2_strstr_After2iPKcS0_
+	.def	__Z29testOpt07_Type2_strstr_After2iPKcS0_;	.scl	2;	.type	32;	.endef
+__Z29testOpt07_Type2_strstr_After2iPKcS0_:
+LFB3628:
+	.cfi_startproc
+	movl	8(%esp), %eax
+	movl	12(%esp), %edx
+	movl	%eax, 4(%esp)
+	movl	%edx, 8(%esp)
+	jmp	__Z14_strstrbm_fastPKcS0_
+	.cfi_endproc
+LFE3628:
 	.p2align 4,,15
 	.globl	__Z28testOpt07_Type2_strcpy_AfteriPcPKc
 	.def	__Z28testOpt07_Type2_strcpy_AfteriPcPKc;	.scl	2;	.type	32;	.endef
 __Z28testOpt07_Type2_strcpy_AfteriPcPKc:
-LFB3626:
+LFB3629:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	12(%esp), %edx
@@ -9622,12 +10294,12 @@ LFB3626:
 	movl	%edx, 8(%esp)
 	jmp	__Z12_strcpy_fastPcPKc
 	.cfi_endproc
-LFE3626:
+LFE3629:
 	.p2align 4,,15
 	.globl	__Z29testOpt07_Type2_strncpy_AfteriPcPKcj
 	.def	__Z29testOpt07_Type2_strncpy_AfteriPcPKcj;	.scl	2;	.type	32;	.endef
 __Z29testOpt07_Type2_strncpy_AfteriPcPKcj:
-LFB3627:
+LFB3630:
 	.cfi_startproc
 	movl	8(%esp), %eax
 	movl	12(%esp), %edx
@@ -9637,17 +10309,17 @@ LFB3627:
 	movl	%ecx, 12(%esp)
 	jmp	__Z13_strncpy_fastPcPKcj
 	.cfi_endproc
-LFE3627:
+LFE3630:
 	.section .rdata,"dr"
 	.align 4
-LC188:
+LC199:
 	.ascii "lambda1()=%d, lambda2()=%d, lambda3()=%d\12\0"
 	.text
 	.p2align 4,,15
 	.globl	__Z13callLambda123v
 	.def	__Z13callLambda123v;	.scl	2;	.type	32;	.endef
 __Z13callLambda123v:
-LFB3631:
+LFB3634:
 	.cfi_startproc
 	pushl	%esi
 	.cfi_def_cfa_offset 8
@@ -9659,24 +10331,24 @@ LFB3631:
 	.cfi_def_cfa_offset 32
 	movl	_s_lambda3+8, %eax
 	testl	%eax, %eax
-	je	L902
+	je	L936
 	movl	$_s_lambda3, (%esp)
 	call	*_s_lambda3+12
 	movl	%eax, %ebx
 	movl	_s_lambda2+8, %eax
 	testl	%eax, %eax
-	je	L902
+	je	L936
 	movl	$_s_lambda2, (%esp)
 	call	*_s_lambda2+12
 	movl	%eax, %esi
 	movl	_s_lambda1+8, %eax
 	testl	%eax, %eax
-	je	L902
+	je	L936
 	movl	$_s_lambda1, (%esp)
 	call	*_s_lambda1+12
 	movl	%ebx, 12(%esp)
 	movl	%esi, 8(%esp)
-	movl	$LC188, (%esp)
+	movl	$LC199, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
 	addl	$20, %esp
@@ -9689,21 +10361,21 @@ LFB3631:
 	.cfi_restore 6
 	.cfi_def_cfa_offset 4
 	ret
-L902:
+L936:
 	.cfi_restore_state
 	call	__ZSt25__throw_bad_function_callv
 	.cfi_endproc
-LFE3631:
+LFE3634:
 	.section .rdata,"dr"
 	.align 4
-LC189:
+LC200:
 	.ascii "lambda1()=%d, lambda2()=NG!, lambda3()=%d\12\0"
 	.text
 	.p2align 4,,15
 	.globl	__Z12callLambda13v
 	.def	__Z12callLambda13v;	.scl	2;	.type	32;	.endef
 __Z12callLambda13v:
-LFB3632:
+LFB3635:
 	.cfi_startproc
 	pushl	%ebx
 	.cfi_def_cfa_offset 8
@@ -9712,17 +10384,17 @@ LFB3632:
 	.cfi_def_cfa_offset 32
 	movl	_s_lambda3+8, %edx
 	testl	%edx, %edx
-	je	L906
+	je	L940
 	movl	$_s_lambda3, (%esp)
 	call	*_s_lambda3+12
 	movl	%eax, %ebx
 	movl	_s_lambda1+8, %eax
 	testl	%eax, %eax
-	je	L906
+	je	L940
 	movl	$_s_lambda1, (%esp)
 	call	*_s_lambda1+12
 	movl	%ebx, 8(%esp)
-	movl	$LC189, (%esp)
+	movl	$LC200, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
 	addl	$24, %esp
@@ -9732,38 +10404,38 @@ LFB3632:
 	.cfi_restore 3
 	.cfi_def_cfa_offset 4
 	ret
-L906:
+L940:
 	.cfi_restore_state
 	call	__ZSt25__throw_bad_function_callv
 	.cfi_endproc
-LFE3632:
+LFE3635:
 	.section .rdata,"dr"
 	.align 4
-LC190:
+LC201:
 	.ascii "Call lambda in block with counter in setLambda().\0"
-LC191:
+LC202:
 	.ascii "dummy=%d\12\0"
 	.align 4
-LC192:
+LC203:
 	.ascii "Call lambda in block without counter in setLambda().\0"
 	.align 4
-LC193:
+LC204:
 	.ascii "for lambda1: external_counter=%d\12\0"
 	.align 4
-LC194:
+LC205:
 	.ascii "for lambda2: local_counter=%d\12\0"
 	.align 4
-LC195:
+LC206:
 	.ascii "for lambda3: static_counter=%d\12\0"
 	.text
 	.p2align 4,,15
 	.globl	__Z9setLambdaRi
 	.def	__Z9setLambdaRi;	.scl	2;	.type	32;	.endef
 __Z9setLambdaRi:
-LFB3633:
+LFB3636:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3633
+	.cfi_lsda 0,LLSDA3636
 	pushl	%esi
 	.cfi_def_cfa_offset 8
 	.cfi_offset 6, -8
@@ -9774,81 +10446,81 @@ LFB3633:
 	.cfi_def_cfa_offset 64
 	movl	_s_lambda1+8, %ebx
 	testl	%ebx, %ebx
-	je	L909
+	je	L943
 	movl	_s_lambda2+8, %ecx
 	testl	%ecx, %ecx
-	je	L909
-L910:
+	je	L943
+L944:
 	movl	$999, 4(%esp)
-	movl	$LC191, (%esp)
+	movl	$LC202, (%esp)
 LEHB10:
 	call	_printf
-	movl	$LC192, (%esp)
+	movl	$LC203, (%esp)
 	call	_puts
 	movl	_s_lambda3+8, %edx
 	testl	%edx, %edx
-	je	L924
+	je	L958
 	movl	$_s_lambda3, (%esp)
 	call	*_s_lambda3+12
 	movl	%eax, %ebx
 	movl	_s_lambda2+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda2, (%esp)
 	call	*_s_lambda2+12
 	movl	%eax, %esi
 	movl	_s_lambda1+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda1, (%esp)
 	call	*_s_lambda1+12
 	movl	%ebx, 12(%esp)
 	movl	%esi, 8(%esp)
-	movl	$LC188, (%esp)
+	movl	$LC199, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
 	movl	_s_lambda3+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda3, (%esp)
 	call	*_s_lambda3+12
 	movl	%eax, %ebx
 	movl	_s_lambda2+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda2, (%esp)
 	call	*_s_lambda2+12
 	movl	%eax, %esi
 	movl	_s_lambda1+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda1, (%esp)
 	call	*_s_lambda1+12
 	movl	%ebx, 12(%esp)
 	movl	%esi, 8(%esp)
-	movl	$LC188, (%esp)
+	movl	$LC199, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
 	movl	_s_lambda3+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda3, (%esp)
 	call	*_s_lambda3+12
 	movl	_s_lambda2+8, %esi
 	testl	%esi, %esi
 	movl	%eax, %ebx
-	je	L924
+	je	L958
 	movl	$_s_lambda2, (%esp)
 	call	*_s_lambda2+12
 	movl	_s_lambda1+8, %ecx
 	testl	%ecx, %ecx
 	movl	%eax, %esi
-	je	L924
+	je	L958
 	movl	$_s_lambda1, (%esp)
 	call	*_s_lambda1+12
 	movl	%ebx, 12(%esp)
 	movl	%esi, 8(%esp)
-	movl	$LC188, (%esp)
+	movl	$LC199, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
 	addl	$52, %esp
@@ -9862,20 +10534,20 @@ LEHB10:
 	.cfi_def_cfa_offset 4
 	ret
 	.p2align 4,,7
-L909:
+L943:
 	.cfi_restore_state
 	movl	64(%esp), %eax
 	movl	$0, 16(%esp)
 	movl	(%eax), %eax
-	movl	$LC193, (%esp)
+	movl	$LC204, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
 	movl	16(%esp), %eax
-	movl	$LC194, (%esp)
+	movl	$LC205, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
 	movl	__ZZ9setLambdaRiE14static_counter, %eax
-	movl	$LC195, (%esp)
+	movl	$LC206, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
 LEHE10:
@@ -9902,13 +10574,13 @@ LEHE11:
 	movl	%eax, 40(%esp)
 	movl	%edx, 44(%esp)
 	movl	$__ZNSt17_Function_handlerIFivEZ9setLambdaRiEUlvE_E9_M_invokeERKSt9_Any_data, _s_lambda1+12
-	je	L912
+	je	L946
 	leal	32(%esp), %edx
 	movl	$3, 8(%esp)
 	movl	%edx, 4(%esp)
 	movl	%edx, (%esp)
 	call	*%eax
-L912:
+L946:
 	movl	$4, (%esp)
 	movl	$0, 40(%esp)
 LEHB12:
@@ -9932,13 +10604,13 @@ LEHE12:
 	movl	%eax, 40(%esp)
 	movl	%edx, 44(%esp)
 	movl	$__ZNSt17_Function_handlerIFivEZ9setLambdaRiEUlvE0_E9_M_invokeERKSt9_Any_data, _s_lambda2+12
-	je	L916
+	je	L950
 	leal	32(%esp), %edx
 	movl	$3, 8(%esp)
 	movl	%edx, 4(%esp)
 	movl	%edx, (%esp)
 	call	*%eax
-L916:
+L950:
 	movl	$1, (%esp)
 	movl	$0, 40(%esp)
 LEHB13:
@@ -9960,166 +10632,166 @@ LEHE13:
 	movl	$__ZNSt14_Function_base13_Base_managerIZ9setLambdaRiEUlvE1_E10_M_managerERSt9_Any_dataRKS4_St18_Manager_operation, _s_lambda3+8
 	movl	%edx, 44(%esp)
 	movl	$__ZNSt17_Function_handlerIFivEZ9setLambdaRiEUlvE1_E9_M_invokeERKSt9_Any_data, _s_lambda3+12
-	je	L920
+	je	L954
 	leal	32(%esp), %edx
 	movl	$3, 8(%esp)
 	movl	%edx, 4(%esp)
 	movl	%edx, (%esp)
 	call	*%eax
-L920:
-	movl	$LC190, (%esp)
+L954:
+	movl	$LC201, (%esp)
 LEHB14:
 	call	_puts
 	movl	_s_lambda3+8, %edx
 	testl	%edx, %edx
-	je	L924
+	je	L958
 	movl	$_s_lambda3, (%esp)
 	call	*_s_lambda3+12
 	movl	%eax, %ebx
 	movl	_s_lambda2+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda2, (%esp)
 	call	*_s_lambda2+12
 	movl	%eax, %esi
 	movl	_s_lambda1+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda1, (%esp)
 	call	*_s_lambda1+12
 	movl	%ebx, 12(%esp)
 	movl	%esi, 8(%esp)
-	movl	$LC188, (%esp)
+	movl	$LC199, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
 	movl	_s_lambda3+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda3, (%esp)
 	call	*_s_lambda3+12
 	movl	%eax, %ebx
 	movl	_s_lambda2+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda2, (%esp)
 	call	*_s_lambda2+12
 	movl	%eax, %esi
 	movl	_s_lambda1+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda1, (%esp)
 	call	*_s_lambda1+12
 	movl	%ebx, 12(%esp)
 	movl	%esi, 8(%esp)
-	movl	$LC188, (%esp)
+	movl	$LC199, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
 	movl	_s_lambda3+8, %eax
 	testl	%eax, %eax
-	je	L924
+	je	L958
 	movl	$_s_lambda3, (%esp)
 	call	*_s_lambda3+12
 	movl	_s_lambda2+8, %esi
 	testl	%esi, %esi
 	movl	%eax, %ebx
-	je	L924
+	je	L958
 	movl	$_s_lambda2, (%esp)
 	call	*_s_lambda2+12
 	movl	_s_lambda1+8, %ecx
 	testl	%ecx, %ecx
 	movl	%eax, %esi
-	je	L924
+	je	L958
 	movl	$_s_lambda1, (%esp)
 	call	*_s_lambda1+12
 	movl	%ebx, 12(%esp)
 	movl	%esi, 8(%esp)
-	movl	$LC188, (%esp)
+	movl	$LC199, (%esp)
 	movl	%eax, 4(%esp)
 	call	_printf
-	jmp	L910
-L924:
+	jmp	L944
+L958:
 	call	__ZSt25__throw_bad_function_callv
 LEHE14:
-L926:
+L960:
 	movl	40(%esp), %edx
 	movl	%eax, %ebx
 	testl	%edx, %edx
-	je	L922
+	je	L956
 	leal	32(%esp), %ecx
 	movl	$3, 8(%esp)
 	movl	%ecx, 4(%esp)
 	movl	%ecx, (%esp)
 	call	*%edx
-L922:
+L956:
 	movl	%ebx, (%esp)
 LEHB15:
 	call	__Unwind_Resume
 LEHE15:
-L927:
+L961:
 	movl	40(%esp), %edx
 	movl	%eax, %ebx
 	testl	%edx, %edx
-	je	L922
+	je	L956
 	leal	32(%esp), %ecx
 	movl	$3, 8(%esp)
 	movl	%ecx, 4(%esp)
 	movl	%ecx, (%esp)
 	call	*%edx
-	jmp	L922
-L928:
+	jmp	L956
+L962:
 	movl	40(%esp), %edx
 	movl	%eax, %ebx
 	testl	%edx, %edx
-	je	L922
+	je	L956
 	leal	32(%esp), %ecx
 	movl	$3, 8(%esp)
 	movl	%ecx, 4(%esp)
 	movl	%ecx, (%esp)
 	call	*%edx
-	jmp	L922
+	jmp	L956
 	.cfi_endproc
-LFE3633:
+LFE3636:
 	.section	.gcc_except_table,"w"
-LLSDA3633:
+LLSDA3636:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3633-LLSDACSB3633
-LLSDACSB3633:
-	.uleb128 LEHB10-LFB3633
+	.uleb128 LLSDACSE3636-LLSDACSB3636
+LLSDACSB3636:
+	.uleb128 LEHB10-LFB3636
 	.uleb128 LEHE10-LEHB10
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB11-LFB3633
+	.uleb128 LEHB11-LFB3636
 	.uleb128 LEHE11-LEHB11
-	.uleb128 L926-LFB3633
+	.uleb128 L960-LFB3636
 	.uleb128 0
-	.uleb128 LEHB12-LFB3633
+	.uleb128 LEHB12-LFB3636
 	.uleb128 LEHE12-LEHB12
-	.uleb128 L927-LFB3633
+	.uleb128 L961-LFB3636
 	.uleb128 0
-	.uleb128 LEHB13-LFB3633
+	.uleb128 LEHB13-LFB3636
 	.uleb128 LEHE13-LEHB13
-	.uleb128 L928-LFB3633
+	.uleb128 L962-LFB3636
 	.uleb128 0
-	.uleb128 LEHB14-LFB3633
+	.uleb128 LEHB14-LFB3636
 	.uleb128 LEHE14-LEHB14
 	.uleb128 0
 	.uleb128 0
-	.uleb128 LEHB15-LFB3633
+	.uleb128 LEHB15-LFB3636
 	.uleb128 LEHE15-LEHB15
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3633:
+LLSDACSE3636:
 	.text
 	.p2align 4,,15
 	.globl	__Z10getLambda1v
 	.def	__Z10getLambda1v;	.scl	2;	.type	32;	.endef
 __Z10getLambda1v:
-LFB3639:
+LFB3642:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3639
+	.cfi_lsda 0,LLSDA3642
 	pushl	%esi
 	.cfi_def_cfa_offset 8
 	.cfi_offset 6, -8
@@ -10132,7 +10804,7 @@ LFB3639:
 	movl	$0, 8(%ebx)
 	movl	_s_lambda1+8, %eax
 	testl	%eax, %eax
-	je	L940
+	je	L974
 	movl	_s_lambda1+12, %edx
 	movl	%eax, 8(%ebx)
 	movl	%edx, 12(%ebx)
@@ -10142,7 +10814,7 @@ LFB3639:
 LEHB16:
 	call	*_s_lambda1+8
 LEHE16:
-L940:
+L974:
 	addl	$20, %esp
 	.cfi_remember_state
 	.cfi_def_cfa_offset 12
@@ -10154,48 +10826,48 @@ L940:
 	.cfi_restore 6
 	.cfi_def_cfa_offset 4
 	ret	$4
-L944:
+L978:
 	.cfi_restore_state
 	movl	8(%ebx), %edx
 	movl	%eax, %esi
 	testl	%edx, %edx
-	je	L943
+	je	L977
 	movl	$3, 8(%esp)
 	movl	%ebx, 4(%esp)
 	movl	%ebx, (%esp)
 	call	*%edx
-L943:
+L977:
 	movl	%esi, (%esp)
 LEHB17:
 	call	__Unwind_Resume
 LEHE17:
 	.cfi_endproc
-LFE3639:
+LFE3642:
 	.section	.gcc_except_table,"w"
-LLSDA3639:
+LLSDA3642:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3639-LLSDACSB3639
-LLSDACSB3639:
-	.uleb128 LEHB16-LFB3639
+	.uleb128 LLSDACSE3642-LLSDACSB3642
+LLSDACSB3642:
+	.uleb128 LEHB16-LFB3642
 	.uleb128 LEHE16-LEHB16
-	.uleb128 L944-LFB3639
+	.uleb128 L978-LFB3642
 	.uleb128 0
-	.uleb128 LEHB17-LFB3639
+	.uleb128 LEHB17-LFB3642
 	.uleb128 LEHE17-LEHB17
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3639:
+LLSDACSE3642:
 	.text
 	.p2align 4,,15
 	.globl	__Z10getLambda2v
 	.def	__Z10getLambda2v;	.scl	2;	.type	32;	.endef
 __Z10getLambda2v:
-LFB3640:
+LFB3643:
 	.cfi_startproc
 	.cfi_personality 0,___gxx_personality_v0
-	.cfi_lsda 0,LLSDA3640
+	.cfi_lsda 0,LLSDA3643
 	pushl	%esi
 	.cfi_def_cfa_offset 8
 	.cfi_offset 6, -8
@@ -10208,7 +10880,7 @@ LFB3640:
 	movl	$0, 8(%ebx)
 	movl	_s_lambda1+8, %eax
 	testl	%eax, %eax
-	je	L952
+	je	L986
 	movl	_s_lambda1+12, %edx
 	movl	%eax, 8(%ebx)
 	movl	%edx, 12(%ebx)
@@ -10218,7 +10890,7 @@ LFB3640:
 LEHB18:
 	call	*_s_lambda1+8
 LEHE18:
-L952:
+L986:
 	addl	$20, %esp
 	.cfi_remember_state
 	.cfi_def_cfa_offset 12
@@ -10230,39 +10902,39 @@ L952:
 	.cfi_restore 6
 	.cfi_def_cfa_offset 4
 	ret	$4
-L956:
+L990:
 	.cfi_restore_state
 	movl	8(%ebx), %edx
 	movl	%eax, %esi
 	testl	%edx, %edx
-	je	L955
+	je	L989
 	movl	$3, 8(%esp)
 	movl	%ebx, 4(%esp)
 	movl	%ebx, (%esp)
 	call	*%edx
-L955:
+L989:
 	movl	%esi, (%esp)
 LEHB19:
 	call	__Unwind_Resume
 LEHE19:
 	.cfi_endproc
-LFE3640:
+LFE3643:
 	.section	.gcc_except_table,"w"
-LLSDA3640:
+LLSDA3643:
 	.byte	0xff
 	.byte	0xff
 	.byte	0x1
-	.uleb128 LLSDACSE3640-LLSDACSB3640
-LLSDACSB3640:
-	.uleb128 LEHB18-LFB3640
+	.uleb128 LLSDACSE3643-LLSDACSB3643
+LLSDACSB3643:
+	.uleb128 LEHB18-LFB3643
 	.uleb128 LEHE18-LEHB18
-	.uleb128 L956-LFB3640
+	.uleb128 L990-LFB3643
 	.uleb128 0
-	.uleb128 LEHB19-LFB3640
+	.uleb128 LEHB19-LFB3643
 	.uleb128 LEHE19-LEHB19
 	.uleb128 0
 	.uleb128 0
-LLSDACSE3640:
+LLSDACSE3643:
 	.text
 	.section	.text$_Z22testOpt07_Type1_BeforeILj4ELj4ELj4EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE,"x"
 	.linkonce discard
@@ -10270,7 +10942,7 @@ LLSDACSE3640:
 	.globl	__Z22testOpt07_Type1_BeforeILj4ELj4ELj4EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE
 	.def	__Z22testOpt07_Type1_BeforeILj4ELj4ELj4EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE;	.scl	2;	.type	32;	.endef
 __Z22testOpt07_Type1_BeforeILj4ELj4ELj4EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE:
-LFB3735:
+LFB3738:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -10390,28 +11062,28 @@ LFB3735:
 	fstps	56(%eax)
 	fmuls	60(%ecx)
 	fstps	60(%eax)
-	jne	L984
+	jne	L1018
 	testl	$2, %edi
-	jne	L985
-L966:
+	jne	L1019
+L1000:
 	movl	%ebx, %ecx
 	xorl	%eax, %eax
 	shrl	$2, %ecx
 	testb	$2, %bl
 	rep stosl
-	je	L967
+	je	L1001
 	xorl	%ebp, %ebp
 	addl	$2, %edi
 	movw	%bp, -2(%edi)
-L967:
+L1001:
 	andl	$1, %ebx
-	je	L968
+	je	L1002
 	movb	$0, (%edi)
-L968:
+L1002:
 	movl	52(%esp), %edi
 	xorl	%ebx, %ebx
 	xorl	%eax, %eax
-L969:
+L1003:
 	sall	$4, %eax
 	addl	$1, %ebx
 	leal	(%edi,%eax), %ecx
@@ -10482,7 +11154,7 @@ L969:
 	faddp	%st, %st(1)
 	fstps	12(%eax)
 	movl	%ebx, %eax
-	jne	L969
+	jne	L1003
 	popl	%ebx
 	.cfi_remember_state
 	.cfi_restore 3
@@ -10498,29 +11170,29 @@ L969:
 	.cfi_def_cfa_offset 4
 	ret
 	.p2align 4,,7
-L984:
+L1018:
 	.cfi_restore_state
 	leal	1(%esi), %edi
 	movb	$63, %bl
 	testl	$2, %edi
 	movb	$0, (%esi)
-	je	L966
+	je	L1000
 	.p2align 4,,7
-L985:
+L1019:
 	xorl	%eax, %eax
 	addl	$2, %edi
 	movw	%ax, -2(%edi)
 	subl	$2, %ebx
-	jmp	L966
+	jmp	L1000
 	.cfi_endproc
-LFE3735:
+LFE3738:
 	.section	.text$_Z21testOpt07_Type1_AfterILj4ELj4ELj4EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE,"x"
 	.linkonce discard
 	.p2align 4,,15
 	.globl	__Z21testOpt07_Type1_AfterILj4ELj4ELj4EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE
 	.def	__Z21testOpt07_Type1_AfterILj4ELj4ELj4EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE;	.scl	2;	.type	32;	.endef
 __Z21testOpt07_Type1_AfterILj4ELj4ELj4EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE:
-LFB3736:
+LFB3739:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -10656,14 +11328,14 @@ LFB3736:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3736:
+LFE3739:
 	.section	.text$_Z22testOpt07_Type1_BeforeILj1ELj4ELj3EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE,"x"
 	.linkonce discard
 	.p2align 4,,15
 	.globl	__Z22testOpt07_Type1_BeforeILj1ELj4ELj3EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE
 	.def	__Z22testOpt07_Type1_BeforeILj1ELj4ELj3EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE;	.scl	2;	.type	32;	.endef
 __Z22testOpt07_Type1_BeforeILj1ELj4ELj3EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE:
-LFB3737:
+LFB3740:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -10775,14 +11447,14 @@ LFB3737:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3737:
+LFE3740:
 	.section	.text$_Z21testOpt07_Type1_AfterILj1ELj4ELj3EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE,"x"
 	.linkonce discard
 	.p2align 4,,15
 	.globl	__Z21testOpt07_Type1_AfterILj1ELj4ELj3EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE
 	.def	__Z21testOpt07_Type1_AfterILj1ELj4ELj3EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE;	.scl	2;	.type	32;	.endef
 __Z21testOpt07_Type1_AfterILj1ELj4ELj3EEviR6matrixIXT_EXT0_EES2_S2_RKS1_S4_S4_fRKS0_IXT_EXT1_EERKS0_IXT1_EXT0_EE:
-LFB3738:
+LFB3741:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -10894,7 +11566,7 @@ LFB3738:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3738:
+LFE3741:
 	.section	.text$_ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv,"x"
 	.linkonce discard
 	.align 2
@@ -10902,7 +11574,7 @@ LFE3738:
 	.globl	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	.def	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv;	.scl	2;	.type	32;	.endef
 __ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv:
-LFB3845:
+LFB3848:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -10921,10 +11593,10 @@ LFB3845:
 	movl	48(%esp), %edx
 	movl	2496(%edx), %eax
 	cmpl	$623, %eax
-	ja	L993
+	ja	L1027
 	leal	1(%eax), %ecx
 	movl	(%edx,%eax,4), %eax
-L994:
+L1028:
 	movl	%ecx, 2496(%edx)
 	movl	%eax, %edx
 	addl	$28, %esp
@@ -10957,14 +11629,14 @@ L994:
 	.cfi_def_cfa_offset 4
 	ret
 	.p2align 4,,7
-L993:
+L1027:
 	.cfi_restore_state
 	movl	%edx, %eax
 	andl	$15, %eax
 	shrl	$2, %eax
 	negl	%eax
 	andl	$3, %eax
-	je	L1010
+	je	L1044
 	movl	4(%edx), %esi
 	movl	(%edx), %ecx
 	movl	%esi, %ebx
@@ -10980,7 +11652,7 @@ L993:
 	xorl	%ebx, %ecx
 	cmpl	$1, %eax
 	movl	%ecx, (%edx)
-	jbe	L1011
+	jbe	L1045
 	movl	8(%edx), %edi
 	andl	$-2147483648, %esi
 	movl	%edi, %ebx
@@ -10995,7 +11667,7 @@ L993:
 	xorl	%ebx, %ecx
 	cmpl	$2, %eax
 	movl	%ecx, 4(%edx)
-	jbe	L1012
+	jbe	L1046
 	movl	12(%edx), %ebx
 	andl	$-2147483648, %edi
 	movl	$3, %ebp
@@ -11010,22 +11682,22 @@ L993:
 	shrl	%ebx
 	xorl	%ebx, %ecx
 	movl	%ecx, 8(%edx)
-L995:
+L1029:
 	movl	$227, 4(%esp)
 	xorl	%ecx, %ecx
-	movdqa	LC196, %xmm2
+	movdqa	LC207, %xmm2
 	subl	%eax, 4(%esp)
-	movdqa	LC197, %xmm3
-	movdqa	LC198, %xmm4
+	movdqa	LC208, %xmm3
+	movdqa	LC209, %xmm4
 	sall	$2, %eax
-	movdqa	LC199, %xmm5
+	movdqa	LC210, %xmm5
 	pxor	%xmm6, %xmm6
 	leal	(%edx,%eax), %ebx
 	leal	4(%edx,%eax), %edi
 	leal	1588(%edx,%eax), %esi
 	xorl	%eax, %eax
 	.p2align 4,,7
-L1001:
+L1035:
 	movdqu	(%edi,%eax), %xmm1
 	movdqa	(%ebx,%eax), %xmm0
 	pand	%xmm2, %xmm1
@@ -11043,10 +11715,10 @@ L1001:
 	movdqa	%xmm0, (%ebx,%eax)
 	addl	$16, %eax
 	cmpl	$55, %ecx
-	jbe	L1001
+	jbe	L1035
 	cmpl	$224, 4(%esp)
 	leal	224(%ebp), %eax
-	je	L999
+	je	L1033
 	leal	225(%ebp), %ebx
 	leal	(%edx,%eax,4), %edi
 	movl	(%edx,%ebx,4), %eax
@@ -11064,7 +11736,7 @@ L1001:
 	xorl	%esi, %ecx
 	cmpl	$225, (%esp)
 	movl	%ecx, (%edi)
-	je	L999
+	je	L1033
 	leal	226(%ebp), %edi
 	andl	$-2147483648, %eax
 	movl	(%edx,%edi,4), %esi
@@ -11080,7 +11752,7 @@ L1001:
 	xorl	%ecx, %eax
 	cmpl	$226, (%esp)
 	movl	%eax, (%edx,%ebx,4)
-	je	L999
+	je	L1033
 	movl	908(%edx,%ebp,4), %ecx
 	andl	$-2147483648, %esi
 	andl	$2147483647, %ecx
@@ -11093,13 +11765,13 @@ L1001:
 	shrl	%ecx
 	xorl	%ecx, %eax
 	movl	%eax, (%edx,%edi,4)
-L999:
+L1033:
 	leal	908(%edx), %eax
 	andl	$15, %eax
 	shrl	$2, %eax
 	negl	%eax
 	andl	$3, %eax
-	je	L1013
+	je	L1047
 	movl	912(%edx), %esi
 	movl	908(%edx), %ecx
 	movl	%esi, %ebx
@@ -11115,7 +11787,7 @@ L999:
 	xorl	%ebx, %ecx
 	cmpl	$1, %eax
 	movl	%ecx, 908(%edx)
-	jbe	L1014
+	jbe	L1048
 	movl	916(%edx), %edi
 	andl	$-2147483648, %esi
 	movl	%edi, %ebx
@@ -11130,7 +11802,7 @@ L999:
 	xorl	%ebx, %ecx
 	cmpl	$2, %eax
 	movl	%ecx, 912(%edx)
-	jbe	L1015
+	jbe	L1049
 	movl	920(%edx), %ebx
 	andl	$-2147483648, %edi
 	movl	$393, 4(%esp)
@@ -11145,7 +11817,7 @@ L999:
 	shrl	%ebx
 	xorl	%ebx, %ecx
 	movl	%ecx, 916(%edx)
-L1002:
+L1036:
 	movl	$396, (%esp)
 	xorl	%ecx, %ecx
 	pxor	%xmm6, %xmm6
@@ -11160,7 +11832,7 @@ L1002:
 	leal	-908(%edx,%eax), %edi
 	xorl	%eax, %eax
 	.p2align 4,,7
-L1008:
+L1042:
 	movdqu	0(%ebp,%eax), %xmm1
 	movdqa	(%ebx,%eax), %xmm0
 	pand	%xmm2, %xmm1
@@ -11178,7 +11850,7 @@ L1008:
 	movdqa	%xmm0, (%ebx,%eax)
 	addl	$16, %eax
 	cmpl	%ecx, %esi
-	ja	L1008
+	ja	L1042
 	movl	12(%esp), %edi
 	movl	4(%esp), %eax
 	movl	8(%esp), %ecx
@@ -11187,7 +11859,7 @@ L1008:
 	addl	%edi, %ecx
 	cmpl	%esi, %edi
 	movl	%eax, 4(%esp)
-	je	L1006
+	je	L1040
 	leal	1(%ecx), %esi
 	leal	(%edx,%ecx,4), %ebp
 	movl	(%edx,%esi,4), %eax
@@ -11205,7 +11877,7 @@ L1008:
 	xorl	%edi, %ebx
 	cmpl	$1, 4(%esp)
 	movl	%ebx, 0(%ebp)
-	je	L1006
+	je	L1040
 	leal	2(%ecx), %ebp
 	andl	$-2147483648, %eax
 	movl	(%edx,%ebp,4), %edi
@@ -11221,7 +11893,7 @@ L1008:
 	xorl	%ebx, %eax
 	cmpl	$2, 4(%esp)
 	movl	%eax, (%edx,%esi,4)
-	je	L1006
+	je	L1040
 	movl	12(%edx,%ecx,4), %ebx
 	andl	$-2147483648, %edi
 	andl	$2147483647, %ebx
@@ -11234,7 +11906,7 @@ L1008:
 	shrl	%ebx
 	xorl	%ebx, %eax
 	movl	%eax, (%edx,%ebp,4)
-L1006:
+L1040:
 	movl	(%edx), %eax
 	movl	2492(%edx), %ecx
 	movl	%eax, %ebx
@@ -11250,45 +11922,45 @@ L1006:
 	xorl	%ebx, %ecx
 	movl	%ecx, 2492(%edx)
 	movl	$1, %ecx
-	jmp	L994
+	jmp	L1028
 	.p2align 4,,7
-L1012:
+L1046:
 	movl	$225, (%esp)
 	movl	$2, %ebp
-	jmp	L995
+	jmp	L1029
 	.p2align 4,,7
-L1011:
+L1045:
 	movl	$226, (%esp)
 	movl	$1, %ebp
-	jmp	L995
+	jmp	L1029
 	.p2align 4,,7
-L1010:
+L1044:
 	movl	$227, (%esp)
 	xorl	%ebp, %ebp
-	jmp	L995
+	jmp	L1029
 	.p2align 4,,7
-L1013:
+L1047:
 	movl	$396, 4(%esp)
 	movl	$227, 8(%esp)
-	jmp	L1002
+	jmp	L1036
 	.p2align 4,,7
-L1015:
+L1049:
 	movl	$394, 4(%esp)
 	movl	$229, 8(%esp)
-	jmp	L1002
+	jmp	L1036
 	.p2align 4,,7
-L1014:
+L1048:
 	movl	$395, 4(%esp)
 	movl	$228, 8(%esp)
-	jmp	L1002
+	jmp	L1036
 	.cfi_endproc
-LFE3845:
+LFE3848:
 	.text
 	.p2align 4,,15
 	.globl	__Z9initOpt04R11dataOpt04_t
 	.def	__Z9initOpt04R11dataOpt04_t;	.scl	2;	.type	32;	.endef
 __Z9initOpt04R11dataOpt04_t:
-LFB3040:
+LFB3041:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -11311,7 +11983,7 @@ LFB3040:
 	leal	16(%esp), %esi
 	movl	$5489, 16(%esp)
 	.p2align 4,,7
-L1033:
+L1067:
 	movl	%ebx, %eax
 	movl	%ecx, %edx
 	shrl	$30, %eax
@@ -11328,26 +12000,26 @@ L1033:
 	movl	%ebx, (%esi,%ecx,4)
 	addl	$1, %ecx
 	cmpl	$624, %ecx
-	jne	L1033
+	jne	L1067
 	leal	80000(%ebp), %ebx
 	movl	$-1342177277, %edi
 	cmpl	%ebx, %ebp
 	movl	$624, 2512(%esp)
-	je	L1031
+	je	L1065
 	.p2align 4,,7
-L1036:
+L1070:
 	movl	%esi, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-5, %eax
-	ja	L1036
+	ja	L1070
 	mull	%edi
 	addl	$8, %ebp
 	movl	$0x00000000, -4(%ebp)
 	shrl	$28, %edx
 	movl	%edx, -8(%ebp)
 	cmpl	%ebp, %ebx
-	jne	L1036
-L1031:
+	jne	L1070
+L1065:
 	addl	$2540, %esp
 	.cfi_def_cfa_offset 20
 	popl	%ebx
@@ -11364,12 +12036,12 @@ L1031:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3040:
+LFE3041:
 	.p2align 4,,15
 	.globl	__Z9initOpt06R11dataOpt06_t
 	.def	__Z9initOpt06R11dataOpt06_t;	.scl	2;	.type	32;	.endef
 __Z9initOpt06R11dataOpt06_t:
-LFB3525:
+LFB3526:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -11392,7 +12064,7 @@ LFB3525:
 	leal	16(%esp), %esi
 	movl	$5489, 16(%esp)
 	.p2align 4,,7
-L1042:
+L1076:
 	movl	%ebx, %eax
 	movl	%ecx, %edx
 	shrl	$30, %eax
@@ -11409,13 +12081,13 @@ L1042:
 	movl	%ebx, (%esi,%ecx,4)
 	addl	$1, %ecx
 	cmpl	$624, %ecx
-	jne	L1042
+	jne	L1076
 	leal	80000(%ebp), %ebx
 	cmpl	%ebx, %ebp
 	movl	$624, 2512(%esp)
-	je	L1040
+	je	L1074
 	.p2align 4,,7
-L1046:
+L1080:
 	movl	%esi, (%esp)
 	addl	$8, %ebp
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
@@ -11426,14 +12098,14 @@ L1046:
 	fldz
 	fadd	%st, %st(1)
 	fxch	%st(1)
-	fmuls	LC200
-	fmuls	LC201
+	fmuls	LC211
+	fmuls	LC212
 	fadd	%st(1), %st
 	fstps	-8(%ebp)
 	fstps	-4(%ebp)
 	cmpl	%ebp, %ebx
-	jne	L1046
-L1040:
+	jne	L1080
+L1074:
 	addl	$2540, %esp
 	.cfi_def_cfa_offset 20
 	popl	%ebx
@@ -11450,12 +12122,12 @@ L1040:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3525:
+LFE3526:
 	.p2align 4,,15
 	.globl	__Z9initOpt02R11dataOpt02_t
 	.def	__Z9initOpt02R11dataOpt02_t;	.scl	2;	.type	32;	.endef
 __Z9initOpt02R11dataOpt02_t:
-LFB2675:
+LFB2676:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -11478,7 +12150,7 @@ LFB2675:
 	leal	16(%esp), %esi
 	movl	$5489, 16(%esp)
 	.p2align 4,,7
-L1050:
+L1084:
 	movl	%ebx, %eax
 	movl	%ecx, %edx
 	shrl	$30, %eax
@@ -11495,25 +12167,25 @@ L1050:
 	movl	%ebx, (%esi,%ecx,4)
 	addl	$1, %ecx
 	cmpl	$624, %ecx
-	jne	L1050
+	jne	L1084
 	leal	40000(%ebp), %ebx
 	movl	$-1342177277, %edi
 	cmpl	%ebx, %ebp
 	movl	$624, 2512(%esp)
-	je	L1048
+	je	L1082
 	.p2align 4,,7
-L1053:
+L1087:
 	movl	%esi, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-5, %eax
-	ja	L1053
+	ja	L1087
 	mull	%edi
 	addl	$4, %ebp
 	shrl	$28, %edx
 	movl	%edx, -4(%ebp)
 	cmpl	%ebp, %ebx
-	jne	L1053
-L1048:
+	jne	L1087
+L1082:
 	addl	$2540, %esp
 	.cfi_def_cfa_offset 20
 	popl	%ebx
@@ -11530,12 +12202,12 @@ L1048:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE2675:
+LFE2676:
 	.p2align 4,,15
 	.globl	__Z15initOpt03_Type3R11dataOpt03_t
 	.def	__Z15initOpt03_Type3R11dataOpt03_t;	.scl	2;	.type	32;	.endef
 __Z15initOpt03_Type3R11dataOpt03_t:
-LFB2681:
+LFB2682:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -11558,7 +12230,7 @@ LFB2681:
 	leal	16(%esp), %esi
 	movl	$5489, 16(%esp)
 	.p2align 4,,7
-L1059:
+L1093:
 	movl	%ebx, %eax
 	movl	%ecx, %edx
 	shrl	$30, %eax
@@ -11575,25 +12247,25 @@ L1059:
 	movl	%ebx, (%esi,%ecx,4)
 	addl	$1, %ecx
 	cmpl	$624, %ecx
-	jne	L1059
+	jne	L1093
 	leal	40000(%ebp), %ebx
 	movl	$-1342177277, %edi
 	cmpl	%ebx, %ebp
 	movl	$624, 2512(%esp)
-	je	L1057
+	je	L1091
 	.p2align 4,,7
-L1062:
+L1096:
 	movl	%esi, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-5, %eax
-	ja	L1062
+	ja	L1096
 	mull	%edi
 	addl	$4, %ebp
 	shrl	$28, %edx
 	movl	%edx, -4(%ebp)
 	cmpl	%ebp, %ebx
-	jne	L1062
-L1057:
+	jne	L1096
+L1091:
 	addl	$2540, %esp
 	.cfi_def_cfa_offset 20
 	popl	%ebx
@@ -11610,12 +12282,12 @@ L1057:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE2681:
+LFE2682:
 	.p2align 4,,15
 	.globl	__Z9initOpt01R11dataOpt01_t
 	.def	__Z9initOpt01R11dataOpt01_t;	.scl	2;	.type	32;	.endef
 __Z9initOpt01R11dataOpt01_t:
-LFB2670:
+LFB2671:
 	.cfi_startproc
 	pushl	%ebp
 	.cfi_def_cfa_offset 8
@@ -11638,7 +12310,7 @@ LFB2670:
 	leal	16(%esp), %esi
 	movl	$5489, 16(%esp)
 	.p2align 4,,7
-L1068:
+L1102:
 	movl	%ebx, %eax
 	movl	%ecx, %edx
 	shrl	$30, %eax
@@ -11655,27 +12327,27 @@ L1068:
 	movl	%ebx, (%esi,%ecx,4)
 	addl	$1, %ecx
 	cmpl	$624, %ecx
-	jne	L1068
+	jne	L1102
 	leal	40004(%ebp), %edi
 	leal	4(%ebp), %ebx
 	cmpl	%edi, %ebx
 	movl	$0, 0(%ebp)
 	movl	$-1342177277, %ebp
 	movl	$624, 2512(%esp)
-	je	L1066
+	je	L1100
 	.p2align 4,,7
-L1071:
+L1105:
 	movl	%esi, (%esp)
 	call	__ZNSt23mersenne_twister_engineIjLj32ELj624ELj397ELj31ELj2567483615ELj11ELj4294967295ELj7ELj2636928640ELj15ELj4022730752ELj18ELj1812433253EEclEv
 	cmpl	$-5, %eax
-	ja	L1071
+	ja	L1105
 	mull	%ebp
 	addl	$4, %ebx
 	shrl	$28, %edx
 	movl	%edx, -4(%ebx)
 	cmpl	%ebx, %edi
-	jne	L1071
-L1066:
+	jne	L1105
+L1100:
 	addl	$2540, %esp
 	.cfi_def_cfa_offset 20
 	popl	%ebx
@@ -11692,12 +12364,12 @@ L1066:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE2670:
+LFE2671:
 	.section	.text.startup,"x"
 	.p2align 4,,15
 	.def	__GLOBAL__sub_I__Z9initOpt01R11dataOpt01_t;	.scl	3;	.type	32;	.endef
 __GLOBAL__sub_I__Z9initOpt01R11dataOpt01_t:
-LFB3942:
+LFB3945:
 	.cfi_startproc
 	subl	$28, %esp
 	.cfi_def_cfa_offset 32
@@ -11710,7 +12382,7 @@ LFB3942:
 	.cfi_def_cfa_offset 4
 	ret
 	.cfi_endproc
-LFE3942:
+LFE3945:
 	.section	.ctors,"w"
 	.align 4
 	.long	__GLOBAL__sub_I__Z9initOpt01R11dataOpt01_t
@@ -11718,11 +12390,11 @@ LFE3942:
 	.p2align 4,,15
 	.def	__GLOBAL__sub_D__Z9initOpt01R11dataOpt01_t;	.scl	3;	.type	32;	.endef
 __GLOBAL__sub_D__Z9initOpt01R11dataOpt01_t:
-LFB3943:
+LFB3946:
 	.cfi_startproc
 	jmp	__Z41__static_initialization_and_destruction_0ii.part.35
 	.cfi_endproc
-LFE3943:
+LFE3946:
 	.section	.dtors,"w"
 	.align 4
 	.long	__GLOBAL__sub_D__Z9initOpt01R11dataOpt01_t
@@ -11911,13 +12583,13 @@ LC5:
 LC8:
 	.long	1065353216
 	.align 16
-LC109:
+LC120:
 	.long	858927408
 	.long	926299444
 	.long	1650538808
 	.long	1717920867
 	.align 16
-LC127:
+LC138:
 	.byte	48
 	.byte	49
 	.byte	50
@@ -11935,34 +12607,34 @@ LC127:
 	.byte	101
 	.byte	102
 	.align 16
-LC196:
+LC207:
 	.long	2147483647
 	.long	2147483647
 	.long	2147483647
 	.long	2147483647
 	.align 16
-LC197:
+LC208:
 	.long	-2147483648
 	.long	-2147483648
 	.long	-2147483648
 	.long	-2147483648
 	.align 16
-LC198:
+LC209:
 	.long	1
 	.long	1
 	.long	1
 	.long	1
 	.align 16
-LC199:
+LC210:
 	.long	-1727483681
 	.long	-1727483681
 	.long	-1727483681
 	.long	-1727483681
 	.align 4
-LC200:
+LC211:
 	.long	796917760
 	.align 4
-LC201:
+LC212:
 	.long	1093664768
 	.ident	"GCC: (GNU) 4.8.2"
 	.def	___cxa_guard_acquire;	.scl	2;	.type	32;	.endef
@@ -11983,13 +12655,14 @@ LC201:
 	.def	_strcpy;	.scl	2;	.type	32;	.endef
 	.def	_strncpy;	.scl	2;	.type	32;	.endef
 	.def	__Z12_strlen_fastPKc;	.scl	2;	.type	32;	.endef
-	.def	_printf;	.scl	2;	.type	32;	.endef
 	.def	__Z13_strnlen_fastPKcj;	.scl	2;	.type	32;	.endef
+	.def	_printf;	.scl	2;	.type	32;	.endef
 	.def	__Z12_strcmp_fastPKcS0_;	.scl	2;	.type	32;	.endef
 	.def	__Z13_strncmp_fastPKcS0_j;	.scl	2;	.type	32;	.endef
 	.def	__Z12_strchr_fastPKcc;	.scl	2;	.type	32;	.endef
 	.def	__Z13_strrchr_fastPKcc;	.scl	2;	.type	32;	.endef
 	.def	__Z12_strstr_fastPKcS0_;	.scl	2;	.type	32;	.endef
+	.def	__Z14_strstrbm_fastPKcS0_;	.scl	2;	.type	32;	.endef
 	.def	__Z13_strstr0_fastPKcS0_;	.scl	2;	.type	32;	.endef
 	.def	__Z12_strcpy_fastPcPKc;	.scl	2;	.type	32;	.endef
 	.def	__Z13_strncpy_fastPcPKcj;	.scl	2;	.type	32;	.endef

@@ -1,37 +1,39 @@
-    49: //【タイプ１】【参考】C++11でもっとも簡潔な記述
-    50: //※C++11の範囲に基づくforループを使用し、最も簡潔に記述したコード（遅い）
-    51: void testOpt01_Type1_Appendix(dataOpt01_t& data)
-    52: {
-01023070 55                   push        ebp  
-01023071 8B EC                mov         ebp,esp  
-01023073 53                   push        ebx  
-01023074 56                   push        esi  
-    53: 	for (auto elems : data.elems)
-01023075 8B 75 08             mov         esi,dword ptr [data]  
-01023078 33 DB                xor         ebx,ebx  
-0102307A 57                   push        edi  
-0102307B 33 D2                xor         edx,edx  
-0102307D 8D 46 04             lea         eax,[esi+4]  
-01023080 8D 88 40 9C 00 00    lea         ecx,[eax+9C40h]  
-01023086 8B F9                mov         edi,ecx  
-01023088 2B F8                sub         edi,eax  
-0102308A 83 C7 03             add         edi,3  
-0102308D C1 EF 02             shr         edi,2  
-01023090 3B C1                cmp         eax,ecx  
-01023092 0F 47 FB             cmova       edi,ebx  
-01023095 85 FF                test        edi,edi  
-01023097 74 13                je          testOpt01_Type1_Appendix+3Ch (010230ACh)  
-01023099 8D A4 24 00 00 00 00 lea         esp,[esp]  
-    54: 		data.sum += elems.value;
-010230A0 8B 08                mov         ecx,dword ptr [eax]  
-010230A2 8D 40 04             lea         eax,[eax+4]  
-010230A5 01 0E                add         dword ptr [esi],ecx  
-010230A7 42                   inc         edx  
-010230A8 3B D7                cmp         edx,edi  
-010230AA 75 F4                jne         testOpt01_Type1_Appendix+30h (010230A0h)  
-010230AC 5F                   pop         edi  
-010230AD 5E                   pop         esi  
-010230AE 5B                   pop         ebx  
-    55: }
-010230AF 5D                   pop         ebp  
-010230B0 C3                   ret  
+    71: //【タイプ１】【参考】C++11でもっとも簡潔な記述（遅い）
+    72: //※C++11 範囲に基づくforループ
+    73: void testOpt01_Type1_Appendix(dataOpt01_t& data)
+    74: {
+00ADBDB0 55                   push        ebp  
+00ADBDB1 8B EC                mov         ebp,esp  
+00ADBDB3 53                   push        ebx  
+00ADBDB4 56                   push        esi  
+    75: 	data.sum = 0;
+00ADBDB5 8B 75 08             mov         esi,dword ptr [data]  
+00ADBDB8 33 DB                xor         ebx,ebx  
+00ADBDBA 57                   push        edi  
+00ADBDBB 33 D2                xor         edx,edx  
+    76: 	for (auto elem : data.elems)
+00ADBDBD 8D 46 04             lea         eax,[esi+4]  
+00ADBDC0 C7 06 00 00 00 00    mov         dword ptr [esi],0  
+00ADBDC6 8D 88 40 9C 00 00    lea         ecx,[eax+9C40h]  
+00ADBDCC 8B F9                mov         edi,ecx  
+00ADBDCE 2B F8                sub         edi,eax  
+00ADBDD0 83 C7 03             add         edi,3  
+00ADBDD3 C1 EF 02             shr         edi,2  
+00ADBDD6 3B C1                cmp         eax,ecx  
+00ADBDD8 0F 47 FB             cmova       edi,ebx  
+00ADBDDB 85 FF                test        edi,edi  
+00ADBDDD 74 0D                je          testOpt01_Type1_Appendix+3Ch (0ADBDECh)  
+00ADBDDF 90                   nop  
+    77: 		data.sum += elem.value;
+00ADBDE0 8B 08                mov         ecx,dword ptr [eax]  
+00ADBDE2 8D 40 04             lea         eax,[eax+4]  
+00ADBDE5 01 0E                add         dword ptr [esi],ecx  
+00ADBDE7 42                   inc         edx  
+00ADBDE8 3B D7                cmp         edx,edi  
+00ADBDEA 75 F4                jne         testOpt01_Type1_Appendix+30h (0ADBDE0h)  
+00ADBDEC 5F                   pop         edi  
+00ADBDED 5E                   pop         esi  
+00ADBDEE 5B                   pop         ebx  
+    78: }
+00ADBDEF 5D                   pop         ebp  
+00ADBDF0 C3                   ret  

@@ -150,22 +150,22 @@
      |  |  |
      |  |  |-[C++CLI_SmartPtr]        ... C++/CLIのgcnewのテスト
      |  |  |
-     |  |  |-[CalcExpression]         ... 計算式の状況に応じた右値評価のテスト
+     |  |  |-[CalcExpression]         ... 論理演算の右辺値評価（右辺値の関数呼び出し）テスト
      |  |  |
-     |  |  |-[callPoint]              ... ★コールポイントのサンプルプログラム
+     |  |  |-[callPoint]              ... ★コールポイントのサンプルプログラム　※デバッグプリント処理を含む
      |  |  |-[callPoint_unix]         ... ★コールポイントのサンプルプログラム（unix系＋GCC）
      |  |  |
      |  |  |-[constexpr]              ... constexpr のテスト
      |  |  |
-     |  |  |-[cpu_cache_test]         ... ☆CPUキャッシュを効率的に使用する方法のテスト
-     |  |  |-[cpu_cache_test_unix]    ... ☆CPUキャッシュを効率的に使用する方法のテスト（unix系＋GCC）
+     |  |  |-[cpu_cache_test]         ... ★CPUキャッシュを効率的に使用する方法のテスト
+     |  |  |-[cpu_cache_test_unix]    ... ★CPUキャッシュを効率的に使用する方法のテスト（unix系＋GCC）
      |  |  |
-     |  |  |-[cpu_optimization]       ... ☆CPU最適化のテスト
-     |  |  |-[cpu_optimization_unix]  ... ☆CPU最適化のテスト（unix系＋GCC）
+     |  |  |-[cpu_optimization]       ... ★CPU最適化のテスト ※SSEによる行列和算／積算、SSEによる文字列処理のサンプルを含む
+     |  |  |-[cpu_optimization_unix]  ... ★CPU最適化のテスト（unix系＋GCC）
      |  |  |
-     |  |  |-[DebugPrint]             ... 【失敗作】デバッグ用ロギング処理／boost::backtraceのテスト
-     |  |  |                              ※マルチスレッドの考慮が不完全でダメ
-     |  |  |-[DebugPrintTest]         ... 【失敗作】デバッグ用ロギング処理の試作
+     |  |  |-[DebugPrint]             ... ×【失敗作】デバッグ用ロギング処理／boost::backtraceのテスト
+     |  |  |                              　※マルチスレッドの考慮が不完全でダメ
+     |  |  |-[DebugPrintTest]         ... ×【失敗作】デバッグ用ロギング処理の試作
      |  |  |
      |  |  |-[DesignPattern]          ... ☆デザインパターンの実装テスト
      |  |  |
@@ -175,7 +175,7 @@
      |  |  |
      |  |  |-[hamming_code]           ... ★ハミング符号のサンプルプログラム ※Excelによるロジック確認（後にC++のサンプルプログラム追加予定）
      |  |  |
-     |  |  |-[hash_table]             ... ★ハッシュテーブルのサンプルプログラム ※素数判定／生成用のランタイム／メタプログラミング処理を含む
+     |  |  |-[hash_table]             ... ★ハッシュテーブルのサンプルプログラム ※素数判定・生成用のランタイム／メタ処理を含む
      |  |  |-[hash_table_unix]        ... ★ハッシュテーブルのサンプルプログラム（unix系＋GCC）
      |  |  |
      |  |  |-[NamedRef]               ... ★名前付きデータ参照のサンプル処理

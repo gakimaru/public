@@ -58,6 +58,10 @@ void testOpt01_Type1_Before(dataOpt01_t& data);
 void testOpt01_Type1_After1(dataOpt01_t& data);
 //yƒ^ƒCƒv‚PzÅ“K‰»Œã‚Q
 void testOpt01_Type1_After2(dataOpt01_t& data);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚R
+void testOpt01_Type1_After3(dataOpt01_t& data);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚S
+void testOpt01_Type1_After4(dataOpt01_t& data);
 //yƒ^ƒCƒv‚PzyQlzC++11‚Å‚à‚Á‚Æ‚àŠÈŒ‰‚È‹Lq
 void testOpt01_Type1_Appendix(dataOpt01_t& data);
 
@@ -83,6 +87,8 @@ int testOpt02_Type1_Before(dataOpt02_t& data);
 int testOpt02_Type1_After1(dataOpt02_t& data);
 //yƒ^ƒCƒv‚PzÅ“K‰»Œã‚Q
 int testOpt02_Type1_After2(dataOpt02_t& data);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚R
+int testOpt02_Type1_After3(dataOpt02_t& data);
 
 //----------------------------------------
 //Å“K‰»‡BFƒƒ‚ƒŠƒAƒNƒZƒX‚Ì—}§FŠÖ”ŒÄ‚Ño‚µ‚ÌíŒ¸
@@ -114,8 +120,18 @@ inline int testOpt03_Type2_After(int a, int b, int c, int d, int e, int f, int g
 void initOpt03_Type3(dataOpt03_t& data);
 //yƒ^ƒCƒv‚RzÅ“K‰»‘O
 int testOpt03_Type3_Before(dataOpt03_t& data);
-//yƒ^ƒCƒv‚RzÅ“K‰»Œã
-int testOpt03_Type3_After(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã1
+int testOpt03_Type3_After1(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã2
+int testOpt03_Type3_After2(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã3
+int testOpt03_Type3_After3(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzyQlz1
+int testOpt03_Type3_Appendix1(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzyQlz2
+int testOpt03_Type3_Appendix2(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzyQlz3
+int testOpt03_Type3_Appendix3(dataOpt03_t& data);
 
 //----------------------------------------
 //Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
@@ -427,8 +443,8 @@ int testOpt09_Type1_After3(dataOpt08_t1& data);
 int testOpt09_Type1_After4(dataOpt08_t1& data);
 //yƒ^ƒCƒv‚PzÅ“K‰»Œã‚T
 int testOpt09_Type1_After5(dataOpt08_t1& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚U
-int testOpt09_Type1_After6(dataOpt08_t1& data);
+//yƒ^ƒCƒv‚PzyQlzC++11‚Å‚à‚Á‚Æ‚àŠÈŒ‰‚È‹Lq
+int testOpt09_Type1_Appendix(dataOpt08_t1& data);
 
 //yƒ^ƒCƒv‚QzÅ“K‰»‘O
 int testOpt09_Type2_Before(dataOpt08_t2& data);
@@ -442,8 +458,8 @@ int testOpt09_Type2_After3(dataOpt08_t2& data);
 int testOpt09_Type2_After4(dataOpt08_t2& data);
 //yƒ^ƒCƒv‚QzÅ“K‰»Œã‚T
 int testOpt09_Type2_After5(dataOpt08_t2& data);
-//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚U
-int testOpt09_Type2_After6(dataOpt08_t2& data);
+//yƒ^ƒCƒv‚QzyQlzC++11‚Å‚à‚Á‚Æ‚àŠÈŒ‰‚È‹Lq
+int testOpt09_Type2_Appendix(dataOpt08_t2& data);
 
 //yƒ^ƒCƒv‚RzÅ“K‰»‘O
 int testOpt09_Type3_Before(dataOpt08_t2::elem_t* elems, const std::size_t num);

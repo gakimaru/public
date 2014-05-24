@@ -43,7 +43,7 @@ int main(const int argc, const char* argv[])
 	TEST(sub() / 1);
 //	TEST(sub() / 0);
 	
-//yŒ‹‰Êz
+//yŒ‹‰ÊFDebugz
 //	expr = "1"
 //	  result = 1
 //	expr = "1 + 1"
@@ -126,8 +126,92 @@ int main(const int argc, const char* argv[])
 //	    ->Called!
 //	  result = 1
 	
+//yŒ‹‰ÊFReleasez
+//¦u0 * sub()v‚Ì‚æ‚¤‚ÈŒvŽZŒ‹‰Ê‚ª•ª‚©‚è‚«‚Á‚Ä‚¢‚éŽ®‚Å‚ ‚Á‚Ä‚àA
+//@Å“K‰»‚ÅŠÖ”ŒÄ‚Ño‚µ‚ªÈ—ª‚³‚ê‚é‚æ‚¤‚È‚±‚Æ‚Í‚È‚©‚Á‚½iVC++ 2013j
+//	expr="1"
+//		result = 1
+//	expr = "1 + 1"
+//		result = 2
+//	expr = "true && sub()"
+//		->Called!
+//		result = 1
+//	expr = "false && sub()"
+//		result = 0
+//	expr = "true || sub()"
+//		result = 1
+//	expr = "false || sub()"
+//		->Called!
+//		result = 1
+//	expr = "sub() && true"
+//		->Called!
+//		result = 1
+//	expr = "sub() && false"
+//		->Called!
+//		result = 0
+//	expr = "sub() || true"
+//		->Called!
+//		result = 1
+//	expr = "sub() || false"
+//		->Called!
+//		result = 1
+//	expr = "true ? sub() : 999"
+//		->Called!
+//		result = 1
+//	expr = "false ? sub() : 999"
+//		result = 999
+//	expr = "true ? 999 : sub()"
+//		result = 999
+//	expr = "false ? 999 : sub()"
+//		->Called!
+//		result = 1
+//	expr = "0xffffffff & sub()"
+//		->Called!
+//		result = 1
+//	expr = "0x00000000 & sub()"
+//		->Called!
+//		result = 0
+//	expr = "0xffffffff | sub()"
+//		->Called!
+//		result = -1
+//	expr = "0x00000000 | sub()"
+//		->Called!
+//		result = 1
+//	expr = "sub() & 0xffffffff"
+//		->Called!
+//		result = 1
+//	expr = "sub() & 0x00000000"
+//		->Called!
+//		result = 0
+//	expr = "sub() | 0xffffffff"
+//		->Called!
+//		result = -1
+//	expr = "sub() | 0x00000000"
+//		->Called!
+//		result = 1
+//	expr = "1 * sub()"
+//		->Called!
+//		result = 1
+//	expr = "0 * sub()"
+//		->Called!
+//		result = 0
+//	expr = "1 / sub()"
+//		->Called!
+//		result = 1
+//	expr = "0 / sub()"
+//		->Called!
+//		result = 0
+//	expr = "sub() * 1"
+//		->Called!
+//		result = 1
+//	expr = "sub() * 0"
+//		->Called!
+//		result = 0
+//	expr = "sub() / 1"
+//		->Called!
+//		result = 1
+
 	return EXIT_SUCCESS;
 }
 
 // End of file
-

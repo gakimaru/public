@@ -1,4 +1,5 @@
 #include "sub.h"
+#include "sub2.h"
 
 #include <random>//C++11 std::random用
 
@@ -21,6 +22,7 @@ void initOpt01(dataOpt01_t& data)
 //※単純な配列ループアクセス
 void testOpt01_Type1_Before(dataOpt01_t& data)
 {
+	data.sum = 0;
 	for (std::size_t i = 0; i < extentof(data.elems); ++i)
 		data.sum += data.elems[i].value;
 }
@@ -36,8 +38,18 @@ void testOpt01_Type1_After1(dataOpt01_t& data)
 }
 
 //【タイプ１】最適化後２
-//※ポインタ計算に置き換えてループカウンタを無くす
+//※「最適化後１」＋register指定子
 void testOpt01_Type1_After2(dataOpt01_t& data)
+{
+	register int sum_tmp = 0;
+	for (register std::size_t i = 0; i < extentof(data.elems); ++i)
+		sum_tmp += data.elems[i].value;
+	data.sum = sum_tmp;
+}
+
+//【タイプ１】最適化後３
+//※ポインタ計算に置き換えてループカウンタを無くす
+void testOpt01_Type1_After3(dataOpt01_t& data)
 {
 	int sum_tmp = 0;
 	const dataOpt01_t::elem_t* end = data.elems + extentof(data.elems);
@@ -46,10 +58,22 @@ void testOpt01_Type1_After2(dataOpt01_t& data)
 	data.sum = sum_tmp;
 }
 
-//【タイプ１】【参考】C++11でもっとも簡潔な記述
-//※C++11の範囲に基づくforループを使用し、最も簡潔に記述したコード（遅い）
+//【タイプ１】最適化後４
+//※「最適化後３」＋register指定子
+void testOpt01_Type1_After4(dataOpt01_t& data)
+{
+	register int sum_tmp = 0;
+	register const dataOpt01_t::elem_t* end = data.elems + extentof(data.elems);
+	for (register dataOpt01_t::elem_t* elem_p = data.elems; elem_p < end; ++elem_p)
+		sum_tmp += elem_p->value;
+	data.sum = sum_tmp;
+}
+
+//【タイプ１】【参考】C++11でもっとも簡潔な記述（遅い）
+//※C++11 範囲に基づくforループ
 void testOpt01_Type1_Appendix(dataOpt01_t& data)
 {
+	data.sum = 0;
 	for (auto elem : data.elems)
 		data.sum += elem.value;
 }
@@ -143,9 +167,9 @@ int testOpt02_Type1_After2(dataOpt02_t& data)
 	};
 	//分布集計用変数初期化
 	dist_t dist[dataOpt02_t::elem_t::VALUE_RANGE];
-	const dist_t* dist_end = dist + dataOpt02_t::elem_t::VALUE_RANGE;
 	{
 		int value = 0;
+		const dist_t* dist_end = dist + dataOpt02_t::elem_t::VALUE_RANGE;
 		for (dist_t* dist_p = dist; dist_p < dist_end; ++dist_p)
 		{
 			dist_p->value = value++;
@@ -154,18 +178,54 @@ int testOpt02_Type1_After2(dataOpt02_t& data)
 	}
 	//分布集計
 	{
-		const dataOpt02_t::elem_t* end = data.elems + extentof(data.elems);
-		for (const dataOpt02_t::elem_t* elem_p = data.elems; elem_p < end; ++elem_p)
+		const dataOpt02_t::elem_t* elem_end = data.elems + extentof(data.elems);
+		for (const dataOpt02_t::elem_t* elem_p = data.elems; elem_p < elem_end; ++elem_p)
 			++dist[elem_p->value].count;
 	}
 	//最大分布取得
 	const dist_t* top_dist_p = dist;
 	{
+		const dist_t* dist_end = dist + dataOpt02_t::elem_t::VALUE_RANGE;
 		for (const dist_t* dist_p = top_dist_p + 1; dist_p < dist_end; ++dist_p)
 		{
 			if (top_dist_p->count < dist_p->count)
 				top_dist_p = dist_p;
 		}
+	}
+	return (top_dist_p->count << 16) | top_dist_p->value;
+}
+
+//【タイプ１】最適化後３
+//※徹底的にポインタ計算に変更
+int testOpt02_Type1_After3(dataOpt02_t& data)
+{
+	//分布集計用構造体
+	struct dist_t
+	{
+		int value;
+		int count;
+	};
+	//分布集計用変数初期化
+	dist_t dist[dataOpt02_t::elem_t::VALUE_RANGE];
+	for (int value = 0; value < dataOpt02_t::elem_t::VALUE_RANGE; ++value)
+	{
+		dist_t* dist_p = &dist[value];
+		dist_p->value = value;
+		dist_p->count = 0;
+	}
+	//分布集計
+	for (std::size_t i = 0; i < extentof(data.elems); ++i)
+	{
+		const dataOpt02_t::elem_t* elem_p = &data.elems[i];
+		++dist[elem_p->value].count;
+	}
+	//最大分布取得
+	const dist_t* top_dist_p = &dist[0];
+	for (std::size_t i = 1; i < dataOpt02_t::elem_t::VALUE_RANGE; ++i)
+	{
+		dist_t* dist_p = &dist[i];
+		if (top_dist_p->count < dist_p->count)
+			top_dist_p = dist_p;
 	}
 	return (top_dist_p->count << 16) | top_dist_p->value;
 }
@@ -208,101 +268,298 @@ void initOpt03_Type3(dataOpt03_t& data)
 	}
 }
 
-//【タイプ３】最適化前：共通関数
-//※オブザーバー（コールバック）を std::function 型で受け取る
-#include <functional>//C++11 std::function用
-template <typename T, std::size_t N>
-void commonProc_testOpt03_Type3_Before(T(&values)[N], const T find, std::function<void(int&)> observer)
+//【タイプ３】コールバック関数
+//配列内の値を検索して別の値に置き換えるコールバック関数と静的変数
+static int s_exchange_value = 0;
+inline static void _exchangeDataCB(int& value)
 {
-	//配列から値を検索し、見つけたらオブザーバーを呼び出す
-	const T* end = values + N;
-	for (T* value_p = values; value_p < end; ++value_p)
-	{
-		if (*value_p == find)
-			observer(*value_p);
-	}
+	value = s_exchange_value;
 }
-
-//【タイプ３】最適化後：共通関数
-//※オブザーバー（コールバック）をテンプレートで型展開して受け取る（std::sort などと同じやり方）
-template < typename T, std::size_t N, class OBSERVER>
-void commonProc_testOpt03_Type3_After(T(&values)[N], const T find, OBSERVER observer)
+//配列内の値を検索して出現数を算出するコールバック関数と静的変数
+static int s_count_value = 0;
+inline static void _countDataCB(int& value)
 {
-	//配列から値を検索し、見つけたらオブザーバーを呼び出す
-	const T* end = values + N;
-	for (T* value_p = values; value_p < end; ++value_p)
-	{
-		if (*value_p == find)
-			observer(*value_p);
-	}
+	++s_count_value;
 }
 
 //【タイプ３】最適化前
-//※最適化前の共通関数を使用
+//※最適化前の共通関数とコールバック関数を使用
+//配列内の値を検索して別の値に置き換える
+inline static void _exchangeData_Before(dataOpt03_t& data, const int find, const int exchange)
+{
+	s_exchange_value = exchange;
+	commonProc_testOpt03_Type3_Before(data.values, extentof(data.values), find, _exchangeDataCB);
+}
+//配列内の値を検索して出現数を算出する
+inline static int _countData_Before(dataOpt03_t& data, const int find)
+{
+	s_count_value = 0;
+	commonProc_testOpt03_Type3_Before(data.values, extentof(data.values), find, _countDataCB);
+	return s_count_value;
+}
+//関数本体
 int testOpt03_Type3_Before(dataOpt03_t& data)
 {
-	//配列内の値を検索して別の値に置き換えるラムダ式
-	//※変数data/exchangeをキャプチャしたクロ―ジャとして振る舞う
-	auto exchangeData = [&data](const int find, const int exchange)
-	{
-		commonProc_testOpt03_Type3_Before(data.values, 0,
-			[&exchange](int& value)
-			{
-				value = exchange;
-			}
-		);
-	};
-	//配列内の値を検索して出現数を算出するラムダ式
-	//※変数data/countをキャプチャしたクロ―ジャとして振る舞う
-	auto countData = [&data](const int find) -> int
-	{
-		int count = 0;
-		commonProc_testOpt03_Type3_Before(data.values, find,
-			[&count](int& value)
-			{
-				++count;
-			}
-		);
-		return count;
-	};
-	//値の置き換え
-	exchangeData(0, 1);
-	//値の出現数の合計を返す
-	return countData(1) + countData(2) + countData(3);
+	//値の置き換え：0→1
+	_exchangeData_Before(data, 0, 1);
+	//値の置き換え：4→3
+	_exchangeData_Before(data, 4, 3);
+	//値1,2,3の出現数を計上して返す
+	return _countData_Before(data, 1) + _countData_Before(data, 2) + _countData_Before(data, 3);
 }
 
-//【タイプ３】最適化後
-//※最適化後の共通関数を使用
-int testOpt03_Type3_After(dataOpt03_t& data)
+//【タイプ３】最適化後1
+//※共通テンプレート関数とコールバック関数を使用
+//配列内の値を検索して別の値に置き換える
+inline static void _exchangeData_After1(dataOpt03_t& data, const int find, const int exchange)
+{
+	s_exchange_value = exchange;
+	commonProc_testOpt03_Type3_After(data.values, find, _exchangeDataCB);
+}
+//配列内の値を検索して出現数を算出する
+inline static int _countData_After1(dataOpt03_t& data, const int find)
+{
+	s_count_value = 0;
+	commonProc_testOpt03_Type3_After(data.values, find, _countDataCB);
+	return s_count_value;
+}
+//関数本体
+int testOpt03_Type3_After1(dataOpt03_t& data)
+{
+	//値の置き換え：0→1
+	_exchangeData_After1(data, 0, 1);
+	//値の置き換え：4→3
+	_exchangeData_After1(data, 4, 3);
+	//値1,2,3の出現数を計上して返す
+	return _countData_After1(data, 1) + _countData_After1(data, 2) + _countData_After1(data, 3);
+}
+
+//【タイプ３】最適化後2
+//※共通テンプレート関数と関数オブジェクトを使用
+int testOpt03_Type3_After2(dataOpt03_t& data)
+{
+	//配列内の値を検索して別の値に置き換える関数オブジェクト
+	struct functor_exchangeData {
+		dataOpt03_t& m_data;
+		inline void operator()(const int find, const int exchange)
+		{
+			//コールバック用の関数オブジェクト
+			struct functor{
+				const int m_exchange;
+				inline void operator()(int& value)
+				{
+					value = m_exchange;
+				}
+				inline functor(const int exchange) :
+					m_exchange(exchange)
+				{}
+			};
+			commonProc_testOpt03_Type3_After(m_data.values, find, functor(exchange));
+		}
+		inline functor_exchangeData(dataOpt03_t& data) :
+			m_data(data)
+		{}
+	};
+	functor_exchangeData _exchangeData(data);//関数オブジェクトを実体化
+	
+	//配列内の値を検索して出現数を算出する関数オブジェクト
+	//※変数dataをキャプチャしたクロ―ジャとして振る舞う
+	struct functor_countData {
+		dataOpt03_t& m_data;
+		inline auto operator()(const int find) -> int
+		{
+			int count = 0;
+			//コールバック用の関数オブジェクト
+			struct functor{
+				int& m_count;
+				inline void operator()(int& value)
+				{
+					++m_count;
+				}
+				inline functor(int& count) :
+					m_count(count)
+				{}
+			};
+			commonProc_testOpt03_Type3_After(m_data.values, find, functor(count));
+			return count;
+		}
+		inline functor_countData(dataOpt03_t& data) :
+			m_data(data)
+		{}
+	};
+	functor_countData _countData(data);//関数オブジェクトを実体化
+
+	//値の置き換え：0→1
+	_exchangeData(0, 1);
+	//値の置き換え：4→3
+	_exchangeData(4, 3);
+	//値1,2,3の出現数を計上して返す
+	return _countData(1) + _countData(2) + _countData(3);
+}
+
+//【タイプ３】最適化後3
+//※共通テンプレート関数とラムダ式を使用
+int testOpt03_Type3_After3(dataOpt03_t& data)
 {
 	//配列内の値を検索して別の値に置き換えるラムダ式
 	//※変数data/exchangeをキャプチャしたクロ―ジャとして振る舞う
-	auto exchangeData = [&data](const int find, const int exchange)
+	auto _exchangeData = [&data](const int find, const int exchange)
 	{
-		commonProc_testOpt03_Type3_After(data.values, 0,
+		commonProc_testOpt03_Type3_After(data.values, find,
 			[&exchange](int& value)
-			{
-				value = exchange;
-			}
+		{
+			value = exchange;
+		}
 		);
 	};
+	
 	//配列内の値を検索して出現数を算出するラムダ式
 	//※変数data/countをキャプチャしたクロ―ジャとして振る舞う
-	auto countData = [&data](const int find) -> int
+	auto _countData = [&data](const int find) -> int
 	{
 		int count = 0;
 		commonProc_testOpt03_Type3_After(data.values, find,
 			[&count](int& value)
-			{
-				++count;
-			}
+		{
+			++count;
+		}
 		);
 		return count;
 	};
-	//値の置き換え
-	exchangeData(0, 1);
-	//値の出現数の合計を返す
-	return countData(1) + countData(2) + countData(3);
+
+	//値の置き換え：0→1
+	_exchangeData(0, 1);
+	//値の置き換え：4→3
+	_exchangeData(4, 3);
+	//値1,2,3の出現数を計上して返す
+	return _countData(1) + _countData(2) + _countData(3);
+}
+
+//【タイプ３】【参考】1
+//※std::function型を受け取る共通テンプレート関数とコールバック関数を使用
+//配列内の値を検索して別の値に置き換える
+inline static void _exchangeData_Appendix1(dataOpt03_t& data, const int find, const int exchange)
+{
+	s_exchange_value = exchange;
+	commonProc_testOpt03_Type3_After(data.values, find, _exchangeDataCB);
+}
+//配列内の値を検索して出現数を算出する
+inline static int _countData_Appendix1(dataOpt03_t& data, const int find)
+{
+	s_count_value = 0;
+	commonProc_testOpt03_Type3_After(data.values, find, _countDataCB);
+	return s_count_value;
+}
+//関数本体
+int testOpt03_Type3_Appendix1(dataOpt03_t& data)
+{
+	//値の置き換え：0→1
+	_exchangeData_After1(data, 0, 1);
+	//値の置き換え：4→3
+	_exchangeData_After1(data, 4, 3);
+	//値1,2,3の出現数を計上して返す
+	return _countData_After1(data, 1) + _countData_After1(data, 2) + _countData_After1(data, 3);
+}
+
+//【タイプ３】【参考】2
+//※std::function型を受け取る共通テンプレート関数と関数オブジェクトを使用
+int testOpt03_Type3_Appendix2(dataOpt03_t& data)
+{
+	//配列内の値を検索して別の値に置き換える関数オブジェクト
+	struct functor_exchangeData {
+		dataOpt03_t& m_data;
+		inline void operator()(const int find, const int exchange)
+		{
+			//コールバック用の関数オブジェクト
+			struct functor{
+				const int m_exchange;
+				inline void operator()(int& value)
+				{
+					value = m_exchange;
+				}
+				inline functor(const int exchange) :
+					m_exchange(exchange)
+				{}
+			};
+			commonProc_testOpt03_Type3_Appendix(m_data.values, find, functor(exchange));
+		}
+		inline functor_exchangeData(dataOpt03_t& data) :
+			m_data(data)
+		{}
+	};
+	functor_exchangeData _exchangeData(data);//関数オブジェクトを実体化
+	
+	//配列内の値を検索して出現数を算出する関数オブジェクト
+	//※変数dataをキャプチャしたクロ―ジャとして振る舞う
+	struct functor_countData {
+		dataOpt03_t& m_data;
+		inline auto operator()(const int find) -> int
+		{
+			int count = 0;
+			//コールバック用の関数オブジェクト
+			struct functor{
+				int& m_count;
+				inline void operator()(int& value)
+				{
+					++m_count;
+				}
+				inline functor(int& count) :
+					m_count(count)
+				{}
+			};
+			commonProc_testOpt03_Type3_Appendix(m_data.values, find, functor(count));
+			return count;
+		}
+		inline functor_countData(dataOpt03_t& data) :
+			m_data(data)
+		{}
+	};
+	functor_countData _countData(data);//関数オブジェクトを実体化
+
+	//値の置き換え：0→1
+	_exchangeData(0, 1);
+	//値の置き換え：4→3
+	_exchangeData(4, 3);
+	//値1,2,3の出現数を計上して返す
+	return _countData(1) + _countData(2) + _countData(3);
+}
+
+//【タイプ３】【参考】3
+//※std::function型を受け取る共通テンプレート関数とラムダ式を使用
+int testOpt03_Type3_Appendix3(dataOpt03_t& data)
+{
+	//配列内の値を検索して別の値に置き換えるラムダ式
+	//※変数data/exchangeをキャプチャしたクロ―ジャとして振る舞う
+	auto _exchangeData = [&data](const int find, const int exchange)
+	{
+		commonProc_testOpt03_Type3_Appendix(data.values, find,
+			[&exchange](int& value)
+		{
+			value = exchange;
+		}
+		);
+	};
+	
+	//配列内の値を検索して出現数を算出するラムダ式
+	//※変数data/countをキャプチャしたクロ―ジャとして振る舞う
+	auto _countData = [&data](const int find) -> int
+	{
+		int count = 0;
+		commonProc_testOpt03_Type3_Appendix(data.values, find,
+			[&count](int& value)
+		{
+			++count;
+		}
+		);
+		return count;
+	};
+
+	//値の置き換え：0→1
+	_exchangeData(0, 1);
+	//値の置き換え：4→3
+	_exchangeData(4, 3);
+	//値1,2,3の出現数を計上して返す
+	return _countData(1) + _countData(2) + _countData(3);
 }
 
 //----------------------------------------
@@ -1031,12 +1288,12 @@ std::size_t _strnlen_fast(const char* str, const std::size_t max_len)
 }
 //----------
 //SSE版strcmp補助関数
-static inline int _str_case(const char* str1, const char* str2)
+inline static int _str_case(const char* str1, const char* str2)
 {
 	return (((reinterpret_cast<intptr_t>(str1) & 0xf) != 0) << 0) |
 	       (((reinterpret_cast<intptr_t>(str2) & 0xf) != 0) << 1);
 }
-static inline int _strcmp_compare(const int val1, const int val2)
+inline static int _strcmp_compare(const int val1, const int val2)
 {
 	const int val = val1 - val2;
 	return (val >> 31) | (val != 0);
@@ -1645,7 +1902,7 @@ static const _strstr_fast_cmp_casex_t _strstr_fast_cmp_casex[] =
 };
 //SSE版strstr補助関数
 //戻り値: 0 ... 不一致, 1 ... 一致, 2 ... strの方が短い
-static inline int _strstr_fast_cmp(const char* str, const char* pattern)
+inline static int _strstr_fast_cmp(const char* str, const char* pattern)
 {
 	return _strstr_fast_cmp_casex[_str_case(str, pattern)](str, pattern);
 }
@@ -2315,7 +2572,7 @@ static const __m128i _memcpy_m128i_flags[17] =
 };
 #endif
 //SSE版strcpy用補助関数:_m128iからメモリへのコピー用関数
-static inline void _memcpy_m128i_a(__m128i* dst, const __m128i src, const std::size_t len)
+inline static void _memcpy_m128i_a(__m128i* dst, const __m128i src, const std::size_t len)
 {
 #if _MEMCPY_M128I_TYPE == 1//↓速い
 	_memcpy_m128i_a_x[len](reinterpret_cast<char*>(dst), src);
@@ -2327,7 +2584,7 @@ static inline void _memcpy_m128i_a(__m128i* dst, const __m128i src, const std::s
 	memcpy(reinterpret_cast<const char*>(dst), reinterpret_cast<const char*>(&src), len);
 #endif
 }
-static inline void _memcpy_m128i_u(char* dst, const __m128i src, const std::size_t len)
+inline static void _memcpy_m128i_u(char* dst, const __m128i src, const std::size_t len)
 {
 #if _MEMCPY_M128I_TYPE == 1//↓速い
 	_memcpy_m128i_u_x[len](dst, src);
@@ -2459,23 +2716,23 @@ const char* _strcpy_fast(char* dst, const char* src)
 //※前提：この処理は、max_len > len の時にしか呼び出されないものとする。
 //　　　　max_len >= len の時は、_memcpy_m128i() を使用する。
 #ifdef STRNCPY_PADDING_ZERO
-static inline void _memncpy_m128i_a(__m128i* dst, const __m128i src, const std::size_t len, const std::size_t max_len)
+inline static void _memncpy_m128i_a(__m128i* dst, const __m128i src, const std::size_t len, const std::size_t max_len)
 {
 	_memcpy_m128i_a(dst, src, len);
 	memset(reinterpret_cast<char*>(dst) + len, '\0', max_len - len);
 }
-static inline void _memncpy_m128i_u(char* dst, const __m128i src, const std::size_t len, const std::size_t max_len)
+inline static void _memncpy_m128i_u(char* dst, const __m128i src, const std::size_t len, const std::size_t max_len)
 {
 	_memcpy_m128i_u(dst, src, len);
 	memset(dst + len, '\0', max_len - len);
 }
 #else//STRNCPY_PADDING_ZERO
-static inline void _memncpy_m128i_a(__m128i* dst, const __m128i src, const std::size_t len)
+inline static void _memncpy_m128i_a(__m128i* dst, const __m128i src, const std::size_t len)
 {
 	_memcpy_m128i_a(dst, src, len);
 	*(reinterpret_cast<char*>(dst) + len) = '\0';
 }
-static inline void _memncpy_m128i_u(char* dst, const __m128i src, const std::size_t len)
+inline static void _memncpy_m128i_u(char* dst, const __m128i src, const std::size_t len)
 {
 	_memcpy_m128i_u(dst, src, len);
 	dst[len] = '\0';
@@ -3602,7 +3859,6 @@ void initOpt08_t1(dataOpt08_t1& data)
 		elem.value = rnd_dist(rnd_engine);
 	}
 }
-
 //【タイプ１】最適化前
 //※加算ループ
 int testOpt09_Type1_Before(dataOpt08_t1& data)
@@ -3686,9 +3942,9 @@ int testOpt09_Type1_After5(dataOpt08_t1& data)
 	}
 	return sum;
 }
-//【タイプ１】最適化後６
-//※範囲に基づく for ループ
-int testOpt09_Type1_After6(dataOpt08_t1& data)
+//【タイプ１】【参考】C++11でもっとも簡潔な記述（遅い）
+//※C++11 範囲に基づくforループ
+int testOpt09_Type1_Appendix(dataOpt08_t1& data)
 {
 	int sum = 0;
 	for (const dataOpt08_t1::elem_t& elem : data.elems)
@@ -3711,7 +3967,6 @@ void initOpt08_t2(dataOpt08_t2& data)
 			other = rnd_dist(rnd_engine);
 	}
 }
-
 //【タイプ２】最適化前
 //※加算ループ
 int testOpt09_Type2_Before(dataOpt08_t2& data)
@@ -3795,9 +4050,9 @@ int testOpt09_Type2_After5(dataOpt08_t2& data)
 	}
 	return sum;
 }
-//【タイプ２】最適化後６
-//※範囲に基づく for ループ
-int testOpt09_Type2_After6(dataOpt08_t2& data)
+//【タイプ２】【参考】C++11でもっとも簡潔な記述（遅い）
+//※C++11 範囲に基づくforループ
+int testOpt09_Type2_Appendix(dataOpt08_t2& data)
 {
 	int sum = 0;
 	for (const dataOpt08_t2::elem_t& elem : data.elems)
@@ -3812,7 +4067,7 @@ int testOpt09_Type2_After6(dataOpt08_t2& data)
 int testOpt09_Type3_Before(dataOpt08_t2::elem_t* elems, const std::size_t num)
 {
 	int sum = 0;
-	for (int i = 0; i < num; ++i)
+	for (int i = 0; i < static_cast<int>(num); ++i)
 	{
 		sum += (elems[i].value2 - elems[i].value1);
 	}
@@ -3823,7 +4078,7 @@ int testOpt09_Type3_Before(dataOpt08_t2::elem_t* elems, const std::size_t num)
 int testOpt09_Type3_After1(dataOpt08_t2::elem_t* elems, const std::size_t num)
 {
 	int sum = 0;
-	for (int i = num - 1; i >= 0; --i)
+	for (int i = static_cast<int>(num) - 1; i >= 0; --i)
 	{
 		sum += (elems[i].value2 - elems[i].value1);
 	}

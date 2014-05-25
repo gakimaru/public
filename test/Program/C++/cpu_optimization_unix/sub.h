@@ -126,12 +126,18 @@ int testOpt03_Type3_After1(dataOpt03_t& data);
 int testOpt03_Type3_After2(dataOpt03_t& data);
 //【タイプ３】最適化後3
 int testOpt03_Type3_After3(dataOpt03_t& data);
-//【タイプ３】【参考】1
-int testOpt03_Type3_Appendix1(dataOpt03_t& data);
-//【タイプ３】【参考】2
-int testOpt03_Type3_Appendix2(dataOpt03_t& data);
-//【タイプ３】【参考】3
-int testOpt03_Type3_Appendix3(dataOpt03_t& data);
+//【タイプ３】【参考】A-1
+int testOpt03_Type3_AppendixA1(dataOpt03_t& data);
+//【タイプ３】【参考】A-2
+int testOpt03_Type3_AppendixA2(dataOpt03_t& data);
+//【タイプ３】【参考】A-3
+int testOpt03_Type3_AppendixA3(dataOpt03_t& data);
+//【タイプ３】【参考】B-1
+int testOpt03_Type3_AppendixB1(dataOpt03_t& data);
+//【タイプ３】【参考】B-2
+int testOpt03_Type3_AppendixB2(dataOpt03_t& data);
+//【タイプ３】【参考】B-3
+int testOpt03_Type3_AppendixB3(dataOpt03_t& data);
 
 //----------------------------------------
 //最適化④：除算の抑制：乗算に変更

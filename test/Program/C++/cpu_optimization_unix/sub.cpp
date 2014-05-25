@@ -271,7 +271,7 @@ void initOpt03_Type3(dataOpt03_t& data)
 //【タイプ３】コールバック関数
 //配列内の値を検索して別の値に置き換えるコールバック関数と静的変数
 static int s_exchange_value = 0;
-inline static void _exchangeDataCB(int& value)
+ static void _exchangeDataCB(int& value)
 {
 	value = s_exchange_value;
 }
@@ -406,10 +406,10 @@ int testOpt03_Type3_After3(dataOpt03_t& data)
 	auto _exchangeData = [&data](const int find, const int exchange)
 	{
 		commonProc_testOpt03_Type3_After(data.values, find,
-			[&exchange](int& value)
-		{
-			value = exchange;
-		}
+			[exchange](int& value)
+			{
+				value = exchange;
+			}
 		);
 	};
 	
@@ -420,9 +420,9 @@ int testOpt03_Type3_After3(dataOpt03_t& data)
 		int count = 0;
 		commonProc_testOpt03_Type3_After(data.values, find,
 			[&count](int& value)
-		{
-			++count;
-		}
+			{
+				++count;
+			}
 		);
 		return count;
 	};
@@ -435,35 +435,35 @@ int testOpt03_Type3_After3(dataOpt03_t& data)
 	return _countData(1) + _countData(2) + _countData(3);
 }
 
-//【タイプ３】【参考】1
+//【タイプ３】【参考】A-1
 //※std::function型を受け取る共通テンプレート関数とコールバック関数を使用
 //配列内の値を検索して別の値に置き換える
-inline static void _exchangeData_Appendix1(dataOpt03_t& data, const int find, const int exchange)
+inline static void _exchangeData_AppendixA1(dataOpt03_t& data, const int find, const int exchange)
 {
 	s_exchange_value = exchange;
-	commonProc_testOpt03_Type3_After(data.values, find, _exchangeDataCB);
+	commonProc_testOpt03_Type3_AppendixA(data.values, find, _exchangeDataCB);
 }
 //配列内の値を検索して出現数を算出する
-inline static int _countData_Appendix1(dataOpt03_t& data, const int find)
+inline static int _countData_AppendixA1(dataOpt03_t& data, const int find)
 {
 	s_count_value = 0;
-	commonProc_testOpt03_Type3_After(data.values, find, _countDataCB);
+	commonProc_testOpt03_Type3_AppendixA(data.values, find, _countDataCB);
 	return s_count_value;
 }
 //関数本体
-int testOpt03_Type3_Appendix1(dataOpt03_t& data)
+int testOpt03_Type3_AppendixA1(dataOpt03_t& data)
 {
 	//値の置き換え：0→1
-	_exchangeData_After1(data, 0, 1);
+	_exchangeData_AppendixA1(data, 0, 1);
 	//値の置き換え：4→3
-	_exchangeData_After1(data, 4, 3);
+	_exchangeData_AppendixA1(data, 4, 3);
 	//値1,2,3の出現数を計上して返す
-	return _countData_After1(data, 1) + _countData_After1(data, 2) + _countData_After1(data, 3);
+	return _countData_AppendixA1(data, 1) + _countData_AppendixA1(data, 2) + _countData_AppendixA1(data, 3);
 }
 
-//【タイプ３】【参考】2
+//【タイプ３】【参考】A-2
 //※std::function型を受け取る共通テンプレート関数と関数オブジェクトを使用
-int testOpt03_Type3_Appendix2(dataOpt03_t& data)
+int testOpt03_Type3_AppendixA2(dataOpt03_t& data)
 {
 	//配列内の値を検索して別の値に置き換える関数オブジェクト
 	struct functor_exchangeData {
@@ -481,7 +481,7 @@ int testOpt03_Type3_Appendix2(dataOpt03_t& data)
 					m_exchange(exchange)
 				{}
 			};
-			commonProc_testOpt03_Type3_Appendix(m_data.values, find, functor(exchange));
+			commonProc_testOpt03_Type3_AppendixA(m_data.values, find, functor(exchange));
 		}
 		inline functor_exchangeData(dataOpt03_t& data) :
 			m_data(data)
@@ -507,7 +507,7 @@ int testOpt03_Type3_Appendix2(dataOpt03_t& data)
 					m_count(count)
 				{}
 			};
-			commonProc_testOpt03_Type3_Appendix(m_data.values, find, functor(count));
+			commonProc_testOpt03_Type3_AppendixA(m_data.values, find, functor(count));
 			return count;
 		}
 		inline functor_countData(dataOpt03_t& data) :
@@ -524,19 +524,19 @@ int testOpt03_Type3_Appendix2(dataOpt03_t& data)
 	return _countData(1) + _countData(2) + _countData(3);
 }
 
-//【タイプ３】【参考】3
+//【タイプ３】【参考】A-3
 //※std::function型を受け取る共通テンプレート関数とラムダ式を使用
-int testOpt03_Type3_Appendix3(dataOpt03_t& data)
+int testOpt03_Type3_AppendixA3(dataOpt03_t& data)
 {
 	//配列内の値を検索して別の値に置き換えるラムダ式
 	//※変数data/exchangeをキャプチャしたクロ―ジャとして振る舞う
 	auto _exchangeData = [&data](const int find, const int exchange)
 	{
-		commonProc_testOpt03_Type3_Appendix(data.values, find,
-			[&exchange](int& value)
-		{
-			value = exchange;
-		}
+		commonProc_testOpt03_Type3_AppendixA(data.values, find,
+			[exchange](int& value)
+			{
+				value = exchange;
+			}
 		);
 	};
 	
@@ -545,11 +545,138 @@ int testOpt03_Type3_Appendix3(dataOpt03_t& data)
 	auto _countData = [&data](const int find) -> int
 	{
 		int count = 0;
-		commonProc_testOpt03_Type3_Appendix(data.values, find,
+		commonProc_testOpt03_Type3_AppendixA(data.values, find,
 			[&count](int& value)
+			{
+				++count;
+			}
+		);
+		return count;
+	};
+
+	//値の置き換え：0→1
+	_exchangeData(0, 1);
+	//値の置き換え：4→3
+	_exchangeData(4, 3);
+	//値1,2,3の出現数を計上して返す
+	return _countData(1) + _countData(2) + _countData(3);
+}
+
+//【タイプ３】【参考】B-1
+//※std::function型を受け取る共通関数とコールバック関数を使用
+//配列内の値を検索して別の値に置き換える
+inline static void _exchangeData_AppendixB1(dataOpt03_t& data, const int find, const int exchange)
+{
+	s_exchange_value = exchange;
+	commonProc_testOpt03_Type3_AppendixB(data.values, extentof(data.values), find, _exchangeDataCB);
+}
+//配列内の値を検索して出現数を算出する
+inline static int _countData_AppendixB1(dataOpt03_t& data, const int find)
+{
+	s_count_value = 0;
+	commonProc_testOpt03_Type3_AppendixB(data.values, extentof(data.values), find, _countDataCB);
+	return s_count_value;
+}
+//関数本体
+int testOpt03_Type3_AppendixB1(dataOpt03_t& data)
+{
+	//値の置き換え：0→1
+	_exchangeData_AppendixB1(data, 0, 1);
+	//値の置き換え：4→3
+	_exchangeData_AppendixB1(data, 4, 3);
+	//値1,2,3の出現数を計上して返す
+	return _countData_AppendixB1(data, 1) + _countData_AppendixB1(data, 2) + _countData_AppendixB1(data, 3);
+}
+
+//【タイプ３】【参考】B-2
+//※std::function型を受け取る共通関数と関数オブジェクトを使用
+int testOpt03_Type3_AppendixB2(dataOpt03_t& data)
+{
+	//配列内の値を検索して別の値に置き換える関数オブジェクト
+	struct functor_exchangeData {
+		dataOpt03_t& m_data;
+		inline void operator()(const int find, const int exchange)
 		{
-			++count;
+			//コールバック用の関数オブジェクト
+			struct functor{
+				const int m_exchange;
+				inline void operator()(int& value)
+				{
+					value = m_exchange;
+				}
+				inline functor(const int exchange) :
+					m_exchange(exchange)
+				{}
+			};
+			commonProc_testOpt03_Type3_AppendixB(m_data.values, extentof(m_data.values), find, functor(exchange));
 		}
+		inline functor_exchangeData(dataOpt03_t& data) :
+			m_data(data)
+		{}
+	};
+	functor_exchangeData _exchangeData(data);//関数オブジェクトを実体化
+
+	//配列内の値を検索して出現数を算出する関数オブジェクト
+	//※変数dataをキャプチャしたクロ―ジャとして振る舞う
+	struct functor_countData {
+		dataOpt03_t& m_data;
+		inline auto operator()(const int find) -> int
+		{
+			int count = 0;
+			//コールバック用の関数オブジェクト
+			struct functor{
+				int& m_count;
+				inline void operator()(int& value)
+				{
+					++m_count;
+				}
+				inline functor(int& count) :
+					m_count(count)
+				{}
+			};
+			commonProc_testOpt03_Type3_AppendixB(m_data.values, extentof(m_data.values), find, functor(count));
+			return count;
+		}
+		inline functor_countData(dataOpt03_t& data) :
+			m_data(data)
+		{}
+	};
+	functor_countData _countData(data);//関数オブジェクトを実体化
+
+	//値の置き換え：0→1
+	_exchangeData(0, 1);
+	//値の置き換え：4→3
+	_exchangeData(4, 3);
+	//値1,2,3の出現数を計上して返す
+	return _countData(1) + _countData(2) + _countData(3);
+}
+
+//【タイプ３】【参考】B-3
+//※std::function型を受け取る共通関数とラムダ式を使用
+int testOpt03_Type3_AppendixB3(dataOpt03_t& data)
+{
+	//配列内の値を検索して別の値に置き換えるラムダ式
+	//※変数data/exchangeをキャプチャしたクロ―ジャとして振る舞う
+	auto _exchangeData = [&data](const int find, const int exchange)
+	{
+		commonProc_testOpt03_Type3_AppendixB(data.values, extentof(data.values), find,
+			[exchange](int& value)
+			{
+				value = exchange;
+			}
+		);
+	};
+
+	//配列内の値を検索して出現数を算出するラムダ式
+	//※変数data/countをキャプチャしたクロ―ジャとして振る舞う
+	auto _countData = [&data](const int find) -> int
+	{
+		int count = 0;
+		commonProc_testOpt03_Type3_AppendixB(data.values, extentof(data.values), find,
+			[&count](int& value)
+			{
+				++count;
+			}
 		);
 		return count;
 	};

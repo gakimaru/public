@@ -492,25 +492,34 @@ void runTestOpt03_Type3()
 	testOpt03_Type3_After1(data);
 	testOpt03_Type3_After2(data);
 	testOpt03_Type3_After3(data);
-	testOpt03_Type3_Appendix1(data);
-	testOpt03_Type3_Appendix2(data);
-	testOpt03_Type3_Appendix3(data);
+	testOpt03_Type3_AppendixA1(data);
+	testOpt03_Type3_AppendixA2(data);
+	testOpt03_Type3_AppendixA3(data);
+	testOpt03_Type3_AppendixB1(data);
+	testOpt03_Type3_AppendixB2(data);
+	testOpt03_Type3_AppendixB3(data);
 
 	printf("Type3: *%d times repeated.\n", LOOP_OPT03_TYPE3);
 	extern void runTestOpt03_Type3_Before(dataOpt03_t& data);
 	extern void runTestOpt03_Type3_After1(dataOpt03_t& data);
 	extern void runTestOpt03_Type3_After2(dataOpt03_t& data);
 	extern void runTestOpt03_Type3_After3(dataOpt03_t& data);
-	extern void runTestOpt03_Type3_Appendix1(dataOpt03_t& data);
-	extern void runTestOpt03_Type3_Appendix2(dataOpt03_t& data);
-	extern void runTestOpt03_Type3_Appendix3(dataOpt03_t& data);
+	extern void runTestOpt03_Type3_AppendixA1(dataOpt03_t& data);
+	extern void runTestOpt03_Type3_AppendixA2(dataOpt03_t& data);
+	extern void runTestOpt03_Type3_AppendixA3(dataOpt03_t& data);
+	extern void runTestOpt03_Type3_AppendixB1(dataOpt03_t& data);
+	extern void runTestOpt03_Type3_AppendixB2(dataOpt03_t& data);
+	extern void runTestOpt03_Type3_AppendixB3(dataOpt03_t& data);
 	initOpt03_Type3(data); runTestOpt03_Type3_Before(data);
 	initOpt03_Type3(data); runTestOpt03_Type3_After1(data);
 	initOpt03_Type3(data); runTestOpt03_Type3_After2(data);
 	initOpt03_Type3(data); runTestOpt03_Type3_After3(data);
-	initOpt03_Type3(data); runTestOpt03_Type3_Appendix1(data);
-	initOpt03_Type3(data); runTestOpt03_Type3_Appendix2(data);
-	initOpt03_Type3(data); runTestOpt03_Type3_Appendix3(data);
+	initOpt03_Type3(data); runTestOpt03_Type3_AppendixA1(data);
+	initOpt03_Type3(data); runTestOpt03_Type3_AppendixA2(data);
+	initOpt03_Type3(data); runTestOpt03_Type3_AppendixA3(data);
+	initOpt03_Type3(data); runTestOpt03_Type3_AppendixB1(data);
+	initOpt03_Type3(data); runTestOpt03_Type3_AppendixB2(data);
+	initOpt03_Type3(data); runTestOpt03_Type3_AppendixB3(data);
 }
 //ç≈ìKâªëO
 void runTestOpt03_Type3_Before(dataOpt03_t& data)
@@ -556,36 +565,69 @@ void runTestOpt03_Type3_After3(dataOpt03_t& data)
 	printElapsedTimeWithoutCR(prev_time);
 	printf("  count=%d\n", count);
 }
-//ÅyéQçlÅz1
-void runTestOpt03_Type3_Appendix1(dataOpt03_t& data)
+//ÅyéQçlÅzA-1
+void runTestOpt03_Type3_AppendixA1(dataOpt03_t& data)
 {
-	printf("  Appendix1... ");
+	printf("  AppendixA1.. ");
 	const auto prev_time = std::chrono::system_clock::now();
 	int count = 0;
 	for (int loop = 0; loop < LOOP_OPT03_TYPE3; ++loop)
-		count += testOpt03_Type3_Appendix1(data);
+		count += testOpt03_Type3_AppendixA1(data);
 	printElapsedTimeWithoutCR(prev_time);
 	printf("  count=%d\n", count);
 }
-//ÅyéQçlÅz2
-void runTestOpt03_Type3_Appendix2(dataOpt03_t& data)
+//ÅyéQçlÅzA-2
+void runTestOpt03_Type3_AppendixA2(dataOpt03_t& data)
 {
-	printf("  Appendix2... ");
+	printf("  AppendixA2.. ");
 	const auto prev_time = std::chrono::system_clock::now();
 	int count = 0;
 	for (int loop = 0; loop < LOOP_OPT03_TYPE3; ++loop)
-		count += testOpt03_Type3_Appendix2(data);
+		count += testOpt03_Type3_AppendixA2(data);
 	printElapsedTimeWithoutCR(prev_time);
 	printf("  count=%d\n", count);
 }
-//ÅyéQçlÅz3
-void runTestOpt03_Type3_Appendix3(dataOpt03_t& data)
+//ÅyéQçlÅzA-3
+void runTestOpt03_Type3_AppendixA3(dataOpt03_t& data)
 {
-	printf("  Appendix3... ");
+	printf("  AppendixA3.. ");
 	const auto prev_time = std::chrono::system_clock::now();
 	int count = 0;
 	for (int loop = 0; loop < LOOP_OPT03_TYPE3; ++loop)
-		count += testOpt03_Type3_Appendix3(data);
+		count += testOpt03_Type3_AppendixA3(data);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  count=%d\n", count);
+}
+//ÅyéQçlÅzB-1
+void runTestOpt03_Type3_AppendixB1(dataOpt03_t& data)
+{
+	printf("  AppendixB1.. ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int count = 0;
+	for (int loop = 0; loop < LOOP_OPT03_TYPE3; ++loop)
+		count += testOpt03_Type3_AppendixB1(data);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  count=%d\n", count);
+}
+//ÅyéQçlÅzB-2
+void runTestOpt03_Type3_AppendixB2(dataOpt03_t& data)
+{
+	printf("  AppendixB2.. ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int count = 0;
+	for (int loop = 0; loop < LOOP_OPT03_TYPE3; ++loop)
+		count += testOpt03_Type3_AppendixB2(data);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  count=%d\n", count);
+}
+//ÅyéQçlÅzB-3
+void runTestOpt03_Type3_AppendixB3(dataOpt03_t& data)
+{
+	printf("  AppendixB3.. ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int count = 0;
+	for (int loop = 0; loop < LOOP_OPT03_TYPE3; ++loop)
+		count += testOpt03_Type3_AppendixB3(data);
 	printElapsedTimeWithoutCR(prev_time);
 	printf("  count=%d\n", count);
 }

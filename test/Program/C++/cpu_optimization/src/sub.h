@@ -126,12 +126,18 @@ int testOpt03_Type3_After1(dataOpt03_t& data);
 int testOpt03_Type3_After2(dataOpt03_t& data);
 //yƒ^ƒCƒv‚RzÅ“K‰»Œã3
 int testOpt03_Type3_After3(dataOpt03_t& data);
-//yƒ^ƒCƒv‚RzyQlz1
-int testOpt03_Type3_Appendix1(dataOpt03_t& data);
-//yƒ^ƒCƒv‚RzyQlz2
-int testOpt03_Type3_Appendix2(dataOpt03_t& data);
-//yƒ^ƒCƒv‚RzyQlz3
-int testOpt03_Type3_Appendix3(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzyQlzA-1
+int testOpt03_Type3_AppendixA1(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzyQlzA-2
+int testOpt03_Type3_AppendixA2(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzyQlzA-3
+int testOpt03_Type3_AppendixA3(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzyQlzB-1
+int testOpt03_Type3_AppendixB1(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzyQlzB-2
+int testOpt03_Type3_AppendixB2(dataOpt03_t& data);
+//yƒ^ƒCƒv‚RzyQlzB-3
+int testOpt03_Type3_AppendixB3(dataOpt03_t& data);
 
 //----------------------------------------
 //Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX

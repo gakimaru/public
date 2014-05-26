@@ -2,6 +2,7 @@
 
 //ƒeƒXƒgƒ‹[ƒv‰ñ”
 //#define NOLOOP//‚»‚ê‚¼‚ê1‰ñ‚¾‚¯‚ÌƒeƒXƒg‚É‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
+#define CHECK_OPT04//Å“K‰»‡C‚ÌœZ‚ÌŒŸZ‚ğs‚¤ê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
 #ifdef NOLOOP
 	//Å“K‰»‡@Fƒƒ‚ƒŠƒAƒNƒZƒX‚Ì—}§Fˆê•Ï”‚ÌŠˆ—p
 	static const int LOOP_OPT01_TYPE1 = 1;
@@ -13,6 +14,9 @@
 	static const int LOOP_OPT03_TYPE3 = 1;
 	//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
 	static const int LOOP_OPT04_TYPE1 = 1;
+	static const int LOOP_OPT04_TYPE2 = 1;
+	static const int LOOP_OPT04_TYPE3 = 1;
+	static const int LOOP_OPT04_TYPE4 = 1;
 	//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
 	static const int LOOP_OPT05_TYPE1 = 1;
 	//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
@@ -46,7 +50,10 @@
 			static const int LOOP_OPT03_TYPE2 = 10000000;
 			static const int LOOP_OPT03_TYPE3 = 1000;
 			//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
-			static const int LOOP_OPT04_TYPE1 = 1000;
+			static const int LOOP_OPT04_TYPE1 = 10000000;
+			static const int LOOP_OPT04_TYPE2 = 1000;
+			static const int LOOP_OPT04_TYPE3 = 10000000;
+			static const int LOOP_OPT04_TYPE4 = 10000000;
 			//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
 			static const int LOOP_OPT05_TYPE1 = 100000;
 			//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
@@ -78,7 +85,10 @@
 			static const int LOOP_OPT03_TYPE2 = 100000000;
 			static const int LOOP_OPT03_TYPE3 = 10000;
 			//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
-			static const int LOOP_OPT04_TYPE1 = 10000;
+			static const int LOOP_OPT04_TYPE1 = 100000000;
+			static const int LOOP_OPT04_TYPE2 = 10000;
+			static const int LOOP_OPT04_TYPE3 = 100000000;
+			static const int LOOP_OPT04_TYPE4 = 100000000;
 			//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
 			static const int LOOP_OPT05_TYPE1 = 10000000;
 			//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
@@ -112,7 +122,10 @@
 			static const int LOOP_OPT03_TYPE2 = 10000000;
 			static const int LOOP_OPT03_TYPE3 = 100000;
 			//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
-			static const int LOOP_OPT04_TYPE1 = 100000;
+			static const int LOOP_OPT04_TYPE1 = 10000000;
+			static const int LOOP_OPT04_TYPE2 = 100000;
+			static const int LOOP_OPT04_TYPE3 = 10000000;
+			static const int LOOP_OPT04_TYPE4 = 10000000;
 			//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
 			static const int LOOP_OPT05_TYPE1 = 1000000;
 			//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
@@ -144,7 +157,10 @@
 			static const int LOOP_OPT03_TYPE2 = 100000000;
 			static const int LOOP_OPT03_TYPE3 = 1000000;
 			//Å“K‰»‡CFœZ‚Ì—}§FæZ‚É•ÏX
-			static const int LOOP_OPT04_TYPE1 = 1000000;
+			static const int LOOP_OPT04_TYPE1 = 100000000;
+			static const int LOOP_OPT04_TYPE2 = 1000000;
+			static const int LOOP_OPT04_TYPE3 = 100000000;
+			static const int LOOP_OPT04_TYPE4 = 100000000;
 			//Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
 			static const int LOOP_OPT05_TYPE1 = 10000000;
 			//Å“K‰»‡EFæZ^œZ‚Ì—}§F‰‰Z‚Ì‹¤’Ê‰»
@@ -639,51 +655,408 @@ void runTestOpt04()
 	printf("----------------------------------------\n");
 	printf("[Optimize Test 04]\n");
 
+#ifdef CHECK_OPT04
+	extern void runTestOpt04_1time();
+	runTestOpt04_1time();
+#endif//CHECK_OPT04
+
 	//‰Šú‰»
 	dataOpt04_t data;
 	initOpt04(data);
 
 	//yƒ^ƒCƒv‚Pz
-	extern void runTestOpt04_Type1(dataOpt04_t& data);
-	runTestOpt04_Type1(data);
+	extern void runTestOpt04_Type1();
+	runTestOpt04_Type1();
+
+	//yƒ^ƒCƒv‚Qz
+	extern void runTestOpt04_Type2(dataOpt04_t& data);
+	runTestOpt04_Type2(data);
+
+	//yƒ^ƒCƒv‚Rz
+	extern void runTestOpt04_Type3(const float div);
+	runTestOpt04_Type3(1.2f);
+
+	//yƒ^ƒCƒv‚Sz
+	extern void runTestOpt04_Type4();
+	runTestOpt04_Type4();
 }
+
+//œZ^•½•ûª‚ÌŒŸZ
+#ifdef CHECK_OPT04
+#include <functional>//C++11 std::function—p
+void runTestOpt04_1time()
+{
+	auto check_type1 = [](const char* label, const float value_begin, const float value_end, const float value_step, const float value_step_mul, const int value_step_mul_by, const float tolerance, std::function<float(float)> div_lambda_b, std::function<float(float)> div_lambda_a)
+	{
+		printf("----------------------------------------\n");
+		const float div = 1.2f;
+		printf("[CHECK:TYPE1:%s] div(%.5f~%.5f,%+.5f,*%.1fby%dt / %.5f) [tol=%.5f]\n", label, value_begin, value_end, value_step, value_step_mul, value_step_mul_by, div, tolerance);
+		int ok_count = 0;
+		int ng_count = 0;
+		float diff_sum = 0.f;
+		float diff_max = 0.f;
+		float diff_max_value = 0.f;
+		int value_i = 0;
+		float _value_step = value_step;
+		float value = value_begin;
+		while (1)
+		{
+			const float result_b = div_lambda_b(value);
+			const float result_a = div_lambda_a(value);
+			const float diff = fabs(result_a - result_b);
+			if (diff < tolerance)
+				++ok_count;
+			else
+				++ng_count;
+			diff_sum += diff;
+			if (diff_max < diff)
+			{
+				diff_max = diff;
+				diff_max_value = value;
+			}
+			if (value >= value_end)
+				break;
+			++value_i;
+			if (value_i % value_step_mul_by == 0)
+				_value_step *= value_step_mul;
+			value += _value_step;
+			if (value > value_end)
+				value = value_end;
+		}
+		const float diff_avg = diff_sum / static_cast<float>(ok_count + ng_count);
+		printf("[CHECK:TYPE1:%s] ng=%d/%d(%.2f%%), diff-avg=%.5f, diff-max=%.5f(%.5f / %.5f)\n", label, ng_count, ok_count + ng_count, static_cast<float>(ng_count) / static_cast<float>(ok_count + ng_count) * 100.f, diff_avg, diff_max, diff_max_value, div);
+	};
+	auto check_type3 = [](const char* label, const float value_begin, const float value_end, const float value_step, const float value_step_mul, const int value_step_mul_by, const float div_begin, const float div_end, const float div_step, const float div_step_mul, const int div_step_mul_by, const float tolerance, std::function<float(float, float)> div_lambda_b, std::function<float(float, float)> div_lambda_a)
+	{
+		printf("----------------------------------------\n");
+		printf("[CHECK:TYPE3:%s] div(%.5f~%.5f,%+.5f,*%.1fby%dt / %.5f~%.5f,%+.5f,*%.1fby%dt) [tol=%.5f]\n", label, value_begin, value_end, value_step, value_step_mul, value_step_mul_by, div_begin, div_end, div_step, div_step_mul, div_step_mul_by, tolerance);
+		int ok_count = 0;
+		int ng_count = 0;
+		float diff_sum = 0.f;
+		float diff_max = 0.f;
+		float diff_max_value = 0.f;
+		float diff_max_div = 0.f;
+		int value_i = 0;
+		float _value_step = value_step;
+		float value = value_begin;
+		while (1)
+		{
+			int div_i = 0;
+			float _div_step = div_step;
+			float div = div_begin;
+			while (1)
+			{
+				const float result_b = div_lambda_b(value, div);
+				const float result_a = div_lambda_a(value, div);
+				const float diff = fabs(result_a - result_b);
+				if (diff < tolerance)
+					++ok_count;
+				else
+					++ng_count;
+				diff_sum += diff;
+				if (diff_max < diff)
+				{
+					if (diff_max < 0.001f && diff >= 0.001f ||
+						diff_max < 0.01f && diff >= 0.01f ||
+						diff_max < 0.1f && diff >= 0.1f ||
+						diff_max < 1.f && diff >= 1.f ||
+						diff_max < 10.f && diff >= 10.f ||
+						diff_max < 100.f && diff >= 100.f ||
+						diff_max < 1000.f && diff >= 1000.f ||
+						diff_max < 10000.f && diff >= 10000.f)
+						printf("***** diff=%.5f(%.5f / %.5f)\n", diff, value, div);
+					diff_max = diff;
+					diff_max_value = value;
+					diff_max_div = div;
+				}
+				if (div >= div_end)
+					break;
+				++div_i;
+				if (div_i % div_step_mul_by == 0)
+					_div_step *= div_step_mul;
+				div += _div_step;
+				if (div > div_end)
+					div = div_end;
+			}
+			if (value >= value_end)
+				break;
+			++value_i;
+			if (value_i % value_step_mul_by == 0)
+				_value_step *= value_step_mul;
+			value += _value_step;
+			if (value > value_end)
+				value = value_end;
+		}
+		const float diff_avg = diff_sum / static_cast<float>(ok_count + ng_count);
+		printf("[CHECK:TYPE3:%s] ng=%d/%d(%.2f%%), diff-avg=%.5f, diff-max=%.5f(%.5f / %.5f)\n", label, ng_count, ok_count + ng_count, static_cast<float>(ng_count) / static_cast<float>(ok_count + ng_count) * 100.f, diff_avg, diff_max, diff_max_value, diff_max_div);
+	};
+	auto check_type4 = [](const char* label, const float value_begin, const float value_end, const float value_step, const float value_step_mul, const int value_step_mul_by, const float tolerance, std::function<float(float)> sqrt_lambda_b, std::function<float(float)> sqrt_lambda_a)
+	{
+		printf("----------------------------------------\n");
+		printf("[CHECK:TYPE4:%s] sqrt(%.5f~%.5f,%+.5f,*%.1fby%dt) [tol=%.5f]\n", label, value_begin, value_end, value_step, value_step_mul, value_step_mul_by, tolerance);
+		int ok_count = 0;
+		int ng_count = 0;
+		float diff_sum = 0.f;
+		float diff_max = 0.f;
+		float diff_max_value = 0.f;
+		int value_i = 0;
+		float _value_step = value_step;
+		float value = value_begin;
+		while (1)
+		{
+			const float result_b = sqrt_lambda_b(value);
+			const float result_a = sqrt_lambda_a(value);
+			const float diff = fabs(result_a - result_b);
+			if (diff < tolerance)
+				++ok_count;
+			else
+				++ng_count;
+			diff_sum += diff;
+			if (diff_max < diff)
+			{
+				if (diff_max < 0.001f && diff >= 0.001f ||
+				    diff_max < 0.01f && diff >= 0.01f ||
+				    diff_max < 0.1f && diff >= 0.1f ||
+					diff_max < 1.f && diff >= 1.f ||
+					diff_max < 10.f && diff >= 10.f)
+					printf("***** diff=%.5f(%.5f)\n", diff, value);
+				diff_max = diff;
+				diff_max_value = value;
+			}
+			if (value >= value_end)
+				break;
+			++value_i;
+			if (value_i % value_step_mul_by == 0)
+				_value_step *= value_step_mul;
+			value += _value_step;
+			if (value > value_end)
+				value = value_end;
+		}
+		const float diff_avg = diff_sum / static_cast<float>(ok_count + ng_count);
+		printf("[CHECK:TYPE4:%s] ng=%d/%d(%.2f%%), diff-avg=%.5f, diff-max=%.5f(%.5f)\n", label, ng_count, ok_count + ng_count, static_cast<float>(ng_count) / static_cast<float>(ok_count + ng_count) * 100.f, diff_avg, diff_max, diff_max_value);
+	};
+	check_type1("1", 0.000f, 100000.000f, 0.001f, 2.f, 1000, 0.001f, testOpt04_Type1_Before, testOpt04_Type1_After);
+	check_type3("1", 0.000f, 100000.000f, 0.001f, 2.f, 1000, 0.001f, 100000.000f, 0.001f, 2.f, 1000, 0.001f, testOpt04_Type3_Before, testOpt04_Type3_After1);
+	check_type3("2", 0.000f, 100000.000f, 0.001f, 2.f, 1000, 0.001f, 100000.000f, 0.001f, 2.f, 1000, 0.001f, testOpt04_Type3_Before, testOpt04_Type3_After2);
+	check_type3("3", 0.000f, 100000.000f, 0.001f, 2.f, 1000, 0.001f, 100000.000f, 0.001f, 2.f, 1000, 0.001f, testOpt04_Type3_Before, testOpt04_Type3_After3);
+	check_type3("1", 0.000f, 10000.000f, 0.001f, 2.f, 1000, 1.000f, 1000.000f, 0.100f, 2.f, 1000, 0.001f, testOpt04_Type3_Before, testOpt04_Type3_After1);
+	check_type3("2", 0.000f, 10000.000f, 0.001f, 2.f, 1000, 1.000f, 1000.000f, 0.100f, 2.f, 1000, 0.001f, testOpt04_Type3_Before, testOpt04_Type3_After2);
+	check_type3("3", 0.000f, 10000.000f, 0.001f, 2.f, 1000, 1.000f, 1000.000f, 0.100f, 2.f, 1000, 0.001f, testOpt04_Type3_Before, testOpt04_Type3_After3);
+	check_type4("1", 0.001f, 100000.000f, 0.001f, 2.f, 1000, 0.001f, testOpt04_Type4_Before, testOpt04_Type4_After1);
+	check_type4("2", 0.001f, 100000.000f, 0.001f, 2.f, 1000, 0.001f, testOpt04_Type4_Before, testOpt04_Type4_After2);
+	check_type4("3", 0.001f, 100000.000f, 0.001f, 2.f, 1000, 0.001f, testOpt04_Type4_Before, testOpt04_Type4_After3);
+}
+#endif//CHECK_OPT04
+
 //yƒ^ƒCƒv‚Pz
-void runTestOpt04_Type1(dataOpt04_t& data)
+void runTestOpt04_Type1()
 {
 	printf("Type1: *%d times repeated.\n", LOOP_OPT04_TYPE1);
-	extern void runTestOpt04_Type1_Before(dataOpt04_t& data);
-	extern void runTestOpt04_Type1_After1(dataOpt04_t& data);
-	extern void runTestOpt04_Type1_After2(dataOpt04_t& data);
-	runTestOpt04_Type1_Before(data);
-	runTestOpt04_Type1_After1(data);
-	runTestOpt04_Type1_After2(data);
+
+	//ƒLƒƒƒbƒVƒ…ó‘Ô‚ğ•½“™‚É‚·‚é‚½‚ßAˆê“xˆê’Ê‚èÀs‚·‚é
+	testOpt04_Type1_Before(0.f);
+	testOpt04_Type1_After(0.f);
+
+	extern void runTestOpt04_Type1_Before();
+	extern void runTestOpt04_Type1_After();
+	runTestOpt04_Type1_Before();
+	runTestOpt04_Type1_After();
 }
 //Å“K‰»‘O
-void runTestOpt04_Type1_Before(dataOpt04_t& data)
+void runTestOpt04_Type1_Before()
 {
 	printf("  Before   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
 	for (int loop = 0; loop < LOOP_OPT04_TYPE1; ++loop)
-		testOpt04_Type1_Before(data);
+		sum += testOpt04_Type1_Before(static_cast<float>(loop));
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.5f\n", sum);
+}
+//Å“K‰»Œã‚P
+void runTestOpt04_Type1_After()
+{
+	printf("  After    ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
+	for (int loop = 0; loop < LOOP_OPT04_TYPE1; ++loop)
+		sum += testOpt04_Type1_After(static_cast<float>(loop));
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.5f\n", sum);
+}
+//yƒ^ƒCƒv‚Qz
+void runTestOpt04_Type2(dataOpt04_t& data)
+{
+	printf("Type2: *%d times repeated.\n", LOOP_OPT04_TYPE2);
+
+	//ƒLƒƒƒbƒVƒ…ó‘Ô‚ğ•½“™‚É‚·‚é‚½‚ßAˆê“xˆê’Ê‚èÀs‚·‚é
+	testOpt04_Type2_Before(data);
+	testOpt04_Type2_After1(data);
+	testOpt04_Type2_After2(data);
+	
+	extern void runTestOpt04_Type2_Before(dataOpt04_t& data);
+	extern void runTestOpt04_Type2_After1(dataOpt04_t& data);
+	extern void runTestOpt04_Type2_After2(dataOpt04_t& data);
+	runTestOpt04_Type2_Before(data);
+	runTestOpt04_Type2_After1(data);
+	runTestOpt04_Type2_After2(data);
+}
+//Å“K‰»‘O
+void runTestOpt04_Type2_Before(dataOpt04_t& data)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	for (int loop = 0; loop < LOOP_OPT04_TYPE2; ++loop)
+		testOpt04_Type2_Before(data);
 	printElapsedTime(prev_time);
 }
 //Å“K‰»Œã‚P
-void runTestOpt04_Type1_After1(dataOpt04_t& data)
+void runTestOpt04_Type2_After1(dataOpt04_t& data)
 {
 	printf("  After1   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
-	for (int loop = 0; loop < LOOP_OPT04_TYPE1; ++loop)
-		testOpt04_Type1_After1(data);
+	for (int loop = 0; loop < LOOP_OPT04_TYPE2; ++loop)
+		testOpt04_Type2_After1(data);
 	printElapsedTime(prev_time);
 }
 //Å“K‰»Œã‚Q
-void runTestOpt04_Type1_After2(dataOpt04_t& data)
+void runTestOpt04_Type2_After2(dataOpt04_t& data)
 {
 	printf("  After2   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
-	for (int loop = 0; loop < LOOP_OPT04_TYPE1; ++loop)
-		testOpt04_Type1_After2(data);
+	for (int loop = 0; loop < LOOP_OPT04_TYPE2; ++loop)
+		testOpt04_Type2_After2(data);
 	printElapsedTime(prev_time);
+}
+
+//yƒ^ƒCƒv‚Rz
+void runTestOpt04_Type3(const float div)
+{
+	printf("Type3: *%d times repeated.\n", LOOP_OPT04_TYPE3);
+
+	//ƒLƒƒƒbƒVƒ…ó‘Ô‚ğ•½“™‚É‚·‚é‚½‚ßAˆê“xˆê’Ê‚èÀs‚·‚é
+	testOpt04_Type3_Before(0.f, div);
+	testOpt04_Type3_After1(0.f, div);
+	testOpt04_Type3_After2(0.f, div);
+	testOpt04_Type3_After3(0.f, div);
+
+	extern void runTestOpt04_Type3_Before(const float div);
+	extern void runTestOpt04_Type3_After1(const float div);
+	extern void runTestOpt04_Type3_After2(const float div);
+	extern void runTestOpt04_Type3_After3(const float div);
+	runTestOpt04_Type3_Before(div);
+	runTestOpt04_Type3_After1(div);
+	runTestOpt04_Type3_After2(div);
+	runTestOpt04_Type3_After3(div);
+}
+//Å“K‰»‘O
+void runTestOpt04_Type3_Before(const float div)
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
+	for (int loop = 0; loop < LOOP_OPT04_TYPE3; ++loop)
+		sum += testOpt04_Type3_Before(static_cast<float>(loop), div);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.5f\n", sum);
+}
+//Å“K‰»Œã1
+void runTestOpt04_Type3_After1(const float div)
+{
+	printf("  After1   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
+	for (int loop = 0; loop < LOOP_OPT04_TYPE3; ++loop)
+		sum += testOpt04_Type3_After1(static_cast<float>(loop), div);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.5f\n", sum);
+}
+//Å“K‰»Œã2
+void runTestOpt04_Type3_After2(const float div)
+{
+	printf("  After2   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
+	for (int loop = 0; loop < LOOP_OPT04_TYPE3; ++loop)
+		sum += testOpt04_Type3_After2(static_cast<float>(loop), div);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.5f\n", sum);
+}
+//Å“K‰»Œã3
+void runTestOpt04_Type3_After3(const float div)
+{
+	printf("  After3   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
+	for (int loop = 0; loop < LOOP_OPT04_TYPE3; ++loop)
+		sum += testOpt04_Type3_After3(static_cast<float>(loop), div);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.5f\n", sum);
+}
+
+//yƒ^ƒCƒv‚Sz
+void runTestOpt04_Type4()
+{
+	printf("Type4: *%d times repeated.\n", LOOP_OPT04_TYPE4);
+
+	//ƒLƒƒƒbƒVƒ…ó‘Ô‚ğ•½“™‚É‚·‚é‚½‚ßAˆê“xˆê’Ê‚èÀs‚·‚é
+	testOpt04_Type4_Before(0.f);
+	testOpt04_Type4_After1(0.f);
+	testOpt04_Type4_After2(0.f);
+	testOpt04_Type4_After3(0.f);
+
+	extern void runTestOpt04_Type4_Before();
+	extern void runTestOpt04_Type4_After1();
+	extern void runTestOpt04_Type4_After2();
+	extern void runTestOpt04_Type4_After3();
+	runTestOpt04_Type4_Before();
+	runTestOpt04_Type4_After1();
+	runTestOpt04_Type4_After2();
+	runTestOpt04_Type4_After3();
+}
+//Å“K‰»‘O
+void runTestOpt04_Type4_Before()
+{
+	printf("  Before   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
+	for (int loop = 1; loop < LOOP_OPT04_TYPE4; ++loop)
+		sum += testOpt04_Type4_Before(static_cast<float>(loop));
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.5f\n", sum);
+}
+//Å“K‰»Œã1
+void runTestOpt04_Type4_After1()
+{
+	printf("  After1   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
+	for (int loop = 1; loop < LOOP_OPT04_TYPE4; ++loop)
+		sum += testOpt04_Type4_After1(static_cast<float>(loop));
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.5f\n", sum);
+}
+//Å“K‰»Œã2
+void runTestOpt04_Type4_After2()
+{
+	printf("  After2   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
+	for (int loop = 1; loop < LOOP_OPT04_TYPE4; ++loop)
+		sum += testOpt04_Type4_After2(static_cast<float>(loop));
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.5f\n", sum);
+}
+//Å“K‰»Œã3
+void runTestOpt04_Type4_After3()
+{
+	printf("  After3   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
+	for (int loop = 1; loop < LOOP_OPT04_TYPE4; ++loop)
+		sum += testOpt04_Type4_After3(static_cast<float>(loop));
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.5f\n", sum);
 }
 
 //----------------------------------------
@@ -717,11 +1090,15 @@ void runTestOpt05_Type1_Before()
 		int m2, m3, m4, m5, m10, m16, m24;
 		int d2, d3, d4, d5, d10, d16, d24;
 		int r2, r3, r4, r5, r10, r16, r24;
-		sum += testOpt05_Type1_Before(loop, m2, m3, m4, m5, m10, m16, m24,
-		                                    d2, d3, d4, d5, d10, d16, d24,
-		                                    r2, r3, r4, r5, r10, r16, r24);
+		m2 = m3 = m4 = m5 = m10 = m16 = m24 =
+		d2 = d3 = d4 = d5 = d10 = d16 = d24 =
+		r2 = r3 = r4 = r5 = r10 = r16 = r24 = loop;
+		sum += testOpt05_Type1_Before(m2, m3, m4, m5, m10, m16, m24,
+		                              d2, d3, d4, d5, d10, d16, d24,
+		                              r2, r3, r4, r5, r10, r16, r24);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%df\n", sum);
 }
 //Å“K‰»Œã
 void runTestOpt05_Type1_After()
@@ -734,11 +1111,15 @@ void runTestOpt05_Type1_After()
 		int m2, m3, m4, m5, m10, m16, m24;
 		int d2, d3, d4, d5, d10, d16, d24;
 		int r2, r3, r4, r5, r10, r16, r24;
-		sum += testOpt05_Type1_After(loop, m2, m3, m4, m5, m10, m16, m24,
-		                                   d2, d3, d4, d5, d10, d16, d24,
-		                                   r2, r3, r4, r5, r10, r16, r24);
+		m2 = m3 = m4 = m5 = m10 = m16 = m24 =
+		d2 = d3 = d4 = d5 = d10 = d16 = d24 =
+		r2 = r3 = r4 = r5 = r10 = r16 = r24 = loop;
+		sum += testOpt05_Type1_After(m2, m3, m4, m5, m10, m16, m24,
+		                             d2, d3, d4, d5, d10, d16, d24,
+		                             r2, r3, r4, r5, r10, r16, r24);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%df\n", sum);
 }
 
 //----------------------------------------

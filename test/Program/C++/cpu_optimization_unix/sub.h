@@ -157,24 +157,226 @@ struct dataOpt04_t
 //初期化
 void initOpt04(dataOpt04_t& data);
 
+#if 0
 //【タイプ１】最適化前
-void testOpt04_Type1_Before(dataOpt04_t& data);
-//【タイプ１】最適化後１
-void testOpt04_Type1_After1(dataOpt04_t& data);
-//【タイプ１】最適化後２
-void testOpt04_Type1_After2(dataOpt04_t& data);
+float testOpt04_Type1_Before(const float value);
+//【タイプ１】最適化後
+float testOpt04_Type1_After(const float value);
+#else
+//【タイプ１】最適化前
+//※定数による除算
+inline float testOpt04_Type1_Before(const float value)
+{
+	return value / 1.2f;
+}
+
+//【タイプ１】最適化後
+//※定数による除算を乗算に変更
+inline float testOpt04_Type1_After(const float value)
+{
+	return value * (1.f / 1.2f);
+}
+#endif
+
+//【タイプ２】最適化前
+void testOpt04_Type2_Before(dataOpt04_t& data);
+//【タイプ２】最適化後１
+void testOpt04_Type2_After1(dataOpt04_t& data);
+//【タイプ２】最適化後２
+void testOpt04_Type2_After2(dataOpt04_t& data);
+
+#if 0
+//【タイプ３】最適化前
+float testOpt04_Type3_Before(const float value, const float div);
+//【タイプ３】最適化後
+float testOpt04_Type3_After(const float value, const float div);
+#else
+
+#include <xmmintrin.h>//SSE1
+//【タイプ３】最適化前
+//※変数による除算
+inline float testOpt04_Type3_Before(const float value, const float div)
+{
+	//return value / div;
+	//除算
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _div_m128 = _mm_set1_ps(div);
+	const __m128 _result_m128 = _mm_div_ss(_value_m128, _div_m128);
+	//計算結果取得
+	float result;
+	_mm_store_ss(&result, _result_m128);
+	return result;
+}
+
+//【タイプ３】最適化後1
+//※変数による除算を乗算に変更
+inline float testOpt04_Type3_After1(const float value, const float div)
+{
+	//const float rcp = 1.f / div;
+	//return value * rcp;
+	//逆数算出
+	const __m128 _div_m128 = _mm_set1_ps(div);
+	const __m128 _rcp_m128 = _mm_rcp_ss(_div_m128);
+	//乗算
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _result_m128 = _mm_mul_ss(_value_m128, _rcp_m128);
+	//計算結果取得
+	float result;
+	_mm_store_ss(&result, _result_m128);
+	return result;
+}
+
+//【タイプ３】最適化後2
+//※変数による除算を乗算に変更
+//※ニュートン法で逆数の精度を高める
+inline float testOpt04_Type3_After2(const float value, const float div)
+{
+	//const float rcp = 1.f / div;
+	//return value * rcp;
+	//逆数算出
+	const __m128 _div_m128 = _mm_set1_ps(div);
+	__m128 _rcp_m128 = _mm_rcp_ss(_div_m128);
+	//ニュートン法で逆数の精度を高める
+	//ニュートン法による漸化式：rcp = rcp * (2.f - div * rcp)
+	//  rcp   = 1 / div
+	//  f(x)  = div * x - 1
+	//  f(x)  = 1 / x - div
+	//  f'(x) = -(1 / x ^ 2)
+	//  x[i+1] = x[i] - f(x[i]) / f'(x[i])
+	//         = x[i] - (1 / x[i] - div) / -(1 / x[i] ^ 2)
+	//         = x[i] + x[i] * (1 - div * x[i])
+	//         = x[i] * (2 - div * x[i])
+	const __m128 _2_m128 = _mm_set1_ps(2.f);
+	_rcp_m128 = _mm_mul_ss(_rcp_m128, _mm_sub_ss(_2_m128, _mm_mul_ss(_div_m128, _rcp_m128)));
+	//乗算
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _result_m128 = _mm_mul_ss(_value_m128, _rcp_m128);
+	//計算結果取得
+	float result;
+	_mm_store_ss(&result, _result_m128);
+	return result;
+}
+
+//【タイプ３】最適化後3
+//※変数による除算を乗算に変更
+//※ニュートン法を2回繰り返し、より逆数の精度を高める
+inline float testOpt04_Type3_After3(const float value, const float div)
+{
+	//const float rcp = 1.f / div;
+	//return value * rcp;
+	//逆数算出
+	const __m128 _div_m128 = _mm_set1_ps(div);
+	__m128 _rcp_m128 = _mm_rcp_ss(_div_m128);
+	//ニュートン法で逆数の精度を高める
+	const __m128 _2_m128 = _mm_set1_ps(2.f);
+	_rcp_m128 = _mm_mul_ss(_rcp_m128, _mm_sub_ss(_2_m128, _mm_mul_ss(_div_m128, _rcp_m128)));
+	_rcp_m128 = _mm_mul_ss(_rcp_m128, _mm_sub_ss(_2_m128, _mm_mul_ss(_div_m128, _rcp_m128)));
+	//乗算
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _result_m128 = _mm_mul_ss(_value_m128, _rcp_m128);
+	//計算結果取得
+	float result;
+	_mm_store_ss(&result, _result_m128);
+	return result;
+}
+#endif
+
+#if 0
+//【タイプ４】最適化前
+float testOpt04_Type4_Before(const float value);
+//【タイプ４】最適化後
+float testOpt04_Type4_After(const float value);
+#else
+//【タイプ４】最適化前
+//※平方根
+#include <xmmintrin.h>//SSE1
+inline float testOpt04_Type4_Before(const float value)
+{
+	//return sqrt(value);
+	//平方根算出
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _sqrt_m128 = _mm_sqrt_ss(_value_m128);
+	//計算結果取得
+	float sqrt;
+	_mm_store_ss(&sqrt, _sqrt_m128);
+	return sqrt;
+}
+
+//【タイプ４】最適化後1
+//※平方根の逆数を使用した平方根
+inline float testOpt04_Type4_After1(const float value)
+{
+	//const float rsqrt = rsqrt(value);
+	//return value * rsqrt;
+	//平方根の逆数算出
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _rsqrt_m128 = _mm_rsqrt_ss(_value_m128);
+	//乗算
+	const __m128 _sqrt_m128 = _mm_mul_ss(_value_m128, _rsqrt_m128);
+	//計算結果取得
+	float sqrt;
+	_mm_store_ss(&sqrt, _sqrt_m128);
+	return sqrt;
+}
+
+//【タイプ４】最適化後2
+//※平方根の逆数を使用した平方根
+//※ニュートン法で逆数の精度を高める
+inline float testOpt04_Type4_After2(const float value)
+{
+	//const float rsqrt = rsqrt(value);
+	//return value * rsqrt;
+	//平方根の逆数算出
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	__m128 _rsqrt_m128 = _mm_rsqrt_ss(_value_m128);
+	//ニュートン法で逆数の精度を高める
+	//ニュートン法による漸化式：rsqrt = rsqrt * (3 - value * rsqrt * rsqrt) * 0.5f
+	//  平方根の漸化式:      x[i+1] = (x[i] + value / x[i]) * 0.5
+	//  平方根の逆数の漸化式:x[i+1] = x[i] * (3 - value * x[i] ^ 2) * 0.5
+	const __m128 _3_m128 = _mm_set1_ps(3.f);
+	const __m128 _05_m128 = _mm_set1_ps(0.5f);
+	_rsqrt_m128 = _mm_mul_ss(_mm_mul_ss(_rsqrt_m128, _mm_sub_ss(_3_m128, _mm_mul_ss(_value_m128, _mm_mul_ss(_rsqrt_m128, _rsqrt_m128)))), _05_m128);
+	//乗算
+	const __m128 _sqrt_m128 = _mm_mul_ss(_value_m128, _rsqrt_m128);
+	//計算結果取得
+	float sqrt;
+	_mm_store_ss(&sqrt, _sqrt_m128);
+	return sqrt;
+}
+
+//【タイプ４】最適化後3
+//※平方根の逆数を使用した平方根
+//※ニュートン法を2回繰り返し、より逆数の精度を高める
+inline float testOpt04_Type4_After3(const float value)
+{
+	//const float rsqrt = rsqrt(value);
+	//return value * rsqrt;
+	//平方根の逆数算出
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	__m128 _rsqrt_m128 = _mm_rsqrt_ss(_value_m128);
+	//ニュートン法で逆数の精度を高める
+	const __m128 _3_m128 = _mm_set1_ps(3.f);
+	const __m128 _05_m128 = _mm_set1_ps(0.5f);
+	_rsqrt_m128 = _mm_mul_ss(_mm_mul_ss(_rsqrt_m128, _mm_sub_ss(_3_m128, _mm_mul_ss(_value_m128, _mm_mul_ss(_rsqrt_m128, _rsqrt_m128)))), _05_m128);
+	_rsqrt_m128 = _mm_mul_ss(_mm_mul_ss(_rsqrt_m128, _mm_sub_ss(_3_m128, _mm_mul_ss(_value_m128, _mm_mul_ss(_rsqrt_m128, _rsqrt_m128)))), _05_m128);
+	//乗算
+	const __m128 _sqrt_m128 = _mm_mul_ss(_value_m128, _rsqrt_m128);
+	//計算結果取得
+	float sqrt;
+	_mm_store_ss(&sqrt, _sqrt_m128);
+	return sqrt;
+}
+#endif
 
 //----------------------------------------
 //最適化⑤：乗算／除算の抑制：シフト演算や加減算に変更
 
 //【タイプ１】最適化前
-int testOpt05_Type1_Before(const int val,
-                           int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
+int testOpt05_Type1_Before(int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
 						   int& d2, int& d3, int& d4, int& d5, int& d10, int& d16, int& d24,
 						   int& r2, int& r3, int& r4, int& r5, int& r10, int& r16, int& r24);
 //【タイプ１】最適化後
-int testOpt05_Type1_After(const int val,
-                          int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
+int testOpt05_Type1_After(int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
 						  int& d2, int& d3, int& d4, int& d5, int& d10, int& d16, int& d24,
 						  int& r2, int& r3, int& r4, int& r5, int& r10, int& r16, int& r24);
 

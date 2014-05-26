@@ -157,24 +157,226 @@ struct dataOpt04_t
 //‰Šú‰»
 void initOpt04(dataOpt04_t& data);
 
+#if 0
 //yƒ^ƒCƒv‚PzÅ“K‰»‘O
-void testOpt04_Type1_Before(dataOpt04_t& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚P
-void testOpt04_Type1_After1(dataOpt04_t& data);
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚Q
-void testOpt04_Type1_After2(dataOpt04_t& data);
+float testOpt04_Type1_Before(const float value);
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã
+float testOpt04_Type1_After(const float value);
+#else
+//yƒ^ƒCƒv‚PzÅ“K‰»‘O
+//¦’è”‚É‚æ‚éœZ
+inline float testOpt04_Type1_Before(const float value)
+{
+	return value / 1.2f;
+}
+
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã
+//¦’è”‚É‚æ‚éœZ‚ğæZ‚É•ÏX
+inline float testOpt04_Type1_After(const float value)
+{
+	return value * (1.f / 1.2f);
+}
+#endif
+
+//yƒ^ƒCƒv‚QzÅ“K‰»‘O
+void testOpt04_Type2_Before(dataOpt04_t& data);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚P
+void testOpt04_Type2_After1(dataOpt04_t& data);
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚Q
+void testOpt04_Type2_After2(dataOpt04_t& data);
+
+#if 0
+//yƒ^ƒCƒv‚RzÅ“K‰»‘O
+float testOpt04_Type3_Before(const float value, const float div);
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã
+float testOpt04_Type3_After(const float value, const float div);
+#else
+
+#include <xmmintrin.h>//SSE1
+//yƒ^ƒCƒv‚RzÅ“K‰»‘O
+//¦•Ï”‚É‚æ‚éœZ
+inline float testOpt04_Type3_Before(const float value, const float div)
+{
+	//return value / div;
+	//œZ
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _div_m128 = _mm_set1_ps(div);
+	const __m128 _result_m128 = _mm_div_ss(_value_m128, _div_m128);
+	//ŒvZŒ‹‰Êæ“¾
+	float result;
+	_mm_store_ss(&result, _result_m128);
+	return result;
+}
+
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã1
+//¦•Ï”‚É‚æ‚éœZ‚ğæZ‚É•ÏX
+inline float testOpt04_Type3_After1(const float value, const float div)
+{
+	//const float rcp = 1.f / div;
+	//return value * rcp;
+	//‹t”Zo
+	const __m128 _div_m128 = _mm_set1_ps(div);
+	const __m128 _rcp_m128 = _mm_rcp_ss(_div_m128);
+	//æZ
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _result_m128 = _mm_mul_ss(_value_m128, _rcp_m128);
+	//ŒvZŒ‹‰Êæ“¾
+	float result;
+	_mm_store_ss(&result, _result_m128);
+	return result;
+}
+
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã2
+//¦•Ï”‚É‚æ‚éœZ‚ğæZ‚É•ÏX
+//¦ƒjƒ…[ƒgƒ“–@‚Å‹t”‚Ì¸“x‚ğ‚‚ß‚é
+inline float testOpt04_Type3_After2(const float value, const float div)
+{
+	//const float rcp = 1.f / div;
+	//return value * rcp;
+	//‹t”Zo
+	const __m128 _div_m128 = _mm_set1_ps(div);
+	__m128 _rcp_m128 = _mm_rcp_ss(_div_m128);
+	//ƒjƒ…[ƒgƒ“–@‚Å‹t”‚Ì¸“x‚ğ‚‚ß‚é
+	//ƒjƒ…[ƒgƒ“–@‚É‚æ‚é‘Q‰»®Frcp = rcp * (2.f - div * rcp)
+	//  rcp   = 1 / div
+	//  f(x)  = div * x - 1
+	//  f(x)  = 1 / x - div
+	//  f'(x) = -(1 / x ^ 2)
+	//  x[i+1] = x[i] - f(x[i]) / f'(x[i])
+	//         = x[i] - (1 / x[i] - div) / -(1 / x[i] ^ 2)
+	//         = x[i] + x[i] * (1 - div * x[i])
+	//         = x[i] * (2 - div * x[i])
+	const __m128 _2_m128 = _mm_set1_ps(2.f);
+	_rcp_m128 = _mm_mul_ss(_rcp_m128, _mm_sub_ss(_2_m128, _mm_mul_ss(_div_m128, _rcp_m128)));
+	//æZ
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _result_m128 = _mm_mul_ss(_value_m128, _rcp_m128);
+	//ŒvZŒ‹‰Êæ“¾
+	float result;
+	_mm_store_ss(&result, _result_m128);
+	return result;
+}
+
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã3
+//¦•Ï”‚É‚æ‚éœZ‚ğæZ‚É•ÏX
+//¦ƒjƒ…[ƒgƒ“–@‚ğ2‰ñŒJ‚è•Ô‚µA‚æ‚è‹t”‚Ì¸“x‚ğ‚‚ß‚é
+inline float testOpt04_Type3_After3(const float value, const float div)
+{
+	//const float rcp = 1.f / div;
+	//return value * rcp;
+	//‹t”Zo
+	const __m128 _div_m128 = _mm_set1_ps(div);
+	__m128 _rcp_m128 = _mm_rcp_ss(_div_m128);
+	//ƒjƒ…[ƒgƒ“–@‚Å‹t”‚Ì¸“x‚ğ‚‚ß‚é
+	const __m128 _2_m128 = _mm_set1_ps(2.f);
+	_rcp_m128 = _mm_mul_ss(_rcp_m128, _mm_sub_ss(_2_m128, _mm_mul_ss(_div_m128, _rcp_m128)));
+	_rcp_m128 = _mm_mul_ss(_rcp_m128, _mm_sub_ss(_2_m128, _mm_mul_ss(_div_m128, _rcp_m128)));
+	//æZ
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _result_m128 = _mm_mul_ss(_value_m128, _rcp_m128);
+	//ŒvZŒ‹‰Êæ“¾
+	float result;
+	_mm_store_ss(&result, _result_m128);
+	return result;
+}
+#endif
+
+#if 0
+//yƒ^ƒCƒv‚SzÅ“K‰»‘O
+float testOpt04_Type4_Before(const float value);
+//yƒ^ƒCƒv‚SzÅ“K‰»Œã
+float testOpt04_Type4_After(const float value);
+#else
+//yƒ^ƒCƒv‚SzÅ“K‰»‘O
+//¦•½•ûª
+#include <xmmintrin.h>//SSE1
+inline float testOpt04_Type4_Before(const float value)
+{
+	//return sqrt(value);
+	//•½•ûªZo
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _sqrt_m128 = _mm_sqrt_ss(_value_m128);
+	//ŒvZŒ‹‰Êæ“¾
+	float sqrt;
+	_mm_store_ss(&sqrt, _sqrt_m128);
+	return sqrt;
+}
+
+//yƒ^ƒCƒv‚SzÅ“K‰»Œã1
+//¦•½•ûª‚Ì‹t”‚ğg—p‚µ‚½•½•ûª
+inline float testOpt04_Type4_After1(const float value)
+{
+	//const float rsqrt = rsqrt(value);
+	//return value * rsqrt;
+	//•½•ûª‚Ì‹t”Zo
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	const __m128 _rsqrt_m128 = _mm_rsqrt_ss(_value_m128);
+	//æZ
+	const __m128 _sqrt_m128 = _mm_mul_ss(_value_m128, _rsqrt_m128);
+	//ŒvZŒ‹‰Êæ“¾
+	float sqrt;
+	_mm_store_ss(&sqrt, _sqrt_m128);
+	return sqrt;
+}
+
+//yƒ^ƒCƒv‚SzÅ“K‰»Œã2
+//¦•½•ûª‚Ì‹t”‚ğg—p‚µ‚½•½•ûª
+//¦ƒjƒ…[ƒgƒ“–@‚Å‹t”‚Ì¸“x‚ğ‚‚ß‚é
+inline float testOpt04_Type4_After2(const float value)
+{
+	//const float rsqrt = rsqrt(value);
+	//return value * rsqrt;
+	//•½•ûª‚Ì‹t”Zo
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	__m128 _rsqrt_m128 = _mm_rsqrt_ss(_value_m128);
+	//ƒjƒ…[ƒgƒ“–@‚Å‹t”‚Ì¸“x‚ğ‚‚ß‚é
+	//ƒjƒ…[ƒgƒ“–@‚É‚æ‚é‘Q‰»®Frsqrt = rsqrt * (3 - value * rsqrt * rsqrt) * 0.5f
+	//  •½•ûª‚Ì‘Q‰»®:      x[i+1] = (x[i] + value / x[i]) * 0.5
+	//  •½•ûª‚Ì‹t”‚Ì‘Q‰»®:x[i+1] = x[i] * (3 - value * x[i] ^ 2) * 0.5
+	const __m128 _3_m128 = _mm_set1_ps(3.f);
+	const __m128 _05_m128 = _mm_set1_ps(0.5f);
+	_rsqrt_m128 = _mm_mul_ss(_mm_mul_ss(_rsqrt_m128, _mm_sub_ss(_3_m128, _mm_mul_ss(_value_m128, _mm_mul_ss(_rsqrt_m128, _rsqrt_m128)))), _05_m128);
+	//æZ
+	const __m128 _sqrt_m128 = _mm_mul_ss(_value_m128, _rsqrt_m128);
+	//ŒvZŒ‹‰Êæ“¾
+	float sqrt;
+	_mm_store_ss(&sqrt, _sqrt_m128);
+	return sqrt;
+}
+
+//yƒ^ƒCƒv‚SzÅ“K‰»Œã3
+//¦•½•ûª‚Ì‹t”‚ğg—p‚µ‚½•½•ûª
+//¦ƒjƒ…[ƒgƒ“–@‚ğ2‰ñŒJ‚è•Ô‚µA‚æ‚è‹t”‚Ì¸“x‚ğ‚‚ß‚é
+inline float testOpt04_Type4_After3(const float value)
+{
+	//const float rsqrt = rsqrt(value);
+	//return value * rsqrt;
+	//•½•ûª‚Ì‹t”Zo
+	const __m128 _value_m128 = _mm_set1_ps(value);
+	__m128 _rsqrt_m128 = _mm_rsqrt_ss(_value_m128);
+	//ƒjƒ…[ƒgƒ“–@‚Å‹t”‚Ì¸“x‚ğ‚‚ß‚é
+	const __m128 _3_m128 = _mm_set1_ps(3.f);
+	const __m128 _05_m128 = _mm_set1_ps(0.5f);
+	_rsqrt_m128 = _mm_mul_ss(_mm_mul_ss(_rsqrt_m128, _mm_sub_ss(_3_m128, _mm_mul_ss(_value_m128, _mm_mul_ss(_rsqrt_m128, _rsqrt_m128)))), _05_m128);
+	_rsqrt_m128 = _mm_mul_ss(_mm_mul_ss(_rsqrt_m128, _mm_sub_ss(_3_m128, _mm_mul_ss(_value_m128, _mm_mul_ss(_rsqrt_m128, _rsqrt_m128)))), _05_m128);
+	//æZ
+	const __m128 _sqrt_m128 = _mm_mul_ss(_value_m128, _rsqrt_m128);
+	//ŒvZŒ‹‰Êæ“¾
+	float sqrt;
+	_mm_store_ss(&sqrt, _sqrt_m128);
+	return sqrt;
+}
+#endif
 
 //----------------------------------------
 //Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
 
 //yƒ^ƒCƒv‚PzÅ“K‰»‘O
-int testOpt05_Type1_Before(const int val,
-                           int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
+int testOpt05_Type1_Before(int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
 						   int& d2, int& d3, int& d4, int& d5, int& d10, int& d16, int& d24,
 						   int& r2, int& r3, int& r4, int& r5, int& r10, int& r16, int& r24);
 //yƒ^ƒCƒv‚PzÅ“K‰»Œã
-int testOpt05_Type1_After(const int val,
-                          int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
+int testOpt05_Type1_After(int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
 						  int& d2, int& d3, int& d4, int& d5, int& d10, int& d16, int& d24,
 						  int& r2, int& r3, int& r4, int& r5, int& r10, int& r16, int& r24);
 

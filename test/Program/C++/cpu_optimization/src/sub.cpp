@@ -704,49 +704,144 @@ void initOpt04(dataOpt04_t& data)
 	}
 }
 
+#if 0//ƒCƒ“ƒ‰ƒCƒ“ŠÖ”‰»
 //yƒ^ƒCƒv‚PzÅ“K‰»‘O
+//¦’è”‚É‚æ‚éœZ
+float testOpt04_Type1_Before(const float value)
+{
+	//...
+}
+
+//yƒ^ƒCƒv‚PzÅ“K‰»Œã
+//¦’è”‚É‚æ‚éœZ‚ğæZ‚É•ÏX
+float testOpt04_Type1_After(const float value)
+{
+	//...
+}
+#endif
+
+//yƒ^ƒCƒv‚QzÅ“K‰»‘O
 //¦‘f’¼‚È•‚“®¬”“_ƒf[ƒ^‰‰ZA‚¨‚æ‚ÑAœZ
-void testOpt04_Type1_Before(dataOpt04_t& data)
+void testOpt04_Type2_Before(dataOpt04_t& data)
 {
 	//‡Œv’lZo
 	float sum = 0.f;
-	const dataOpt04_t::elem_t* end = data.elems + extentof(data.elems);
-	for (dataOpt04_t::elem_t* elem_p = data.elems; elem_p < end; ++elem_p)
+	for (std::size_t i = 0; i < extentof(data.elems); ++i)
+	{
+		dataOpt04_t::elem_t* elem_p = &data.elems[i];
 		sum += static_cast<float>(elem_p->value);
+	}
 	//Še—v‘f‚Ì•ª•z”ä—¦‚ğZo
-	for (dataOpt04_t::elem_t* elem_p = data.elems; elem_p < end; ++elem_p)
+	for (std::size_t i = 0; i < extentof(data.elems); ++i)
+	{
+		dataOpt04_t::elem_t* elem_p = &data.elems[i];
 		elem_p->ratio = static_cast<float>(elem_p->value) / sum;
+	}
 }
 
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚P
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚P
 //¦œZ‚ğæZ‚É•ÏX
-void testOpt04_Type1_After1(dataOpt04_t& data)
+void testOpt04_Type2_After1(dataOpt04_t& data)
 {
 	//‡Œv’lZo
 	float sum = 0.f;
-	const dataOpt04_t::elem_t* end = data.elems + extentof(data.elems);
-	for (dataOpt04_t::elem_t* elem_p = data.elems; elem_p < end; ++elem_p)
+	for (std::size_t i = 0; i < extentof(data.elems); ++i)
+	{
+		dataOpt04_t::elem_t* elem_p = &data.elems[i];
 		sum += static_cast<float>(elem_p->value);
+	}
 	//Še—v‘f‚Ì•ª•z”ä—¦‚ğZo
-	const float base_ratio = 1.f / sum;
-	for (dataOpt04_t::elem_t* elem_p = data.elems; elem_p < end; ++elem_p)
-		elem_p->ratio = static_cast<float>(elem_p->value) * base_ratio;
+	const float mul = 1.f / sum;
+	for (std::size_t i = 0; i < extentof(data.elems); ++i)
+	{
+		dataOpt04_t::elem_t* elem_p = &data.elems[i];
+		elem_p->ratio = static_cast<float>(elem_p->value) * mul;
+	}
 }
 
-//yƒ^ƒCƒv‚PzÅ“K‰»Œã‚Q
-//¦•‚“®¬”“_‰‰Z‚Ì”‚ğŒ¸‚ç‚·i®”‰‰Z‚Ì‚Ü‚Ü‚Å‚æ‚¢‚Æ‚±‚ë‚Í®”‰‰Z‚·‚éj
-void testOpt04_Type1_After2(dataOpt04_t& data)
+//yƒ^ƒCƒv‚QzÅ“K‰»Œã‚Q
+//¦•‚“®¬”“_‰‰Z‚Ì”‚ğŒ¸‚ç‚·i®”‰‰Z‚Ì‚Ü‚Ü‚Å‚æ‚¢‚Æ‚±‚ë‚Í®”‰‰Z‚É‚·‚éj
+void testOpt04_Type2_After2(dataOpt04_t& data)
 {
 	//‡Œv’lZo
 	int sum = 0;
-	const dataOpt04_t::elem_t* end = data.elems + extentof(data.elems);
-	for (dataOpt04_t::elem_t* elem_p = data.elems; elem_p < end; ++elem_p)
+	for (std::size_t i = 0; i < extentof(data.elems); ++i)
+	{
+		dataOpt04_t::elem_t* elem_p = &data.elems[i];
 		sum += elem_p->value;
+	}
 	//Še—v‘f‚Ì•ª•z”ä—¦‚ğZo
-	const float base_ratio = 1.f / static_cast<float>(sum);
-	for (dataOpt04_t::elem_t* elem_p = data.elems; elem_p < end; ++elem_p)
-		elem_p->ratio = static_cast<float>(elem_p->value) * base_ratio;
+	const float mul = 1.f / static_cast<float>(sum);
+	for (std::size_t i = 0; i < extentof(data.elems); ++i)
+	{
+		dataOpt04_t::elem_t* elem_p = &data.elems[i];
+		elem_p->ratio = static_cast<float>(elem_p->value) * mul;
+	}
 }
+
+#if 0//ƒCƒ“ƒ‰ƒCƒ“ŠÖ”‰»
+//yƒ^ƒCƒv‚RzÅ“K‰»‘O
+//¦•Ï”‚É‚æ‚éœZ
+float testOpt04_Type3_Before(const float value, const float div)
+{
+	//...
+}
+
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã1
+//¦•Ï”‚É‚æ‚éœZ‚ğæZ‚É•ÏX
+float testOpt04_Type3_After1(const float value, const float div)
+{
+	//...
+}
+
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã2
+//¦•Ï”‚É‚æ‚éœZ‚ğæZ‚É•ÏX
+//¦ƒjƒ…[ƒgƒ“–@‚Å‹t”‚Ì¸“x‚ğ‚‚ß‚é
+float testOpt04_Type3_After2(const float value, const float div)
+{
+	//...
+}
+
+//yƒ^ƒCƒv‚RzÅ“K‰»Œã3
+//¦•Ï”‚É‚æ‚éœZ‚ğæZ‚É•ÏX
+//¦ƒjƒ…[ƒgƒ“–@‚ğ2‰ñŒJ‚è•Ô‚µA‚æ‚è‹t”‚Ì¸“x‚ğ‚‚ß‚é
+float testOpt04_Type3_After3(const float value, const float div)
+{
+	//...
+}
+#endif
+
+#if 0//ƒCƒ“ƒ‰ƒCƒ“ŠÖ”‰»
+//yƒ^ƒCƒv‚SzÅ“K‰»‘O
+//¦•½•ûª
+float testOpt04_Type4_Before(const float value)
+{
+	//...
+}
+
+//yƒ^ƒCƒv‚SzÅ“K‰»Œã1
+//¦•½•ûª‚Ì‹t”‚ğg—p‚µ‚½•½•ûª
+float testOpt04_Type4_After1(const float value)
+{
+	//...
+}
+
+//yƒ^ƒCƒv‚SzÅ“K‰»Œã2
+//¦•½•ûª‚Ì‹t”‚ğg—p‚µ‚½•½•ûª
+//¦ƒjƒ…[ƒgƒ“–@‚Å‹t”‚Ì¸“x‚ğ‚‚ß‚é
+float testOpt04_Type4_After2(const float value)
+{
+	//...
+}
+
+//yƒ^ƒCƒv‚SzÅ“K‰»Œã3
+//¦•½•ûª‚Ì‹t”‚ğg—p‚µ‚½•½•ûª
+//¦ƒjƒ…[ƒgƒ“–@‚ğ2‰ñŒJ‚è•Ô‚µA‚æ‚è‹t”‚Ì¸“x‚ğ‚‚ß‚é
+float testOpt04_Type4_After3(const float value)
+{
+	//...
+}
+#endif
 
 //----------------------------------------
 //Å“K‰»‡DFæZ^œZ‚Ì—}§FƒVƒtƒg‰‰Z‚â‰ÁŒ¸Z‚É•ÏX
@@ -758,32 +853,31 @@ template<int N>
 inline int intDiv(const int val){ return val / N; }
 template<int N>
 inline int intMod(const int val){ return val % N; }
-int testOpt05_Type1_Before(const int val, 
-                           int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
+int testOpt05_Type1_Before(int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
 						   int& d2, int& d3, int& d4, int& d5, int& d10, int& d16, int& d24,
 						   int& r2, int& r3, int& r4, int& r5, int& r10, int& r16, int& r24)
 {
-	m2 = intMul<2>(val);
-	m3 = intMul<3>(val);
-	m4 = intMul<4>(val);
-	m5 = intMul<5>(val);
-	m10 = intMul<10>(val);
-	m16 = intMul<16>(val);
-	m24 = intMul<24>(val);
-	d2 = intDiv<2>(val);
-	d3 = intDiv<3>(val);
-	d4 = intDiv<4>(val);
-	d5 = intDiv<5>(val);
-	d10 = intDiv<10>(val);
-	d16 = intDiv<16>(val);
-	d24 = intDiv<24>(val);
-	r2 = intMod<2>(val);
-	r3 = intMod<3>(val);
-	r4 = intMod<4>(val);
-	r5 = intMod<5>(val);
-	r10 = intMod<10>(val);
-	r16 = intMod<16>(val);
-	r24 = intMod<24>(val);
+	m2  = intMul< 2>(m2 );//val *  2
+	m3  = intMul< 3>(m3 );//val *  3
+	m4  = intMul< 4>(m4 );//val *  4
+	m5  = intMul< 5>(m5 );//val *  5
+	m10 = intMul<10>(m10);//val * 10
+	m16 = intMul<16>(m16);//val * 16
+	m24 = intMul<24>(m24);//val * 24
+	d2  = intDiv< 2>(d2 );//val /  2
+	d3  = intDiv< 3>(d3 );//val /  3
+	d4  = intDiv< 4>(d4 );//val /  4
+	d5  = intDiv< 5>(d5 );//val /  5
+	d10 = intDiv<10>(d10);//val / 10
+	d16 = intDiv<16>(d16);//val / 16
+	d24 = intDiv<24>(d24);//val / 24
+	r2  = intMod< 2>(r2 );//val %  2
+	r3  = intMod< 3>(r3 );//val %  3
+	r4  = intMod< 4>(r4 );//val %  4
+	r5  = intMod< 5>(r5 );//val %  5
+	r10 = intMod<10>(r10);//val % 10
+	r16 = intMod<16>(r16);//val % 16
+	r24 = intMod<24>(r24);//val % 24
 	return m2 + m3 + m4 + m5 + m10 + m16 + m24 +
 	       d2 + d3 + d4 + d5 + d10 + d16 + d24 + 
 	       r2 + r3 + r4 + r5 + r10 + r16 + r24;
@@ -791,30 +885,30 @@ int testOpt05_Type1_Before(const int val,
 //yƒ^ƒCƒv‚PzÅ“K‰»Œã
 #include <iostream>
 #include <exception>
-//¦æZ‚ÌƒŒƒCƒeƒ“ƒV‚ğ5‚Æ‰¼’è‚µAƒVƒtƒg‰‰Z‚ğ1‰ÁZ‚ğ1‚Æ‚µ‚ÄAŒv5–¢–‚È‚çƒVƒtƒg‰‰Z‚Æ‰ÁZ‚É“WŠJ‚µ‚½“Áê‰»‚ğ“K—p‚·‚é
+//¦æZ‚ÌƒŒƒCƒeƒ“ƒV‚ğ5‚Æ‰¼’è‚µAƒVƒtƒg‰‰Z‚ğ1A‰ÁZ‚ğ1‚Æ‚µ‚ÄAŒv5–¢–‚È‚çƒVƒtƒg‰‰Z‚Æ‰ÁZ‚É“WŠJ‚µ‚½“Áê‰»‚ğ“K—p‚·‚é
 template<int N> inline int intMulOpt(const int val){ return val * N; }
-template<>      inline int intMulOpt<0>(const int val){ return 0; }
-template<>      inline int intMulOpt<1>(const int val){ return val; }
-template<>      inline int intMulOpt<2>(const int val){ return val << 1; }
-template<>      inline int intMulOpt<3>(const int val){ return (val << 1) + val; }
-template<>      inline int intMulOpt<4>(const int val){ return val << 2; }
-template<>      inline int intMulOpt<5>(const int val){ return (val << 2) + val; }
-template<>      inline int intMulOpt<6>(const int val){ return (val << 2) + (val << 1); }
-template<>      inline int intMulOpt<7>(const int val){ return (val << 2) + (val << 1) + val; }
-template<>      inline int intMulOpt<8>(const int val){ return val << 3; }
-template<>      inline int intMulOpt<9>(const int val){ return (val << 3) + val; }
-template<>      inline int intMulOpt<10>(const int val){ return (val << 3) + (val << 1); }
-template<>      inline int intMulOpt<11>(const int val){ return (val << 3) + (val << 1) + val; }
-template<>      inline int intMulOpt<12>(const int val){ return (val << 3) + (val << 2); }
-template<>      inline int intMulOpt<13>(const int val){ return (val << 3) + (val << 2) + val; }
-template<>      inline int intMulOpt<16>(const int val){ return val << 4; }
-template<>      inline int intMulOpt<20>(const int val){ return (val << 4) + (val << 2); }
-template<>      inline int intMulOpt<24>(const int val){ return (val << 4) + (val << 3); }
-template<>      inline int intMulOpt<32>(const int val){ return val << 5; }
-template<>      inline int intMulOpt<64>(const int val){ return val << 6; }
-template<>      inline int intMulOpt<128>(const int val){ return val << 7; }
-template<>      inline int intMulOpt<256>(const int val){ return val << 8; }
-template<>      inline int intMulOpt<512>(const int val){ return val << 9; }
+template<>      inline int intMulOpt<   0>(const int val){ return 0; }
+template<>      inline int intMulOpt<   1>(const int val){ return val; }
+template<>      inline int intMulOpt<   2>(const int val){ return val << 1; }
+template<>      inline int intMulOpt<   3>(const int val){ return (val << 1) + val; }
+template<>      inline int intMulOpt<   4>(const int val){ return val << 2; }
+template<>      inline int intMulOpt<   5>(const int val){ return (val << 2) + val; }
+template<>      inline int intMulOpt<   6>(const int val){ return (val << 2) + (val << 1); }
+template<>      inline int intMulOpt<   7>(const int val){ return (val << 2) + (val << 1) + val; }
+template<>      inline int intMulOpt<   8>(const int val){ return val << 3; }
+template<>      inline int intMulOpt<   9>(const int val){ return (val << 3) + val; }
+template<>      inline int intMulOpt<  10>(const int val){ return (val << 3) + (val << 1); }
+template<>      inline int intMulOpt<  11>(const int val){ return (val << 3) + (val << 1) + val; }
+template<>      inline int intMulOpt<  12>(const int val){ return (val << 3) + (val << 2); }
+template<>      inline int intMulOpt<  13>(const int val){ return (val << 3) + (val << 2) + val; }
+template<>      inline int intMulOpt<  16>(const int val){ return val << 4; }
+template<>      inline int intMulOpt<  20>(const int val){ return (val << 4) + (val << 2); }
+template<>      inline int intMulOpt<  24>(const int val){ return (val << 4) + (val << 3); }
+template<>      inline int intMulOpt<  32>(const int val){ return val << 5; }
+template<>      inline int intMulOpt<  64>(const int val){ return val << 6; }
+template<>      inline int intMulOpt< 128>(const int val){ return val << 7; }
+template<>      inline int intMulOpt< 256>(const int val){ return val << 8; }
+template<>      inline int intMulOpt< 512>(const int val){ return val << 9; }
 template<>      inline int intMulOpt<1024>(const int val){ return val << 10; }
 //template<int N> inline int intDivOpt(const int val){ return (static_cast<long long>(val) * (0xffffffffll / static_cast<long long>(N)) + 32) >> 32; }//‹t”‚ğ’è”‰»‚µ‚Ä®”‰‰Z
 //template<int N> constexpr int getReciprocalDivisor(){ return static_cast<int>(0xffffffffll / static_cast<long long>(N)); }
@@ -833,17 +927,17 @@ template<>      inline int intMulOpt<1024>(const int val){ return val << 10; }
 //}
 //template<int N> inline int intDivOpt(const int val){ return static_cast<int>(static_cast<float>(val) * (1.f / (static_cast<float>(N)))); }//‹t”‚ğ’è”‰»‚µ‚Ä•‚“®¬”“_‰‰Z‚µ‚½Œã‚É®”‰»
 template<int N> inline int intDivOpt(const int val){ return val / N; }//‚»‚Ì‚Ü‚Ü‰‰Z
-template<>      inline int intDivOpt<0>(const int val){ throw std::overflow_error("Integer division by zero");	return 0; }
-template<>      inline int intDivOpt<1>(const int val){ return val; }
-template<>      inline int intDivOpt<2>(const int val){ return val >> 1; }
-template<>      inline int intDivOpt<4>(const int val){ return val >> 2; }
-template<>      inline int intDivOpt<8>(const int val){ return val >> 3; }
-template<>      inline int intDivOpt<16>(const int val){ return val >> 4; }
-template<>      inline int intDivOpt<32>(const int val){ return val >> 5; }
-template<>      inline int intDivOpt<64>(const int val){ return val >> 6; }
-template<>      inline int intDivOpt<128>(const int val){ return val >> 7; }
-template<>      inline int intDivOpt<256>(const int val){ return val >> 8; }
-template<>      inline int intDivOpt<512>(const int val){ return val >> 9; }
+template<>      inline int intDivOpt<   0>(const int val){ throw std::overflow_error("Integer division by zero");	return 0; }
+template<>      inline int intDivOpt<   1>(const int val){ return val; }
+template<>      inline int intDivOpt<   2>(const int val){ return val >>  1; }
+template<>      inline int intDivOpt<   4>(const int val){ return val >>  2; }
+template<>      inline int intDivOpt<   8>(const int val){ return val >>  3; }
+template<>      inline int intDivOpt<  16>(const int val){ return val >>  4; }
+template<>      inline int intDivOpt<  32>(const int val){ return val >>  5; }
+template<>      inline int intDivOpt<  64>(const int val){ return val >>  6; }
+template<>      inline int intDivOpt< 128>(const int val){ return val >>  7; }
+template<>      inline int intDivOpt< 256>(const int val){ return val >>  8; }
+template<>      inline int intDivOpt< 512>(const int val){ return val >>  9; }
 template<>      inline int intDivOpt<1024>(const int val){ return val >> 10; }
 //template<int N> inline int intModOpt(const int val){ return (((static_cast<long long>(val) * (0xffffffffll / static_cast<long long>(N)) + 32) & 0xffffffffll) * static_cast<long long>(N)) >> 32; }//‹t”‚ğ’è”‰»‚µ‚Ä®”‰‰Z
 //template<int N> inline int intModOpt(const int val)//‹t”‚ğ’è”‰»‚µ‚Ä®”‰‰ZiƒCƒ“ƒ‰ƒCƒ“ƒAƒZƒ“ƒuƒ‰”Åj
@@ -862,44 +956,43 @@ template<>      inline int intDivOpt<1024>(const int val){ return val >> 10; }
 //}
 //template<int N> inline int intModOpt(const int val){ return val - static_cast<int>(static_cast<float>(val)* (1.f / (static_cast<float>(N)))) * N; }//‹t”‚ğ’è”‰»‚µ‚Ä•‚“®¬”“_‰‰Z‚µ‚½Œã‚É®”‰»
 template<int N> inline int intModOpt(const int val){ return val % N; }//‚»‚Ì‚Ü‚Ü‰‰Z
-template<>      inline int intModOpt<0>(const int val){ throw std::overflow_error("Integer division by zero");	return 0; }
-template<>      inline int intModOpt<1>(const int val){ return 0; }
-template<>      inline int intModOpt<2>(const int val){ return val & (2 - 1); }
-template<>      inline int intModOpt<4>(const int val){ return val & (4 - 1); }
-template<>      inline int intModOpt<8>(const int val){ return val & (8 - 1); }
-template<>      inline int intModOpt<16>(const int val){ return val & (16 - 1); }
-template<>      inline int intModOpt<32>(const int val){ return val & (32 - 1); }
-template<>      inline int intModOpt<64>(const int val){ return val & (64 - 1); }
-template<>      inline int intModOpt<128>(const int val){ return val & (128 - 1); }
-template<>      inline int intModOpt<256>(const int val){ return val & (256 - 1); }
-template<>      inline int intModOpt<512>(const int val){ return val & (512 - 1); }
+template<>      inline int intModOpt<   0>(const int val){ throw std::overflow_error("Integer division by zero");	return 0; }
+template<>      inline int intModOpt<   1>(const int val){ return 0; }
+template<>      inline int intModOpt<   2>(const int val){ return val & (   2 - 1); }
+template<>      inline int intModOpt<   4>(const int val){ return val & (   4 - 1); }
+template<>      inline int intModOpt<   8>(const int val){ return val & (   8 - 1); }
+template<>      inline int intModOpt<  16>(const int val){ return val & (  16 - 1); }
+template<>      inline int intModOpt<  32>(const int val){ return val & (  32 - 1); }
+template<>      inline int intModOpt<  64>(const int val){ return val & (  64 - 1); }
+template<>      inline int intModOpt< 128>(const int val){ return val & ( 128 - 1); }
+template<>      inline int intModOpt< 256>(const int val){ return val & ( 256 - 1); }
+template<>      inline int intModOpt< 512>(const int val){ return val & ( 512 - 1); }
 template<>      inline int intModOpt<1024>(const int val){ return val & (1024 - 1); }
-int testOpt05_Type1_After(const int val,
-                          int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
+int testOpt05_Type1_After(int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
 						  int& d2, int& d3, int& d4, int& d5, int& d10, int& d16, int& d24,
 						  int& r2, int& r3, int& r4, int& r5, int& r10, int& r16, int& r24)
 {
-	m2 = intMulOpt<2>(val);
-	m3 = intMulOpt<3>(val);
-	m4 = intMulOpt<4>(val);
-	m5 = intMulOpt<5>(val);
-	m10 = intMulOpt<10>(val);
-	m16 = intMulOpt<16>(val);
-	m24 = intMulOpt<24>(val);
-	d2 = intDivOpt<2>(val);
-	d3 = intDivOpt<3>(val);
-	d4 = intDivOpt<4>(val);
-	d5 = intDivOpt<5>(val);
-	d10 = intDivOpt<10>(val);
-	d16 = intDivOpt<16>(val);
-	d24 = intDivOpt<24>(val);
-	r2 = intModOpt<2>(val);
-	r3 = intModOpt<3>(val);
-	r4 = intModOpt<4>(val);
-	r5 = intModOpt<5>(val);
-	r10 = intModOpt<10>(val);
-	r16 = intModOpt<16>(val);
-	r24 = intModOpt<24>(val);
+	m2  = intMulOpt< 2>(m2 );//val *  2
+	m3  = intMulOpt< 3>(m3 );//val *  3
+	m4  = intMulOpt< 4>(m4 );//val *  4
+	m5  = intMulOpt< 5>(m5 );//val *  5
+	m10 = intMulOpt<10>(m10);//val * 10
+	m16 = intMulOpt<16>(m16);//val * 16
+	m24 = intMulOpt<24>(m24);//val * 24
+	d2  = intDivOpt< 2>(d2 );//val /  2
+	d3  = intDivOpt< 3>(d3 );//val /  3
+	d4  = intDivOpt< 4>(d4 );//val /  4
+	d5  = intDivOpt< 5>(d5 );//val /  5
+	d10 = intDivOpt<10>(d10);//val / 10
+	d16 = intDivOpt<16>(d16);//val / 16
+	d24 = intDivOpt<24>(d24);//val / 24
+	r2  = intModOpt< 2>(r2 );//val %  2
+	r3  = intModOpt< 3>(r3 );//val %  3
+	r4  = intModOpt< 4>(r4 );//val %  4
+	r5  = intModOpt< 5>(r5 );//val %  5
+	r10 = intModOpt<10>(r10);//val % 10
+	r16 = intModOpt<16>(r16);//val % 16
+	r24 = intModOpt<24>(r24);//val % 24
 	return m2 + m3 + m4 + m5 + m10 + m16 + m24 +
 	       d2 + d3 + d4 + d5 + d10 + d16 + d24 +
 	       r2 + r3 + r4 + r5 + r10 + r16 + r24;

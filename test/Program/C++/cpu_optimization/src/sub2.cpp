@@ -5,7 +5,7 @@
 void commonProc_testOpt03_Type3_Before(int* values, std::size_t n, const int find, void(*observer)(int&))
 {
 	//配列から値を検索し、見つけたらオブザーバーを呼び出す
-	for (int i = 0; i < n; ++i)
+	for (std::size_t i = 0; i < n; ++i)
 	{
 		int& value = values[i];
 		if (value == find)
@@ -18,7 +18,7 @@ void commonProc_testOpt03_Type3_Before(int* values, std::size_t n, const int fin
 void commonProc_testOpt03_Type3_AppendixB(int* values, std::size_t n, const int find, std::function<void(int&)> observer)
 {
 	//配列から値を検索し、見つけたらオブザーバーを呼び出す
-	for (int i = 0; i < n; ++i)
+	for (std::size_t i = 0; i < n; ++i)
 	{
 		int& value = values[i];
 		if (value == find)

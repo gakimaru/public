@@ -1,287 +1,192 @@
-   407: //【タイプ１】最適化後
-   408: #include <iostream>
-   409: #include <exception>
-   410: //※乗算のレイテンシを5と仮定し、シフト演算を1加算を1として、計5未満ならシフト演算と加算に展開した特殊化を適用する
-   411: template<int N> inline int intMulOpt(const int val){ return val * N; }
-   412: template<>      inline int intMulOpt<0>(const int val){ return 0; }
-   413: template<>      inline int intMulOpt<1>(const int val){ return val; }
-   414: template<>      inline int intMulOpt<2>(const int val){ return val << 1; }
-   415: template<>      inline int intMulOpt<3>(const int val){ return (val << 1) + val; }
-   416: template<>      inline int intMulOpt<4>(const int val){ return val << 2; }
-   417: template<>      inline int intMulOpt<5>(const int val){ return (val << 2) + val; }
-   418: template<>      inline int intMulOpt<6>(const int val){ return (val << 2) + (val << 1); }
-   419: template<>      inline int intMulOpt<7>(const int val){ return (val << 2) + (val << 1) + val; }
-   420: template<>      inline int intMulOpt<8>(const int val){ return val << 3; }
-   421: template<>      inline int intMulOpt<9>(const int val){ return (val << 3) + val; }
-   422: template<>      inline int intMulOpt<10>(const int val){ return (val << 3) + (val << 1); }
-   423: template<>      inline int intMulOpt<11>(const int val){ return (val << 3) + (val << 1) + val; }
-   424: template<>      inline int intMulOpt<12>(const int val){ return (val << 3) + (val << 2); }
-   425: template<>      inline int intMulOpt<13>(const int val){ return (val << 3) + (val << 2) + val; }
-   426: template<>      inline int intMulOpt<16>(const int val){ return val << 4; }
-   427: template<>      inline int intMulOpt<20>(const int val){ return (val << 4) + (val << 2); }
-   428: template<>      inline int intMulOpt<24>(const int val){ return (val << 4) + (val << 3); }
-   429: template<>      inline int intMulOpt<32>(const int val){ return val << 5; }
-   430: template<>      inline int intMulOpt<64>(const int val){ return val << 6; }
-   431: template<>      inline int intMulOpt<128>(const int val){ return val << 7; }
-   432: template<>      inline int intMulOpt<256>(const int val){ return val << 8; }
-   433: template<>      inline int intMulOpt<512>(const int val){ return val << 9; }
-   434: template<>      inline int intMulOpt<1024>(const int val){ return val << 10; }
-   435: //template<int N> inline int intDivOpt(const int val){ return (static_cast<long long>(val) * (0xffffffffll / static_cast<long long>(N)) + 32) >> 32; }//逆数を定数化して整数演算
-   436: //template<int N> constexpr int getReciprocalDivisor(){ return static_cast<int>(0xffffffffll / static_cast<long long>(N)); }
-   437: //template<int N> inline int intDivOpt(const int val)//逆数を定数化して整数演算（インラインアセンブラ版）
-   438: //{
-   439: //	//return (static_cast<long long>(val) * (0xffffffffll / static_cast<long long>(N)) + 32) >> 32;
-   440: //	const int rec = getReciprocalDivisor<N>();
-   441: //	__asm
-   442: //	{
-   443: //		mov     eax, rec	//eax ← rec
-   444: //		mul     val			//edx:eax ← eax * val
-   445: //		add     eax, 32		//eax ← eax + 32
-   446: //		adc     edx, 0		//edx ← edx + 0 + キャリーフラグ
-   447: //		mov     eax, edx	//eax ← edx ※戻り値
-   448: //	}
-   449: //}
-   450: //template<int N> inline int intDivOpt(const int val){ return static_cast<int>(static_cast<float>(val) * (1.f / (static_cast<float>(N)))); }//逆数を定数化して浮動小数点演算した後に整数化
-   451: template<int N> inline int intDivOpt(const int val){ return val / N; }//そのまま演算
-   452: template<>      inline int intDivOpt<0>(const int val){ throw std::overflow_error("Integer division by zero");	return 0; }
-   453: template<>      inline int intDivOpt<1>(const int val){ return val; }
-   454: template<>      inline int intDivOpt<2>(const int val){ return val >> 1; }
-   455: template<>      inline int intDivOpt<4>(const int val){ return val >> 2; }
-   456: template<>      inline int intDivOpt<8>(const int val){ return val >> 3; }
-   457: template<>      inline int intDivOpt<16>(const int val){ return val >> 4; }
-   458: template<>      inline int intDivOpt<32>(const int val){ return val >> 5; }
-   459: template<>      inline int intDivOpt<64>(const int val){ return val >> 6; }
-   460: template<>      inline int intDivOpt<128>(const int val){ return val >> 7; }
-   461: template<>      inline int intDivOpt<256>(const int val){ return val >> 8; }
-   462: template<>      inline int intDivOpt<512>(const int val){ return val >> 9; }
-   463: template<>      inline int intDivOpt<1024>(const int val){ return val >> 10; }
-   464: //template<int N> inline int intModOpt(const int val){ return (((static_cast<long long>(val) * (0xffffffffll / static_cast<long long>(N)) + 32) & 0xffffffffll) * static_cast<long long>(N)) >> 32; }//逆数を定数化して整数演算
-   465: //template<int N> inline int intModOpt(const int val)//逆数を定数化して整数演算（インラインアセンブラ版）
-   466: //{
-   467: //	//return (((static_cast<long long>(val) * (0xffffffffll / static_cast<long long>(N)) + 32) & 0xffffffffll) * static_cast<long long>(N)) >> 32;
-   468: //	const int rec = getReciprocalDivisor<N>();
-   469: //	const int n = N;
-   470: //	__asm
-   471: //	{
-   472: //		mov     eax, rec	//eax ← rec
-   473: //		mul     val			//edx:eax ← eax * val
-   474: //		add     eax, 32		//eax ← eax + 32
-   475: //		mul     n           //edx:eax ← eax * N
-   476: //		mov     eax, edx	//eax ← edx ※戻り値
-   477: //	}
-   478: //}
-   479: //template<int N> inline int intModOpt(const int val){ return val - static_cast<int>(static_cast<float>(val)* (1.f / (static_cast<float>(N)))) * N; }//逆数を定数化して浮動小数点演算した後に整数化
-   480: template<int N> inline int intModOpt(const int val){ return val % N; }//そのまま演算
-   481: template<>      inline int intModOpt<0>(const int val){ throw std::overflow_error("Integer division by zero");	return 0; }
-   482: template<>      inline int intModOpt<1>(const int val){ return 0; }
-   483: template<>      inline int intModOpt<2>(const int val){ return val & (2 - 1); }
-   484: template<>      inline int intModOpt<4>(const int val){ return val & (4 - 1); }
-   485: template<>      inline int intModOpt<8>(const int val){ return val & (8 - 1); }
-   486: template<>      inline int intModOpt<16>(const int val){ return val & (16 - 1); }
-   487: template<>      inline int intModOpt<32>(const int val){ return val & (32 - 1); }
-   488: template<>      inline int intModOpt<64>(const int val){ return val & (64 - 1); }
-   489: template<>      inline int intModOpt<128>(const int val){ return val & (128 - 1); }
-   490: template<>      inline int intModOpt<256>(const int val){ return val & (256 - 1); }
-   491: template<>      inline int intModOpt<512>(const int val){ return val & (512 - 1); }
-   492: template<>      inline int intModOpt<1024>(const int val){ return val & (1024 - 1); }
-   493: int testOpt05_Type1_After(const int val,
-   494:                           int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
-   495: 						  int& d2, int& d3, int& d4, int& d5, int& d10, int& d16, int& d24,
-   496: 						  int& r2, int& r3, int& r4, int& r5, int& r10, int& r16, int& r24)
-   497: {
-00903AB0 55                   push        ebp  
-00903AB1 8B EC                mov         ebp,esp  
-00903AB3 83 EC 08             sub         esp,8  
-   498: 	m2 = intMulOpt<2>(val);
-00903AB6 8B 4D 0C             mov         ecx,dword ptr [m2]  
-00903AB9 53                   push        ebx  
-00903ABA 8B 5D 08             mov         ebx,dword ptr [val]  
-00903ABD 56                   push        esi  
-00903ABE 57                   push        edi  
-00903ABF 8D 04 1B             lea         eax,[ebx+ebx]  
-00903AC2 89 01                mov         dword ptr [ecx],eax  
-   499: 	m3 = intMulOpt<3>(val);
-00903AC4 8D 04 5B             lea         eax,[ebx+ebx*2]  
-00903AC7 8B 4D 10             mov         ecx,dword ptr [m3]  
-00903ACA 89 01                mov         dword ptr [ecx],eax  
-   500: 	m4 = intMulOpt<4>(val);
-00903ACC 8D 04 9D 00 00 00 00 lea         eax,[ebx*4]  
-00903AD3 8B 4D 14             mov         ecx,dword ptr [m4]  
-00903AD6 89 01                mov         dword ptr [ecx],eax  
-   501: 	m5 = intMulOpt<5>(val);
-00903AD8 8D 04 9B             lea         eax,[ebx+ebx*4]  
-00903ADB 8B 4D 18             mov         ecx,dword ptr [m5]  
-00903ADE 89 01                mov         dword ptr [ecx],eax  
-   502: 	m10 = intMulOpt<10>(val);
-00903AE0 8D 04 9B             lea         eax,[ebx+ebx*4]  
-00903AE3 8B 4D 1C             mov         ecx,dword ptr [m10]  
-00903AE6 03 C0                add         eax,eax  
-00903AE8 89 01                mov         dword ptr [ecx],eax  
-   503: 	m16 = intMulOpt<16>(val);
-00903AEA 8B C3                mov         eax,ebx  
-   503: 	m16 = intMulOpt<16>(val);
-00903AEC 8B 4D 20             mov         ecx,dword ptr [m16]  
-00903AEF C1 E0 04             shl         eax,4  
-00903AF2 89 01                mov         dword ptr [ecx],eax  
-   504: 	m24 = intMulOpt<24>(val);
-00903AF4 8D 04 5B             lea         eax,[ebx+ebx*2]  
-00903AF7 8B 4D 24             mov         ecx,dword ptr [m24]  
-00903AFA C1 E0 03             shl         eax,3  
-00903AFD 89 01                mov         dword ptr [ecx],eax  
-   505: 	d2 = intDivOpt<2>(val);
-00903AFF 8B C3                mov         eax,ebx  
-00903B01 8B 4D 28             mov         ecx,dword ptr [d2]  
-00903B04 D1 F8                sar         eax,1  
-00903B06 89 01                mov         dword ptr [ecx],eax  
-   506: 	d3 = intDivOpt<3>(val);
-00903B08 B8 56 55 55 55       mov         eax,55555556h  
-00903B0D F7 EB                imul        ebx  
-00903B0F 8B 45 2C             mov         eax,dword ptr [d3]  
-   507: 	d4 = intDivOpt<4>(val);
-00903B12 8B 4D 30             mov         ecx,dword ptr [d4]  
-   506: 	d3 = intDivOpt<3>(val);
-00903B15 8B FA                mov         edi,edx  
-00903B17 C1 EF 1F             shr         edi,1Fh  
-00903B1A 03 FA                add         edi,edx  
-00903B1C 89 38                mov         dword ptr [eax],edi  
-   507: 	d4 = intDivOpt<4>(val);
-00903B1E 8B C3                mov         eax,ebx  
-00903B20 C1 F8 02             sar         eax,2  
-00903B23 89 01                mov         dword ptr [ecx],eax  
-   508: 	d5 = intDivOpt<5>(val);
-00903B25 B8 67 66 66 66       mov         eax,66666667h  
-00903B2A F7 EB                imul        ebx  
-00903B2C 8B 45 34             mov         eax,dword ptr [d5]  
-   509: 	d10 = intDivOpt<10>(val);
-00903B2F 8B 4D 38             mov         ecx,dword ptr [d10]  
-   508: 	d5 = intDivOpt<5>(val);
-00903B32 D1 FA                sar         edx,1  
-00903B34 8B F2                mov         esi,edx  
-00903B36 C1 EE 1F             shr         esi,1Fh  
-00903B39 03 F2                add         esi,edx  
-00903B3B 89 30                mov         dword ptr [eax],esi  
-   509: 	d10 = intDivOpt<10>(val);
-00903B3D B8 67 66 66 66       mov         eax,66666667h  
-00903B42 F7 EB                imul        ebx  
-00903B44 C1 FA 02             sar         edx,2  
-00903B47 8B C2                mov         eax,edx  
-00903B49 C1 E8 1F             shr         eax,1Fh  
-00903B4C 03 C2                add         eax,edx  
-00903B4E 89 01                mov         dword ptr [ecx],eax  
-   510: 	d16 = intDivOpt<16>(val);
-00903B50 8B 4D 3C             mov         ecx,dword ptr [d16]  
-   509: 	d10 = intDivOpt<10>(val);
-00903B53 89 45 FC             mov         dword ptr [ebp-4],eax  
-   510: 	d16 = intDivOpt<16>(val);
-00903B56 8B C3                mov         eax,ebx  
-00903B58 C1 F8 04             sar         eax,4  
-00903B5B 89 01                mov         dword ptr [ecx],eax  
-   511: 	d24 = intDivOpt<24>(val);
-00903B5D B8 AB AA AA 2A       mov         eax,2AAAAAABh  
-00903B62 8B 4D 40             mov         ecx,dword ptr [d24]  
-00903B65 F7 EB                imul        ebx  
-00903B67 C1 FA 02             sar         edx,2  
-00903B6A 8B C2                mov         eax,edx  
-00903B6C C1 E8 1F             shr         eax,1Fh  
-00903B6F 03 C2                add         eax,edx  
-00903B71 89 01                mov         dword ptr [ecx],eax  
-   512: 	r2 = intModOpt<2>(val);
-00903B73 8B 4D 44             mov         ecx,dword ptr [r2]  
-   511: 	d24 = intDivOpt<24>(val);
-00903B76 89 45 F8             mov         dword ptr [ebp-8],eax  
-   512: 	r2 = intModOpt<2>(val);
-00903B79 8B C3                mov         eax,ebx  
-00903B7B 83 E0 01             and         eax,1  
-00903B7E 89 01                mov         dword ptr [ecx],eax  
-   513: 	r3 = intModOpt<3>(val);
-00903B80 8B CB                mov         ecx,ebx  
-00903B82 8B 5D 48             mov         ebx,dword ptr [r3]  
-00903B85 8D 04 7F             lea         eax,[edi+edi*2]  
-00903B88 2B C8                sub         ecx,eax  
-00903B8A 89 0B                mov         dword ptr [ebx],ecx  
-   514: 	r4 = intModOpt<4>(val);
-00903B8C 8B 5D 08             mov         ebx,dword ptr [val]  
-00903B8F 8B C3                mov         eax,ebx  
-00903B91 8B 7D 4C             mov         edi,dword ptr [r4]  
-00903B94 83 E0 03             and         eax,3  
-   516: 	r10 = intModOpt<10>(val);
-00903B97 8B 55 54             mov         edx,dword ptr [r10]  
-   515: 	r5 = intModOpt<5>(val);
-00903B9A 8B CB                mov         ecx,ebx  
-   514: 	r4 = intModOpt<4>(val);
-00903B9C 89 07                mov         dword ptr [edi],eax  
-   515: 	r5 = intModOpt<5>(val);
-00903B9E 8D 04 B6             lea         eax,[esi+esi*4]  
-00903BA1 2B C8                sub         ecx,eax  
-00903BA3 8B 75 50             mov         esi,dword ptr [r5]  
-   516: 	r10 = intModOpt<10>(val);
-00903BA6 8B 45 FC             mov         eax,dword ptr [ebp-4]  
-   515: 	r5 = intModOpt<5>(val);
-00903BA9 89 0E                mov         dword ptr [esi],ecx  
-00903BAB 8B CB                mov         ecx,ebx  
-00903BAD 8D 04 80             lea         eax,[eax+eax*4]  
-00903BB0 03 C0                add         eax,eax  
-00903BB2 2B C8                sub         ecx,eax  
-   517: 	r16 = intModOpt<16>(val);
-00903BB4 8B C3                mov         eax,ebx  
-   516: 	r10 = intModOpt<10>(val);
-00903BB6 89 0A                mov         dword ptr [edx],ecx  
-   517: 	r16 = intModOpt<16>(val);
-00903BB8 83 E0 0F             and         eax,0Fh  
-00903BBB 8B 4D 58             mov         ecx,dword ptr [r16]  
-00903BBE 89 01                mov         dword ptr [ecx],eax  
-   518: 	r24 = intModOpt<24>(val);
-00903BC0 8B 45 F8             mov         eax,dword ptr [ebp-8]  
-00903BC3 8D 04 40             lea         eax,[eax+eax*2]  
-00903BC6 C1 E0 03             shl         eax,3  
-00903BC9 2B D8                sub         ebx,eax  
-00903BCB 8B 45 5C             mov         eax,dword ptr [r24]  
-00903BCE 89 5D 08             mov         dword ptr [val],ebx  
-00903BD1 89 18                mov         dword ptr [eax],ebx  
-   519: 	return m2 + m3 + m4 + m5 + m10 + m16 + m24 +
-   520: 	       d2 + d3 + d4 + d5 + d10 + d16 + d24 +
-   521: 	       r2 + r3 + r4 + r5 + r10 + r16 + r24;
-00903BD3 8B 45 24             mov         eax,dword ptr [m24]  
-00903BD6 8B 5D 44             mov         ebx,dword ptr [r2]  
-00903BD9 8B 00                mov         eax,dword ptr [eax]  
-00903BDB 03 03                add         eax,dword ptr [ebx]  
-00903BDD 8B 5D 28             mov         ebx,dword ptr [d2]  
-00903BE0 03 03                add         eax,dword ptr [ebx]  
-00903BE2 8B 5D 48             mov         ebx,dword ptr [r3]  
-00903BE5 03 03                add         eax,dword ptr [ebx]  
-00903BE7 8B 5D 0C             mov         ebx,dword ptr [m2]  
-00903BEA 03 03                add         eax,dword ptr [ebx]  
-00903BEC 8B 5D 2C             mov         ebx,dword ptr [d3]  
-00903BEF 03 03                add         eax,dword ptr [ebx]  
-00903BF1 03 07                add         eax,dword ptr [edi]  
-00903BF3 8B 7D 10             mov         edi,dword ptr [m3]  
-00903BF6 03 07                add         eax,dword ptr [edi]  
-00903BF8 8B 7D 30             mov         edi,dword ptr [d4]  
-00903BFB 03 07                add         eax,dword ptr [edi]  
-00903BFD 03 06                add         eax,dword ptr [esi]  
-00903BFF 8B 75 14             mov         esi,dword ptr [m4]  
-00903C02 5F                   pop         edi  
-00903C03 03 06                add         eax,dword ptr [esi]  
-00903C05 8B 75 34             mov         esi,dword ptr [d5]  
-00903C08 03 06                add         eax,dword ptr [esi]  
-00903C0A 03 02                add         eax,dword ptr [edx]  
-00903C0C 8B 55 18             mov         edx,dword ptr [m5]  
-00903C0F 5E                   pop         esi  
-00903C10 5B                   pop         ebx  
-00903C11 03 02                add         eax,dword ptr [edx]  
-00903C13 8B 55 38             mov         edx,dword ptr [d10]  
-00903C16 03 02                add         eax,dword ptr [edx]  
-00903C18 03 01                add         eax,dword ptr [ecx]  
-00903C1A 8B 4D 1C             mov         ecx,dword ptr [m10]  
-00903C1D 03 45 08             add         eax,dword ptr [val]  
-00903C20 03 01                add         eax,dword ptr [ecx]  
-00903C22 8B 4D 3C             mov         ecx,dword ptr [d16]  
-00903C25 03 01                add         eax,dword ptr [ecx]  
-00903C27 8B 4D 20             mov         ecx,dword ptr [m16]  
-00903C2A 03 01                add         eax,dword ptr [ecx]  
-00903C2C 8B 4D 40             mov         ecx,dword ptr [d24]  
-00903C2F 03 01                add         eax,dword ptr [ecx]  
-   522: }
-00903C31 8B E5                mov         esp,ebp  
-00903C33 5D                   pop         ebp  
-00903C34 C3                   ret  
+   971: int testOpt05_Type1_After(int& m2, int& m3, int& m4, int& m5, int& m10, int& m16, int& m24,
+   972: 						  int& d2, int& d3, int& d4, int& d5, int& d10, int& d16, int& d24,
+   973: 						  int& r2, int& r3, int& r4, int& r5, int& r10, int& r16, int& r24)
+   974: {
+0083A2B0 55                   push        ebp  
+0083A2B1 8B EC                mov         ebp,esp  
+   975: 	m2  = intMulOpt< 2>(m2 );//val *  2
+0083A2B3 8B 45 08             mov         eax,dword ptr [m2]  
+   976: 	m3  = intMulOpt< 3>(m3 );//val *  3
+0083A2B6 8B 4D 0C             mov         ecx,dword ptr [m3]  
+0083A2B9 53                   push        ebx  
+   985: 	d5  = intDivOpt< 5>(d5 );//val /  5
+0083A2BA 8B 5D 30             mov         ebx,dword ptr [d5]  
+   975: 	m2  = intMulOpt< 2>(m2 );//val *  2
+0083A2BD D1 20                shl         dword ptr [eax],1  
+   976: 	m3  = intMulOpt< 3>(m3 );//val *  3
+0083A2BF 8B 01                mov         eax,dword ptr [ecx]  
+0083A2C1 56                   push        esi  
+   990: 	r3  = intModOpt< 3>(r3 );//val %  3
+0083A2C2 BE 03 00 00 00       mov         esi,3  
+0083A2C7 57                   push        edi  
+   976: 	m3  = intMulOpt< 3>(m3 );//val *  3
+0083A2C8 8D 04 40             lea         eax,[eax+eax*2]  
+   993: 	r10 = intModOpt<10>(r10);//val % 10
+0083A2CB 8B 7D 50             mov         edi,dword ptr [r10]  
+   976: 	m3  = intMulOpt< 3>(m3 );//val *  3
+0083A2CE 89 01                mov         dword ptr [ecx],eax  
+   977: 	m4  = intMulOpt< 4>(m4 );//val *  4
+0083A2D0 8B 45 10             mov         eax,dword ptr [m4]  
+   978: 	m5  = intMulOpt< 5>(m5 );//val *  5
+0083A2D3 8B 4D 14             mov         ecx,dword ptr [m5]  
+   977: 	m4  = intMulOpt< 4>(m4 );//val *  4
+0083A2D6 C1 20 02             shl         dword ptr [eax],2  
+0083A2D9 8B 01                mov         eax,dword ptr [ecx]  
+0083A2DB 8D 04 80             lea         eax,[eax+eax*4]  
+0083A2DE 89 01                mov         dword ptr [ecx],eax  
+   979: 	m10 = intMulOpt<10>(m10);//val * 10
+0083A2E0 8B 4D 18             mov         ecx,dword ptr [m10]  
+0083A2E3 8B 01                mov         eax,dword ptr [ecx]  
+0083A2E5 8D 04 80             lea         eax,[eax+eax*4]  
+0083A2E8 03 C0                add         eax,eax  
+0083A2EA 89 01                mov         dword ptr [ecx],eax  
+   980: 	m16 = intMulOpt<16>(m16);//val * 16
+0083A2EC 8B 45 1C             mov         eax,dword ptr [m16]  
+   981: 	m24 = intMulOpt<24>(m24);//val * 24
+0083A2EF 8B 4D 20             mov         ecx,dword ptr [m24]  
+   980: 	m16 = intMulOpt<16>(m16);//val * 16
+0083A2F2 C1 20 04             shl         dword ptr [eax],4  
+   981: 	m24 = intMulOpt<24>(m24);//val * 24
+0083A2F5 8B 01                mov         eax,dword ptr [ecx]  
+0083A2F7 8D 04 40             lea         eax,[eax+eax*2]  
+0083A2FA C1 E0 03             shl         eax,3  
+0083A2FD 89 01                mov         dword ptr [ecx],eax  
+   982: 	d2  = intDivOpt< 2>(d2 );//val /  2
+0083A2FF 8B 45 24             mov         eax,dword ptr [d2]  
+   983: 	d3  = intDivOpt< 3>(d3 );//val /  3
+0083A302 8B 4D 28             mov         ecx,dword ptr [d3]  
+   982: 	d2  = intDivOpt< 2>(d2 );//val /  2
+0083A305 D1 38                sar         dword ptr [eax],1  
+   983: 	d3  = intDivOpt< 3>(d3 );//val /  3
+0083A307 B8 56 55 55 55       mov         eax,55555556h  
+0083A30C F7 29                imul        dword ptr [ecx]  
+0083A30E 8B C2                mov         eax,edx  
+0083A310 C1 E8 1F             shr         eax,1Fh  
+0083A313 03 C2                add         eax,edx  
+0083A315 89 01                mov         dword ptr [ecx],eax  
+   984: 	d4  = intDivOpt< 4>(d4 );//val /  4
+0083A317 8B 45 2C             mov         eax,dword ptr [d4]  
+0083A31A C1 38 02             sar         dword ptr [eax],2  
+   985: 	d5  = intDivOpt< 5>(d5 );//val /  5
+0083A31D B8 67 66 66 66       mov         eax,66666667h  
+0083A322 F7 2B                imul        dword ptr [ebx]  
+   986: 	d10 = intDivOpt<10>(d10);//val / 10
+0083A324 B8 67 66 66 66       mov         eax,66666667h  
+   985: 	d5  = intDivOpt< 5>(d5 );//val /  5
+0083A329 D1 FA                sar         edx,1  
+0083A32B 8B CA                mov         ecx,edx  
+0083A32D C1 E9 1F             shr         ecx,1Fh  
+0083A330 03 CA                add         ecx,edx  
+0083A332 89 0B                mov         dword ptr [ebx],ecx  
+   986: 	d10 = intDivOpt<10>(d10);//val / 10
+0083A334 8B 4D 34             mov         ecx,dword ptr [d10]  
+   991: 	r4  = intModOpt< 4>(r4 );//val %  4
+0083A337 8B 5D 48             mov         ebx,dword ptr [r4]  
+   986: 	d10 = intDivOpt<10>(d10);//val / 10
+0083A33A F7 29                imul        dword ptr [ecx]  
+0083A33C C1 FA 02             sar         edx,2  
+0083A33F 8B C2                mov         eax,edx  
+0083A341 C1 E8 1F             shr         eax,1Fh  
+0083A344 03 C2                add         eax,edx  
+0083A346 89 01                mov         dword ptr [ecx],eax  
+   987: 	d16 = intDivOpt<16>(d16);//val / 16
+0083A348 8B 45 38             mov         eax,dword ptr [d16]  
+   988: 	d24 = intDivOpt<24>(d24);//val / 24
+0083A34B 8B 4D 3C             mov         ecx,dword ptr [d24]  
+0083A34E C1 38 04             sar         dword ptr [eax],4  
+   988: 	d24 = intDivOpt<24>(d24);//val / 24
+0083A351 B8 AB AA AA 2A       mov         eax,2AAAAAABh  
+0083A356 F7 29                imul        dword ptr [ecx]  
+0083A358 C1 FA 02             sar         edx,2  
+0083A35B 8B C2                mov         eax,edx  
+0083A35D C1 E8 1F             shr         eax,1Fh  
+0083A360 03 C2                add         eax,edx  
+0083A362 89 01                mov         dword ptr [ecx],eax  
+   989: 	r2  = intModOpt< 2>(r2 );//val %  2
+0083A364 8B 45 40             mov         eax,dword ptr [r2]  
+   990: 	r3  = intModOpt< 3>(r3 );//val %  3
+0083A367 8B 4D 44             mov         ecx,dword ptr [r3]  
+   989: 	r2  = intModOpt< 2>(r2 );//val %  2
+0083A36A 83 20 01             and         dword ptr [eax],1  
+   990: 	r3  = intModOpt< 3>(r3 );//val %  3
+0083A36D 8B 01                mov         eax,dword ptr [ecx]  
+0083A36F 99                   cdq  
+0083A370 F7 FE                idiv        eax,esi  
+0083A372 89 11                mov         dword ptr [ecx],edx  
+   992: 	r5  = intModOpt< 5>(r5 );//val %  5
+0083A374 8B 4D 4C             mov         ecx,dword ptr [r5]  
+   991: 	r4  = intModOpt< 4>(r4 );//val %  4
+0083A377 21 33                and         dword ptr [ebx],esi  
+   992: 	r5  = intModOpt< 5>(r5 );//val %  5
+0083A379 BE 05 00 00 00       mov         esi,5  
+0083A37E 8B 01                mov         eax,dword ptr [ecx]  
+0083A380 99                   cdq  
+0083A381 F7 FE                idiv        eax,esi  
+0083A383 89 11                mov         dword ptr [ecx],edx  
+   993: 	r10 = intModOpt<10>(r10);//val % 10
+0083A385 8B 07                mov         eax,dword ptr [edi]  
+0083A387 B9 0A 00 00 00       mov         ecx,0Ah  
+0083A38C 99                   cdq  
+0083A38D F7 F9                idiv        eax,ecx  
+   994: 	r16 = intModOpt<16>(r16);//val % 16
+0083A38F 8B 75 54             mov         esi,dword ptr [r16]  
+   995: 	r24 = intModOpt<24>(r24);//val % 24
+0083A392 8B 4D 58             mov         ecx,dword ptr [r24]  
+   993: 	r10 = intModOpt<10>(r10);//val % 10
+0083A395 89 17                mov         dword ptr [edi],edx  
+   995: 	r24 = intModOpt<24>(r24);//val % 24
+0083A397 C7 45 48 18 00 00 00 mov         dword ptr [r4],18h  
+   994: 	r16 = intModOpt<16>(r16);//val % 16
+0083A39E 83 26 0F             and         dword ptr [esi],0Fh  
+   995: 	r24 = intModOpt<24>(r24);//val % 24
+0083A3A1 8B 01                mov         eax,dword ptr [ecx]  
+0083A3A3 99                   cdq  
+0083A3A4 F7 7D 48             idiv        eax,dword ptr [r4]  
+   996: 	return m2 + m3 + m4 + m5 + m10 + m16 + m24 +
+   997: 	       d2 + d3 + d4 + d5 + d10 + d16 + d24 +
+   998: 	       r2 + r3 + r4 + r5 + r10 + r16 + r24;
+0083A3A7 8B 45 20             mov         eax,dword ptr [m24]  
+0083A3AA 89 11                mov         dword ptr [ecx],edx  
+0083A3AC 8B 4D 40             mov         ecx,dword ptr [r2]  
+0083A3AF 8B 00                mov         eax,dword ptr [eax]  
+0083A3B1 03 01                add         eax,dword ptr [ecx]  
+0083A3B3 8B 4D 24             mov         ecx,dword ptr [d2]  
+0083A3B6 03 01                add         eax,dword ptr [ecx]  
+0083A3B8 8B 4D 44             mov         ecx,dword ptr [r3]  
+0083A3BB 03 01                add         eax,dword ptr [ecx]  
+0083A3BD 8B 4D 08             mov         ecx,dword ptr [m2]  
+0083A3C0 03 01                add         eax,dword ptr [ecx]  
+0083A3C2 8B 4D 28             mov         ecx,dword ptr [d3]  
+0083A3C5 03 01                add         eax,dword ptr [ecx]  
+0083A3C7 03 03                add         eax,dword ptr [ebx]  
+0083A3C9 8B 4D 0C             mov         ecx,dword ptr [m3]  
+0083A3CC 03 01                add         eax,dword ptr [ecx]  
+0083A3CE 8B 4D 2C             mov         ecx,dword ptr [d4]  
+0083A3D1 03 01                add         eax,dword ptr [ecx]  
+0083A3D3 8B 4D 4C             mov         ecx,dword ptr [r5]  
+0083A3D6 03 01                add         eax,dword ptr [ecx]  
+0083A3D8 8B 4D 10             mov         ecx,dword ptr [m4]  
+0083A3DB 03 01                add         eax,dword ptr [ecx]  
+0083A3DD 8B 4D 30             mov         ecx,dword ptr [d5]  
+0083A3E0 03 01                add         eax,dword ptr [ecx]  
+0083A3E2 03 07                add         eax,dword ptr [edi]  
+0083A3E4 8B 4D 14             mov         ecx,dword ptr [m5]  
+0083A3E7 03 C2                add         eax,edx  
+0083A3E9 5F                   pop         edi  
+0083A3EA 03 01                add         eax,dword ptr [ecx]  
+0083A3EC 8B 4D 34             mov         ecx,dword ptr [d10]  
+0083A3EF 03 01                add         eax,dword ptr [ecx]  
+0083A3F1 03 06                add         eax,dword ptr [esi]  
+0083A3F3 8B 4D 18             mov         ecx,dword ptr [m10]  
+0083A3F6 5E                   pop         esi  
+0083A3F7 5B                   pop         ebx  
+0083A3F8 03 01                add         eax,dword ptr [ecx]  
+0083A3FA 8B 4D 38             mov         ecx,dword ptr [d16]  
+0083A3FD 03 01                add         eax,dword ptr [ecx]  
+0083A3FF 8B 4D 1C             mov         ecx,dword ptr [m16]  
+0083A402 03 01                add         eax,dword ptr [ecx]  
+0083A404 8B 4D 3C             mov         ecx,dword ptr [d24]  
+0083A407 03 01                add         eax,dword ptr [ecx]  
+   999: }
+0083A409 5D                   pop         ebp  
+0083A40A C3                   ret  

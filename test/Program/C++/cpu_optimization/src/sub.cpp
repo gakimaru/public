@@ -1099,7 +1099,7 @@ void testOpt07_Type1_Before(const int dummy, matrix<N, M>& add0, matrix<N, M>& m
 
 //----------
 //行列の加算
-#if 1
+#if 0
 //※単純ループ版
 template<std::size_t N, std::size_t M>
 void addMatrixOpt(matrix<N, M>& mat0, const matrix<N, M>& mat1, const matrix<N, M>& mat2)
@@ -1125,14 +1125,6 @@ struct _addMatrixOpt<N, M, NOW_N, 0>{
 	{
 		mat0(NOW_N, 0) = mat1(NOW_N, 0) + mat2(NOW_N, 0);
 		_addMatrixOpt<N, M, NOW_N - 1, M - 1>::calc(mat0, mat1, mat2);
-	}
-};
-template<std::size_t N, std::size_t M, std::size_t NOW_M>
-struct _addMatrixOpt<N, M, 0, NOW_M>{
-	inline static void calc(matrix<N, M>& mat0, const matrix<N, M>& mat1, const matrix<N, M>& mat2)
-	{
-		mat0(0, NOW_M) = mat1(0, NOW_M) + mat2(0, NOW_M);
-		_addMatrixOpt<N, M, N - 1, NOW_M - 1>::calc(mat0, mat1, mat2);
 	}
 };
 template<std::size_t N, std::size_t M>
@@ -1169,7 +1161,7 @@ void addMatrixOpt<4, 4>(matrix<4, 4>& mat0, const matrix<4, 4>& mat1, const matr
 
 //----------
 //行列のスカラー倍
-#if 1
+#if 0
 //※単純ループ版
 template<std::size_t N, std::size_t M>
 void mulMatrixScalarOpt(matrix<N, M>& mat0, const matrix<N, M>& mat1, const float scalar)
@@ -1195,14 +1187,6 @@ struct _mulMatrixScalarOpt<N, M, NOW_N, 0>{
 	{
 		mat0(NOW_N, 0) = mat1(NOW_N, 0) * scalar;
 		_mulMatrixScalarOpt<N, M, NOW_N - 1, M - 1>::calc(mat0, mat1, scalar);
-	}
-};
-template<std::size_t N, std::size_t M, std::size_t NOW_M>
-struct _mulMatrixScalarOpt<N, M, 0, NOW_M>{
-	inline static void calc(matrix<N, M>& mat0, const matrix<N, M>& mat1, const float scalar)
-	{
-		mat0(0, NOW_M) = mat1(0, NOW_M) * scalar;
-		_mulMatrixScalarOpt<N, M, N - 1, NOW_M - 1>::calc(mat0, mat1, scalar);
 	}
 };
 template<std::size_t N, std::size_t M>
@@ -1239,7 +1223,7 @@ void mulMatrixScalarOpt<4, 4>(matrix<4, 4>& mat0, const matrix<4, 4>& mat1, cons
 
 //----------
 //行列の乗算
-#if 1
+#if 0
 //※単純ループ版
 template<std::size_t N, std::size_t M, std::size_t NM>
 void mulMatrixOpt(matrix<N, M>& mat0, const matrix<N, NM>& mat1, const matrix<NM, M>& mat2)

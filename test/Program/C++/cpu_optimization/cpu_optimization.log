@@ -1,38 +1,38 @@
 ----------------------------------------
 [Optimize Test 01]
 Type1: *100000 times repeated.
-  Before   ... *elapsed time=0.917872600  sum=49327
-  After1   ... *elapsed time=0.257246400  sum=49327
-  After2   ... *elapsed time=0.259247100  sum=49327
-  After3   ... *elapsed time=0.267254300  sum=49327
-  After4   ... *elapsed time=0.265250500  sum=49327
-  Appendix ... *elapsed time=1.982887400  sum=49327
+  Before   ... *elapsed time=0.922878500  sum=49327
+  After1   ... *elapsed time=0.259245800  sum=49327
+  After2   ... *elapsed time=0.274261100  sum=49327
+  After3   ... *elapsed time=0.277264000  sum=49327
+  After4   ... *elapsed time=0.283269600  sum=49327
+  Appendix ... *elapsed time=1.984887300  sum=49327
 ----------------------------------------
 [Optimize Test 02]
 Type1: *100000 times repeated.
-  Before   ... *elapsed time=0.627598000  sum=63569920
-  After1   ... *elapsed time=0.582554400  sum=63569920
-  After2   ... *elapsed time=0.604573200  sum=63569920
-  After3   ... *elapsed time=0.624596000  sum=63569920
+  Before   ... *elapsed time=0.610582800  sum=63569920
+  After1   ... *elapsed time=0.575547400  sum=63569920
+  After2   ... *elapsed time=0.576548500  sum=63569920
+  After3   ... *elapsed time=0.615584000  sum=63569920
 ----------------------------------------
 [Optimize Test 03]
 Type1: *100000000 times repeated.
-  Before   ... *elapsed time=0.298283900  sum=1974919424
-  After    ... *elapsed time=0.061057700  sum=1974919424
+  Before   ... *elapsed time=0.243232700  sum=1974919424
+  After    ... *elapsed time=0.055053000  sum=1974919424
 Type2: *100000000 times repeated.
-  Before   ... *elapsed time=0.425404100  sum=-525080576
-  After    ... *elapsed time=0.058055100  sum=-525080576
+  Before   ... *elapsed time=0.434413200  sum=-525080576
+  After    ... *elapsed time=0.058053300  sum=-525080576
 Type3: *10000 times repeated.
-  Before   ... *elapsed time=0.697664800  count=46310000
-  After1   ... *elapsed time=0.509485000  count=46310000
-  After2   ... *elapsed time=0.483459400  count=46310000
-  After3   ... *elapsed time=0.479456500  count=46310000
-  AppendixA1.. *elapsed time=0.788749900  count=46310000
-  AppendixA2.. *elapsed time=0.735699700  count=46310000
-  AppendixA3.. *elapsed time=0.734699200  count=46310000
-  AppendixB1.. *elapsed time=0.799761500  count=46310000
-  AppendixB2.. *elapsed time=0.758722300  count=46310000
-  AppendixB3.. *elapsed time=0.738702700  count=46310000
+  Before   ... *elapsed time=0.720686500  count=46310000
+  After1   ... *elapsed time=0.523498100  count=46310000
+  After2   ... *elapsed time=0.488465700  count=46310000
+  After3   ... *elapsed time=0.490466400  count=46310000
+  AppendixA1.. *elapsed time=0.810771600  count=46310000
+  AppendixA2.. *elapsed time=0.743707000  count=46310000
+  AppendixA3.. *elapsed time=0.741716400  count=46310000
+  AppendixB1.. *elapsed time=0.800751600  count=46310000
+  AppendixB2.. *elapsed time=0.753717100  count=46310000
+  AppendixB3.. *elapsed time=0.736700300  count=46310000
 ----------------------------------------
 [Optimize Test 04]
 ----------------------------------------
@@ -88,137 +88,137 @@ Type3: *10000 times repeated.
 [CHECK:TYPE4:3] sqrt(0.00100~100000.00000,+0.00100,*2.0by1000t) [tol=0.00100]
 [CHECK:TYPE4:3] ng=0/16526(0.00%), diff-avg=0.00000, diff-max=0.00003(50070.83984)
 Type1: *100000000 times repeated.
-  Before   ... *elapsed time=0.194184600  sum=2251799813685248.00000
-  After    ... *elapsed time=0.080075300  sum=2251799813685248.00000
+  Before   ... *elapsed time=0.197187800  sum=2251799813685248.00000
+  After    ... *elapsed time=0.082077400  sum=2251799813685248.00000
 Type2: *10000 times repeated.
-  Before   ... *elapsed time=0.268256100
-  After1   ... *elapsed time=0.130124300
-  After2   ... *elapsed time=0.078072900
+  Before   ... *elapsed time=0.268255500
+  After1   ... *elapsed time=0.131124500
+  After2   ... *elapsed time=0.079075600
 Type3: *100000000 times repeated.
-  Before   ... *elapsed time=0.208196900  sum=2251799813685248.00000
-  After1   ... *elapsed time=0.081077400  sum=2251799813685248.00000
-  After2   ... *elapsed time=0.080076200  sum=2251799813685248.00000
-  After3   ... *elapsed time=0.147139800  sum=2251799813685248.00000
+  Before   ... *elapsed time=0.209198400  sum=2251799813685248.00000
+  After1   ... *elapsed time=0.081083800  sum=2251799813685248.00000
+  After2   ... *elapsed time=0.080070300  sum=2251799813685248.00000
+  After3   ... *elapsed time=0.161152100  sum=2251799813685248.00000
 Type4: *100000000 times repeated.
-  Before   ... *elapsed time=0.186177200  sum=274877906944.00000
-  After1   ... *elapsed time=0.080076200  sum=274877906944.00000
-  After2   ... *elapsed time=0.165159400  sum=274877906944.00000
-  After3   ... *elapsed time=0.322306200  sum=274877906944.00000
+  Before   ... *elapsed time=0.189180500  sum=274877906944.00000
+  After1   ... *elapsed time=0.080077100  sum=274877906944.00000
+  After2   ... *elapsed time=0.165156700  sum=274877906944.00000
+  After3   ... *elapsed time=0.321304500  sum=274877906944.00000
 ----------------------------------------
 [Optimize Test 05]
 Type1: *10000000 times repeated.
-  Before   ... *elapsed time=0.343325600  sum=-762288062
-  After    ... *elapsed time=0.334319400  sum=-762288062
+  Before   ... *elapsed time=0.345329300  sum=-762288062
+  After    ... *elapsed time=0.382364500  sum=-762288062
 ----------------------------------------
 [Optimize Test 06]
 Type1: *10000 times repeated.
-  Before   ... *elapsed time=0.374358600  sum=1339270784
-  After    ... *elapsed time=0.108100200  sum=1339270784
+  Before   ... *elapsed time=0.372354300  sum=1339270784
+  After    ... *elapsed time=0.112104900  sum=1339270784
 ----------------------------------------
 [Optimize Test 07]
 Type1: *10000000 times repeated.
-  Before   ... *elapsed time=0.852811100
-  After    ... *elapsed time=0.365348100
+  Before   ... *elapsed time=0.921878800
+  After    ... *elapsed time=0.366347500
 Type2: *1000000 times repeated.
 Type2(strlen):
-  Before   ... *elapsed time=0.104098200
-  After    ... *elapsed time=0.028028700
+  Before   ... *elapsed time=0.108103700
+  After    ... *elapsed time=0.030028700
 Type2(strcmp):
-  Before   ... *elapsed time=0.355336700
-  After    ... *elapsed time=0.130123000
+  Before   ... *elapsed time=0.353336400
+  After    ... *elapsed time=0.129122800
 Type2(strncmp):
-  Before   ... *elapsed time=0.693660800
-  After    ... *elapsed time=0.332315900
+  Before   ... *elapsed time=0.624593400
+  After    ... *elapsed time=0.344328400
 Type2(strchr):
-  Before   ... *elapsed time=0.108103100
-  After    ... *elapsed time=0.099093500
+  Before   ... *elapsed time=0.109104100
+  After    ... *elapsed time=0.104098400
 Type2(strrchr):
-  Before   ... *elapsed time=0.157149400
-  After    ... *elapsed time=0.153146500
+  Before   ... *elapsed time=0.155147100
+  After    ... *elapsed time=0.151148900
 Type2(strstr):
-  Before   ... *elapsed time=0.440419100
-  After1   ... *elapsed time=0.930885700
-  After2(bm).. *elapsed time=1.999900900
+  Before   ... *elapsed time=0.436410800
+  After1   ... *elapsed time=0.938891300
+  After2(bm).. *elapsed time=1.997902600
 Type2(strcpy):
-  Before   ... *elapsed time=0.137130400
-  After    ... *elapsed time=0.050048600
+  Before   ... *elapsed time=0.128121900
+  After    ... *elapsed time=0.049046900
 Type2(strncpy):
-  Before   ... *elapsed time=0.247234700
-  After    ... *elapsed time=0.193184900
+  Before   ... *elapsed time=0.251239100
+  After    ... *elapsed time=0.175166100
 ----------------------------------------
 [Optimize Test 08]
 Type1: *100000000 times repeated.
-  Before   ... *elapsed time=1.318253200  sum=500000000
-  After1   ... *elapsed time=1.316254800  sum=500000000
-  After2   ... *elapsed time=0.846804300  sum=500000000
-  After3   ... *elapsed time=0.959913300  sum=500000000
+  Before   ... *elapsed time=1.414344700  sum=500000000
+  After1   ... *elapsed time=1.418350800  sum=500000000
+  After2   ... *elapsed time=0.833793200  sum=500000000
+  After3   ... *elapsed time=0.944899600  sum=500000000
 Type2: *100000000 times repeated.
-  Before   ... *elapsed time=0.911867100  sum=500000000
-  After1   ... *elapsed time=0.908864700  sum=500000000
-  After2   ... *elapsed time=0.747712000  sum=500000000
-  After3   ... *elapsed time=0.724687400  sum=500000000
+  Before   ... *elapsed time=1.015964900  sum=500000000
+  After1   ... *elapsed time=0.908865900  sum=500000000
+  After2   ... *elapsed time=0.745709400  sum=500000000
+  After3   ... *elapsed time=0.727691500  sum=500000000
 Type3: *100000000 times repeated.
-  Before   ... *elapsed time=0.463442800  sum=100000000
-  After1   ... *elapsed time=0.403383800  sum=100000000
+  Before   ... *elapsed time=0.468444800  sum=100000000
+  After1   ... *elapsed time=0.407388000  sum=100000000
 Type4: *100000000 times repeated.
-  Before   ... *elapsed time=0.938891400  sum=1001308160
-  After1   ... *elapsed time=0.936893400  sum=1001308160
-  After2   ... *elapsed time=0.723688600  sum=1001308160
+  Before   ... *elapsed time=0.938894800  sum=1001308160
+  After1   ... *elapsed time=0.936891100  sum=1001308160
+  After2   ... *elapsed time=0.722687700  sum=1001308160
 Type5: *10000000 times repeated.
-  Before   ... *elapsed time=3.672493700  sum=1160000000
+  Before   ... *elapsed time=3.678499600  sum=1160000000
   After1   ... *elapsed time=1.301237400  sum=1160000000
-  After2   ... *elapsed time=0.383365400  sum=1160000000
-  After3   ... *elapsed time=0.278264000  sum=1160000000
+  After2   ... *elapsed time=0.381363600  sum=1160000000
+  After3   ... *elapsed time=0.279267000  sum=1160000000
 Type6: *10000000 times repeated.
-  Before   ... *elapsed time=0.882839800  sum=-1414967296
-  After1   ... *elapsed time=0.715681900  sum=-1414967296
-  After2   ... *elapsed time=0.506480500  sum=-1414967296
-  After3   ... *elapsed time=0.423403200  sum=-1414967296
-  After4   ... *elapsed time=0.729694200  sum=-1414967296
-  After5   ... *elapsed time=0.347330500  sum=-1414967296
+  Before   ... *elapsed time=0.869826300  sum=-1414967296
+  After1   ... *elapsed time=0.717681500  sum=-1414967296
+  After2   ... *elapsed time=0.505481200  sum=-1414967296
+  After3   ... *elapsed time=0.422402900  sum=-1414967296
+  After4   ... *elapsed time=0.746708500  sum=-1414967296
+  After5   ... *elapsed time=0.345330500  sum=-1414967296
 Type7: *10000000 times repeated.
-  Before   ... *elapsed time=0.767731400  sum=800000000
-  After1   ... *elapsed time=0.672639900  sum=800000000
-  After2   ... *elapsed time=0.544519600  sum=800000000
-  After3   ... *elapsed time=0.381361200  sum=800000000
-  After4   ... *elapsed time=0.952906600  sum=800000000
-  After5   ... *elapsed time=0.302287500  sum=800000000
+  Before   ... *elapsed time=0.768731100  sum=800000000
+  After1   ... *elapsed time=0.703667800  sum=800000000
+  After2   ... *elapsed time=0.564539200  sum=800000000
+  After3   ... *elapsed time=0.410389700  sum=800000000
+  After4   ... *elapsed time=0.950904200  sum=800000000
+  After5   ... *elapsed time=0.302288700  sum=800000000
 Type8: *10000000 times repeated.
-  Before   ... *elapsed time=0.094089100  sum=547755776
-  After1   ... *elapsed time=0.084080600  sum=547755776
-  Appendix1... *elapsed time=0.078074400  sum=547755776
-  Appendix2... *elapsed time=0.075071200  sum=547755776
+  Before   ... *elapsed time=0.093087300  sum=547755776
+  After1   ... *elapsed time=0.086082900  sum=547755776
+  Appendix1... *elapsed time=0.076072700  sum=547755776
+  Appendix2... *elapsed time=0.076072600  sum=547755776
 Type9: *10000000 times repeated.
-  Before   ... *elapsed time=0.110104300  sum=19511275
-  After    ... *elapsed time=0.111105200  sum=19511275
-  Appendix ... *elapsed time=0.109105200  sum=19511275
+  Before   ... *elapsed time=0.110104400  sum=19511275
+  After    ... *elapsed time=0.109103400  sum=19511275
+  Appendix ... *elapsed time=0.109103700  sum=19511275
 ----------------------------------------
 [Optimize Test 09]
 Type1: *100000 times repeated.
-  Before   ... *elapsed time=0.202192500  sum=49327
-  After1   ... *elapsed time=0.269256100  sum=49327
-  After2   ... *elapsed time=0.263251400  sum=49327
-  After3   ... *elapsed time=0.193182000  sum=49327
-  After4   ... *elapsed time=0.178169000  sum=49327
-  After5   ... *elapsed time=0.196187000  sum=49327
-  Appendix ... *elapsed time=0.417397300  sum=49327
+  Before   ... *elapsed time=0.203192800  sum=49327
+  After1   ... *elapsed time=0.267254400  sum=49327
+  After2   ... *elapsed time=0.266254300  sum=49327
+  After3   ... *elapsed time=0.190180800  sum=49327
+  After4   ... *elapsed time=0.174165600  sum=49327
+  After5   ... *elapsed time=0.193184000  sum=49327
+  Appendix ... *elapsed time=0.416396100  sum=49327
 Type2: *10000 times repeated.
   Before   ... *elapsed time=0.108102800  sum=-49
   After1   ... *elapsed time=0.108102900  sum=-49
-  After2   ... *elapsed time=0.107100800  sum=-49
-  After3   ... *elapsed time=0.106100800  sum=-49
-  After4   ... *elapsed time=0.107103400  sum=-49
-  After5   ... *elapsed time=0.105099900  sum=-49
-  After6   ... *elapsed time=0.107101100  sum=-49
-  Appendix ... *elapsed time=0.109104000  sum=-49
+  After2   ... *elapsed time=0.108102500  sum=-49
+  After3   ... *elapsed time=0.107102300  sum=-49
+  After4   ... *elapsed time=0.107101400  sum=-49
+  After5   ... *elapsed time=0.104099000  sum=-49
+  After6   ... *elapsed time=0.107101400  sum=-49
+  Appendix ... *elapsed time=0.111105200  sum=-49
 Type3: *10000 times repeated.
-  Before   ... *elapsed time=0.107102300  sum=-49
-  After1   ... *elapsed time=0.108102200  sum=-49
-  After2   ... *elapsed time=0.107102900  sum=-49
-  After3   ... *elapsed time=0.112105800  sum=-49
-  After4   ... *elapsed time=0.108103400  sum=-49
-  After5   ... *elapsed time=0.106100800  sum=-49
-  After6   ... *elapsed time=0.107102000  sum=-49
+  Before   ... *elapsed time=0.108102600  sum=-49
+  After1   ... *elapsed time=0.106101100  sum=-49
+  After2   ... *elapsed time=0.106100200  sum=-49
+  After3   ... *elapsed time=0.112107200  sum=-49
+  After4   ... *elapsed time=0.107102000  sum=-49
+  After5   ... *elapsed time=0.104099000  sum=-49
+  After6   ... *elapsed time=0.107100300  sum=-49
 ----------------------------------------
 [Test for Lambda with closure]
 for lambda1: external_counter=0

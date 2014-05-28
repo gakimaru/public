@@ -999,7 +999,7 @@ int testOpt05_Type1_After(int& m2, int& m3, int& m4, int& m5, int& m10, int& m16
 }
 
 //----------------------------------------
-//最適化⑥：乗算／除算の抑制：演算の共通化
+//最適化⑥：乗算／除算の抑制：計算結果の共通利用
 
 //初期化
 void initOpt06(dataOpt06_t& data)
@@ -1008,30 +1008,43 @@ void initOpt06(dataOpt06_t& data)
 	std::uniform_real_distribution<float> rnd_dist(0.f, static_cast<float>(dataOpt06_t::elem_t::VALUE_RANGE));
 	for (auto& elem : data.elems)
 	{
-		elem.value = rnd_dist(rnd_engine);
-		elem.result = 0.f;
+		elem.value_a = rnd_dist(rnd_engine);
+		elem.value_b = rnd_dist(rnd_engine);
+		elem.value_b = 0.f;
 	}
 }
 
 //【タイプ１】最適化前
-//※素直な乗除算
-void testOpt06_Type1_Before(dataOpt06_t& data, const float mul1, const float mul2, const float div)
+//※毎ループ複雑な演算を行う
+float testOpt06_Type1_Before(dataOpt06_t& data, const float mul1, const float mul2, const float div)
 {
 	//各要素を計算
-	const dataOpt06_t::elem_t* end = data.elems + extentof(data.elems);
-	for (dataOpt06_t::elem_t* elem_p = data.elems; elem_p < end; ++elem_p)
-		elem_p->result = elem_p->value * mul1 * mul2 / div;
+	float sum = 0.f;
+	for (std::size_t i = 0; i < extentof(data.elems); ++i)
+	{
+		dataOpt06_t::elem_t* elem_p = &data.elems[i];
+		elem_p->value_c = (elem_p->value_a * mul1 * mul2 / div) * 2.f + 
+		                  (elem_p->value_b * mul1 * mul2 / div) * 3.f;
+		sum += elem_p->value_c;
+	}
+	return sum;
 }
 
 //【タイプ１】最適化後
-//※演算を共通化する
-void testOpt06_Type1_After(dataOpt06_t& data, const float mul1, const float mul2, const float div)
+//※一部の演算を共通化する
+float testOpt06_Type1_After(dataOpt06_t& data, const float mul1, const float mul2, const float div)
 {
 	//各要素を計算
+	float sum = 0.f;
 	const float calc = mul1 * mul2 / div;
-	const dataOpt06_t::elem_t* end = data.elems + extentof(data.elems);
-	for (dataOpt06_t::elem_t* elem_p = data.elems; elem_p < end; ++elem_p)
-		elem_p->result = elem_p->value * calc;
+	for (std::size_t i = 0; i < extentof(data.elems); ++i)
+	{
+		dataOpt06_t::elem_t* elem_p = &data.elems[i];
+		elem_p->value_c = (elem_p->value_a * calc) * 2.f +
+		                  (elem_p->value_b * calc) * 3.f;
+		sum += elem_p->value_c;
+	}
+	return sum;
 }
 
 //----------------------------------------
@@ -1041,7 +1054,7 @@ void testOpt06_Type1_After(dataOpt06_t& data, const float mul1, const float mul2
 //【タイプ１】最適化前
 
 //----------
-//行列加算
+//行列の加算
 //※単純ループ版
 template<std::size_t N, std::size_t M>
 void addMatrix(matrix<N, M>& mat0, const matrix<N, M>& mat1, const matrix<N, M>& mat2)
@@ -1051,7 +1064,7 @@ void addMatrix(matrix<N, M>& mat0, const matrix<N, M>& mat1, const matrix<N, M>&
 			mat0(n, m) = mat1(n, m) + mat2(n, m);
 }
 //----------
-//行列スカラー乗算
+//行列のスカラー倍
 //※単純ループ版
 template<std::size_t N, std::size_t M>
 void mulMatrixScalar(matrix<N, M>& mat0, const matrix<N, M>& mat1, const float scalar)
@@ -1061,7 +1074,7 @@ void mulMatrixScalar(matrix<N, M>& mat0, const matrix<N, M>& mat1, const float s
 			mat0(n, m) = mat1(n, m) * scalar;
 }
 //----------
-//行列積算
+//行列の乗算
 //※単純ループ版
 template<std::size_t N, std::size_t M, std::size_t NM>
 void mulMatrix(matrix<N, M>& mat0, const matrix<N, NM>& mat1, const matrix<NM, M>& mat2)
@@ -1085,7 +1098,7 @@ void testOpt07_Type1_Before(const int dummy, matrix<N, M>& add0, matrix<N, M>& m
 //【タイプ１】最適化後
 
 //----------
-//行列加算
+//行列の加算
 #if 1
 //※単純ループ版
 template<std::size_t N, std::size_t M>
@@ -1137,7 +1150,7 @@ void addMatrixOpt(matrix<N, M>& mat0, const matrix<N, M>& mat1, const matrix<N, 
 #endif
 #if 1
 //※4×4行列用特殊化
-#include <smmintrin.h>//SSE4.1用
+#include <xmmintrin.h>//SSE1用
 template<>
 void addMatrixOpt<4, 4>(matrix<4, 4>& mat0, const matrix<4, 4>& mat1, const matrix<4, 4>& mat2)
 {
@@ -1155,7 +1168,7 @@ void addMatrixOpt<4, 4>(matrix<4, 4>& mat0, const matrix<4, 4>& mat1, const matr
 #endif
 
 //----------
-//行列スカラー乗算
+//行列のスカラー倍
 #if 1
 //※単純ループ版
 template<std::size_t N, std::size_t M>
@@ -1207,7 +1220,7 @@ void mulMatrixScalarOpt(matrix<N, M>& mat0, const matrix<N, M>& mat1, const floa
 #endif
 #if 1
 //※4×4行列用特殊化
-#include <smmintrin.h>//SSE4.1用
+#include <xmmintrin.h>//SSE1用
 template<>
 void mulMatrixScalarOpt<4, 4>(matrix<4, 4>& mat0, const matrix<4, 4>& mat1, const float scalar)
 {
@@ -1225,7 +1238,7 @@ void mulMatrixScalarOpt<4, 4>(matrix<4, 4>& mat0, const matrix<4, 4>& mat1, cons
 #endif
 
 //----------
-//行列積算
+//行列の乗算
 #if 1
 //※単純ループ版
 template<std::size_t N, std::size_t M, std::size_t NM>
@@ -1280,7 +1293,7 @@ void mulMatrixOpt(matrix<N, M>& mat0, const matrix<N, NM>& mat1, const matrix<NM
 #endif
 #if 1
 //※4×4行列用特殊化
-#include <smmintrin.h>//SSE4.1用
+#include <smmintrin.h>//SSE4.1用 ※内積計算用命令の _mm_dp_ps を利用
 template<>
 void mulMatrixOpt<4, 4, 4>(matrix<4, 4>& mat0, const matrix<4, 4>& mat1, const matrix<4, 4>& mat2)
 {
@@ -1322,7 +1335,7 @@ void mulMatrixOpt<4, 4, 4>(matrix<4, 4>& mat0, const matrix<4, 4>& mat1, const m
 	};
 #endif
 #if 0
-	//行列を積算してmat0にストア（SSE4.1の内積命令使用）※ベタな処理
+	//行列を乗算してmat0にストア（SSE4.1の内積命令使用）※ベタな処理
 	_mm_store_ss(&mat0.value[0][0], _mm_dp_ps(_mat1[0], _mat2t[0], 0xf1));
 	_mm_store_ss(&mat0.value[0][1], _mm_dp_ps(_mat1[0], _mat2t[1], 0xf1));
 	_mm_store_ss(&mat0.value[0][2], _mm_dp_ps(_mat1[0], _mat2t[2], 0xf1));
@@ -1340,7 +1353,7 @@ void mulMatrixOpt<4, 4, 4>(matrix<4, 4>& mat0, const matrix<4, 4>& mat1, const m
 	_mm_store_ss(&mat0.value[3][2], _mm_dp_ps(_mat1[3], _mat2t[2], 0xf1));
 	_mm_store_ss(&mat0.value[3][3], _mm_dp_ps(_mat1[3], _mat2t[3], 0xf1));
 #else
-	//行列を積算してmat0にストア（SSE4.1の内積命令使用）※シャッフル活用
+	//行列を乗算してmat0にストア（SSE4.1の内積命令使用）※シャッフル活用
 	_mm_store_ps(mat0.value[0], _mm_shuffle_ps(_mm_unpacklo_ps(_mm_dp_ps(_mat1[0], _mat2t[0], 0xf1),
 	                                                           _mm_dp_ps(_mat1[0], _mat2t[1], 0xf1)),
 	                                           _mm_unpacklo_ps(_mm_dp_ps(_mat1[0], _mat2t[2], 0xf1),
@@ -1433,7 +1446,7 @@ std::size_t _strlen_fast(const char* str)
 	const std::size_t str_over = reinterpret_cast<intptr_t>(str) & 0xf;
 	if (str_over != 0)
 	{
-		//非16バイトアライメント時
+		//非16バイトアランイメント時
 		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
 		const int zf          = _mm_cmpistrz(null, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
 		const std::size_t pos = _mm_cmpistri(null, str16, flags);
@@ -1441,7 +1454,7 @@ std::size_t _strlen_fast(const char* str)
 			return pos;
 		p += (16 - str_over);
 	}
-	//16バイトアライメント時
+	//16バイトアランイメント時
 	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
 	while (true)
 	{
@@ -1469,7 +1482,7 @@ std::size_t _strnlen_fast(const char* str, const std::size_t max_len)
 	const std::size_t str_over = reinterpret_cast<intptr_t>(str)& 0xf;
 	if (str_over != 0)
 	{
-		//非16バイトアライメント時
+		//非16バイトアランイメント時
 		const __m128i str16   = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
 		const int zf          = _mm_cmpistrz(null, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
 		const std::size_t pos = _mm_cmpistri(null, str16, flags);
@@ -1481,7 +1494,7 @@ std::size_t _strnlen_fast(const char* str, const std::size_t max_len)
 		}
 		p += (16 - str_over);
 	}
-	//16バイトアライメント時
+	//16バイトアランイメント時
 	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
 	while (reinterpret_cast<const char*>(p128) <= p_end_16)
 	{
@@ -1508,17 +1521,25 @@ std::size_t _strnlen_fast(const char* str, const std::size_t max_len)
 }
 //----------
 //SSE版strcmp補助関数
+//アラインメント判定
+//戻り値:
+//  0 ... 16バイトアラインメント＋16バイトアラインメント
+//  1 ... 16バイトアラインメント＋非16バイトアラインメント
+//  2 ... 非16バイトアラインメント＋16バイトアラインメント
+//  3 ... 非16バイトアラインメント＋非16バイトアラインメント
 inline static int _str_case(const char* str1, const char* str2)
 {
 	return (((reinterpret_cast<intptr_t>(str1) & 0xf) != 0) << 0) |
 	       (((reinterpret_cast<intptr_t>(str2) & 0xf) != 0) << 1);
 }
+//文字の大小判定
+//戻り値: 0 ... 一致、1 ... val1の方が大きい、-1 ... val2の方が大きい
 inline static int _strcmp_compare(const int val1, const int val2)
 {
 	const int val = val1 - val2;
 	return (val >> 31) | (val != 0);
 }
-//SSE版strcmp:16バイトアライメント＋16バイトアライメント時
+//SSE版strcmp:16バイトアランイメント＋16バイトアランイメント時
 static int _strcmp_fast_case0(const char* str1, const char* str2)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -1544,7 +1565,7 @@ static int _strcmp_fast_case0(const char* str1, const char* str2)
 	}
 	return 0;//dummy
 }
-//SSE版strcmp:非16バイトアライメント＋16バイトアライメント時
+//SSE版strcmp:非16バイトアランイメント＋16バイトアランイメント時
 static int _strcmp_fast_case1(const char* str1, const char* str2)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -1570,7 +1591,7 @@ static int _strcmp_fast_case1(const char* str1, const char* str2)
 	}
 	return 0;//dummy
 }
-//SSE版strcmp:16バイトアライメント＋非16バイトアライメント時
+//SSE版strcmp:16バイトアランイメント＋非16バイトアランイメント時
 static int _strcmp_fast_case2(const char* str1, const char* str2)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -1596,7 +1617,7 @@ static int _strcmp_fast_case2(const char* str1, const char* str2)
 	}
 	return 0;//dummy
 }
-//SSE版strcmp:16バイトアライメント＋非16バイトアライメント時
+//SSE版strcmp:非16バイトアランイメント＋非16バイトアランイメント時
 static int _strcmp_fast_case3(const char* str1, const char* str2)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -1642,7 +1663,7 @@ int _strcmp_fast(const char* str1, const char* str2)
 	return _strcmp_fast_casex[_str_case(str1, str2)](str1, str2);
 }
 //----------
-//SSE版strncmp:16バイトアライメント＋16バイトアライメント時
+//SSE版strncmp:16バイトアランイメント＋16バイトアランイメント時
 static int _strncmp_fast_case0(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -1692,7 +1713,7 @@ static int _strncmp_fast_case0(const char* str1, const char* str2, const std::si
 	}
 	return 0;
 }
-//SSE版strncmp:非16バイトアライメント＋16バイトアライメント時
+//SSE版strncmp:非16バイトアランイメント＋16バイトアランイメント時
 static int _strncmp_fast_case1(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -1742,7 +1763,7 @@ static int _strncmp_fast_case1(const char* str1, const char* str2, const std::si
 	}
 	return 0;
 }
-//SSE版strncmp:16バイトアライメント＋非16バイトアライメント時
+//SSE版strncmp:16バイトアランイメント＋非16バイトアランイメント時
 static int _strncmp_fast_case2(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -1792,7 +1813,7 @@ static int _strncmp_fast_case2(const char* str1, const char* str2, const std::si
 	}
 	return 0;
 }
-//SSE版strncmp:16バイトアライメント＋非16バイトアライメント時
+//SSE版strncmp:非16バイトアランイメント＋非16バイトアランイメント時
 static int _strncmp_fast_case3(const char* str1, const char* str2, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -1874,7 +1895,7 @@ const char* _strchr_fast(const char* str, const char c)
 	const std::size_t str_over = reinterpret_cast<intptr_t>(str) & 0xf;
 	if (str_over != 0)
 	{
-		//非16バイトアライメント時
+		//非16バイトアランイメント時
 		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
 		const int cf          = _mm_cmpistrc(c16, str16, flags);//※この三行は、コンパイル後は1回の cmpistri になる（はず）
 		const int zf          = _mm_cmpistrz(c16, str16, flags);
@@ -1885,7 +1906,7 @@ const char* _strchr_fast(const char* str, const char c)
 			return nullptr;
 		p += (16 - str_over);
 	}
-	//16バイトアライメント時
+	//16バイトアランイメント時
 	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
 	while (true)
 	{
@@ -1915,7 +1936,7 @@ const char* _strrchr_fast(const char* str, const char c)
 	const std::size_t str_over = reinterpret_cast<intptr_t>(str) & 0xf;
 	if (str_over != 0)
 	{
-		//非16バイトアライメント時
+		//非16バイトアランイメント時
 		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
 		const int cf          = _mm_cmpistrc(c16, str16, flags);//※この三行は、コンパイル後は1回の cmpistri になる（はず）
 		const int zf          = _mm_cmpistrz(c16, str16, flags);
@@ -1926,7 +1947,7 @@ const char* _strrchr_fast(const char* str, const char c)
 			return found_p;
 		p += (16 - str_over);
 	}
-	//16バイトアライメント時
+	//16バイトアランイメント時
 	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
 	while (true)
 	{
@@ -1956,7 +1977,7 @@ static const char* _strstr_fast_2(const char* str, const char* pattern)
 	const std::size_t str_over = reinterpret_cast<intptr_t>(p) & 0xf;
 	if (str_over != 0)
 	{
-		//非16バイトアライメント時
+		//非16バイトアランイメント時
 		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
 		const int zf = _mm_cmpistrz(pattern_top_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
 		const int cf = _mm_cmpistrc(pattern_top_c16, str16, flags);
@@ -1977,7 +1998,7 @@ static const char* _strstr_fast_2(const char* str, const char* pattern)
 			return nullptr;
 		p += (16 - str_over);
 	}
-	//16バイトアライメント時
+	//16バイトアランイメント時
 	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
 	while (true)
 	{
@@ -2003,7 +2024,7 @@ static const char* _strstr_fast_2(const char* str, const char* pattern)
 	}
 	return nullptr;//dummy
 }
-//SSE版strstr補助関数:16バイトアライメント＋16バイトアライメント時
+//SSE版strstr補助関数:16バイトアランイメント＋16バイトアランイメント時
 //戻り値: 0 ... 不一致, 1 ... 一致, 2 ... strの方が短い
 static int _strstr_fast_cmp_case0(const char* str, const char* pattern)
 {
@@ -2030,7 +2051,7 @@ static int _strstr_fast_cmp_case0(const char* str, const char* pattern)
 	}
 	return 0;//dummy
 }
-//SSE版strstr補助関数:非16バイトアライメント＋16バイトアライメント時
+//SSE版strstr補助関数:非16バイトアランイメント＋16バイトアランイメント時
 //戻り値: 0 ... 不一致, 1 ... 一致, 2 ... strの方が短い
 static int _strstr_fast_cmp_case1(const char* str, const char* pattern)
 {
@@ -2057,7 +2078,7 @@ static int _strstr_fast_cmp_case1(const char* str, const char* pattern)
 	}
 	return 0;//dummy
 }
-//SSE版strstr補助関数:16バイトアライメント＋非16バイトアライメント時
+//SSE版strstr補助関数:16バイトアランイメント＋非16バイトアランイメント時
 //戻り値: 0 ... 不一致, 1 ... 一致, 2 ... strの方が短い
 static int _strstr_fast_cmp_case2(const char* str, const char* pattern)
 {
@@ -2084,7 +2105,7 @@ static int _strstr_fast_cmp_case2(const char* str, const char* pattern)
 	}
 	return 0;//dummy
 }
-//SSE版strstr補助関数:16バイトアライメント＋非16バイトアライメント時
+//SSE版strstr補助関数:非16バイトアランイメント＋非16バイトアランイメント時
 //戻り値: 0 ... 不一致, 1 ... 一致, 2 ... strの方が短い
 static int _strstr_fast_cmp_case3(const char* str, const char* pattern)
 {
@@ -2129,6 +2150,9 @@ inline static int _strstr_fast_cmp(const char* str, const char* pattern)
 //SSE版strstr
 const char* _strstr_fast(const char* str, const char* pattern)
 {
+//nullチェックしない
+//	if (!str || !pattern)
+//		return 0;
 #if 0//strchr_fast()とstrncmp_fast()を活用した単純な処理（遅いのでNG）
 	const std::size_t pattern_len = strlen_fast(pattern);
 	const char pattern_c = *pattern;
@@ -2144,9 +2168,6 @@ const char* _strstr_fast(const char* str, const char* pattern)
 	}
 	return nullptr;//dummy
 #else//SSE命令使用 ※このやり方がベストだが、VC++のstrstrよりもはるかに遅い（GCCのstrstrよりは速い）
-	//nullチェックしない
-	//	if (!str)
-	//		return 0;
 	//patternの長さに基づいて、処理を振り分ける
 	if (*pattern == '\0')//パターンが0文字の時
 		return str;
@@ -2170,7 +2191,7 @@ const char* _strstr_fast(const char* str, const char* pattern)
 	const std::size_t str_over = reinterpret_cast<intptr_t>(p)& 0xf;
 	if (str_over != 0)
 	{
-		//非16バイトアライメント時
+		//非16バイトアランイメント時
 		const __m128i str16 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p));
 		const int zf = _mm_cmpistrz(pattern_top_c16, str16, flags);//※この二行は、コンパイル後は1回の cmpistri になる（はず）
 		const int cf = _mm_cmpistrc(pattern_top_c16, str16, flags);
@@ -2203,7 +2224,7 @@ const char* _strstr_fast(const char* str, const char* pattern)
 			return nullptr;
 		p += (16 - str_over);
 	}
-	//16バイトアライメント時
+	//16バイトアランイメント時
 	const __m128i* p128 = reinterpret_cast<const __m128i*>(p);
 	while (true)
 	{
@@ -2243,13 +2264,18 @@ const char* _strstr_fast(const char* str, const char* pattern)
 #endif
 }
 //SSE版strstr_bm
-//※BM（Boyer-Moore）法バージョン
+//※BM法（Boyer-Moore法）バージョン
 //※文字列が長い時（とくにパターンが長い時）には有利なアルゴリズムだが、
-//　短い場合は、スキップ文字数を事前計算する分遅くなる
+//　短い場合は、スキップ文字数を事前計算する分遅くなる。
+//※コールバック処理を追加し、見つかったパターンを順次通知するような
+//　処理にすると、長いテキストの検索に威力を発揮する。
 const char* _strstrbm_fast(const char* str, const char* pattern)
 {
+//nullチェックしない
+//	if (!str || !pattern)
+//		return 0;
 #if 0//※SSE命令未使用版
-	std::size_t pattern_len = strlen_fast(pattern);
+	//patternの長さに基づいて、処理を振り分ける
 	if (*pattern == '\0')//パターンが0文字の時
 		return str;
 	if (*(pattern + 1) == '\0')//パターンが1文字の時
@@ -2258,14 +2284,17 @@ const char* _strstrbm_fast(const char* str, const char* pattern)
 			return nullptr;
 		return strchr(str, *pattern);
 	}
+	const std::size_t pattern_len = strlen_fast(pattern);
 	const std::size_t str_len = strlen_fast(str);
 	if (str_len < pattern_len)
 		return nullptr;
+	//パターン内の文字ごとに、照合失敗時のスキップ文字数を記録
 	int skip[256];
 	for (std::size_t i = 0; i < 256; ++i)
 		skip[i] = pattern_len;
 	for (std::size_t i = 0; i < pattern_len; ++i)
 		skip[static_cast<unsigned char>(pattern[i])] = pattern_len - i - 1;
+	//検索開始
 	const std::size_t pattern_term = pattern_len - 1;
 	const char* pattern_term_p = pattern + pattern_term;
 	const char* pattern_term_1_p = pattern_term_p - 1;
@@ -2318,7 +2347,6 @@ const char* _strstrbm_fast(const char* str, const char* pattern)
 	}
 	return nullptr;
 #else//※SSE命令使用版
-	const std::size_t pattern_len = strlen_fast(pattern);
 	if (*pattern == '\0')//パターンが0文字の時
 		return str;
 	if (*(pattern + 1) == '\0')//パターンが1文字の時
@@ -2327,14 +2355,17 @@ const char* _strstrbm_fast(const char* str, const char* pattern)
 			return nullptr;
 		return strchr(str, *pattern);
 	}
+	const std::size_t pattern_len = strlen_fast(pattern);
 	const std::size_t str_len = strnlen_fast(str, pattern_len);
 	if (str_len < pattern_len)
 		return nullptr;
+	//パターン内の文字ごとに、照合失敗時のスキップ文字数を記録
 	int skip[256];
 	for (std::size_t i = 0; i < 256; ++i)
 		skip[i] = pattern_len;
 	for (std::size_t i = 0; i < pattern_len; ++i)
 		skip[pattern[i]] = pattern_len - i - 1;
+	//検索開始
 	const std::size_t pattern_term = pattern_len - 1;
 	const char* pattern_term_p = pattern + pattern_term;
 	const char* pattern_term_1_p = pattern_term_p - 1;
@@ -2427,7 +2458,7 @@ const char* _strstr0_fast(const char* str, const char* pattern)
 //SSE版strcpy用補助関数
 #define _MEMCPY_M128I_TYPE 2// 0 ... memcpy() 使用
                             // 1 ... コピーサイズとアラインメントごとの関数
-                            // 2 ... コピーサイズごとの関数（アラインメント無視／16バイトの時だけアライメントで振り分け）
+                            // 2 ... コピーサイズごとの関数（アラインメント無視／16バイトの時だけアランイメントで振り分け）
                             // 3 ... _mm_maskmoveu_si128() 使用
 //SSE版strcpy用補助関数:_m128iからメモリへのコピー用関数
 //【OK】コピーサイズごとの関数を用意するやり方は、memcpy()を使うよりも速かった
@@ -2816,7 +2847,7 @@ inline static void _memcpy_m128i_u(char* dst, const __m128i src, const std::size
 	memcpy(dst, reinterpret_cast<const char*>(&src), len);
 #endif
 }
-//SSE版strcpy:16バイトアライメント＋16バイトアライメント時
+//SSE版strcpy:16バイトアランイメント＋16バイトアランイメント時
 static const char* _strcpy_fast_case0(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -2839,7 +2870,7 @@ static const char* _strcpy_fast_case0(char* dst, const char* src)
 	}
 	return nullptr;//dummy
 }
-//SSE版strcpy:非16バイトアライメント＋16バイトアライメント時
+//SSE版strcpy:非16バイトアランイメント＋16バイトアランイメント時
 static const char* _strcpy_fast_case1(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -2862,7 +2893,7 @@ static const char* _strcpy_fast_case1(char* dst, const char* src)
 	}
 	return nullptr;//dummy
 }
-//SSE版strcpy:16バイトアライメント＋非16バイトアライメント時
+//SSE版strcpy:16バイトアランイメント＋非16バイトアランイメント時
 static const char* _strcpy_fast_case2(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -2885,7 +2916,7 @@ static const char* _strcpy_fast_case2(char* dst, const char* src)
 	}
 	return nullptr;//dummy
 }
-//SSE版strcpy:16バイトアライメント＋非16バイトアライメント時
+//SSE版strcpy:非16バイトアランイメント＋非16バイトアランイメント時
 static const char* _strcpy_fast_case3(char* dst, const char* src)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -2958,7 +2989,7 @@ inline static void _memncpy_m128i_u(char* dst, const __m128i src, const std::siz
 	dst[len] = '\0';
 }
 #endif//STRNCPY_PADDING_ZERO
-//SSE版strncpy:16バイトアライメント＋16バイトアライメント時
+//SSE版strncpy:16バイトアランイメント＋16バイトアランイメント時
 static const char* _strncpy_fast_case0(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -2996,7 +3027,7 @@ static const char* _strncpy_fast_case0(char* dst, const char* src, const std::si
 	}
 	return dst;
 }
-//SSE版strncpy:非16バイトアライメント＋16バイトアライメント時
+//SSE版strncpy:非16バイトアランイメント＋16バイトアランイメント時
 static const char* _strncpy_fast_case1(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -3034,7 +3065,7 @@ static const char* _strncpy_fast_case1(char* dst, const char* src, const std::si
 	}
 	return dst;
 }
-//SSE版strncpy:16バイトアライメント＋非16バイトアライメント時
+//SSE版strncpy:16バイトアランイメント＋非16バイトアランイメント時
 static const char* _strncpy_fast_case2(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -3072,7 +3103,7 @@ static const char* _strncpy_fast_case2(char* dst, const char* src, const std::si
 	}
 	return dst;
 }
-//SSE版strncpy:非16バイトアライメント＋非16バイトアライメント時
+//SSE版strncpy:非16バイトアランイメント＋非16バイトアランイメント時
 static const char* _strncpy_fast_case3(char* dst, const char* src, const std::size_t max_len)
 {
 	static const int flags = _SIDD_SBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
@@ -3823,31 +3854,17 @@ int testOpt08_Type4_After2(const int value)
 //※ループとif文によるビット数計測
 int testOpt08_Type5_Before(const int value)
 {
-	int _value = value;
 	int bits = 0;
 	for (int i = 0; i < 32; ++i)
 	{
-		if (_value & 1)
+		if (value & (1 << i))
 			++bits;
-		_value >>= 1;
 	}
 	return bits;
 }
 //【タイプ５】最適化後１
-//※計算式のみによるビット数計測
-int testOpt08_Type5_After1(const int value)
-{
-	unsigned int bits = static_cast<unsigned int>(value);
-	bits = ((bits >> 1) & 0x55555555) + (bits & 0x55555555);
-	bits = ((bits >>  2) & 0x33333333) + (bits & 0x33333333);
-	bits = ((bits >>  4) & 0x0f0f0f0f) + (bits & 0x0f0f0f0f);
-	bits = ((bits >>  8) & 0x00ff00ff) + (bits & 0x00ff00ff);
-	bits = ((bits >> 16) & 0x0000ffff) + (bits & 0x0000ffff);
-	return static_cast<int>(bits);
-}
-//【タイプ５】最適化後２
 //※ベタ書きでビット数計測
-int testOpt08_Type5_After2(const int value)
+int testOpt08_Type5_After1(const int value)
 {
 	unsigned int bits =
 		((value & 0x00000001) != 0) +
@@ -3884,35 +3901,54 @@ int testOpt08_Type5_After2(const int value)
 		((value & 0x80000000) != 0);
 	return bits;
 }
+//【タイプ５】最適化後２
+//※計算式のみによるビット数計測
+inline int countBits(const int value)
+{
+	unsigned int bits = static_cast<unsigned int>(value);
+	bits = ((bits >>  1) & 0x55555555) + (bits & 0x55555555);//1ビットずつ16個の加算
+	bits = ((bits >>  2) & 0x33333333) + (bits & 0x33333333);//2ビットずつ8個の加算
+	bits = ((bits >>  4) & 0x0f0f0f0f) + (bits & 0x0f0f0f0f);//4ビットずつ4個の加算
+	bits = ((bits >>  8) & 0x00ff00ff) + (bits & 0x00ff00ff);//8ビットずつ2個の加算
+	bits = ((bits >> 16) & 0x0000ffff) + (bits & 0x0000ffff);//最終加算
+	return static_cast<int>(bits);
+}
+int testOpt08_Type5_After2(const int value)
+{
+	return countBits(value);
+}
+//【タイプ５】最適化後３
+//※更に最適化
+inline int countBits2(const int value)
+{
+	unsigned int bits = static_cast<unsigned int>(value);
+	bits = bits - ((bits >> 1) & 0x55555555);//2ビットずつ16個の減算
+	bits = ((bits >> 2) & 0x33333333) + (bits & 0x33333333);//2ビットずつ8個の加算 ※1ビットのずつ加算と同じ結果になる
+	bits = (((bits >> 4) + bits) & 0x0f0f0f0f);//4ビットずつ4個の加算 ※加算の繰り上げが隣の値まで及ばないのでマスクなしで加算可能
+	bits *= 0x01010101;//8ビットずつ4個の値をまとめて加算
+	                   //※上位から8ビットごとに [ 4個の加算値, 3個の加算値, 2個の加算値, 1個の値 ] という値ができ上がる
+	bits >>= 24;//上位8ビットを取り出す
+	return static_cast<int>(bits);
+}
+int testOpt08_Type5_After3(const int value)
+{
+	return countBits2(value);
+}
 
 //【タイプ６】最適化前
 //※ループとif文によるMSB(Most Significant Bit)数計測
 int testOpt08_Type6_Before(const int value)
 {
-	int _value = value;
 	for (int i = 31; i >= 0; --i)
 	{
-		if (_value & 0x80000000)
+		if (value & (1 << i))
 			return i;
-		_value <<= 1;
 	}
 	return -1;
 }
 //【タイプ６】最適化後１
-//※計算式のみによるMSB(Most Significant Bit)計測
-int testOpt08_Type6_After1(const int value)
-{
-	unsigned int bits = static_cast<unsigned int>(value);
-	bits = bits | (bits >> 16);
-	bits = bits | (bits >>  8);
-	bits = bits | (bits >>  4);
-	bits = bits | (bits >>  2);
-	bits = bits | (bits >>  1);
-	return bits == 0 ? -1 : testOpt08_Type5_After1(bits) - 1;
-}
-//【タイプ６】最適化後２
 //※ベタ書きでMSB(Most Significant Bit)計測
-int testOpt08_Type6_After2(const int value)
+int testOpt08_Type6_After1(const int value)
 {
 	if (value & 0x80000000) return 31;
 	if (value & 0x40000000) return 30;
@@ -3946,6 +3982,153 @@ int testOpt08_Type6_After2(const int value)
 	if (value & 0x00000004) return 2;
 	if (value & 0x00000002) return 1;
 	if (value & 0x00000001) return 0;
+	return -1;
+}
+//【タイプ６】最適化後２
+//※計算式のみによるMSB(Most Significant Bit)計測
+int testOpt08_Type6_After2(const int value)
+{
+	unsigned int bits = static_cast<unsigned int>(value);
+	bits |= (bits >> 16);//上位16ビットのビット数を倍にする
+	bits |= (bits >>  8);//上位24ビットのビット数を倍にする
+	bits |= (bits >>  4);//上位28ビットのビット数を倍にする
+	bits |= (bits >>  2);//上位30ビットのビット数を倍にする
+	bits |= (bits >>  1);//上位31ビットのビット数を倍にする
+	int bit = countBits2(static_cast<int>(bits));//ビット数を計測
+	--bit;//-1～31の値に調整
+	return bit;
+}
+//【タイプ６】最適化後３
+//※より少ない判定量でMSB(Most Significant Bit)計測
+int testOpt08_Type6_After3(const int value)
+{
+	int bit = 0;
+	unsigned int _value = static_cast<unsigned int>(value);
+	if (_value & 0xffff0000){ bit += 16; _value >>= 16; }//上位16ビット分のビット位置を計上
+	if (_value & 0x0000ff00){ bit +=  8; _value >>=  8; }//上位24ビット分のビット位置を計上
+	if (_value & 0x000000f0){ bit +=  4; _value >>=  4; }//上位28ビット分のビット位置を計上
+	if (_value & 0x0000000c){ bit +=  2; _value >>=  2; }//上位30ビット分のビット位置を計上
+	if (_value & 0x00000002){ ++bit;     _value >>=  1; }//上位31ビット分のビット位置を計上
+	if (_value & 0x00000001){ ++bit;                    }//全ビット分のビット位置を計上
+	--bit;//-1～31の値に調整
+	return bit;
+}
+//【タイプ６】最適化後４
+//※より少ない判定量でMSB(Most Significant Bit)計測
+int testOpt08_Type6_After4(const int value)
+{
+	int bit = 0;
+	unsigned int _value = static_cast<unsigned int>(value);
+	int shift;
+	shift = ((_value & 0xffff0000) != 0) << 4; bit += shift; _value >>= shift;//上位16ビット分のビット位置を計上
+	shift = ((_value & 0x0000ff00) != 0) << 3; bit += shift; _value >>= shift;//上位24ビット分のビット位置を計上
+	shift = ((_value & 0x000000f0) != 0) << 2; bit += shift; _value >>= shift;//上位28ビット分のビット位置を計上
+	shift = ((_value & 0x0000000c) != 0) << 1; bit += shift; _value >>= shift;//上位30ビット分のビット位置を計上
+	shift = ((_value & 0x00000002) != 0) << 0; bit += shift; _value >>= shift;//上位31ビット分のビット位置を計上
+	shift = ((_value & 0x00000001) != 0) << 0; bit += shift;                  //全ビット分のビット位置を計上
+	--bit;//-1～31の値に調整
+	return bit;
+}
+//【タイプ６】最適化後５
+//※より少ない判定量でMSB(Most Significant Bit)計測
+int testOpt08_Type6_After5(const int value)
+{
+	if (value != 0)
+		if (value & 0xffff0000)
+			if (value & 0xff000000)
+				if (value & 0xf0000000)
+					if (value & 0xc0000000)
+						if (value & 0x80000000)
+							return 31;
+						else//if(value & 0x40000000)
+							return 30;
+					else//if(value & 0x30000000)
+						if (value & 0x20000000)
+							return 29;
+						else//if(value & 0x10000000)
+							return 28;
+				else//if(value & 0x0f000000)
+					if (value & 0x0c000000)
+						if (value & 0x08000000)
+							return 27;
+						else//if(value & 0x04000000)
+							return 26;
+					else//if(value & 0x03000000)
+						if (value & 0x02000000)
+							return 25;
+						else//if(value & 0x01000000)
+							return 24;
+			else//if(value & 0x00ff0000)
+				if (value & 0x00f00000)
+					if (value & 0x00c00000)
+						if (value & 0x00800000)
+							return 23;
+						else//if(value & 0x00400000)
+							return 22;
+					else//if(value & 0x00300000)
+						if (value & 0x00200000)
+							return 21;
+						else//if(value & 0x00100000)
+							return 20;
+				else//if(value & 0x000f0000)
+					if (value & 0x000c0000)
+						if (value & 0x00080000)
+							return 19;
+						else//if(value & 0x00040000)
+							return 18;
+					else//if(value & 0x00030000)
+						if (value & 0x00020000)
+							return 17;
+						else//if(value & 0x00010000)
+							return 16;
+		else//if(value & 0x0000ffff)
+			if (value & 0x0000ff00)
+				if (value & 0x0000f000)
+					if (value & 0x0000c000)
+						if (value & 0x00008000)
+							return 15;
+						else//if(value & 0x00004000)
+							return 14;
+					else//if(value & 0x00003000)
+						if (value & 0x00002000)
+							return 13;
+						else//if(value & 0x00001000)
+							return 12;
+				else//if(value & 0x00000f00)
+					if (value & 0x00000c00)
+						if (value & 0x00000800)
+							return 11;
+						else//if(value & 0x00000400)
+							return 10;
+					else//if(value & 0x00000300)
+						if (value & 0x00000200)
+							return 9;
+						else//if(value & 0x00000100)
+							return 8;
+			else//if(value & 0x000000ff)
+				if (value & 0x000000f0)
+					if (value & 0x000000c0)
+						if (value & 0x00000080)
+							return 7;
+						else//if(value & 0x00000040)
+							return 6;
+					else//if(value & 0x00000030)
+						if (value & 0x00000020)
+							return 5;
+						else//if(value & 0x00000010)
+							return 4;
+				else//if(value & 0x0000000f)
+					if (value & 0x0000000c)
+						if (value & 0x00000008)
+							return 3;
+						else//if(value & 0x00000004)
+							return 2;
+					else//if(value & 0x00000003)
+						if (value & 0x00000002)
+							return 1;
+						else//if(value & 0x00000001)
+							return 0;
+	//else//if(value == 0)
 	return -1;
 }
 
@@ -3953,30 +4136,16 @@ int testOpt08_Type6_After2(const int value)
 //※ループとif文によるLSB(Last Significant Bit)数計測
 int testOpt08_Type7_Before(const int value)
 {
-	int _value = value;
 	for (int i = 0; i < 32; ++i)
 	{
-		if (_value & 1)
+		if (value & (1 << i))
 			return i;
-		_value >>= 1;
 	}
 	return -1;
 }
 //【タイプ７】最適化後１
 //※計算式のみによるLSB(Last Significant Bit)計測
 int testOpt08_Type7_After1(const int value)
-{
-	unsigned int bits = static_cast<unsigned int>(value);
-	bits = bits | (bits << 16);
-	bits = bits | (bits <<  8);
-	bits = bits | (bits <<  4);
-	bits = bits | (bits <<  2);
-	bits = bits | (bits <<  1);
-	return bits == 0 ? -1 : testOpt08_Type5_After1(~bits);
-}
-//【タイプ７】最適化後２
-//※計算式のみによるLSB(Last Significant Bit)計測
-int testOpt08_Type7_After2(const int value)
 {
 	if (value & 0x00000001) return 0;
 	if (value & 0x00000002) return 1;
@@ -4012,7 +4181,164 @@ int testOpt08_Type7_After2(const int value)
 	if (value & 0x80000000) return 31;
 	return -1;
 }
+//【タイプ７】最適化後２
+//※計算式のみによるLSB(Last Significant Bit)計測
+int testOpt08_Type7_After2(const int value)
+{
+	unsigned int bits = static_cast<unsigned int>(value);
+	bits |= (bits << 16);//下位16ビットのビット数を倍にする
+	bits |= (bits <<  8);//下位24ビットのビット数を倍にする
+	bits |= (bits <<  4);//下位28ビットのビット数を倍にする
+	bits |= (bits <<  2);//下位30ビットのビット数を倍にする
+	bits |= (bits <<  1);//下位31ビットのビット数を倍にする
+	int bit = countBits2(static_cast<int>(bits));//ビット数を計測
+	--bit;//-1～31の値に調整
+	const int sign = bit >> 31;//符号（-1か0）を取得
+	bit = 31 - bit;//ビット番号反転（0～32の値になる）
+	bit |= sign;//符号を合成して -1～31の値に調整
+	return bit;
+}
+//【タイプ７】最適化後３
+//※より少ない判定量でLSB(Last Significant Bit)計測
+int testOpt08_Type7_After3(const int value)
+{
+	int bit = 0;
+	unsigned int _value = static_cast<unsigned int>(value);
+	if (_value & 0x0000ffff){ bit -= 16; _value <<= 16; }//下位16ビット分のビット位置を計上
+	if (_value & 0x00ff0000){ bit -=  8; _value <<=  8; }//下位24ビット分のビット位置を計上
+	if (_value & 0x0f000000){ bit -=  4; _value <<=  4; }//下位28ビット分のビット位置を計上
+	if (_value & 0x30000000){ bit -=  2; _value <<=  2; }//下位30ビット分のビット位置を計上
+	if (_value & 0x40000000){ --bit;     _value <<=  1; }//下位31ビット分のビット位置を計上
+	if (_value & 0x80000000){ --bit;                    }//全ビット分のビット位置を計上
+	int sign = (bit ^ 0x80000000);//符号ビットを取得
+	sign >>= 31;//符号を-1か0に拡張
+	bit += 32;//ビット番号を調整（0～32の値になる）
+	bit |= sign;//符号を合成して -1～31の値に調整
+	return bit;
+}
+//【タイプ７】最適化後４
+//※より少ない判定量でLSB(Last Significant Bit)計測
+int testOpt08_Type7_After4(const int value)
+{
+	int bit = 0;
+	unsigned int _value = static_cast<unsigned int>(value);
+	int shift;
+	shift = ((_value & 0x0000ffff) != 0) << 4; bit -= shift; _value <<= shift;//下位16ビット分のビット位置を計上
+	shift = ((_value & 0x00ff0000) != 0) << 3; bit -= shift; _value <<= shift;//下位24ビット分のビット位置を計上
+	shift = ((_value & 0x0f000000) != 0) << 2; bit -= shift; _value <<= shift;//下位28ビット分のビット位置を計上
+	shift = ((_value & 0x30000000) != 0) << 1; bit -= shift; _value <<= shift;//下位30ビット分のビット位置を計上
+	shift = ((_value & 0x40000000) != 0) << 0; bit -= shift; _value <<= shift;//下位31ビット分のビット位置を計上
+	shift = ((_value & 0x80000000) != 0) << 0; bit -= shift;                  //全ビット分のビット位置を計上
+	int sign = (bit ^ 0x80000000);//符号ビットを取得
+	sign >>= 31;//符号を-1か0に拡張
+	bit += 32;//ビット番号を調整（0～32の値になる）
+	bit |= sign;//符号を合成して -1～31の値に調整
+	return bit;
+}
+//【タイプ７】最適化後５
+//※より少ない判定量でLSB(Last Significant Bit)計測
+int testOpt08_Type7_After5(const int value)
+{
+	if (value != 0)
+		if (value & 0x0000ffff)
+			if (value & 0x000000ff)
+				if (value & 0x0000000f)
+					if (value & 0x00000003)
+						if (value & 0x00000001)
+							return 0;
+						else//if(value & 0x00000002)
+							return 1;
+					else//if(value & 0x0000000c)
+						if (value & 0x00000004)
+							return 2;
+						else//if(value & 0x00000008)
+							return 3;
+				else//if(value & 0x000000f0)
+					if (value & 0x00000030)
+						if (value & 0x00000010)
+							return 4;
+						else//if(value & 0x00000020)
+							return 5;
+					else//if(value & 0x000000c0)
+						if (value & 0x00000040)
+							return 6;
+						else//if(value & 0x00000080)
+							return 7;
+			else//if(value & 0x0000ff00)
+				if (value & 0x00000f00)
+					if (value & 0x00000300)
+						if (value & 0x00000100)
+							return 8;
+						else//if(value & 0x00000200)
+							return 9;
+					else//if(value & 0x00000c00)
+						if (value & 0x00000400)
+							return 10;
+						else//if(value & 0x00000800)
+							return 11;
+				else//if(value & 0x0000f000)
+					if (value & 0x00003000)
+						if (value & 0x00001000)
+							return 12;
+						else//if(value & 0x00002000)
+							return 13;
+					else//if(value & 0x0000c000)
+						if (value & 0x00004000)
+							return 14;
+						else//if(value & 0x00008000)
+							return 15;
+		else//if(value & 0xffff0000)
+			if (value & 0x00ff0000)
+				if (value & 0x000f0000)
+					if (value & 0x00030000)
+						if (value & 0x00010000)
+							return 16;
+						else//if(value & 0x00020000)
+							return 17;
+					else//if(value & 0x000c0000)
+						if (value & 0x00040000)
+							return 18;
+						else//if(value & 0x00080000)
+							return 19;
+				else//if(value & 0x00f00000)
+					if (value & 0x00300000)
+						if (value & 0x00100000)
+							return 20;
+						else//if(value & 0x00200000)
+							return 21;
+					else//if(value & 0x00c00000)
+						if (value & 0x00400000)
+							return 22;
+						else//if(value & 0x00800000)
+							return 23;
+			else//if(value & 0xff000000)
+				if (value & 0x0f000000)
+					if (value & 0x03000000)
+						if (value & 0x01000000)
+							return 24;
+						else//if(value & 0x02000000)
+							return 25;
+					else//if(value & 0x0c000000)
+						if (value & 0x04000000)
+							return 26;
+						else//if(value & 0x08000000)
+							return 27;
+				else//if(value & 0xf0000000)
+					if (value & 0x30000000)
+						if (value & 0x10000000)
+							return 28;
+						else//if(value & 0x20000000)
+							return 29;
+					else//if(value & 0xc0000000)
+						if (value & 0x40000000)
+							return 30;
+						else//if(value & 0x80000000)
+							return 31;
+	//else//if (value == 0x0)
+	return -1;
+}
 
+#if 0//インライン関数化
 //【タイプ８】最適化前
 //※if文による絶対値計算
 int testOpt08_Type8_Before(const int value)
@@ -4021,28 +4347,50 @@ int testOpt08_Type8_Before(const int value)
 		return -value;
 	return value;
 }
-//【タイプ８】最適化後１
+//【タイプ８】最適化後
+//※計算式のみによる絶対値計算
+int testOpt08_Type8_After(const int value)
+{
+#if 1
+	const int sign = value >> 31;//符号（-1か0）を取得
+	return (sign ^ value) - sign;//正の数の時: (0x00000000 ^ value) -  0 => value
+	                             //負の数の時: (0xffffffff ^ value) - -1 => ~value + 1
+#elif 1
+	//インラインアセンブラ：パターン１
+	__asm
+	{
+		mov    eax, value
+		cdq
+		xor    eax, edx
+		sub    eax, edx
+	}
+#else
+	//インラインアセンブラ：パターン２
+	__asm
+	{
+		mov    eax, value
+		mov    ecx, eax
+		neg    ecx
+		cmovns eax, ecx
+	}
+#endif
+}
+//【タイプ８】【参考１】
 //※三項演算子による絶対値計算
-int testOpt08_Type8_After1(const int value)
+int testOpt08_Type8_Appendix1(const int value)
 {
 	return value < 0 ? -value : value;
 }
-//【タイプ８】最適化後２
-//※計算式のみによる絶対値計算
-int testOpt08_Type8_After2(const int value)
+//【タイプ８】【参考２】
+//※標準ライブラリによる絶対値算出
+#include <stdlib.h>
+int testOpt08_Type8_Appendix2(const int value)
 {
-	const int _value = value >> 31;
-	return (_value ^ value) - _value;
-	//  mov   ecx, eax
-	//  sar   eax, 31
-	//  xor   ecx, eax
-	//  sub   ecx, eax
-	//[for P6]
-	//  mov   ecx, eax
-	//  neg   eax
-	//  cmovs eax, ecx
+	return abs(value);
 }
+#endif
 
+#if 0//インライン関数化
 //【タイプ９】最適化前
 //※if文による符号取得
 int testOpt08_Type9_Before(const int value)
@@ -4053,27 +4401,44 @@ int testOpt08_Type9_Before(const int value)
 		return 1;
 	return 0;
 }
-//【タイプ９】最適化後１
+//【タイプ９】最適化後
+//※計算式のみによる符号取得
+int testOpt08_Type9_After(const int value)
+{
+#if 1
+	const int sign = value >> 31;//符号（-1か0）を取得
+	const int nz = value != 0;//非ゼロ判定
+	return sign | nz;
+#else
+	//インラインアセンブラ
+	__asm
+	{
+		mov    eax, value
+		xor    ecx, ecx
+		test   eax, eax
+		setne  cl
+		cdq
+		mov    eax, edx
+		or     eax, ecx
+	}
+#endif
+}
+//【タイプ９】【参考】
 //※三項演算子による符号取得
-int testOpt08_Type9_After1(const int value)
+int testOpt08_Type9_Appendix(const int value)
 {
 	return value < 0 ? -1 : value > 0 ? 1 : 0;
 }
-//【タイプ９】最適化後２
-//※計算式のみによる符号取得
-int testOpt08_Type9_After2(const int value)
-{
-	return (value >> 31) | (value != 0);
-}
+#endif
 
 //----------------------------------------
 //最適化⑨：ループ回数の削減：ループアンローリング
 
 //【タイプ１】初期化
-void initOpt08_t1(dataOpt08_t1& data)
+void initOpt09_t1(dataOpt09_t1& data)
 {
 	std::mt19937 rnd_engine;
-	std::uniform_int_distribution<int> rnd_dist(0, dataOpt08_t1::elem_t::VALUE_RANGE - 1);
+	std::uniform_int_distribution<int> rnd_dist(0, dataOpt09_t1::elem_t::VALUE_RANGE - 1);
 	for (auto& elem : data.elems)
 	{
 		elem.value = rnd_dist(rnd_engine);
@@ -4081,7 +4446,7 @@ void initOpt08_t1(dataOpt08_t1& data)
 }
 //【タイプ１】最適化前
 //※加算ループ
-int testOpt09_Type1_Before(dataOpt08_t1& data)
+int testOpt09_Type1_Before(dataOpt09_t1& data)
 {
 	int sum = 0;
 	for (int i = 0; i < static_cast<int>(extentof(data.elems)); ++i)
@@ -4092,7 +4457,7 @@ int testOpt09_Type1_Before(dataOpt08_t1& data)
 }
 //【タイプ１】最適化後１
 //※減算ループ
-int testOpt09_Type1_After1(dataOpt08_t1& data)
+int testOpt09_Type1_After1(dataOpt09_t1& data)
 {
 	int sum = 0;
 	for (int i = static_cast<int>(extentof(data.elems)) - 1; i >= 0; --i)
@@ -4103,11 +4468,11 @@ int testOpt09_Type1_After1(dataOpt08_t1& data)
 }
 //【タイプ１】最適化後２
 //※ポインタループ展開
-int testOpt09_Type1_After2(dataOpt08_t1& data)
+int testOpt09_Type1_After2(dataOpt09_t1& data)
 {
 	int sum = 0;
-	const dataOpt08_t1::elem_t* elem_end = data.elems + extentof(data.elems);
-	for (const dataOpt08_t1::elem_t* elem = data.elems; elem < elem_end; ++elem)
+	const dataOpt09_t1::elem_t* elem_end = data.elems + extentof(data.elems);
+	for (const dataOpt09_t1::elem_t* elem = data.elems; elem < elem_end; ++elem)
 	{
 		sum += elem->value;
 	}
@@ -4115,59 +4480,92 @@ int testOpt09_Type1_After2(dataOpt08_t1& data)
 }
 //【タイプ１】最適化後３
 //※自前ループアンローリング×２
-int testOpt09_Type1_After3(dataOpt08_t1& data)
+int testOpt09_Type1_After3(dataOpt09_t1& data)
 {
 	int sum = 0;
-	const dataOpt08_t1::elem_t* elem_end = data.elems + extentof(data.elems);
-	for (const dataOpt08_t1::elem_t* elem = data.elems; elem < elem_end;)
+	for (int i = 0; i < static_cast<int>(extentof(data.elems)); i += 2)
 	{
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
+		const dataOpt09_t1::elem_t* _elem0 = &data.elems[i];
+		const dataOpt09_t1::elem_t* _elem1 = _elem0 + 1;
+		sum += _elem0->value;
+		sum += _elem1->value;
 	}
 	return sum;
 }
 //【タイプ１】最適化後４
 //※自前ループアンローリング×４
-int testOpt09_Type1_After4(dataOpt08_t1& data)
+int testOpt09_Type1_After4(dataOpt09_t1& data)
 {
 	int sum = 0;
-	const dataOpt08_t1::elem_t* elem_end = data.elems + extentof(data.elems);
-	for (const dataOpt08_t1::elem_t* elem = data.elems; elem < elem_end;)
+	for (int i = 0; i < static_cast<int>(extentof(data.elems)); i += 4)
 	{
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
+		const dataOpt09_t1::elem_t* _elem0 = &data.elems[i];
+		const dataOpt09_t1::elem_t* _elem1 = _elem0 + 1;
+		const dataOpt09_t1::elem_t* _elem2 = _elem1 + 1;
+		const dataOpt09_t1::elem_t* _elem3 = _elem2 + 1;
+		sum += _elem0->value;
+		sum += _elem1->value;
+		sum += _elem2->value;
+		sum += _elem3->value;
 	}
 	return sum;
 }
 //【タイプ１】最適化後５
-//※自前ループアンローリング×１０
-int testOpt09_Type1_After5(dataOpt08_t1& data)
+//※自前ループアンローリング×２０
+int testOpt09_Type1_After5(dataOpt09_t1& data)
 {
 	int sum = 0;
-	const dataOpt08_t1::elem_t* elem_end = data.elems + extentof(data.elems);
-	for (const dataOpt08_t1::elem_t* elem = data.elems; elem < elem_end;)
+	for (int i = 0; i < static_cast<int>(extentof(data.elems)); i += 20)
 	{
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
-		sum += elem->value; ++elem;
+		const dataOpt09_t1::elem_t* _elem0 = &data.elems[i];
+		const dataOpt09_t1::elem_t* _elem1 = _elem0 + 1;
+		const dataOpt09_t1::elem_t* _elem2 = _elem1 + 1;
+		const dataOpt09_t1::elem_t* _elem3 = _elem2 + 1;
+		const dataOpt09_t1::elem_t* _elem4 = _elem3 + 1;
+		const dataOpt09_t1::elem_t* _elem5 = _elem4 + 1;
+		const dataOpt09_t1::elem_t* _elem6 = _elem5 + 1;
+		const dataOpt09_t1::elem_t* _elem7 = _elem6 + 1;
+		const dataOpt09_t1::elem_t* _elem8 = _elem7 + 1;
+		const dataOpt09_t1::elem_t* _elem9 = _elem8 + 1;
+		const dataOpt09_t1::elem_t* _elem10 = _elem9 + 1;
+		const dataOpt09_t1::elem_t* _elem11 = _elem10 + 1;
+		const dataOpt09_t1::elem_t* _elem12 = _elem11 + 1;
+		const dataOpt09_t1::elem_t* _elem13 = _elem12 + 1;
+		const dataOpt09_t1::elem_t* _elem14 = _elem13 + 1;
+		const dataOpt09_t1::elem_t* _elem15 = _elem14 + 1;
+		const dataOpt09_t1::elem_t* _elem16 = _elem15 + 1;
+		const dataOpt09_t1::elem_t* _elem17 = _elem16 + 1;
+		const dataOpt09_t1::elem_t* _elem18 = _elem17 + 1;
+		const dataOpt09_t1::elem_t* _elem19 = _elem18 + 1;
+		sum += _elem0->value;
+		sum += _elem1->value;
+		sum += _elem2->value;
+		sum += _elem3->value;
+		sum += _elem4->value;
+		sum += _elem5->value;
+		sum += _elem6->value;
+		sum += _elem7->value;
+		sum += _elem8->value;
+		sum += _elem9->value;
+		sum += _elem10->value;
+		sum += _elem11->value;
+		sum += _elem12->value;
+		sum += _elem13->value;
+		sum += _elem14->value;
+		sum += _elem15->value;
+		sum += _elem16->value;
+		sum += _elem17->value;
+		sum += _elem18->value;
+		sum += _elem19->value;
 	}
 	return sum;
 }
 //【タイプ１】【参考】C++11でもっとも簡潔な記述（遅い）
 //※C++11 範囲に基づくforループ
-int testOpt09_Type1_Appendix(dataOpt08_t1& data)
+int testOpt09_Type1_Appendix(dataOpt09_t1& data)
 {
 	int sum = 0;
-	for (const dataOpt08_t1::elem_t& elem : data.elems)
+	for (const dataOpt09_t1::elem_t& elem : data.elems)
 	{
 		sum += elem.value;
 	}
@@ -4175,10 +4573,10 @@ int testOpt09_Type1_Appendix(dataOpt08_t1& data)
 }
 
 //【タイプ２】初期化
-void initOpt08_t2(dataOpt08_t2& data)
+void initOpt09_t2(dataOpt09_t2& data)
 {
 	std::mt19937 rnd_engine;
-	std::uniform_int_distribution<int> rnd_dist(0, dataOpt08_t2::elem_t::VALUE_RANGE - 1);
+	std::uniform_int_distribution<int> rnd_dist(0, dataOpt09_t2::elem_t::VALUE_RANGE - 1);
 	for (auto& elem : data.elems)
 	{
 		elem.value1 = rnd_dist(rnd_engine);
@@ -4189,7 +4587,7 @@ void initOpt08_t2(dataOpt08_t2& data)
 }
 //【タイプ２】最適化前
 //※加算ループ
-int testOpt09_Type2_Before(dataOpt08_t2& data)
+int testOpt09_Type2_Before(dataOpt09_t2& data)
 {
 	int sum = 0;
 	for (int i = 0; i < static_cast<int>(extentof(data.elems)); ++i)
@@ -4200,7 +4598,7 @@ int testOpt09_Type2_Before(dataOpt08_t2& data)
 }
 //【タイプ２】最適化後２
 //※減算ループ
-int testOpt09_Type2_After1(dataOpt08_t2& data)
+int testOpt09_Type2_After1(dataOpt09_t2& data)
 {
 	int sum = 0;
 	for (int i = static_cast<int>(extentof(data.elems)) - 1; i >= 0; --i)
@@ -4211,11 +4609,11 @@ int testOpt09_Type2_After1(dataOpt08_t2& data)
 }
 //【タイプ２】最適化後２
 //※ポインタループ展開
-int testOpt09_Type2_After2(dataOpt08_t2& data)
+int testOpt09_Type2_After2(dataOpt09_t2& data)
 {
 	int sum = 0;
-	const dataOpt08_t2::elem_t* elem_end = data.elems + extentof(data.elems);
-	for (const dataOpt08_t2::elem_t* elem = data.elems; elem < elem_end; ++elem)
+	const dataOpt09_t2::elem_t* elem_end = data.elems + extentof(data.elems);
+	for (const dataOpt09_t2::elem_t* elem = data.elems; elem < elem_end; ++elem)
 	{
 		sum += (elem->value2 - elem->value1);
 	}
@@ -4223,59 +4621,112 @@ int testOpt09_Type2_After2(dataOpt08_t2& data)
 }
 //【タイプ２】最適化後３
 //※自前ループアンローリング×２
-int testOpt09_Type2_After3(dataOpt08_t2& data)
+int testOpt09_Type2_After3(dataOpt09_t2& data)
 {
 	int sum = 0;
-	const dataOpt08_t2::elem_t* elem_end = data.elems + extentof(data.elems);
-	for (const dataOpt08_t2::elem_t* elem = data.elems; elem < elem_end;)
+	for (int i = 0; i < static_cast<int>(extentof(data.elems)); i += 2)
 	{
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
+		const dataOpt09_t2::elem_t* _elem0 = &data.elems[i];
+		const dataOpt09_t2::elem_t* _elem1 = _elem0 + 1;
+		sum += (_elem0->value2 - _elem0->value1);
+		sum += (_elem1->value2 - _elem1->value1);
 	}
 	return sum;
 }
 //【タイプ２】最適化後４
 //※自前ループアンローリング×４
-int testOpt09_Type2_After4(dataOpt08_t2& data)
+int testOpt09_Type2_After4(dataOpt09_t2& data)
 {
 	int sum = 0;
-	const dataOpt08_t2::elem_t* elem_end = data.elems + extentof(data.elems);
-	for (const dataOpt08_t2::elem_t* elem = data.elems; elem < elem_end;)
+	for (int i = 0; i < static_cast<int>(extentof(data.elems)); i += 4)
 	{
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
+		const dataOpt09_t2::elem_t* _elem0 = &data.elems[i];
+		const dataOpt09_t2::elem_t* _elem1 = _elem0 + 1;
+		const dataOpt09_t2::elem_t* _elem2 = _elem1 + 1;
+		const dataOpt09_t2::elem_t* _elem3 = _elem2 + 1;
+		sum += (_elem0->value2 - _elem0->value1);
+		sum += (_elem1->value2 - _elem1->value1);
+		sum += (_elem2->value2 - _elem2->value1);
+		sum += (_elem3->value2 - _elem3->value1);
 	}
 	return sum;
 }
 //【タイプ２】最適化後５
 //※自前ループアンローリング×２０
-int testOpt09_Type2_After5(dataOpt08_t2& data)
+int testOpt09_Type2_After5(dataOpt09_t2& data)
 {
 	int sum = 0;
-	const dataOpt08_t2::elem_t* elem_end = data.elems + extentof(data.elems);
-	for (const dataOpt08_t2::elem_t* elem = data.elems; elem < elem_end;)
+	for (int i = 0; i < static_cast<int>(extentof(data.elems)); i += 20)
 	{
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
+		const dataOpt09_t2::elem_t* _elem0 = &data.elems[i];
+		const dataOpt09_t2::elem_t* _elem1 = _elem0 + 1;
+		const dataOpt09_t2::elem_t* _elem2 = _elem1 + 1;
+		const dataOpt09_t2::elem_t* _elem3 = _elem2 + 1;
+		const dataOpt09_t2::elem_t* _elem4 = _elem3 + 1;
+		const dataOpt09_t2::elem_t* _elem5 = _elem4 + 1;
+		const dataOpt09_t2::elem_t* _elem6 = _elem5 + 1;
+		const dataOpt09_t2::elem_t* _elem7 = _elem6 + 1;
+		const dataOpt09_t2::elem_t* _elem8 = _elem7 + 1;
+		const dataOpt09_t2::elem_t* _elem9 = _elem8 + 1;
+		const dataOpt09_t2::elem_t* _elem10 = _elem9 + 1;
+		const dataOpt09_t2::elem_t* _elem11 = _elem10 + 1;
+		const dataOpt09_t2::elem_t* _elem12 = _elem11 + 1;
+		const dataOpt09_t2::elem_t* _elem13 = _elem12 + 1;
+		const dataOpt09_t2::elem_t* _elem14 = _elem13 + 1;
+		const dataOpt09_t2::elem_t* _elem15 = _elem14 + 1;
+		const dataOpt09_t2::elem_t* _elem16 = _elem15 + 1;
+		const dataOpt09_t2::elem_t* _elem17 = _elem16 + 1;
+		const dataOpt09_t2::elem_t* _elem18 = _elem17 + 1;
+		const dataOpt09_t2::elem_t* _elem19 = _elem18 + 1;
+		sum += (_elem0->value2 - _elem0->value1);
+		sum += (_elem1->value2 - _elem1->value1);
+		sum += (_elem2->value2 - _elem2->value1);
+		sum += (_elem3->value2 - _elem3->value1);
+		sum += (_elem4->value2 - _elem4->value1);
+		sum += (_elem5->value2 - _elem5->value1);
+		sum += (_elem6->value2 - _elem6->value1);
+		sum += (_elem7->value2 - _elem7->value1);
+		sum += (_elem8->value2 - _elem8->value1);
+		sum += (_elem9->value2 - _elem9->value1);
+		sum += (_elem10->value2 - _elem10->value1);
+		sum += (_elem11->value2 - _elem11->value1);
+		sum += (_elem12->value2 - _elem12->value1);
+		sum += (_elem13->value2 - _elem13->value1);
+		sum += (_elem14->value2 - _elem14->value1);
+		sum += (_elem15->value2 - _elem15->value1);
+		sum += (_elem16->value2 - _elem16->value1);
+		sum += (_elem17->value2 - _elem17->value1);
+		sum += (_elem18->value2 - _elem18->value1);
+		sum += (_elem19->value2 - _elem19->value1);
 	}
 	return sum;
 }
+//【タイプ２】最適化後６
+//※自前ループアンローリング×４をSIMD演算
+#include <xmmintrin.h>//SSE1用
+int testOpt09_Type2_After6(dataOpt09_t2& data)
+{
+	__m128i sum = _mm_setzero_si128();
+	for (int i = 0; i < static_cast<int>(extentof(data.elems)); i += 4)
+	{
+		const dataOpt09_t2::elem_t* _elem0 = &data.elems[i];
+		const dataOpt09_t2::elem_t* _elem1 = _elem0 + 1;
+		const dataOpt09_t2::elem_t* _elem2 = _elem1 + 1;
+		const dataOpt09_t2::elem_t* _elem3 = _elem2 + 1;
+		const __m128i _sub = _mm_sub_epi32(_mm_set_epi32(_elem0->value2, _elem1->value2, _elem2->value2, _elem3->value2),
+		                                   _mm_set_epi32(_elem0->value1, _elem1->value1, _elem2->value1, _elem3->value1));
+		sum = _mm_add_epi32(sum, _sub);
+	}
+	sum = _mm_add_epi32(sum, _mm_srli_si128(sum, 8));
+	sum = _mm_add_epi32(sum, _mm_srli_si128(sum, 4));
+	return *reinterpret_cast<int*>(&sum);
+}
 //【タイプ２】【参考】C++11でもっとも簡潔な記述（遅い）
 //※C++11 範囲に基づくforループ
-int testOpt09_Type2_Appendix(dataOpt08_t2& data)
+int testOpt09_Type2_Appendix(dataOpt09_t2& data)
 {
 	int sum = 0;
-	for (const dataOpt08_t2::elem_t& elem : data.elems)
+	for (const dataOpt09_t2::elem_t& elem : data.elems)
 	{
 		sum += (elem.value2 - elem.value1);
 	}
@@ -4284,7 +4735,7 @@ int testOpt09_Type2_Appendix(dataOpt08_t2& data)
 
 //【タイプ３】最適化前
 //※加算ループ
-int testOpt09_Type3_Before(dataOpt08_t2::elem_t* elems, const std::size_t num)
+int testOpt09_Type3_Before(dataOpt09_t2::elem_t* elems, const std::size_t num)
 {
 	int sum = 0;
 	for (int i = 0; i < static_cast<int>(num); ++i)
@@ -4295,7 +4746,7 @@ int testOpt09_Type3_Before(dataOpt08_t2::elem_t* elems, const std::size_t num)
 }
 //【タイプ３】最適化後３
 //※減算ループ
-int testOpt09_Type3_After1(dataOpt08_t2::elem_t* elems, const std::size_t num)
+int testOpt09_Type3_After1(dataOpt09_t2::elem_t* elems, const std::size_t num)
 {
 	int sum = 0;
 	for (int i = static_cast<int>(num) - 1; i >= 0; --i)
@@ -4306,11 +4757,11 @@ int testOpt09_Type3_After1(dataOpt08_t2::elem_t* elems, const std::size_t num)
 }
 //【タイプ３】最適化後３
 //※ポインタループ展開
-int testOpt09_Type3_After2(dataOpt08_t2::elem_t* elems, const std::size_t num)
+int testOpt09_Type3_After2(dataOpt09_t2::elem_t* elems, const std::size_t num)
 {
 	int sum = 0;
-	const dataOpt08_t2::elem_t* elem_end = elems + num;
-	for (const dataOpt08_t2::elem_t* elem = elems; elem < elem_end; ++elem)
+	const dataOpt09_t2::elem_t* elem = elems;
+	for (int i = static_cast<int>(num) - 1; i >= 0; --i, ++elem)
 	{
 		sum += (elem->value2 - elem->value1);
 	}
@@ -4318,52 +4769,109 @@ int testOpt09_Type3_After2(dataOpt08_t2::elem_t* elems, const std::size_t num)
 }
 //【タイプ３】最適化後３
 //※自前ループアンローリング×３
-int testOpt09_Type3_After3(dataOpt08_t2::elem_t* elems, const std::size_t num)
+int testOpt09_Type3_After3(dataOpt09_t2::elem_t* elems, const std::size_t num)
 {
 	int sum = 0;
-	const dataOpt08_t2::elem_t* elem_end = elems + num;
-	for (const dataOpt08_t2::elem_t* elem = elems; elem < elem_end;)
+	const dataOpt09_t2::elem_t* elem = elems;
+	for (int i = static_cast<int>(num)-1; i >= 0; i -= 2, elem += 2)
 	{
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
+		const dataOpt09_t2::elem_t* _elem0 = elem;
+		const dataOpt09_t2::elem_t* _elem1 = _elem0 + 1;
+		sum += (_elem0->value2 - _elem0->value1);
+		sum += (_elem1->value2 - _elem1->value1);
 	}
 	return sum;
 }
 //【タイプ３】最適化後４
 //※自前ループアンローリング×４
-int testOpt09_Type3_After4(dataOpt08_t2::elem_t* elems, const std::size_t num)
+int testOpt09_Type3_After4(dataOpt09_t2::elem_t* elems, const std::size_t num)
 {
 	int sum = 0;
-	const dataOpt08_t2::elem_t* elem_end = elems + num;
-	for (const dataOpt08_t2::elem_t* elem = elems; elem < elem_end;)
+	const dataOpt09_t2::elem_t* elem = elems;
+	for (int i = static_cast<int>(num)-1; i >= 0; i -= 4, elem += 4)
 	{
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
+		const dataOpt09_t2::elem_t* _elem0 = elem;
+		const dataOpt09_t2::elem_t* _elem1 = _elem0 + 1;
+		const dataOpt09_t2::elem_t* _elem2 = _elem1 + 1;
+		const dataOpt09_t2::elem_t* _elem3 = _elem2 + 1;
+		sum += (_elem0->value2 - _elem0->value1);
+		sum += (_elem1->value2 - _elem1->value1);
+		sum += (_elem2->value2 - _elem2->value1);
+		sum += (_elem3->value2 - _elem3->value1);
 	}
 	return sum;
 }
 //【タイプ３】最適化後５
-//※自前ループアンローリング×３０
-int testOpt09_Type3_After5(dataOpt08_t2::elem_t* elems, const std::size_t num)
+//※自前ループアンローリング×２０
+int testOpt09_Type3_After5(dataOpt09_t2::elem_t* elems, const std::size_t num)
 {
 	int sum = 0;
-	const dataOpt08_t2::elem_t* elem_end = elems + num;
-	for (const dataOpt08_t2::elem_t* elem = elems; elem < elem_end;)
+	const dataOpt09_t2::elem_t* elem = elems;
+	for (int i = static_cast<int>(num) - 1; i >= 0; i -= 20, elem += 20)
 	{
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
-		sum += (elem->value2 - elem->value1); ++elem;
+		const dataOpt09_t2::elem_t* _elem0 = elem;
+		const dataOpt09_t2::elem_t* _elem1 = _elem0 + 1;
+		const dataOpt09_t2::elem_t* _elem2 = _elem1 + 1;
+		const dataOpt09_t2::elem_t* _elem3 = _elem2 + 1;
+		const dataOpt09_t2::elem_t* _elem4 = _elem3 + 1;
+		const dataOpt09_t2::elem_t* _elem5 = _elem4 + 1;
+		const dataOpt09_t2::elem_t* _elem6 = _elem5 + 1;
+		const dataOpt09_t2::elem_t* _elem7 = _elem6 + 1;
+		const dataOpt09_t2::elem_t* _elem8 = _elem7 + 1;
+		const dataOpt09_t2::elem_t* _elem9 = _elem8 + 1;
+		const dataOpt09_t2::elem_t* _elem10 = _elem9 + 1;
+		const dataOpt09_t2::elem_t* _elem11 = _elem10 + 1;
+		const dataOpt09_t2::elem_t* _elem12 = _elem11 + 1;
+		const dataOpt09_t2::elem_t* _elem13 = _elem12 + 1;
+		const dataOpt09_t2::elem_t* _elem14 = _elem13 + 1;
+		const dataOpt09_t2::elem_t* _elem15 = _elem14 + 1;
+		const dataOpt09_t2::elem_t* _elem16 = _elem15 + 1;
+		const dataOpt09_t2::elem_t* _elem17 = _elem16 + 1;
+		const dataOpt09_t2::elem_t* _elem18 = _elem17 + 1;
+		const dataOpt09_t2::elem_t* _elem19 = _elem18 + 1;
+		sum += (_elem0->value2 - _elem0->value1);
+		sum += (_elem1->value2 - _elem1->value1);
+		sum += (_elem2->value2 - _elem2->value1);
+		sum += (_elem3->value2 - _elem3->value1);
+		sum += (_elem4->value2 - _elem4->value1);
+		sum += (_elem5->value2 - _elem5->value1);
+		sum += (_elem6->value2 - _elem6->value1);
+		sum += (_elem7->value2 - _elem7->value1);
+		sum += (_elem8->value2 - _elem8->value1);
+		sum += (_elem9->value2 - _elem9->value1);
+		sum += (_elem10->value2 - _elem10->value1);
+		sum += (_elem11->value2 - _elem11->value1);
+		sum += (_elem12->value2 - _elem12->value1);
+		sum += (_elem13->value2 - _elem13->value1);
+		sum += (_elem14->value2 - _elem14->value1);
+		sum += (_elem15->value2 - _elem15->value1);
+		sum += (_elem16->value2 - _elem16->value1);
+		sum += (_elem17->value2 - _elem17->value1);
+		sum += (_elem18->value2 - _elem18->value1);
+		sum += (_elem19->value2 - _elem19->value1);
 	}
 	return sum;
+}
+//【タイプ３】最適化後６
+//※自前ループアンローリング×４をSIMD演算
+#include <xmmintrin.h>//SSE1用
+int testOpt09_Type3_After6(dataOpt09_t2::elem_t* elems, const std::size_t num)
+{
+	__m128i sum = _mm_setzero_si128();
+	const dataOpt09_t2::elem_t* elem = elems;
+	for (int i = static_cast<int>(num)-1; i >= 0; i -= 4, elem += 4)
+	{
+		const dataOpt09_t2::elem_t* _elem0 = elem;
+		const dataOpt09_t2::elem_t* _elem1 = _elem0 + 1;
+		const dataOpt09_t2::elem_t* _elem2 = _elem1 + 1;
+		const dataOpt09_t2::elem_t* _elem3 = _elem2 + 1;
+		const __m128i _sub = _mm_sub_epi32(_mm_set_epi32(_elem0->value2, _elem1->value2, _elem2->value2, _elem3->value2),
+		                                   _mm_set_epi32(_elem0->value1, _elem1->value1, _elem2->value1, _elem3->value1));
+		sum = _mm_add_epi32(sum, _sub);
+	}
+	sum = _mm_add_epi32(sum, _mm_srli_si128(sum, 8));
+	sum = _mm_add_epi32(sum, _mm_srli_si128(sum, 4));
+	return *reinterpret_cast<int*>(&sum);
 }
 
 //----------------------------------------

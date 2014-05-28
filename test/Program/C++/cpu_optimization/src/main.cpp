@@ -19,7 +19,7 @@
 	static const int LOOP_OPT04_TYPE4 = 1;
 	//最適化⑤：乗算／除算の抑制：シフト演算や加減算に変更
 	static const int LOOP_OPT05_TYPE1 = 1;
-	//最適化⑥：乗算／除算の抑制：演算の共通化
+	//最適化⑥：乗算／除算の抑制：計算結果の共通利用
 	static const int LOOP_OPT06_TYPE1 = 1;
 	//最適化⑦：SIMD演算の活用
 	static const int LOOP_OPT07_TYPE1 = 1;
@@ -56,7 +56,7 @@
 			static const int LOOP_OPT04_TYPE4 = 10000000;
 			//最適化⑤：乗算／除算の抑制：シフト演算や加減算に変更
 			static const int LOOP_OPT05_TYPE1 = 100000;
-			//最適化⑥：乗算／除算の抑制：演算の共通化
+			//最適化⑥：乗算／除算の抑制：計算結果の共通利用
 			static const int LOOP_OPT06_TYPE1 = 1000;
 			//最適化⑦：SIMD演算の活用
 			static const int LOOP_OPT07_TYPE1 = 100000;
@@ -69,12 +69,12 @@
 			static const int LOOP_OPT08_TYPE5 = 100000;
 			static const int LOOP_OPT08_TYPE6 = 100000;
 			static const int LOOP_OPT08_TYPE7 = 100000;
-			static const int LOOP_OPT08_TYPE8 = 1000000;
-			static const int LOOP_OPT08_TYPE9 = 1000000;
+			static const int LOOP_OPT08_TYPE8 = 100000;
+			static const int LOOP_OPT08_TYPE9 = 100000;
 			//最適化⑨：ループ回数の削減：ループアンローリング
 			static const int LOOP_OPT09_TYPE1 = 100000;
-			static const int LOOP_OPT09_TYPE2 = 50000;
-			static const int LOOP_OPT09_TYPE3 = 50000;
+			static const int LOOP_OPT09_TYPE2 = 10000;
+			static const int LOOP_OPT09_TYPE3 = 10000;
 		#else//_DEBUG
 			//最適化①：メモリアクセスの抑制：一時変数の活用
 			static const int LOOP_OPT01_TYPE1 = 100000;
@@ -91,7 +91,7 @@
 			static const int LOOP_OPT04_TYPE4 = 100000000;
 			//最適化⑤：乗算／除算の抑制：シフト演算や加減算に変更
 			static const int LOOP_OPT05_TYPE1 = 10000000;
-			//最適化⑥：乗算／除算の抑制：演算の共通化
+			//最適化⑥：乗算／除算の抑制：計算結果の共通利用
 			static const int LOOP_OPT06_TYPE1 = 10000;
 			//最適化⑦：SIMD演算の活用
 			static const int LOOP_OPT07_TYPE1 = 10000000;
@@ -104,12 +104,12 @@
 			static const int LOOP_OPT08_TYPE5 = 10000000;
 			static const int LOOP_OPT08_TYPE6 = 10000000;
 			static const int LOOP_OPT08_TYPE7 = 10000000;
-			static const int LOOP_OPT08_TYPE8 = 100000000;
-			static const int LOOP_OPT08_TYPE9 = 100000000;
+			static const int LOOP_OPT08_TYPE8 = 10000000;
+			static const int LOOP_OPT08_TYPE9 = 10000000;
 			//最適化⑨：ループ回数の削減：ループアンローリング
 			static const int LOOP_OPT09_TYPE1 = 100000;
-			static const int LOOP_OPT09_TYPE2 = 50000;
-			static const int LOOP_OPT09_TYPE3 = 50000;
+			static const int LOOP_OPT09_TYPE2 = 10000;
+			static const int LOOP_OPT09_TYPE3 = 10000;
 		#endif//_DEBUG
 	#else//_ELEMENT_SIZE < 1000
 		#ifdef _DEBUG
@@ -128,7 +128,7 @@
 			static const int LOOP_OPT04_TYPE4 = 10000000;
 			//最適化⑤：乗算／除算の抑制：シフト演算や加減算に変更
 			static const int LOOP_OPT05_TYPE1 = 1000000;
-			//最適化⑥：乗算／除算の抑制：演算の共通化
+			//最適化⑥：乗算／除算の抑制：計算結果の共通利用
 			static const int LOOP_OPT06_TYPE1 = 100000;
 			//最適化⑦：SIMD演算の活用
 			static const int LOOP_OPT07_TYPE1 = 100000;
@@ -141,12 +141,12 @@
 			static const int LOOP_OPT08_TYPE5 = 100000;
 			static const int LOOP_OPT08_TYPE6 = 100000;
 			static const int LOOP_OPT08_TYPE7 = 100000;
-			static const int LOOP_OPT08_TYPE8 = 1000000;
-			static const int LOOP_OPT08_TYPE9 = 1000000;
+			static const int LOOP_OPT08_TYPE8 = 100000;
+			static const int LOOP_OPT08_TYPE9 = 100000;
 			//最適化⑨：ループ回数の削減：ループアンローリング
 			static const int LOOP_OPT09_TYPE1 = 100000;
-			static const int LOOP_OPT09_TYPE2 = 50000;
-			static const int LOOP_OPT09_TYPE3 = 50000;
+			static const int LOOP_OPT09_TYPE2 = 10000;
+			static const int LOOP_OPT09_TYPE3 = 10000;
 		#else//_DEBUG
 			//最適化①：メモリアクセスの抑制：一時変数の活用
 			static const int LOOP_OPT01_TYPE1 = 10000000;
@@ -163,7 +163,7 @@
 			static const int LOOP_OPT04_TYPE4 = 100000000;
 			//最適化⑤：乗算／除算の抑制：シフト演算や加減算に変更
 			static const int LOOP_OPT05_TYPE1 = 10000000;
-			//最適化⑥：乗算／除算の抑制：演算の共通化
+			//最適化⑥：乗算／除算の抑制：計算結果の共通利用
 			static const int LOOP_OPT06_TYPE1 = 1000000;
 			//最適化⑦：SIMD演算の活用
 			static const int LOOP_OPT07_TYPE1 = 100000000;
@@ -176,12 +176,12 @@
 			static const int LOOP_OPT08_TYPE5 = 10000000;
 			static const int LOOP_OPT08_TYPE6 = 10000000;
 			static const int LOOP_OPT08_TYPE7 = 10000000;
-			static const int LOOP_OPT08_TYPE8 = 100000000;
-			static const int LOOP_OPT08_TYPE9 = 100000000;
+			static const int LOOP_OPT08_TYPE8 = 10000000;
+			static const int LOOP_OPT08_TYPE9 = 10000000;
 			//最適化⑨：ループ回数の削減：ループアンローリング
 			static const int LOOP_OPT09_TYPE1 = 10000000;
-			static const int LOOP_OPT09_TYPE2 = 5000000;
-			static const int LOOP_OPT09_TYPE3 = 5000000;
+			static const int LOOP_OPT09_TYPE2 = 1000000;
+			static const int LOOP_OPT09_TYPE3 = 1000000;
 		#endif//_DEBUG
 	#endif//_ELEMENT_SIZE < 1000
 #endif//NOLOOP
@@ -1098,7 +1098,7 @@ void runTestOpt05_Type1_Before()
 		                              r2, r3, r4, r5, r10, r16, r24);
 	}
 	printElapsedTimeWithoutCR(prev_time);
-	printf("  sum=%df\n", sum);
+	printf("  sum=%d\n", sum);
 }
 //最適化後
 void runTestOpt05_Type1_After()
@@ -1119,11 +1119,11 @@ void runTestOpt05_Type1_After()
 		                             r2, r3, r4, r5, r10, r16, r24);
 	}
 	printElapsedTimeWithoutCR(prev_time);
-	printf("  sum=%df\n", sum);
+	printf("  sum=%d\n", sum);
 }
 
 //----------------------------------------
-//最適化⑥：乗算／除算の抑制：演算の共通化
+//最適化⑥：乗算／除算の抑制：計算結果の共通利用
 void runTestOpt06()
 {
 	printf("----------------------------------------\n");
@@ -1162,18 +1162,22 @@ void runTestOpt06_Type1_Before(dataOpt06_t& data, const float mul1, const float 
 {
 	printf("  Before   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
 	for (int loop = 0; loop < LOOP_OPT06_TYPE1; ++loop)
-		testOpt06_Type1_Before(data, mul1, mul2, div);
-	printElapsedTime(prev_time);
+		sum += testOpt06_Type1_Before(data, mul1, mul2, div);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.f\n", sum);
 }
 //最適化後
 void runTestOpt06_Type1_After(dataOpt06_t& data, const float mul1, const float mul2, const float div)
 {
 	printf("  After    ... ");
 	const auto prev_time = std::chrono::system_clock::now();
+	float sum = 0.f;
 	for (int loop = 0; loop < LOOP_OPT06_TYPE1; ++loop)
-		testOpt06_Type1_After(data, mul1, mul2, div);
-	printElapsedTime(prev_time);
+		sum += testOpt06_Type1_After(data, mul1, mul2, div);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%.f\n", sum);
 }
 
 //----------------------------------------
@@ -2473,7 +2477,8 @@ void runTestOpt08_Type1_Before(const int value1, const int value2, const int val
 		sum += testOpt08_Type1_Before(value3);
 		sum += testOpt08_Type1_Before(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後１
 void runTestOpt08_Type1_After1(const int value1, const int value2, const int value3, const int value4)
@@ -2488,7 +2493,8 @@ void runTestOpt08_Type1_After1(const int value1, const int value2, const int val
 		sum += testOpt08_Type1_After1(value3);
 		sum += testOpt08_Type1_After1(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後２
 void runTestOpt08_Type1_After2(const int value1, const int value2, const int value3, const int value4)
@@ -2503,7 +2509,8 @@ void runTestOpt08_Type1_After2(const int value1, const int value2, const int val
 		sum += testOpt08_Type1_After2(value3);
 		sum += testOpt08_Type1_After2(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後３
 void runTestOpt08_Type1_After3(const int value1, const int value2, const int value3, const int value4)
@@ -2518,7 +2525,8 @@ void runTestOpt08_Type1_After3(const int value1, const int value2, const int val
 		sum += testOpt08_Type1_After3(value3);
 		sum += testOpt08_Type1_After3(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //【タイプ２】
 void runTestOpt08_Type2()
@@ -2555,7 +2563,8 @@ void runTestOpt08_Type2_Before(const int value1, const int value2, const int val
 		sum += testOpt08_Type2_Before(value3);
 		sum += testOpt08_Type2_Before(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後１
 void runTestOpt08_Type2_After1(const int value1, const int value2, const int value3, const int value4)
@@ -2570,7 +2579,8 @@ void runTestOpt08_Type2_After1(const int value1, const int value2, const int val
 		sum += testOpt08_Type2_After1(value3);
 		sum += testOpt08_Type2_After1(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後２
 void runTestOpt08_Type2_After2(const int value1, const int value2, const int value3, const int value4)
@@ -2585,7 +2595,8 @@ void runTestOpt08_Type2_After2(const int value1, const int value2, const int val
 		sum += testOpt08_Type2_After2(value3);
 		sum += testOpt08_Type2_After2(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後３
 void runTestOpt08_Type2_After3(const int value1, const int value2, const int value3, const int value4)
@@ -2600,7 +2611,8 @@ void runTestOpt08_Type2_After3(const int value1, const int value2, const int val
 		sum += testOpt08_Type2_After3(value3);
 		sum += testOpt08_Type2_After3(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 
 //【タイプ３】
@@ -2632,7 +2644,8 @@ void runTestOpt08_Type3_Before(const int value1, const int value2, const int val
 		sum += testOpt08_Type3_Before(value1, value2);
 		sum += testOpt08_Type3_Before(value3, value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後
 void runTestOpt08_Type3_After(const int value1, const int value2, const int value3, const int value4)
@@ -2645,7 +2658,8 @@ void runTestOpt08_Type3_After(const int value1, const int value2, const int valu
 		sum += testOpt08_Type3_After(value1, value2);
 		sum += testOpt08_Type3_After(value3, value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 
 //【タイプ４】
@@ -2681,7 +2695,8 @@ void runTestOpt08_Type4_Before(const int value1, const int value2, const int val
 		sum += testOpt08_Type4_Before(value3);
 		sum += testOpt08_Type4_Before(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後１
 void runTestOpt08_Type4_After1(const int value1, const int value2, const int value3, const int value4)
@@ -2696,7 +2711,8 @@ void runTestOpt08_Type4_After1(const int value1, const int value2, const int val
 		sum += testOpt08_Type4_After1(value3);
 		sum += testOpt08_Type4_After1(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後２
 void runTestOpt08_Type4_After2(const int value1, const int value2, const int value3, const int value4)
@@ -2711,7 +2727,8 @@ void runTestOpt08_Type4_After2(const int value1, const int value2, const int val
 		sum += testOpt08_Type4_After2(value3);
 		sum += testOpt08_Type4_After2(value4);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 
 //【タイプ５】
@@ -2730,9 +2747,11 @@ void runTestOpt08_Type5()
 	extern void runTestOpt08_Type5_Before(const int value1, const int value2, const int value3, const int value4);
 	extern void runTestOpt08_Type5_After1(const int value1, const int value2, const int value3, const int value4);
 	extern void runTestOpt08_Type5_After2(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type5_After3(const int value1, const int value2, const int value3, const int value4);
 	runTestOpt08_Type5_Before(value1, value2, value3, value4);
 	runTestOpt08_Type5_After1(value1, value2, value3, value4);
 	runTestOpt08_Type5_After2(value1, value2, value3, value4);
+	runTestOpt08_Type5_After3(value1, value2, value3, value4);
 }
 //最適化前
 void runTestOpt08_Type5_Before(const int value1, const int value2, const int value3, const int value4)
@@ -2746,8 +2765,17 @@ void runTestOpt08_Type5_Before(const int value1, const int value2, const int val
 		sum += testOpt08_Type5_Before(value2);
 		sum += testOpt08_Type5_Before(value3);
 		sum += testOpt08_Type5_Before(value4);
+		sum += testOpt08_Type5_Before(value1 & 0xffff0000);
+		sum += testOpt08_Type5_Before(value2 & 0xffff0000);
+		sum += testOpt08_Type5_Before(value3 & 0xffff0000);
+		sum += testOpt08_Type5_Before(value4 & 0xffff0000);
+		sum += testOpt08_Type5_Before(value1 & 0x0000ffff);
+		sum += testOpt08_Type5_Before(value2 & 0x0000ffff);
+		sum += testOpt08_Type5_Before(value3 & 0x0000ffff);
+		sum += testOpt08_Type5_Before(value4 & 0x0000ffff);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後１
 void runTestOpt08_Type5_After1(const int value1, const int value2, const int value3, const int value4)
@@ -2761,8 +2789,17 @@ void runTestOpt08_Type5_After1(const int value1, const int value2, const int val
 		sum += testOpt08_Type5_After1(value2);
 		sum += testOpt08_Type5_After1(value3);
 		sum += testOpt08_Type5_After1(value4);
+		sum += testOpt08_Type5_After1(value1 & 0xffff0000);
+		sum += testOpt08_Type5_After1(value2 & 0xffff0000);
+		sum += testOpt08_Type5_After1(value3 & 0xffff0000);
+		sum += testOpt08_Type5_After1(value4 & 0xffff0000);
+		sum += testOpt08_Type5_After1(value1 & 0x0000ffff);
+		sum += testOpt08_Type5_After1(value2 & 0x0000ffff);
+		sum += testOpt08_Type5_After1(value3 & 0x0000ffff);
+		sum += testOpt08_Type5_After1(value4 & 0x0000ffff);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後２
 void runTestOpt08_Type5_After2(const int value1, const int value2, const int value3, const int value4)
@@ -2776,8 +2813,41 @@ void runTestOpt08_Type5_After2(const int value1, const int value2, const int val
 		sum += testOpt08_Type5_After2(value2);
 		sum += testOpt08_Type5_After2(value3);
 		sum += testOpt08_Type5_After2(value4);
+		sum += testOpt08_Type5_After2(value1 & 0xffff0000);
+		sum += testOpt08_Type5_After2(value2 & 0xffff0000);
+		sum += testOpt08_Type5_After2(value3 & 0xffff0000);
+		sum += testOpt08_Type5_After2(value4 & 0xffff0000);
+		sum += testOpt08_Type5_After2(value1 & 0x0000ffff);
+		sum += testOpt08_Type5_After2(value2 & 0x0000ffff);
+		sum += testOpt08_Type5_After2(value3 & 0x0000ffff);
+		sum += testOpt08_Type5_After2(value4 & 0x0000ffff);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
+}
+//最適化後３
+void runTestOpt08_Type5_After3(const int value1, const int value2, const int value3, const int value4)
+{
+	printf("  After3   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT08_TYPE5; ++loop)
+	{
+		sum += testOpt08_Type5_After3(value1);
+		sum += testOpt08_Type5_After3(value2);
+		sum += testOpt08_Type5_After3(value3);
+		sum += testOpt08_Type5_After3(value4);
+		sum += testOpt08_Type5_After3(value1 & 0xffff0000);
+		sum += testOpt08_Type5_After3(value2 & 0xffff0000);
+		sum += testOpt08_Type5_After3(value3 & 0xffff0000);
+		sum += testOpt08_Type5_After3(value4 & 0xffff0000);
+		sum += testOpt08_Type5_After3(value1 & 0x0000ffff);
+		sum += testOpt08_Type5_After3(value2 & 0x0000ffff);
+		sum += testOpt08_Type5_After3(value3 & 0x0000ffff);
+		sum += testOpt08_Type5_After3(value4 & 0x0000ffff);
+	}
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 
 //【タイプ６】
@@ -2796,9 +2866,15 @@ void runTestOpt08_Type6()
 	extern void runTestOpt08_Type6_Before(const int value1, const int value2, const int value3, const int value4);
 	extern void runTestOpt08_Type6_After1(const int value1, const int value2, const int value3, const int value4);
 	extern void runTestOpt08_Type6_After2(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type6_After3(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type6_After4(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type6_After5(const int value1, const int value2, const int value3, const int value4);
 	runTestOpt08_Type6_Before(value1, value2, value3, value4);
 	runTestOpt08_Type6_After1(value1, value2, value3, value4);
 	runTestOpt08_Type6_After2(value1, value2, value3, value4);
+	runTestOpt08_Type6_After3(value1, value2, value3, value4);
+	runTestOpt08_Type6_After4(value1, value2, value3, value4);
+	runTestOpt08_Type6_After5(value1, value2, value3, value4);
 }
 //最適化前
 void runTestOpt08_Type6_Before(const int value1, const int value2, const int value3, const int value4)
@@ -2812,8 +2888,17 @@ void runTestOpt08_Type6_Before(const int value1, const int value2, const int val
 		sum += testOpt08_Type6_Before(value2);
 		sum += testOpt08_Type6_Before(value3);
 		sum += testOpt08_Type6_Before(value4);
+		sum += testOpt08_Type6_Before(value1 & 0xffff0000);
+		sum += testOpt08_Type6_Before(value2 & 0xffff0000);
+		sum += testOpt08_Type6_Before(value3 & 0xffff0000);
+		sum += testOpt08_Type6_Before(value4 & 0xffff0000);
+		sum += testOpt08_Type6_Before(value1 & 0x0000ffff);
+		sum += testOpt08_Type6_Before(value2 & 0x0000ffff);
+		sum += testOpt08_Type6_Before(value3 & 0x0000ffff);
+		sum += testOpt08_Type6_Before(value4 & 0x0000ffff);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後１
 void runTestOpt08_Type6_After1(const int value1, const int value2, const int value3, const int value4)
@@ -2827,8 +2912,17 @@ void runTestOpt08_Type6_After1(const int value1, const int value2, const int val
 		sum += testOpt08_Type6_After1(value2);
 		sum += testOpt08_Type6_After1(value3);
 		sum += testOpt08_Type6_After1(value4);
+		sum += testOpt08_Type6_After1(value1 & 0xffff0000);
+		sum += testOpt08_Type6_After1(value2 & 0xffff0000);
+		sum += testOpt08_Type6_After1(value3 & 0xffff0000);
+		sum += testOpt08_Type6_After1(value4 & 0xffff0000);
+		sum += testOpt08_Type6_After1(value1 & 0x0000ffff);
+		sum += testOpt08_Type6_After1(value2 & 0x0000ffff);
+		sum += testOpt08_Type6_After1(value3 & 0x0000ffff);
+		sum += testOpt08_Type6_After1(value4 & 0x0000ffff);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後２
 void runTestOpt08_Type6_After2(const int value1, const int value2, const int value3, const int value4)
@@ -2842,8 +2936,89 @@ void runTestOpt08_Type6_After2(const int value1, const int value2, const int val
 		sum += testOpt08_Type6_After2(value2);
 		sum += testOpt08_Type6_After2(value3);
 		sum += testOpt08_Type6_After2(value4);
+		sum += testOpt08_Type6_After2(value1 & 0xffff0000);
+		sum += testOpt08_Type6_After2(value2 & 0xffff0000);
+		sum += testOpt08_Type6_After2(value3 & 0xffff0000);
+		sum += testOpt08_Type6_After2(value4 & 0xffff0000);
+		sum += testOpt08_Type6_After2(value1 & 0x0000ffff);
+		sum += testOpt08_Type6_After2(value2 & 0x0000ffff);
+		sum += testOpt08_Type6_After2(value3 & 0x0000ffff);
+		sum += testOpt08_Type6_After2(value4 & 0x0000ffff);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
+}
+//最適化後３
+void runTestOpt08_Type6_After3(const int value1, const int value2, const int value3, const int value4)
+{
+	printf("  After3   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT08_TYPE6; ++loop)
+	{
+		sum += testOpt08_Type6_After3(value1);
+		sum += testOpt08_Type6_After3(value2);
+		sum += testOpt08_Type6_After3(value3);
+		sum += testOpt08_Type6_After3(value4);
+		sum += testOpt08_Type6_After3(value1 & 0xffff0000);
+		sum += testOpt08_Type6_After3(value2 & 0xffff0000);
+		sum += testOpt08_Type6_After3(value3 & 0xffff0000);
+		sum += testOpt08_Type6_After3(value4 & 0xffff0000);
+		sum += testOpt08_Type6_After3(value1 & 0x0000ffff);
+		sum += testOpt08_Type6_After3(value2 & 0x0000ffff);
+		sum += testOpt08_Type6_After3(value3 & 0x0000ffff);
+		sum += testOpt08_Type6_After3(value4 & 0x0000ffff);
+	}
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
+}
+//最適化後４
+void runTestOpt08_Type6_After4(const int value1, const int value2, const int value3, const int value4)
+{
+	printf("  After4   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT08_TYPE6; ++loop)
+	{
+		sum += testOpt08_Type6_After4(value1);
+		sum += testOpt08_Type6_After4(value2);
+		sum += testOpt08_Type6_After4(value3);
+		sum += testOpt08_Type6_After4(value4);
+		sum += testOpt08_Type6_After4(value1 & 0xffff0000);
+		sum += testOpt08_Type6_After4(value2 & 0xffff0000);
+		sum += testOpt08_Type6_After4(value3 & 0xffff0000);
+		sum += testOpt08_Type6_After4(value4 & 0xffff0000);
+		sum += testOpt08_Type6_After4(value1 & 0x0000ffff);
+		sum += testOpt08_Type6_After4(value2 & 0x0000ffff);
+		sum += testOpt08_Type6_After4(value3 & 0x0000ffff);
+		sum += testOpt08_Type6_After4(value4 & 0x0000ffff);
+	}
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
+}
+//最適化後５
+void runTestOpt08_Type6_After5(const int value1, const int value2, const int value3, const int value4)
+{
+	printf("  After5   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT08_TYPE6; ++loop)
+	{
+		sum += testOpt08_Type6_After5(value1);
+		sum += testOpt08_Type6_After5(value2);
+		sum += testOpt08_Type6_After5(value3);
+		sum += testOpt08_Type6_After5(value4);
+		sum += testOpt08_Type6_After5(value1 & 0xffff0000);
+		sum += testOpt08_Type6_After5(value2 & 0xffff0000);
+		sum += testOpt08_Type6_After5(value3 & 0xffff0000);
+		sum += testOpt08_Type6_After5(value4 & 0xffff0000);
+		sum += testOpt08_Type6_After5(value1 & 0x0000ffff);
+		sum += testOpt08_Type6_After5(value2 & 0x0000ffff);
+		sum += testOpt08_Type6_After5(value3 & 0x0000ffff);
+		sum += testOpt08_Type6_After5(value4 & 0x0000ffff);
+	}
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 
 //【タイプ７】
@@ -2862,9 +3037,15 @@ void runTestOpt08_Type7()
 	extern void runTestOpt08_Type7_Before(const int value1, const int value2, const int value3, const int value4);
 	extern void runTestOpt08_Type7_After1(const int value1, const int value2, const int value3, const int value4);
 	extern void runTestOpt08_Type7_After2(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type7_After3(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type7_After4(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type7_After5(const int value1, const int value2, const int value3, const int value4);
 	runTestOpt08_Type7_Before(value1, value2, value3, value4);
 	runTestOpt08_Type7_After1(value1, value2, value3, value4);
 	runTestOpt08_Type7_After2(value1, value2, value3, value4);
+	runTestOpt08_Type7_After3(value1, value2, value3, value4);
+	runTestOpt08_Type7_After4(value1, value2, value3, value4);
+	runTestOpt08_Type7_After5(value1, value2, value3, value4);
 }
 //最適化前
 void runTestOpt08_Type7_Before(const int value1, const int value2, const int value3, const int value4)
@@ -2878,8 +3059,17 @@ void runTestOpt08_Type7_Before(const int value1, const int value2, const int val
 		sum += testOpt08_Type7_Before(value2);
 		sum += testOpt08_Type7_Before(value3);
 		sum += testOpt08_Type7_Before(value4);
+		sum += testOpt08_Type7_Before(value1 & 0xffff0000);
+		sum += testOpt08_Type7_Before(value2 & 0xffff0000);
+		sum += testOpt08_Type7_Before(value3 & 0xffff0000);
+		sum += testOpt08_Type7_Before(value4 & 0xffff0000);
+		sum += testOpt08_Type7_Before(value1 & 0x0000ffff);
+		sum += testOpt08_Type7_Before(value2 & 0x0000ffff);
+		sum += testOpt08_Type7_Before(value3 & 0x0000ffff);
+		sum += testOpt08_Type7_Before(value4 & 0x0000ffff);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後１
 void runTestOpt08_Type7_After1(const int value1, const int value2, const int value3, const int value4)
@@ -2893,8 +3083,17 @@ void runTestOpt08_Type7_After1(const int value1, const int value2, const int val
 		sum += testOpt08_Type7_After1(value2);
 		sum += testOpt08_Type7_After1(value3);
 		sum += testOpt08_Type7_After1(value4);
+		sum += testOpt08_Type7_After1(value1 & 0xffff0000);
+		sum += testOpt08_Type7_After1(value2 & 0xffff0000);
+		sum += testOpt08_Type7_After1(value3 & 0xffff0000);
+		sum += testOpt08_Type7_After1(value4 & 0xffff0000);
+		sum += testOpt08_Type7_After1(value1 & 0x0000ffff);
+		sum += testOpt08_Type7_After1(value2 & 0x0000ffff);
+		sum += testOpt08_Type7_After1(value3 & 0x0000ffff);
+		sum += testOpt08_Type7_After1(value4 & 0x0000ffff);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 //最適化後２
 void runTestOpt08_Type7_After2(const int value1, const int value2, const int value3, const int value4)
@@ -2908,8 +3107,89 @@ void runTestOpt08_Type7_After2(const int value1, const int value2, const int val
 		sum += testOpt08_Type7_After2(value2);
 		sum += testOpt08_Type7_After2(value3);
 		sum += testOpt08_Type7_After2(value4);
+		sum += testOpt08_Type7_After2(value1 & 0xffff0000);
+		sum += testOpt08_Type7_After2(value2 & 0xffff0000);
+		sum += testOpt08_Type7_After2(value3 & 0xffff0000);
+		sum += testOpt08_Type7_After2(value4 & 0xffff0000);
+		sum += testOpt08_Type7_After2(value1 & 0x0000ffff);
+		sum += testOpt08_Type7_After2(value2 & 0x0000ffff);
+		sum += testOpt08_Type7_After2(value3 & 0x0000ffff);
+		sum += testOpt08_Type7_After2(value4 & 0x0000ffff);
 	}
-	printElapsedTime(prev_time);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
+}
+//最適化後３
+void runTestOpt08_Type7_After3(const int value1, const int value2, const int value3, const int value4)
+{
+	printf("  After3   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT08_TYPE7; ++loop)
+	{
+		sum += testOpt08_Type7_After3(value1);
+		sum += testOpt08_Type7_After3(value2);
+		sum += testOpt08_Type7_After3(value3);
+		sum += testOpt08_Type7_After3(value4);
+		sum += testOpt08_Type7_After3(value1 & 0xffff0000);
+		sum += testOpt08_Type7_After3(value2 & 0xffff0000);
+		sum += testOpt08_Type7_After3(value3 & 0xffff0000);
+		sum += testOpt08_Type7_After3(value4 & 0xffff0000);
+		sum += testOpt08_Type7_After3(value1 & 0x0000ffff);
+		sum += testOpt08_Type7_After3(value2 & 0x0000ffff);
+		sum += testOpt08_Type7_After3(value3 & 0x0000ffff);
+		sum += testOpt08_Type7_After3(value4 & 0x0000ffff);
+	}
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
+}
+//最適化後４
+void runTestOpt08_Type7_After4(const int value1, const int value2, const int value3, const int value4)
+{
+	printf("  After4   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT08_TYPE7; ++loop)
+	{
+		sum += testOpt08_Type7_After4(value1);
+		sum += testOpt08_Type7_After4(value2);
+		sum += testOpt08_Type7_After4(value3);
+		sum += testOpt08_Type7_After4(value4);
+		sum += testOpt08_Type7_After4(value1 & 0xffff0000);
+		sum += testOpt08_Type7_After4(value2 & 0xffff0000);
+		sum += testOpt08_Type7_After4(value3 & 0xffff0000);
+		sum += testOpt08_Type7_After4(value4 & 0xffff0000);
+		sum += testOpt08_Type7_After4(value1 & 0x0000ffff);
+		sum += testOpt08_Type7_After4(value2 & 0x0000ffff);
+		sum += testOpt08_Type7_After4(value3 & 0x0000ffff);
+		sum += testOpt08_Type7_After4(value4 & 0x0000ffff);
+	}
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
+}
+//最適化後５
+void runTestOpt08_Type7_After5(const int value1, const int value2, const int value3, const int value4)
+{
+	printf("  After5   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT08_TYPE7; ++loop)
+	{
+		sum += testOpt08_Type7_After5(value1);
+		sum += testOpt08_Type7_After5(value2);
+		sum += testOpt08_Type7_After5(value3);
+		sum += testOpt08_Type7_After5(value4);
+		sum += testOpt08_Type7_After5(value1 & 0xffff0000);
+		sum += testOpt08_Type7_After5(value2 & 0xffff0000);
+		sum += testOpt08_Type7_After5(value3 & 0xffff0000);
+		sum += testOpt08_Type7_After5(value4 & 0xffff0000);
+		sum += testOpt08_Type7_After5(value1 & 0x0000ffff);
+		sum += testOpt08_Type7_After5(value2 & 0x0000ffff);
+		sum += testOpt08_Type7_After5(value3 & 0x0000ffff);
+		sum += testOpt08_Type7_After5(value4 & 0x0000ffff);
+	}
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 
 //【タイプ８】
@@ -2926,11 +3206,13 @@ void runTestOpt08_Type8()
 	const int value4 = rnd(rnd_engine);
 
 	extern void runTestOpt08_Type8_Before(const int value1, const int value2, const int value3, const int value4);
-	extern void runTestOpt08_Type8_After1(const int value1, const int value2, const int value3, const int value4);
-	extern void runTestOpt08_Type8_After2(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type8_After(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type8_Appendix1(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type8_Appendix2(const int value1, const int value2, const int value3, const int value4);
 	runTestOpt08_Type8_Before(value1, value2, value3, value4);
-	runTestOpt08_Type8_After1(value1, value2, value3, value4);
-	runTestOpt08_Type8_After2(value1, value2, value3, value4);
+	runTestOpt08_Type8_After(value1, value2, value3, value4);
+	runTestOpt08_Type8_Appendix1(value1, value2, value3, value4);
+	runTestOpt08_Type8_Appendix2(value1, value2, value3, value4);
 }
 //最適化前
 void runTestOpt08_Type8_Before(const int value1, const int value2, const int value3, const int value4)
@@ -2939,43 +3221,130 @@ void runTestOpt08_Type8_Before(const int value1, const int value2, const int val
 	const auto prev_time = std::chrono::system_clock::now();
 	int sum = 0;
 	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
-	{
-		sum += testOpt08_Type8_Before(value1);
-		sum += testOpt08_Type8_Before(value2);
-		sum += testOpt08_Type8_Before(value3);
-		sum += testOpt08_Type8_Before(value4);
-	}
-	printElapsedTime(prev_time);
+		sum += testOpt08_Type8_Before(loop * value1);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(loop * value2);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(loop * value3);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(loop * value4);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(~(loop * value1));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(~(loop * value2));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(~(loop * value3));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(~(loop * value4));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(loop * value1 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(loop * value2 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(loop * value3 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Before(loop * value4 / LOOP_OPT08_TYPE8);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
-//最適化後１
-void runTestOpt08_Type8_After1(const int value1, const int value2, const int value3, const int value4)
+//最適化後
+void runTestOpt08_Type8_After(const int value1, const int value2, const int value3, const int value4)
 {
 	printf("  After1   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
 	int sum = 0;
 	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
-	{
-		sum += testOpt08_Type8_After1(value1);
-		sum += testOpt08_Type8_After1(value2);
-		sum += testOpt08_Type8_After1(value3);
-		sum += testOpt08_Type8_After1(value4);
-	}
-	printElapsedTime(prev_time);
+		sum += testOpt08_Type8_After(loop * value1);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(loop * value2);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(loop * value3);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(loop * value4);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(~(loop * value1));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(~(loop * value2));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(~(loop * value3));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(~(loop * value4));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(loop * value1 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(loop * value2 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(loop * value3 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_After(loop * value4 / LOOP_OPT08_TYPE8);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
-//最適化後２
-void runTestOpt08_Type8_After2(const int value1, const int value2, const int value3, const int value4)
+//【参考１】
+void runTestOpt08_Type8_Appendix1(const int value1, const int value2, const int value3, const int value4)
 {
-	printf("  After2   ... ");
+	printf("  Appendix1... ");
 	const auto prev_time = std::chrono::system_clock::now();
 	int sum = 0;
 	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
-	{
-		sum += testOpt08_Type8_After2(value1);
-		sum += testOpt08_Type8_After2(value2);
-		sum += testOpt08_Type8_After2(value3);
-		sum += testOpt08_Type8_After2(value4);
-	}
-	printElapsedTime(prev_time);
+		sum += testOpt08_Type8_Appendix1(loop * value1);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(loop * value2);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(loop * value3);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(loop * value4);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(~(loop * value1));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(~(loop * value2));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(~(loop * value3));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(~(loop * value4));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(loop * value1 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(loop * value2 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(loop * value3 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix1(loop * value4 / LOOP_OPT08_TYPE8);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
+}
+//【参考２】
+void runTestOpt08_Type8_Appendix2(const int value1, const int value2, const int value3, const int value4)
+{
+	printf("  Appendix2... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(loop * value1);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(loop * value2);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(loop * value3);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(loop * value4);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(~(loop * value1));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(~(loop * value2));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(~(loop * value3));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(~(loop * value4));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(loop * value1 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(loop * value2 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(loop * value3 / LOOP_OPT08_TYPE8);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
+		sum += testOpt08_Type8_Appendix2(loop * value4 / LOOP_OPT08_TYPE8);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 
 //【タイプ８】
@@ -2992,11 +3361,11 @@ void runTestOpt08_Type9()
 	const int value4 = rnd(rnd_engine);
 
 	extern void runTestOpt08_Type9_Before(const int value1, const int value2, const int value3, const int value4);
-	extern void runTestOpt08_Type9_After1(const int value1, const int value2, const int value3, const int value4);
-	extern void runTestOpt08_Type9_After2(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type9_After(const int value1, const int value2, const int value3, const int value4);
+	extern void runTestOpt08_Type9_Appendix(const int value1, const int value2, const int value3, const int value4);
 	runTestOpt08_Type9_Before(value1, value2, value3, value4);
-	runTestOpt08_Type9_After1(value1, value2, value3, value4);
-	runTestOpt08_Type9_After2(value1, value2, value3, value4);
+	runTestOpt08_Type9_After(value1, value2, value3, value4);
+	runTestOpt08_Type9_Appendix(value1, value2, value3, value4);
 }
 //最適化前
 void runTestOpt08_Type9_Before(const int value1, const int value2, const int value3, const int value4)
@@ -3005,43 +3374,97 @@ void runTestOpt08_Type9_Before(const int value1, const int value2, const int val
 	const auto prev_time = std::chrono::system_clock::now();
 	int sum = 0;
 	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
-	{
-		sum += testOpt08_Type9_Before(value1);
-		sum += testOpt08_Type9_Before(value2);
-		sum += testOpt08_Type9_Before(value3);
-		sum += testOpt08_Type9_Before(value4);
-	}
-	printElapsedTime(prev_time);
+		sum += testOpt08_Type9_Before(loop * value1);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(loop * value2);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(loop * value3);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(loop * value4);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(~(loop * value1));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(~(loop * value2));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(~(loop * value3));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(~(loop * value4));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(loop * value1 / LOOP_OPT08_TYPE9);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(loop * value2 / LOOP_OPT08_TYPE9);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(loop * value3 / LOOP_OPT08_TYPE9);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Before(loop * value4 / LOOP_OPT08_TYPE9);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
-//最適化後１
-void runTestOpt08_Type9_After1(const int value1, const int value2, const int value3, const int value4)
+//最適化後
+void runTestOpt08_Type9_After(const int value1, const int value2, const int value3, const int value4)
 {
-	printf("  After1   ... ");
+	printf("  After    ... ");
 	const auto prev_time = std::chrono::system_clock::now();
 	int sum = 0;
 	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
-	{
-		sum += testOpt08_Type9_After1(value1);
-		sum += testOpt08_Type9_After1(value2);
-		sum += testOpt08_Type9_After1(value3);
-		sum += testOpt08_Type9_After1(value4);
-	}
-	printElapsedTime(prev_time);
+		sum += testOpt08_Type9_After(loop * value1);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(loop * value2);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(loop * value3);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(loop * value4);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(~(loop * value1));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(~(loop * value2));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(~(loop * value3));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(~(loop * value4));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(loop * value1 / LOOP_OPT08_TYPE9);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(loop * value2 / LOOP_OPT08_TYPE9);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(loop * value3 / LOOP_OPT08_TYPE9);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_After(loop * value4 / LOOP_OPT08_TYPE9);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
-//最適化後２
-void runTestOpt08_Type9_After2(const int value1, const int value2, const int value3, const int value4)
+//【参考】
+void runTestOpt08_Type9_Appendix(const int value1, const int value2, const int value3, const int value4)
 {
-	printf("  After2   ... ");
+	printf("  Appendix ... ");
 	const auto prev_time = std::chrono::system_clock::now();
 	int sum = 0;
-	for (int loop = 0; loop < LOOP_OPT08_TYPE8; ++loop)
-	{
-		sum += testOpt08_Type9_After2(value1);
-		sum += testOpt08_Type9_After2(value2);
-		sum += testOpt08_Type9_After2(value3);
-		sum += testOpt08_Type9_After2(value4);
-	}
-	printElapsedTime(prev_time);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(loop * value1);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(loop * value2);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(loop * value3);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(loop * value4);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(~(loop * value1));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(~(loop * value2));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(~(loop * value3));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(~(loop * value4));
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(loop * value1 / LOOP_OPT08_TYPE9);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(loop * value2 / LOOP_OPT08_TYPE9);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(loop * value3 / LOOP_OPT08_TYPE9);
+	for (int loop = 0; loop < LOOP_OPT08_TYPE9; ++loop)
+		sum += testOpt08_Type9_Appendix(loop * value4 / LOOP_OPT08_TYPE9);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
 }
 
 //【処理の検証】一通りの実行テスト
@@ -3100,7 +3523,7 @@ void runTestOpt08_1time()
 #endif
 #if 1
 	{
-		#define COUNT_BITS(value) printf("CountBits(0x%08x) ... %d / %d (%d)\n", value, testOpt08_Type5_After1(value), testOpt08_Type5_After2(value), testOpt08_Type5_Before(value));
+		#define COUNT_BITS(value) printf("CountBits(0x%08x) ... %d / %d / %d (%d)\n", value, testOpt08_Type5_After1(value), testOpt08_Type5_After2(value), testOpt08_Type5_After3(value), testOpt08_Type5_Before(value));
 		COUNT_BITS(0x00000000);
 		COUNT_BITS(0x00000001);
 		COUNT_BITS(0x80000000);
@@ -3119,12 +3542,45 @@ void runTestOpt08_1time()
 		COUNT_BITS(0x12345678);
 		COUNT_BITS(0x9abcdef0);
 		COUNT_BITS(0xffffffff);
+		COUNT_BITS(0x00000000);
+		COUNT_BITS(0x00000001);
+		COUNT_BITS(0x00000002);
+		COUNT_BITS(0x00000004);
+		COUNT_BITS(0x00000008);
+		COUNT_BITS(0x00000010);
+		COUNT_BITS(0x00000020);
+		COUNT_BITS(0x00000040);
+		COUNT_BITS(0x00000080);
+		COUNT_BITS(0x00000100);
+		COUNT_BITS(0x00000200);
+		COUNT_BITS(0x00000400);
+		COUNT_BITS(0x00000800);
+		COUNT_BITS(0x00001000);
+		COUNT_BITS(0x00002000);
+		COUNT_BITS(0x00004000);
+		COUNT_BITS(0x00008000);
+		COUNT_BITS(0x00010000);
+		COUNT_BITS(0x00020000);
+		COUNT_BITS(0x00040000);
+		COUNT_BITS(0x00080000);
+		COUNT_BITS(0x00100000);
+		COUNT_BITS(0x00200000);
+		COUNT_BITS(0x00400000);
+		COUNT_BITS(0x00800000);
+		COUNT_BITS(0x01000000);
+		COUNT_BITS(0x02000000);
+		COUNT_BITS(0x04000000);
+		COUNT_BITS(0x08000000);
+		COUNT_BITS(0x10000000);
+		COUNT_BITS(0x20000000);
+		COUNT_BITS(0x40000000);
+		COUNT_BITS(0x80000000);
 		#undef COUNT_BITS
 	}
 #endif
 #if 1
 	{
-		#define MSB(value) printf("MSB(0x%08x) ... %d / %d (%d)\n", value, testOpt08_Type6_After1(value), testOpt08_Type6_After2(value), testOpt08_Type6_Before(value));
+		#define MSB(value) printf("MSB(0x%08x) ... %d / %d / %d / %d / %d (%d)\n", value, testOpt08_Type6_After1(value), testOpt08_Type6_After2(value), testOpt08_Type6_After3(value), testOpt08_Type6_After4(value), testOpt08_Type6_After5(value), testOpt08_Type6_Before(value));
 		MSB(0x00000000);
 		MSB(0x00000001);
 		MSB(0x80000000);
@@ -3142,12 +3598,45 @@ void runTestOpt08_1time()
 		MSB(0x12345678);
 		MSB(0x9abcdef0);
 		MSB(0xffffffff);
+		MSB(0x00000000);
+		MSB(0x00000001);
+		MSB(0x00000002);
+		MSB(0x00000004);
+		MSB(0x00000008);
+		MSB(0x00000010);
+		MSB(0x00000020);
+		MSB(0x00000040);
+		MSB(0x00000080);
+		MSB(0x00000100);
+		MSB(0x00000200);
+		MSB(0x00000400);
+		MSB(0x00000800);
+		MSB(0x00001000);
+		MSB(0x00002000);
+		MSB(0x00004000);
+		MSB(0x00008000);
+		MSB(0x00010000);
+		MSB(0x00020000);
+		MSB(0x00040000);
+		MSB(0x00080000);
+		MSB(0x00100000);
+		MSB(0x00200000);
+		MSB(0x00400000);
+		MSB(0x00800000);
+		MSB(0x01000000);
+		MSB(0x02000000);
+		MSB(0x04000000);
+		MSB(0x08000000);
+		MSB(0x10000000);
+		MSB(0x20000000);
+		MSB(0x40000000);
+		MSB(0x80000000);
 		#undef MSB
 	}
 #endif
 #if 1
 	{
-		#define LSB(value) printf("LSB(0x%08x) ... %d / %d (%d)\n", value, testOpt08_Type7_After1(value), testOpt08_Type7_After2(value), testOpt08_Type7_Before(value));
+		#define LSB(value) printf("LSB(0x%08x) ... %d / %d / %d / %d / %d (%d)\n", value, testOpt08_Type7_After1(value), testOpt08_Type7_After2(value), testOpt08_Type7_After3(value), testOpt08_Type7_After4(value), testOpt08_Type7_After5(value), testOpt08_Type7_Before(value));
 		LSB(0x00000000);
 		LSB(0x00000001);
 		LSB(0x80000000);
@@ -3165,12 +3654,45 @@ void runTestOpt08_1time()
 		LSB(0x12345678);
 		LSB(0x9abcdef0);
 		LSB(0xffffffff);
+		LSB(0x00000000);
+		LSB(0x00000001);
+		LSB(0x00000002);
+		LSB(0x00000004);
+		LSB(0x00000008);
+		LSB(0x00000010);
+		LSB(0x00000020);
+		LSB(0x00000040);
+		LSB(0x00000080);
+		LSB(0x00000100);
+		LSB(0x00000200);
+		LSB(0x00000400);
+		LSB(0x00000800);
+		LSB(0x00001000);
+		LSB(0x00002000);
+		LSB(0x00004000);
+		LSB(0x00008000);
+		LSB(0x00010000);
+		LSB(0x00020000);
+		LSB(0x00040000);
+		LSB(0x00080000);
+		LSB(0x00100000);
+		LSB(0x00200000);
+		LSB(0x00400000);
+		LSB(0x00800000);
+		LSB(0x01000000);
+		LSB(0x02000000);
+		LSB(0x04000000);
+		LSB(0x08000000);
+		LSB(0x10000000);
+		LSB(0x20000000);
+		LSB(0x40000000);
+		LSB(0x80000000);
 		#undef LSB
 	}
 #endif
 #if 1
 	{
-		#define ABS(value) printf("Abs(%d) ... %d / %d (%d)\n", value, testOpt08_Type8_After1(value), testOpt08_Type8_After2(value), testOpt08_Type8_Before(value));
+		#define ABS(value) printf("Abs(%d) ... %d / %d / %d (%d)\n", value, testOpt08_Type8_After(value), testOpt08_Type8_Appendix1(value), testOpt08_Type8_Appendix2(value), testOpt08_Type8_Before(value));
 		ABS(0);
 		ABS(1);
 		ABS(-1);
@@ -3187,7 +3709,7 @@ void runTestOpt08_1time()
 #endif
 #if 1
 	{
-		#define SIGN(value) printf("Sign(%d) ... %d / %d (%d)\n", value, testOpt08_Type9_After1(value), testOpt08_Type9_After2(value), testOpt08_Type9_Before(value));
+		#define SIGN(value) printf("Sign(%d) ... %d / %d (%d)\n", value, testOpt08_Type9_After(value), testOpt08_Type9_Appendix(value), testOpt08_Type9_Before(value));
 		SIGN(0);
 		SIGN(1);
 		SIGN(-1);
@@ -3229,16 +3751,16 @@ void runTestOpt09_Type1()
 	printf("Type1: *%d times repeated.\n", LOOP_OPT09_TYPE1);
 
 	//初期化
-	dataOpt08_t1 data;
-	initOpt08_t1(data);
+	dataOpt09_t1 data;
+	initOpt09_t1(data);
 
-	extern void runTestOpt09_Type1_Before(dataOpt08_t1& data);
-	extern void runTestOpt09_Type1_After1(dataOpt08_t1& data);
-	extern void runTestOpt09_Type1_After2(dataOpt08_t1& data);
-	extern void runTestOpt09_Type1_After3(dataOpt08_t1& data);
-	extern void runTestOpt09_Type1_After4(dataOpt08_t1& data);
-	extern void runTestOpt09_Type1_After5(dataOpt08_t1& data);
-	extern void runTestOpt09_Type1_Appendix(dataOpt08_t1& data);
+	extern void runTestOpt09_Type1_Before(dataOpt09_t1& data);
+	extern void runTestOpt09_Type1_After1(dataOpt09_t1& data);
+	extern void runTestOpt09_Type1_After2(dataOpt09_t1& data);
+	extern void runTestOpt09_Type1_After3(dataOpt09_t1& data);
+	extern void runTestOpt09_Type1_After4(dataOpt09_t1& data);
+	extern void runTestOpt09_Type1_After5(dataOpt09_t1& data);
+	extern void runTestOpt09_Type1_Appendix(dataOpt09_t1& data);
 	runTestOpt09_Type1_Before(data);
 	runTestOpt09_Type1_After1(data);
 	runTestOpt09_Type1_After2(data);
@@ -3248,7 +3770,7 @@ void runTestOpt09_Type1()
 	runTestOpt09_Type1_Appendix(data);
 }
 //最適化前
-void runTestOpt09_Type1_Before(dataOpt08_t1& data)
+void runTestOpt09_Type1_Before(dataOpt09_t1& data)
 {
 	printf("  Before   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3259,7 +3781,7 @@ void runTestOpt09_Type1_Before(dataOpt08_t1& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後１
-void runTestOpt09_Type1_After1(dataOpt08_t1& data)
+void runTestOpt09_Type1_After1(dataOpt09_t1& data)
 {
 	printf("  After1   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3270,7 +3792,7 @@ void runTestOpt09_Type1_After1(dataOpt08_t1& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後２
-void runTestOpt09_Type1_After2(dataOpt08_t1& data)
+void runTestOpt09_Type1_After2(dataOpt09_t1& data)
 {
 	printf("  After2   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3281,7 +3803,7 @@ void runTestOpt09_Type1_After2(dataOpt08_t1& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後３
-void runTestOpt09_Type1_After3(dataOpt08_t1& data)
+void runTestOpt09_Type1_After3(dataOpt09_t1& data)
 {
 	printf("  After3   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3292,7 +3814,7 @@ void runTestOpt09_Type1_After3(dataOpt08_t1& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後４
-void runTestOpt09_Type1_After4(dataOpt08_t1& data)
+void runTestOpt09_Type1_After4(dataOpt09_t1& data)
 {
 	printf("  After4   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3303,7 +3825,7 @@ void runTestOpt09_Type1_After4(dataOpt08_t1& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後５
-void runTestOpt09_Type1_After5(dataOpt08_t1& data)
+void runTestOpt09_Type1_After5(dataOpt09_t1& data)
 {
 	printf("  After5   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3314,7 +3836,7 @@ void runTestOpt09_Type1_After5(dataOpt08_t1& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後６
-void runTestOpt09_Type1_Appendix(dataOpt08_t1& data)
+void runTestOpt09_Type1_Appendix(dataOpt09_t1& data)
 {
 	printf("  Appendix ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3331,26 +3853,28 @@ void runTestOpt09_Type2()
 	printf("Type2: *%d times repeated.\n", LOOP_OPT09_TYPE2);
 
 	//初期化
-	dataOpt08_t2 data;
-	initOpt08_t2(data);
+	dataOpt09_t2 data;
+	initOpt09_t2(data);
 
-	extern void runTestOpt09_Type2_Before(dataOpt08_t2& data);
-	extern void runTestOpt09_Type2_After1(dataOpt08_t2& data);
-	extern void runTestOpt09_Type2_After2(dataOpt08_t2& data);
-	extern void runTestOpt09_Type2_After3(dataOpt08_t2& data);
-	extern void runTestOpt09_Type2_After4(dataOpt08_t2& data);
-	extern void runTestOpt09_Type2_After5(dataOpt08_t2& data);
-	extern void runTestOpt09_Type2_Appendix(dataOpt08_t2& data);
+	extern void runTestOpt09_Type2_Before(dataOpt09_t2& data);
+	extern void runTestOpt09_Type2_After1(dataOpt09_t2& data);
+	extern void runTestOpt09_Type2_After2(dataOpt09_t2& data);
+	extern void runTestOpt09_Type2_After3(dataOpt09_t2& data);
+	extern void runTestOpt09_Type2_After4(dataOpt09_t2& data);
+	extern void runTestOpt09_Type2_After5(dataOpt09_t2& data);
+	extern void runTestOpt09_Type2_After6(dataOpt09_t2& data);
+	extern void runTestOpt09_Type2_Appendix(dataOpt09_t2& data);
 	runTestOpt09_Type2_Before(data);
 	runTestOpt09_Type2_After1(data);
 	runTestOpt09_Type2_After2(data);
 	runTestOpt09_Type2_After3(data);
 	runTestOpt09_Type2_After4(data);
 	runTestOpt09_Type2_After5(data);
+	runTestOpt09_Type2_After6(data);
 	runTestOpt09_Type2_Appendix(data);
 }
 //最適化前
-void runTestOpt09_Type2_Before(dataOpt08_t2& data)
+void runTestOpt09_Type2_Before(dataOpt09_t2& data)
 {
 	printf("  Before   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3361,7 +3885,7 @@ void runTestOpt09_Type2_Before(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後１
-void runTestOpt09_Type2_After1(dataOpt08_t2& data)
+void runTestOpt09_Type2_After1(dataOpt09_t2& data)
 {
 	printf("  After1   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3372,7 +3896,7 @@ void runTestOpt09_Type2_After1(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後２
-void runTestOpt09_Type2_After2(dataOpt08_t2& data)
+void runTestOpt09_Type2_After2(dataOpt09_t2& data)
 {
 	printf("  After2   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3383,7 +3907,7 @@ void runTestOpt09_Type2_After2(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後３
-void runTestOpt09_Type2_After3(dataOpt08_t2& data)
+void runTestOpt09_Type2_After3(dataOpt09_t2& data)
 {
 	printf("  After3   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3394,7 +3918,7 @@ void runTestOpt09_Type2_After3(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後４
-void runTestOpt09_Type2_After4(dataOpt08_t2& data)
+void runTestOpt09_Type2_After4(dataOpt09_t2& data)
 {
 	printf("  After4   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3405,7 +3929,7 @@ void runTestOpt09_Type2_After4(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後５
-void runTestOpt09_Type2_After5(dataOpt08_t2& data)
+void runTestOpt09_Type2_After5(dataOpt09_t2& data)
 {
 	printf("  After5   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3416,7 +3940,18 @@ void runTestOpt09_Type2_After5(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後６
-void runTestOpt09_Type2_Appendix(dataOpt08_t2& data)
+void runTestOpt09_Type2_After6(dataOpt09_t2& data)
+{
+	printf("  After6   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT09_TYPE2; ++loop)
+		sum = testOpt09_Type2_After6(data);
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
+}
+//【参考】
+void runTestOpt09_Type2_Appendix(dataOpt09_t2& data)
 {
 	printf("  Appendix ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3433,24 +3968,26 @@ void runTestOpt09_Type3()
 	printf("Type3: *%d times repeated.\n", LOOP_OPT09_TYPE3);
 
 	//初期化
-	dataOpt08_t2 data;
-	initOpt08_t2(data);
+	dataOpt09_t2 data;
+	initOpt09_t2(data);
 
-	extern void runTestOpt09_Type3_Before(dataOpt08_t2& data);
-	extern void runTestOpt09_Type3_After1(dataOpt08_t2& data);
-	extern void runTestOpt09_Type3_After2(dataOpt08_t2& data);
-	extern void runTestOpt09_Type3_After3(dataOpt08_t2& data);
-	extern void runTestOpt09_Type3_After4(dataOpt08_t2& data);
-	extern void runTestOpt09_Type3_After5(dataOpt08_t2& data);
+	extern void runTestOpt09_Type3_Before(dataOpt09_t2& data);
+	extern void runTestOpt09_Type3_After1(dataOpt09_t2& data);
+	extern void runTestOpt09_Type3_After2(dataOpt09_t2& data);
+	extern void runTestOpt09_Type3_After3(dataOpt09_t2& data);
+	extern void runTestOpt09_Type3_After4(dataOpt09_t2& data);
+	extern void runTestOpt09_Type3_After5(dataOpt09_t2& data);
+	extern void runTestOpt09_Type3_After6(dataOpt09_t2& data);
 	runTestOpt09_Type3_Before(data);
 	runTestOpt09_Type3_After1(data);
 	runTestOpt09_Type3_After2(data);
 	runTestOpt09_Type3_After3(data);
 	runTestOpt09_Type3_After4(data);
 	runTestOpt09_Type3_After5(data);
+	runTestOpt09_Type3_After6(data);
 }
 //最適化前
-void runTestOpt09_Type3_Before(dataOpt08_t2& data)
+void runTestOpt09_Type3_Before(dataOpt09_t2& data)
 {
 	printf("  Before   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3461,7 +3998,7 @@ void runTestOpt09_Type3_Before(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後１
-void runTestOpt09_Type3_After1(dataOpt08_t2& data)
+void runTestOpt09_Type3_After1(dataOpt09_t2& data)
 {
 	printf("  After1   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3472,7 +4009,7 @@ void runTestOpt09_Type3_After1(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後３
-void runTestOpt09_Type3_After2(dataOpt08_t2& data)
+void runTestOpt09_Type3_After2(dataOpt09_t2& data)
 {
 	printf("  After2   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3483,7 +4020,7 @@ void runTestOpt09_Type3_After2(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後３
-void runTestOpt09_Type3_After3(dataOpt08_t2& data)
+void runTestOpt09_Type3_After3(dataOpt09_t2& data)
 {
 	printf("  After3   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3494,7 +4031,7 @@ void runTestOpt09_Type3_After3(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後４
-void runTestOpt09_Type3_After4(dataOpt08_t2& data)
+void runTestOpt09_Type3_After4(dataOpt09_t2& data)
 {
 	printf("  After4   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
@@ -3505,13 +4042,24 @@ void runTestOpt09_Type3_After4(dataOpt08_t2& data)
 	printf("  sum=%d\n", sum);
 }
 //最適化後５
-void runTestOpt09_Type3_After5(dataOpt08_t2& data)
+void runTestOpt09_Type3_After5(dataOpt09_t2& data)
 {
 	printf("  After5   ... ");
 	const auto prev_time = std::chrono::system_clock::now();
 	int sum = 0;
 	for (int loop = 0; loop < LOOP_OPT09_TYPE3; ++loop)
 		sum = testOpt09_Type3_After5(data.elems, extentof(data.elems));
+	printElapsedTimeWithoutCR(prev_time);
+	printf("  sum=%d\n", sum);
+}
+//最適化後６
+void runTestOpt09_Type3_After6(dataOpt09_t2& data)
+{
+	printf("  After6   ... ");
+	const auto prev_time = std::chrono::system_clock::now();
+	int sum = 0;
+	for (int loop = 0; loop < LOOP_OPT09_TYPE3; ++loop)
+		sum = testOpt09_Type3_After6(data.elems, extentof(data.elems));
 	printElapsedTimeWithoutCR(prev_time);
 	printf("  sum=%d\n", sum);
 }
@@ -3558,7 +4106,7 @@ int main(const int argc, const char* argv[])
 	//最適化⑤：乗算／除算の抑制：シフト演算や加減算に変更
 	runTestOpt05();
 
-	//最適化⑥：乗算／除算の抑制：演算の共通化
+	//最適化⑥：乗算／除算の抑制：計算結果の共通利用
 	runTestOpt06();
 
 	//最適化⑦：SIMD演算の活用

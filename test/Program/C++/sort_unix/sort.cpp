@@ -34,7 +34,7 @@
 //========================================
 
 //----------------------------------------
-//ソート処理オーバーロード関数用マクロ
+//比較ソート処理オーバーロード関数用マクロ
 #define sortFuncSet(func_name) \
 	template<class T, std::size_t N, class PREDICATE> \
 	inline std::size_t func_name(T(&array)[N], PREDICATE predicate) \
@@ -172,6 +172,7 @@ struct _swapObjects<T*>{
 		_swapArithmetic<T*>::exec(val1, val2);
 	}
 };
+//データ入れ替え関数（直接使用する関数）
 template<class T>
 inline void swapValues(T& val1, T& val2)
 {
@@ -235,6 +236,7 @@ struct _rotateObjects<T*>{
 		_rotateArithmetic<T*>::exec(val1, val2, step);
 	}
 };
+//データローテーション関数（直接使用する関数）
 template<class T>
 inline void rotateValues(T* val1, T* val2, int step)
 {
@@ -251,7 +253,7 @@ inline void rotateValues(T* val1, T* val2, int step)
 //・計算時間：
 //    - O(n)       ... データ件数分の時間
 //    - O(n ^ 2)   ... データ件数の２乗分の時間
-//    - O(log n)   ... log2(データ件数)分の時間（4→, 16→4, 1024→10,1048576→20）
+//    - O(log n)   ... log2(データ件数)分の時間（4→2, 16→4, 1024→10,1048576→20）
 //    - O(n log n) ... n×log n 分の時間
 //・メモリ使用量：
 //    - O(1)       ... １件分のメモリが必要
@@ -269,7 +271,8 @@ inline void rotateValues(T* val1, T* val2, int step)
 //----------------------------------------
 //アルゴリズム：バブルソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(n)
+//・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
@@ -309,7 +312,8 @@ sortFuncSet(bubbleSort);
 //----------------------------------------
 //アルゴリズム：シェーカーソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(n)
+//・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
@@ -364,9 +368,10 @@ sortFuncSet(shakerSort);
 //----------------------------------------
 //アルゴリズム：奇遇転置ソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(2n)
+//・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
-//・メモリ使用量：O(1)
+//・メモリ使用量：O(1)×並列処理分
 //・安定性：　　　○
 //----------------------------------------
 //※OpenMPを使用し、並列化で最適化する。
@@ -410,9 +415,10 @@ sortFuncSet(oddEvenSort);
 //----------------------------------------
 //アルゴリズム：シェアソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(n^1.5)
+//・平均計算時間：O(n^1.5)
 //・最悪計算時間：O(n^1.5)
-//・メモリ使用量：O(1)
+//・メモリ使用量：O(1)×並列処理分
 //・安定性：　　　×
 //----------------------------------------
 //※OpenMPを使用し、並列化で最適化する。
@@ -589,6 +595,7 @@ sortFuncSet(shearSort);
 //----------------------------------------
 //アルゴリズム：コムソート
 //----------------------------------------
+//・最良計算時間：O(n)
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
@@ -629,7 +636,8 @@ sortFuncSet(combSort);
 //----------------------------------------
 //アルゴリズム：ノームソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(n)
+//・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
@@ -669,12 +677,17 @@ std::size_t gnomeSort(T* array, const std::size_t size, PREDICATE predicate)
 }
 sortFuncSet(gnomeSort);
 
+//========================================
+//ソートアルゴリズム分類：分割交換ソート
+//========================================
+
 //----------------------------------------
 //アルゴリズム：クイックソート
 //----------------------------------------
+//・最良計算時間：O(n log n)
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n^2)
-//・メモリ使用量：O(log n) ※再帰処理を使用しなければ O(1)
+//・メモリ使用量：O(log n)～O(n) ※ループ処理版は O(32*2)
 //・安定性：　　　×
 //----------------------------------------
 //※再帰処理を使用せず、スタックを使用したループ処理にして最適化する。
@@ -693,7 +706,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 	const T* term = array + size;
 	T* begin = array;
 	T* end = array + size - 1;
-	//中央値を決定
+	//軸を決定
 	const T* med = array + (size >> 1);
 	const T* pivot =
 		predicate(*begin, *med) ?
@@ -707,7 +720,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 				predicate(*begin, *end) ?
 					begin :
 					end;
-	//中央値未満の配列と中央値以上の配列に二分
+	//軸未満の配列と軸以上の配列に二分
 	while (true)
 	{
 		while (predicate(*begin, *pivot))
@@ -717,14 +730,14 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 		if (begin >= end)
 			break;
 		swapValues(*begin, *end);
-		pivot = pivot == begin ? end : pivot == end ? begin : pivot;//中央値の位置調整（中央値の位置も入れ替わるため）
+		pivot = pivot == begin ? end : pivot == end ? begin : pivot;//軸の位置調整（軸の位置も入れ替わるため）
 		++swapped_count;
 		++begin;
 		--end;
 	}
 	//再帰処理
-	swapped_count += _quickSort(array, begin - array, predicate);//中央値未満の配列
-	swapped_count += _quickSort(end + 1, term - end - 1, predicate);//中央値以上の配列
+	swapped_count += _quickSort(array, begin - array, predicate);//軸未満の配列
+	swapped_count += _quickSort(end + 1, term - end - 1, predicate);//軸以上の配列
 	return swapped_count;
 #else//QUICK_SORT_NO_USE_RECURSIVE_CALL
 #ifndef QUICK_SORT_USE_OPENMP
@@ -753,7 +766,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 		const T* term = _array + _size;
 		T* begin = _array;
 		T* end = _array + _size - 1;
-		//中央値を決定
+		//軸を決定
 		const T* med = _array + (_size >> 1);
 		const T* pivot =
 			predicate(*begin, *med) ?
@@ -767,7 +780,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 					predicate(*begin, *end) ?
 						begin :
 						end;
-		//中央値未満の配列と中央値以上の配列に二分
+		//軸未満の配列と軸以上の配列に二分
 		while (true)
 		{
 			while (predicate(*begin, *pivot))
@@ -777,13 +790,13 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 			if (begin >= end)
 				break;
 			swapValues(*begin, *end);
-			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//中央値の位置調整（中央値の位置も入れ替わるため）
+			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//軸の位置調整（軸の位置も入れ替わるため）
 			++swapped_count;
 			++begin;
 			--end;
 		}
-		//recursive = 0 : 中央値未満の配列をプッシュ
-		//            1 : 中央値以上の配列をプッシュ
+		//recursive = 0 : 軸未満の配列をプッシュ
+		//            1 : 軸以上の配列をプッシュ
 		for (int recursive = 0; recursive < 2; ++recursive)
 		{
 			T* new_array = recursive == 0 ? _array : end + 1;
@@ -849,7 +862,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 				term = _array + _size;
 				begin = _array;
 				end = _array + _size - 1;
-				//中央値を決定
+				//軸を決定
 				med = _array + (_size >> 1);
 				pivot =
 					predicate(*begin, *med) ?
@@ -863,7 +876,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 							predicate(*begin, *end) ?
 								begin :
 								end;
-				//中央値未満の配列と中央値以上の配列に二分
+				//軸未満の配列と軸以上の配列に二分
 				while (true)
 				{
 					while (predicate(*begin, *pivot))
@@ -873,13 +886,13 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 					if (begin >= end)
 						break;
 					swapValues(*begin, *end);
-					pivot = pivot == begin ? end : pivot == end ? begin : pivot;//中央値の位置調整（中央値の位置も入れ替わるため）
+					pivot = pivot == begin ? end : pivot == end ? begin : pivot;//軸の位置調整（軸の位置も入れ替わるため）
 					++swapped_count;
 					++begin;
 					--end;
 				}
-				//recursive = 0 : 中央値未満の配列をプッシュ
-				//            1 : 中央値以上の配列をプッシュ
+				//recursive = 0 : 軸未満の配列をプッシュ
+				//            1 : 軸以上の配列をプッシュ
 				for (recursive = 0; recursive < 2; ++recursive)
 				{
 					new_array = recursive == 0 ? _array : end + 1;
@@ -918,6 +931,7 @@ sortFuncSet(quickSort);
 //----------------------------------------
 //アルゴリズム：選択ソート
 //----------------------------------------
+//・最良計算時間：O(n^2)
 //・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
@@ -954,6 +968,7 @@ sortFuncSet(selectionSort);
 //----------------------------------------
 //アルゴリズム：ヒープソート
 //----------------------------------------
+//・最良計算時間：O(n log n)
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n log n)
 //・メモリ使用量：O(1)
@@ -1029,7 +1044,8 @@ sortFuncSet(heapSort);
 //----------------------------------------
 //アルゴリズム：挿入ソート
 //----------------------------------------
-//・平均計算時間：O(n + d) ※d = O(n^2)
+//・最良計算時間：O(n)
+//・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
@@ -1070,7 +1086,8 @@ sortFuncSet(insertionSort);
 //----------------------------------------
 //アルゴリズム：シェルソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(n)
+//・平均計算時間：O(n log^2 n) or O(n^3/2)
 //・最悪計算時間：O(n log^2 n)
 //・メモリ使用量：O(1)
 //・安定性：　　　×
@@ -1119,8 +1136,9 @@ sortFuncSet(shellSort);
 //----------------------------------------
 //アルゴリズム：インプレースマージソート
 //----------------------------------------
-//・平均計算時間：-
-//・最悪計算時間：O(n log n)
+//・最良計算時間：O(n log2 n)
+//・平均計算時間：O(n log2 n)
+//・最悪計算時間：O(n log2 n)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
 //----------------------------------------
@@ -1287,9 +1305,10 @@ sortFuncSet(inplaceMergeSort);
 //----------------------------------------
 //アルゴリズム：イントロソート
 //----------------------------------------
+//・最良計算時間：O(n log n)
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n log n)
-//・メモリ使用量：O(n log n) ※クイックソートで再帰処理を使用しなければ O(1)
+//・メモリ使用量：O(n log n) ※ループ処理版は O(32*2)
 //・安定性：　　　×
 //----------------------------------------
 //※クイックソートの再帰レベルが log n に達したら、
@@ -1343,7 +1362,7 @@ std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 		const T* term = _array + _size;
 		T* begin = _array;
 		T* end = _array + _size - 1;
-		//中央値を決定
+		//軸を決定
 		const T* med = _array + (_size >> 1);
 		const T* pivot =
 			predicate(*begin, *med) ?
@@ -1357,7 +1376,7 @@ std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 					predicate(*begin, *end) ?
 						begin :
 						end;
-		//中央値未満の配列と中央値以上の配列に二分
+		//軸未満の配列と軸以上の配列に二分
 		while (true)
 		{
 			while (predicate(*begin, *pivot))
@@ -1367,13 +1386,13 @@ std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 			if (begin >= end)
 				break;
 			swapValues(*begin, *end);
-			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//中央値の位置調整（中央値の位置も入れ替わるため）
+			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//軸の位置調整（軸の位置も入れ替わるため）
 			++swapped_count;
 			++begin;
 			--end;
 		}
-		//recursive = 0 : 中央値未満の配列をプッシュ
-		//            1 : 中央値以上の配列をプッシュ
+		//recursive = 0 : 軸未満の配列をプッシュ
+		//            1 : 軸以上の配列をプッシュ
 		for (int recursive = 0; recursive < 2; ++recursive)
 		{
 			T* new_array = recursive == 0 ? _array : end + 1;
@@ -1418,15 +1437,16 @@ inline std::size_t introSort(T* array, const std::size_t size, PREDICATE predica
 sortFuncSet(introSort);
 
 //========================================
-//ソートアルゴリズム分類：非比較ソート
+//ソートアルゴリズム分類：分布ソート
 //========================================
 
 //----------------------------------------
 //アルゴリズム：基数ソート
 //----------------------------------------
-//・平均計算時間：O(nk/s)
-//・最悪計算時間：O(nk/s)
-//・メモリ使用量：O(n) ※実際は O(n * 2) のキー情報(12 bytes) + O(16 * 16) のキー分布情報(4 bytes) + O(16) のスタック情報（4 bytes）
+//・最良計算時間：O(n*k/d) ※k=キーの範囲、d=基数(256)
+//・平均計算時間：O(n*k/d)
+//・最悪計算時間：O(n*k/d)
+//・メモリ使用量：O(n) ※実際は O(n * 2) のキー情報(12 bytes) + O(256 * 256) のキー分布情報(4 bytes) + O(1～8) のスタック情報（4 bytes）
 //・安定性：　　　○
 //----------------------------------------
 #include <climits>//***_MAX用
@@ -1683,7 +1703,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 	std::size_t swapped_count = 0;
 
 	//#define RADIX_IS_16//基数を16にする場合は、このマクロを有効化する（無効化時の基数は256)
-	//※基数は256の方が速い
+	//※基数は、256の方が速いが、16の方が所用メモリ量を抑えられる
 
 	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;//キー型
 	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;//符号なしキー型
@@ -1723,7 +1743,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 	}
 	//キーの最大値から最大の長さを算出
 	const index_type KEY_LEN = (
-#ifndef RADIX_IS_16//基数が256(8bit)の場合の計算
+	#ifndef RADIX_IS_16//基数が256(8bit)の場合の計算
 		(key_max & 0xff00000000000000llu) != 0llu ? 8 :
 		(key_max & 0x00ff000000000000llu) != 0llu ? 7 :
 		(key_max & 0x0000ff0000000000llu) != 0llu ? 6 :
@@ -1732,7 +1752,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		(key_max & 0x0000000000ff0000u)   != 0u   ? 3 :
 		(key_max & 0x000000000000ff00u)   != 0u   ? 2 :
 		(key_max & 0x00000000000000ffu)   != 0u   ? 1 :
-#else//RADIX_IS_16//基数が16(4bit)の場合の計算
+	#else//RADIX_IS_16//基数が16(4bit)の場合の計算
 		(key_max & 0xf000000000000000llu) != 0llu ? 16 :
 		(key_max & 0x0f00000000000000llu) != 0llu ? 15 :
 		(key_max & 0x00f0000000000000llu) != 0llu ? 14 :
@@ -1749,7 +1769,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		(key_max & 0x0000000000000f00u)   != 0u   ?  3 :
 		(key_max & 0x00000000000000f0u)   != 0u   ?  2 :
 		(key_max & 0x000000000000000fu)   != 0u   ?  1 :
-#endif//RADIX_IS_16
+	#endif//RADIX_IS_16
 		0);
 	if (KEY_LEN == 0)//キーの桁数が 0 ならこの時点で終了
 	{
@@ -1814,14 +1834,16 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 	const key_t** sorted_key_tbl = new const key_t*[size];//ソート済みキー情報
 	bucket_set_t* bucket_tbl_set = new bucket_set_t[KEY_LEN];//分布情報セット
 	stack_t* stack = new stack_t[KEY_LEN];//スタック
-	if (!sorted_key_tbl)//メモリ確保に失敗したら終了
+	if (!sorted_key_tbl || !bucket_tbl_set || !stack)//メモリ確保に失敗したら終了
 	{
 		if (key_tbl)
 			delete[] key_tbl;//メモリ破棄
-		if (bucket_tbl_set)
+		if (sorted_key_tbl)
 			delete[] sorted_key_tbl;//メモリ破棄
 		if (bucket_tbl_set)
 			delete[] bucket_tbl_set;//メモリ破棄
+		if (stack)
+			delete[] stack;//メモリ破棄
 		return 0;
 	}
 
@@ -2710,6 +2732,8 @@ int main(const int argc, const char* argv[])
 	printLine("Shear sort:", sum_shear);
 	printLine("Comb sort:", sum_comb);
 	printLine("Gnome sort<S>:", sum_gnome);
+	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
+	printf("[Partition-exchange sorts]\n");
 	printLine("Quick sort:", sum_quick);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("[Selection sorts]\n");

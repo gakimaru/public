@@ -1,0 +1,20 @@
+----------------------------------------
+[Test for Lock-free stack/queue with threads]
+--------------------
+[Normal Pool-allocator:START]
+[Normal Pool-allocator:END] elapsed_time=1.488327300
+----- Debug Info for pool_allocator -----
+POOL_SIZE=20, VALUE_SIZE=8, emptyHead=20, usingCount=0
+Using:
+Deleted(for Recycle):
+ [10] [5] [2] [14] [15] [19] [8] [6] [1] [17] [4] [11] [18] [9] [7] [13] [12] [16] [3] [0]
+----------
+--------------------
+[Lock-Free Pool-allocator:START]
+[Lock-Free Pool-allocator:END] elapsed_time=0.441420000
+----- Debug Info for lf_pool_allocator -----
+POOL_SIZE=20, VALUE_SIZE=8, emptyHead=20, usingCount=0
+Using:
+Deleted(for Recycle):
+ [19(tag=0)] [18(tag=13)] [17(tag=14)] [14(tag=7)] [15(tag=13)] [16(tag=3)] [13(tag=13)] [12(tag=12)] [11(tag=11)] [10(tag=10)] [9(tag=9)] [8(tag=8)] [7(tag=7)] [6(tag=6)] [5(tag=5)] [4(tag=4)] [3(tag=3)] [2(tag=2)] [1(tag=1)] [0(tag=0)]
+----------

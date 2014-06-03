@@ -2,7 +2,7 @@
 //コンパイラスイッチ
 
 #define USE_POOL_ALLOCATOR//スタック／キューの実装で、プールアロケータを使用する場合はこのマクロを有効化する
-#define USE_LF_POOL_ALLOCATOR//ロックフリースタック／キューの実装で、ロックフリープールアロケータを使用する場合はこのマクロを有効化する
+//#define USE_LF_POOL_ALLOCATOR//ロックフリースタック／キューの実装で、ロックフリープールアロケータを使用する場合はこのマクロを有効化する
 
 //#define USE_GCC//GCC使用時は、このマクロを有効化する
 
@@ -35,8 +35,8 @@ static const int TEST_COUNT = 1000000;//テスト回数
 static const int TEST_PRINT_COUNT = 5;//テスト中のメッセージ表示回数
 static const int TEST_PUSH_THREADS = 10;//テスト用のプッシュ／エンキュースレッド数
 static const int TEST_POP_THREADS = 5;//テスト用のポップ／デキュースレッド数
-static const int TEST_ALLOC_THREADS = 20;//テスト用のアロケートスレッド数
-static const int TEST_POOL_SIZE = 20;// TEST_COUNT / 2;//テスト用プールアロケータのプールサイズ
+static const int TEST_ALLOC_THREADS = 100;//テスト用のアロケートスレッド数
+static const int TEST_POOL_SIZE = 20;//テスト用プールアロケータのプールサイズ
 #endif//USE_GCC
 #endif//TEST_1_TIME
 #ifdef ENABLE_TEST_PRINT
@@ -44,10 +44,6 @@ static const int TEST_PRINT_STEP = TEST_COUNT >= TEST_PRINT_COUNT * 10 ? TEST_CO
 #else//ENABLE_TEST_PRINT
 static const int TEST_PRINT_STEP = 0;
 #endif//ENABLE_TEST_PRINT
-static const int TEST_PUSH_SLEEP_STEP = TEST_COUNT >= TEST_PUSH_THREADS * 10 ? TEST_COUNT / TEST_PUSH_THREADS / 10 : 10;//プッシュテスト中のスリープの間隔
-static const int TEST_PUSH_SLEEP_TIME = 1;//プッシュテスト中のスリープ時間（マイクロ秒）※メモリ確保に失敗した時もスリープする
-static const int TEST_ALLOC_SLEEP_STEP = TEST_COUNT >= TEST_ALLOC_THREADS * 10 ? TEST_COUNT / TEST_ALLOC_THREADS / 10 : 10;//アロケートテスト中のスリープの間隔
-static const int TEST_ALLOC_SLEEP_TIME = 1;//アロケートテスト中のスリープ時間（マイクロ秒）※メモリ確保に失敗した時もスリープする
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -107,23 +103,6 @@ template<typename T, std::size_t N>
 inline std::size_t extentof(T(&val)[N]){return N; }
 
 //--------------------------------------------------------------------------------
-//デバッグ用
-
-//デバッグ用操作記録
-struct g_ope_t
-{
-	std::size_t time;
-	int type;
-	int result;
-	void* buff;
-	unsigned int val_before;
-	unsigned int val_after;
-};
-g_ope_t s_gOpeRec[100000];
-std::atomic<int> s_gOpeIndex;
-std::atomic<std::size_t> s_gTime;
-
-//--------------------------------------------------------------------------------
 //通常プールアロケータクラス
 #include <new>//new(void*)用
 template<class T, std::size_t POOL>
@@ -149,6 +128,7 @@ public:
 	void* alloc()
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);//ミューテックスでロック
+		//新規プールを確保
 		if (m_emptyHead < POOL_SIZE)//空きバッファの先頭インデックスがプールサイズ未満ならそのまま返す
 		{
 			const std::size_t empty_index = m_emptyHead++;//空きバッファのインでックスを取得＆インクリメント
@@ -156,21 +136,25 @@ public:
 			*reinterpret_cast<std::size_t*>(empty) = DIRTY_INDEX;//再利用連結インデックス削除
 			m_using[empty_index] = true;//インデックスを使用中にする
 			++m_usingCount;//使用中の数を増やす
-			return empty;//バッファを返して
+			return empty;//メモリ確保成功
 		}
-		if (m_deletedHead == INVALID_INDEX)//削除済みインデックスが無効ならメモリ確保失敗
+		//削除済みインデックスが無効ならメモリ確保失敗（空きプールが無い）
+		if (m_deletedHead == INVALID_INDEX)
 		{
 			//static const bool NOT_ENOUGH_POOL_MEMORY = false;
 			//assert(NOT_ENOUGH_POOL_MEMORY);
-			return nullptr;
+			return nullptr;//メモリ確保失敗
 		}
-		const std::size_t recycle_index = m_deletedHead;//先頭の削除済みインデックスを再利用インデックスとして取得
-		void* recycle = m_buff[recycle_index];//再利用バッファ取得
-		m_deletedHead = *reinterpret_cast<std::size_t*>(recycle);//先頭の削除済みインデックスを次のインデックスに変更
-		*reinterpret_cast<std::size_t*>(recycle) = DIRTY_INDEX;//再利用連結インデックス削除
-		m_using[recycle_index] = true;//インデックスを使用中にする
-		++m_usingCount;//使用中の数を増やす
-		return recycle;
+		//再利用プールを確保
+		{
+			const std::size_t recycle_index = m_deletedHead;//先頭の削除済みインデックスを再利用インデックスとして取得
+			void* recycle = m_buff[recycle_index];//再利用バッファ取得
+			m_deletedHead = *reinterpret_cast<std::size_t*>(recycle);//先頭の削除済みインデックスを次のインデックスに変更
+			*reinterpret_cast<std::size_t*>(recycle) = DIRTY_INDEX;//再利用連結インデックス削除
+			m_using[recycle_index] = true;//インデックスを使用中にする
+			++m_usingCount;//使用中の数を増やす
+			return recycle;//メモリ確保成功
+		}
 	}
 
 private:
@@ -293,9 +277,7 @@ private:
 
 //--------------------------------------------------------------------------------
 //ロックフリープールアロケータクラス
-//※ABA問題対策あり（4ビットのタグを使用してABA問題の発生率を1/16にする）
-//※要素数の上限は2^28-2=268,435,454
-//#define ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR//デバッグ用操作記録を作成する場合、このマクロを有効化する
+//※ABA問題対策あり（プール要素ごとの処理数をカウントし、重複処理を抑える）
 #include <new>//new(void*)用
 template<class T, std::size_t POOL>
 class alignas(16) lf_pool_allocator
@@ -319,256 +301,87 @@ public:
 	//メモリ確保
 	void* alloc()
 	{
-	#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-		std::size_t ope_index;
-		a_ope_t* ope;
-		std::size_t g_ope_index;
-		g_ope_t* g_ope;
-		int retry = 0;
-		std::size_t deleted_head_index_and_tag_tried = INVALID_INDEX;
-	#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-		const std::size_t empty_index = m_emptyHead.fetch_add(1);//空きバッファの先頭インデックスを取得してインクリメント
-		if (empty_index < POOL_SIZE)//空きバッファの先頭インデックスがプールサイズ未満ならそのまま返す
+		//新規プールを確保
 		{
-		#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-			g_ope_index = s_gOpeIndex.fetch_add(1);
-			g_ope = g_ope_index < static_cast<int>(extentof(s_gOpeRec)) ? &s_gOpeRec[g_ope_index] : nullptr;
-			if (g_ope)
+			const std::size_t empty_index = m_emptyHead.fetch_add(1);//空きバッファの先頭インデックスを取得してインクリメント
+			if (empty_index < POOL_SIZE)//空きバッファの先頭インデックスがプールサイズ未満ならそのまま返す
 			{
-				g_ope->time = s_gTime.fetch_add(1);
-				g_ope->type = 1;
-				g_ope->result = 1;
-				g_ope->buff = reinterpret_cast<void*>(m_buff[empty_index]);
-				g_ope->val_before = *reinterpret_cast<unsigned int*>(m_buff[empty_index]);
-				g_ope->val_after = DIRTY_INDEX;
-			}
-		#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-			m_using[empty_index].fetch_add(1);//インデックスを使用中にする
-			*reinterpret_cast<std::size_t*>(m_buff[empty_index]) = DIRTY_INDEX;//再利用連結インデックス削除
-			m_usingCount.fetch_add(1);//使用中の数を増やす
-			m_allocCount[empty_index].fetch_add(1);//アロケート回数をカウントアップ（デバッグ用）
-		#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-			//デバッグ用操作記録
-			ope_index = m_aOpeIndex.fetch_add(1);
-			ope = ope_index < static_cast<int>(extentof(m_aOpeRec)) ? &m_aOpeRec[ope_index] : nullptr;
-			if (ope)
-			{
-				ope->time = s_gTime.fetch_add(1);
-				ope->result = 1;
-				ope->retry = 0;
-				ope->is_allocate = true;
-				ope->is_recycle = false;
-				ope->deleted_head_index_and_tag = INVALID_INDEX;
-				ope->deleted_head_index_and_tag_old = INVALID_INDEX;
-				ope->deleted_head_index_and_tag_next = INVALID_INDEX;
-				ope->deleted_head_index_and_tag_tried = INVALID_INDEX;
-				ope->new_delete_buff = m_buff[empty_index];
-				ope->new_delete_index = empty_index;
-				ope->new_delete_index_and_tag = empty_index;
-			}
-		#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-			return m_buff[empty_index];//メモリ確保成功
-		}
-		m_emptyHead.store(POOL_SIZE);//空きバッファの先頭インデックスをプールサイズにする（インクリメントでオーバーしてしまっているので）
-		std::size_t recycle_index;
-		void* recycle;
-		std::size_t recycle_index_and_tag = m_deletedHead.load();//先頭の削除済みインデックスを再利用インデックスとして取得
-		int retry_count = 0;
-		while (true)
-		{
-			if (++retry_count == 1000)//1000回のリトライにつき1回ゼロスリープ
-			{
-				std::this_thread::sleep_for(std::chrono::nanoseconds(0));//ゼロスリープ
-				recycle_index_and_tag = m_deletedHead.load();//再利用インデックスを再取得
-				retry_count = 0;
-			}
-			if (recycle_index_and_tag == INVALID_INDEX)//削除済みインデックスが無効ならメモリ確保失敗（空きプールがない）
-			{
-				//static const bool NOT_ENOUGH_POOL_MEMORY = false;
-				//assert(NOT_ENOUGH_POOL_MEMORY);
-				return nullptr;//メモリ確保失敗
-			}
-			recycle_index = recycle_index_and_tag >> 4;//タグを削除
-			const std::size_t index_using = m_using[recycle_index].fetch_add(1);//インデックスを使用中にする
-			if (index_using != 0)//他のスレッドがインデックスを処理中ならリトライ
-			{
-				m_using[recycle_index].fetch_sub(1);//インデックスの使用中状態を戻す
-				recycle_index_and_tag = m_deletedHead.load();//再利用インデックスを再取得
-				continue;
-			}
-			recycle = m_buff[recycle_index];//先頭の削除済みインデックスのプールを再利用
-			const std::size_t next_index_and_tag = *reinterpret_cast<std::size_t*>(recycle);//先頭の削除済みインデックスの次のインデックスを取得
-		#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-			//デバッグ用操作記録
-			ope_index = m_aOpeIndex.fetch_add(1);
-			ope = ope_index < static_cast<int>(extentof(m_aOpeRec)) ? &m_aOpeRec[ope_index] : nullptr;
-			if (ope)
-			{
-				ope->time = s_gTime.fetch_add(1);
-				ope->result = 0;
-				ope->retry = retry++;
-				ope->is_allocate = true;
-				ope->is_recycle = true;
-				ope->deleted_head_index_and_tag = recycle_index_and_tag;
-				ope->deleted_head_index_and_tag_old = m_deletedHead.load();
-				ope->deleted_head_index_and_tag_next = next_index_and_tag;
-				ope->deleted_head_index_and_tag_tried = deleted_head_index_and_tag_tried;
-				ope->new_delete_buff = recycle;
-				ope->new_delete_index = recycle_index;
-				ope->new_delete_index_and_tag = recycle_index_and_tag;
-				deleted_head_index_and_tag_tried = next_index_and_tag;
-			}
-		#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-			if (m_deletedHead.compare_exchange_weak(recycle_index_and_tag, next_index_and_tag))
-			{
-				if (next_index_and_tag != INVALID_INDEX && (next_index_and_tag >> 4) >= POOL_SIZE)
-				{
-					printf("!!! Next pool index is broken !!!(recycle_index_and_tag=0x%08x, next_index_and_tag=0x%08x)\n", recycle_index_and_tag, next_index_and_tag);
-				}
-			#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-				//デバッグ用操作記録
-				if (ope)
-				{
-					if (next_index_and_tag != INVALID_INDEX && (next_index_and_tag >> 4) >= POOL_SIZE)
-						ope->result = 0xf;
-					else
-						ope->result = 1;
-				}
-				g_ope_index = s_gOpeIndex.fetch_add(1);
-				g_ope = g_ope_index < static_cast<int>(extentof(s_gOpeRec)) ? &s_gOpeRec[g_ope_index] : nullptr;
-				if (g_ope)
-				{
-					g_ope->time = s_gTime.fetch_add(1);
-					g_ope->type = 2;
-					g_ope->result = 1;
-					g_ope->buff = reinterpret_cast<void*>(m_buff[recycle_index]);
-					g_ope->val_before = *reinterpret_cast<unsigned int*>(m_buff[recycle_index]);
-					g_ope->val_after = DIRTY_INDEX;
-				}
-			#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-				*reinterpret_cast<std::size_t*>(m_buff[recycle_index]) = DIRTY_INDEX;//再利用連結インデックス削除
+				m_using[empty_index].fetch_add(1);//インデックスを使用中状態にする
+				*reinterpret_cast<std::size_t*>(m_buff[empty_index]) = DIRTY_INDEX;//再利用連結インデックス削除
 				m_usingCount.fetch_add(1);//使用中の数を増やす
-				m_allocCount[recycle_index].fetch_add(1);//アロケート回数をカウントアップ（デバッグ用）
-				return recycle;//メモリ確保成功
+				m_allocCount[empty_index].fetch_add(1);//アロケート回数をカウントアップ（デバッグ用）
+				return m_buff[empty_index];//メモリ確保成功
 			}
-			//【この処理を分解した処理】
-			//    if(m_deletedHead == recycle_index)//先頭の削除済みインデックスを他のスレッドが書き換えていないか？
-			//    {
-			//        m_deletedHead = next;//先頭の削除済みインデックスを次のインデックスに変更
-			//        //メモリ確保成功
-			//    }
-			//    else
-			//        recycle_index_and_tag = m_deletedHead;//先頭の削除済みインデックスを再取得
-			m_using[recycle_index].fetch_sub(1);//リトライのために、インデックスの使用中状態を戻す
-		#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-			//デバッグ用操作記録
-			if (ope)
-			{
-				if (next_index_and_tag != INVALID_INDEX && (next_index_and_tag >> 4) >= POOL_SIZE)
-					ope->result = -15;
-				else
-					ope->result = -1;
-			}
-		#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
 		}
-		return nullptr;//ダミー
+		//再利用プールを確保
+		{
+			m_emptyHead.store(POOL_SIZE);//空きバッファの先頭インデックスをプールサイズにする（インクリメントでオーバーしてしまっているので）
+			std::size_t recycle_index = m_deletedHead.load();//先頭の削除済みインデックスを再利用インデックスとして取得
+			int retry_count = 0;//リトライ回数
+			while (true)
+			{
+				++retry_count;
+				if (retry_count == 1000)//一定数のリトライごとにゼロスリープ
+				{
+					std::this_thread::sleep_for(std::chrono::nanoseconds(0));//ゼロスリープ（コンテキストスイッチ）
+					recycle_index = m_deletedHead.load();//再利用インデックスを再取得
+					retry_count = 0;
+				}
+				if (recycle_index == INVALID_INDEX)//削除済みインデックスが無効ならメモリ確保失敗（空きプールが無い）
+				{
+					//static const bool NOT_ENOUGH_POOL_MEMORY = false;
+					//assert(NOT_ENOUGH_POOL_MEMORY);
+					return nullptr;//メモリ確保失敗
+				}
+				const std::size_t index_using = m_using[recycle_index].fetch_add(1);//インデックスを使用中状態にする
+				if (index_using != 0)//他のスレッドがインデックスを処理中ならリトライ
+				{
+					m_using[recycle_index].fetch_sub(1);//インデックスの使用中状態を戻す
+					recycle_index = m_deletedHead.load();//再利用インデックスを再取得
+					continue;//リトライ
+				}
+				void* recycle = m_buff[recycle_index];//先頭の削除済みインデックスのプールを再利用
+				const std::size_t next_index_and_tag = *reinterpret_cast<std::size_t*>(recycle);//先頭の削除済みインデックスの次のインデックスを取得
+				std::size_t curr_recycle_index = recycle_index;//CAS操作失敗に備えて再利用インデックスを記憶
+
+				//CAS操作
+				if (m_deletedHead.compare_exchange_weak(recycle_index, next_index_and_tag))
+				{
+					*reinterpret_cast<std::size_t*>(m_buff[recycle_index]) = DIRTY_INDEX;//再利用連結インデックス削除
+					m_usingCount.fetch_add(1);//使用中の数を増やす
+					m_allocCount[recycle_index].fetch_add(1);//アロケート回数をカウントアップ（デバッグ用）
+					return recycle;//メモリ確保成功
+				}
+				//【この処理を分解した処理】
+				//    if(m_deletedHead == recycle_index)//先頭の削除済みインデックスを他のスレッドが書き換えていないか？
+				//    {
+				//        m_deletedHead = next;//先頭の削除済みインデックスを次のインデックスに変更
+				//        //メモリ確保成功
+				//    }
+				//    else
+				//        recycle_index_and_tag = m_deletedHead;//先頭の削除済みインデックスを再取得
+				
+				m_using[curr_recycle_index].fetch_sub(1);//インデックスの使用中状態を戻してリトライ
+			}
+			return nullptr;//ダミー
+		}
 	}
 
 private:
 	//メモリ解放
 	bool free(void* p, const std::size_t index)
 	{
-	#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-		std::size_t ope_index;
-		a_ope_t* ope;
-		std::size_t g_ope_index;
-		g_ope_t* g_ope;
-		int retry = 0;
-		std::size_t deleted_head_index_and_tag_tried = INVALID_INDEX;
-	#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-		const std::size_t tag = m_tag.fetch_add(1) & 0xf;//タグを算出
-		const std::size_t index_and_tag = (index << 4) | tag;//タグを追加
-		std::size_t deleted_head_index_and_tag = m_deletedHead.load();//削除済みインデックスを取得
+		std::size_t deleted_index_head = m_deletedHead.load();//削除済みインデックスを取得
 		while (true)
 		{
-		#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-			//デバッグ用操作記録
-			ope_index = m_aOpeIndex.fetch_add(1);
-			ope = ope_index < static_cast<int>(extentof(m_aOpeRec)) ? &m_aOpeRec[ope_index] : nullptr;
-			if (ope)
+			*reinterpret_cast<std::size_t*>(m_buff[index]) = deleted_index_head;//次の削除済みインデックスを保存
+			
+			//CAS操作
+			if (m_deletedHead.compare_exchange_weak(deleted_index_head, index))
 			{
-				ope->time = s_gTime.fetch_add(1);
-				ope->result = 0;
-				ope->retry = retry++;
-				ope->is_allocate = false;
-				ope->is_recycle = true;
-				ope->deleted_head_index_and_tag = deleted_head_index_and_tag;
-				ope->deleted_head_index_and_tag_old = m_deletedHead.load();
-				ope->deleted_head_index_and_tag_next = index_and_tag;
-				ope->deleted_head_index_and_tag_tried = deleted_head_index_and_tag_tried;
-				ope->new_delete_buff = p;
-				ope->new_delete_index = index;
-				ope->new_delete_index_and_tag = index_and_tag;
-				deleted_head_index_and_tag_tried = index_and_tag;
-			}
-			g_ope_index = s_gOpeIndex.fetch_add(1);
-			g_ope = g_ope_index < static_cast<int>(extentof(s_gOpeRec)) ? &s_gOpeRec[g_ope_index] : nullptr;
-			if (g_ope)
-			{
-				g_ope->time = s_gTime.fetch_add(1);
-				g_ope->type = 3;
-				g_ope->result = 0;
-				g_ope->buff = reinterpret_cast<void*>(m_buff[index]);
-				g_ope->val_before = *reinterpret_cast<unsigned int*>(m_buff[index]);
-				g_ope->val_after = static_cast<unsigned int>(deleted_head_index_and_tag);
-			}
-		#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-			if ((deleted_head_index_and_tag >> 4) == index)//二重解放検出
-			{
-				static const bool IS_ALREADY_DELETE_POINTER = false;
-				assert(IS_ALREADY_DELETE_POINTER);
-				return false;//メモリ解放失敗
-			}
-			*reinterpret_cast<std::size_t*>(m_buff[index]) = deleted_head_index_and_tag;//次の削除済みインデックスを保存
-if (index >= POOL_SIZE)
-{
-	printf("!!!(3) POOL_SIZE=%d, VALUE_SIZE=%d, emptyHead=%d, usingCount=%d\n", POOL_SIZE, VALUE_SIZE, m_emptyHead, m_usingCount);
-}
-			if (m_deletedHead.compare_exchange_weak(deleted_head_index_and_tag, index_and_tag))
-			{
-			#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-				//デバッグ用操作記録
-				if (ope)
-					ope->result = 1;
-				if (g_ope)
-					g_ope->result = 1;
-			#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-				const std::size_t index_using = m_using[index].fetch_sub(1);//インデックスを未使用状態にする
+				m_using[index].fetch_sub(1);//インデックスを未使用状態にする
 				m_usingCount.fetch_sub(1);//使用中の数を減らす
 				m_freeCount[index].fetch_add(1);//フリー回数をカウントアップ（デバッグ用）
-//!!!
-# if 0
-{
-int loop = 0;
-std::size_t deleted_index_and_tag = m_deletedHead.load();
-while (deleted_index_and_tag != INVALID_INDEX)
-{
-	if (loop >= POOL_SIZE)
-	{
-		printf("!!! infinite deleted chain !!!\n");
-		break;
-	}
-	const std::size_t deleted_index = deleted_index_and_tag >> 4;
-	if (deleted_index >= POOL_SIZE)
-	{
-		printf("!!! using data found !!!\n");
-		break;
-	}
-	deleted_index_and_tag = *reinterpret_cast<std::size_t*>(m_buff[deleted_index]);
-	++loop;
-}
-}
-#endif
 				return true;//メモリ解放成功
 			}
 			//【この処理を分解した処理】
@@ -579,13 +392,6 @@ while (deleted_index_and_tag != INVALID_INDEX)
 			//    }
 			//    else
 			//        deleted_head_index_and_tag = m_deletedHead;//削除済みインデックスを再取得
-		#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-			//デバッグ用操作記録
-			if (ope)
-				ope->result = -1;
-			if (g_ope)
-				g_ope->result = -1;
-		#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
 		}
 		return false;//ダミー
 	}
@@ -673,13 +479,11 @@ public:
 			}
 		}
 		printf("Deleted(for Recycle):\n");
-		std::size_t deleted_index_and_tag = m_deletedHead;
-		while (deleted_index_and_tag != INVALID_INDEX)
+		std::size_t deleted_index = m_deletedHead;
+		while (deleted_index != INVALID_INDEX)
 		{
-			const std::size_t deleted_index = deleted_index_and_tag >> 4;
-			const std::size_t tag = deleted_index_and_tag & 0xf;
-			printf(" [%d(tag=%d)]", deleted_index, tag);
-			deleted_index_and_tag = *reinterpret_cast<std::size_t*>(m_buff[deleted_index]);
+			printf(" [%d]", deleted_index);
+			deleted_index = *reinterpret_cast<std::size_t*>(m_buff[deleted_index]);
 		}
 		printf("\n");
 		printf("----------\n");
@@ -696,47 +500,16 @@ public:
 	~lf_pool_allocator()
 	{}
 
-//private:
-public:
+private:
 	//フィールド
 	char m_buff[POOL_SIZE][VALUE_SIZE];//プールバッファ ※先頭に配置してクラスのアライメントと一致させる
 	std::atomic<std::size_t> m_emptyHead;//空きバッファの先頭インデックス
 	std::atomic<std::size_t> m_deletedHead;//先頭の削除済みインデックス（再利用用）
-	std::atomic<std::size_t> m_tag;//ABA問題対策用のタグ
 	std::atomic<char> m_using[POOL_SIZE];//使用中インデックス  ※std::bitsetは使用しない
 	std::atomic<std::size_t> m_usingCount;//使用中の数（デバッグ用）※必須の情報ではない
 	std::atomic<std::size_t> m_allocCount[POOL_SIZE];//アロケート回数（デバッグ用）※必須の情報ではない
 	std::atomic<std::size_t> m_freeCount[POOL_SIZE];//フリー回数（デバッグ用）※必須の情報ではない
-
-#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-public:
-	//デバッグ用操作記録
-	struct a_ope_t
-	{
-		std::size_t time;
-		int result;
-		int retry;
-		bool is_allocate;
-		bool is_recycle;
-		std::size_t deleted_head_index_and_tag;
-		std::size_t deleted_head_index_and_tag_old;
-		std::size_t deleted_head_index_and_tag_next;
-		std::size_t deleted_head_index_and_tag_tried;
-		void* new_delete_buff;
-		std::size_t new_delete_index;
-		std::size_t new_delete_index_and_tag;
-	};
-	static a_ope_t m_aOpeRec[50000];
-	static std::atomic<std::size_t> m_aOpeIndex;
-#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
 };
-#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-//デバッグ用操作記録
-template<class T, std::size_t POOL_SIZE>
-typename lf_pool_allocator<T, POOL_SIZE>::a_ope_t lf_pool_allocator<T, POOL_SIZE>::m_aOpeRec[];
-template<class T, std::size_t POOL_SIZE>
-std::atomic<std::size_t> lf_pool_allocator<T, POOL_SIZE>::m_aOpeIndex;
-#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
 
 //--------------------------------------------------------------------------------
 //通常スタッククラス
@@ -859,7 +632,6 @@ private:
 //--------------------------------------------------------------------------------
 //ロックフリースタッククラス
 //※ABA問題対策あり（4ビットのタグを使用してABA問題の発生率を1/16にする）
-#define ENABLE_DEBUG_RECORD_FOR_LF_STACK//デバッグ用操作記録を作成する場合、このマクロを有効化する
 #include <cstdint>//uintptr_t用
 #ifdef USE_LF_POOL_ALLOCATOR
 template<class T, std::size_t POOL_SIZE>
@@ -887,15 +659,6 @@ public:
 	//プッシュ
 	bool push(value_type value)
 	{
-	#ifdef ENABLE_DEBUG_RECORD_FOR_LF_STACK
-		//デバッグ用操作記録
-		std::size_t ope_index;
-		s_ope_t* ope;
-		std::size_t g_ope_index;
-		g_ope_t* g_ope;
-		int retry = 0;
-		stack_t* head_and_tag_tried = nullptr;
-	#endif//ENABLE_DEBUG_RECORD_FOR_LF_STACK
 	#ifdef USE_LF_POOL_ALLOCATOR
 		stack_t* new_node = m_allocator.newObj();//新規ノードを生成
 	#else//USE_LF_POOL_ALLOCATOR
@@ -914,82 +677,18 @@ public:
 		#endif//USE_LF_POOL_ALLOCATOR
 			return false;
 		}
-		if (new_node->next != reinterpret_cast<stack_t*>(0xfefefefe))
-			printf("!!!\n");
-	#ifdef ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
-		g_ope_index = s_gOpeIndex.fetch_add(1);
-		g_ope = g_ope_index < static_cast<int>(extentof(s_gOpeRec)) ? &s_gOpeRec[g_ope_index] : nullptr;
-		if (g_ope)
-		{
-			g_ope->time = s_gTime.fetch_add(1);
-			g_ope->type = 4;
-			g_ope->result = 1;
-			g_ope->buff = reinterpret_cast<void*>(&new_node->next);
-			g_ope->val_before = reinterpret_cast<unsigned int>(new_node->next);
-			g_ope->val_after = 0;
-		}
-	#endif//ENABLE_DEBUG_RECORD_FOR_LF_POOL_ALLOCATOR
 		new_node->next = nullptr;//新規ノードの次ノードを初期化
 		new_node->value = value;//新規ノードに値をセット
 		const uintptr_t tag = m_tag.fetch_add(1) & 0xf;//タグを算出
 		stack_t* new_node_and_tag = reinterpret_cast<stack_t*>(reinterpret_cast<uintptr_t>(new_node) | tag);//タグを追加
 		while (true)
 		{
-		#ifdef ENABLE_DEBUG_RECORD_FOR_LF_STACK
-			//デバッグ用操作記録
-			ope_index = m_sOpeIndex.fetch_add(1);
-			ope = ope_index < static_cast<int>(extentof(m_sOpeRec)) ? &m_sOpeRec[ope_index] : nullptr;
-			if (ope)
-			{
-				ope->time = s_gTime.fetch_add(1);
-				ope->result = 0;
-				ope->retry = retry++;
-				ope->is_push = true;
-				ope->head = reinterpret_cast<stack_t*>(reinterpret_cast<uintptr_t>(new_node->next) & ~0xf);
-				ope->head_and_tag = new_node->next;
-				ope->head_and_tag_old = m_head.load();
-				ope->head_and_tag_next = new_node_and_tag;
-				ope->head_and_tag_tried = head_and_tag_tried;
-				ope->new_head = new_node;
-				ope->new_head_and_tag = new_node_and_tag;
-				ope->is_deleted_head = false;
-				head_and_tag_tried = new_node->next;
-			}
-			g_ope_index = s_gOpeIndex.fetch_add(1);
-			g_ope = ope_index < static_cast<int>(extentof(s_gOpeRec)) ? &s_gOpeRec[g_ope_index] : nullptr;
-			if (g_ope)
-			{
-				g_ope->time = s_gTime.fetch_add(1);
-				g_ope->type = 5;
-				g_ope->result = 0;
-				g_ope->buff = reinterpret_cast<void*>(&new_node->next);
-				g_ope->val_before = reinterpret_cast<unsigned int>(new_node->next);
-				g_ope->val_after = reinterpret_cast<unsigned int>(m_head.load());
-			}
-		#endif//ENABLE_DEBUG_RECORD_FOR_LF_STACK
 			if (new_node->next != nullptr && reinterpret_cast<uintptr_t>(new_node->next) < 0x100)
 			{
 				printf("!!! new_node->next(0x%08x) is broken !!!\n", reinterpret_cast<uintptr_t>(new_node->next));
 			}
 			if (m_head.compare_exchange_weak(new_node->next, new_node_and_tag))
-			{
-			#ifdef ENABLE_DEBUG_RECORD_FOR_LF_STACK
-				//デバッグ用操作記録
-				if (ope)
-					ope->result = 1;
-				if (g_ope)
-					g_ope->result = 1;
-			#endif//ENABLE_DEBUG_RECORD_FOR_LF_STACK
-#if 0
-if (m_allocator.m_deletedHead.load() != 0xffffffff && new_node == reinterpret_cast<stack_t*>(m_allocator.m_buff[m_allocator.m_deletedHead.load() >> 4]))
-{
-	if (ope)
-		ope->is_deleted_head = true;
-	printf("!!!(4) IS DELETED PTR!\n");
-}
-#endif
 				return true;//プッシュ成功
-			}
 			//【この処理を分解した処理】
 			//    if(m_head == new_node->next)//先頭ノードが新規ノードの次ノードか？
 			//    {
@@ -1000,13 +699,6 @@ if (m_allocator.m_deletedHead.load() != 0xffffffff && new_node == reinterpret_ca
 			//        new_node->next = m_head;//新規ノードの次ノードを現在の先頭ノードにする
 			//        ※このタイミングで他のスレッドが先頭ノードを書き換えている可能性があるため、
 			//          次のループで成功するとは限らない
-		#ifdef ENABLE_DEBUG_RECORD_FOR_LF_STACK
-			//デバッグ用操作記録
-			if (ope)
-				ope->result = -1;
-			if (g_ope)
-				g_ope->result = -1;
-		#endif//ENABLE_DEBUG_RECORD_FOR_LF_STACK
 		}
 		return false;//ダミー
 	}
@@ -1014,46 +706,13 @@ if (m_allocator.m_deletedHead.load() != 0xffffffff && new_node == reinterpret_ca
 	//ポップ
 	bool pop(value_type& value)
 	{
-	#ifdef ENABLE_DEBUG_RECORD_FOR_LF_STACK
-		//デバッグ用操作記録
-		std::size_t ope_index;
-		s_ope_t* ope;
-		int retry = 0;
-		stack_t* head_and_tag_tried = nullptr;
-	#endif//ENABLE_DEBUG_RECORD_FOR_LF_STACK
 		stack_t* head_and_tag = m_head.load();//先頭ノードを取得
 		stack_t* head = nullptr;
 		while (head_and_tag)
 		{
 			head = reinterpret_cast<stack_t*>(reinterpret_cast<uintptr_t>(head_and_tag) & ~0xf);//タグを削除
-		#ifdef ENABLE_DEBUG_RECORD_FOR_LF_STACK
-			//デバッグ用操作記録
-			ope_index = m_sOpeIndex.fetch_add(1);
-			ope = ope_index < static_cast<int>(extentof(m_sOpeRec)) ? &m_sOpeRec[ope_index] : nullptr;
-			if (ope)
-			{
-				ope->time = s_gTime.fetch_add(1);
-				ope->result = 0;
-				ope->retry = retry++;
-				ope->is_push = false;
-				ope->head = head;
-				ope->head_and_tag = head_and_tag;
-				ope->head_and_tag_old = m_head.load();
-				ope->head_and_tag_next = head->next;
-				ope->head_and_tag_tried = head_and_tag_tried;
-				ope->new_head = nullptr;
-				ope->new_head_and_tag = nullptr;
-				ope->is_deleted_head = false;
-				head_and_tag_tried = head_and_tag;
-			}
-		#endif//ENABLE_DEBUG_RECORD_FOR_LF_STACK
 			if (m_head.compare_exchange_weak(head_and_tag, head->next))
 			{
-			#ifdef ENABLE_DEBUG_RECORD_FOR_LF_STACK
-				//デバッグ用操作記録
-				if (ope)
-					ope->result = 1;
-			#endif//ENABLE_DEBUG_RECORD_FOR_LF_STACK
 				value = head->value;//値を取得
 			#ifdef USE_LF_POOL_ALLOCATOR
 				m_allocator.deleteObj(head);//先頭ノードを削除
@@ -1071,11 +730,6 @@ if (m_allocator.m_deletedHead.load() != 0xffffffff && new_node == reinterpret_ca
 			//    }
 			//    else
 			//        head_and_tag = m_head;//先頭ノードを再取得
-		#ifdef ENABLE_DEBUG_RECORD_FOR_LF_STACK
-			//デバッグ用操作記録
-			if (ope)
-				ope->result = -1;
-		#endif//ENABLE_DEBUG_RECORD_FOR_LF_STACK
 		}
 		return false;//ポップ失敗
 	}
@@ -1139,35 +793,7 @@ private:
 	std::atomic<stack_t*> m_head;//スタックの先頭
 	std::atomic<std::size_t> m_tag;//ABA問題対策用のタグ
 	std::atomic<unsigned long long> m_test;
-#ifdef ENABLE_DEBUG_RECORD_FOR_LF_STACK
-public:
-	//デバッグ用操作記録
-	struct s_ope_t
-	{
-		std::size_t time;
-		int result;
-		int retry;
-		bool is_push;
-		stack_t* head;
-		stack_t* head_and_tag;
-		stack_t* head_and_tag_old;
-		stack_t* head_and_tag_next;
-		stack_t* head_and_tag_tried;
-		stack_t* new_head;
-		stack_t* new_head_and_tag;
-		bool is_deleted_head;
-	};
-	static s_ope_t m_sOpeRec[50000];
-	static std::atomic<std::size_t> m_sOpeIndex;
-#endif//ENABLE_DEBUG_RECORD_FOR_LF_STACK
 };
-#ifdef ENABLE_DEBUG_RECORD_FOR_LF_STACK
-//デバッグ用操作記録
-template<class T, std::size_t POOL_SIZE>
-typename lf_stack<T, POOL_SIZE>::s_ope_t lf_stack<T, POOL_SIZE>::m_sOpeRec[];
-template<class T, std::size_t POOL_SIZE>
-std::atomic<std::size_t> lf_stack<T, POOL_SIZE>::m_sOpeIndex;
-#endif//ENABLE_DEBUG_RECORD_FOR_LF_STACK
 
 //--------------------------------------------------------------------------------
 //通常キュークラス
@@ -1821,33 +1447,31 @@ void thread_test()
 			printf("[%s:%2d]:Start\n", push_name, thread_no);
 		#endif//ENABLE_TEST_PRINT
 
-			int my_count = 0;
+			int loop_count = 0;
+			int my_push_count = 0;
 			while (true)
 			{
+				++loop_count;
+				if (loop_count % 1000 == 0)
+					std::this_thread::sleep_for(std::chrono::microseconds(0));
 				const int count = push_count.fetch_add(1);
 				if (count > TEST_COUNT)
 					break;
 				const bool result = push({ 0, count });
 				if (!result)
 				{
-				#ifdef ENABLE_TEST_PRINT
-				//	printf("[%s:%2d] Failed! count=%d\n", push_name, thread_no, count);
-				#endif//ENABLE_TEST_PRINT
 					push_count.fetch_sub(1);
-					std::this_thread::sleep_for(std::chrono::microseconds(TEST_PUSH_SLEEP_TIME));
 					continue;
 				}
+				++my_push_count;
+				if (my_push_count % 1000 == 0)
+					std::this_thread::sleep_for(std::chrono::microseconds(1));
 			#ifdef ENABLE_TEST_PRINT
 				if (count % TEST_PRINT_STEP == 0)
 					printf("[%s:%2d] count=%d\n", push_name, thread_no, count);
 			#endif//ENABLE_TEST_PRINT
 				//std::this_thread::yield();
-				std::this_thread::sleep_for(std::chrono::nanoseconds(0));
-				++my_count;
-				if (my_count % TEST_PUSH_SLEEP_STEP == 0)
-				{
-					std::this_thread::sleep_for(std::chrono::microseconds(TEST_PUSH_SLEEP_TIME));
-				}
+				std::this_thread::sleep_for(std::chrono::microseconds(0));
 			}
 			
 			end_count.fetch_add(1);
@@ -1883,7 +1507,7 @@ void thread_test()
 				#endif//ENABLE_TEST_PRINT
 				}
 				//std::this_thread::yield();
-				std::this_thread::sleep_for(std::chrono::nanoseconds(0));
+				std::this_thread::sleep_for(std::chrono::microseconds(0));
 			}
 
 			end_count.fetch_add(1);
@@ -1906,7 +1530,7 @@ void thread_test()
 				th2[i] = new std::thread(threadPop, i);
 				++thread_count;
 			}
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
 		}
 		const auto begin_time = std::chrono::system_clock::now();
 		{
@@ -1914,7 +1538,7 @@ void thread_test()
 			while (true)
 			{
 				cond.notify_all();//きちんと全スレッドに通知できない場合があるのでリトライする
-				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				std::this_thread::sleep_for(std::chrono::microseconds(1));
 				if (start_count.load() == thread_count)
 					break;
 			}
@@ -1973,34 +1597,30 @@ void thread_test()
 			printf("[Alloc:%2d]:Start\n", thread_no);
 		#endif//ENABLE_TEST_PRINT
 
-			int my_count = 0;
+			int loop_count = 0;
+			int my_alloc_count = 0;
 			while (true)
 			{
+				++loop_count;
+				if (loop_count % 1000 == 0)
+					std::this_thread::sleep_for(std::chrono::microseconds(0));
 				const int count = alloc_count.fetch_add(1);
 				if (count > TEST_COUNT)
 					break;
 				data_t* obj = alloc();
 				if (!obj)
-				{
-				#ifdef ENABLE_TEST_PRINT
-				//	printf("[%s:%2d] Failed! count=%d\n", push_name, thread_no, count);
-				#endif//ENABLE_TEST_PRINT
-					alloc_count.fetch_sub(1);
-					std::this_thread::sleep_for(std::chrono::microseconds(TEST_ALLOC_SLEEP_TIME));
 					continue;
-				}
+				std::this_thread::sleep_for(std::chrono::microseconds(0));
 				free(obj);
+				++my_alloc_count;
+				if (my_alloc_count % 1000 == 0)
+					std::this_thread::sleep_for(std::chrono::microseconds(1));
 			#ifdef ENABLE_TEST_PRINT
 				if (count % TEST_PRINT_STEP == 0)
 					printf("[Alloc:%2d] alloc=%d\n", thread_no, count);
 			#endif//ENABLE_TEST_PRINT
 				//std::this_thread::yield();
-				std::this_thread::sleep_for(std::chrono::nanoseconds(0));
-				++my_count;
-				if (my_count % TEST_ALLOC_SLEEP_STEP == 0)
-				{
-					std::this_thread::sleep_for(std::chrono::microseconds(TEST_ALLOC_SLEEP_TIME));
-				}
+				std::this_thread::sleep_for(std::chrono::microseconds(0));
 			}
 
 			end_count.fetch_add(1);

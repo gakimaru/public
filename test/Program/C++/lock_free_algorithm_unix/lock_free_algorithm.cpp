@@ -1,58 +1,58 @@
 //--------------------------------------------------------------------------------
-//ƒRƒ“ƒpƒCƒ‰ƒXƒCƒbƒ`
+//ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã‚¹ã‚¤ãƒƒãƒ
 
-//#define USE_GCC//GCCg—p‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
+#define USE_GCC//GCCä½¿ç”¨æ™‚ã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
 
-#define USE_POOL_ALLOCATOR//ƒXƒ^ƒbƒN^ƒLƒ…[‚ÌÀ‘•‚ÅAƒv[ƒ‹ƒAƒƒP[ƒ^‚ğg—p‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-#define USE_LF_POOL_ALLOCATOR//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒN^ƒLƒ…[‚ÌÀ‘•‚ÅAƒƒbƒNƒtƒŠ[ƒv[ƒ‹ƒAƒƒP[ƒ^‚ğg—p‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-//#define USE_SAFE_CAS_LF_POOL_ALLOCATOR//ƒƒbƒNƒtƒŠ[ƒv[ƒ‹ƒAƒƒP[ƒ^‚ÌÀ‘•‚ÅACAS‘€ì‚ªˆÓ}’Ê‚è‚É“®ì‚µ‚È‚¢‚ÌˆÀ‘S‘Îô‚ğg—p‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-//#define USE_SAFE_CAS_LF_STACK//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒN‚ÌÀ‘•‚ÅACAS‘€ì‚ªˆÓ}’Ê‚è‚É“®ì‚µ‚È‚¢‚ÌˆÀ‘S‘Îô‚ğg—p‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-//#define USE_SAFE_CAS_LF_QUEUE//ƒƒbƒNƒtƒŠ[ƒLƒ…[‚ÌÀ‘•‚ÅACAS‘€ì‚ªˆÓ}’Ê‚è‚É“®ì‚µ‚È‚¢‚ÌˆÀ‘S‘Îô‚ğg—p‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-//¦CAS‘€ì‚ÌˆÀ‘S‘Îô‚ÍA‚²‚­‹H‚ÉCAS‘€ì‚ªˆÓ}’Ê‚è‚É“®ì‚µ‚È‚¢‚±‚Æ‚ª‚ ‚Á‚½‚½‚ß‚É—pˆÓBCAS‘€ì‚ğƒXƒsƒ“ƒƒbƒN‚Å•ÛŒì‚·‚éBƒƒbƒNƒtƒŠ[‚Æ‚ÍŒ¾‚¦‚È‚­‚È‚Á‚Ä‚µ‚Ü‚¤B
+#define USE_POOL_ALLOCATOR//ã‚¹ã‚¿ãƒƒã‚¯ï¼ã‚­ãƒ¥ãƒ¼ã®å®Ÿè£…ã§ã€ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+#define USE_LF_POOL_ALLOCATOR//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯ï¼ã‚­ãƒ¥ãƒ¼ã®å®Ÿè£…ã§ã€ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+//#define USE_SAFE_CAS_LF_POOL_ALLOCATOR//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã®å®Ÿè£…ã§ã€CASæ“ä½œãŒæ„å›³é€šã‚Šã«å‹•ä½œã—ãªã„æ™‚ã®å®‰å…¨å¯¾ç­–ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+//#define USE_SAFE_CAS_LF_STACK//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯ã®å®Ÿè£…ã§ã€CASæ“ä½œãŒæ„å›³é€šã‚Šã«å‹•ä½œã—ãªã„æ™‚ã®å®‰å…¨å¯¾ç­–ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+//#define USE_SAFE_CAS_LF_QUEUE//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚­ãƒ¥ãƒ¼ã®å®Ÿè£…ã§ã€CASæ“ä½œãŒæ„å›³é€šã‚Šã«å‹•ä½œã—ãªã„æ™‚ã®å®‰å…¨å¯¾ç­–ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+//â€»CASæ“ä½œã®å®‰å…¨å¯¾ç­–ã¯ã€ã”ãç¨€ã«CASæ“ä½œãŒæ„å›³é€šã‚Šã«å‹•ä½œã—ãªã„ã“ã¨ãŒã‚ã£ãŸãŸã‚ã«ç”¨æ„ã€‚CASæ“ä½œã‚’ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã§ä¿è­·ã™ã‚‹ã€‚ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã¨ã¯è¨€ãˆãªããªã£ã¦ã—ã¾ã†ã€‚
 
 //--------------------------------------------------------------------------------
-//ƒeƒXƒg—pƒRƒ“ƒpƒCƒ‰ƒXƒCƒbƒ`^’è”
+//ãƒ†ã‚¹ãƒˆç”¨ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã‚¹ã‚¤ãƒƒãƒï¼å®šæ•°
 
-//#define ENABLE_EASY_TEST//ŠÈˆÕƒeƒXƒg‚ğÀs‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-#define ENABLE_THREAD_TEST//ƒXƒeƒbƒhƒeƒXƒg‚ğÀs‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
+//#define ENABLE_EASY_TEST//ç°¡æ˜“ãƒ†ã‚¹ãƒˆã‚’å®Ÿè¡Œã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+#define ENABLE_THREAD_TEST//ã‚¹ãƒ†ãƒƒãƒ‰ãƒ†ã‚¹ãƒˆã‚’å®Ÿè¡Œã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
 
-#define ENABLE_TEST_FOR_NORMAL_POOL_ALLOCATOR//’Êíƒv[ƒ‹ƒAƒƒP[ƒ^‚ÌƒeƒXƒg‚ğ—LŒø‚É‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-#define ENABLE_TEST_FOR_LF_POOL_ALLOCATOR//ƒƒbƒNƒtƒŠ[ƒv[ƒ‹ƒAƒƒP[ƒ^‚ÌƒeƒXƒg‚ğ—LŒø‚É‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-#define ENABLE_TEST_FOR_NORMAL_STACK//’ÊíƒXƒ^ƒbƒN‚ÌƒeƒXƒg‚ğ—LŒø‚É‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-#define ENABLE_TEST_FOR_LF_STACK//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒN‚ÌƒeƒXƒg‚ğ—LŒø‚É‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-#define ENABLE_TEST_FOR_NORMAL_QUEUE//’ÊíƒLƒ…[‚ÌƒeƒXƒg‚ğ—LŒø‚É‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-#define ENABLE_TEST_FOR_LF_QUEUE//ƒƒbƒNƒtƒŠ[ƒLƒ…[‚ÌƒeƒXƒg‚ğ—LŒø‚É‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
+#define ENABLE_TEST_FOR_NORMAL_POOL_ALLOCATOR//é€šå¸¸ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã®ãƒ†ã‚¹ãƒˆã‚’æœ‰åŠ¹ã«ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+#define ENABLE_TEST_FOR_LF_POOL_ALLOCATOR//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã®ãƒ†ã‚¹ãƒˆã‚’æœ‰åŠ¹ã«ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+#define ENABLE_TEST_FOR_NORMAL_STACK//é€šå¸¸ã‚¹ã‚¿ãƒƒã‚¯ã®ãƒ†ã‚¹ãƒˆã‚’æœ‰åŠ¹ã«ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+#define ENABLE_TEST_FOR_LF_STACK//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯ã®ãƒ†ã‚¹ãƒˆã‚’æœ‰åŠ¹ã«ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+#define ENABLE_TEST_FOR_NORMAL_QUEUE//é€šå¸¸ã‚­ãƒ¥ãƒ¼ã®ãƒ†ã‚¹ãƒˆã‚’æœ‰åŠ¹ã«ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+#define ENABLE_TEST_FOR_LF_QUEUE//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚­ãƒ¥ãƒ¼ã®ãƒ†ã‚¹ãƒˆã‚’æœ‰åŠ¹ã«ã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
 
-//ƒXƒŒƒbƒhƒeƒXƒg—p’è”
-//#define ENABLE_TEST_PRINT//ƒXƒŒƒbƒhƒeƒXƒg‚ÌŒo‰ßƒƒbƒZ[ƒW‚ğ•\¦‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-//#define ENABLE_TEST_PRINT_DEBUG_INFO//ƒXƒŒƒbƒhƒeƒXƒg‚ÌÅŒã‚ÉƒfƒoƒbƒOî•ñ‚ğ•\¦‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
-//#define TEST_1_TIME//1‰ñ‚¾‚¯‚ÌƒeƒXƒg‚ğÀs‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
+//ã‚¹ãƒ¬ãƒƒãƒ‰ãƒ†ã‚¹ãƒˆç”¨å®šæ•°
+//#define ENABLE_TEST_PRINT//ã‚¹ãƒ¬ãƒƒãƒ‰ãƒ†ã‚¹ãƒˆã®çµŒéãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+//#define ENABLE_TEST_PRINT_DEBUG_INFO//ã‚¹ãƒ¬ãƒƒãƒ‰ãƒ†ã‚¹ãƒˆã®æœ€å¾Œã«ãƒ‡ãƒãƒƒã‚°æƒ…å ±ã‚’è¡¨ç¤ºã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+//#define TEST_1_TIME//1å›ã ã‘ã®ãƒ†ã‚¹ãƒˆã‚’å®Ÿè¡Œã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
 #ifdef TEST_1_TIME
-static const int TEST_COUNT = 1;//ƒeƒXƒg‰ñ”
-static const int TEST_PRINT_COUNT = 0;//ƒeƒXƒg’†‚ÌƒƒbƒZ[ƒW•\¦‰ñ”
-static const int TEST_PUSH_THREADS = 1;//ƒeƒXƒg—p‚ÌƒvƒbƒVƒ…^ƒGƒ“ƒLƒ…[ƒXƒŒƒbƒh”
-static const int TEST_POP_THREADS = 1;//ƒeƒXƒg—p‚Ìƒ|ƒbƒv^ƒfƒLƒ…[ƒXƒŒƒbƒh”
-static const int TEST_ALLOC_THREADS = 1;//ƒeƒXƒg—p‚ÌƒAƒƒP[ƒgƒXƒŒƒbƒh”
-static const int TEST_POOL_SIZE = 10;//ƒeƒXƒg—pƒv[ƒ‹ƒAƒƒP[ƒ^‚Ìƒv[ƒ‹ƒTƒCƒY
+static const int TEST_COUNT = 1;//ãƒ†ã‚¹ãƒˆå›æ•°
+static const int TEST_PRINT_COUNT = 0;//ãƒ†ã‚¹ãƒˆä¸­ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºå›æ•°
+static const int TEST_PUSH_THREADS = 1;//ãƒ†ã‚¹ãƒˆç”¨ã®ãƒ—ãƒƒã‚·ãƒ¥ï¼ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼ã‚¹ãƒ¬ãƒƒãƒ‰æ•°
+static const int TEST_POP_THREADS = 1;//ãƒ†ã‚¹ãƒˆç”¨ã®ãƒãƒƒãƒ—ï¼ãƒ‡ã‚­ãƒ¥ãƒ¼ã‚¹ãƒ¬ãƒƒãƒ‰æ•°
+static const int TEST_ALLOC_THREADS = 1;//ãƒ†ã‚¹ãƒˆç”¨ã®ã‚¢ãƒ­ã‚±ãƒ¼ãƒˆã‚¹ãƒ¬ãƒƒãƒ‰æ•°
+static const int TEST_POOL_SIZE = 10;//ãƒ†ã‚¹ãƒˆç”¨ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã®ãƒ—ãƒ¼ãƒ«ã‚µã‚¤ã‚º
 #else//TEST_1_TIME
 #ifdef USE_GCC
-static const int TEST_COUNT = 20000;//ƒeƒXƒg‰ñ”
-static const int TEST_PRINT_COUNT = 5;//ƒeƒXƒg’†‚ÌƒƒbƒZ[ƒW•\¦‰ñ”
-static const int TEST_PUSH_THREADS = 10;//ƒeƒXƒg—p‚ÌƒvƒbƒVƒ…^ƒGƒ“ƒLƒ…[ƒXƒŒƒbƒh”
-static const int TEST_POP_THREADS = 5;//ƒeƒXƒg—p‚Ìƒ|ƒbƒv^ƒfƒLƒ…[ƒXƒŒƒbƒh”
-static const int TEST_ALLOC_THREADS = 15;//ƒeƒXƒg—p‚ÌƒAƒƒP[ƒgƒXƒŒƒbƒh”
-static const int TEST_POOL_SIZE = 20;//ƒeƒXƒg—pƒv[ƒ‹ƒAƒƒP[ƒ^‚Ìƒv[ƒ‹ƒTƒCƒY
+static const int TEST_COUNT = 20000;//ãƒ†ã‚¹ãƒˆå›æ•°
+static const int TEST_PRINT_COUNT = 5;//ãƒ†ã‚¹ãƒˆä¸­ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºå›æ•°
+static const int TEST_PUSH_THREADS = 10;//ãƒ†ã‚¹ãƒˆç”¨ã®ãƒ—ãƒƒã‚·ãƒ¥ï¼ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼ã‚¹ãƒ¬ãƒƒãƒ‰æ•°
+static const int TEST_POP_THREADS = 5;//ãƒ†ã‚¹ãƒˆç”¨ã®ãƒãƒƒãƒ—ï¼ãƒ‡ã‚­ãƒ¥ãƒ¼ã‚¹ãƒ¬ãƒƒãƒ‰æ•°
+static const int TEST_ALLOC_THREADS = 15;//ãƒ†ã‚¹ãƒˆç”¨ã®ã‚¢ãƒ­ã‚±ãƒ¼ãƒˆã‚¹ãƒ¬ãƒƒãƒ‰æ•°
+static const int TEST_POOL_SIZE = 20;//ãƒ†ã‚¹ãƒˆç”¨ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã®ãƒ—ãƒ¼ãƒ«ã‚µã‚¤ã‚º
 #else//USE_GCC
-static const int TEST_COUNT = 200000;//ƒeƒXƒg‰ñ”
-static const int TEST_PRINT_COUNT = 5;//ƒeƒXƒg’†‚ÌƒƒbƒZ[ƒW•\¦‰ñ”
-static const int TEST_PUSH_THREADS = 10;//ƒeƒXƒg—p‚ÌƒvƒbƒVƒ…^ƒGƒ“ƒLƒ…[ƒXƒŒƒbƒh”
-static const int TEST_POP_THREADS = 5;//ƒeƒXƒg—p‚Ìƒ|ƒbƒv^ƒfƒLƒ…[ƒXƒŒƒbƒh”
-static const int TEST_ALLOC_THREADS = 15;//ƒeƒXƒg—p‚ÌƒAƒƒP[ƒgƒXƒŒƒbƒh”
-static const int TEST_POOL_SIZE = 20;//ƒeƒXƒg—pƒv[ƒ‹ƒAƒƒP[ƒ^‚Ìƒv[ƒ‹ƒTƒCƒY
+static const int TEST_COUNT = 200000;//ãƒ†ã‚¹ãƒˆå›æ•°
+static const int TEST_PRINT_COUNT = 5;//ãƒ†ã‚¹ãƒˆä¸­ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºå›æ•°
+static const int TEST_PUSH_THREADS = 10;//ãƒ†ã‚¹ãƒˆç”¨ã®ãƒ—ãƒƒã‚·ãƒ¥ï¼ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼ã‚¹ãƒ¬ãƒƒãƒ‰æ•°
+static const int TEST_POP_THREADS = 5;//ãƒ†ã‚¹ãƒˆç”¨ã®ãƒãƒƒãƒ—ï¼ãƒ‡ã‚­ãƒ¥ãƒ¼ã‚¹ãƒ¬ãƒƒãƒ‰æ•°
+static const int TEST_ALLOC_THREADS = 15;//ãƒ†ã‚¹ãƒˆç”¨ã®ã‚¢ãƒ­ã‚±ãƒ¼ãƒˆã‚¹ãƒ¬ãƒƒãƒ‰æ•°
+static const int TEST_POOL_SIZE = 20;//ãƒ†ã‚¹ãƒˆç”¨ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã®ãƒ—ãƒ¼ãƒ«ã‚µã‚¤ã‚º
 #endif//USE_GCC
 #endif//TEST_1_TIME
 #ifdef ENABLE_TEST_PRINT
-static const int TEST_PRINT_STEP = TEST_COUNT >= TEST_PRINT_COUNT * 10 ? TEST_COUNT / TEST_PRINT_COUNT : 10;//ƒeƒXƒg’†‚ÌƒƒbƒZ[ƒW•\¦‚ÌŠÔŠu
+static const int TEST_PRINT_STEP = TEST_COUNT >= TEST_PRINT_COUNT * 10 ? TEST_COUNT / TEST_PRINT_COUNT : 10;//ãƒ†ã‚¹ãƒˆä¸­ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºã®é–“éš”
 #else//ENABLE_TEST_PRINT
 static const int TEST_PRINT_STEP = 0;
 #endif//ENABLE_TEST_PRINT
@@ -60,23 +60,23 @@ static const int TEST_PRINT_STEP = 0;
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <assert.h>//assert()—p
+#include <assert.h>//assert()ç”¨
 
-#include <cstddef>//std::size_t—p
+#include <cstddef>//std::size_tç”¨
 
-//ƒAƒ‰ƒCƒ“ƒƒ“ƒgw’è
+//ã‚¢ãƒ©ã‚¤ãƒ³ãƒ¡ãƒ³ãƒˆæŒ‡å®š
 #ifdef USE_GCC
-#define alignas(n) __attribute__((aligned(n)))//GCC—p
+#define alignas(n) __attribute__((aligned(n)))//GCCç”¨
 #else//USE_GCC
-#define alignas(n) __declspec(align(n))//VC++—p
+#define alignas(n) __declspec(align(n))//VC++ç”¨
 #endif//USE_GCC
 
-//ƒAƒ‰ƒCƒ“ƒƒ“ƒgw’è•t‚«ƒƒ‚ƒŠŠm•ÛŠÖ”
-//¦VC++d—l‚É‡‚í‚¹‚Ä‹¤’Ê‰»
+//ã‚¢ãƒ©ã‚¤ãƒ³ãƒ¡ãƒ³ãƒˆæŒ‡å®šä»˜ããƒ¡ãƒ¢ãƒªç¢ºä¿é–¢æ•°
+//â€»VC++ä»•æ§˜ã«åˆã‚ã›ã¦å…±é€šåŒ–
 #ifdef USE_GCC
-#include <cstddef>//std::size_t—p
-#include <stdlib.h>//posix_memalign()—p
-#include <memory.h>//free()—p
+#include <cstddef>//std::size_tç”¨
+#include <stdlib.h>//posix_memalign()ç”¨
+#include <memory.h>//free()ç”¨
 inline void* _aligned_malloc(const std::size_t size, const std::size_t alignment)
 {
 	void *p;
@@ -88,53 +88,53 @@ inline void _aligned_free(void* p)
 	free(p);
 }
 #else//USE_GCC
-#include <memory.h>//_aligned_malloc(), _aligned_free()—p
+#include <memory.h>//_aligned_malloc(), _aligned_free()ç”¨
 //void* _aligned_malloc(size_t size, size_t alignment);
 //void _aligned_free(void* p);
 #endif//USE_GCC
 
 //--------------------------------------------------------------------------------
-//ƒv[ƒ‹ƒAƒƒP[ƒ^—pƒCƒ“ƒNƒ‹[ƒh
+//ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ç”¨ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 #include <bitset>//std::bitset
 #include <new>//new(void*), delete(void*, void*)
 
 //--------------------------------------------------------------------------------
-//’ÊíƒXƒ^ƒbƒN^ƒLƒ…[—pƒCƒ“ƒNƒ‹[ƒh
+//é€šå¸¸ã‚¹ã‚¿ãƒƒã‚¯ï¼ã‚­ãƒ¥ãƒ¼ç”¨ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 #include <utility>//C++11 std::move
 #include <mutex>//C++11 std::mutex
 #include <thread>//C++11 std::this_thread
 #include <cstdint>//uintptr_t
 
 //--------------------------------------------------------------------------------
-//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒN^ƒLƒ…[—pƒCƒ“ƒNƒ‹[ƒh
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯ï¼ã‚­ãƒ¥ãƒ¼ç”¨ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 #include <atomic>//C++11 std::atomic
 
 //--------------------------------------------------------------------------------
-//”Ä—pˆ—
+//æ±ç”¨å‡¦ç†
 
-//”z—ñ‚Ì—v‘f”‚ğ•Ô‚·
+//é…åˆ—ã®è¦ç´ æ•°ã‚’è¿”ã™
 template<typename T, std::size_t N>
 inline std::size_t extentof(T(&val)[N]){return N; }
 
 //--------------------------------------------------------------------------------
-//ƒ^ƒO•t‚«ƒ|ƒCƒ“ƒ^Œ^
-//¦32ƒrƒbƒgƒAƒhƒŒƒX‘O’ñ
-//¦PODŒ^‚ğ•ÛØ‚·‚é‚½‚ß‚ÉƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—pˆÓ‚µ‚È‚¢
+//ã‚¿ã‚°ä»˜ããƒã‚¤ãƒ³ã‚¿å‹
+//â€»32ãƒ“ãƒƒãƒˆã‚¢ãƒ‰ãƒ¬ã‚¹å‰æ
+//â€»PODå‹ã‚’ä¿è¨¼ã™ã‚‹ãŸã‚ã«ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ç”¨æ„ã—ãªã„
 template<typename T>
 struct tag_ptr
 {
-	//Œ^
-	typedef unsigned long long value_type;//ƒ^ƒO•t‚«ƒ|ƒCƒ“ƒ^Œ^
-	typedef T* pointer_type;//ƒ|ƒCƒ“ƒ^Œ^
-	typedef unsigned int tag_type;//ƒ^ƒOŒ^
-	//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
+	//å‹
+	typedef unsigned long long value_type;//ã‚¿ã‚°ä»˜ããƒã‚¤ãƒ³ã‚¿å‹
+	typedef T* pointer_type;//ãƒã‚¤ãƒ³ã‚¿å‹
+	typedef unsigned int tag_type;//ã‚¿ã‚°å‹
+	//ã‚­ãƒ£ã‚¹ãƒˆã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 	inline operator value_type() const { return m_value; }
 	inline operator const pointer_type() const { return ptr(); }
 	inline operator pointer_type(){ return ptr(); }
-	//ƒIƒyƒŒ[ƒ^
+	//ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 	inline bool operator==(const tag_ptr& lhs) const { return m_value == lhs.m_value; }
 	inline bool operator!=(const tag_ptr& lhs) const { return m_value != lhs.m_value; }
-	//ƒAƒNƒZƒbƒT
+	//ã‚¢ã‚¯ã‚»ãƒƒã‚µ
 	inline value_type value() const { return m_value; }
 	inline const pointer_type ptr() const { return reinterpret_cast<const pointer_type>(m_value & 0xffffffffllu); }
 	inline pointer_type ptr(){ return reinterpret_cast<pointer_type>(m_value & 0xffffffffllu); }
@@ -145,86 +145,86 @@ struct tag_ptr
 	{
 		m_value = reinterpret_cast<value_type>(ptr) | (static_cast<value_type>(tag) << 32);
 	}
-	//ƒtƒB[ƒ‹ƒh
-	value_type m_value;//ƒ^ƒOiãˆÊ32ƒrƒbƒgj{ƒ|ƒCƒ“ƒ^i‰ºˆÊ32ƒrƒbƒgj
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	value_type m_value;//ã‚¿ã‚°ï¼ˆä¸Šä½32ãƒ“ãƒƒãƒˆï¼‰ï¼‹ãƒã‚¤ãƒ³ã‚¿ï¼ˆä¸‹ä½32ãƒ“ãƒƒãƒˆï¼‰
 };
 
 //--------------------------------------------------------------------------------
-//’Êíƒv[ƒ‹ƒAƒƒP[ƒ^ƒNƒ‰ƒX
+//é€šå¸¸ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã‚¯ãƒ©ã‚¹
 template<class T, std::size_t POOL>
 class pool_allocator
 {
 	static_assert(sizeof(T) >= 4, "sizeof(T) is too small.");
 
 public:
-	//Œ^
-	typedef T value_type;//’lŒ^
+	//å‹
+	typedef T value_type;//å€¤å‹
 
 public:
-	//’è”
-	static const std::size_t POOL_SIZE = POOL;//ƒv[ƒ‹ƒTƒCƒY
-	static const std::size_t VALUE_SIZE = sizeof(value_type);//’l‚ÌƒTƒCƒY
-	static const std::size_t INVALID_INDEX = 0xffffffff;//–³Œø‚ÈƒCƒ“ƒfƒbƒNƒX
-	static const std::size_t DIRTY_INDEX = 0xfefefefe;//Ä—˜—p˜AŒ‹ƒCƒ“ƒfƒbƒNƒXíœ—p
+	//å®šæ•°
+	static const std::size_t POOL_SIZE = POOL;//ãƒ—ãƒ¼ãƒ«ã‚µã‚¤ã‚º
+	static const std::size_t VALUE_SIZE = sizeof(value_type);//å€¤ã®ã‚µã‚¤ã‚º
+	static const std::size_t INVALID_INDEX = 0xffffffff;//ç„¡åŠ¹ãªã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+	static const std::size_t DIRTY_INDEX = 0xfefefefe;//å†åˆ©ç”¨é€£çµã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹å‰Šé™¤ç”¨
 
 public:
-	//ƒƒ\ƒbƒh
+	//ãƒ¡ã‚½ãƒƒãƒ‰
 
-	//ƒƒ‚ƒŠŠm•Û
+	//ãƒ¡ãƒ¢ãƒªç¢ºä¿
 	void* alloc()
 	{
-		std::lock_guard<std::mutex> lock(m_mutex);//ƒ~ƒ…[ƒeƒbƒNƒX‚ÅƒƒbƒN
-		//V‹Kƒv[ƒ‹‚ğŠm•Û
-		if (m_emptyHead < POOL_SIZE)//‹ó‚«ƒoƒbƒtƒ@‚Ìæ“ªƒCƒ“ƒfƒbƒNƒX‚ªƒv[ƒ‹ƒTƒCƒY–¢–‚È‚ç‚»‚Ì‚Ü‚Ü•Ô‚·
+		std::lock_guard<std::mutex> lock(m_mutex);//ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹ã§ãƒ­ãƒƒã‚¯
+		//æ–°è¦ãƒ—ãƒ¼ãƒ«ã‚’ç¢ºä¿
+		if (m_emptyHead < POOL_SIZE)//ç©ºããƒãƒƒãƒ•ã‚¡ã®å…ˆé ­ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãŒãƒ—ãƒ¼ãƒ«ã‚µã‚¤ã‚ºæœªæº€ãªã‚‰ãã®ã¾ã¾è¿”ã™
 		{
-			const std::size_t empty_index = m_emptyHead++;//‹ó‚«ƒoƒbƒtƒ@‚ÌƒCƒ“‚ÅƒbƒNƒX‚ğæ“¾•ƒCƒ“ƒNƒŠƒƒ“ƒg
-			void* empty = m_buff[empty_index];//‹ó‚«ƒoƒbƒtƒ@æ“¾
-			*reinterpret_cast<std::size_t*>(empty) = DIRTY_INDEX;//Ä—˜—p˜AŒ‹ƒCƒ“ƒfƒbƒNƒXíœ
-			m_using[empty_index] = true;//ƒCƒ“ƒfƒbƒNƒX‚ğg—p’†‚É‚·‚é
-			++m_usingCount;//g—p’†‚Ì”‚ğ‘‚â‚·
-			return empty;//ƒƒ‚ƒŠŠm•Û¬Œ÷
+			const std::size_t empty_index = m_emptyHead++;//ç©ºããƒãƒƒãƒ•ã‚¡ã®ã‚¤ãƒ³ã§ãƒƒã‚¯ã‚¹ã‚’å–å¾—ï¼†ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+			void* empty = m_buff[empty_index];//ç©ºããƒãƒƒãƒ•ã‚¡å–å¾—
+			*reinterpret_cast<std::size_t*>(empty) = DIRTY_INDEX;//å†åˆ©ç”¨é€£çµã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹å‰Šé™¤
+			m_using[empty_index] = true;//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ä½¿ç”¨ä¸­ã«ã™ã‚‹
+			++m_usingCount;//ä½¿ç”¨ä¸­ã®æ•°ã‚’å¢—ã‚„ã™
+			return empty;//ãƒ¡ãƒ¢ãƒªç¢ºä¿æˆåŠŸ
 		}
-		//íœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ª–³Œø‚È‚çƒƒ‚ƒŠŠm•Û¸”si‹ó‚«ƒv[ƒ‹‚ª–³‚¢j
+		//å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãŒç„¡åŠ¹ãªã‚‰ãƒ¡ãƒ¢ãƒªç¢ºä¿å¤±æ•—ï¼ˆç©ºããƒ—ãƒ¼ãƒ«ãŒç„¡ã„ï¼‰
 		if (m_deletedHead == INVALID_INDEX)
 		{
 			//static const bool NOT_ENOUGH_POOL_MEMORY = false;
 			//assert(NOT_ENOUGH_POOL_MEMORY);
-			return nullptr;//ƒƒ‚ƒŠŠm•Û¸”s
+			return nullptr;//ãƒ¡ãƒ¢ãƒªç¢ºä¿å¤±æ•—
 		}
-		//Ä—˜—pƒv[ƒ‹‚ğŠm•Û
+		//å†åˆ©ç”¨ãƒ—ãƒ¼ãƒ«ã‚’ç¢ºä¿
 		{
-			const std::size_t recycle_index = m_deletedHead;//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğÄ—˜—pƒCƒ“ƒfƒbƒNƒX‚Æ‚µ‚Äæ“¾
-			void* recycle = m_buff[recycle_index];//Ä—˜—pƒoƒbƒtƒ@æ“¾
-			m_deletedHead = *reinterpret_cast<std::size_t*>(recycle);//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğŸ‚ÌƒCƒ“ƒfƒbƒNƒX‚É•ÏX
-			*reinterpret_cast<std::size_t*>(recycle) = DIRTY_INDEX;//Ä—˜—p˜AŒ‹ƒCƒ“ƒfƒbƒNƒXíœ
-			m_using[recycle_index] = true;//ƒCƒ“ƒfƒbƒNƒX‚ğg—p’†‚É‚·‚é
-			++m_usingCount;//g—p’†‚Ì”‚ğ‘‚â‚·
-			return recycle;//ƒƒ‚ƒŠŠm•Û¬Œ÷
+			const std::size_t recycle_index = m_deletedHead;//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å†åˆ©ç”¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã¨ã—ã¦å–å¾—
+			void* recycle = m_buff[recycle_index];//å†åˆ©ç”¨ãƒãƒƒãƒ•ã‚¡å–å¾—
+			m_deletedHead = *reinterpret_cast<std::size_t*>(recycle);//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æ¬¡ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¤‰æ›´
+			*reinterpret_cast<std::size_t*>(recycle) = DIRTY_INDEX;//å†åˆ©ç”¨é€£çµã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹å‰Šé™¤
+			m_using[recycle_index] = true;//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ä½¿ç”¨ä¸­ã«ã™ã‚‹
+			++m_usingCount;//ä½¿ç”¨ä¸­ã®æ•°ã‚’å¢—ã‚„ã™
+			return recycle;//ãƒ¡ãƒ¢ãƒªç¢ºä¿æˆåŠŸ
 		}
 	}
 
 private:
-	//ƒƒ‚ƒŠ‰ğ•ú
+	//ãƒ¡ãƒ¢ãƒªè§£æ”¾
 	bool free(void* p, const std::size_t index)
 	{
-		*reinterpret_cast<std::size_t*>(m_buff[index]) = m_deletedHead;//Ÿ‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğ•Û‘¶
-		m_deletedHead = index;//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğ•ÏX
-		m_using[index] = false;//ƒCƒ“ƒfƒbƒNƒX‚ğ–¢g—pó‘Ô‚É‚·‚é
-		--m_usingCount;//g—p’†‚Ì”‚ğŒ¸‚ç‚·
+		*reinterpret_cast<std::size_t*>(m_buff[index]) = m_deletedHead;//æ¬¡ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ä¿å­˜
+		m_deletedHead = index;//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å¤‰æ›´
+		m_using[index] = false;//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æœªä½¿ç”¨çŠ¶æ…‹ã«ã™ã‚‹
+		--m_usingCount;//ä½¿ç”¨ä¸­ã®æ•°ã‚’æ¸›ã‚‰ã™
 		return true;
 	}
 	
-	//ƒ|ƒCƒ“ƒ^‚ğƒCƒ“ƒfƒbƒNƒX‚É•ÏŠ·
+	//ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¤‰æ›
 	std::size_t ptrToIndex(void* p)
 	{
 		const std::size_t index = (reinterpret_cast<char*>(p) - reinterpret_cast<char*>(m_buff)) / VALUE_SIZE;
-		if (index >= POOL_SIZE)//”ÍˆÍŠO‚ÌƒCƒ“ƒfƒbƒNƒX‚È‚çI—¹
+		if (index >= POOL_SIZE)//ç¯„å›²å¤–ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãªã‚‰çµ‚äº†
 		{
 			static const bool IS_INVALID_POINTER_OF_POOL = false;
 			assert(IS_INVALID_POINTER_OF_POOL);
 			return INVALID_INDEX;
 		}
-		if (!m_using[index])//ƒCƒ“ƒfƒbƒNƒX‚ªŠù‚É–¢g—pó‘Ô‚È‚çI—¹
+		if (!m_using[index])//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãŒæ—¢ã«æœªä½¿ç”¨çŠ¶æ…‹ãªã‚‰çµ‚äº†
 		{
 			static const bool IS_ALREADY_DELETE_POINTER = false;
 			assert(IS_ALREADY_DELETE_POINTER);
@@ -234,17 +234,17 @@ private:
 	}
 
 public:
-	//ƒƒ‚ƒŠ‰ğ•ú
+	//ãƒ¡ãƒ¢ãƒªè§£æ”¾
 	bool free(void* p)
 	{
-		std::lock_guard<std::mutex> lock(m_mutex);//ƒ~ƒ…[ƒeƒbƒNƒX‚ÅƒƒbƒN
-		const std::size_t index = ptrToIndex(p);//ƒ|ƒCƒ“ƒ^‚ğƒCƒ“ƒfƒbƒNƒX‚É•ÏŠ·
+		std::lock_guard<std::mutex> lock(m_mutex);//ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹ã§ãƒ­ãƒƒã‚¯
+		const std::size_t index = ptrToIndex(p);//ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¤‰æ›
 		if (index == INVALID_INDEX)
 			return false;
 		return free(p, index);
 	}
 	
-	//ƒƒ‚ƒŠŠm•Û‚ÆƒRƒ“ƒXƒgƒ‰ƒNƒ^ŒÄ‚Ño‚µ
+	//ãƒ¡ãƒ¢ãƒªç¢ºä¿ã¨ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å‘¼ã³å‡ºã—
 	template<typename...Tx>
 	value_type* newObj(Tx... args)
 	{
@@ -263,20 +263,20 @@ public:
 		return new(p)ObjType(args...);
 	}
 	
-	//ƒƒ‚ƒŠ‰ğ•ú‚ÆƒfƒXƒgƒ‰ƒNƒ^ŒÄ‚Ño‚µ
+	//ãƒ¡ãƒ¢ãƒªè§£æ”¾ã¨ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å‘¼ã³å‡ºã—
 	template<typename ObjType>
 	bool deleteObj(ObjType* p)
 	{
-		std::lock_guard<std::mutex> lock(m_mutex);//ƒ~ƒ…[ƒeƒbƒNƒX‚ÅƒƒbƒN
-		const std::size_t index = ptrToIndex(p);//ƒ|ƒCƒ“ƒ^‚ğƒCƒ“ƒfƒbƒNƒX‚É•ÏŠ·
+		std::lock_guard<std::mutex> lock(m_mutex);//ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹ã§ãƒ­ãƒƒã‚¯
+		const std::size_t index = ptrToIndex(p);//ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¤‰æ›
 		if (index == INVALID_INDEX)
 			return false;
-		p->~ObjType();//ƒfƒXƒgƒ‰ƒNƒ^ŒÄ‚Ño‚µ
+		p->~ObjType();//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å‘¼ã³å‡ºã—
 		//operator delete(p, p);
 		return free(p, index);
 	}
 
-	//ƒfƒoƒbƒOî•ñ•\¦
+	//ãƒ‡ãƒãƒƒã‚°æƒ…å ±è¡¨ç¤º
 	void printDebugInfo(std::function<void(const value_type& value)> print_node)
 	{
 		printf("----- Debug Info for pool_allocator -----\n");
@@ -303,164 +303,164 @@ public:
 	}
 
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	pool_allocator() :
 		m_emptyHead(0),
 		m_deletedHead(INVALID_INDEX)
 	{}
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~pool_allocator()
 	{}
 
 private:
-	//ƒtƒB[ƒ‹ƒh
-	char m_buff[POOL_SIZE][VALUE_SIZE];//ƒv[ƒ‹ƒoƒbƒtƒ@ ¦æ“ª‚É”z’u‚µ‚ÄƒNƒ‰ƒX‚ÌƒAƒ‰ƒCƒƒ“ƒg‚Æˆê’v‚³‚¹‚é
-	std::size_t m_emptyHead;//‹ó‚«ƒoƒbƒtƒ@‚Ìæ“ªƒCƒ“ƒfƒbƒNƒX
-	std::size_t m_deletedHead;//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒXiÄ—˜—p—pj
-	std::bitset<POOL_SIZE> m_using;//g—p’†ƒCƒ“ƒfƒbƒNƒX
-	std::size_t m_usingCount;//g—p’†‚Ì”iƒfƒoƒbƒO—pj¦•K{‚Ìî•ñ‚Å‚Í‚È‚¢
-	std::mutex m_mutex;//ƒ~ƒ…[ƒeƒbƒNƒX
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	char m_buff[POOL_SIZE][VALUE_SIZE];//ãƒ—ãƒ¼ãƒ«ãƒãƒƒãƒ•ã‚¡ â€»å…ˆé ­ã«é…ç½®ã—ã¦ã‚¯ãƒ©ã‚¹ã®ã‚¢ãƒ©ã‚¤ãƒ¡ãƒ³ãƒˆã¨ä¸€è‡´ã•ã›ã‚‹
+	std::size_t m_emptyHead;//ç©ºããƒãƒƒãƒ•ã‚¡ã®å…ˆé ­ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+	std::size_t m_deletedHead;//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ï¼ˆå†åˆ©ç”¨ç”¨ï¼‰
+	std::bitset<POOL_SIZE> m_using;//ä½¿ç”¨ä¸­ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+	std::size_t m_usingCount;//ä½¿ç”¨ä¸­ã®æ•°ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰â€»å¿…é ˆã®æƒ…å ±ã§ã¯ãªã„
+	std::mutex m_mutex;//ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹
 };
 
 //--------------------------------------------------------------------------------
-//ƒƒbƒNƒtƒŠ[ƒv[ƒ‹ƒAƒƒP[ƒ^ƒNƒ‰ƒX
-//¦ABA–â‘è‘Îô‚ ‚èiƒv[ƒ‹—v‘f‚²‚Æ‚Ìˆ—”‚ğƒJƒEƒ“ƒg‚µAd•¡ˆ—‚ğ—}‚¦‚éj
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã‚¯ãƒ©ã‚¹
+//â€»ABAå•é¡Œå¯¾ç­–ã‚ã‚Šï¼ˆãƒ—ãƒ¼ãƒ«è¦ç´ ã”ã¨ã®å‡¦ç†æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã—ã€é‡è¤‡å‡¦ç†ã‚’æŠ‘ãˆã‚‹ï¼‰
 template<class T, std::size_t POOL>
 class lf_pool_allocator
 {
 	static_assert(sizeof(T) >= 4, "sizeof(T) is too small.");
 
 public:
-	//Œ^
-	typedef T value_type;//’lŒ^
+	//å‹
+	typedef T value_type;//å€¤å‹
 
 public:
-	//’è”
-	static const std::size_t POOL_SIZE = POOL;//ƒv[ƒ‹ƒTƒCƒY
-	static const std::size_t VALUE_SIZE = sizeof(value_type);//’l‚ÌƒTƒCƒY
-	static const std::size_t INVALID_INDEX = 0xffffffff;//–³Œø‚ÈƒCƒ“ƒfƒbƒNƒX
-	static const std::size_t DIRTY_INDEX = 0xfefefefe;//Ä—˜—p˜AŒ‹ƒCƒ“ƒfƒbƒNƒXíœ—p
+	//å®šæ•°
+	static const std::size_t POOL_SIZE = POOL;//ãƒ—ãƒ¼ãƒ«ã‚µã‚¤ã‚º
+	static const std::size_t VALUE_SIZE = sizeof(value_type);//å€¤ã®ã‚µã‚¤ã‚º
+	static const std::size_t INVALID_INDEX = 0xffffffff;//ç„¡åŠ¹ãªã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+	static const std::size_t DIRTY_INDEX = 0xfefefefe;//å†åˆ©ç”¨é€£çµã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹å‰Šé™¤ç”¨
 
 public:
-	//ƒƒ\ƒbƒh
+	//ãƒ¡ã‚½ãƒƒãƒ‰
 	
-	//ƒƒ‚ƒŠŠm•Û
+	//ãƒ¡ãƒ¢ãƒªç¢ºä¿
 	void* alloc()
 	{
-		//V‹Kƒv[ƒ‹‚ğŠm•Û
+		//æ–°è¦ãƒ—ãƒ¼ãƒ«ã‚’ç¢ºä¿
 		{
-			const std::size_t empty_index = m_emptyHead.fetch_add(1);//‹ó‚«ƒoƒbƒtƒ@‚Ìæ“ªƒCƒ“ƒfƒbƒNƒX‚ğæ“¾‚µ‚ÄƒCƒ“ƒNƒŠƒƒ“ƒg
-			if (empty_index < POOL_SIZE)//‹ó‚«ƒoƒbƒtƒ@‚Ìæ“ªƒCƒ“ƒfƒbƒNƒX‚ªƒv[ƒ‹ƒTƒCƒY–¢–‚È‚ç‚»‚Ì‚Ü‚Ü•Ô‚·
+			const std::size_t empty_index = m_emptyHead.fetch_add(1);//ç©ºããƒãƒƒãƒ•ã‚¡ã®å…ˆé ­ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—ã—ã¦ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+			if (empty_index < POOL_SIZE)//ç©ºããƒãƒƒãƒ•ã‚¡ã®å…ˆé ­ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãŒãƒ—ãƒ¼ãƒ«ã‚µã‚¤ã‚ºæœªæº€ãªã‚‰ãã®ã¾ã¾è¿”ã™
 			{
-				m_using[empty_index].fetch_add(1);//ƒCƒ“ƒfƒbƒNƒX‚ğg—p’†ó‘Ô‚É‚·‚é
-				*reinterpret_cast<std::size_t*>(m_buff[empty_index]) = DIRTY_INDEX;//Ä—˜—p˜AŒ‹ƒCƒ“ƒfƒbƒNƒXíœ
-				m_usingCount.fetch_add(1);//g—p’†‚Ì”‚ğ‘‚â‚·
-				m_allocCount[empty_index].fetch_add(1);//ƒAƒƒP[ƒg‰ñ”‚ğƒJƒEƒ“ƒgƒAƒbƒviƒfƒoƒbƒO—pj
-				return m_buff[empty_index];//ƒƒ‚ƒŠŠm•Û¬Œ÷
+				m_using[empty_index].fetch_add(1);//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ä½¿ç”¨ä¸­çŠ¶æ…‹ã«ã™ã‚‹
+				*reinterpret_cast<std::size_t*>(m_buff[empty_index]) = DIRTY_INDEX;//å†åˆ©ç”¨é€£çµã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹å‰Šé™¤
+				m_usingCount.fetch_add(1);//ä½¿ç”¨ä¸­ã®æ•°ã‚’å¢—ã‚„ã™
+				m_allocCount[empty_index].fetch_add(1);//ã‚¢ãƒ­ã‚±ãƒ¼ãƒˆå›æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰
+				return m_buff[empty_index];//ãƒ¡ãƒ¢ãƒªç¢ºä¿æˆåŠŸ
 			}
 		}
-		//Ä—˜—pƒv[ƒ‹‚ğŠm•Û
+		//å†åˆ©ç”¨ãƒ—ãƒ¼ãƒ«ã‚’ç¢ºä¿
 		{
-			m_emptyHead.store(POOL_SIZE);//‹ó‚«ƒoƒbƒtƒ@‚Ìæ“ªƒCƒ“ƒfƒbƒNƒX‚ğƒv[ƒ‹ƒTƒCƒY‚É‚·‚éiƒCƒ“ƒNƒŠƒƒ“ƒg‚ÅƒI[ƒo[‚µ‚Ä‚µ‚Ü‚Á‚Ä‚¢‚é‚Ì‚Åj
-			std::size_t recycle_index = m_deletedHead.load();//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğÄ—˜—pƒCƒ“ƒfƒbƒNƒX‚Æ‚µ‚Äæ“¾
-			int retry_count = 0;//ƒŠƒgƒ‰ƒC‰ñ”
+			m_emptyHead.store(POOL_SIZE);//ç©ºããƒãƒƒãƒ•ã‚¡ã®å…ˆé ­ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ãƒ—ãƒ¼ãƒ«ã‚µã‚¤ã‚ºã«ã™ã‚‹ï¼ˆã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã§ã‚ªãƒ¼ãƒãƒ¼ã—ã¦ã—ã¾ã£ã¦ã„ã‚‹ã®ã§ï¼‰
+			std::size_t recycle_index = m_deletedHead.load();//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å†åˆ©ç”¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã¨ã—ã¦å–å¾—
+			int retry_count = 0;//ãƒªãƒˆãƒ©ã‚¤å›æ•°
 			while (true)
 			{
 				++retry_count;
-				if (retry_count == 1000)//ˆê’è”‚ÌƒŠƒgƒ‰ƒC‚²‚Æ‚Éƒ[ƒƒXƒŠ[ƒv
+				if (retry_count == 1000)//ä¸€å®šæ•°ã®ãƒªãƒˆãƒ©ã‚¤ã”ã¨ã«ã‚¼ãƒ­ã‚¹ãƒªãƒ¼ãƒ—
 				{
-					std::this_thread::sleep_for(std::chrono::nanoseconds(0));//ƒ[ƒƒXƒŠ[ƒviƒRƒ“ƒeƒLƒXƒgƒXƒCƒbƒ`j
-					recycle_index = m_deletedHead.load();//Ä—˜—pƒCƒ“ƒfƒbƒNƒX‚ğÄæ“¾
+					std::this_thread::sleep_for(std::chrono::nanoseconds(0));//ã‚¼ãƒ­ã‚¹ãƒªãƒ¼ãƒ—ï¼ˆã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚¹ã‚¤ãƒƒãƒï¼‰
+					recycle_index = m_deletedHead.load();//å†åˆ©ç”¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å†å–å¾—
 					retry_count = 0;
 				}
-				if (recycle_index == INVALID_INDEX)//íœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ª–³Œø‚È‚çƒƒ‚ƒŠŠm•Û¸”si‹ó‚«ƒv[ƒ‹‚ª–³‚¢j
+				if (recycle_index == INVALID_INDEX)//å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãŒç„¡åŠ¹ãªã‚‰ãƒ¡ãƒ¢ãƒªç¢ºä¿å¤±æ•—ï¼ˆç©ºããƒ—ãƒ¼ãƒ«ãŒç„¡ã„ï¼‰
 				{
 					//static const bool NOT_ENOUGH_POOL_MEMORY = false;
 					//assert(NOT_ENOUGH_POOL_MEMORY);
-					return nullptr;//ƒƒ‚ƒŠŠm•Û¸”s
+					return nullptr;//ãƒ¡ãƒ¢ãƒªç¢ºä¿å¤±æ•—
 				}
-				const std::size_t index_using = m_using[recycle_index].fetch_add(1);//ƒCƒ“ƒfƒbƒNƒX‚ğg—p’†ó‘Ô‚É‚·‚é
-				if (index_using != 0)//‘¼‚ÌƒXƒŒƒbƒh‚ªƒCƒ“ƒfƒbƒNƒX‚ğˆ—’†‚È‚çƒŠƒgƒ‰ƒC
+				const std::size_t index_using = m_using[recycle_index].fetch_add(1);//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ä½¿ç”¨ä¸­çŠ¶æ…‹ã«ã™ã‚‹
+				if (index_using != 0)//ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å‡¦ç†ä¸­ãªã‚‰ãƒªãƒˆãƒ©ã‚¤
 				{
-					m_using[recycle_index].fetch_sub(1);//ƒCƒ“ƒfƒbƒNƒX‚Ìg—p’†ó‘Ô‚ğ–ß‚·
-					recycle_index = m_deletedHead.load();//Ä—˜—pƒCƒ“ƒfƒbƒNƒX‚ğÄæ“¾
-					continue;//ƒŠƒgƒ‰ƒC
+					m_using[recycle_index].fetch_sub(1);//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ä½¿ç”¨ä¸­çŠ¶æ…‹ã‚’æˆ»ã™
+					recycle_index = m_deletedHead.load();//å†åˆ©ç”¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å†å–å¾—
+					continue;//ãƒªãƒˆãƒ©ã‚¤
 				}
-				void* recycle = m_buff[recycle_index];//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚Ìƒv[ƒ‹‚ğÄ—˜—p
-				const std::size_t next_index_and_tag = *reinterpret_cast<std::size_t*>(recycle);//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ÌŸ‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
-				std::size_t curr_recycle_index = recycle_index;//CAS‘€ì¸”s‚É”õ‚¦‚ÄÄ—˜—pƒCƒ“ƒfƒbƒNƒX‚ğ‹L‰¯
+				void* recycle = m_buff[recycle_index];//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ãƒ—ãƒ¼ãƒ«ã‚’å†åˆ©ç”¨
+				const std::size_t next_index_and_tag = *reinterpret_cast<std::size_t*>(recycle);//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®æ¬¡ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
+				std::size_t curr_recycle_index = recycle_index;//CASæ“ä½œå¤±æ•—ã«å‚™ãˆã¦å†åˆ©ç”¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’è¨˜æ†¶
 
-				//CAS‘€ì
-			#ifdef USE_SAFE_CAS_LF_POOL_ALLOCATOR//yˆÀ‘S‘Îôz¦ƒXƒsƒ“ƒƒbƒN‚ÅCAS‘€ì‚ğ•ÛŒì
-				while (m_lock.test_and_set());//ƒƒbƒNæ“¾
-				const bool result = m_deletedHead.compare_exchange_weak(recycle_index, next_index_and_tag);//CAS‘€ì
-				m_lock.clear();//ƒƒbƒN‰ğœ
+				//CASæ“ä½œ
+			#ifdef USE_SAFE_CAS_LF_POOL_ALLOCATOR//ã€å®‰å…¨å¯¾ç­–ã€‘â€»ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã§CASæ“ä½œã‚’ä¿è­·
+				while (m_lock.test_and_set());//ãƒ­ãƒƒã‚¯å–å¾—
+				const bool result = m_deletedHead.compare_exchange_weak(recycle_index, next_index_and_tag);//CASæ“ä½œ
+				m_lock.clear();//ãƒ­ãƒƒã‚¯è§£é™¤
 				if (result)
 			#else//USE_SAFE_CAS_LF_POOL_ALLOCATOR
-				if (m_deletedHead.compare_exchange_weak(recycle_index, next_index_and_tag))//CAS‘€ì
+				if (m_deletedHead.compare_exchange_weak(recycle_index, next_index_and_tag))//CASæ“ä½œ
 			#endif//USE_SAFE_CAS_LF_POOL_ALLOCATOR
-				//yCAS‘€ì‚Ì“à—ez
-				//    if(m_deletedHead == recycle_index)//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğ‘¼‚ÌƒXƒŒƒbƒh‚ª‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
-				//        m_deletedHead = next;//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğŸ‚ÌƒCƒ“ƒfƒbƒNƒX‚É•ÏXiƒƒ‚ƒŠŠm•Û¬Œ÷j
+				//ã€CASæ“ä½œã®å†…å®¹ã€‘
+				//    if(m_deletedHead == recycle_index)//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
+				//        m_deletedHead = next;//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æ¬¡ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¤‰æ›´ï¼ˆãƒ¡ãƒ¢ãƒªç¢ºä¿æˆåŠŸï¼‰
 				//    else
-				//        recycle_index_and_tag = m_deletedHead;//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğÄæ“¾
+				//        recycle_index_and_tag = m_deletedHead;//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å†å–å¾—
 				{
-					*reinterpret_cast<std::size_t*>(m_buff[recycle_index]) = DIRTY_INDEX;//Ä—˜—p˜AŒ‹ƒCƒ“ƒfƒbƒNƒXíœ
-					m_usingCount.fetch_add(1);//g—p’†‚Ì”‚ğ‘‚â‚·
-					m_allocCount[recycle_index].fetch_add(1);//ƒAƒƒP[ƒg‰ñ”‚ğƒJƒEƒ“ƒgƒAƒbƒviƒfƒoƒbƒO—pj
-					return recycle;//ƒƒ‚ƒŠŠm•Û¬Œ÷
+					*reinterpret_cast<std::size_t*>(m_buff[recycle_index]) = DIRTY_INDEX;//å†åˆ©ç”¨é€£çµã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹å‰Šé™¤
+					m_usingCount.fetch_add(1);//ä½¿ç”¨ä¸­ã®æ•°ã‚’å¢—ã‚„ã™
+					m_allocCount[recycle_index].fetch_add(1);//ã‚¢ãƒ­ã‚±ãƒ¼ãƒˆå›æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰
+					return recycle;//ãƒ¡ãƒ¢ãƒªç¢ºä¿æˆåŠŸ
 				}
 				
-				m_using[curr_recycle_index].fetch_sub(1);//ƒCƒ“ƒfƒbƒNƒX‚Ìg—p’†ó‘Ô‚ğ–ß‚µ‚ÄƒŠƒgƒ‰ƒC
+				m_using[curr_recycle_index].fetch_sub(1);//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ä½¿ç”¨ä¸­çŠ¶æ…‹ã‚’æˆ»ã—ã¦ãƒªãƒˆãƒ©ã‚¤
 			}
-			return nullptr;//ƒ_ƒ~[
+			return nullptr;//ãƒ€ãƒŸãƒ¼
 		}
 	}
 
 private:
-	//ƒƒ‚ƒŠ‰ğ•ú
+	//ãƒ¡ãƒ¢ãƒªè§£æ”¾
 	bool free(void* p, const std::size_t index)
 	{
-		std::size_t deleted_index_head = m_deletedHead.load();//íœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
+		std::size_t deleted_index_head = m_deletedHead.load();//å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
 		while (true)
 		{
-			*reinterpret_cast<std::size_t*>(m_buff[index]) = deleted_index_head;//Ÿ‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğ•Û‘¶
+			*reinterpret_cast<std::size_t*>(m_buff[index]) = deleted_index_head;//æ¬¡ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ä¿å­˜
 			
-			//CAS‘€ì
-		#ifdef USE_SAFE_CAS_LF_POOL_ALLOCATOR//yˆÀ‘S‘Îôz¦ƒXƒsƒ“ƒƒbƒN‚ÅCAS‘€ì‚ğ•ÛŒì
-			while (m_lock.test_and_set());//ƒƒbƒNæ“¾
-			const bool result = m_deletedHead.compare_exchange_weak(deleted_index_head, index);//CAS‘€ì
-			m_lock.clear();//ƒƒbƒN‰ğœ
+			//CASæ“ä½œ
+		#ifdef USE_SAFE_CAS_LF_POOL_ALLOCATOR//ã€å®‰å…¨å¯¾ç­–ã€‘â€»ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã§CASæ“ä½œã‚’ä¿è­·
+			while (m_lock.test_and_set());//ãƒ­ãƒƒã‚¯å–å¾—
+			const bool result = m_deletedHead.compare_exchange_weak(deleted_index_head, index);//CASæ“ä½œ
+			m_lock.clear();//ãƒ­ãƒƒã‚¯è§£é™¤
 			if (result)
 		#else//USE_SAFE_CAS_LF_POOL_ALLOCATOR
-			if (m_deletedHead.compare_exchange_weak(deleted_index_head, index))//CAS‘€ì
+			if (m_deletedHead.compare_exchange_weak(deleted_index_head, index))//CASæ“ä½œ
 		#endif//USE_SAFE_CAS_LF_POOL_ALLOCATOR
-			//yCAS‘€ì‚Ì“à—ez
-			//    if(m_deletedHead == deleted_head_index_and_tag)//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğ‘¼‚ÌƒXƒŒƒbƒh‚ª‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
-			//        m_deletedHead = index_and_tag;//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğŸ‚ÌƒCƒ“ƒfƒbƒNƒX‚É•ÏXiƒƒ‚ƒŠ‰ğ•ú¬Œ÷j
+			//ã€CASæ“ä½œã®å†…å®¹ã€‘
+			//    if(m_deletedHead == deleted_head_index_and_tag)//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
+			//        m_deletedHead = index_and_tag;//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æ¬¡ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¤‰æ›´ï¼ˆãƒ¡ãƒ¢ãƒªè§£æ”¾æˆåŠŸï¼‰
 			//    else
-			//        deleted_head_index_and_tag = m_deletedHead;//íœÏ‚İƒCƒ“ƒfƒbƒNƒX‚ğÄæ“¾
+			//        deleted_head_index_and_tag = m_deletedHead;//å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å†å–å¾—
 			{
-				m_using[index].fetch_sub(1);//ƒCƒ“ƒfƒbƒNƒX‚ğ–¢g—pó‘Ô‚É‚·‚é
-				m_usingCount.fetch_sub(1);//g—p’†‚Ì”‚ğŒ¸‚ç‚·
-				m_freeCount[index].fetch_add(1);//ƒtƒŠ[‰ñ”‚ğƒJƒEƒ“ƒgƒAƒbƒviƒfƒoƒbƒO—pj
-				return true;//ƒƒ‚ƒŠ‰ğ•ú¬Œ÷
+				m_using[index].fetch_sub(1);//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æœªä½¿ç”¨çŠ¶æ…‹ã«ã™ã‚‹
+				m_usingCount.fetch_sub(1);//ä½¿ç”¨ä¸­ã®æ•°ã‚’æ¸›ã‚‰ã™
+				m_freeCount[index].fetch_add(1);//ãƒ•ãƒªãƒ¼å›æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰
+				return true;//ãƒ¡ãƒ¢ãƒªè§£æ”¾æˆåŠŸ
 			}
 		}
-		return false;//ƒ_ƒ~[
+		return false;//ãƒ€ãƒŸãƒ¼
 	}
 	
-	//ƒ|ƒCƒ“ƒ^‚ğƒCƒ“ƒfƒbƒNƒX‚É•ÏŠ·
+	//ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¤‰æ›
 	std::size_t ptrToIndex(void* p)
 	{
 		const std::size_t index = (reinterpret_cast<char*>(p) - reinterpret_cast<char*>(m_buff)) / VALUE_SIZE;
-		if (index >= POOL_SIZE)//”ÍˆÍŠO‚ÌƒCƒ“ƒfƒbƒNƒX‚È‚çI—¹
+		if (index >= POOL_SIZE)//ç¯„å›²å¤–ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãªã‚‰çµ‚äº†
 		{
 			static const bool IS_INVALID_POINTER_OF_POOL = false;
 			assert(IS_INVALID_POINTER_OF_POOL);
 			return INVALID_INDEX;
 		}
-		if (m_using[index].load() == 0)//ƒCƒ“ƒfƒbƒNƒX‚ªŠù‚É–¢g—pó‘Ô‚È‚çI—¹
+		if (m_using[index].load() == 0)//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãŒæ—¢ã«æœªä½¿ç”¨çŠ¶æ…‹ãªã‚‰çµ‚äº†
 		{
 			static const bool IS_ALREADY_DELETE_POINTER = false;
 			assert(IS_ALREADY_DELETE_POINTER);
@@ -470,16 +470,16 @@ private:
 	}
 
 public:
-	//ƒƒ‚ƒŠ‰ğ•ú
+	//ãƒ¡ãƒ¢ãƒªè§£æ”¾
 	bool free(void* p)
 	{
-		const std::size_t index = ptrToIndex(p);//ƒ|ƒCƒ“ƒ^‚ğƒCƒ“ƒfƒbƒNƒX‚É•ÏŠ·
+		const std::size_t index = ptrToIndex(p);//ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¤‰æ›
 		if (index == INVALID_INDEX)
 			return false;
 		return free(p, index);
 	}
 
-	//ƒƒ‚ƒŠŠm•Û‚ÆƒRƒ“ƒXƒgƒ‰ƒNƒ^ŒÄ‚Ño‚µ
+	//ãƒ¡ãƒ¢ãƒªç¢ºä¿ã¨ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å‘¼ã³å‡ºã—
 	template<typename...Tx>
 	value_type* newObj(Tx... args)
 	{
@@ -498,19 +498,19 @@ public:
 		return new(p)ObjType(args...);
 	}
 	
-	//ƒƒ‚ƒŠ‰ğ•ú‚ÆƒfƒXƒgƒ‰ƒNƒ^ŒÄ‚Ño‚µ
+	//ãƒ¡ãƒ¢ãƒªè§£æ”¾ã¨ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å‘¼ã³å‡ºã—
 	template<typename ObjType>
 	bool deleteObj(ObjType* p)
 	{
-		const std::size_t index = ptrToIndex(p);//ƒ|ƒCƒ“ƒ^‚ğƒCƒ“ƒfƒbƒNƒX‚É•ÏŠ·
+		const std::size_t index = ptrToIndex(p);//ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¤‰æ›
 		if (index == INVALID_INDEX)
 			return false;
-		p->~ObjType();//ƒfƒXƒgƒ‰ƒNƒ^ŒÄ‚Ño‚µ
+		p->~ObjType();//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å‘¼ã³å‡ºã—
 		//operator delete(p, p);
 		return free(p, index);
 	}
 
-	//ƒfƒoƒbƒOî•ñ•\¦
+	//ãƒ‡ãƒãƒƒã‚°æƒ…å ±è¡¨ç¤º
 	void printDebugInfo(std::function<void(const value_type& value)> print_node)
 	{
 		printf("----- Debug Info for lf_pool_allocator -----\n");
@@ -545,7 +545,7 @@ public:
 	}
 
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	lf_pool_allocator()
 	{
 		m_emptyHead.store(0);
@@ -558,26 +558,26 @@ public:
 			m_freeCount[i].store(0);
 		}
 	}
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~lf_pool_allocator()
 	{}
 
 private:
-	//ƒtƒB[ƒ‹ƒh
-	char m_buff[POOL_SIZE][VALUE_SIZE];//ƒv[ƒ‹ƒoƒbƒtƒ@ ¦æ“ª‚É”z’u‚µ‚ÄƒNƒ‰ƒX‚ÌƒAƒ‰ƒCƒƒ“ƒg‚Æˆê’v‚³‚¹‚é
-	std::atomic<std::size_t> m_emptyHead;//‹ó‚«ƒoƒbƒtƒ@‚Ìæ“ªƒCƒ“ƒfƒbƒNƒX
-	std::atomic<std::size_t> m_deletedHead;//æ“ª‚ÌíœÏ‚İƒCƒ“ƒfƒbƒNƒXiÄ—˜—p—pj
-	std::atomic<char> m_using[POOL_SIZE];//g—p’†ƒCƒ“ƒfƒbƒNƒX  ¦std::bitsetg—p•s‰Â
-	std::atomic<std::size_t> m_usingCount;//g—p’†‚Ì”iƒfƒoƒbƒO—pj¦•K{‚Ìî•ñ‚Å‚Í‚È‚¢
-	std::atomic<std::size_t> m_allocCount[POOL_SIZE];//ƒAƒƒP[ƒg‰ñ”iƒfƒoƒbƒO—pj¦•K{‚Ìî•ñ‚Å‚Í‚È‚¢
-	std::atomic<std::size_t> m_freeCount[POOL_SIZE];//ƒtƒŠ[‰ñ”iƒfƒoƒbƒO—pj¦•K{‚Ìî•ñ‚Å‚Í‚È‚¢
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+	char m_buff[POOL_SIZE][VALUE_SIZE];//ãƒ—ãƒ¼ãƒ«ãƒãƒƒãƒ•ã‚¡ â€»å…ˆé ­ã«é…ç½®ã—ã¦ã‚¯ãƒ©ã‚¹ã®ã‚¢ãƒ©ã‚¤ãƒ¡ãƒ³ãƒˆã¨ä¸€è‡´ã•ã›ã‚‹
+	std::atomic<std::size_t> m_emptyHead;//ç©ºããƒãƒƒãƒ•ã‚¡ã®å…ˆé ­ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+	std::atomic<std::size_t> m_deletedHead;//å…ˆé ­ã®å‰Šé™¤æ¸ˆã¿ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ï¼ˆå†åˆ©ç”¨ç”¨ï¼‰
+	std::atomic<char> m_using[POOL_SIZE];//ä½¿ç”¨ä¸­ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹  â€»std::bitsetä½¿ç”¨ä¸å¯
+	std::atomic<std::size_t> m_usingCount;//ä½¿ç”¨ä¸­ã®æ•°ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰â€»å¿…é ˆã®æƒ…å ±ã§ã¯ãªã„
+	std::atomic<std::size_t> m_allocCount[POOL_SIZE];//ã‚¢ãƒ­ã‚±ãƒ¼ãƒˆå›æ•°ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰â€»å¿…é ˆã®æƒ…å ±ã§ã¯ãªã„
+	std::atomic<std::size_t> m_freeCount[POOL_SIZE];//ãƒ•ãƒªãƒ¼å›æ•°ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰â€»å¿…é ˆã®æƒ…å ±ã§ã¯ãªã„
 #ifdef USE_SAFE_CAS_LF_POOL_ALLOCATOR
-	std::atomic_flag m_lock;//CAS‘€ì•ÛŒì—p‚ÌƒXƒsƒ“ƒƒbƒN
+	std::atomic_flag m_lock;//CASæ“ä½œä¿è­·ç”¨ã®ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯
 #endif//USE_SAFE_CAS_LF_POOL_ALLOCATOR
 };
 
 //--------------------------------------------------------------------------------
-//’ÊíƒXƒ^ƒbƒNƒNƒ‰ƒX
+//é€šå¸¸ã‚¹ã‚¿ãƒƒã‚¯ã‚¯ãƒ©ã‚¹
 #ifdef USE_POOL_ALLOCATOR
 template<class T, std::size_t POOL_SIZE>
 #else//USE_POOL_ALLOCATOR
@@ -586,10 +586,10 @@ template<class T>
 class stack
 {
 public:
-	//Œ^
-	typedef T value_type;//’lŒ^
+	//å‹
+	typedef T value_type;//å€¤å‹
 
-	//ƒXƒ^ƒbƒNŒ^
+	//ã‚¹ã‚¿ãƒƒã‚¯å‹
 	struct stack_t
 	{
 		stack_t* m_next;
@@ -597,45 +597,45 @@ public:
 	};
 
 public:
-	//ƒƒ\ƒbƒh
+	//ãƒ¡ã‚½ãƒƒãƒ‰
 
-	//ƒvƒbƒVƒ…
+	//ãƒ—ãƒƒã‚·ãƒ¥
 	bool push(value_type&& value)
 	{
 	#ifdef USE_POOL_ALLOCATOR
-		stack_t* new_node = m_allocator.newObj();//V‹Kƒm[ƒh‚ğ¶¬
+		stack_t* new_node = m_allocator.newObj();//æ–°è¦ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
 	#else//USE_POOL_ALLOCATOR
-		stack_t* new_node = new stack_t();//V‹Kƒm[ƒh‚ğ¶¬
+		stack_t* new_node = new stack_t();//æ–°è¦ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
 	#endif//USE_POOL_ALLOCATOR
-		if (!new_node)//ƒƒ‚ƒŠŠm•Û¸”s
-			return false;//ƒvƒbƒVƒ…¸”s
-		new_node->m_value = std::move(value);//V‹Kƒm[ƒh‚É’l‚ğƒZƒbƒg
-		std::lock_guard<std::mutex> lock(m_mutex);//ƒ~ƒ…[ƒeƒbƒNƒX‚ÅƒƒbƒN
-		new_node->m_next = m_head;//V‹Kƒm[ƒh‚ÌŸƒm[ƒh‚ÉŒ»İ‚Ìæ“ªƒm[ƒh‚ğƒZƒbƒg
-		m_head = new_node;//æ“ªƒm[ƒh‚ğV‹Kƒm[ƒh‚É‚·‚é
-		return true;//ƒvƒbƒVƒ…¬Œ÷
+		if (!new_node)//ãƒ¡ãƒ¢ãƒªç¢ºä¿å¤±æ•—
+			return false;//ãƒ—ãƒƒã‚·ãƒ¥å¤±æ•—
+		new_node->m_value = std::move(value);//æ–°è¦ãƒãƒ¼ãƒ‰ã«å€¤ã‚’ã‚»ãƒƒãƒˆ
+		std::lock_guard<std::mutex> lock(m_mutex);//ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹ã§ãƒ­ãƒƒã‚¯
+		new_node->m_next = m_head;//æ–°è¦ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã«ç¾åœ¨ã®å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆ
+		m_head = new_node;//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’æ–°è¦ãƒãƒ¼ãƒ‰ã«ã™ã‚‹
+		return true;//ãƒ—ãƒƒã‚·ãƒ¥æˆåŠŸ
 	}
 
-	//ƒ|ƒbƒv
+	//ãƒãƒƒãƒ—
 	bool pop(value_type& value)
 	{
-		std::lock_guard<std::mutex> lock(m_mutex);//ƒ~ƒ…[ƒeƒbƒNƒX‚ÅƒƒbƒN
-		stack_t* head = m_head;//æ“ªƒm[ƒh‚ğæ“¾
-		if (head)//æ“ªƒm[ƒh‚ª‘¶İ‚µ‚Ä‚¢‚½ê‡
+		std::lock_guard<std::mutex> lock(m_mutex);//ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹ã§ãƒ­ãƒƒã‚¯
+		stack_t* head = m_head;//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å–å¾—
+		if (head)//å…ˆé ­ãƒãƒ¼ãƒ‰ãŒå­˜åœ¨ã—ã¦ã„ãŸå ´åˆ
 		{
-			m_head = head->m_next;//æ“ªƒm[ƒh‚ğŸƒm[ƒh‚É•ÏX
-			value = std::move(head->m_value);//’l‚ğæ“¾
+			m_head = head->m_next;//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’æ¬¡ãƒãƒ¼ãƒ‰ã«å¤‰æ›´
+			value = std::move(head->m_value);//å€¤ã‚’å–å¾—
 		#ifdef USE_POOL_ALLOCATOR
-			m_allocator.deleteObj(head);//æ“ªƒm[ƒh‚ğíœ
+			m_allocator.deleteObj(head);//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
 		#else//USE_POOL_ALLOCATOR
-			delete head;//æ“ªƒm[ƒh‚ğíœ
+			delete head;//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
 		#endif//USE_POOL_ALLOCATOR
-			return true;//ƒ|ƒbƒv¬Œ÷
+			return true;//ãƒãƒƒãƒ—æˆåŠŸ
 		}
-		return false;//ƒ|ƒbƒv¸”s
+		return false;//ãƒãƒƒãƒ—å¤±æ•—
 	}
 
-	//ƒfƒoƒbƒOî•ñ•\¦
+	//ãƒ‡ãƒãƒƒã‚°æƒ…å ±è¡¨ç¤º
 	void printDebugInfo(std::function<void(const value_type& value)> print_node)
 	{
 		printf("----- Debug Info for stack -----\n");
@@ -660,42 +660,42 @@ public:
 	}
 
 private:
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void initialize()
 	{
-		m_head = nullptr;//æ“ªƒm[ƒh‚Ì‰Šú’l‚Ínullptr
+		m_head = nullptr;//å…ˆé ­ãƒãƒ¼ãƒ‰ã®åˆæœŸå€¤ã¯nullptr
 	}
-	//I—¹
+	//çµ‚äº†
 	void finalize()
 	{
-		//‹ó‚É‚È‚é‚Ü‚Åƒ|ƒbƒv
+		//ç©ºã«ãªã‚‹ã¾ã§ãƒãƒƒãƒ—
 		value_type value;
 		while (pop(value));
 	}
 
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	stack()
 	{
 		initialize();
 	}
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~stack()
 	{
 		finalize();
 	}
 private:
-	//ƒtƒB[ƒ‹ƒh
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 #ifdef USE_POOL_ALLOCATOR
-	pool_allocator<stack_t, POOL_SIZE> m_allocator;//ƒv[ƒ‹ƒAƒƒP[ƒ^
+	pool_allocator<stack_t, POOL_SIZE> m_allocator;//ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿
 #endif//USE_POOL_ALLOCATOR
-	stack_t* m_head;//ƒXƒ^ƒbƒN‚Ìæ“ª
-	std::mutex m_mutex;//ƒ~ƒ…[ƒeƒbƒNƒX
+	stack_t* m_head;//ã‚¹ã‚¿ãƒƒã‚¯ã®å…ˆé ­
+	std::mutex m_mutex;//ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹
 };
 
 //--------------------------------------------------------------------------------
-//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒNƒNƒ‰ƒX
-//¦ABA–â‘è‘Îô‚ ‚èiƒ^ƒO•t‚«ƒ|ƒCƒ“ƒ^Œ^g—pj
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯ã‚¯ãƒ©ã‚¹
+//â€»ABAå•é¡Œå¯¾ç­–ã‚ã‚Šï¼ˆã‚¿ã‚°ä»˜ããƒã‚¤ãƒ³ã‚¿å‹ä½¿ç”¨ï¼‰
 #ifdef USE_LF_POOL_ALLOCATOR
 template<class T, std::size_t POOL_SIZE>
 #else//USE_LF_POOL_ALLOCATOR
@@ -704,14 +704,14 @@ template<class T>
 class lf_stack
 {
 public:
-	//Œ^
-	typedef T value_type;//’lŒ^
+	//å‹
+	typedef T value_type;//å€¤å‹
 
-	//ƒXƒ^ƒbƒNŒ^—pƒ^ƒO•t‚«ƒ|ƒCƒ“ƒ^Œ^
+	//ã‚¹ã‚¿ãƒƒã‚¯å‹ç”¨ã‚¿ã‚°ä»˜ããƒã‚¤ãƒ³ã‚¿å‹
 	struct stack_t;
 	typedef tag_ptr<stack_t> stack_ptr_t;
 	
-	//ƒXƒ^ƒbƒNŒ^
+	//ã‚¹ã‚¿ãƒƒã‚¯å‹
 	struct stack_t
 	{
 		std::atomic<stack_ptr_t> m_next;
@@ -719,100 +719,100 @@ public:
 	};
 
 public:
-	//ƒƒ\ƒbƒh
+	//ãƒ¡ã‚½ãƒƒãƒ‰
 
-	//ƒvƒbƒVƒ…
+	//ãƒ—ãƒƒã‚·ãƒ¥
 	bool push(value_type&& value)
 	{
 	#ifdef USE_LF_POOL_ALLOCATOR
-		stack_t* new_node = m_allocator.newObj();//V‹Kƒm[ƒh‚ğ¶¬
-		if (!new_node)//ƒƒ‚ƒŠŠm•Û¸”s
-			return nullptr;//ƒvƒbƒVƒ…¸”s
+		stack_t* new_node = m_allocator.newObj();//æ–°è¦ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
+		if (!new_node)//ãƒ¡ãƒ¢ãƒªç¢ºä¿å¤±æ•—
+			return nullptr;//ãƒ—ãƒƒã‚·ãƒ¥å¤±æ•—
 	#else//USE_LF_POOL_ALLOCATOR
 		void* p = _aligned_malloc(sizeof(stack_t), 16);
-		if (!p)//ƒƒ‚ƒŠŠm•Û¸”s
-			return false;//ƒvƒbƒVƒ…¸”s
-		stack_t* new_node = new(p) stack_t();//V‹Kƒm[ƒh‚ğ¶¬
+		if (!p)//ãƒ¡ãƒ¢ãƒªç¢ºä¿å¤±æ•—
+			return false;//ãƒ—ãƒƒã‚·ãƒ¥å¤±æ•—
+		stack_t* new_node = new(p) stack_t();//æ–°è¦ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
 	#endif//USE_LF_POOL_ALLOCATOR
-		new_node->m_next.store(m_head.load());//V‹Kƒm[ƒh‚ÌŸƒm[ƒh‚ÉŒ»İ‚Ìæ“ªƒm[ƒh‚ğƒZƒbƒg
-		new_node->m_value = std::move(value);//V‹Kƒm[ƒh‚É’l‚ğƒZƒbƒg
+		new_node->m_next.store(m_head.load());//æ–°è¦ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã«ç¾åœ¨ã®å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆ
+		new_node->m_value = std::move(value);//æ–°è¦ãƒãƒ¼ãƒ‰ã«å€¤ã‚’ã‚»ãƒƒãƒˆ
 		stack_ptr_t new_node_tag_ptr;
-		new_node_tag_ptr.setTagPtr(new_node, m_tag.fetch_add(1));//ƒ^ƒO•t‚«ƒ|ƒCƒ“ƒ^¶¬
+		new_node_tag_ptr.setTagPtr(new_node, m_tag.fetch_add(1));//ã‚¿ã‚°ä»˜ããƒã‚¤ãƒ³ã‚¿ç”Ÿæˆ
 		while (true)
 		{
 			stack_ptr_t next_tag_ptr = new_node->m_next.load();
-			if (next_tag_ptr == m_head.load())//‚±‚Ìƒ^ƒCƒ~ƒ“ƒO‚Å‘¼‚ÌƒXƒŒƒbƒh‚ª––”ö‚ğ‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
+			if (next_tag_ptr == m_head.load())//ã“ã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæœ«å°¾ã‚’æ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
 			{
-				//CAS‘€ì
-			#ifdef USE_SAFE_CAS_LF_STACK//yˆÀ‘S‘Îôz¦ƒXƒsƒ“ƒƒbƒN‚ÅCAS‘€ì‚ğ•ÛŒì
-				while (m_lock.test_and_set());//ƒƒbƒNæ“¾
-				const bool result = m_head.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr);//CAS‘€ì
-				m_lock.clear();//ƒƒbƒN‰ğœ
+				//CASæ“ä½œ
+			#ifdef USE_SAFE_CAS_LF_STACK//ã€å®‰å…¨å¯¾ç­–ã€‘â€»ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã§CASæ“ä½œã‚’ä¿è­·
+				while (m_lock.test_and_set());//ãƒ­ãƒƒã‚¯å–å¾—
+				const bool result = m_head.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr);//CASæ“ä½œ
+				m_lock.clear();//ãƒ­ãƒƒã‚¯è§£é™¤
 				if (result)
 			#else//USE_SAFE_CAS_LF_STACK
-				if (m_head.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr))//CAS‘€ì
+				if (m_head.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr))//CASæ“ä½œ
 			#endif//USE_SAFE_CAS_LF_STACK
-				//yCAS‘€ì‚Ì“à—ez
-				//    if(m_head == next_tag_ptr)//æ“ªƒm[ƒh‚ªV‹Kƒm[ƒh‚ÌŸƒm[ƒh‚©H
-				//        m_head = new_node_tag_ptr;//æ“ªƒm[ƒh‚ğV‹Kƒm[ƒh•ƒ^ƒO‚É’u‚«Š·‚¦‚ÄŠ®—¹iƒvƒbƒVƒ…¬Œ÷j
+				//ã€CASæ“ä½œã®å†…å®¹ã€‘
+				//    if(m_head == next_tag_ptr)//å…ˆé ­ãƒãƒ¼ãƒ‰ãŒæ–°è¦ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‹ï¼Ÿ
+				//        m_head = new_node_tag_ptr;//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’æ–°è¦ãƒãƒ¼ãƒ‰ï¼†ã‚¿ã‚°ã«ç½®ãæ›ãˆã¦å®Œäº†ï¼ˆãƒ—ãƒƒã‚·ãƒ¥æˆåŠŸï¼‰
 				//    else
-				//        next_tag_ptr = m_head;//V‹Kƒm[ƒh‚ÌŸƒm[ƒh‚ğŒ»İ‚Ìæ“ªƒm[ƒh‚É‚·‚é
+				//        next_tag_ptr = m_head;//æ–°è¦ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‚’ç¾åœ¨ã®å…ˆé ­ãƒãƒ¼ãƒ‰ã«ã™ã‚‹
 				{
-					return true;//ƒvƒbƒVƒ…¬Œ÷
+					return true;//ãƒ—ãƒƒã‚·ãƒ¥æˆåŠŸ
 				}
 				
-				new_node->m_next.store(next_tag_ptr);//æ“ªƒm[ƒh‚ğÄæ“¾
+				new_node->m_next.store(next_tag_ptr);//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å†å–å¾—
 			}
 			else
-				new_node->m_next.store(m_head.load());//æ“ªƒm[ƒh‚ğÄæ“¾
+				new_node->m_next.store(m_head.load());//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å†å–å¾—
 		}
-		return false;//ƒ_ƒ~[
+		return false;//ãƒ€ãƒŸãƒ¼
 	}
 
-	//ƒ|ƒbƒv
+	//ãƒãƒƒãƒ—
 	bool pop(value_type& value)
 	{
-		stack_ptr_t head_tag_ptr = m_head.load();//æ“ªƒm[ƒh‚ğæ“¾
+		stack_ptr_t head_tag_ptr = m_head.load();//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å–å¾—
 		while (head_tag_ptr.isNotNull())
 		{
-			stack_t* head = head_tag_ptr;//ƒ^ƒO•t‚«ƒ|ƒCƒ“ƒ^‚©‚çƒ|ƒCƒ“ƒ^‚ğæ“¾
-			stack_ptr_t next_tag_ptr = head->m_next;//Ÿ‚Ìƒm[ƒh‚ğæ“¾
+			stack_t* head = head_tag_ptr;//ã‚¿ã‚°ä»˜ããƒã‚¤ãƒ³ã‚¿ã‹ã‚‰ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
+			stack_ptr_t next_tag_ptr = head->m_next;//æ¬¡ã®ãƒãƒ¼ãƒ‰ã‚’å–å¾—
 
-			if (head_tag_ptr == m_head.load())//‚±‚Ìƒ^ƒCƒ~ƒ“ƒO‚Å‘¼‚ÌƒXƒŒƒbƒh‚ª––”ö‚ğ‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
+			if (head_tag_ptr == m_head.load())//ã“ã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæœ«å°¾ã‚’æ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
 			{
-				//CAS‘€ì
-			#ifdef USE_SAFE_CAS_LF_STACK//yˆÀ‘S‘Îôz¦ƒXƒsƒ“ƒƒbƒN‚ÅCAS‘€ì‚ğ•ÛŒì
-				while (m_lock.test_and_set());//ƒƒbƒNæ“¾
-				const bool result = m_head.compare_exchange_weak(head_tag_ptr, next_tag_ptr);//CAS‘€ì
-				m_lock.clear();//ƒƒbƒN‰ğœ
+				//CASæ“ä½œ
+			#ifdef USE_SAFE_CAS_LF_STACK//ã€å®‰å…¨å¯¾ç­–ã€‘â€»ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã§CASæ“ä½œã‚’ä¿è­·
+				while (m_lock.test_and_set());//ãƒ­ãƒƒã‚¯å–å¾—
+				const bool result = m_head.compare_exchange_weak(head_tag_ptr, next_tag_ptr);//CASæ“ä½œ
+				m_lock.clear();//ãƒ­ãƒƒã‚¯è§£é™¤
 				if (result)
 			#else//USE_SAFE_CAS_LF_STACK
-				if (m_head.compare_exchange_weak(head_tag_ptr, next_tag_ptr))//CAS‘€ì
+				if (m_head.compare_exchange_weak(head_tag_ptr, next_tag_ptr))//CASæ“ä½œ
 			#endif//USE_SAFE_CAS_LF_STACK
-				//yCAS‘€ì‚Ì“à—ez
-				//    if(m_head == head_tag_ptr)//æ“ªƒm[ƒh‚ğ‘¼‚ÌƒXƒŒƒbƒh‚ª‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
-				//        m_head = next_tag_ptr;//æ“ªƒm[ƒh‚ğæ“ªƒm[ƒh‚ÌŸƒm[ƒh‚É’u‚«Š·‚¦‚ÄŠ®—¹iƒ|ƒbƒv¬Œ÷j
+				//ã€CASæ“ä½œã®å†…å®¹ã€‘
+				//    if(m_head == head_tag_ptr)//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
+				//        m_head = next_tag_ptr;//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å…ˆé ­ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã«ç½®ãæ›ãˆã¦å®Œäº†ï¼ˆãƒãƒƒãƒ—æˆåŠŸï¼‰
 				//    else
-				//        head_tag_ptr = m_head;//æ“ªƒm[ƒh‚ğÄæ“¾
+				//        head_tag_ptr = m_head;//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å†å–å¾—
 				{
-					value = std::move(head->m_value);//’l‚ğæ“¾
+					value = std::move(head->m_value);//å€¤ã‚’å–å¾—
 				#ifdef USE_LF_POOL_ALLOCATOR
-					m_allocator.deleteObj(head);//æ“ªƒm[ƒh‚ğíœ
+					m_allocator.deleteObj(head);//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
 				#else//USE_LF_POOL_ALLOCATOR
 					head->~stack_t();
 					//operator delete(head, head);
-					_aligned_free(head);//æ“ªƒm[ƒh‚ğíœ
+					_aligned_free(head);//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
 				#endif//USE_LF_POOL_ALLOCATOR
-					return true;//ƒ|ƒbƒv¬Œ÷
+					return true;//ãƒãƒƒãƒ—æˆåŠŸ
 				}
 			}
 			else
-				head_tag_ptr = m_head.load();//æ“ªƒm[ƒh‚ğÄæ“¾
+				head_tag_ptr = m_head.load();//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å†å–å¾—
 		}
-		return false;//ƒ|ƒbƒv¸”s
+		return false;//ãƒãƒƒãƒ—å¤±æ•—
 	}
 
-	//ƒfƒoƒbƒOî•ñ•\¦
+	//ãƒ‡ãƒãƒƒã‚°æƒ…å ±è¡¨ç¤º
 	void printDebugInfo(std::function<void(const value_type& value)> print_node)
 	{
 		printf("----- Debug Info for lf_stack -----\n");
@@ -838,49 +838,49 @@ public:
 	}
 
 private:
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void initialize()
 	{
 		stack_ptr_t null_tag_ptr;
-		null_tag_ptr.setTagPtr(nullptr, 0);//ƒ^ƒO•t‚«ƒkƒ‹ƒ|ƒCƒ“ƒ^
-		m_head.store(null_tag_ptr);//æ“ªƒm[ƒh‚Ì‰Šú’l‚Ínull
-		m_tag.store(0);//ƒ^ƒO‚ğ‰Šú‰»
+		null_tag_ptr.setTagPtr(nullptr, 0);//ã‚¿ã‚°ä»˜ããƒŒãƒ«ãƒã‚¤ãƒ³ã‚¿
+		m_head.store(null_tag_ptr);//å…ˆé ­ãƒãƒ¼ãƒ‰ã®åˆæœŸå€¤ã¯null
+		m_tag.store(0);//ã‚¿ã‚°ã‚’åˆæœŸåŒ–
 		//if (m_head.is_lock_free())
 		//	printf("m_head is lock free!\n");
 	}
-	//I—¹
+	//çµ‚äº†
 	void finalize()
 	{
-		//‹ó‚É‚È‚é‚Ü‚Åƒ|ƒbƒv
+		//ç©ºã«ãªã‚‹ã¾ã§ãƒãƒƒãƒ—
 		value_type value;
 		while (pop(value));
 	}
 
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	lf_stack()
 	{
 		initialize();
 	}
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~lf_stack()
 	{
 		finalize();
 	}
 private:
-	//ƒtƒB[ƒ‹ƒh
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 #ifdef USE_LF_POOL_ALLOCATOR
-	lf_pool_allocator<stack_t, POOL_SIZE> m_allocator;//ƒv[ƒ‹ƒAƒƒP[ƒ^
+	lf_pool_allocator<stack_t, POOL_SIZE> m_allocator;//ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿
 #endif//USE_LF_POOL_ALLOCATOR
-	std::atomic<stack_ptr_t> m_head;//ƒXƒ^ƒbƒN‚Ìæ“ª@¦ƒ^ƒO•t‚«ƒ|ƒCƒ“ƒ^
-	std::atomic<std::size_t> m_tag;//ABA–â‘è‘Îô—p‚Ìƒ^ƒO
+	std::atomic<stack_ptr_t> m_head;//ã‚¹ã‚¿ãƒƒã‚¯ã®å…ˆé ­ã€€â€»ã‚¿ã‚°ä»˜ããƒã‚¤ãƒ³ã‚¿
+	std::atomic<std::size_t> m_tag;//ABAå•é¡Œå¯¾ç­–ç”¨ã®ã‚¿ã‚°
 #ifdef USE_SAFE_CAS_LF_STACK
-	std::atomic_flag m_lock;//CAS‘€ì•ÛŒì—p‚ÌƒXƒsƒ“ƒƒbƒN
+	std::atomic_flag m_lock;//CASæ“ä½œä¿è­·ç”¨ã®ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯
 #endif//USE_SAFE_CAS_LF_STACK
 };
 
 //--------------------------------------------------------------------------------
-//’ÊíƒLƒ…[ƒNƒ‰ƒX
+//é€šå¸¸ã‚­ãƒ¥ãƒ¼ã‚¯ãƒ©ã‚¹
 #ifdef USE_POOL_ALLOCATOR
 template<class T, std::size_t POOL_SIZE>
 #else//USE_POOL_ALLOCATOR
@@ -889,10 +889,10 @@ template<class T>
 class queue
 {
 public:
-	//Œ^
-	typedef T value_type;//’lŒ^
+	//å‹
+	typedef T value_type;//å€¤å‹
 
-	//ƒLƒ…[Œ^
+	//ã‚­ãƒ¥ãƒ¼å‹
 	struct queue_t
 	{
 		queue_t* m_next;
@@ -900,46 +900,46 @@ public:
 	};
 
 public:
-	//ƒƒ\ƒbƒh
+	//ãƒ¡ã‚½ãƒƒãƒ‰
 
-	//ƒGƒ“ƒLƒ…[
+	//ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼
 	bool enqueue(value_type&& value)
 	{
 	#ifdef USE_POOL_ALLOCATOR
-		queue_t* new_node = m_allocator.newObj();//V‹Kƒm[ƒh‚ğ¶¬
+		queue_t* new_node = m_allocator.newObj();//æ–°è¦ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
 	#else//USE_POOL_ALLOCATOR
-		queue_t* new_node = new queue_t();//V‹Kƒm[ƒh‚ğ¶¬
+		queue_t* new_node = new queue_t();//æ–°è¦ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
 	#endif//USE_POOL_ALLOCATOR
-		if (!new_node)//ƒƒ‚ƒŠŠm•Û¸”s
-			return false;//ƒGƒ“ƒLƒ…[¸”s
-		new_node->m_next = nullptr;//V‹Kƒm[ƒh‚ÌŸƒm[ƒh‚ğ‰Šú‰»
-		new_node->m_value = std::move(value);//V‹Kƒm[ƒh‚É’l‚ğƒZƒbƒg
-		std::lock_guard<std::mutex> lock(m_mutex);//ƒ~ƒ…[ƒeƒbƒNƒX‚ÅƒƒbƒN
-		m_tail->m_next = new_node;//––”öƒm[ƒh‚ÌŸƒm[ƒh‚ğV‹Kƒm[ƒh‚É‚·‚é
-		m_tail = new_node;//––”öƒm[ƒh‚ğV‹Kƒm[ƒh‚É‚·‚é
-		return true;//ƒGƒ“ƒLƒ…[¬Œ÷
+		if (!new_node)//ãƒ¡ãƒ¢ãƒªç¢ºä¿å¤±æ•—
+			return false;//ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼å¤±æ•—
+		new_node->m_next = nullptr;//æ–°è¦ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‚’åˆæœŸåŒ–
+		new_node->m_value = std::move(value);//æ–°è¦ãƒãƒ¼ãƒ‰ã«å€¤ã‚’ã‚»ãƒƒãƒˆ
+		std::lock_guard<std::mutex> lock(m_mutex);//ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹ã§ãƒ­ãƒƒã‚¯
+		m_tail->m_next = new_node;//æœ«å°¾ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‚’æ–°è¦ãƒãƒ¼ãƒ‰ã«ã™ã‚‹
+		m_tail = new_node;//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’æ–°è¦ãƒãƒ¼ãƒ‰ã«ã™ã‚‹
+		return true;//ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼æˆåŠŸ
 	}
 
-	//ƒfƒLƒ…[
+	//ãƒ‡ã‚­ãƒ¥ãƒ¼
 	bool dequeue(value_type& value)
 	{
-		std::lock_guard<std::mutex> lock(m_mutex);//ƒ~ƒ…[ƒeƒbƒNƒX‚ÅƒƒbƒN
+		std::lock_guard<std::mutex> lock(m_mutex);//ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹ã§ãƒ­ãƒƒã‚¯
 		if (m_head != m_tail)
 		{
-			queue_t* top = m_head->m_next;//Ÿƒm[ƒhi—LŒø‚ÈƒLƒ…[‚Ìæ“ªj‚ğæ“¾
+			queue_t* top = m_head->m_next;//æ¬¡ãƒãƒ¼ãƒ‰ï¼ˆæœ‰åŠ¹ãªã‚­ãƒ¥ãƒ¼ã®å…ˆé ­ï¼‰ã‚’å–å¾—
 		#ifdef USE_POOL_ALLOCATOR
-			m_allocator.deleteObj(m_head);//æ“ªƒm[ƒhiƒ_ƒ~[ƒm[ƒhj‚ğíœ
+			m_allocator.deleteObj(m_head);//å…ˆé ­ãƒãƒ¼ãƒ‰ï¼ˆãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ï¼‰ã‚’å‰Šé™¤
 		#else//USE_POOL_ALLOCATOR
-			delete m_head;//æ“ªƒm[ƒhiƒ_ƒ~[ƒm[ƒhj‚ğíœ
+			delete m_head;//å…ˆé ­ãƒãƒ¼ãƒ‰ï¼ˆãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ï¼‰ã‚’å‰Šé™¤
 		#endif//USE_POOL_ALLOCATOR
-			m_head = top;//æ“ªƒm[ƒh‚ğŸƒm[ƒh‚É•ÏXi‚±‚ê‚æ‚èŸƒm[ƒh‚ªƒ_ƒ~[ƒm[ƒhˆµ‚¢‚É‚È‚éj
-			value = std::move(top->m_value);//’l‚ğæ“¾
-			return true;//ƒfƒLƒ…[¬Œ÷
+			m_head = top;//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’æ¬¡ãƒãƒ¼ãƒ‰ã«å¤‰æ›´ï¼ˆã“ã‚Œã‚ˆã‚Šæ¬¡ãƒãƒ¼ãƒ‰ãŒãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰æ‰±ã„ã«ãªã‚‹ï¼‰
+			value = std::move(top->m_value);//å€¤ã‚’å–å¾—
+			return true;//ãƒ‡ã‚­ãƒ¥ãƒ¼æˆåŠŸ
 		}
-		return false;//ƒfƒLƒ…[¸”s
+		return false;//ãƒ‡ã‚­ãƒ¥ãƒ¼å¤±æ•—
 	}
 
-	//ƒfƒoƒbƒOî•ñ•\¦
+	//ãƒ‡ãƒãƒƒã‚°æƒ…å ±è¡¨ç¤º
 	void printDebugInfo(std::function<void(const value_type& value)> print_node)
 	{
 		printf("----- Debug Info for queue -----\n");
@@ -967,25 +967,25 @@ public:
 	}
 
 private:
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void initialize()
 	{
 	#ifdef USE_POOL_ALLOCATOR
-		queue_t* dummy_node = m_allocator.newObj();//ƒ_ƒ~[ƒm[ƒh‚ğ¶¬
+		queue_t* dummy_node = m_allocator.newObj();//ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
 	#else//USE_POOL_ALLOCATOR
-		queue_t* dummy_node = new queue_t;//ƒ_ƒ~[ƒm[ƒh‚ğ¶¬
+		queue_t* dummy_node = new queue_t;//ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
 	#endif//USE_POOL_ALLOCATOR
-		dummy_node->m_next = nullptr;//ƒ_ƒ~[ƒm[ƒh‚ÌŸƒm[ƒh‚ğ‰Šú‰»
-		m_head = dummy_node;//æ“ªƒm[ƒh‚Éƒ_ƒ~[ƒm[ƒh‚ğƒZƒbƒg
-		m_tail = dummy_node;//––”öƒm[ƒh‚Éƒ_ƒ~[ƒm[ƒh‚ğƒZƒbƒg
+		dummy_node->m_next = nullptr;//ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‚’åˆæœŸåŒ–
+		m_head = dummy_node;//å…ˆé ­ãƒãƒ¼ãƒ‰ã«ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆ
+		m_tail = dummy_node;//æœ«å°¾ãƒãƒ¼ãƒ‰ã«ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆ
 	}
-	//I—¹
+	//çµ‚äº†
 	void finalize()
 	{
-		//‹ó‚É‚È‚é‚Ü‚ÅƒfƒLƒ…[
+		//ç©ºã«ãªã‚‹ã¾ã§ãƒ‡ã‚­ãƒ¥ãƒ¼
 		value_type value;
 		while (dequeue(value));
-		//ƒ_ƒ~[ƒm[ƒh‚ğíœ
+		//ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
 	#ifdef USE_POOL_ALLOCATOR
 		m_allocator.deleteObj(m_head);
 	#else//USE_POOL_ALLOCATOR
@@ -994,30 +994,30 @@ private:
 	}
 
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	queue()
 	{
 		initialize();
 	}
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~queue()
 	{
 		finalize();
 	}
 private:
-	//ƒtƒB[ƒ‹ƒh
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 #ifdef USE_POOL_ALLOCATOR
-	pool_allocator<queue_t, POOL_SIZE> m_allocator;//ƒv[ƒ‹ƒAƒƒP[ƒ^
+	pool_allocator<queue_t, POOL_SIZE> m_allocator;//ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿
 #endif//USE_POOL_ALLOCATOR
-	queue_t* m_head;//ƒLƒ…[‚Ìæ“ª
-	queue_t* m_tail;//ƒLƒ…[‚Ì––”ö
-	std::mutex m_mutex;//ƒ~ƒ…[ƒeƒbƒNƒX
+	queue_t* m_head;//ã‚­ãƒ¥ãƒ¼ã®å…ˆé ­
+	queue_t* m_tail;//ã‚­ãƒ¥ãƒ¼ã®æœ«å°¾
+	std::mutex m_mutex;//ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹
 };
 
 //--------------------------------------------------------------------------------
-//ƒƒbƒNƒtƒŠ[ƒLƒ…[ƒNƒ‰ƒX
-//¦˜_•¶‚ÉŠî‚Ã‚¢‚Ä‚¢‚ÄÀ‘•: http://www.cs.rochester.edu/u/scott/papers/1996_PODC_queues.pdf
-//¦ABA–â‘è‘Îô‚ ‚èiƒ^ƒO•t‚«ƒ|ƒCƒ“ƒ^Œ^g—pj
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚­ãƒ¥ãƒ¼ã‚¯ãƒ©ã‚¹
+//â€»è«–æ–‡ã«åŸºã¥ã„ã¦ã„ã¦å®Ÿè£…: http://www.cs.rochester.edu/u/scott/papers/1996_PODC_queues.pdf
+//â€»ABAå•é¡Œå¯¾ç­–ã‚ã‚Šï¼ˆã‚¿ã‚°ä»˜ããƒã‚¤ãƒ³ã‚¿å‹ä½¿ç”¨ï¼‰
 #ifdef USE_LF_POOL_ALLOCATOR
 template<class T, std::size_t POOL_SIZE>
 #else//USE_LF_POOL_ALLOCATOR
@@ -1026,14 +1026,14 @@ template<class T>
 class lf_queue
 {
 public:
-	//Œ^
-	typedef T value_type;//’lŒ^
+	//å‹
+	typedef T value_type;//å€¤å‹
 
-	//ƒLƒ…[Œ^—pƒ^ƒO•t‚«ƒ|ƒCƒ“ƒ^Œ^
+	//ã‚­ãƒ¥ãƒ¼å‹ç”¨ã‚¿ã‚°ä»˜ããƒã‚¤ãƒ³ã‚¿å‹
 	struct queue_t;
 	typedef tag_ptr<queue_t> queue_ptr_t;
 
-	//ƒLƒ…[Œ^
+	//ã‚­ãƒ¥ãƒ¼å‹
 	struct queue_t
 	{
 		std::atomic<queue_ptr_t> m_next;
@@ -1041,152 +1041,152 @@ public:
 	};
 
 public:
-	//ƒƒ\ƒbƒh
+	//ãƒ¡ã‚½ãƒƒãƒ‰
 	
-	//ƒGƒ“ƒLƒ…[
+	//ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼
 	bool enqueue(value_type&& value)
 	{
 	#ifdef USE_LF_POOL_ALLOCATOR
-		queue_t* new_node = m_allocator.newObj();//V‹Kƒm[ƒh‚ğ¶¬
-		if (!new_node)//ƒƒ‚ƒŠŠm•Û¸”s
-			return nullptr;//ƒGƒ“ƒLƒ…[¸”s
+		queue_t* new_node = m_allocator.newObj();//æ–°è¦ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
+		if (!new_node)//ãƒ¡ãƒ¢ãƒªç¢ºä¿å¤±æ•—
+			return nullptr;//ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼å¤±æ•—
 	#else//USE_LF_POOL_ALLOCATOR
 		void* p = _aligned_malloc(sizeof(queue_t), 16);
-		if (!p)//ƒƒ‚ƒŠŠm•Û¸”s
-			return false;//ƒGƒ“ƒLƒ…[¸”s
-		queue_t* new_node = new(p) queue_t();//V‹Kƒm[ƒh‚ğ¶¬
+		if (!p)//ãƒ¡ãƒ¢ãƒªç¢ºä¿å¤±æ•—
+			return false;//ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼å¤±æ•—
+		queue_t* new_node = new(p) queue_t();//æ–°è¦ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
 	#endif//USE_LF_POOL_ALLOCATOR
 		queue_ptr_t new_node_tag_ptr;
-		new_node_tag_ptr.setTagPtr(new_node, m_tag.fetch_add(1));//ƒ^ƒO•t‚«ƒ|ƒCƒ“ƒ^¶¬
+		new_node_tag_ptr.setTagPtr(new_node, m_tag.fetch_add(1));//ã‚¿ã‚°ä»˜ããƒã‚¤ãƒ³ã‚¿ç”Ÿæˆ
 		queue_ptr_t null_tag_ptr;
-		null_tag_ptr.setTagPtr(nullptr, 0);//ƒ^ƒO•t‚«ƒkƒ‹ƒ|ƒCƒ“ƒ^
-		new_node->m_next.store(null_tag_ptr);//V‹Kƒm[ƒh‚ÌŸƒm[ƒh‚ğ‰Šú‰»
-		new_node->m_value = std::move(value);//V‹Kƒm[ƒh‚É’l‚ğƒZƒbƒg
+		null_tag_ptr.setTagPtr(nullptr, 0);//ã‚¿ã‚°ä»˜ããƒŒãƒ«ãƒã‚¤ãƒ³ã‚¿
+		new_node->m_next.store(null_tag_ptr);//æ–°è¦ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‚’åˆæœŸåŒ–
+		new_node->m_value = std::move(value);//æ–°è¦ãƒãƒ¼ãƒ‰ã«å€¤ã‚’ã‚»ãƒƒãƒˆ
 		queue_ptr_t tail_tag_ptr = null_tag_ptr;
 		while (true)
 		{
-			tail_tag_ptr = m_tail.load();//––”öƒm[ƒh‚ğæ“¾
+			tail_tag_ptr = m_tail.load();//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’å–å¾—
 			queue_t* tail = tail_tag_ptr;
-			queue_ptr_t next_tag_ptr = tail->m_next.load();//––”öƒm[ƒh‚ÌŸƒm[ƒh‚ğæ“¾
-			if (tail_tag_ptr == m_tail.load())//‚±‚Ìƒ^ƒCƒ~ƒ“ƒO‚Å‘¼‚ÌƒXƒŒƒbƒh‚ª––”ö‚ğ‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
+			queue_ptr_t next_tag_ptr = tail->m_next.load();//æœ«å°¾ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‚’å–å¾—
+			if (tail_tag_ptr == m_tail.load())//ã“ã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæœ«å°¾ã‚’æ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
 			{
-				if (next_tag_ptr.isNull())//––”öƒm[ƒh‚ÌŸƒm[ƒh‚ª––’[inullptrj‚©H
+				if (next_tag_ptr.isNull())//æœ«å°¾ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ãŒæœ«ç«¯ï¼ˆnullptrï¼‰ã‹ï¼Ÿ
 				{
-					//CAS‘€ì
-				#ifdef USE_SAFE_CAS_LF_QUEUE//yˆÀ‘S‘Îôz¦ƒXƒsƒ“ƒƒbƒN‚ÅCAS‘€ì‚ğ•ÛŒì
-					while (m_lock.test_and_set());//ƒƒbƒNæ“¾
-					const bool result = tail->m_next.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr);//CAS‘€ì
-						m_lock.clear();//ƒƒbƒN‰ğœ
+					//CASæ“ä½œ
+				#ifdef USE_SAFE_CAS_LF_QUEUE//ã€å®‰å…¨å¯¾ç­–ã€‘â€»ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã§CASæ“ä½œã‚’ä¿è­·
+					while (m_lock.test_and_set());//ãƒ­ãƒƒã‚¯å–å¾—
+					const bool result = tail->m_next.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr);//CASæ“ä½œ
+						m_lock.clear();//ãƒ­ãƒƒã‚¯è§£é™¤
 					if (result)
 				#else//USE_SAFE_CAS_LF_QUEUE
-					if (tail->m_next.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr))//CAS‘€ì
+					if (tail->m_next.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr))//CASæ“ä½œ
 				#endif//USE_SAFE_CAS_LF_QUEUE
-					//yCAS‘€ì‚Ì“à—ez
-					//    if(tail_tag_ptr->m_next == next_tag_ptr)//––”öƒm[ƒh‚ÌŸƒm[ƒh‚ğ‘¼‚ÌƒXƒŒƒbƒh‚ª‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
-					//        tail_tag_ptr->m_next = new_node_tag_ptr;//––”öƒm[ƒh‚ÌŸƒm[ƒh‚ÉV‹Kƒm[ƒh‚ğƒZƒbƒgiƒGƒ“ƒLƒ…[¬Œ÷j
+					//ã€CASæ“ä½œã®å†…å®¹ã€‘
+					//    if(tail_tag_ptr->m_next == next_tag_ptr)//æœ«å°¾ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‚’ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
+					//        tail_tag_ptr->m_next = new_node_tag_ptr;//æœ«å°¾ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã«æ–°è¦ãƒãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆï¼ˆã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼æˆåŠŸï¼‰
 					{
-						//CAS‘€ì
-					#ifdef USE_SAFE_CAS_LF_QUEUE//yˆÀ‘S‘Îôz¦ƒXƒsƒ“ƒƒbƒN‚ÅCAS‘€ì‚ğ•ÛŒì
-						while (m_lock.test_and_set());//ƒƒbƒNæ“¾
-						m_tail.compare_exchange_strong(tail_tag_ptr, new_node_tag_ptr);//CAS‘€ì
-						m_lock.clear();//ƒƒbƒN‰ğœ
+						//CASæ“ä½œ
+					#ifdef USE_SAFE_CAS_LF_QUEUE//ã€å®‰å…¨å¯¾ç­–ã€‘â€»ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã§CASæ“ä½œã‚’ä¿è­·
+						while (m_lock.test_and_set());//ãƒ­ãƒƒã‚¯å–å¾—
+						m_tail.compare_exchange_strong(tail_tag_ptr, new_node_tag_ptr);//CASæ“ä½œ
+						m_lock.clear();//ãƒ­ãƒƒã‚¯è§£é™¤
 					#else//USE_SAFE_CAS_LF_QUEUE
-						m_tail.compare_exchange_strong(tail_tag_ptr, new_node_tag_ptr);//CAS‘€ì
+						m_tail.compare_exchange_strong(tail_tag_ptr, new_node_tag_ptr);//CASæ“ä½œ
 					#endif//USE_SAFE_CAS_LF_QUEUE
-						//yCAS‘€ì‚Ì“à—ez
-						//    if(m_tail == tail_tag_ptr)//––”öƒm[ƒh‚ğ‘¼‚ÌƒXƒŒƒbƒh‚ª‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
-						//        tail_tag_ptr = new_node_tag_ptr;//––”öƒm[ƒh‚ğV‹Kƒm[ƒh‚É•ÏX
+						//ã€CASæ“ä½œã®å†…å®¹ã€‘
+						//    if(m_tail == tail_tag_ptr)//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
+						//        tail_tag_ptr = new_node_tag_ptr;//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’æ–°è¦ãƒãƒ¼ãƒ‰ã«å¤‰æ›´
 
-						return true;//ƒGƒ“ƒLƒ…[¬Œ÷
+						return true;//ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼æˆåŠŸ
 					}
 				}
-				else//if(next_tag_ptr.isNotNull())//––”öƒm[ƒh‚ÌŸƒm[ƒh‚ª––’[‚Å‚Í‚È‚¢i‘¼‚ÌƒXƒŒƒbƒh‚Ìˆ—‚ªŠ„‚è‚ñ‚Å‚¢‚½ê‡j
+				else//if(next_tag_ptr.isNotNull())//æœ«å°¾ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ãŒæœ«ç«¯ã§ã¯ãªã„ï¼ˆä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ã®å‡¦ç†ãŒå‰²ã‚Šè¾¼ã‚“ã§ã„ãŸå ´åˆï¼‰
 				{
-					//CAS‘€ì
-				#ifdef USE_SAFE_CAS_LF_QUEUE//yˆÀ‘S‘Îôz¦ƒXƒsƒ“ƒƒbƒN‚ÅCAS‘€ì‚ğ•ÛŒì
-					while (m_lock.test_and_set());//ƒƒbƒNæ“¾
-					m_tail.compare_exchange_weak(tail_tag_ptr, next_tag_ptr);//CAS‘€ì
-					m_lock.clear();//ƒƒbƒN‰ğœ
+					//CASæ“ä½œ
+				#ifdef USE_SAFE_CAS_LF_QUEUE//ã€å®‰å…¨å¯¾ç­–ã€‘â€»ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã§CASæ“ä½œã‚’ä¿è­·
+					while (m_lock.test_and_set());//ãƒ­ãƒƒã‚¯å–å¾—
+					m_tail.compare_exchange_weak(tail_tag_ptr, next_tag_ptr);//CASæ“ä½œ
+					m_lock.clear();//ãƒ­ãƒƒã‚¯è§£é™¤
 				#else//USE_SAFE_CAS_LF_QUEUE
-					m_tail.compare_exchange_weak(tail_tag_ptr, next_tag_ptr);//CAS‘€ì
+					m_tail.compare_exchange_weak(tail_tag_ptr, next_tag_ptr);//CASæ“ä½œ
 				#endif//USE_SAFE_CAS_LF_QUEUE
-					//yCAS‘€ì‚Ì“à—ez
-					//    if(m_tail == tail_tag_ptr)//––”öƒm[ƒh‚ğ‘¼‚ÌƒXƒŒƒbƒh‚ª‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
-					//        m_tail = next_tag_ptr;//––”öƒm[ƒh‚ğŸƒm[ƒh‚É•ÏX
+					//ã€CASæ“ä½œã®å†…å®¹ã€‘
+					//    if(m_tail == tail_tag_ptr)//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
+					//        m_tail = next_tag_ptr;//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’æ¬¡ãƒãƒ¼ãƒ‰ã«å¤‰æ›´
 				}
 			}
 		}
-		return false;//ƒ_ƒ~[
+		return false;//ãƒ€ãƒŸãƒ¼
 	}
 
-	//ƒfƒLƒ…[
+	//ãƒ‡ã‚­ãƒ¥ãƒ¼
 	bool dequeue(value_type& value)
 	{
 		queue_ptr_t null_tag_ptr;
-		null_tag_ptr.setTagPtr(nullptr, 0);//ƒ^ƒO•t‚«ƒkƒ‹ƒ|ƒCƒ“ƒ^
+		null_tag_ptr.setTagPtr(nullptr, 0);//ã‚¿ã‚°ä»˜ããƒŒãƒ«ãƒã‚¤ãƒ³ã‚¿
 		queue_ptr_t head_tag_ptr = null_tag_ptr;
 		queue_ptr_t tail_tag_ptr = null_tag_ptr;
 		queue_ptr_t top_tag_ptr = null_tag_ptr;
 		while (true)
 		{
-			head_tag_ptr = m_head.load();//æ“ªƒm[ƒh‚ğæ“¾
-			tail_tag_ptr = m_tail.load();//––”öƒm[ƒh‚ğæ“¾
+			head_tag_ptr = m_head.load();//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å–å¾—
+			tail_tag_ptr = m_tail.load();//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’å–å¾—
 			queue_t* head = head_tag_ptr;
-			queue_ptr_t next_tag_ptr = head->m_next.load();//æ“ªƒm[ƒh‚ÌŸƒm[ƒhi—LŒø‚ÈƒLƒ…[‚Ìæ“ªj‚ğæ“¾
-			if (head_tag_ptr == m_head.load())//‚±‚Ìƒ^ƒCƒ~ƒ“ƒO‚Å‘¼‚ÌƒXƒŒƒbƒh‚ªæ“ª‚ğ‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
+			queue_ptr_t next_tag_ptr = head->m_next.load();//å…ˆé ­ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ï¼ˆæœ‰åŠ¹ãªã‚­ãƒ¥ãƒ¼ã®å…ˆé ­ï¼‰ã‚’å–å¾—
+			if (head_tag_ptr == m_head.load())//ã“ã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒå…ˆé ­ã‚’æ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
 			{
-				if (head_tag_ptr == tail_tag_ptr)//æ“ªƒm[ƒh‚Æ––”öƒm[ƒh‚ª“¯‚¶‚©HiƒLƒ…[ƒCƒ“ƒO‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô‚©Hj
+				if (head_tag_ptr == tail_tag_ptr)//å…ˆé ­ãƒãƒ¼ãƒ‰ã¨æœ«å°¾ãƒãƒ¼ãƒ‰ãŒåŒã˜ã‹ï¼Ÿï¼ˆã‚­ãƒ¥ãƒ¼ã‚¤ãƒ³ã‚°ã•ã‚Œã¦ã„ãªã„çŠ¶æ…‹ã‹ï¼Ÿï¼‰
 				{
-					if (next_tag_ptr.isNull())//–{“–‚ÉƒLƒ…[‚ª‚È‚¢‚©Hitailæ“¾‚Ænextæ“¾‚ÌŠÔ‚ÉA‘¼‚ÌƒXƒŒƒbƒh‚ªƒLƒ…[ƒCƒ“ƒO‚µ‚Ä‚¢‚é‰Â”\«‚ª‚ ‚éj
-						return false;//ƒfƒLƒ…[¸”s
+					if (next_tag_ptr.isNull())//æœ¬å½“ã«ã‚­ãƒ¥ãƒ¼ãŒãªã„ã‹ï¼Ÿï¼ˆtailå–å¾—ã¨nextå–å¾—ã®é–“ã«ã€ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒã‚­ãƒ¥ãƒ¼ã‚¤ãƒ³ã‚°ã—ã¦ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ï¼‰
+						return false;//ãƒ‡ã‚­ãƒ¥ãƒ¼å¤±æ•—
 					
-					//CAS‘€ì
-				#ifdef USE_SAFE_CAS_LF_QUEUE//yˆÀ‘S‘Îôz¦ƒXƒsƒ“ƒƒbƒN‚ÅCAS‘€ì‚ğ•ÛŒì
-					while (m_lock.test_and_set());//ƒƒbƒNæ“¾
-					m_tail.compare_exchange_strong(tail_tag_ptr, next_tag_ptr);//CAS‘€ì
-					m_lock.clear();//ƒƒbƒN‰ğœ
+					//CASæ“ä½œ
+				#ifdef USE_SAFE_CAS_LF_QUEUE//ã€å®‰å…¨å¯¾ç­–ã€‘â€»ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã§CASæ“ä½œã‚’ä¿è­·
+					while (m_lock.test_and_set());//ãƒ­ãƒƒã‚¯å–å¾—
+					m_tail.compare_exchange_strong(tail_tag_ptr, next_tag_ptr);//CASæ“ä½œ
+					m_lock.clear();//ãƒ­ãƒƒã‚¯è§£é™¤
 				#else//USE_SAFE_CAS_LF_QUEUE
-					m_tail.compare_exchange_strong(tail_tag_ptr, next_tag_ptr);//CAS‘€ì
+					m_tail.compare_exchange_strong(tail_tag_ptr, next_tag_ptr);//CASæ“ä½œ
 				#endif//USE_SAFE_CAS_LF_QUEUE
-					//yCAS‘€ì‚Ì“à—ez
-					//    if(m_tail == tail_tag_ptr)//––”öƒm[ƒh‚ğ‘¼‚ÌƒXƒŒƒbƒh‚ª‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
-					//        m_tail = next_tag_ptr;//––”öƒm[ƒh‚ğŸƒm[ƒh‚É•ÏX
+					//ã€CASæ“ä½œã®å†…å®¹ã€‘
+					//    if(m_tail == tail_tag_ptr)//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
+					//        m_tail = next_tag_ptr;//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’æ¬¡ãƒãƒ¼ãƒ‰ã«å¤‰æ›´
 				}
 				else
 				{
-					top_tag_ptr = next_tag_ptr;//Ÿƒm[ƒhi—LŒø‚ÈƒLƒ…[‚Ìæ“ªj‚ğæ“¾
+					top_tag_ptr = next_tag_ptr;//æ¬¡ãƒãƒ¼ãƒ‰ï¼ˆæœ‰åŠ¹ãªã‚­ãƒ¥ãƒ¼ã®å…ˆé ­ï¼‰ã‚’å–å¾—
 					
-					//CAS‘€ì
-				#ifdef USE_SAFE_CAS_LF_QUEUE//yˆÀ‘S‘Îôz¦ƒXƒsƒ“ƒƒbƒN‚ÅCAS‘€ì‚ğ•ÛŒì
-					while (m_lock.test_and_set());//ƒƒbƒNæ“¾
-					const bool result = m_head.compare_exchange_weak(head_tag_ptr, next_tag_ptr);//CAS‘€ì
-					m_lock.clear();//ƒƒbƒN‰ğœ
+					//CASæ“ä½œ
+				#ifdef USE_SAFE_CAS_LF_QUEUE//ã€å®‰å…¨å¯¾ç­–ã€‘â€»ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã§CASæ“ä½œã‚’ä¿è­·
+					while (m_lock.test_and_set());//ãƒ­ãƒƒã‚¯å–å¾—
+					const bool result = m_head.compare_exchange_weak(head_tag_ptr, next_tag_ptr);//CASæ“ä½œ
+					m_lock.clear();//ãƒ­ãƒƒã‚¯è§£é™¤
 					if (result)
 				#else//USE_SAFE_CAS_LF_QUEUE
-					if (m_head.compare_exchange_weak(head_tag_ptr, next_tag_ptr))//CAS‘€ì
+					if (m_head.compare_exchange_weak(head_tag_ptr, next_tag_ptr))//CASæ“ä½œ
 				#endif//USE_SAFE_CAS_LF_QUEUE
-					//yCAS‘€ì‚Ì“à—ez
-					//    if(m_head == head_tag_ptr)//æ“ªƒm[ƒh‚ÌŸƒm[ƒh‚ğ‘¼‚ÌƒXƒŒƒbƒh‚ª‘‚«Š·‚¦‚Ä‚¢‚È‚¢‚©H
-					//        m_head = next_tag_ptr;//æ“ªƒm[ƒh‚ğŸƒm[ƒh‚É•ÏXi‚±‚ê‚æ‚èŸƒm[ƒh‚ªƒ_ƒ~[ƒm[ƒhˆµ‚¢‚É‚È‚éjiƒfƒLƒ…[¬Œ÷j
+					//ã€CASæ“ä½œã®å†…å®¹ã€‘
+					//    if(m_head == head_tag_ptr)//å…ˆé ­ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‚’ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæ›¸ãæ›ãˆã¦ã„ãªã„ã‹ï¼Ÿ
+					//        m_head = next_tag_ptr;//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’æ¬¡ãƒãƒ¼ãƒ‰ã«å¤‰æ›´ï¼ˆã“ã‚Œã‚ˆã‚Šæ¬¡ãƒãƒ¼ãƒ‰ãŒãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰æ‰±ã„ã«ãªã‚‹ï¼‰ï¼ˆãƒ‡ã‚­ãƒ¥ãƒ¼æˆåŠŸï¼‰
 					{
 						queue_t* top = top_tag_ptr;
-						value = std::move(top->m_value);//’l‚ğæ“¾
+						value = std::move(top->m_value);//å€¤ã‚’å–å¾—
 					#ifdef USE_LF_POOL_ALLOCATOR
-						m_allocator.deleteObj(head);//æ“ªƒm[ƒhiƒ_ƒ~[ƒm[ƒhj‚ğíœ
+						m_allocator.deleteObj(head);//å…ˆé ­ãƒãƒ¼ãƒ‰ï¼ˆãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ï¼‰ã‚’å‰Šé™¤
 					#else//USE_LF_POOL_ALLOCATOR
 						head->~queue_t();
 						//operator delete(head, head);
-						_aligned_free(head);//æ“ªƒm[ƒhiƒ_ƒ~[ƒm[ƒhj‚ğíœ
+						_aligned_free(head);//å…ˆé ­ãƒãƒ¼ãƒ‰ï¼ˆãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ï¼‰ã‚’å‰Šé™¤
 					#endif//USE_LF_POOL_ALLOCATOR
-						return true;//ƒfƒLƒ…[¬Œ÷
+						return true;//ãƒ‡ã‚­ãƒ¥ãƒ¼æˆåŠŸ
 					}
 				}
 			}
 		}
-		return false;//ƒ_ƒ~[
+		return false;//ãƒ€ãƒŸãƒ¼
 	}
 
-	//ƒfƒoƒbƒOî•ñ•\¦
+	//ãƒ‡ãƒãƒƒã‚°æƒ…å ±è¡¨ç¤º
 	void printDebugInfo(std::function<void(const value_type& value)> print_node)
 	{
 		printf("----- Debug Info for lf_queue -----\n");
@@ -1217,22 +1217,22 @@ public:
 	}
 
 private:
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void initialize()
 	{
 	#ifdef USE_LF_POOL_ALLOCATOR
-		queue_t* dummy_node = m_allocator.newObj();//ƒ_ƒ~[ƒm[ƒh‚ğ¶¬
+		queue_t* dummy_node = m_allocator.newObj();//ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
 	#else//USE_LF_POOL_ALLOCATOR
-		queue_t* dummy_node = new(_aligned_malloc(sizeof(queue_t), 16)) queue_t();//ƒ_ƒ~[ƒm[ƒh‚ğ¶¬
+		queue_t* dummy_node = new(_aligned_malloc(sizeof(queue_t), 16)) queue_t();//ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’ç”Ÿæˆ
 	#endif//USE_LF_POOL_ALLOCATOR
 		queue_ptr_t null_tag_ptr;
-		null_tag_ptr.setTagPtr(nullptr, 0);//ƒ^ƒO•t‚«ƒkƒ‹ƒ|ƒCƒ“ƒ^
-		dummy_node->m_next.store(null_tag_ptr);//ƒ_ƒ~[ƒm[ƒh‚ÌŸƒm[ƒh‚ğ‰Šú‰»
+		null_tag_ptr.setTagPtr(nullptr, 0);//ã‚¿ã‚°ä»˜ããƒŒãƒ«ãƒã‚¤ãƒ³ã‚¿
+		dummy_node->m_next.store(null_tag_ptr);//ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‚’åˆæœŸåŒ–
 		queue_ptr_t dummy_node_tag_ptr;
 		dummy_node_tag_ptr.setTagPtr(dummy_node, 0);
-		m_head.store(dummy_node_tag_ptr);//æ“ªƒm[ƒh‚Éƒ_ƒ~[ƒm[ƒh‚ğƒZƒbƒg
-		m_tail.store(dummy_node_tag_ptr);//––”öƒm[ƒh‚Éƒ_ƒ~[ƒm[ƒh‚ğƒZƒbƒg
-		m_tag.store(0);//ƒ^ƒO‚ğ‰Šú‰»
+		m_head.store(dummy_node_tag_ptr);//å…ˆé ­ãƒãƒ¼ãƒ‰ã«ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆ
+		m_tail.store(dummy_node_tag_ptr);//æœ«å°¾ãƒãƒ¼ãƒ‰ã«ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆ
+		m_tag.store(0);//ã‚¿ã‚°ã‚’åˆæœŸåŒ–
 		//if (dummy_node->m_next.is_lock_free())
 		//	printf("dummy_node->m_next is lock free!\n");
 		//if (m_head.is_lock_free())
@@ -1240,49 +1240,49 @@ private:
 		//if (m_tail.is_lock_free())
 		//	printf("m_tail is lock free!\n");
 	}
-	//I—¹
+	//çµ‚äº†
 	void finalize()
 	{
-		//‹ó‚É‚È‚é‚Ü‚ÅƒfƒLƒ…[
+		//ç©ºã«ãªã‚‹ã¾ã§ãƒ‡ã‚­ãƒ¥ãƒ¼
 		value_type value;
 		while (dequeue(value));
-		//ƒ_ƒ~[ƒm[ƒh‚ğíœ
+		//ãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
 		queue_ptr_t head_tag_ptr = m_head.load();
 		queue_t* head = head_tag_ptr;
 	#ifdef USE_LF_POOL_ALLOCATOR
 		m_allocator.deleteObj(head);
 	#else//USE_LF_POOL_ALLOCATOR
 		head->~queue_t();
-		_aligned_free(head);//æ“ªƒm[ƒhiƒ_ƒ~[ƒm[ƒhj‚ğíœ
+		_aligned_free(head);//å…ˆé ­ãƒãƒ¼ãƒ‰ï¼ˆãƒ€ãƒŸãƒ¼ãƒãƒ¼ãƒ‰ï¼‰ã‚’å‰Šé™¤
 	#endif//USE_LF_POOL_ALLOCATOR
 	}
 
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	lf_queue()
 	{
 		initialize();
 	}
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~lf_queue()
 	{
 		finalize();
 	}
 private:
-	//ƒtƒB[ƒ‹ƒh
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 #ifdef USE_LF_POOL_ALLOCATOR
-	lf_pool_allocator<queue_t, POOL_SIZE> m_allocator;//ƒv[ƒ‹ƒAƒƒP[ƒ^
+	lf_pool_allocator<queue_t, POOL_SIZE> m_allocator;//ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿
 #endif//USE_LF_POOL_ALLOCATOR
-	std::atomic<queue_ptr_t> m_head;//ƒLƒ…[‚Ìæ“ª
-	std::atomic<queue_ptr_t> m_tail;//ƒLƒ…[‚Ì––”ö
-	std::atomic<std::size_t> m_tag;//ABA–â‘è‘Îô—p‚Ìƒ^ƒO
+	std::atomic<queue_ptr_t> m_head;//ã‚­ãƒ¥ãƒ¼ã®å…ˆé ­
+	std::atomic<queue_ptr_t> m_tail;//ã‚­ãƒ¥ãƒ¼ã®æœ«å°¾
+	std::atomic<std::size_t> m_tag;//ABAå•é¡Œå¯¾ç­–ç”¨ã®ã‚¿ã‚°
 #ifdef USE_SAFE_CAS_LF_QUEUE
-	std::atomic_flag m_lock;//CAS‘€ì•ÛŒì—p‚ÌƒXƒsƒ“ƒƒbƒN
+	std::atomic_flag m_lock;//CASæ“ä½œä¿è­·ç”¨ã®ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯
 #endif//USE_SAFE_CAS_LF_QUEUE
 };
 
 //--------------------------------------------------------------------------------
-//ƒeƒXƒg—pƒf[ƒ^
+//ãƒ†ã‚¹ãƒˆç”¨ãƒ‡ãƒ¼ã‚¿
 struct data_t
 {
 	int m_temp;
@@ -1290,131 +1290,131 @@ struct data_t
 };
 
 //--------------------------------------------------------------------------------
-//’Êíƒv[ƒ‹ƒAƒƒP[ƒ^ƒeƒXƒg
+//é€šå¸¸ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ãƒ†ã‚¹ãƒˆ
 
-static pool_allocator<data_t, TEST_POOL_SIZE> s_poolAllocator;//’Êíƒv[ƒ‹ƒAƒƒP[ƒ^
+static pool_allocator<data_t, TEST_POOL_SIZE> s_poolAllocator;//é€šå¸¸ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿
 
-//’Êíƒv[ƒ‹ƒAƒƒP[ƒ^‚©‚çƒAƒƒP[ƒg
+//é€šå¸¸ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã‹ã‚‰ã‚¢ãƒ­ã‚±ãƒ¼ãƒˆ
 data_t* allocNormal()
 {
 	return s_poolAllocator.newObj();
 }
-//’Êíƒv[ƒ‹ƒAƒƒP[ƒ^‚©‚çƒtƒŠ[
+//é€šå¸¸ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã‹ã‚‰ãƒ•ãƒªãƒ¼
 bool freeNormal(data_t* value)
 {
 	return s_poolAllocator.deleteObj(value);
 }
 
 //--------------------------------------------------------------------------------
-//ƒƒbƒNƒtƒŠ[ƒv[ƒ‹ƒAƒƒP[ƒ^ƒeƒXƒg
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ãƒ†ã‚¹ãƒˆ
 
-static lf_pool_allocator<data_t, TEST_POOL_SIZE> s_lfPoolAllocator;//ƒƒbƒNƒtƒŠ[ƒv[ƒ‹ƒAƒƒP[ƒ^
+static lf_pool_allocator<data_t, TEST_POOL_SIZE> s_lfPoolAllocator;//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿
 
-//ƒƒbƒNƒtƒŠ[ƒv[ƒ‹ƒAƒƒP[ƒ^‚©‚çƒAƒƒP[ƒg
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã‹ã‚‰ã‚¢ãƒ­ã‚±ãƒ¼ãƒˆ
 data_t* allocLockFree()
 {
 	return s_lfPoolAllocator.newObj();
 }
-//ƒƒbƒNƒtƒŠ[ƒv[ƒ‹ƒAƒƒP[ƒ^‚©‚çƒtƒŠ[
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã‹ã‚‰ãƒ•ãƒªãƒ¼
 bool freeLockFree(data_t* value)
 {
 	return s_lfPoolAllocator.deleteObj(value);
 }
 
 //--------------------------------------------------------------------------------
-//’ÊíƒXƒ^ƒbƒNƒeƒXƒg
+//é€šå¸¸ã‚¹ã‚¿ãƒƒã‚¯ãƒ†ã‚¹ãƒˆ
 
 #ifdef USE_POOL_ALLOCATOR
-static stack<data_t, TEST_POOL_SIZE> s_stack;//’ÊíƒXƒ^ƒbƒN
+static stack<data_t, TEST_POOL_SIZE> s_stack;//é€šå¸¸ã‚¹ã‚¿ãƒƒã‚¯
 #else//USE_POOL_ALLOCATOR
-static stack<data_t> s_stack;//’ÊíƒXƒ^ƒbƒN
+static stack<data_t> s_stack;//é€šå¸¸ã‚¹ã‚¿ãƒƒã‚¯
 #endif//USE_POOL_ALLOCATOR
 
-//’ÊíƒXƒ^ƒbƒN‚ÉƒvƒbƒVƒ…
+//é€šå¸¸ã‚¹ã‚¿ãƒƒã‚¯ã«ãƒ—ãƒƒã‚·ãƒ¥
 bool pushNormal(data_t&& data)
 {
-	return s_stack.push(std::move(data));//ƒXƒ^ƒbƒN‚ÉƒvƒbƒVƒ…
+	return s_stack.push(std::move(data));//ã‚¹ã‚¿ãƒƒã‚¯ã«ãƒ—ãƒƒã‚·ãƒ¥
 }
 
-//’ÊíƒXƒ^ƒbƒN‚©‚çƒ|ƒbƒv
+//é€šå¸¸ã‚¹ã‚¿ãƒƒã‚¯ã‹ã‚‰ãƒãƒƒãƒ—
 bool popNormal(data_t& data)
 {
-	return s_stack.pop(data);//ƒXƒ^ƒbƒN‚©‚çƒ|ƒbƒv
+	return s_stack.pop(data);//ã‚¹ã‚¿ãƒƒã‚¯ã‹ã‚‰ãƒãƒƒãƒ—
 }
 
 //--------------------------------------------------------------------------------
-//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒNƒeƒXƒg
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯ãƒ†ã‚¹ãƒˆ
 
 #ifdef USE_LF_POOL_ALLOCATOR
-static lf_stack<data_t, TEST_POOL_SIZE> s_lfStack;//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒN
+static lf_stack<data_t, TEST_POOL_SIZE> s_lfStack;//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯
 #else//USE_LF_POOL_ALLOCATOR
-static lf_stack<data_t> s_lfStack;//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒN
+static lf_stack<data_t> s_lfStack;//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯
 #endif//USE_LF_POOL_ALLOCATOR
 
-//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒN‚ÉƒvƒbƒVƒ…
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯ã«ãƒ—ãƒƒã‚·ãƒ¥
 bool pushLockFree(data_t&& data)
 {
-	return s_lfStack.push(std::move(data));//ƒXƒ^ƒbƒN‚ÉƒvƒbƒVƒ…
+	return s_lfStack.push(std::move(data));//ã‚¹ã‚¿ãƒƒã‚¯ã«ãƒ—ãƒƒã‚·ãƒ¥
 }
 
-//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒN‚©‚çƒ|ƒbƒv
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯ã‹ã‚‰ãƒãƒƒãƒ—
 bool popLockFree(data_t& data)
 {
-	return s_lfStack.pop(data);//ƒXƒ^ƒbƒN‚©‚çƒ|ƒbƒv
+	return s_lfStack.pop(data);//ã‚¹ã‚¿ãƒƒã‚¯ã‹ã‚‰ãƒãƒƒãƒ—
 }
 
 //--------------------------------------------------------------------------------
-//’ÊíƒLƒ…[ƒeƒXƒg
+//é€šå¸¸ã‚­ãƒ¥ãƒ¼ãƒ†ã‚¹ãƒˆ
 
 #ifdef USE_POOL_ALLOCATOR
-static queue<data_t, TEST_POOL_SIZE> s_queue;//’ÊíƒLƒ…[
+static queue<data_t, TEST_POOL_SIZE> s_queue;//é€šå¸¸ã‚­ãƒ¥ãƒ¼
 #else//USE_POOL_ALLOCATOR
-static queue<data_t> s_queue;//’ÊíƒLƒ…[
+static queue<data_t> s_queue;//é€šå¸¸ã‚­ãƒ¥ãƒ¼
 #endif//USE_POOL_ALLOCATOR
 
-//’ÊíƒLƒ…[‚ÉƒGƒ“ƒLƒ…[
+//é€šå¸¸ã‚­ãƒ¥ãƒ¼ã«ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼
 bool enqueueNormal(data_t&& value)
 {
 	return s_queue.enqueue(std::move(value));
 }
-//’ÊíƒLƒ…[‚©‚çƒfƒLƒ…[
+//é€šå¸¸ã‚­ãƒ¥ãƒ¼ã‹ã‚‰ãƒ‡ã‚­ãƒ¥ãƒ¼
 bool dequeueNormal(data_t& value)
 {
 	return s_queue.dequeue(value);
 }
 
 //--------------------------------------------------------------------------------
-//ƒƒbƒNƒtƒŠ[ƒLƒ…[ƒeƒXƒg
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚­ãƒ¥ãƒ¼ãƒ†ã‚¹ãƒˆ
 
 #ifdef USE_LF_POOL_ALLOCATOR
-static lf_queue<data_t, TEST_POOL_SIZE> s_lfQueue;//ƒƒbƒNƒtƒŠ[ƒLƒ…[
+static lf_queue<data_t, TEST_POOL_SIZE> s_lfQueue;//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚­ãƒ¥ãƒ¼
 #else//USE_LF_POOL_ALLOCATOR
-static lf_queue<data_t> s_lfQueue;//ƒƒbƒNƒtƒŠ[ƒLƒ…[
+static lf_queue<data_t> s_lfQueue;//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚­ãƒ¥ãƒ¼
 #endif//USE_LF_POOL_ALLOCATOR
 
-//ƒƒbƒNƒtƒŠ[ƒLƒ…[‚ÉƒGƒ“ƒLƒ…[
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚­ãƒ¥ãƒ¼ã«ã‚¨ãƒ³ã‚­ãƒ¥ãƒ¼
 bool enqueueLockFree(data_t&& value)
 {
 	return s_lfQueue.enqueue(std::move(value));
 }
-//ƒƒbƒNƒtƒŠ[ƒLƒ…[‚©‚çƒfƒLƒ…[
+//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚­ãƒ¥ãƒ¼ã‹ã‚‰ãƒ‡ã‚­ãƒ¥ãƒ¼
 bool dequeueLockFree(data_t& value)
 {
 	return	s_lfQueue.dequeue(value);
 }
 
 //--------------------------------------------------------------------------------
-//ƒeƒXƒg
+//ãƒ†ã‚¹ãƒˆ
 
 #ifdef ENABLE_EASY_TEST
-//ŠÈˆÕƒeƒXƒg
+//ç°¡æ˜“ãƒ†ã‚¹ãƒˆ
 void easyTest()
 {
 	printf("================================================================================\n");
 	printf("[Test for Lock-free pool-allocator/stack/queue]\n");
 	
 #ifdef ENABLE_TEST_FOR_NORMAL_POOL_ALLOCATOR
-	//’Êíƒv[ƒ‹ƒAƒƒP[ƒ^
+	//é€šå¸¸ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿
 	{
 		printf("Normal pool allocator\n");
 		pool_allocator<data_t, 3> allocator;
@@ -1445,7 +1445,7 @@ void easyTest()
 #endif//ENABLE_TEST_FOR_NORMAL_POOL_ALLOCATOR
 
 #ifdef ENABLE_TEST_FOR_LF_POOL_ALLOCATOR
-	//ƒƒbƒNƒtƒŠ[ƒv[ƒ‹ƒAƒƒP[ƒ^
+	//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿
 	{
 		printf("Lock-free pool allocator\n");
 		lf_pool_allocator<data_t, 3> allocator;
@@ -1476,7 +1476,7 @@ void easyTest()
 #endif//ENABLE_TEST_FOR_LF_POOL_ALLOCATOR
 	
 #ifdef ENABLE_TEST_FOR_NORMAL_STACK
-	//’ÊíƒXƒ^ƒbƒN
+	//é€šå¸¸ã‚¹ã‚¿ãƒƒã‚¯
 	{
 		printf("Normal stack\n");
 		for (int i = 1; i <= 3; ++i)
@@ -1494,7 +1494,7 @@ void easyTest()
 #endif//ENABLE_TEST_FOR_NORMAL_STACK
 	
 #ifdef ENABLE_TEST_FOR_LF_STACK
-	//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒN
+	//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯
 	{
 		printf("Lock-free stack\n");
 		for (int i = 1; i <= 3; ++i)
@@ -1512,7 +1512,7 @@ void easyTest()
 #endif//ENABLE_TEST_FOR_LF_STACK
 	
 #ifdef ENABLE_TEST_FOR_NORMAL_QUEUE
-	//’ÊíƒLƒ…[
+	//é€šå¸¸ã‚­ãƒ¥ãƒ¼
 	{
 		printf("Normal queue\n");
 		for (int i = 1; i <= 3; ++i)
@@ -1530,7 +1530,7 @@ void easyTest()
 #endif//ENABLE_TEST_FOR_NORMAL_QUEUE
 	
 #ifdef ENABLE_TEST_FOR_LF_QUEUE
-	//ƒƒbƒNƒtƒŠ[ƒLƒ…[
+	//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚­ãƒ¥ãƒ¼
 	{
 		printf("Lock-free queue\n");
 		for (int i = 1; i <= 3; ++i)
@@ -1550,7 +1550,7 @@ void easyTest()
 #endif//ENABLE_EASY_TEST
 
 #ifdef ENABLE_THREAD_TEST
-//ƒXƒŒƒbƒh‚ğg‚Á‚½ƒeƒXƒg
+//ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’ä½¿ã£ãŸãƒ†ã‚¹ãƒˆ
 #include <thread>//C++11 std::thread
 #include <condition_variable>//C++11 std::condition_variable
 #include <chrono>//C++11 std::chrono
@@ -1560,7 +1560,7 @@ void thread_test()
 	printf("================================================================================\n");
 	printf("[Test for Lock-free pool-allocator/stack/queue with threads]\n");
 
-	//ƒv[ƒ‹ƒAƒƒP[ƒ^‚ÌƒeƒXƒgi‹¤’Êˆ—j
+	//ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã®ãƒ†ã‚¹ãƒˆï¼ˆå…±é€šå‡¦ç†ï¼‰
 	auto test_pool_allocator = [](const char* caption, std::function<data_t*()> alloc, std::function<bool(data_t*)> free)
 	{
 		printf("--------------------------------------------------------------------------------\n");
@@ -1648,7 +1648,7 @@ void thread_test()
 			is_ready = true;
 			while (true)
 			{
-				cond.notify_all();//‚«‚¿‚ñ‚Æ‘SƒXƒŒƒbƒh‚É’Ê’m‚Å‚«‚È‚¢ê‡‚ª‚ ‚é‚Ì‚ÅƒŠƒgƒ‰ƒC‚·‚é
+				cond.notify_all();//ãã¡ã‚“ã¨å…¨ã‚¹ãƒ¬ãƒƒãƒ‰ã«é€šçŸ¥ã§ããªã„å ´åˆãŒã‚ã‚‹ã®ã§ãƒªãƒˆãƒ©ã‚¤ã™ã‚‹
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				if (start_count.load() == thread_count)
 					break;
@@ -1669,7 +1669,7 @@ void thread_test()
 		printf("--------------------------------------------------------------------------------\n");
 	};
 
-	//ƒXƒ^ƒbƒN^ƒLƒ…[‚ÌƒeƒXƒgi‹¤’Êˆ—j
+	//ã‚¹ã‚¿ãƒƒã‚¯ï¼ã‚­ãƒ¥ãƒ¼ã®ãƒ†ã‚¹ãƒˆï¼ˆå…±é€šå‡¦ç†ï¼‰
 	auto test_stack_queue = [](const char* caption, const char* push_name, const char* pop_name, std::function<bool(data_t&&)> push, std::function<bool(data_t&)> pop)
 	{
 		printf("--------------------------------------------------------------------------------\n");
@@ -1811,7 +1811,7 @@ void thread_test()
 			is_ready = true;
 			while (true)
 			{
-				cond.notify_all();//‚«‚¿‚ñ‚Æ‘SƒXƒŒƒbƒh‚É’Ê’m‚Å‚«‚È‚¢ê‡‚ª‚ ‚é‚Ì‚ÅƒŠƒgƒ‰ƒC‚·‚é
+				cond.notify_all();//ãã¡ã‚“ã¨å…¨ã‚¹ãƒ¬ãƒƒãƒ‰ã«é€šçŸ¥ã§ããªã„å ´åˆãŒã‚ã‚‹ã®ã§ãƒªãƒˆãƒ©ã‚¤ã™ã‚‹
 				std::this_thread::sleep_for(std::chrono::microseconds(1));
 				if (start_count.load() == thread_count)
 					break;
@@ -1838,14 +1838,14 @@ void thread_test()
 		printf("--------------------------------------------------------------------------------\n");
 	};
 	
-	//ƒfƒoƒbƒOî•ñ•\¦—pˆ—
+	//ãƒ‡ãƒãƒƒã‚°æƒ…å ±è¡¨ç¤ºç”¨å‡¦ç†
 	auto debug_print_info = [](const data_t& data)
 	{
 		printf("temp=%d, value=%d", data.m_temp, data.m_value);
 	};
 	
 #ifdef ENABLE_TEST_FOR_NORMAL_POOL_ALLOCATOR
-	//’Êíƒv[ƒ‹ƒAƒƒP[ƒ^‚ÌƒeƒXƒg
+	//é€šå¸¸ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã®ãƒ†ã‚¹ãƒˆ
 	{
 		auto alloc = []() -> data_t*
 		{
@@ -1864,7 +1864,7 @@ void thread_test()
 #endif//ENABLE_TEST_FOR_NORMAL_POOL_ALLOCATOR
 
 #ifdef ENABLE_TEST_FOR_LF_POOL_ALLOCATOR
-	//ƒƒbƒNƒtƒŠ[ƒv[ƒ‹ƒAƒƒP[ƒ^‚ÌƒeƒXƒg
+	//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ãƒ—ãƒ¼ãƒ«ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ã®ãƒ†ã‚¹ãƒˆ
 	{
 		auto alloc = []() -> data_t*
 		{
@@ -1883,7 +1883,7 @@ void thread_test()
 #endif//ENABLE_TEST_FOR_LF_POOL_ALLOCATOR
 
 #ifdef ENABLE_TEST_FOR_NORMAL_STACK
-	//’ÊíƒXƒ^ƒbƒN‚ÌƒeƒXƒg
+	//é€šå¸¸ã‚¹ã‚¿ãƒƒã‚¯ã®ãƒ†ã‚¹ãƒˆ
 	{
 		auto push = [](data_t&& data) -> bool
 		{
@@ -1902,7 +1902,7 @@ void thread_test()
 #endif//ENABLE_TEST_FOR_NORMAL_STACK
 
 #ifdef ENABLE_TEST_FOR_LF_STACK
-	//ƒƒbƒNƒtƒŠ[ƒXƒ^ƒbƒN‚ÌƒeƒXƒg
+	//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚¹ã‚¿ãƒƒã‚¯ã®ãƒ†ã‚¹ãƒˆ
 	{
 		auto push = [](data_t&& data) -> bool
 		{
@@ -1921,7 +1921,7 @@ void thread_test()
 #endif//ENABLE_TEST_FOR_LF_STACK
 
 #ifdef ENABLE_TEST_FOR_NORMAL_QUEUE
-	//’ÊíƒLƒ…[‚ÌƒeƒXƒg
+	//é€šå¸¸ã‚­ãƒ¥ãƒ¼ã®ãƒ†ã‚¹ãƒˆ
 	{
 		auto push = [](data_t&& data) -> bool
 		{
@@ -1940,7 +1940,7 @@ void thread_test()
 #endif//ENABLE_TEST_FOR_NORMAL_QUEUE
 
 #ifdef ENABLE_TEST_FOR_LF_QUEUE
-	//ƒƒbƒNƒtƒŠ[ƒLƒ…[‚ÌƒeƒXƒg
+	//ãƒ­ãƒƒã‚¯ãƒ•ãƒªãƒ¼ã‚­ãƒ¥ãƒ¼ã®ãƒ†ã‚¹ãƒˆ
 	{
 		auto push = [](data_t&& data) -> bool
 		{
@@ -1960,16 +1960,16 @@ void thread_test()
 }
 #endif//ENABLE_THREAD_TEST
 
-//ƒeƒXƒg
+//ãƒ†ã‚¹ãƒˆ
 int main(const int argc, const char* argv[])
 {
 #ifdef ENABLE_EASY_TEST
-	//ŠÈˆÕƒeƒXƒg
+	//ç°¡æ˜“ãƒ†ã‚¹ãƒˆ
 	easyTest();
 #endif//ENABLE_EASY_TEST
 
 #ifdef ENABLE_THREAD_TEST
-	//ƒXƒŒƒbƒh‚ğg‚Á‚½ƒeƒXƒg
+	//ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’ä½¿ã£ãŸãƒ†ã‚¹ãƒˆ
 	thread_test();
 #endif//ENABLE_THREAD_TEST
 

@@ -5,14 +5,14 @@
 *Test count                     = 200000
 *Allocate and free test threads = 15
 *Memory pool size               = 20
-[Normal Pool-allocator:END] elapsed_time=0.530503800
+[Normal Pool-allocator:END] elapsed_time=0.280265700
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 [Lock-Free Pool-allocator:START]
 *Test count                     = 200000
 *Allocate and free test threads = 15
 *Memory pool size               = 20
-[Lock-Free Pool-allocator:END] elapsed_time=0.072068300
+[Lock-Free Pool-allocator:END] elapsed_time=0.077072700
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 [Normal Stack:START]
@@ -20,7 +20,7 @@
 *Push/Enqueue test threads = 10
 *Pop/Dequeue  test threads = 5
 *Memory pool size          = 20
-[Normal Stack:END] elapsed_time=4.278073500
+[Normal Stack:END] elapsed_time=4.454241800
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 [Lock-Free Stack:START]
@@ -28,7 +28,7 @@
 *Push/Enqueue test threads = 10
 *Pop/Dequeue  test threads = 5
 *Memory pool size          = 20
-[Lock-Free Stack:END] elapsed_time=0.320305000
+[Lock-Free Stack:END] elapsed_time=0.669636700
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 [Normal Queue:START]
@@ -36,7 +36,7 @@
 *Push/Enqueue test threads = 10
 *Pop/Dequeue  test threads = 5
 *Memory pool size          = 20
-[Normal Queue:END] elapsed_time=4.272067900
+[Normal Queue:END] elapsed_time=2.938798000
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 [Lock-Free Queue:START]
@@ -44,5 +44,5 @@
 *Push/Enqueue test threads = 10
 *Pop/Dequeue  test threads = 5
 *Memory pool size          = 20
-[Lock-Free Queue:END] elapsed_time=0.879837700
+[Lock-Free Queue:END] elapsed_time=0.970925600
 --------------------------------------------------------------------------------

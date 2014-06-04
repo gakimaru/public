@@ -8,7 +8,7 @@
 //#define USE_SAFE_CAS_LF_POOL_ALLOCATOR//ロックフリープールアロケータの実装で、CAS操作が意図通りに動作しない時の安全対策を使用する場合は、このマクロを有効化する
 //#define USE_SAFE_CAS_LF_STACK//ロックフリースタックの実装で、CAS操作が意図通りに動作しない時の安全対策を使用する場合は、このマクロを有効化する
 //#define USE_SAFE_CAS_LF_QUEUE//ロックフリーキューの実装で、CAS操作が意図通りに動作しない時の安全対策を使用する場合は、このマクロを有効化する
-//※CAS操作の安全対策は、ごく稀にCAS操作が意図通りに動作しないことがあったために用意。CAS操作をスピンロックで保護する。ロックフリーとは言えなくなってしまう。
+//※CAS操作の安全対策は、CAS操作に誤りがあり、意図通りに動作しなかった時の挙動比較用に用意したもの。CAS操作をスピンロックで保護する。ロックフリーとは言えなくなってしまう。
 
 //--------------------------------------------------------------------------------
 //テスト用コンパイラスイッチ／定数
@@ -740,8 +740,8 @@ public:
 		new_node_tag_ptr.setTagPtr(new_node, m_tag.fetch_add(1));//タグ付きポインタ生成
 		while (true)
 		{
-			stack_ptr_t next_tag_ptr = new_node->m_next.load();
-			if (next_tag_ptr == m_head.load())//このタイミングで他のスレッドが末尾を書き換えていないか？
+			stack_ptr_t next_tag_ptr = new_node->m_next.load();//新規ノードの次ノードを取得
+			if (next_tag_ptr == m_head.load())//このタイミングで他のスレッドが先頭を書き換えていないか？
 			{
 				//CAS操作
 			#ifdef USE_SAFE_CAS_LF_STACK//【安全対策】※スピンロックでCAS操作を保護
@@ -778,7 +778,7 @@ public:
 			stack_t* head = head_tag_ptr;//タグ付きポインタからポインタを取得
 			stack_ptr_t next_tag_ptr = head->m_next;//次のノードを取得
 
-			if (head_tag_ptr == m_head.load())//このタイミングで他のスレッドが末尾を書き換えていないか？
+			if (head_tag_ptr == m_head.load())//このタイミングで他のスレッドが先頭を書き換えていないか？
 			{
 				//CAS操作
 			#ifdef USE_SAFE_CAS_LF_STACK//【安全対策】※スピンロックでCAS操作を保護
@@ -1017,6 +1017,13 @@ private:
 //--------------------------------------------------------------------------------
 //ロックフリーキュークラス
 //※論文に基づいていて実装: http://www.cs.rochester.edu/u/scott/papers/1996_PODC_queues.pdf
+//　一部論文通りの実装と異なる
+//    ⇒ 変更点①：enqueu:E9: if CAS(&tail.ptr->next, next, <node, ...>)
+//                                    ↓
+//                            if CAS(&Q->Tail.ptr->next, next, <node, ...>)
+//       変更点②：ポインタへのタグ付けは新規ノード生成時のみ適用
+//                 ※32bitタグ＋32bitポインタによる64bitのタグ付きポインタとすることで、
+//                   タグが巡回して競合する危険性がほとんどない状態に
 //※ABA問題対策あり（タグ付きポインタ型使用）
 #ifdef USE_LF_POOL_ALLOCATOR
 template<class T, std::size_t POOL_SIZE>
@@ -1075,11 +1082,11 @@ public:
 					//CAS操作
 				#ifdef USE_SAFE_CAS_LF_QUEUE//【安全対策】※スピンロックでCAS操作を保護
 					while (m_lock.test_and_set());//ロック取得
-					const bool result = tail->m_next.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr);//CAS操作
+					const bool result = m_tail.load().ptr()->m_next.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr);//CAS操作
 						m_lock.clear();//ロック解除
 					if (result)
 				#else//USE_SAFE_CAS_LF_QUEUE
-					if (tail->m_next.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr))//CAS操作
+					if (m_tail.load().ptr()->m_next.compare_exchange_weak(next_tag_ptr, new_node_tag_ptr))//CAS操作
 				#endif//USE_SAFE_CAS_LF_QUEUE
 					//【CAS操作の内容】
 					//    if(tail_tag_ptr->m_next == next_tag_ptr)//末尾ノードの次ノードを他のスレッドが書き換えていないか？
@@ -1105,10 +1112,10 @@ public:
 					//CAS操作
 				#ifdef USE_SAFE_CAS_LF_QUEUE//【安全対策】※スピンロックでCAS操作を保護
 					while (m_lock.test_and_set());//ロック取得
-					m_tail.compare_exchange_weak(tail_tag_ptr, next_tag_ptr);//CAS操作
+					m_tail.compare_exchange_strong(tail_tag_ptr, next_tag_ptr);//CAS操作
 					m_lock.clear();//ロック解除
 				#else//USE_SAFE_CAS_LF_QUEUE
-					m_tail.compare_exchange_weak(tail_tag_ptr, next_tag_ptr);//CAS操作
+					m_tail.compare_exchange_strong(tail_tag_ptr, next_tag_ptr);//CAS操作
 				#endif//USE_SAFE_CAS_LF_QUEUE
 					//【CAS操作の内容】
 					//    if(m_tail == tail_tag_ptr)//末尾ノードを他のスレッドが書き換えていないか？
@@ -1154,8 +1161,6 @@ public:
 				}
 				else
 				{
-					top_tag_ptr = next_tag_ptr;//次ノード（有効なキューの先頭）を取得
-					
 					//CAS操作
 				#ifdef USE_SAFE_CAS_LF_QUEUE//【安全対策】※スピンロックでCAS操作を保護
 					while (m_lock.test_and_set());//ロック取得
@@ -1169,7 +1174,7 @@ public:
 					//    if(m_head == head_tag_ptr)//先頭ノードの次ノードを他のスレッドが書き換えていないか？
 					//        m_head = next_tag_ptr;//先頭ノードを次ノードに変更（これより次ノードがダミーノード扱いになる）（デキュー成功）
 					{
-						queue_t* top = top_tag_ptr;
+						queue_t* top = next_tag_ptr;//新しい先頭ノードから値を取り出す
 						value = std::move(top->m_value);//値を取得
 					#ifdef USE_LF_POOL_ALLOCATOR
 						m_allocator.deleteObj(head);//先頭ノード（ダミーノード）を削除

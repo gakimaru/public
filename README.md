@@ -129,108 +129,111 @@
 
 ####[test]フォルダ ... テスト／サンプルプログラム類####
      |
-     |-[Program]                      ... プログラムのテスト
+     |-[Program]                        ... プログラムのテスト
      |  |
-     |  |-[C#]                        ... C#のテスト
+     |  |-[C#]                          ... C#のテスト
      |  |  |
-     |  |  `-[JSON]                   ... ☆C#によるJSON解析およびC#スクリプトのランタイムコンパイル＆実行のテスト
+     |  |  `-[JSON]                     ... ☆C#によるJSON解析およびC#スクリプトのランタイムコンパイル＆実行のテスト
      |  |
-     |  |-[C++]                       ... C++ のテスト
+     |  |-[C++]                         ... C++ のテスト
      |  |  |
-     |  |  |-[Allocator]              ... ★メモリアロケートのテスト
-     |  |  |-[Allocator_unix]         ... ★メモリアロケートのテスト（Unix系＋GCC）
+     |  |  |-[Allocator]                ... ★メモリアロケートのテスト
+     |  |  |-[Allocator_unix]           ... ★メモリアロケートのテスト（Unix系＋GCC）
      |  |  |
-     |  |  |-[boost]                  ... Boost C++ のテスト
+     |  |  |-[boost]                    ... Boost C++ のテスト
      |  |  |  |
-     |  |  |  |-[install]             ... ☆boost のインストール手順の記録
+     |  |  |  |-[install]               ... ☆boost のインストール手順の記録
      |  |  |  |
-     |  |  |  `-[serializer]          ... boost::serialization をテスト
-     |  |  |     |-[Test01]           ... ネット上のサンプル通りのテスト
-     |  |  |     `-[Test02]           ... 機能確認のためのサンプル
+     |  |  |  `-[serializer]            ... boost::serialization をテスト
+     |  |  |     |-[Test01]             ... ネット上のサンプル通りのテスト
+     |  |  |     `-[Test02]             ... 機能確認のためのサンプル
      |  |  |
-     |  |  |-[C++CLI_SmartPtr]        ... C++/CLIのgcnewのテスト
+     |  |  |-[C++CLI_SmartPtr]          ... C++/CLIのgcnewのテスト
      |  |  |
-     |  |  |-[CalcExpression]         ... 論理演算の右辺値評価（右辺値の関数呼び出し）テスト
+     |  |  |-[CalcExpression]           ... 論理演算の右辺値評価（右辺値の関数呼び出し）テスト
      |  |  |
-     |  |  |-[callPoint]              ... ★コールポイントのサンプルプログラム　※デバッグプリント処理を含む
-     |  |  |-[callPoint_unix]         ... ★コールポイントのサンプルプログラム（unix系＋GCC）
+     |  |  |-[callPoint]                ... ★コールポイントのサンプルプログラム　※デバッグプリント処理を含む
+     |  |  |-[callPoint_unix]           ... ★コールポイントのサンプルプログラム（unix系＋GCC）
      |  |  |
-     |  |  |-[constexpr]              ... constexpr のテスト
+     |  |  |-[constexpr]                ... constexpr のテスト
      |  |  |
-     |  |  |-[cpu_cache_test]         ... ★CPUキャッシュを効率的に使用する方法のテスト
-     |  |  |-[cpu_cache_test_unix]    ... ★CPUキャッシュを効率的に使用する方法のテスト（unix系＋GCC）
+     |  |  |-[cpu_cache_test]           ... ★CPUキャッシュを効率的に使用する方法のテスト
+     |  |  |-[cpu_cache_test_unix]      ... ★CPUキャッシュを効率的に使用する方法のテスト（unix系＋GCC）
      |  |  |
-     |  |  |-[cpu_optimization]       ... ★CPU最適化のテスト ※SSEによる行列和算／積算、SSEによる文字列処理のサンプルを含む
-     |  |  |-[cpu_optimization_unix]  ... ★CPU最適化のテスト（unix系＋GCC）
+     |  |  |-[cpu_optimization]         ... ★CPU最適化のテスト ※SSEによる行列和算／積算、SSEによる文字列処理のサンプルを含む
+     |  |  |-[cpu_optimization_unix]    ... ★CPU最適化のテスト（unix系＋GCC）
      |  |  |
-     |  |  |-[DebugPrint]             ... ×【失敗作】デバッグ用ロギング処理／boost::backtraceのテスト
-     |  |  |                              　※マルチスレッドの考慮が不完全でダメ
-     |  |  |-[DebugPrintTest]         ... ×【失敗作】デバッグ用ロギング処理の試作
+     |  |  |-[DebugPrint]               ... ×【失敗作】デバッグ用ロギング処理／boost::backtraceのテスト
+     |  |  |                                　※マルチスレッドの考慮が不完全でダメ
+     |  |  |-[DebugPrintTest]           ... ×【失敗作】デバッグ用ロギング処理の試作
      |  |  |
-     |  |  |-[DesignPattern]          ... ☆デザインパターンの実装テスト
+     |  |  |-[DesignPattern]            ... ☆デザインパターンの実装テスト
      |  |  |
-     |  |  |-[FloatedFraction]        ... ☆浮動小数点小数のバイナリデータ構造確認
+     |  |  |-[FloatedFraction]          ... ☆浮動小数点小数のバイナリデータ構造確認
      |  |  |
-     |  |  |-[GDConv]                 ... ゲームデータ構造定義データの構成テスト
+     |  |  |-[GDConv]                   ... ゲームデータ構造定義データの構成テスト
      |  |  |
-     |  |  |-[hamming_code]           ... ★ハミング符号のサンプルプログラム ※Excelによるロジック確認（後にC++のサンプルプログラム追加予定）
+     |  |  |-[hamming_code]             ... ★ハミング符号のサンプルプログラム ※Excelによるロジック確認（後にC++のサンプルプログラム追加予定）
      |  |  |
-     |  |  |-[hash_table]             ... ★ハッシュテーブルのサンプルプログラム ※素数判定・生成用のランタイム／メタ処理を含む
-     |  |  |-[hash_table_unix]        ... ★ハッシュテーブルのサンプルプログラム（unix系＋GCC）
+     |  |  |-[hash_table]               ... ★ハッシュテーブルのサンプルプログラム ※素数判定・生成用のランタイム／メタ処理を含む
+     |  |  |-[hash_table_unix]          ... ★ハッシュテーブルのサンプルプログラム（unix系＋GCC）
      |  |  |
-     |  |  |-[NamedRef]               ... ★名前付きデータ参照のサンプル処理
+     |  |  |-[lock_free_algorithm]      ... ★ロックフリーアルゴリズムのサンプルプログラム ※スタック／キュー／プールアロケータ
+     |  |  |-[lock_free_algorithm_unix] ... ★ロックフリーアルゴリズムのサンプルプログラム（unix系＋GCC）
      |  |  |
-     |  |  |-[objcopy]                ... ☆objcopyによる実行ファイルへのファイル埋め込みのテスト
+     |  |  |-[NamedRef]                 ... ★名前付きデータ参照のサンプル処理
      |  |  |
-     |  |  |-[OpenGL]                 ... OpenGLとGLSLのごく簡単なテスト（シェーダーのテストが目的）
+     |  |  |-[objcopy]                  ... ☆objcopyによる実行ファイルへのファイル埋め込みのテスト
      |  |  |
-     |  |  |-[PrecompiledHeader]      ... プリコンパイル済みヘッダーの確認
+     |  |  |-[OpenGL]                   ... OpenGLとGLSLのごく簡単なテスト（シェーダーのテストが目的）
      |  |  |
-     |  |  |-[priority_queue]         ... ★二分ヒープ／プライオリティキューのサンプルプログラム
-     |  |  |-[priority_queue_unix]    ... ★二分ヒープ／プライオリティキューのサンプルプログラム（unix系＋GCC）
+     |  |  |-[PrecompiledHeader]        ... プリコンパイル済みヘッダーの確認
      |  |  |
-     |  |  |-[Random]                 ... 乱数のテスト
+     |  |  |-[priority_queue]           ... ★二分ヒープ／プライオリティキューのサンプルプログラム
+     |  |  |-[priority_queue_unix]      ... ★二分ヒープ／プライオリティキューのサンプルプログラム（unix系＋GCC）
      |  |  |
-     |  |  |-[rb_tree]                ... ★赤黒木（red-black tree）のサンプルプログラム
-     |  |  |-[rb_tree_unix]           ... ★赤黒木（red-black tree）のサンプルプログラム（unix系＋GCC）
+     |  |  |-[Random]                   ... 乱数のテスト
      |  |  |
-     |  |  |-[ResourceBuilderFactory] ... ★リソースビルダーファクトリーのサンプル処理
+     |  |  |-[rb_tree]                  ... ★赤黒木（red-black tree）のサンプルプログラム
+     |  |  |-[rb_tree_unix]             ... ★赤黒木（red-black tree）のサンプルプログラム（unix系＋GCC）
      |  |  |
-     |  |  |-[RTTI]                   ... 実行時型情報（RTTI）の確認
+     |  |  |-[ResourceBuilderFactory]   ... ★リソースビルダーファクトリーのサンプル処理
      |  |  |
-     |  |  |-[serializer]             ... ★シリアライズのサンプルプログラム
-     |  |  |-[serializer_unix]        ... ★シリアライズのサンプルプログラム（unix系＋GCC）
+     |  |  |-[RTTI]                     ... 実行時型情報（RTTI）の確認
      |  |  |
-     |  |  |-[simd]                   ... ★SSEを使用したSIMD演算のサンプルプログラム
-     |  |  |-[simd_unix]              ... ★SSEを使用したSIMD演算のサンプルプログラム（unix系＋GCC）
+     |  |  |-[serializer]               ... ★シリアライズのサンプルプログラム
+     |  |  |-[serializer_unix]          ... ★シリアライズのサンプルプログラム（unix系＋GCC）
      |  |  |
-     |  |  |-[sort]                   ... ★各種ソートアルゴリズムのサンプルプログラム
-     |  |  |-[sort_unix]              ... ★各種ソートアルゴリズムのサンプルプログラム（unix系＋GCC）
+     |  |  |-[simd]                     ... ★SSEを使用したSIMD演算のサンプルプログラム
+     |  |  |-[simd_unix]                ... ★SSEを使用したSIMD演算のサンプルプログラム（unix系＋GCC）
      |  |  |
-     |  |  |-[SpecifyCompiler]        ... ★コンパイラ＆プラットフォーム判定のサンプルプログラム ※コンパイラとそのバージョン、および、
+     |  |  |-[sort]                     ... ★各種ソートアルゴリズムのサンプルプログラム
+     |  |  |-[sort_unix]                ... ★各種ソートアルゴリズムのサンプルプログラム（unix系＋GCC）
+     |  |  |
+     |  |  |-[SpecifyCompiler]          ... ★コンパイラ＆プラットフォーム判定のサンプルプログラム ※コンパイラとそのバージョン、および、
      |  |  |                                                                                       プラットフォームの違いを吸収して、
      |  |  |                                                                                       ソースコードを共通化するための仕組み
-     |  |  |-[SpecifyCompiler_unix]   ... ★コンパイラ＆プラットフォーム判定のサンプルプログラム（unix系＋GCC）
+     |  |  |-[SpecifyCompiler_unix]     ... ★コンパイラ＆プラットフォーム判定のサンプルプログラム（unix系＋GCC）
      |  |  |
-     |  |  |-[stack]                  ... スタックメモリの使用状態と、各データセクションの扱いを確認
+     |  |  |-[stack]                    ... スタックメモリの使用状態と、各データセクションの扱いを確認
      |  |  |
-     |  |  |-[StaticCRC32]            ... ★文字列のCRC32計算をテンプレートで行うテストプログラム
-     |  |  |                              　※テンプレートでは無理。constexprが必要。
-     |  |  |-[StaticCRC32_unix]       ... ★文字列のCRC32計算をconstexprとユーザー定義リテラルを使用して
-     |  |  |                              　コンパイル時に計算するサンプル（unix系＋GCC）
+     |  |  |-[StaticCRC32]              ... ★文字列のCRC32計算をテンプレートで行うテストプログラム
+     |  |  |                                　※テンプレートでは無理。constexprが必要。
+     |  |  |-[StaticCRC32_unix]         ... ★文字列のCRC32計算をconstexprとユーザー定義リテラルを使用して
+     |  |  |                                　コンパイル時に計算するサンプル（unix系＋GCC）
      |  |  |
-     |  |  |-[template]               ... テンプレートのテスト
+     |  |  |-[template]                 ... テンプレートのテスト
      |  |  |  |
-     |  |  |  |-[countOf]             ... ☆配列要素数取得のテンプレートとマクロ比較テスト
+     |  |  |  |-[countOf]               ... ☆配列要素数取得のテンプレートとマクロ比較テスト
      |  |  |  |
-     |  |  |  |-[CRTP01]              ... ☆CRTPテンプレートのテスト
+     |  |  |  |-[CRTP01]                ... ☆CRTPテンプレートのテスト
      |  |  |  |
-     |  |  |  |-[Max]                 ... ☆Min/Maxテンプレート関数のテスト（アセンブラ展開の状態確認が目的）
+     |  |  |  |-[Max]                   ... ☆Min/Maxテンプレート関数のテスト（アセンブラ展開の状態確認が目的）
      |  |  |  |                           　※本当は constexpr との挙動の違いを比較したかった
      |  |  |  |
-     |  |  |  `-[Proxy]               ... ☆テンプレートによる、Proxyパターンおよび自前仮想クラスの実装テスト
+     |  |  |  `-[Proxy]                 ... ☆テンプレートによる、Proxyパターンおよび自前仮想クラスの実装テスト
      |  |  |
-     |  |  |-[Thread]                 ... マルチスレッドのテスト
+     |  |  |-[Thread]                   ... マルチスレッドのテスト
      |  |  |  |
      |  |  |  |-[alarm_fork]                  ... Unix alarmとforkのテスト（雑）
      |  |  |  |-[alarm_thread]                ... Unix alarmとpthreadのテスト（雑）
@@ -276,33 +279,33 @@
      |  |  |  |-[tls_c++11]                   ... WIN32(C++11) スレッドローカルストレージ（TLS）のテスト
      |  |  |  `-[volatile]                    ... WIN32 volatile型修飾子によるコード生成の確認テスト
      |  |  |
-     |  |  `-[UnitTest]               ... ☆ユニットテスト用処理作成
+     |  |  `-[UnitTest]                 ... ☆ユニットテスト用処理作成
      |  |
-     |  |-[F#]                        ... F#のテスト
+     |  |-[F#]                          ... F#のテスト
      |  |  |
-     |  |  `-[Test01]                 ... F#を試しに使ってみた
+     |  |  `-[Test01]                   ... F#を試しに使ってみた
      |  |
-     |  |-[JScript]                   ... JScriptのテスト
+     |  |-[JScript]                     ... JScriptのテスト
      |  |  |
-     |  |  `-[JSON]                   ... ☆JScriptによるJSON解析テスト（VBA, VBScript, PowerShellのサンプルも置いている）
+     |  |  `-[JSON]                     ... ☆JScriptによるJSON解析テスト（VBA, VBScript, PowerShellのサンプルも置いている）
      |  |
-     |  |-[Prolog]                    ... Prologのテスト
+     |  |-[Prolog]                      ... Prologのテスト
      |  |  |
-     |  |  `-[Test01]                 ... Prologを試しに使ってみた
+     |  |  `-[Test01]                   ... Prologを試しに使ってみた
      |  |
-     |  |-[Scons]                     ... ☆Sconsによるスクリプトビルド環境のテスト
+     |  |-[Scons]                       ... ☆Sconsによるスクリプトビルド環境のテスト
      |  |
-     |  `-[Unity]                     ... Unityを試用（起動した程度）
+     |  `-[Unity]                       ... Unityを試用（起動した程度）
      |
-     |-[Excel]                        ... Excelのテスト
+     |-[Excel]                          ... Excelのテスト
      |  |
-     |  |-[VBAでJSONパーステスト]     ... VBAを使用し、JSONテキストをパースするテスト
+     |  |-[VBAでJSONパーステスト]       ... VBAを使用し、JSONテキストをパースするテスト
      |  |
-     |  `-[What-If分析テスト]         ... ExcelのWhat-If分析機能をテスト
+     |  `-[What-If分析テスト]           ... ExcelのWhat-If分析機能をテスト
      |
-     `-[ドキュメント]                 ... ドキュメント作成のテスト
+     `-[ドキュメント]                   ... ドキュメント作成のテスト
         |
-        `-[縦書きテスト]              ... InDesign と Word を使用し、縦書きの表示具合をテスト。
+        `-[縦書きテスト]                ... InDesign と Word を使用し、縦書きの表示具合をテスト。
 
 ####凡例####
     ★ ... とくに有効性が高い（と自分で思っている）もの。

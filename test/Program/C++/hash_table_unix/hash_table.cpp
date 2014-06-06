@@ -3,7 +3,7 @@
 static const int TEST_DATA_TABLE_SIZE = 500000;//テストデータテーブルサイズ
 //static const int TEST_DATA_TABLE_SIZE = 20;//テストデータテーブルサイズ
 
-//#define PRINT_TEST_DATA_DETAIL//テストデーの詳細タを表示する場合は、このマクロを有効化する
+//#define PRINT_TEST_DATA_DETAIL//テストデータの詳細を表示する場合は、このマクロを有効化する
 //#define TEST_DATA_WATCH_CONSTRUCTOR//コンストラクタ／デストラクタ／代入演算子の動作を確認する場合、このマクロを有効化する
 
 #define USE_GCC//GCC版でコンパイルするときは、このマクロを有効化する
@@ -35,215 +35,249 @@ static const int TEST_DATA_TABLE_SIZE = 500000;//テストデータテーブル�
 //【ランタイム版】素数判定
 bool isPrime(const std::size_t n)
 {
-	if (n < 2)
+	if (n < 2)//2未満は素数ではない
 		return false;
-	else if (n == 2)
+	else if (n == 2)//2は素数
 		return true;
-	else if ((n & 0x1) == 0x0)//偶数判定
+	else if ((n & 1) == 0)//偶数は素数ではない
 		return false;
-	for (std::size_t div = 3; div <= n / div; div += 2)
+	for (std::size_t div = 3; div <= n / div; div += 2)//div = 3～n/div の範囲で割り切れる値があるか判定
 	{
-		if (n % div == 0)
+		if (n % div == 0)//割り切れる値がみつかったら素数ではない
 			return false;
 	}
-	return true;
+	return true;//素数と判定
 }
+
 //----------------------------------------
-//【ランタイム版】前の素数を生成
-std::size_t makePrimePrev(const std::size_t n)
+//【ランタイム版】指定の値より小さい最初の素数を算出
+std::size_t makePrimeLT(const std::size_t n)
 {
-	if (n <= 2)
+	if (n <= 2)//2より小さい素数はない
 		return 0;
-	else if (n == 3)
+	else if (n == 3)//3の次に小さい素数は2
 		return 2;
-	for (std::size_t nn = n - ((n & 0x1) == 0x0 ? 1 : 2);; nn -= 2)//※偶数は判定しない
+	for (std::size_t nn = n - ((n & 1) == 0 ? 1 : 2);; nn -= 2)//素数がみつかるまでループ ※偶数は判定しない
 	{
-		if (isPrime(nn))
+		if (isPrime(nn))//素数判定
 			return nn;
 	}
 	return 0;//dummy
 }
 //----------------------------------------
-//【ランタイム版】次の素数を生成
-std::size_t makePrimeNext(const std::size_t n)
+//【ランタイム版】指定の値と同じか、それより小さい最初の素数を算出
+std::size_t makePrimeLE(const std::size_t n)
 {
-	if (n < 2)
+	return isPrime(n) ? n : makePrimeLT(n);
+}
+
+//----------------------------------------
+//【ランタイム版】指定の値より大きい最初の素数を算出
+std::size_t makePrimeGT(const std::size_t n)
+{
+	if (n < 2)//2未満の値より大きい最初の素数は2
 		return 2;
-	for (std::size_t nn = n + ((n & 0x1) == 0x0 ? 1 : 2);; nn += 2)//※偶数は判定しない
+	for (std::size_t nn = n + ((n & 1) == 0 ? 1 : 2);; nn += 2)//素数がみつかるまでループ ※偶数は判定しない
 	{
-		if (isPrime(nn))
+		if (isPrime(nn))//素数判定
 			return nn;
 	}
 	return 0;//dummy
 }
 //----------------------------------------
-//【ランタイム版】指定の値と同じか、前の素数を生成
-std::size_t makePrimeEqPrev(const std::size_t n)
+//【ランタイム版】指定の値と同じか、それより大きい最初の素数を算出
+std::size_t makePrimeGE(const std::size_t n)
 {
-	return isPrime(n) ? n : makePrimePrev(n);
-}
-//----------------------------------------
-//【ランタイム版】指定の値と同じか、次の素数を生成
-std::size_t makePrimeEqNext(const std::size_t n)
-{
-	return isPrime(n) ? n : makePrimeNext(n);
+	return isPrime(n) ? n : makePrimeGT(n);
 }
 
 //----------------------------------------
 //【メタプログラミング版】
 //----------------------------------------
-//【注意】
-// メタプログラミング版では、コンパイラに応じてテンプレートの再帰レベルの限界がある。
-// このため、実質 100001 ぐらいまでの素数しか扱えない点に注意。
-// 他のテンプレート内で使うと、もっと制約を受ける点にも注意。
-// また、コンパイル時間に影響がある点にも注意。
-//----------------------------------------
 
 //----------------------------------------
-//【メタプログラミング版】素数判定
+//【メタプログラミング版】静的素数判定
 //※偶数の判定を避けるために階層化する
-template <std::size_t N, std::size_t DIV>//再帰クラス
-struct _isPrimeMeta{
+//静的素数判定用の再帰クラス（直接使用しない）
+template <std::size_t N, std::size_t DIV>
+struct _isStaticPrime{
 	typedef
 		typename std::conditional<
-			(DIV > N / DIV),
-			std::integral_constant<bool, true>,
+			(DIV > N / DIV),//DIV = ～N/DIVの範囲で割り切れる値があるか判定
+			std::integral_constant<bool, true>,//範囲を超えたので素数と判定
 			typename std::conditional<
-				(N % DIV == 0),
-				std::integral_constant<bool, false>,
-				_isPrimeMeta<N, DIV + 2>
+				(N % DIV == 0),//割り切れる値か判定
+				std::integral_constant<bool, false>,//割り切れたので素数ではない
+				_isStaticPrime<N, DIV + 2>//再帰で次の値が割り切れるか探索 ※偶数は判定しない
 			>::type
 		>::type
 		type;
 	static const bool value = type::value;
 };
-template <std::size_t N>//素数判定クラス
-struct isPrimeMeta{
+//静的素数判定クラス
+template <std::size_t N>
+struct isStaticPrime{
 	typedef
 		typename std::conditional<
-			(N & 0x1) == 0x0,
-			std::integral_constant<bool, false>,
-			typename _isPrimeMeta<N, 3>::type
+			(N & 1) == 0,//偶数判定
+			std::integral_constant<bool, false>,//偶数は素数ではない
+			typename _isStaticPrime<N, 3>::type//素数判定ループ（再帰処理）呼び出し
 		>::type
 		type;
 	static const bool value = type::value;
 };
+//特殊化：0は素数ではない
 template <>
-struct isPrimeMeta<0>{
+struct isStaticPrime<0>{
 	static const bool value = false;
 };
+//特殊化：1は素数
 template <>
-struct isPrimeMeta<1>{
+struct isStaticPrime<1>{
 	static const bool value = false;
 };
+//特殊化：2は素数
 template <>
-struct isPrimeMeta<2>{
+struct isStaticPrime<2>{
 	static const bool value = true;
 };
 
 //----------------------------------------
-//【メタプログラミング版】前の素数を生成
+//【メタプログラミング版】指定の値より小さい最初の素数を静的に算出
 //※偶数の判定を避けるために階層化する
-template<std::size_t N>//再帰クラス
-struct _makePrimePrevMeta{
+//静的素数算出用の再帰クラス（直接使用しない）
+template<std::size_t N>
+struct _makeStaticPrimeLT{
 	typedef
 		typename std::conditional<
-			isPrimeMeta<N>::value,
-			std::integral_constant<std::size_t, N>,
-			_makePrimePrevMeta<N - 2>
+			isStaticPrime<N>::value,//素数判定
+			std::integral_constant<std::size_t, N>,//素数が見つかった
+			_makeStaticPrimeLT<N - 2>//再帰で次に小さい値を探索 ※偶数は判定しない
 		>::type
 		type;
 	static const std::size_t value = type::value;
 };
-template<std::size_t N>//前の素数生成クラス
-struct makePrimePrevMeta{
+//静的素数算出クラス
+template<std::size_t N>
+struct makeStaticPrimeLT{
 	typedef
 		typename std::conditional<
-			(N & 0x1) == 0x0,
-			_makePrimePrevMeta<N - 1>,
-			_makePrimePrevMeta<N - 2>
+			(N & 1) == 0,//素数判定ループの初期値を奇数にするための判定
+			_makeStaticPrimeLT<N - 1>,//素数判定ループ（再帰処理）呼び出し
+			_makeStaticPrimeLT<N - 2>//素数判定ループ（再帰処理）呼び出し
 		>::type
 		type;
 	static const std::size_t value = type::value;
 };
+//特殊化：0より小さい素数はなし
 template<>
-struct makePrimePrevMeta<0>{
+struct makeStaticPrimeLT<0>{
 	static const std::size_t value = 0;
 };
+//特殊化：1より小さい素数はなし
 template<>
-struct makePrimePrevMeta<1>{
+struct makeStaticPrimeLT<1>{
 	static const std::size_t value = 0;
 };
+//特殊化：2より小さい素数はなし
 template<>
-struct makePrimePrevMeta<2>{
+struct makeStaticPrimeLT<2>{
 	static const std::size_t value = 0;
 };
+//特殊化：3より小さい素数は2
 template<>
-struct makePrimePrevMeta<3>{
+struct makeStaticPrimeLT<3>{
 	static const std::size_t value = 2;
+};
+//----------------------------------------
+//【メタプログラミング版】指定の値と同じか、それより小さい最初の素数を静的に算出
+//静的素数算出クラス
+template<std::size_t N>
+struct makeStaticPrimeLE{
+	typedef
+		typename std::conditional<
+			isStaticPrime<N>::value,//指定の値が素数か？
+			std::integral_constant<std::size_t, N>,//素数が見つかった
+			makeStaticPrimeLT<N>//次に小さい値を探索
+		>::type
+	type;
+	static const std::size_t value = type::value;
 };
 
 //----------------------------------------
-//【メタプログラミング版】次の素数を生成
+//【メタプログラミング版】指定の値より大きい最初の素数を静的に算出
 //※偶数の判定を避けるために階層化する
-template<std::size_t N>//再帰クラス
-struct _makePrimeNextMeta{
+//静的素数算出用の再帰クラス（直接使用しない）
+template<std::size_t N>
+struct _makeStaticPrimeGT{
 	typedef
 		typename std::conditional<
-			isPrimeMeta<N>::value,
-			std::integral_constant<std::size_t, N>,
-			_makePrimeNextMeta<N + 2>
+			isStaticPrime<N>::value,//素数判定
+			std::integral_constant<std::size_t, N>,//素数が見つかった
+			_makeStaticPrimeGT<N + 2>//再帰で次に大きい値を探索 ※偶数は判定しない
 		>::type
 		type;
 	static const std::size_t value = type::value;
 };
-template<std::size_t N>//次の素数生成クラス
-struct makePrimeNextMeta{
+//静的素数算出クラス
+template<std::size_t N>
+struct makeStaticPrimeGT{
 	typedef
 		typename std::conditional<
-			(N & 0x1) == 0x0,
-			_makePrimeNextMeta<N + 1>,
-			_makePrimeNextMeta<N + 2>
+			(N & 1) == 0,//素数判定ループの初期値を奇数にするための判定
+			_makeStaticPrimeGT<N + 1>,//素数判定ループ（再帰処理）呼び出し
+			_makeStaticPrimeGT<N + 2>//素数判定ループ（再帰処理）呼び出し
 		>::type
 		type;
 	static const std::size_t value = type::value;
 };
+//特殊化：0より大きい素数は2
 template<>
-struct makePrimeNextMeta<0>{
+struct makeStaticPrimeGT<0>{
 	static const std::size_t value = 2;
 };
+//特殊化：1より大きい素数は2
 template<>
-struct makePrimeNextMeta<1>{
+struct makeStaticPrimeGT<1>{
 	static const std::size_t value = 2;
 };
 
 //----------------------------------------
-//【メタプログラミング版】指定の値と同じか、前の素数を生成
+//【メタプログラミング版】指定の値と同じか、それより大きい最初の素数を静的に算出
+//静的素数算出クラス
 template<std::size_t N>
-struct makePrimeEqPrevMeta{
+struct makeStaticPrimeGE{
 	typedef
 		typename std::conditional<
-			isPrimeMeta<N>::value,
-			std::integral_constant<std::size_t, N>,
-			makePrimePrevMeta<N>
+			isStaticPrime<N>::value,//指定の値が素数か？
+			std::integral_constant<std::size_t, N>,//素数が見つかった
+			makeStaticPrimeGT<N>//次に小さい値を探索
 		>::type
 		type;
 	static const std::size_t value = type::value;
 };
 
-//----------------------------------------
-//【メタプログラミング版】指定の値と同じか、次の素数を生成
-template<std::size_t N>
-struct makePrimeEqNextMeta{
-	typedef
-		typename std::conditional<
-			isPrimeMeta<N>::value,
-			std::integral_constant<std::size_t, N>,
-			makePrimeNextMeta<N>
-		>::type
-		type;
-	static const std::size_t value = type::value;
-};
+//--------------------------------------------------------------------------------
+//【メタプログラミングの使用上の注意】
+// メタプログラミング版では、コンパイラにより、テンプレートの
+// インスタンス化の深度に限界がある。
+// そのため、静的素数判定・算出では、扱える値に上限がある。
+// VC++による実測では、上限は下記の通り。
+//
+//     static const bool        _is_prime = isStaticPrime<1262477>::value;   //限界OK ※次の isStaticPrime<1262479>    はコンパイルエラー
+//     static const std::size_t _prime_gt = makeStaticPrimeGT<952788>::value;//限界OK ※次の makeStaticPrimeGT<952789> はコンパイルエラー
+//
+// makeStaticPrimeGTの結果からも分かるとおり、テンプレートをネストすると
+// この限界値は更に下がっていく。
+// また、大きな素数を指定すると、コンパイル時間が長くなっていく点にも注意。
+// なお、単純に深度限界をチェックするテンプレートクラスを作ってテストした
+// 結果は下記のとおり。
+//
+//     template<int N> struct recursive{ static const int value = recursive<N - 1>::value; };
+//     template<>      struct recursive<0>{ static const int value = 1; };
+//     static const int _n = recursive<499>::value;//VC++2013では限界OK ※次の recursive<500> はコンパイルエラー
+//     static const int _n = recursive<900>::value;//GCC4.8.2では限界OK ※次の recursive<901> はコンパイルエラー
+//--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
 //自作リード・ライトロッククラス
@@ -1039,7 +1073,7 @@ namespace hash_table
 	public:
 		//定数
 		static const size_type ORIGINAL_TABLE_SIZE = _TABLE_SIZE;//テーブルサイズ（元々指定されたサイズ）
-		static const size_type TABLE_SIZE = makePrimeEqNextMeta<ORIGINAL_TABLE_SIZE>::value;//テーブルサイズ（指定サイズと同じか、それより大きい素数）
+		static const size_type TABLE_SIZE = makeStaticPrimeGE<ORIGINAL_TABLE_SIZE>::value;//テーブルサイズ（指定サイズと同じか、それより大きい素数）
 		static const size_type TABLE_SIZE_EXTENDED = TABLE_SIZE - ORIGINAL_TABLE_SIZE;//指定サイズから拡張したサイズ
 		static const size_type  AUTO_REHASH_RATIO = _AUTO_REHASH_RATIO;//自動リハッシュ実行の基準割合 ※削除済み件数が全体サイズの一定割合以上になったら自動リハッシュ ※0で自動リハッシュなし
 		static const size_type  AUTO_REHASH_SIZE = AUTO_REHASH_RATIO == 0 ? 0 : TABLE_SIZE * AUTO_REHASH_RATIO / 100;//自動リハッシュ実行の基準サイズ ※割合とテーブルサイズから計算
@@ -1073,7 +1107,7 @@ namespace hash_table
 		static const key_type KEY_RANGE = calcKeyRangeImpl<((KEY_MIN == 0u && KEY_MAX == 0xffffffffu) || KEY_MIN >= KEY_MAX), size_type, key_type, KEY_MIN, KEY_MAX>::value;//キーの範囲
 		//静的アサーション
 		static_assert(TABLE_SIZE > INDEX_STEP_BASE, "hash_table::container: TABLE_SIZE is required larger than INDEX_STEP_BASE.");
-		static_assert(isPrimeMeta<INDEX_STEP_BASE>::value == true, "hash_table::container: INDEX_STEP_BASE is required prime.");
+		static_assert(isStaticPrime<INDEX_STEP_BASE>::value == true, "hash_table::container: INDEX_STEP_BASE is required prime.");
 	public:
 		//--------------------
 		//イテレータ用の型
@@ -1849,32 +1883,31 @@ inline int sprintf_s(char* dst, const std::size_t size, const char* fmt, Tx... a
 #endif//USE_GCC
 
 //----------------------------------------
-//素数計算テスト
-
-//【ランタイム版】素数表示
+//【ランタイム版】素数判定／算出テスト
 void printPrime(const std::size_t min, const std::size_t max)
 {
 	if (max > min)
 		printPrime(min, max - 1);
-	printf("%6d is %s [prev=%6d(%6d), next=%6d(%6d)]\n", max, isPrime(max) ? "PRIME.    " : "not prime.", makePrimePrev(max), makePrimeEqPrev(max), makePrimeNext(max), makePrimeEqNext(max));
+	printf("%6d is %s [prev=%6d(%6d), next=%6d(%6d)]\n", max, isPrime(max) ? "PRIME.    " : "NOT prime.", makePrimeLT(max), makePrimeLE(max), makePrimeGT(max), makePrimeGE(max));
 }
 
-//【メタプログラミング版】素数表示
+//----------------------------------------
+//【メタプログラミング版】素数判定／算出テスト
 template<std::size_t N>
 void _printPrimeCommon()
 {
-	printf("%6d is %s [prev=%6d(%6d), next=%6d(%6d)]\n", N, isPrimeMeta<N>::value ? "PRIME.    " : "not prime.", makePrimePrevMeta<N>::value, makePrimeEqPrevMeta<N>::value, makePrimeNextMeta<N>::value, makePrimeEqNextMeta<N>::value);
+	printf("%6d is %s [prev=%6d(%6d), next=%6d(%6d)]\n", N, isStaticPrime<N>::value ? "PRIME.    " : "NOT prime.", makeStaticPrimeLT<N>::value, makeStaticPrimeLE<N>::value, makeStaticPrimeGT<N>::value, makeStaticPrimeGE<N>::value);
 }
 template<std::size_t MIN, std::size_t MAX>
-struct printPrimeMeta{
+struct printStaticPrime{
 	void operator()()
 	{
-		printPrimeMeta<MIN, MAX - 1>()();
+		printStaticPrime<MIN, MAX - 1>()();
 		_printPrimeCommon<MAX>();
 	}
 };
 template<std::size_t MIN>
-struct printPrimeMeta<MIN, MIN>{
+struct printStaticPrime<MIN, MIN>{
 	void operator()()
 	{
 		_printPrimeCommon<MIN>();
@@ -1993,24 +2026,24 @@ int main(const int argc, const char* argv[])
 	//素数コンパイル時計算の再帰レベル限界チェック
 	static const std::size_t x = 9999;
 	printf("x=%d\n", x);
-	printf("  isPrime=%s\n", isPrimeMeta<x>::value ? "true" : "False");
-	printf("  prev=%d\n", makePrimePrevMeta<x>::value);
-	printf("  next=%d\n", makePrimeNextMeta<x>::value);
-	printf("  equalPrev=%d\n", makePrimeEqPrevMeta<x>::value);
-	printf("  equalNext=%d\n", makePrimeEqNextMeta<x>::value);
+	printf("  isPrime=%s\n", isStaticPrime<x>::value ? "true" : "False");
+	printf("  prev=%d\n", makeStaticPrimeLT<x>::value);
+	printf("  next=%d\n", makeStaticPrimeGT<x>::value);
+	printf("  equalPrev=%d\n", makeStaticPrimeLE<x>::value);
+	printf("  equalNext=%d\n", makeStaticPrimeGE<x>::value);
 #endif
-
+	bool b = isPrime(952789);
 #if 0
 	//--------------------
 	//素数計算のテスト
-	static const std::size_t MIN = 1020;
-	static const std::size_t MAX = 1030;
+	static const std::size_t MIN = 0;
+	static const std::size_t MAX = 10;
 	
 	printf("----- Check and Make Prime for Runtime -----\n");
 	printPrime(MIN, MAX);
 	
 	printf("----- Check and Make Prime for Meta-Programming -----\n");
-	printPrimeMeta<MIN, MAX>()();
+	printStaticPrime<MIN, MAX>()();
 #endif
 
 #if 0

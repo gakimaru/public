@@ -86,44 +86,49 @@ namespace for_define
 #include <type_traits>//C++11 std::extent用
 namespace for_template
 {
+	//非配列用
 	template<typename T> inline std::size_t rankof(const T& data){ return 0; }
-	template<typename T> inline std::size_t esizeof(const T& data){ return sizeof(T); }
+	template<typename T> inline std::size_t sizeofelemof(const T& data){ return sizeof(T); }
 	template<typename T> inline std::size_t extentof(const T& data){ return 0; }
 	template<typename T> inline std::size_t extent1of(const T& data){ return 0; }
 	template<typename T> inline std::size_t extent2of(const T& data){ return 0; }
 	template<typename T> inline std::size_t extent3of(const T& data){ return 0; }
 	template<typename T> inline std::size_t extent4of(const T& data){ return 0; }
 
+	//一次配列用
 	template<typename T, std::size_t N1> inline std::size_t rankof(const T(&data)[N1]){ return 1; }
-	template<typename T, std::size_t N1> inline std::size_t esizeof(const T(&data)[N1]){ return sizeof(T); }
+	template<typename T, std::size_t N1> inline std::size_t sizeofelemof(const T(&data)[N1]){ return sizeof(T); }
 	template<typename T, std::size_t N1> inline std::size_t extentof(const T(&data)[N1]){ return N1; }
 	template<typename T, std::size_t N1> inline std::size_t extent1of(const T(&data)[N1]){ return N1; }
-	template<typename T, std::size_t N1> inline std::size_t extent2of(const T(&data)[N1]){ return 0; }
-	template<typename T, std::size_t N1> inline std::size_t extent3of(const T(&data)[N1]){ return 0; }
-	template<typename T, std::size_t N1> inline std::size_t extent4of(const T(&data)[N1]){ return 0; }
+	//template<typename T, std::size_t N1> inline std::size_t extent2of(const T(&data)[N1]){ return 0; }//※不要
+	//template<typename T, std::size_t N1> inline std::size_t extent3of(const T(&data)[N1]){ return 0; }//※不要
+	//template<typename T, std::size_t N1> inline std::size_t extent4of(const T(&data)[N1]){ return 0; }//※不要
 
+	//二次配列用
 	template<typename T, std::size_t N1, std::size_t N2> inline std::size_t rankof(const T(&data)[N1][N2]){ return 2; }
-	template<typename T, std::size_t N1, std::size_t N2> inline std::size_t esizeof(const T(&data)[N1][N2]){ return sizeof(T); }
+	template<typename T, std::size_t N1, std::size_t N2> inline std::size_t sizeofelemof(const T(&data)[N1][N2]){ return sizeof(T); }
 	template<typename T, std::size_t N1, std::size_t N2> inline std::size_t extentof(const T(&data)[N1][N2]){ return N1 * N2; }
-	template<typename T, std::size_t N1, std::size_t N2> inline std::size_t extent1of(const T(&data)[N1][N2]){ return N1; }
+	//template<typename T, std::size_t N1, std::size_t N2> inline std::size_t extent1of(const T(&data)[N1][N2]){ return N1; }//※不要
 	template<typename T, std::size_t N1, std::size_t N2> inline std::size_t extent2of(const T(&data)[N1][N2]){ return N2; }
-	template<typename T, std::size_t N1, std::size_t N2> inline std::size_t extent3of(const T(&data)[N1][N2]){ return 0; }
-	template<typename T, std::size_t N1, std::size_t N2> inline std::size_t extent4of(const T(&data)[N1][N2]){ return 0; }
+	//template<typename T, std::size_t N1, std::size_t N2> inline std::size_t extent3of(const T(&data)[N1][N2]){ return 0; }//※不要
+	//template<typename T, std::size_t N1, std::size_t N2> inline std::size_t extent4of(const T(&data)[N1][N2]){ return 0; }//※不要
 
+	//三次配列用
 	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t rankof(const T(&data)[N1][N2][N3]){ return 3; }
-	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t esizeof(const T(&data)[N1][N2][N3]){ return sizeof(T); }
+	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t sizeofelemof(const T(&data)[N1][N2][N3]){ return sizeof(T); }
 	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t extentof(const T(&data)[N1][N2][N3]){ return N1 * N2 * N3; }
-	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t extent1of(const T(&data)[N1][N2][N3]){ return N1; }
-	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t extent2of(const T(&data)[N1][N2][N3]){ return N2; }
+	//template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t extent1of(const T(&data)[N1][N2][N3]){ return N1; }//※不要
+	//template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t extent2of(const T(&data)[N1][N2][N3]){ return N2; }//※不要
 	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t extent3of(const T(&data)[N1][N2][N3]){ return N3; }
-	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t extent4of(const T(&data)[N1][N2][N3]){ return 0; }
+	//template<typename T, std::size_t N1, std::size_t N2, std::size_t N3> inline std::size_t extent4of(const T(&data)[N1][N2][N3]){ return 0; }//※不要
 
+	//四次配列用
 	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t rankof(const T(&data)[N1][N2][N3][N4]){ return 4; }
-	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t esizeof(const T(&data)[N1][N2][N3][N4]){ return sizeof(T); }
+	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t sizeofelemof(const T(&data)[N1][N2][N3][N4]){ return sizeof(T); }
 	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t extentof(const T(&data)[N1][N2][N3][N4]){ return N1 * N2 * N3 * N4; }
-	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t extent1of(const T(&data)[N1][N2][N3][N4]){ return N1; }
-	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t extent2of(const T(&data)[N1][N2][N3][N4]){ return N2; }
-	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t extent3of(const T(&data)[N1][N2][N3][N4]){ return N3; }
+	//template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t extent1of(const T(&data)[N1][N2][N3][N4]){ return N1; }//※不要
+	//template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t extent2of(const T(&data)[N1][N2][N3][N4]){ return N2; }//※不要
+	//template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t extent3of(const T(&data)[N1][N2][N3][N4]){ return N3; }//※不要
 	template<typename T, std::size_t N1, std::size_t N2, std::size_t N3, std::size_t N4> inline std::size_t extent4of(const T(&data)[N1][N2][N3][N4]){ return N4; }
 	
 	template<typename T1, typename T2>
@@ -164,22 +169,27 @@ namespace for_template
 		std::cout << "----- for_template::test_func() -----" << std::endl;
 
 		{
-			typedef int array0d_t;
-			typedef int array1d_t[1];
-			typedef int array2d_t[2][3];
-			typedef int array3d_t[4][5][6];
-			typedef int array4d_t[7][8][9][10];
-			printf("array0d_t(Rank=%d)\n", std::rank<array0d_t>::value);
-			printf("array1d_t[%d](Rank=%d)\n", std::extent<array1d_t, 0>::value, std::rank<array1d_t>::value);
-			printf("array2d_t[%d][%d](Rank=%d)\n", std::extent<array2d_t, 0>::value, std::extent<array2d_t, 1>::value, std::rank<array2d_t>::value);
-			printf("array3d_t[%d][%d][%d](Rank=%d)\n", std::extent<array3d_t, 0>::value, std::extent<array3d_t, 1>::value, std::extent<array3d_t, 2>::value, std::rank<array3d_t>::value);
-			printf("array4d_t[%d][%d][%d][%d](Rank=%d)\n", std::extent<array4d_t, 0>::value, std::extent<array4d_t, 1>::value, std::extent<array4d_t, 2>::value, std::extent<array4d_t, 3>::value, std::rank<array4d_t>::value);
-			
-			std::cout << "sizeof(array0d_t)=" << std::setw(5) << std::right << sizeof(array0d_t) << ", std::extent<array0d_t, 0>::value=" << std::setw(4) << std::right << std::extent<array0d_t, 0>::value << ", std::extent<array0d_t, 1>::value=" << std::setw(4) << std::right << std::extent<array0d_t, 1>::value << ", std::extent<array0d_t, 2>::value=" << std::setw(4) << std::right << std::extent<array0d_t, 2>::value << ", std::extent<array0d_t, 3>::value=" << std::setw(4) << std::right << std::extent<array0d_t, 3>::value << ", std::rank<array0d_t>::value=" << std::setw(4) << std::right << std::rank<array0d_t>::value << std::endl;
-			std::cout << "sizeof(array1d_t)=" << std::setw(5) << std::right << sizeof(array1d_t) << ", std::extent<array1d_t, 0>::value=" << std::setw(4) << std::right << std::extent<array1d_t, 0>::value << ", std::extent<array1d_t, 1>::value=" << std::setw(4) << std::right << std::extent<array1d_t, 1>::value << ", std::extent<array1d_t, 2>::value=" << std::setw(4) << std::right << std::extent<array1d_t, 2>::value << ", std::extent<array1d_t, 3>::value=" << std::setw(4) << std::right << std::extent<array1d_t, 3>::value << ", std::rank<array1d_t>::value=" << std::setw(4) << std::right << std::rank<array1d_t>::value << std::endl;
-			std::cout << "sizeof(array2d_t)=" << std::setw(5) << std::right << sizeof(array2d_t) << ", std::extent<array2d_t, 0>::value=" << std::setw(4) << std::right << std::extent<array2d_t, 0>::value << ", std::extent<array2d_t, 1>::value=" << std::setw(4) << std::right << std::extent<array2d_t, 1>::value << ", std::extent<array2d_t, 2>::value=" << std::setw(4) << std::right << std::extent<array2d_t, 2>::value << ", std::extent<array2d_t, 3>::value=" << std::setw(4) << std::right << std::extent<array2d_t, 3>::value << ", std::rank<array2d_t>::value=" << std::setw(4) << std::right << std::rank<array2d_t>::value << std::endl;
-			std::cout << "sizeof(array3d_t)=" << std::setw(5) << std::right << sizeof(array3d_t) << ", std::extent<array3d_t, 0>::value=" << std::setw(4) << std::right << std::extent<array3d_t, 0>::value << ", std::extent<array3d_t, 1>::value=" << std::setw(4) << std::right << std::extent<array3d_t, 1>::value << ", std::extent<array3d_t, 2>::value=" << std::setw(4) << std::right << std::extent<array3d_t, 2>::value << ", std::extent<array3d_t, 3>::value=" << std::setw(4) << std::right << std::extent<array3d_t, 3>::value << ", std::rank<array3d_t>::value=" << std::setw(4) << std::right << std::rank<array3d_t>::value << std::endl;
-			std::cout << "sizeof(array4d_t)=" << std::setw(5) << std::right << sizeof(array4d_t) << ", std::extent<array4d_t, 0>::value=" << std::setw(4) << std::right << std::extent<array4d_t, 0>::value << ", std::extent<array4d_t, 1>::value=" << std::setw(4) << std::right << std::extent<array4d_t, 1>::value << ", std::extent<array4d_t, 2>::value=" << std::setw(4) << std::right << std::extent<array4d_t, 2>::value << ", std::extent<array4d_t, 3>::value=" << std::setw(4) << std::right << std::extent<array4d_t, 3>::value << ", std::rank<array4d_t>::value=" << std::setw(4) << std::right << std::rank<array4d_t>::value << std::endl;
+			typedef int arr0_t;
+			typedef int arr1_t[1];
+			typedef int arr2_t[2][3];
+			typedef int arr3_t[4][5][6];
+			typedef int arr4_t[7][8][9][10];
+			printf("arr0_t(Rank=%d)\n", std::rank<arr0_t>::value);
+			printf("arr1_t[%d](Rank=%d)\n", std::extent<arr1_t, 0>::value, std::rank<arr1_t>::value);
+			printf("arr2_t[%d][%d](Rank=%d)\n", std::extent<arr2_t, 0>::value, std::extent<arr2_t, 1>::value, std::rank<arr2_t>::value);
+			printf("arr3_t[%d][%d][%d](Rank=%d)\n", std::extent<arr3_t, 0>::value, std::extent<arr3_t, 1>::value, std::extent<arr3_t, 2>::value, std::rank<arr3_t>::value);
+			printf("arr4_t[%d][%d][%d][%d](Rank=%d)\n", std::extent<arr4_t, 0>::value, std::extent<arr4_t, 1>::value, std::extent<arr4_t, 2>::value, std::extent<arr4_t, 3>::value, std::rank<arr4_t>::value);
+			printf("*arr0_t[%d][%d][%d][%d](Rank=%d)\n", std::extent<arr0_t, 0>::value, std::extent<arr0_t, 1>::value, std::extent<arr0_t, 2>::value, std::extent<arr0_t, 3>::value, std::rank<arr0_t>::value);
+			printf("*arr1_t[%d][%d][%d][%d](Rank=%d)\n", std::extent<arr1_t, 0>::value, std::extent<arr1_t, 1>::value, std::extent<arr1_t, 2>::value, std::extent<arr1_t, 3>::value, std::rank<arr1_t>::value);
+			printf("*arr2_t[%d][%d][%d][%d](Rank=%d)\n", std::extent<arr2_t, 0>::value, std::extent<arr2_t, 1>::value, std::extent<arr2_t, 2>::value, std::extent<arr2_t, 3>::value, std::rank<arr2_t>::value);
+			printf("*arr3_t[%d][%d][%d][%d](Rank=%d)\n", std::extent<arr3_t, 0>::value, std::extent<arr3_t, 1>::value, std::extent<arr3_t, 2>::value, std::extent<arr3_t, 3>::value, std::rank<arr3_t>::value);
+			printf("*arr4_t[%d][%d][%d][%d](Rank=%d)\n", std::extent<arr4_t, 0>::value, std::extent<arr4_t, 1>::value, std::extent<arr4_t, 2>::value, std::extent<arr4_t, 3>::value, std::rank<arr4_t>::value);
+
+			std::cout << "sizeof(arr0_t)=" << std::setw(5) << std::right << sizeof(arr0_t) << ", std::extent<arr0_t, 0>::value=" << std::setw(4) << std::right << std::extent<arr0_t, 0>::value << ", std::extent<arr0_t, 1>::value=" << std::setw(4) << std::right << std::extent<arr0_t, 1>::value << ", std::extent<arr0_t, 2>::value=" << std::setw(4) << std::right << std::extent<arr0_t, 2>::value << ", std::extent<arr0_t, 3>::value=" << std::setw(4) << std::right << std::extent<arr0_t, 3>::value << ", std::rank<arr0_t>::value=" << std::setw(4) << std::right << std::rank<arr0_t>::value << std::endl;
+			std::cout << "sizeof(arr1_t)=" << std::setw(5) << std::right << sizeof(arr1_t) << ", std::extent<arr1_t, 0>::value=" << std::setw(4) << std::right << std::extent<arr1_t, 0>::value << ", std::extent<arr1_t, 1>::value=" << std::setw(4) << std::right << std::extent<arr1_t, 1>::value << ", std::extent<arr1_t, 2>::value=" << std::setw(4) << std::right << std::extent<arr1_t, 2>::value << ", std::extent<arr1_t, 3>::value=" << std::setw(4) << std::right << std::extent<arr1_t, 3>::value << ", std::rank<arr1_t>::value=" << std::setw(4) << std::right << std::rank<arr1_t>::value << std::endl;
+			std::cout << "sizeof(arr2_t)=" << std::setw(5) << std::right << sizeof(arr2_t) << ", std::extent<arr2_t, 0>::value=" << std::setw(4) << std::right << std::extent<arr2_t, 0>::value << ", std::extent<arr2_t, 1>::value=" << std::setw(4) << std::right << std::extent<arr2_t, 1>::value << ", std::extent<arr2_t, 2>::value=" << std::setw(4) << std::right << std::extent<arr2_t, 2>::value << ", std::extent<arr2_t, 3>::value=" << std::setw(4) << std::right << std::extent<arr2_t, 3>::value << ", std::rank<arr2_t>::value=" << std::setw(4) << std::right << std::rank<arr2_t>::value << std::endl;
+			std::cout << "sizeof(arr3_t)=" << std::setw(5) << std::right << sizeof(arr3_t) << ", std::extent<arr3_t, 0>::value=" << std::setw(4) << std::right << std::extent<arr3_t, 0>::value << ", std::extent<arr3_t, 1>::value=" << std::setw(4) << std::right << std::extent<arr3_t, 1>::value << ", std::extent<arr3_t, 2>::value=" << std::setw(4) << std::right << std::extent<arr3_t, 2>::value << ", std::extent<arr3_t, 3>::value=" << std::setw(4) << std::right << std::extent<arr3_t, 3>::value << ", std::rank<arr3_t>::value=" << std::setw(4) << std::right << std::rank<arr3_t>::value << std::endl;
+			std::cout << "sizeof(arr4_t)=" << std::setw(5) << std::right << sizeof(arr4_t) << ", std::extent<arr4_t, 0>::value=" << std::setw(4) << std::right << std::extent<arr4_t, 0>::value << ", std::extent<arr4_t, 1>::value=" << std::setw(4) << std::right << std::extent<arr4_t, 1>::value << ", std::extent<arr4_t, 2>::value=" << std::setw(4) << std::right << std::extent<arr4_t, 2>::value << ", std::extent<arr4_t, 3>::value=" << std::setw(4) << std::right << std::extent<arr4_t, 3>::value << ", std::rank<arr4_t>::value=" << std::setw(4) << std::right << std::rank<arr4_t>::value << std::endl;
 		}
 		
 		//以下、for_define::test_func() とほぼ同じ
@@ -189,11 +199,16 @@ namespace for_template
 			int var2[2][3] = { 0 };
 			int var3[4][5][6] = { 0 };
 			int var4[7][8][9][10] = { 0 };
-			printf("var0(Rank=%d, Total=%d, ElemtSize=%d)\n", rankof(var0), extentof(var0), esizeof(var0));
-			printf("var1[%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var1), rankof(var1), extentof(var1), esizeof(var1));
-			printf("var2[%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var2), extent2of(var2), rankof(var2), extentof(var2), esizeof(var2));
-			printf("var3[%d][%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var3), extent2of(var3), extent3of(var3), rankof(var3), extentof(var3), esizeof(var3));
-			printf("var4[%d][%d][%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var4), extent2of(var4), extent3of(var4), extent4of(var4), rankof(var4), extentof(var4), esizeof(var4));
+			printf("var0(Rank=%d, Total=%d, ElemtSize=%d)\n", rankof(var0), extentof(var0), sizeofelemof(var0));
+			printf("var1[%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var1), rankof(var1), extentof(var1), sizeofelemof(var1));
+			printf("var2[%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var2), extent2of(var2), rankof(var2), extentof(var2), sizeofelemof(var2));
+			printf("var3[%d][%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var3), extent2of(var3), extent3of(var3), rankof(var3), extentof(var3), sizeofelemof(var3));
+			printf("var4[%d][%d][%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var4), extent2of(var4), extent3of(var4), extent4of(var4), rankof(var4), extentof(var4), sizeofelemof(var4));
+			printf("*var0[%d][%d][%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var0), extent2of(var0), extent3of(var0), extent4of(var0), rankof(var0), extentof(var0), sizeofelemof(var0));
+			printf("*var1[%d][%d][%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var1), extent2of(var1), extent3of(var1), extent4of(var1), rankof(var1), extentof(var1), sizeofelemof(var1));
+			printf("*var2[%d][%d][%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var2), extent2of(var2), extent3of(var2), extent4of(var2), rankof(var2), extentof(var2), sizeofelemof(var2));
+			printf("*var3[%d][%d][%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var3), extent2of(var3), extent3of(var3), extent4of(var3), rankof(var3), extentof(var3), sizeofelemof(var3));
+			printf("*var4[%d][%d][%d][%d](Rank=%d, Total=%d, ElemtSize=%d)\n", extent1of(var4), extent2of(var4), extent3of(var4), extent4of(var4), rankof(var4), extentof(var4), sizeofelemof(var4));
 		}
 
 		//以下、for_define::test_func() とほぼ同じ
@@ -203,11 +218,11 @@ namespace for_template
 			int var2[2][3] = { 0 };
 			int var3[4][5][6] = { 0 };
 			int var4[7][8][9][10] = { 0 };
-			std::cout << "sizeof(var0)=" << std::setw(5) << std::right << sizeof(var0) << ", esizeof(var0)=" << std::setw(4) << std::right << esizeof(var0) << ", extent1of(var0)=" << std::setw(4) << std::right << extent1of(var0) << ", extent2of(var0)=" << std::setw(4) << std::right << extent2of(var0) << ", extent3of(var0)=" << std::setw(4) << std::right << extent3of(var0) << ", extent4of(var0)=" << std::setw(4) << std::right << extent4of(var0) << ", extentof(var0)=" << std::setw(4) << std::right << extentof(var0) << ", rankof(var0)=" << std::setw(4) << std::right << rankof(var0) << std::endl;
-			std::cout << "sizeof(var1)=" << std::setw(5) << std::right << sizeof(var1) << ", esizeof(var1)=" << std::setw(4) << std::right << esizeof(var1) << ", extent1of(var1)=" << std::setw(4) << std::right << extent1of(var1) << ", extent2of(var1)=" << std::setw(4) << std::right << extent2of(var1) << ", extent3of(var1)=" << std::setw(4) << std::right << extent3of(var1) << ", extent4of(var1)=" << std::setw(4) << std::right << extent4of(var1) << ", extentof(var1)=" << std::setw(4) << std::right << extentof(var1) << ", rankof(var1)=" << std::setw(4) << std::right << rankof(var1) << std::endl;
-			std::cout << "sizeof(var2)=" << std::setw(5) << std::right << sizeof(var2) << ", esizeof(var2)=" << std::setw(4) << std::right << esizeof(var2) << ", extent1of(var2)=" << std::setw(4) << std::right << extent1of(var2) << ", extent2of(var2)=" << std::setw(4) << std::right << extent2of(var2) << ", extent3of(var2)=" << std::setw(4) << std::right << extent3of(var2) << ", extent4of(var2)=" << std::setw(4) << std::right << extent4of(var2) << ", extentof(var2)=" << std::setw(4) << std::right << extentof(var2) << ", rankof(var2)=" << std::setw(4) << std::right << rankof(var2) << std::endl;
-			std::cout << "sizeof(var3)=" << std::setw(5) << std::right << sizeof(var3) << ", esizeof(var3)=" << std::setw(4) << std::right << esizeof(var3) << ", extent1of(var3)=" << std::setw(4) << std::right << extent1of(var3) << ", extent2of(var3)=" << std::setw(4) << std::right << extent2of(var3) << ", extent3of(var3)=" << std::setw(4) << std::right << extent3of(var3) << ", extent4of(var3)=" << std::setw(4) << std::right << extent4of(var3) << ", extentof(var3)=" << std::setw(4) << std::right << extentof(var3) << ", rankof(var3)=" << std::setw(4) << std::right << rankof(var3) << std::endl;
-			std::cout << "sizeof(var4)=" << std::setw(5) << std::right << sizeof(var4) << ", esizeof(var4)=" << std::setw(4) << std::right << esizeof(var4) << ", extent1of(var4)=" << std::setw(4) << std::right << extent1of(var4) << ", extent2of(var4)=" << std::setw(4) << std::right << extent2of(var4) << ", extent3of(var4)=" << std::setw(4) << std::right << extent3of(var4) << ", extent4of(var4)=" << std::setw(4) << std::right << extent4of(var4) << ", extentof(var4)=" << std::setw(4) << std::right << extentof(var4) << ", rankof(var4)=" << std::setw(4) << std::right << rankof(var4) << std::endl;
+			std::cout << "sizeof(var0)=" << std::setw(5) << std::right << sizeof(var0) << ", sizeofelemof(var0)=" << std::setw(4) << std::right << sizeofelemof(var0) << ", extent1of(var0)=" << std::setw(4) << std::right << extent1of(var0) << ", extent2of(var0)=" << std::setw(4) << std::right << extent2of(var0) << ", extent3of(var0)=" << std::setw(4) << std::right << extent3of(var0) << ", extent4of(var0)=" << std::setw(4) << std::right << extent4of(var0) << ", extentof(var0)=" << std::setw(4) << std::right << extentof(var0) << ", rankof(var0)=" << std::setw(4) << std::right << rankof(var0) << std::endl;
+			std::cout << "sizeof(var1)=" << std::setw(5) << std::right << sizeof(var1) << ", sizeofelemof(var1)=" << std::setw(4) << std::right << sizeofelemof(var1) << ", extent1of(var1)=" << std::setw(4) << std::right << extent1of(var1) << ", extent2of(var1)=" << std::setw(4) << std::right << extent2of(var1) << ", extent3of(var1)=" << std::setw(4) << std::right << extent3of(var1) << ", extent4of(var1)=" << std::setw(4) << std::right << extent4of(var1) << ", extentof(var1)=" << std::setw(4) << std::right << extentof(var1) << ", rankof(var1)=" << std::setw(4) << std::right << rankof(var1) << std::endl;
+			std::cout << "sizeof(var2)=" << std::setw(5) << std::right << sizeof(var2) << ", sizeofelemof(var2)=" << std::setw(4) << std::right << sizeofelemof(var2) << ", extent1of(var2)=" << std::setw(4) << std::right << extent1of(var2) << ", extent2of(var2)=" << std::setw(4) << std::right << extent2of(var2) << ", extent3of(var2)=" << std::setw(4) << std::right << extent3of(var2) << ", extent4of(var2)=" << std::setw(4) << std::right << extent4of(var2) << ", extentof(var2)=" << std::setw(4) << std::right << extentof(var2) << ", rankof(var2)=" << std::setw(4) << std::right << rankof(var2) << std::endl;
+			std::cout << "sizeof(var3)=" << std::setw(5) << std::right << sizeof(var3) << ", sizeofelemof(var3)=" << std::setw(4) << std::right << sizeofelemof(var3) << ", extent1of(var3)=" << std::setw(4) << std::right << extent1of(var3) << ", extent2of(var3)=" << std::setw(4) << std::right << extent2of(var3) << ", extent3of(var3)=" << std::setw(4) << std::right << extent3of(var3) << ", extent4of(var3)=" << std::setw(4) << std::right << extent4of(var3) << ", extentof(var3)=" << std::setw(4) << std::right << extentof(var3) << ", rankof(var3)=" << std::setw(4) << std::right << rankof(var3) << std::endl;
+			std::cout << "sizeof(var4)=" << std::setw(5) << std::right << sizeof(var4) << ", sizeofelemof(var4)=" << std::setw(4) << std::right << sizeofelemof(var4) << ", extent1of(var4)=" << std::setw(4) << std::right << extent1of(var4) << ", extent2of(var4)=" << std::setw(4) << std::right << extent2of(var4) << ", extent3of(var4)=" << std::setw(4) << std::right << extent3of(var4) << ", extent4of(var4)=" << std::setw(4) << std::right << extent4of(var4) << ", extentof(var4)=" << std::setw(4) << std::right << extentof(var4) << ", rankof(var4)=" << std::setw(4) << std::right << rankof(var4) << std::endl;
 		}
 
 		//以下、for_define::test_func() と同じ

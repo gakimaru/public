@@ -1,7 +1,7 @@
 --- Make table ---
 [ 5] [10] [ 4] [ 1] [ 4] [10] [ 8] [ 4] [ 8] [ 4] [ 2] [ 7] [ 7] [10] [ 9] [ 7] [ 7] [ 9] [ 5] [ 4] 
 20 registered.
-*elapsed_time=0.000000000 sec
+*elapsed_time=0.000998000 sec
 --- Show tree (count=20) ---
 depth_max=5 (limit for showing=4)
                       .----------------------{ 4:B}----------------------.                      
@@ -121,4 +121,4 @@ diff:blacks=0, reds=0, total=0 (illegal=0)
 (nothing)
 *elapsed_time=0.000000000 sec
 --- end ---
-*elapsed_time=0.000000000 sec
+*elapsed_time=0.000998000 sec

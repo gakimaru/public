@@ -1,7 +1,7 @@
 --- Make table ---
 [ 6] [ 6] [ 8] [ 9] [ 7] [ 9] [ 6] [ 9] [ 5] [ 7] [ 7] [ 4] [ 5] [ 3] [ 9] [ 1] [10] [ 3] [ 4] [ 5] 
 20 registered.
-*elapsed_time=0.000071000 sec
+*elapsed_time=0.000065000 sec
 --- Show tree (count=20) ---
 depth_max=4 (limit for showing=4)
                       .----------------------{ 7:B}----------------------.                      
@@ -9,7 +9,7 @@ depth_max=4 (limit for showing=4)
     .----{ 3:B}----.        .----{ 6:B}----.        .----{ 7:R}----.        .----{ 9:R}----.    
    [ 1:B]    .-{ 4:B}-.  .-{ 5:R}-.    [ 6:B]      [ 7:B]      [ 8:B]      [ 9:B]      [ 9:B}-. 
             [ 3:R][ 4:R][ 5:B][ 6:B]                                                      [10:R]
-*elapsed_time=0.000094000 sec
+*elapsed_time=0.000096000 sec
 --- Show nodes count (count=20) ---
 depth_max=4, width_max=16
     0:[ 1] blacks=3, reds=1, total=4 (illegal=0)
@@ -52,7 +52,7 @@ diff:blacks=0, reds=1, total=1 (illegal=0)
 *elapsed_time=0.000008000 sec
 --- Remove nodes ---
 [ 5] [10] [ 8] [ 1] [ 4] 5 removed.
-*elapsed_time=0.000012000 sec
+*elapsed_time=0.000013000 sec
 --- Show tree (count=15) ---
 depth_max=4 (limit for showing=4)
                       .----------------------{ 7:B}----------------------.                      
@@ -88,7 +88,7 @@ depth_max=3 (limit for showing=4)
     .----{ 5:B}----.        .----{ 9:B}----.    
    [ 3:B]      [ 6:B]    .-{ 7:B}-.    [ 9:B]   
                         [ 7:R][ 9:R]            
-*elapsed_time=0.000035000 sec
+*elapsed_time=0.000034000 sec
 --- Show nodes count (count=9) ---
 depth_max=3, width_max=8
     0:[ 3] blacks=3, reds=0, total=3 (illegal=0)
@@ -99,7 +99,7 @@ depth_max=3, width_max=8
 max: blacks=3, reds=1, total=4
 min: blacks=3, reds=0, total=3
 diff:blacks=0, reds=1, total=1 (illegal=0)
-*elapsed_time=0.000012000 sec
+*elapsed_time=0.000013000 sec
 --- Show nodes ascending (count=9) ---
 [ 3] [ 5] [ 6] [ 6] [ 7] [ 7] [ 9] [ 9] [ 9] 
 *elapsed_time=0.000008000 sec
@@ -119,4 +119,4 @@ diff:blacks=0, reds=0, total=0 (illegal=0)
 (nothing)
 *elapsed_time=0.000005000 sec
 --- end ---
-*elapsed_time=0.000466000 sec
+*elapsed_time=0.000463000 sec

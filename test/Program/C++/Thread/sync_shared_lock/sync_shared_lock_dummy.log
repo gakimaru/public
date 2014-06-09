@@ -1,0 +1,52 @@
+sizeof(shared_spin_lock)=4
+- begin:(R)太郎 -
+- begin:(R)次郎 -
+- begin:(R)三郎 -
+- begin:(W)松子 -
+- begin:(W)竹子 -
+- begin:(W)梅子 -
+(W)梅子: [BEFORE] commonData=0, tlsData=0
+(W)竹子: [BEFORE] commonData=0, tlsData=0
+(W)松子: [BEFORE] commonData=0, tlsData=0
+(R)太郎: [BEFORE] commonData=0, tlsData=0
+(R)次郎: [BEFORE] commonData=0, tlsData=0
+(R)三郎: [BEFORE] commonData=0, tlsData=0
+(R)次郎: [AFTER]  commonData=0, tlsData=0
+(R)次郎: [BEFORE] commonData=0, tlsData=0
+(R)三郎: [AFTER]  commonData=0, tlsData=0
+(R)太郎: [AFTER]  commonData=0, tlsData=0
+(R)三郎: [BEFORE] commonData=0, tlsData=0
+(W)梅子: [AFTER]  commonData=1, tlsData=1
+(W)梅子: [BEFORE] commonData=1, tlsData=1
+(R)太郎: [BEFORE] commonData=1, tlsData=0
+(W)竹子: [AFTER]  commonData=1, tlsData=1
+(W)竹子: [BEFORE] commonData=1, tlsData=1
+(R)三郎: [AFTER]  commonData=1, tlsData=0
+(R)三郎: [BEFORE] commonData=1, tlsData=0
+(W)松子: [AFTER]  commonData=1, tlsData=1
+(W)松子: [BEFORE] commonData=1, tlsData=1
+(R)次郎: [AFTER]  commonData=1, tlsData=0
+(R)次郎: [BEFORE] commonData=1, tlsData=0
+(R)太郎: [AFTER]  commonData=1, tlsData=0
+(R)太郎: [BEFORE] commonData=1, tlsData=0
+(W)竹子: [AFTER]  commonData=2, tlsData=2
+(W)竹子: [BEFORE] commonData=2, tlsData=2
+(R)三郎: [AFTER]  commonData=2, tlsData=0
+(W)梅子: [AFTER]  commonData=2, tlsData=2
+(W)梅子: [BEFORE] commonData=2, tlsData=2
+- end:(R)三郎 -
+(R)太郎: [AFTER]  commonData=2, tlsData=0
+(R)次郎: [AFTER]  commonData=2, tlsData=0
+- end:(R)次郎 -
+- end:(R)太郎 -
+(W)松子: [AFTER]  commonData=2, tlsData=2
+(W)松子: [BEFORE] commonData=2, tlsData=2
+(W)竹子: [AFTER]  commonData=3, tlsData=3
+- end:(W)竹子 -
+(W)梅子: [AFTER]  commonData=3, tlsData=3
+- end:(W)梅子 -
+(W)松子: [AFTER]  commonData=3, tlsData=3
+- end:(W)松子 -
+Time = 0.569541 sec
+Read-WriteLock:wlock * 10000000 = 0.000000 sec
+Read-WriteLock:rlock * 10000000 = 0.000000 sec

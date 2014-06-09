@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------
 //ハッシュテーブルテスト用設定とコンパイラスイッチ
-static const int TEST_DATA_TABLE_SIZE = 500000;//テストデータテーブルサイズ
+static const int TEST_DATA_TABLE_SIZE = 100000;//テストデータテーブルサイズ
 //static const int TEST_DATA_TABLE_SIZE = 20;//テストデータテーブルサイズ
 
 //#define PRINT_TEST_DATA_DETAIL//テストデータの詳細を表示する場合は、このマクロを有効化する
@@ -280,142 +280,20 @@ struct makeStaticPrimeGE{
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-//自作リード・ライトロッククラス
+//自作ロッククラス
 //--------------------------------------------------------------------------------
 
 #include <thread>
 #include <atomic>
 
 //--------------------------------------------------------------------------------
-//スレッドIDクラス
-//--------------------------------------------------------------------------------
-//※IDをハッシュ化した場合、TLSを活用して高速化
-//--------------------------------------------------------------------------------
-
-//スレッドID型
-#define THREAD_ID_IS_HASH//スレッドIDをハッシュ型で扱う場合はこのマクロを有効化する（ハッシュの方が高速）
-#ifdef THREAD_ID_IS_HASH
-typedef std::size_t THREAD_ID;//(ハッシュ)
-static const THREAD_ID INVALID_THREAD_ID = std::hash<std::thread::id>()(std::thread::id());//無効なスレッドID(ハッシュ)
-static const THREAD_ID INITIAL_THREAD_ID = static_cast<THREAD_ID>(~0);//初期スレッドID(ハッシュ)
-#else//THREAD_ID_IS_HASH
-typedef std::thread::id THREAD_ID;
-static const THREAD_ID INVALID_THREAD_ID = std::thread::id();//無効なスレッドID
-#endif//THREAD_ID_IS_HASH
-
-//現在のスレッドID取得関数
-#ifdef THREAD_ID_IS_HASH
-inline THREAD_ID GetThisThreadID(){ return std::hash<std::thread::id>()(std::this_thread::get_id()); }//(ハッシュ)
-#else//THREAD_ID_IS_HASH
-inline THREAD_ID GetThisThreadID(){ return std::this_thread::get_id(); }
-#endif//THREAD_ID_IS_HASH
-
-//スレッドIDクラス
-class CThreadID
-{
-public:
-	//アクセッサ
-	const THREAD_ID getID() const { return m_threadId; }//スレッドIDを取得
-	const char* getName() const { return m_threadName; }//スレッド名を取得
-public:
-	//アクセッサ（static）
-#ifdef THREAD_ID_IS_HASH
-	static THREAD_ID getThisID(){ return m_thisThreadID; }//現在のスレッドのスレッドIDを取得(ハッシュ)
-#else//THREAD_ID_IS_HASH
-	static THREAD_ID getThisID(){ return GetThisThreadID(); }//現在のスレッドのスレッドIDを取得
-#endif//THREAD_ID_IS_HASH
-	static const char* getThisName(){ return m_thisThreadName; }//現在のスレッドのスレッド名を取得
-public:
-	//メソッド
-	bool isThisThread() const { return m_threadId == getThisID(); }//現在のスレッドと同じスレッドか判定
-private:
-	//メソッド(static)
-	static void setThisThread()//現在のスレッドのスレッドIDをセット
-	{
-#ifdef THREAD_ID_IS_HASH
-		if (m_thisThreadID == INITIAL_THREAD_ID)
-			m_thisThreadID = GetThisThreadID();
-#endif//THREAD_ID_IS_HASH
-	}
-	static void resetThisThread(const char* name)//現在のスレッドのスレッドIDをリセット
-	{
-#ifdef THREAD_ID_IS_HASH
-		m_thisThreadID = GetThisThreadID();
-#endif//THREAD_ID_IS_HASH
-		m_thisThreadName = name;
-	}
-public:
-	//オペレータ（許可）
-	bool operator==(const CThreadID& o) const { return m_threadId == o.getID(); }//ID一致判定
-	bool operator!=(const CThreadID& o) const { return m_threadId != o.getID(); }//ID不一致判定
-	bool operator==(const THREAD_ID& id) const { return m_threadId == id; }//ID一致判定
-	bool operator!=(const THREAD_ID& id) const { return m_threadId != id; }//ID不一致判定
-	CThreadID& operator=(const CThreadID& o)//コピー演算子
-	{
-		m_threadId = o.m_threadId;
-		m_threadName = o.m_threadName;
-		return *this;
-	}
-private:
-	//オペレータ（禁止）
-	CThreadID& operator=(const THREAD_ID& id) { return *this; }//コピー演算子（禁止）
-public:
-	//コピーコンストラクタ（許可）
-	explicit CThreadID(const CThreadID& o) :
-		m_threadId(o.m_threadId),
-		m_threadName(o.m_threadName)
-	{
-	}
-private:
-	//コピーコンストラクタ（禁止）
-	explicit CThreadID(const THREAD_ID& id){}
-public:
-	//コンストラクタ
-	//※スレッド名を指定し、内部で現在のスレッドIDを取得して保持
-	//※TLSにも記録
-	CThreadID(const char* name)
-	{
-		resetThisThread(name);
-		m_threadId = getThisID();
-		m_threadName = getThisName();
-	}
-	//デフォルトコンストラクタ
-	//※既にTLSに記録済みのスレッドID（と名前）を取得
-	CThreadID()
-	{
-		setThisThread();
-		m_threadId = getThisID();
-		m_threadName = getThisName();
-	}
-private:
-	//フィールド
-	THREAD_ID m_threadId;//スレッドID（オブジェクトに保存する値）
-	const char* m_threadName;//スレッド名（オブジェクトに保存する値）
-#ifdef THREAD_ID_IS_HASH
-	static thread_local THREAD_ID m_thisThreadID;//現在のスレッドのスレッドID(TLS)
-#endif//THREAD_ID_IS_HASH
-	static thread_local const char* m_thisThreadName;//現在のスレッド名(TLS)
-};
-//static変数のインスタンス化
-#ifdef THREAD_ID_IS_HASH
-thread_local THREAD_ID CThreadID::m_thisThreadID = INITIAL_THREAD_ID;//スレッドID(TLS)
-#endif//THREAD_ID_IS_HASH
-thread_local const char* CThreadID::m_thisThreadName = nullptr;//スレッド名(TLS)
-
-//--------------------------------------------------------------------------------
-//軽量スピンロック
+//スピンロック
 //--------------------------------------------------------------------------------
 
 //----------------------------------------
-//軽量スピンロック
-//※手軽に使えるスピンロック
-//※一定回数のスリープごとにスリープ（コンテキストスイッチ）を行う
-//※容量は4バイト(std::atomic_flag一つ分のサイズ)
-//※プログラミング上の安全性は低いので気がるに使うべきではない
-//　　⇒ロック取得状態を確認せずにアンロックする
-#define SPIN_LOCK_USE_ATOMIC_FLAG//std::atomic_flag版（高速）
-//#define SPIN_LOCK_USE_ATOMIC_BOOL//std::atomic_bool版（軽量）
-class CSpinLock
+//スピンロック
+//※サイズは4バイト(std::atomic_flag一つ分のサイズ)
+class spin_lock
 {
 public:
 	//定数
@@ -424,543 +302,568 @@ public:
 	//ロック取得
 	void lock(const int spin_count = DEFAULT_SPIN_COUNT)
 	{
-		int spin_count_now = 0;
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
-		while (m_lock.test_and_set())//std::atomic_flag版（高速）
+		int spin_count_now = spin_count;
+		while (true)
 		{
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
-		bool prev = false;
-		while (m_lock.compare_exchange_weak(prev, true))//std::atomic_bool版（軽量）
-		{
-			prev = false;
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
-			if (spin_count == 0 || ++spin_count_now % spin_count == 0)
+			if (!m_lock.test_and_set())
+				return;
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				spin_count_now = spin_count;
+			}
 		}
+	}
+	//ロック取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock()
+	{
+		return m_lock.test_and_set() == false;
 	}
 	//ロック解放
-	void unlock()
+	inline void unlock()
 	{
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
-		m_lock.clear();//std::atomic_flag版（高速）
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
-		m_lock.store(false);//std::atomic_bool版（軽量）
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+		m_lock.clear();
 	}
 public:
 	//コンストラクタ
-	CSpinLock()
+	inline spin_lock()
 	{
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
-		m_lock.clear();//ロック用フラグ（高速）
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
-		m_lock.store(false);//ロック用フラグ（軽量）
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+		m_lock.clear();
 	}
 	//デストラクタ
-	~CSpinLock()
-	{
-	}
+	inline ~spin_lock()
+	{}
 private:
 	//フィールド
-#ifdef SPIN_LOCK_USE_ATOMIC_FLAG
-	std::atomic_flag m_lock;//ロック用フラグ（高速）
-#else//SPIN_LOCK_USE_ATOMIC_FLAG
-	std::atomic_bool m_lock;//ロック用フラグ（軽量）
-#endif//SPIN_LOCK_USE_ATOMIC_FLAG
+	std::atomic_flag m_lock;//ロック用フラグ
 };
 
-//--------------------------------------------------------------------------------
-//リード・ライトロッククラス
-//--------------------------------------------------------------------------------
-//※容量節約のために、POSIXスレッドライブラリ版のように、現在のスレッドのロック状態を保持しない
-//※必ずロッククラス CRWLock::LockR, CRWLock::LockR_AsNecessary, CRWLock::LockW を使用し、
-//　そこに現在のロック状態を保持する
-//--------------------------------------------------------------------------------
-
 //----------------------------------------
-//クラス宣言
-class CRWLockHelper;
-
-//----------------------------------------
-//リード・ライトロッククラス
-class CRWLock
+//スピンロック（軽量版）
+//※サイズは1バイト
+class lw_spin_lock
 {
-	friend class CRWLockHelper;//手動でロック／アンロックを操作するためのヘルパークラス
+public:
+	//ロック取得
+	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (true)
+		{
+			bool prev = false;
+			if (!m_lock.compare_exchange_weak(prev, true))
+				return;
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//ロック取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock()
+	{
+		bool prev = false;
+		return m_lock.compare_exchange_weak(prev, true) == false;
+	}
+	//ロック解放
+	inline void unlock()
+	{
+		m_lock.store(false);
+	}
+public:
+	//コンストラクタ
+	inline lw_spin_lock()
+	{
+		m_lock.store(false);//ロック用フラグ
+	}
+	//デストラクタ
+	inline ~lw_spin_lock()
+	{}
+private:
+	//フィールド
+	std::atomic_bool m_lock;//ロック用フラグ
+};
+
+//----------------------------------------
+//共有スピンロッククラス（リード・ライトロッククラス）
+//※サイズは4バイト
+//※排他ロック（ライトロック）を優先する
+//※読み込み操作（共有ロック）が込み合っている途中で割り込んで
+//　書き込み操作（排他ロック）を行いたい時に用いる
+//※排他ロックが常に最優先されるわけではない。
+//　共有ロックがロックを開放する前に排他ロックがロックを
+//　取得することを許可する仕組みで実装する。その場合、
+//　共有ロックが全て解放されるのを待ってから処理を続行する。
+//　そのため、別の排他ロックが待ち状態になっても、
+//　共有ロックより先にロックを取得することは保証しない。
+class shared_spin_lock
+{
 public:
 	//定数
-	enum E_WLOCK_PRIORITY//ライトロック優先度
-	{
-		WLOCK_PRIORITIZED,//ライトロック優先
-		NOT_WLOCK_PRIORITIZED,//ライトロック優先しない
-		ALL_WLOCK//全てライトロックにする（リードロックも内部的にライトロックになる）
-	};
-public:
-	//----------------------------------------
-	//【クラス内クラス】クラス宣言
-	class RLock;
-	class RLockAsNecessary;
-	class WLock;
-	//----------------------------------------
-	//【クラス内クラス】ロッククラス　※継承専用
-	class Lock
-	{
-		friend class CRWLock;
-	public:
-		//アクセッサ
-		bool isWriteLock() const { return m_isWriteLock; }//ライトロックモードか？
-		bool isUnlocked() const { return m_isUnlocked; }//現在アンロック状態か？（ロック状態なのが普通）
-	public:
-		//メソッド
-
-		//明示的なリードロック
-		//※リードロック時が「必要に応じてリードロック」なら同じ動作になる
-		//※明示的なロック解放後用メソッド
-		//※通常はコンストラクタでロックするので使用しない
-		void rlock(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
-		{
-			if (!m_isUnlocked)
-				return;
-			m_lock.rlock(spin_count, m_ignoreThreadId);
-			m_isWriteLock = false;
-			m_isUnlocked = false;
-		}
-		//明示的なライトロック
-		//※明示的なロック解放後用メソッド
-		//※通常はコンストラクタでロックするので使用しない
-		void wlock(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
-		{
-			if (!m_isUnlocked)
-				return;
-			m_lock.wlock(spin_count);
-			m_isWriteLock = true;
-			m_isUnlocked = false;
-		}
-		//明示的なアンロック
-		//※通常はデストラクタでアンロックするので使用しない
-		void unlock()
-		{
-			if (m_isUnlocked)
-				return;
-			if (m_isWriteLock)
-				m_lock.wunlock();
-			else
-				m_lock.runlock();
-			m_isUnlocked = true;
-		}
-	private:
-		//オペレータ
-		Lock& operator=(const Lock& o){ return *this; }//コピー演算子（禁止）
-	private:
-		//コンストラクタ
-		explicit Lock(const Lock& o) :m_lock(o.m_lock){}//コピーコンストラクタ（禁止）
-	public:
-		//ムーブコンストラクタ
-		inline Lock(Lock&& lock) :
-			m_lock(lock.m_lock),
-			m_ignoreThreadId(lock.m_ignoreThreadId),
-			m_isWriteLock(lock.m_isWriteLock),
-			m_isUnlocked(lock.m_isUnlocked)
-		{
-			//移動元のロックオブジェクトはアンロック扱いにして、
-			//デストラクタでアンロックしてしまうことを防ぐ
-			lock.m_isUnlocked = true;
-		}
-	protected:
-		//コンストラクタ　※各種ロッククラスからのみ使用
-
-		//リードロック用コンストラクタ
-		inline Lock(const RLock*, CRWLock& lock, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			m_lock(lock),
-			m_ignoreThreadId(INVALID_THREAD_ID),
-			m_isWriteLock(false),
-			m_isUnlocked(false)
-		{
-			//リードロック
-			m_lock.rlock(spin_count, m_ignoreThreadId);
-		}
-		//必要に応じてリードロック用コンストラクタ
-		inline Lock(const RLockAsNecessary*, CRWLock& lock, const CThreadID& ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			m_lock(lock),
-			m_ignoreThreadId(ignore_thread_id.getID()),
-			m_isWriteLock(false),
-			m_isUnlocked(false)
-		{
-			//必要に応じてリードロック
-			m_lock.rlock(spin_count, m_ignoreThreadId);
-		}
-		inline Lock(const RLockAsNecessary*, CRWLock& lock, const THREAD_ID ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			m_lock(lock),
-			m_ignoreThreadId(ignore_thread_id),
-			m_isWriteLock(false),
-			m_isUnlocked(false)
-		{
-			//必要に応じてリードロック
-			m_lock.rlock(spin_count, m_ignoreThreadId);
-		}
-		//ライトロック用コンストラクタ
-		inline Lock(const WLock*, CRWLock& lock, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			m_lock(lock),
-			m_ignoreThreadId(INVALID_THREAD_ID),
-			m_isWriteLock(true),
-			m_isUnlocked(false)
-		{
-			//ライトロック
-			m_lock.wlock(spin_count);
-		}
-	public:
-		//デストラクタ
-		//※アンロック
-		~Lock()
-		{
-			unlock();
-		}
-	private:
-		//フィールド
-		CRWLock& m_lock;//リード・ライトオブジェクトの参照
-		THREAD_ID m_ignoreThreadId;//リードロックを無視するスレッドID
-		bool m_isWriteLock;//ライトロックモードか？
-		bool m_isUnlocked;//アンロック状態か？
-	};
-public:
-	//----------------------------------------
-	//【クラス内クラス】リードロッククラス
-	class RLock : public Lock
-	{
-	private:
-		//オペレータ
-		RLock& operator=(const RLock& o){ return *this; }//コピー演算子（禁止）
-	private:
-		//コンストラクタ
-		explicit RLock(const Lock& o) :Lock(o){}//コピーコンストラクタ（禁止）
-	public:
-		//ムーブコンストラクタ
-		inline RLock(RLock&& lock) :
-			Lock(std::move(lock))
-		{
-		}
-	public:
-		//コンストラクタ
-		inline RLock(CRWLock& lock, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			Lock(this, lock, spin_count)
-		{}
-		//デストラクタ
-		inline ~RLock()
-		{}
-	};
-	//----------------------------------------
-	//【クラス内クラス】必要に応じてリードロッククラス
-	class RLockAsNecessary : public Lock
-	{
-	private:
-		//オペレータ
-		RLockAsNecessary& operator=(const RLockAsNecessary& o){ return *this; }//コピー演算子（禁止）
-	private:
-		//コンストラクタ
-		explicit RLockAsNecessary(const RLockAsNecessary& o) :Lock(o){}//コピーコンストラクタ（禁止）
-	public:
-		//ムーブコンストラクタ
-		inline RLockAsNecessary(RLockAsNecessary&& lock) :
-			Lock(std::move(lock))
-		{}
-	public:
-		//コンストラクタ
-		inline RLockAsNecessary(CRWLock& lock, const CThreadID& ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			Lock(this, lock, ignore_thread_id, spin_count)
-		{}
-		inline RLockAsNecessary(CRWLock& lock, const THREAD_ID ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			Lock(this, lock, ignore_thread_id, spin_count)
-		{}
-		inline RLockAsNecessary(CRWLock& lock, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			Lock(this, lock, CThreadID::getThisID(), spin_count)
-		{}
-		//デストラクタ
-		inline ~RLockAsNecessary()
-		{}
-	};
-	//----------------------------------------
-	//【クラス内クラス】ライトロッククラス
-	class WLock : public Lock
-	{
-	private:
-		//オペレータ
-		WLock& operator=(const WLock& lock){ return *this; }//コピー演算子（禁止）
-	private:
-		//コンストラクタ
-		explicit WLock(const WLock& lock) :Lock(lock){}//コピーコンストラクタ（禁止）
-	public:
-		//ムーブコンストラクタ
-		inline WLock(WLock&& lock) :
-			Lock(std::move(lock))
-		{}
-	public:
-		//コンストラクタ
-		inline WLock(CRWLock& lock, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT) :
-			Lock(this, lock, spin_count)
-		{}
-		//デストラクタ
-		inline ~WLock()
-		{}
-	};
-	//----------------------------------------
-	//【クラス内クラス】（以上で終了）
+	static const int DEFAULT_COUNTER = 0x01000000;//ロックが取得されていない時のデフォルトのカウンター
 
 public:
-	//【ロックオブジェクトを返すロックメソッド】
-	//※右辺値参照を使用することにより、「コピーコンストラクタ」と
-	//　区別して「ムーブコンストラクタ」を記述できる
-	//※これを利用して、関数の内部で作成したオブジェクトの内容を
-	//　呼び出し元のオブジェクトに移動する。
-	//　ムーブコンストラクタでは、移動元オブジェクトを
-	//　アンロック済み扱いにしているるので、関数終了時に
-	//　ローカルオブジェクトのデストラクタが呼び出されても、
-	//　アンロックしてしまうことがない。
-
-	//【ロックオブジェクトを返すロックメソッド】リードロック
-	RLock rLock(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	//共有ロック（リードロック）取得
+	void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
-		RLock lock(*this, spin_count);
-		return std::move(lock);
-	}
-	//【ロックオブジェクトを返すロックメソッド】必要に応じてリードロック
-	RLockAsNecessary rLockAsNecessary(const CThreadID& ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
-	{
-		RLockAsNecessary lock(*this, ignore_thread_id, spin_count);
-		return std::move(lock);
-	}
-	RLockAsNecessary rLockAsNecessary(const THREAD_ID ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
-	{
-		RLockAsNecessary lock(*this, ignore_thread_id, spin_count);
-		return std::move(lock);
-	}
-	RLockAsNecessary rLockAsNecessary(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
-	{
-		RLockAsNecessary lock(*this, spin_count);
-		return std::move(lock);
-	}
-	//【ロックオブジェクトを返すロックメソッド】ライトロック
-	WLock wLock(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
-	{
-		WLock lock(*this, spin_count);
-		return std::move(lock);
-	}
-
-private:
-	//メソッド　※ロッククラスからのみ使用
-
-	//リードロック取得
-	//※必要に応じてリードロックの機能を備える
-	void rlock(const int spin_count, const THREAD_ID ignore_thread_id)
-	{
-		//全てライトロックにするモード用処理
-		if (m_wlockPrioritized == ALL_WLOCK)
-		{
-			wlock(spin_count);
-			return;
-		}
-
-		//リードロックスキップチェック
-		//※リード・ライトロックオブジェクトインスタンス生成時、および、リードロック時に、
-		//　共にスレッドIDが指定されていた場合、かつ、それが同じIDであった場合、
-		//　リードロックをスキップする
-		if (ignore_thread_id != INVALID_THREAD_ID && m_ignoreThreadId == ignore_thread_id)//&& m_writeLock.load() == false)
-			//↑ライトロック状態はチェックしない
-			//※プログラムを信頼して高速化を徹底する
-			//※仮にこの判定を行っても、m_lock で保護しない限りは不確実なブロック
-		{
-			m_readLock.fetch_add(1);
-			return;
-		}
-
-		//リードロック予約カウントアップ
-		//※制御上は必要ないが、問題追跡時の参考用
-		m_readLockReserved.fetch_add(1);
-
-		//リードロック待機ループ
+		int spin_count_now = spin_count;
 		while (1)
 		{
-			//内部変数更新ロック取得
-			m_lock.lock(spin_count);
-
-			//内部変数更新ロックを取得できたので、ライトロックの状態をチェック
-			if (m_writeLock.load() == false &&//ライトロック状態ではない
-				(m_wlockPrioritized != WLOCK_PRIORITIZED ||//ライトロック優先モードではない
-				m_wlockPrioritized == WLOCK_PRIORITIZED && m_writeLockReserved.load() == 0))//ライトロック優先モードなら、ライトロック予約がないこともチェック
+			const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+			if (lock_counter > 0)
+				return;//ロック取得成功
+			m_lockCounter.fetch_add(1);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				//リードロックOK
-				m_readLock.fetch_add(1);//リードロックカウントアップ
-				m_lock.unlock();//内部変数更新ロック解放
-				break;
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				spin_count_now = spin_count;
 			}
-
-			//内部変数更新ロック解放
-			//※リードロックが取得できるまで再び待機
-			m_lock.unlock();//内部変数更新ロック解放
 		}
-
-		//リードロック予約カウントダウン
-		//※制御上は必要ないが、問題追跡時の参考用
-		m_readLockReserved.fetch_sub(1);
 	}
-	//ライトロック取得
-	void wlock(const int spin_count)
+	//共有ロック（リードロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock_shared()
 	{
-		//ライトロック予約カウントアップ
-		m_writeLockReserved.fetch_add(1);
-
-		//ライトロック待機ループ
+		const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+		if (lock_counter >= 0)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//排他ロック（ライトロック）取得
+	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
 		while (1)
 		{
-			//内部変数更新ロック取得
-			m_lock.lock(spin_count);
-
-			//内部変数更新ロックを取得できたので、リードロックとライトロックの状態をチェック
-			if (m_readLock.load() == 0 && m_writeLock.load() == false)
-			{
-				//ライトロックOK
-				m_writeLock.store(true);//ライトロックON
-				m_lock.unlock();//内部変数更新ロック解放
-				break;
+			const int lock_counter = m_lockCounter.fetch_sub(DEFAULT_COUNTER);//カウンタを更新
+			if (lock_counter == DEFAULT_COUNTER)
+				return;//ロック取得成功
+			if (lock_counter > 0)	//他が排他ロックを取得していないので、現在の共有ロックが全て解放されるのを待つ
+			{						//※カウンタを更新したままなので、後続の共有ロック／排他ロックは取得できない。
+				while (m_lockCounter.load() != 0)//カウンタが0になるのを待つ
+				{
+					if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+					{
+						std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+						spin_count_now = spin_count;
+					}
+				}
+				return;//ロック取得成功
 			}
-
-			//内部変数更新ロック解放
-			//※ライトロックが取得できるまで再び待機
-			m_lock.unlock();//内部変数更新ロック解放
+			m_lockCounter.fetch_add(DEFAULT_COUNTER);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				spin_count_now = spin_count;
+			}
 		}
-
-		//ライトロック予約カウントダウン
-		m_writeLockReserved.fetch_sub(1);
 	}
-	//リードロック解放
-	void runlock()
+	//排他ロック（ライトロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock()
 	{
-		//全てライトロックにするモード用処理
-		if (m_wlockPrioritized == ALL_WLOCK)
-		{
-			wunlock();
-			return;
-		}
-
-		//リードロックカウントダウン
-		m_readLock.fetch_sub(1);
+		const int lock_counter = m_lockCounter.fetch_sub(DEFAULT_COUNTER);//カウンタを更新
+		if (lock_counter == DEFAULT_COUNTER)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(DEFAULT_COUNTER);//カウンタを戻す
+		return false;//ロック取得失敗
 	}
-	//ライトロック解放
-	void wunlock()
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
 	{
-		//ライトロックOFF
-		m_writeLock.store(false);
+		m_lockCounter.fetch_add(1);//カウンタを戻す
 	}
-public:
-	//アクセッサ
-	THREAD_ID getIgnoreThreadID() const { return m_ignoreThreadId; }//「必要に応じてリードロック」用のスレッドID
-	void setIgnoreThreadID(const THREAD_ID thread_id) { m_ignoreThreadId = thread_id; }//「必要に応じてリードロック」用のスレッドIDを更新
-	int getReadLockReserved() const { return m_readLockReserved.load(); }//リードロック予約カウンタ ※制御上は必要ないが、問題追跡時の参考用
-	int getReadLock() const { return m_readLock.load(); }//リードロックカウンタ
-	int getWriteLockReserved() const { return m_writeLockReserved.load(); }//ライトロック予約カウンタ
-	bool getWriteLock() const { return m_writeLock.load(); }//ライトロックフラグ
-	E_WLOCK_PRIORITY getWlockPrioritized() const { return m_wlockPrioritized; }//ライトロック優先度
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lockCounter.fetch_add(DEFAULT_COUNTER);//カウンタを戻す
+	}
 public:
 	//コンストラクタ
-	CRWLock(const THREAD_ID ignore_thread_id, const E_WLOCK_PRIORITY wlock_prioritized) :
-		m_ignoreThreadId(ignore_thread_id),
-		m_readLockReserved(0),
-		m_readLock(0),
-		m_writeLockReserved(0),
-		m_writeLock(false),
-		m_wlockPrioritized(wlock_prioritized)
-	{}
-	CRWLock(const CThreadID& ignore_thread_id, const E_WLOCK_PRIORITY wlock_prioritized) :
-		CRWLock(ignore_thread_id.getID(), wlock_prioritized)
-	{}
-	CRWLock(const CThreadID& ignore_thread_id) :
-		CRWLock(ignore_thread_id.getID(), WLOCK_PRIORITIZED)
-	{}
-	CRWLock(const THREAD_ID ignore_thread_id) :
-		CRWLock(ignore_thread_id, WLOCK_PRIORITIZED)
-	{}
-	CRWLock(const E_WLOCK_PRIORITY wlock_prioritized) :
-		CRWLock(CThreadID::getThisID(), wlock_prioritized)
-	{}
-	CRWLock() :
-		CRWLock(CThreadID::getThisID(), WLOCK_PRIORITIZED)
+	inline shared_spin_lock() :
+		m_lockCounter(DEFAULT_COUNTER)
 	{}
 	//デストラクタ
-	~CRWLock()
+	inline ~shared_spin_lock()
 	{}
 private:
 	//フィールド
-	THREAD_ID m_ignoreThreadId;//「必要に応じてリードロック」用のスレッドID
-	std::atomic<int> m_readLockReserved;//リードロック予約カウンタ ※制御上は必要ないが、問題追跡時の参考用
-	std::atomic<int> m_readLock;//リードロックカウンタ
-	std::atomic<int> m_writeLockReserved;//ライトロック予約カウンタ
-	std::atomic<bool> m_writeLock;//ライトロックフラグ
-	CSpinLock m_lock;//内部変数更新用ロックフラグ
-	E_WLOCK_PRIORITY m_wlockPrioritized;//ライトロック優先度
+	std::atomic<int> m_lockCounter;//ロックカウンター
 };
 
-//「リードロッククラス」「必要に応じてリードロッククラス」「ライトロッククラス」の別名を設定
-typedef CRWLock::RLock CRWLockR;
-typedef CRWLock::RLockAsNecessary CRWLockR_AsNecessary;
-typedef CRWLock::WLock CRWLockW;
-
-//【C++11スタイル】「リードロッククラス」「必要に応じてリードロッククラス」「ライトロッククラス」の別名を設定
-//using CRWLockR = CRWLock::RLock;
-//using CRWLockR_AsNecessary = CRWLock::RLockAsNecessary;
-//using CRWLockW = CRWLock::WLock;
+//----------------------------------------
+//共有スピンロッククラス（リード・ライトロッククラス）（軽量版）
+//※サイズは4バイト
+//※排他ロック（ライトロック）を優先しない
+//※読み込み操作（共有ロック）が込み合っていると、
+//　書き込み操作（排他ロック）が待たされるので注意。
+class lw_shared_spin_lock
+{
+public:
+	//共有ロック（リードロック）取得
+	void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (1)
+		{
+			const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+			if (lock_counter > 0)
+				return;//ロック取得成功
+			m_lockCounter.fetch_add(1);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//共有ロック（リードロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock_shared()
+	{
+		const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+		if (lock_counter >= 0)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//排他ロック（ライトロック）取得
+	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (1)
+		{
+			const int lock_counter = m_lockCounter.fetch_sub(shared_spin_lock::DEFAULT_COUNTER);//カウンタを更新
+			if (lock_counter == shared_spin_lock::DEFAULT_COUNTER)
+				return;//ロック取得成功
+			m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//排他ロック（ライトロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock()
+	{
+		const int lock_counter = m_lockCounter.fetch_sub(shared_spin_lock::DEFAULT_COUNTER);//カウンタを更新
+		if (lock_counter == shared_spin_lock::DEFAULT_COUNTER)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//カウンタを戻す
+	}
+public:
+	//コンストラクタ
+	inline lw_shared_spin_lock() :
+		m_lockCounter(shared_spin_lock::DEFAULT_COUNTER)
+	{}
+	//デストラクタ
+	inline ~lw_shared_spin_lock()
+	{}
+private:
+	//フィールド
+	std::atomic<int> m_lockCounter;//ロックカウンター
+};
 
 //----------------------------------------
-//リード・ライトロックヘルパークラス
-//※ロッククラスを用いずに、直接リード・ライトロックを操作するためのクラス
-//※濫用禁止
-class CRWLockHelper
+//非共有スピンロッククラス（リード・ライトロッククラス）
+//※サイズは4バイト
+//※共有ロッククラスと同一のインターフェースで、
+//　共有ロックを行わないクラス
+//※共有ロックのヘルパークラスやロックガードを使用する処理に対して、
+//　完全な排他制御を行いたい時に使用する。
+class unshared_spin_lock
 {
+public:
+	//共有ロック（リードロック）取得
+	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//共有ロック（リードロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock_shared()
+	{
+		return m_lock.try_lock();
+	}
+	//排他ロック（ライトロック）取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//排他ロック（ライトロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock()
+	{
+		return m_lock.try_lock();
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lock.unlock();
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lock.unlock();
+	}
+public:
+	//コンストラクタ
+	unshared_spin_lock() :
+		m_lock()
+	{}
+	//デストラクタ
+	~unshared_spin_lock()
+	{}
+private:
+	//フィールド
+	spin_lock m_lock;//ロックオブジェクト
+};
+
+//--------------------------------------------------------------------------------
+//ダミーロック
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//ダミーロッククラス
+//※spin_lockやstd::mutexと同様のロックインターフェースを持つが、実際には何もしないクラス
+class dummy_lock
+{
+public:
+	//ロック取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		//何もしない
+	}
+	//ロック取得を試行
+	inline bool try_lock()
+	{
+		//何もしない
+	}
+	//ロック解放
+	inline void unlock()
+	{
+		//何もしない
+	}
+public:
+	//コンストラクタ
+	inline dummy_lock()
+	{}
+	//デストラクタ
+	~dummy_lock()
+	{}
+};
+
+//----------------------------------------
+//ダミー共有ロッククラス
+//※shared_spin_lockやstd::shared_lockと同様のロックインターフェースを持つが、実際には何もしないクラス
+class dummy_shared_lock
+{
+public:
+	//リード・ロック取得
+	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		//何もしない
+	}
+	//リード・ロック取得を試行
+	inline bool try_lock_shared()
+	{
+		//何もしない
+	}
+	//ライト・ロック取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		//何もしない
+	}
+	//ライト・ロック取得を試行
+	inline bool try_lock()
+	{
+		//何もしない
+	}
+	//リード・ロック解放
+	inline void unlock_shared()
+	{
+		//何もしない
+	}
+	//ライト・ロック解放
+	inline void unlock()
+	{
+		//何もしない
+	}
+public:
+	//コンストラクタ
+	inline dummy_shared_lock()
+	{}
+	//デストラクタ
+	~dummy_shared_lock()
+	{}
+};
+
+//--------------------------------------------------------------------------------
+//ロックヘルパー
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//ロックヘルパークラス
+//※実装を隠ぺいしてロックを操作するためのヘルパークラス
+template<class T>
+class lock_helper
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
 public:
 	//メソッド
 
-	//リードロック取得
-	void rLock(const int spin_count)
+	//ロック取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
-		m_lock.rlock(spin_count, INVALID_THREAD_ID);
+		m_lock.lock(spin_count);
 	}
-	//必要に応じてリードロック取得
-	void rLockAsNecessary(const CThreadID& ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	//ロック取得を試行
+	inline bool try_lock()
 	{
-		m_lock.rlock(spin_count, ignore_thread_id.getID());
+		return m_lock.try_lock();
 	}
-	void rLockAsNecessary(const THREAD_ID ignore_thread_id, const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
+	//ロック解放
+	inline void unlock()
 	{
-		m_lock.rlock(spin_count, ignore_thread_id);
-	}
-	void rLockAsNecessary(const int spin_count = CSpinLock::DEFAULT_SPIN_COUNT)
-	{
-		m_lock.rlock(spin_count, CThreadID::getThisID());
-	}
-	//ライトロック取得
-	void wLock(const int spin_count)
-	{
-		m_lock.wlock(spin_count);
-	}
-	//リードロック解放
-	void rUnlock()
-	{
-		m_lock.runlock();
-	}
-	//ライトロック解放
-	void wUnlock()
-	{
-		m_lock.wunlock();
+		m_lock.unlock();
 	}
 public:
 	//コンストラクタ
-	CRWLockHelper(CRWLock& lock) :
+	inline lock_helper(lock_type& lock) :
 		m_lock(lock)
 	{}
 	//デストラクタ
-	~CRWLockHelper()
+	inline ~lock_helper()
 	{}
 private:
 	//フィールド
-	CRWLock& m_lock;//リード・ライトオブジェクトの参照
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//----------------------------------------
+//共有ロックヘルパークラス
+//※実装を隠ぺいして共有ロックを操作するためのヘルパークラス
+template<class T>
+class shared_lock_helper
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//メソッド
+
+	//共有ロック（リードロック）取得
+	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock_shared(spin_count);
+	}
+	//共有ロック（リードロック）取得を試行
+	inline bool try_lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		return m_lock.try_lock_shared(spin_count);
+	}
+	//排他ロック（ライトロック）取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//排他ロック（ライトロック）取得を試行
+	inline bool try_lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		return m_lock.try_lock(spin_count);
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lock.unlock_shared();
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lock.unlock();
+	}
+public:
+	//コンストラクタ
+	inline shared_lock_helper(lock_type& lock) :
+		m_lock(lock)
+	{}
+	//デストラクタ
+	inline ~shared_lock_helper()
+	{}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//--------------------------------------------------------------------------------
+//ロックガード（スコープロック）
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//ロックガードクラス（スコープロック）
+//※スコープロックで通常ロックもしくは排他ロック（ライトロック）のロック取得と解放を行う
+template<class T>
+class lock_guard
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//コンストラクタ
+	inline lock_guard(lock_type& lock, const int spin_count = spin_lock::DEFAULT_SPIN_COUNT) :
+		m_lock(lock)
+	{
+		m_lock.lock(spin_count);
+	}
+	//デストラクタ
+	inline ~lock_guard()
+	{
+		m_lock.unlock();
+	}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//----------------------------------------
+//共有ロックガードクラス（スコープロック）
+//※スコープロックで共有ロック（リードロック）のロック取得と解放を行う
+template<class T>
+class shared_lock_guard
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//コンストラクタ
+	inline shared_lock_guard(lock_type& lock, const int spin_count = spin_lock::DEFAULT_SPIN_COUNT) :
+		m_lock(lock)
+	{
+		m_lock.lock_shared(spin_count);
+	}
+	//デストラクタ
+	inline ~shared_lock_guard()
+	{
+		m_lock.unlock_shared();
+	}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
 };
 
 //--------------------------------------------------------------------------------
@@ -1020,6 +923,10 @@ namespace hash_table
 	//	{
 	//		//キーを取得
 	//		inline static key_type getKey(const value_type& value){ return ???; }
+	//		
+	//		//ロック型
+	//		//※リード・ライトロックを使用する際にだけ宣言
+	//		typedef shared_spin_lock lock_type;//ロックオブジェクト型
 	//	};
 	template<class OPE_TYPE, typename KEY_TYPE, typename VALUE_TYPE, KEY_TYPE _KEY_MIN = 0u, KEY_TYPE _KEY_MAX = 0xffffffffu, KEY_TYPE _INVALID_KEY = 0xffffffffu>
 	struct base_ope_t
@@ -1034,6 +941,9 @@ namespace hash_table
 		typedef VALUE_TYPE value_type;//値型
 		typedef KEY_TYPE key_type;//キー型
 
+		//ロック型
+		typedef dummy_shared_lock lock_type;//ロックオブジェクト型
+		
 		//デストラクタ呼び出し
 		static void callDestructor(value_type* obj){ obj->~VALUE_TYPE(); }
 	};
@@ -1048,19 +958,15 @@ namespace hash_table
 		typedef value_type* pointer; \
 		typedef const value_type* const_pointer; \
 		typedef std::size_t size_type; \
-		typedef std::size_t index_type;
-	
+		typedef std::size_t index_type; \
+		typedef typename ope_type::lock_type lock_type;
+
 	//----------------------------------------
 	//ハッシュテーブルコンテナ用定数
 	enum replace_attr_t : unsigned char//データ置換属性
 	{
 		NEVER_REPLACE,//キーが重複するデータは登録できない（置換しない）
 		REPLACE,//キーが重複するデータは置換して登録する
-	};
-	enum auto_lock_attr_t : unsigned char//自動ロック属性
-	{
-		NEVER_LOCK,//ロックしない
-		AUTO_WRITE_LOCK,//自動ライトロック
 	};
 	//----------------------------------------
 	//ハッシュテーブルコンテナ
@@ -1355,7 +1261,6 @@ namespace hash_table
 	public:
 		//アクセッサ
 		inline replace_attr_t getReplaceAttr() const { return m_replaceAttr; }//置換属性を取得
-		inline auto_lock_attr_t getAutoLockAttr() const { return m_autoLockAttr; }//自動ロック属性を取得
 		inline size_type getOriginalTableSize() const { return ORIGINAL_TABLE_SIZE; }//指定されたテーブルサイズを取得
 		inline size_type getTableSize() const { return TABLE_SIZE; }//（実際の）テーブルサイズを取得
 		inline size_type getTableSizeExtended() const { return TABLE_SIZE_EXTENDED; }//指定のテーブルサイズからの増分を取得
@@ -1388,10 +1293,10 @@ namespace hash_table
 		inline size_type bucket_count() const { return TABLE_SIZE; }//最大要素数を取得
 		inline size_type max_bucket_count() const { return TABLE_SIZE; }//最大要素数を取得
 		inline size_type size() const { return m_usingCount - m_deletedCount; }//使用中の要素数を取得
-		inline size_type bucket(const key_type key) const { return findIndex(key); }//キーに対応するインデックスを取得
-		inline size_type bucket(const char* key) const { return findIndex(key); }//キーに対応するインデックスを取得
-		inline size_type bucket(const std::string key) const { return findIndex(key); }//キーに対応するインデックスを取得
-		inline size_type bucket(const value_type& value) const { return findIndex(value); }//キーに対応するインデックスを取得
+		inline size_type bucket(const key_type key) const { return _findIndex(key); }//キーに対応するインデックスを取得
+		inline size_type bucket(const char* key) const { return _findIndex(key); }//キーに対応するインデックスを取得
+		inline size_type bucket(const std::string key) const { return _findIndex(key); }//キーに対応するインデックスを取得
+		inline size_type bucket(const value_type& value) const { return _findIndex(value); }//キーに対応するインデックスを取得
 		inline size_type bucket_size(const index_type index) const { return m_using[index] && !m_deleted[index] ? 1 : 0; }//特定バケット内の要素数を取得
 	public:
 		//検索系アクセッサ：キーで検索して値を返す
@@ -1415,15 +1320,8 @@ namespace hash_table
 		const value_type* operator[](const value_type& value) const { return findValue(value); }
 	public:
 		//キャストオペレータ
-		operator CRWLock&(){ return m_lock; }//リード・ライトロック
-		//【ロックの使用方法】
-		//{
-		//    CRWLock::RLock lock(container);//引数にハッシュテーブルコンテナを渡すことで、リードロックを取得
-		//    //※この処理ブロックを抜けると自動的にロック解放
-		//    data_t* obj = container[key];//データアクセス
-		//}
-		//※ライトロックも同様の方法で明示的にロックできるが、
-		//　コンテナ生成時にコンストラクタ引数で自動ロック属性を指定する方が良い。
+		inline operator lock_type&(){ return m_lock; }//共有ロックオブジェクト
+		inline operator lock_type&() const { return m_lock; }//共有ロックオブジェクト ※mutable
 	public:
 		//メソッド
 		inline index_type calcIndexStep(const key_type key) const { return INDEX_STEP_BASE - key % INDEX_STEP_BASE; }//キーからインデックスの歩幅（第二ハッシュ）を計算
@@ -1499,7 +1397,7 @@ namespace hash_table
 		inline const_iterator cend() const { return this->end(); }
 	private:
 		//キーで検索してインデックスを取得（本体）
-		index_type _findIndex(const key_type key) const
+		index_type _findIndexCommon(const key_type key) const
 		{
 			if (m_usingCount == 0 || m_deletedCount == m_usingCount)
 				return INVALID_INDEX;
@@ -1518,23 +1416,23 @@ namespace hash_table
 		//キーで検索してインデックスを取得
 		//※マルチスレッドで処理する際は、一連の処理ブロック全体の前後で
 		//　リードロックの取得を行うようにすること。
-		inline index_type findIndex(const key_type key) const{ return _findIndex(key); }
-		inline index_type findIndex(const char* key) const{ return _findIndex(calcCRC32(key)); }
-		inline index_type findIndex(const std::string& key) const{ return _findIndex(key.c_str()); }
-		inline index_type findIndex(const value_type& value) const{ return _findIndex(ope_type::getKey(value)); }
+		inline index_type _findIndex(const key_type key) const{ return _findIndexCommon(key); }
+		inline index_type _findIndex(const char* key) const{ return _findIndexCommon(calcCRC32(key)); }
+		inline index_type _findIndex(const std::string& key) const{ return _findIndexCommon(key.c_str()); }
+		inline index_type _findIndex(const value_type& value) const{ return _findIndexCommon(ope_type::getKey(value)); }
 	private:
 		//キーで検索して値を取得（本体）
 		inline const value_type* _findValue(const key_type key) const
 		{
-			const index_type index = findIndex(key);//検索してインデックスを取得
+			const index_type index = _findIndex(key);//検索してインデックスを取得
 			if (index == INVALID_INDEX)
 				return nullptr;
 			return reinterpret_cast<const value_type*>(&m_table[index]);
 		}
 	public:
 		//キーで検索して値を取得
-		//※マルチスレッドで処理する際は、一連の処理ブロック全体の前後で
-		//　リードロックの取得を行うようにすること。
+		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
 		inline const value_type* findValue(const key_type key) const { return _findValue(key); }
 		inline const value_type* findValue(const char* key) const { return _findValue(calcCRC32(key)); }
 		inline const value_type* findValue(const std::string& key) const { return _findValue(key.c_str()); }
@@ -1544,11 +1442,11 @@ namespace hash_table
 		inline value_type* findValue(const std::string& key){ return const_cast<value_type*>(_findValue(key.c_str())); }
 		inline value_type* findValue(const value_type& value){ return const_cast<value_type*>(_findValue(ope_type::getKey(value))); }
 		//キーで検索してイテレータを取得
-		//※マルチスレッドで処理する際は、一連の処理ブロック全体の前後で
-		//　リードロックの取得を行うようにすること。
+		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
 		const_iterator find(const key_type key) const
 		{
-			const index_type index = findIndex(key);
+			const index_type index = _findIndex(key);
 			if (index == INVALID_INDEX)
 				return iterator(*this, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false);
 			return iterator(*this, index, m_keyTable[index], reinterpret_cast<const value_type*>(m_table[index]), m_deleted[index]);
@@ -1567,7 +1465,7 @@ namespace hash_table
 		{
 			if (m_usingCount == TABLE_SIZE && m_deletedCount == 0)
 				return nullptr;
-			index_type index = _findIndex(key);
+			index_type index = _findIndexCommon(key);
 			if (m_replaceAttr == NEVER_REPLACE && index != INVALID_INDEX)//同じキーが既に割り当て済みなら割り当て失敗
 				return nullptr;
 			int find_cycle = 0;
@@ -1608,14 +1506,10 @@ namespace hash_table
 	public:
 		//キー割り当て
 		//※割り当てた配列要素（データテーブル）のポインタを返す
-		//※処理中、ライトロックを取得する（自動ライトロック属性設定時）
+		//※処理中、排他ロック（ライトロック）を取得する
 		inline value_type* assign(const key_type key)
 		{
-			if (m_autoLockAttr == AUTO_WRITE_LOCK)
-			{
-				CRWLock::WLock lock(m_lock);//ライトロック
-				return _assign(key);
-			}
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
 			return _assign(key);
 		}
 		inline value_type* assign(const char* key){ return assign(calcCRC32(key)); }
@@ -1635,14 +1529,10 @@ namespace hash_table
 	public:
 		//キー割り当てして値を挿入（コピー）
 		//※オブジェクトのコピーが発生する点に注意
-		//※処理中、ライトロックを取得する（自動ライトロック属性設定時）
+		//※処理中、排他ロック（ライトロック）を取得する
 		inline value_type* insert(const key_type key, const value_type& value)
 		{
-			if (m_autoLockAttr == AUTO_WRITE_LOCK)
-			{
-				CRWLock::WLock lock(m_lock);//ライトロック
-				return _insert(key, value);
-			}
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
 			return _insert(key, value);
 		}
 		inline value_type* insert(const char* key, const value_type& value){ return insert(calcCRC32(key), value); }
@@ -1666,15 +1556,11 @@ namespace hash_table
 	public:
 		//キー割り当てして値を初期化
 		//※コンストラクタが呼び出される
-		//※処理中、ライトロックを取得する（自動ライトロック属性設定時）
+		//※処理中、排他ロック（ライトロック）を取得する
 		template<typename... Tx>
 		inline value_type* emplace(const key_type key, Tx... args)//const Tx&... args とも書ける
 		{
-			if (m_autoLockAttr == AUTO_WRITE_LOCK)
-			{
-				CRWLock::WLock lock(m_lock);//ライトロック
-				return _emplace(key, args...);
-			}
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
 			return _emplace(key, args...);
 		}
 		template<typename... Tx>
@@ -1704,7 +1590,7 @@ namespace hash_table
 		//キーを削除（本体）
 		bool _erase(const key_type key)
 		{
-			const index_type index = findIndex(key);//検索してインデックスを取得
+			const index_type index = _findIndex(key);//検索してインデックスを取得
 			if (index == INVALID_INDEX)//検索失敗なら削除失敗
 				return false;
 			_eraseByIndex(index);
@@ -1714,14 +1600,10 @@ namespace hash_table
 		}
 	public:
 		//キーを削除
-		//※処理中、ライトロックを取得する（自動ライトロック属性設定時）
+		//※処理中、排他ロック（ライトロック）を取得する
 		inline bool erase(const key_type key)
 		{
-			if (m_autoLockAttr == AUTO_WRITE_LOCK)
-			{
-				CRWLock::WLock lock(m_lock);//ライトロック
-				return _erase(key);
-			}
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
 			return _erase(key);
 		}
 		inline bool erase(const char* key){ return erase(calcCRC32(key)); }
@@ -1778,14 +1660,10 @@ namespace hash_table
 		//リハッシュ
 		//※テーブルを拡大・再構築するのではなく、削除済みデータを完全に削除するだけ。
 		//　そのために、削除済みデータの位置に移動可能なデータを移動する。
-		//※処理中、ライトロックを取得する（自動ライトロック属性設定時）
+		//※処理中、排他ロック（ライトロック）を取得する
 		inline bool rehash()
 		{
-			if (m_autoLockAttr == AUTO_WRITE_LOCK)
-			{
-				CRWLock::WLock lock(m_lock);//ライトロック
-				return _rehash();
-			}
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
 			return _rehash();
 		}
 	private:
@@ -1805,23 +1683,21 @@ namespace hash_table
 		}
 	public:
 		//クリア
-		//※処理中、ライトロックを取得する
+		//※処理中、排他ロック（ライトロック）を取得する
 		inline void clear()
 		{
-			CRWLock::WLock lock(m_lock);//ライトロック
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
 			_clear();
 		}
 	public:
 		//コンストラクタ
-		container(const replace_attr_t replace_attr = NEVER_REPLACE, const auto_lock_attr_t auto_lock_attr = NEVER_LOCK, const CRWLock::E_WLOCK_PRIORITY wlock_prioritized = CRWLock::WLOCK_PRIORITIZED) :
+		container(const replace_attr_t replace_attr = NEVER_REPLACE) :
 			m_using(),
 			m_deleted(),
 			m_usingCount(0),
 			m_deletedCount(0),
 			m_maxFindingCycle(0),
-			m_replaceAttr(replace_attr),
-			m_autoLockAttr(auto_lock_attr),
-			m_lock(wlock_prioritized)
+			m_replaceAttr(replace_attr)
 		{}
 		//デストラクタ
 		~container()
@@ -1835,8 +1711,7 @@ namespace hash_table
 		int m_deletedCount;//削除済みデータ数
 		int m_maxFindingCycle;//検索時の最大巡回回数 ※登録を削除しても減らない（リハッシュ時には調整される）
 		replace_attr_t m_replaceAttr;//データ置換属性
-		auto_lock_attr_t m_autoLockAttr;//自動ロック属性
-		CRWLock m_lock;//リード・ライトロック
+		mutable lock_type m_lock;//共有ライトオブジェクト
 	};
 	//--------------------
 	//基本型定義マクロ消去
@@ -1985,6 +1860,9 @@ struct ope_t : public hash_table::base_ope_t<ope_t, crc32_t, data_t>
 {
 	//キーを取得
 	inline static key_type getKey(const value_type& value){ return value.m_key; }
+
+	//リード・ライトロックを使用する
+	typedef shared_spin_lock lock_type;
 };
 
 //----------------------------------------
@@ -2154,7 +2032,7 @@ int main(const int argc, const char* argv[])
 	printf("Hash Table Test\n");
 	printf("--------------------------------------------------------------------------------\n");
 	typedef hash_table::container<ope_t, TEST_DATA_TABLE_SIZE, 0, 0> container_type;//自動リハッシュなし, 検索巡回回数制限なし
-	container_type* con = new container_type(hash_table::NEVER_REPLACE, hash_table::NEVER_LOCK);//置換なし、自動ロックなし
+	container_type* con = new container_type(hash_table::NEVER_REPLACE);//置換なし
 
 	//ハッシュテーブルの基本情報表示
 	auto printTableParameter = [&con]()
@@ -2173,7 +2051,6 @@ int main(const int argc, const char* argv[])
 		printf(".getKeyMax()=%u\n", con->getKeyMax());
 		printf(".getKeyRange()=%u\n", con->getKeyRange());
 		printf(".getReplaceAttr()=%u\n", con->getReplaceAttr());
-		printf(".getAutoLockAttr()=%u\n", con->getAutoLockAttr());
 	};
 	printTableParameter();
 
@@ -2764,6 +2641,9 @@ int main(const int argc, const char* argv[])
 		{
 			//キーを取得
 			inline static key_type getKey(const value_type& value){ return value->m_key; }
+
+			//リード・ライトロックを使用する
+			typedef shared_spin_lock lock_type;
 		};
 
 		//ハッシュテーブル
@@ -2794,7 +2674,7 @@ int main(const int argc, const char* argv[])
 
 		//ロック取得テスト
 		{
-			CRWLock::RLock lock(p_con);
+			shared_lock_guard<p_ope_t::lock_type> lock(p_con);
 			printObj(20);
 		}
 	}

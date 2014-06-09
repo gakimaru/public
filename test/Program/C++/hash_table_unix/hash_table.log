@@ -4,10 +4,10 @@ Hash Table Test
 --------------------------------------------------------------------------------
 
 --- Table Parameter ---
-.max_size()=500009
-.getOriginalTableSize()=500000
-.getTableSize()=500009
-.getTableSizeExtended()=9
+.max_size()=100003
+.getOriginalTableSize()=100000
+.getTableSize()=100003
+.getTableSizeExtended()=3
 .getAutoRehashRatio()=0
 .getAutoRehashSize()=0
 .getFindingCycleLimit()=0
@@ -15,11 +15,10 @@ Hash Table Test
 .getKeyMax()=4294967295
 .getKeyRange()=0
 .getReplaceAttr()=0
-.getAutoLockAttr()=0
 
 --- Table Status ---
-.bucket_count()=500009
-.max_bucket_count()=500009
+.bucket_count()=100003
+.max_bucket_count()=100003
 .size()=0
 .empty()=1
 .getUsingCount()=0
@@ -28,84 +27,84 @@ Hash Table Test
 .getNotOptimizedCount()=0
 
 --- Insert Data ---
-success=250000, failure=0
-*elapsed time=0.121837000 sec.
+success=50000, failure=0
+*elapsed time=0.016065000 sec.
 
 --- Table Status ---
-.bucket_count()=500009
-.max_bucket_count()=500009
-.size()=250000
+.bucket_count()=100003
+.max_bucket_count()=100003
+.size()=50000
 .empty()=0
-.getUsingCount()=250000
+.getUsingCount()=50000
 .getDeletedCount()=0
-.getMaxFindingCycle()=23
-.getNotOptimizedCount()=62318
+.getMaxFindingCycle()=17
+.getNotOptimizedCount()=12546
 
 --- Find Data ---
-success=250000, failure=250000
-*elapsed time=0.190032000 sec.
+success=50000, failure=50000
+*elapsed time=0.031978000 sec.
 
 --- Erase Data ---
-success=125000, failure=125000
-*elapsed time=0.078524000 sec.
+success=25000, failure=25000
+*elapsed time=0.022964000 sec.
 
 --- Table Status ---
-.bucket_count()=500009
-.max_bucket_count()=500009
-.size()=125000
+.bucket_count()=100003
+.max_bucket_count()=100003
+.size()=25000
 .empty()=0
-.getUsingCount()=250000
-.getDeletedCount()=125000
-.getMaxFindingCycle()=23
-.getNotOptimizedCount()=31262
+.getUsingCount()=50000
+.getDeletedCount()=25000
+.getMaxFindingCycle()=17
+.getNotOptimizedCount()=6291
 
 --- Find Data ---
-success=125000, failure=375000
-*elapsed time=0.177461000 sec.
+success=25000, failure=75000
+*elapsed time=0.036497000 sec.
 
 --- Insert Data ---
-success=125000, failure=125000
-*elapsed time=0.093782000 sec.
+success=25000, failure=25000
+*elapsed time=0.014847000 sec.
 
 --- Table Status ---
-.bucket_count()=500009
-.max_bucket_count()=500009
-.size()=250000
+.bucket_count()=100003
+.max_bucket_count()=100003
+.size()=50000
 .empty()=0
-.getUsingCount()=332123
-.getDeletedCount()=82123
-.getMaxFindingCycle()=23
-.getNotOptimizedCount()=77827
+.getUsingCount()=66457
+.getDeletedCount()=16457
+.getMaxFindingCycle()=21
+.getNotOptimizedCount()=15685
 
 --- Find Data ---
-success=250000, failure=250000
-*elapsed time=0.213513000 sec.
+success=50000, failure=50000
+*elapsed time=0.030919000 sec.
 
 --- Rehash Table ---
 OK.
-*elapsed time=0.012733000 sec.
+*elapsed time=0.002461000 sec.
 
 --- Table Status ---
-.bucket_count()=500009
-.max_bucket_count()=500009
-.size()=250000
+.bucket_count()=100003
+.max_bucket_count()=100003
+.size()=50000
 .empty()=0
-.getUsingCount()=250000
+.getUsingCount()=50000
 .getDeletedCount()=0
-.getMaxFindingCycle()=22
-.getNotOptimizedCount()=64179
+.getMaxFindingCycle()=21
+.getNotOptimizedCount()=12929
 
 --- Find Data ---
-success=250000, failure=250000
-*elapsed time=0.219865000 sec.
+success=50000, failure=50000
+*elapsed time=0.030236000 sec.
 
 --- Clear Table ---
 OK.
-*elapsed time=0.002018000 sec.
+*elapsed time=0.000417000 sec.
 
 --- Table Status ---
-.bucket_count()=500009
-.max_bucket_count()=500009
+.bucket_count()=100003
+.max_bucket_count()=100003
 .size()=0
 .empty()=1
 .getUsingCount()=0
@@ -114,34 +113,34 @@ OK.
 .getNotOptimizedCount()=0
 
 --- Find Data ---
-success=0, failure=500000
-*elapsed time=0.134141000 sec.
+success=0, failure=100000
+*elapsed time=0.026603000 sec.
 
 --- Insert Data ---
-success=500000, failure=0
-*elapsed time=0.803504000 sec.
+success=100000, failure=0
+*elapsed time=0.117801000 sec.
 
 --- Table Status ---
-.bucket_count()=500009
-.max_bucket_count()=500009
-.size()=500000
+.bucket_count()=100003
+.max_bucket_count()=100003
+.size()=100000
 .empty()=0
-.getUsingCount()=500000
+.getUsingCount()=100000
 .getDeletedCount()=0
-.getMaxFindingCycle()=322877
-.getNotOptimizedCount()=250073
+.getMaxFindingCycle()=86028
+.getNotOptimizedCount()=50159
 
 --- Find Data ---
-success=500000, failure=0
-*elapsed time=1.124976000 sec.
+success=100000, failure=0
+*elapsed time=0.168549000 sec.
 
 --- Erase Data ---
-success=500000, failure=0
-*elapsed time=0.487046000 sec.
+success=100000, failure=0
+*elapsed time=0.087215000 sec.
 
 --- Table Status ---
-.bucket_count()=500009
-.max_bucket_count()=500009
+.bucket_count()=100003
+.max_bucket_count()=100003
 .size()=0
 .empty()=1
 .getUsingCount()=0
@@ -150,12 +149,12 @@ success=500000, failure=0
 .getNotOptimizedCount()=0
 
 --- Find Data ---
-success=0, failure=500000
-*elapsed time=0.134665000 sec.
+success=0, failure=100000
+*elapsed time=0.033354000 sec.
 
 End
 ============================================================
-*elapsed time=4.131145000 sec.
+*elapsed time=0.676645000 sec.
 
 --------------------------------------------------------------------------------
 [STL] Hash Table Test
@@ -167,126 +166,126 @@ End
 --- [STL] Table Status ---
 .size()=0
 .empty()=1
-.bucket_count()=520241
+.bucket_count()=107897
 .max_bucket_count()=119304647
 .load_factor()=0
 .max_load_factor()=0
 
 --- [STL] Insert Data ---
-success=250000, failure=0
-*elapsed time=0.128496000 sec.
+success=50000, failure=0
+*elapsed time=0.030376000 sec.
 
 --- [STL] Table Status ---
-.size()=250000
+.size()=50000
 .empty()=0
-.bucket_count()=520241
+.bucket_count()=107897
 .max_bucket_count()=119304647
-.load_factor()=747324854
+.load_factor()=361559524
 .max_load_factor()=0
 
 --- [STL] Find Data ---
-success=250000, failure=250000
-*elapsed time=0.235780000 sec.
+success=50000, failure=50000
+*elapsed time=0.029647000 sec.
 
 --- [STL] Erase Data ---
-success=125000, failure=125000
-*elapsed time=0.146912000 sec.
+success=25000, failure=25000
+*elapsed time=0.016714000 sec.
 
 --- [STL] Table Status ---
-.size()=125000
+.size()=25000
 .empty()=0
-.bucket_count()=520241
+.bucket_count()=107897
 .max_bucket_count()=119304647
-.load_factor()=747324854
+.load_factor()=361559524
 .max_load_factor()=0
 
 --- [STL] Find Data ---
-success=125000, failure=375000
-*elapsed time=0.231712000 sec.
+success=25000, failure=75000
+*elapsed time=0.043132000 sec.
 
 --- [STL] Insert Data ---
-success=125000, failure=125000
-*elapsed time=0.153658000 sec.
+success=25000, failure=25000
+*elapsed time=0.033805000 sec.
 
 --- [STL] Table Status ---
-.size()=250000
+.size()=50000
 .empty()=0
-.bucket_count()=520241
+.bucket_count()=107897
 .max_bucket_count()=119304647
-.load_factor()=747324854
+.load_factor()=361559524
 .max_load_factor()=0
 
 --- [STL] Find Data ---
-success=250000, failure=250000
-*elapsed time=0.228727000 sec.
+success=50000, failure=50000
+*elapsed time=0.048623000 sec.
 
 --- [STL] Rehash Table ---
 OK.
 *elapsed time=0.000002000 sec.
 
 --- [STL] Table Status ---
-.size()=250000
+.size()=50000
 .empty()=0
-.bucket_count()=520241
+.bucket_count()=107897
 .max_bucket_count()=119304647
-.load_factor()=747324854
+.load_factor()=361559524
 .max_load_factor()=0
 
 --- [STL] Find Data ---
-success=250000, failure=250000
-*elapsed time=0.229836000 sec.
+success=50000, failure=50000
+*elapsed time=0.049255000 sec.
 
 --- [STL] Clear Table ---
 OK.
-*elapsed time=0.035010000 sec.
+*elapsed time=0.005467000 sec.
 
 --- [STL] Table Status ---
 .size()=0
 .empty()=1
-.bucket_count()=520241
+.bucket_count()=107897
 .max_bucket_count()=119304647
 .load_factor()=0
 .max_load_factor()=0
 
 --- [STL] Find Data ---
-success=0, failure=500000
-*elapsed time=0.165396000 sec.
+success=0, failure=100000
+*elapsed time=0.029113000 sec.
 
 --- [STL] Insert Data ---
-success=500000, failure=0
-*elapsed time=0.278696000 sec.
+success=100000, failure=0
+*elapsed time=0.067266000 sec.
 
 --- [STL] Table Status ---
-.size()=500000
+.size()=100000
 .empty()=0
-.bucket_count()=520241
+.bucket_count()=107897
 .max_bucket_count()=119304647
-.load_factor()=747324854
+.load_factor()=361559524
 .max_load_factor()=0
 
 --- [STL] Find Data ---
-success=500000, failure=0
-*elapsed time=0.220786000 sec.
+success=100000, failure=0
+*elapsed time=0.034450000 sec.
 
 --- [STL] Erase Data ---
-success=500000, failure=0
-*elapsed time=0.278303000 sec.
+success=100000, failure=0
+*elapsed time=0.043534000 sec.
 
 --- [STL] Table Status ---
 .size()=0
 .empty()=1
-.bucket_count()=520241
+.bucket_count()=107897
 .max_bucket_count()=119304647
 .load_factor()=0
 .max_load_factor()=0
 
 --- [STL] Find Data ---
-success=0, failure=500000
-*elapsed time=0.143661000 sec.
+success=0, failure=100000
+*elapsed time=0.026769000 sec.
 
 End
 ============================================================
-*elapsed time=2.507108000 sec.
+*elapsed time=0.459670000 sec.
 
 --------------------------------------------------------------------------------
 Hash Table Test for Pointer

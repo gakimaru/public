@@ -268,8 +268,9 @@
      |  |  |  |-[sync_mutex_win]              ... WIN32 ミューテックスを使用した同期のテスト
      |  |  |  |-[sync_named_mutex_win]        ... WIN32 名前付きミューテックスを使用した同期のテスト
      |  |  |  |-[sync_nosync_win]             ... WIN32 通常変数にによる誤った同期のテスト
-     |  |  |  |-[sync_rwlock_c++11]           ... ★C++11 自作リードライトロックサンプル処理
+     |  |  |  |-[sync_rwlock_c++11]           ... ☆C++11 自作リードライトロックサンプルプログラム
      |  |  |  |-[sync_rwlock_posix]           ... POSIX リードライトロックによる同期のテスト
+     |  |  |  |-[sync_shared_lock]            ... ★自作共有ロックのサンプルプログラム　※リード・ライトロックをより効果的な実装ににしたもの
      |  |  |  |-[sync_spinlock_posix]         ... POSIX スピンロックを使用した同期のテスト
      |  |  |  |-[sync_volatile_win]           ... WIN32 volatile型修飾子付き変数にによる誤った同期のテスト
      |  |  |  |-[thread_c++11]                ... C++11 スレッド生成のテスト

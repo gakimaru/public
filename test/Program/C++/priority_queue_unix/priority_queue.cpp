@@ -12,6 +12,598 @@ static const int TEST_DATA_REG_NUM = 60;//テストデータの登録数
 #include <stdlib.h>
 
 //--------------------------------------------------------------------------------
+//自作ロッククラス
+//--------------------------------------------------------------------------------
+
+#include <atomic>//C++11 std::atomic用
+#include <thread>//C++11 std::this_thread::sleep_for用
+#include <chrono>//C++11 std::chrono::milliseconds用
+
+//--------------------------------------------------------------------------------
+//スピンロック
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//スピンロッククラス
+//※サイズは4バイト(std::atomic_flag一つ分のサイズ)
+class spin_lock
+{
+public:
+	//定数
+	static const int DEFAULT_SPIN_COUNT = 1000;//スピンロックカウントのデフォルト値
+public:
+	//ロック取得
+	void lock(const int spin_count = DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (true)
+		{
+			if (!m_lock.test_and_set())
+				return;
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//ロック取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock()
+	{
+		return m_lock.test_and_set() == false;
+	}
+	//ロック解放
+	inline void unlock()
+	{
+		m_lock.clear();
+	}
+public:
+	//コンストラクタ
+	inline spin_lock()
+	{
+		m_lock.clear();
+	}
+	//デストラクタ
+	inline ~spin_lock()
+	{}
+private:
+	//フィールド
+	std::atomic_flag m_lock;//ロック用フラグ
+};
+
+//----------------------------------------
+//スピンロッククラス（軽量版）
+//※サイズは1バイト
+//※spin_lockの方が速い
+class lw_spin_lock
+{
+public:
+	//ロック取得
+	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (true)
+		{
+			bool prev = false;
+			if (!m_lock.compare_exchange_weak(prev, true))
+				return;
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//ロック取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock()
+	{
+		bool prev = false;
+		return m_lock.compare_exchange_weak(prev, true) == false;
+	}
+	//ロック解放
+	inline void unlock()
+	{
+		m_lock.store(false);
+	}
+public:
+	//コンストラクタ
+	inline lw_spin_lock()
+	{
+		m_lock.store(false);//ロック用フラグ
+	}
+	//デストラクタ
+	inline ~lw_spin_lock()
+	{}
+private:
+	//フィールド
+	std::atomic_bool m_lock;//ロック用フラグ
+};
+
+//----------------------------------------
+//共有（リード・ライト）スピンロッククラス
+//※サイズは4バイト
+//※排他ロック（ライトロック）を優先する
+//※読み込み操作（共有ロック）が込み合っている途中で割り込んで
+//　書き込み操作（排他ロック）を行いたい時に用いる
+//※排他ロックが常に最優先されるわけではない。
+//　共有ロックがロックを開放する前に排他ロックがロックを
+//　取得することを許可する仕組みで実装する。その場合、
+//　共有ロックが全て解放されるのを待ってから処理を続行する。
+//　そのため、別の排他ロックが待ち状態になっても、
+//　共有ロックより先にロックを取得することは保証しない。
+class shared_spin_lock
+{
+public:
+	//定数
+	static const int DEFAULT_COUNTER = 0x01000000;//ロックが取得されていない時のデフォルトのカウンタ
+
+public:
+	//共有ロック（リードロック）取得
+	void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (1)
+		{
+			const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+			if (lock_counter > 0)
+				return;//ロック取得成功
+			m_lockCounter.fetch_add(1);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//共有ロック（リードロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock_shared()
+	{
+		const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+		if (lock_counter >= 0)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//排他ロック（ライトロック）取得
+	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (1)
+		{
+			const int lock_counter = m_lockCounter.fetch_sub(DEFAULT_COUNTER);//カウンタを更新
+			if (lock_counter == DEFAULT_COUNTER)
+				return;//ロック取得成功
+			if (lock_counter > 0)	//他が排他ロックを取得していないので、現在の共有ロックが全て解放されるのを待つ
+			{						//※カウンタを更新したままなので、後続の共有ロック／排他ロックは取得できない。
+				while (m_lockCounter.load() != 0)//カウンタが0になるのを待つ
+				{
+					if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+					{
+						std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+						spin_count_now = spin_count;
+					}
+				}
+				return;//ロック取得成功
+			}
+			m_lockCounter.fetch_add(DEFAULT_COUNTER);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//排他ロック（ライトロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock()
+	{
+		const int lock_counter = m_lockCounter.fetch_sub(DEFAULT_COUNTER);//カウンタを更新
+		if (lock_counter == DEFAULT_COUNTER)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(DEFAULT_COUNTER);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lockCounter.fetch_add(DEFAULT_COUNTER);//カウンタを戻す
+	}
+public:
+	//コンストラクタ
+	inline shared_spin_lock() :
+		m_lockCounter(DEFAULT_COUNTER)
+	{}
+	//デストラクタ
+	inline ~shared_spin_lock()
+	{}
+private:
+	//フィールド
+	std::atomic<int> m_lockCounter;//ロックカウンタ
+};
+
+//----------------------------------------
+//共有（リード・ライト）スピンロッククラス（軽量版）
+//※サイズは4バイト
+//※排他ロック（ライトロック）を優先しない
+//※読み込み操作（共有ロック）が込み合っていると、
+//　書き込み操作（排他ロック）が待たされるので注意。
+class lw_shared_spin_lock
+{
+public:
+	//共有ロック（リードロック）取得
+	void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (1)
+		{
+			const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+			if (lock_counter > 0)
+				return;//ロック取得成功
+			m_lockCounter.fetch_add(1);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//共有ロック（リードロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock_shared()
+	{
+		const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+		if (lock_counter >= 0)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//排他ロック（ライトロック）取得
+	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (1)
+		{
+			const int lock_counter = m_lockCounter.fetch_sub(shared_spin_lock::DEFAULT_COUNTER);//カウンタを更新
+			if (lock_counter == shared_spin_lock::DEFAULT_COUNTER)
+				return;//ロック取得成功
+			m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//排他ロック（ライトロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock()
+	{
+		const int lock_counter = m_lockCounter.fetch_sub(shared_spin_lock::DEFAULT_COUNTER);//カウンタを更新
+		if (lock_counter == shared_spin_lock::DEFAULT_COUNTER)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//カウンタを戻す
+	}
+public:
+	//コンストラクタ
+	inline lw_shared_spin_lock() :
+		m_lockCounter(shared_spin_lock::DEFAULT_COUNTER)
+	{}
+	//デストラクタ
+	inline ~lw_shared_spin_lock()
+	{}
+private:
+	//フィールド
+	std::atomic<int> m_lockCounter;//ロックカウンタ
+};
+
+//----------------------------------------
+//非共有（排他）スピンロッククラス
+//※サイズは4バイト
+//※共有ロッククラスと同一のインターフェースで、
+//　共有ロックを行わないクラス
+//※共有ロックのヘルパークラスやロックガードを使用する処理に対して、
+//　完全な排他制御を行いたい時に使用する。
+class unshared_spin_lock
+{
+public:
+	//共有ロック（リードロック）取得
+	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//共有ロック（リードロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock_shared()
+	{
+		return m_lock.try_lock();
+	}
+	//排他ロック（ライトロック）取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//排他ロック（ライトロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock()
+	{
+		return m_lock.try_lock();
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lock.unlock();
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lock.unlock();
+	}
+public:
+	//コンストラクタ
+	unshared_spin_lock() :
+		m_lock()
+	{}
+	//デストラクタ
+	~unshared_spin_lock()
+	{}
+private:
+	//フィールド
+	spin_lock m_lock;//ロックオブジェクト
+};
+
+//--------------------------------------------------------------------------------
+//ダミーロック
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//ダミーロッククラス
+//※spin_lockやstd::mutexと同様のロックインターフェースを持つが、実際には何もしないクラス
+class dummy_lock
+{
+public:
+	//ロック取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		//何もしない
+	}
+	//ロック取得を試行
+	inline bool try_lock()
+	{
+		//何もしない
+		return true;
+	}
+	//ロック解放
+	inline void unlock()
+	{
+		//何もしない
+	}
+public:
+	//コンストラクタ
+	inline dummy_lock()
+	{}
+	//デストラクタ
+	~dummy_lock()
+	{}
+};
+
+//----------------------------------------
+//ダミー共有（リード・ライト）ロッククラス
+//※shared_spin_lockやstd::shared_lockと同様のロックインターフェースを持つが、実際には何もしないクラス
+class dummy_shared_lock
+{
+public:
+	//共有ロック（リードロック）取得
+	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		//何もしない
+	}
+	//共有ロック（リードロック）取得を試行
+	inline bool try_lock_shared()
+	{
+		//何もしない
+		return true;
+	}
+	//排他ロック（ライトロック）取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		//何もしない
+	}
+	//排他ロック（ライトロック）取得を試行
+	inline bool try_lock()
+	{
+		//何もしない
+		return true;
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		//何もしない
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		//何もしない
+	}
+public:
+	//コンストラクタ
+	inline dummy_shared_lock()
+	{}
+	//デストラクタ
+	~dummy_shared_lock()
+	{}
+};
+
+//--------------------------------------------------------------------------------
+//ロックヘルパー
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//ロックヘルパークラス
+//※実装を隠ぺいしてロックを操作するためのヘルパークラス
+template<class T>
+class lock_helper
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//メソッド
+
+	//ロック取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//ロック取得を試行
+	inline bool try_lock()
+	{
+		return m_lock.try_lock();
+	}
+	//ロック解放
+	inline void unlock()
+	{
+		m_lock.unlock();
+	}
+public:
+	//コンストラクタ
+	inline lock_helper(lock_type& lock) :
+		m_lock(lock)
+	{}
+	//デストラクタ
+	inline ~lock_helper()
+	{}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//----------------------------------------
+//共有（リード・ライト）ロックヘルパークラス
+//※実装を隠ぺいして共有（リード・ライト）ロックを操作するためのヘルパークラス
+template<class T>
+class shared_lock_helper
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//メソッド
+
+	//共有ロック（リードロック）取得
+	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock_shared(spin_count);
+	}
+	//共有ロック（リードロック）取得を試行
+	inline bool try_lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		return m_lock.try_lock_shared(spin_count);
+	}
+	//排他ロック（ライトロック）取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//排他ロック（ライトロック）取得を試行
+	inline bool try_lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		return m_lock.try_lock(spin_count);
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lock.unlock_shared();
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lock.unlock();
+	}
+public:
+	//コンストラクタ
+	inline shared_lock_helper(lock_type& lock) :
+		m_lock(lock)
+	{}
+	//デストラクタ
+	inline ~shared_lock_helper()
+	{}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//--------------------------------------------------------------------------------
+//ロックガード（スコープロック）
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//ロックガードクラス（スコープロック）
+//※スコープロックで通常ロックもしくは排他ロック（ライトロック）のロック取得と解放を行う
+template<class T>
+class lock_guard
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//コンストラクタ
+	inline lock_guard(lock_type& lock, const int spin_count = spin_lock::DEFAULT_SPIN_COUNT) :
+		m_lock(lock)
+	{
+		m_lock.lock(spin_count);
+	}
+	//デストラクタ
+	inline ~lock_guard()
+	{
+		m_lock.unlock();
+	}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//----------------------------------------
+//共有（リード・ライト）ロックガードクラス（スコープロック）
+//※スコープロックで共有ロック（リードロック）のロック取得と解放を行う
+template<class T>
+class shared_lock_guard
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//コンストラクタ
+	inline shared_lock_guard(lock_type& lock, const int spin_count = spin_lock::DEFAULT_SPIN_COUNT) :
+		m_lock(lock)
+	{
+		m_lock.lock_shared(spin_count);
+	}
+	//デストラクタ
+	inline ~shared_lock_guard()
+	{
+		m_lock.unlock_shared();
+	}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//--------------------------------------------------------------------------------
 //共通処理
 //--------------------------------------------------------------------------------
 
@@ -115,15 +707,15 @@ inline void swapValues(T& val1, T& val2)
 
 #include <cstddef>//std::size_t用
 
-namespace bin_heap
+namespace binary_heap
 {
 	//--------------------
 	//二分ヒープ操作用テンプレート構造体
 	//※CRTPを活用し、下記のような派生構造体を作成して使用する
 	//  //template<class OPE_TYPE, typename NODE_TYPE>
 	//  //struct base_ope_t;
-	//  //struct 派生構造体名 : public bin_heap::base_ope_t<派生構造体, ノード型>
-	//	struct ope_t : public bin_heap::ope_t<ope_t, data_t>
+	//  //struct 派生構造体名 : public binary_heap::base_ope_t<派生構造体, ノード型>
+	//	struct ope_t : public binary_heap::base_ope_t<ope_t, data_t>
 	//	{
 	//		//キーを比較
 	//		//※lhsの方が小さいければ true を返す
@@ -131,6 +723,11 @@ namespace bin_heap
 	//		{
 	//			return lhs.m_key < rhs.m_key;
 	//		}
+	//		
+	//		//ロック型 ※必要に応じて定義
+	//		//※ロックでコンテナ操作をスレッドセーフにしたい場合は、
+	//		//　有効なロック型（spin_lockなど）を lock_type 型として定義する。
+	//		typedef spin_lock lock_type;//ロックオブジェクト型
 	//	};
 	template<class OPE_TYPE, typename NODE_TYPE>
 	struct base_ope_t
@@ -139,8 +736,25 @@ namespace bin_heap
 		typedef OPE_TYPE ope_type;//ノード操作型
 		typedef NODE_TYPE node_type;//ノード型
 
+		//ロック型
+		typedef dummy_lock lock_type;//ロックオブジェクト型
+		//※デフォルトはダミーのため、一切ロック制御しない。
+		//※ロックでコンテナ操作をスレッドセーフにしたい場合は、
+		//　base_ope_tの派生クラスにて、有効なロック型（spin_lock など）を
+		//　lock_type 型として再定義する。
+		//【補足】コンテナには、あらかじめロック制御のための仕組みがソースコードレベルで
+		//　　　　仕込んであるが、有効な型を与えない限りは、実行時のオーバーヘッドは一切ない。
+
+		//キーを比較
+		//※lhsの方が小さいければ true を返す
+		//※派生クラスでの実装が必要
+		//inline static bool less(const node_type& lhs, const node_type& rhs)
+
+		//STLのstd::priority_queueと共用するための関数オブジェクト
+		inline bool operator()(const node_type& lhs, const node_type& rhs) const{ return ope_type::less(lhs, rhs); }
+
 		//デストラクタ呼び出し
-		static void callDestructor(node_type* obj){ obj->~NODE_TYPE(); }
+		inline static void callDestructor(node_type* obj){ obj->~NODE_TYPE(); }
 	};
 	//--------------------
 	//基本型定義マクロ
@@ -152,8 +766,8 @@ namespace bin_heap
 		typedef const value_type& const_reference; \
 		typedef value_type* pointer; \
 		typedef const value_type* const_pointer; \
-		typedef std::size_t size_type;
-
+		typedef std::size_t size_type; \
+		typedef typename ope_type::lock_type lock_type;
 	//----------------------------------------
 	//二分ヒープコンテナ
 	//※固定配列と使用中の要素数を持つ
@@ -167,7 +781,7 @@ namespace bin_heap
 	public:
 		//定数
 		static const std::size_t TABLE_SIZE = _TABLE_SIZE;//配列要素数
-		enum state_t//ステート
+		enum status_t//ステータス
 		{
 			IDLE = 0,//アイドル
 			PUSH_BEGINNING,//プッシュ開始中
@@ -183,7 +797,11 @@ namespace bin_heap
 		inline node_type* at(const int index){ return ref_node(index); }
 		inline const node_type* operator[](const int index) const { return ref_node(index); }
 		inline node_type* operator[](const int index){ return ref_node(index); }
-		inline state_t state() const { return m_state; }
+		inline status_t status() const { return m_status; }
+	public:
+		//キャストオペレータ
+		inline operator lock_type&(){ return m_lock; }//共有ロックオブジェクト
+		inline operator lock_type&() const { return m_lock; }//共有ロックオブジェクト ※mutable
 	public:
 		//メソッド
 		inline std::size_t max_size() const { return TABLE_SIZE; }//最大要素数を取得
@@ -248,76 +866,132 @@ namespace bin_heap
 		inline node_type* ref_child(const int index, const bool is_right){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child(index, is_right)); }//子ノード参照
 	public:
 		inline bool less(const node_type& lhs, const node_type& rhs) const { return ope_type::less(lhs, rhs); }//キー比較
-		//プッシュ
-		//※オブジェクト渡し
-		//※オブジェクトのコピーが発生する点に注意（少し遅くなる）
-		node_type* pushCopying(const node_type& src)
+	private:
+		//プッシュ（本体）
+		node_type* _pushCopying(const node_type& src)
 		{
-			if (m_state == PUSH_BEGINNING || m_state == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			if (m_status == PUSH_BEGINNING || m_status == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
 			node_type* obj = ref_new();
 			if (!obj)
 				return nullptr;
-			*obj = src;
-			m_state = PUSH_BEGINNING;
+			*obj = std::move(src);
+			m_status = PUSH_BEGINNING;
 			return pushEnd();
 		}
+	public:
 		//プッシュ
-		//※パラメータ渡し
-		//※オブジェクトのコンストラクタが呼び出される
-		template<typename... Tx>
-		node_type* push(Tx... args)
+		//※オブジェクト渡し
+		//※オブジェクトのコピーが発生する点に注意（少し遅くなる）
+		//※ムーブオペレータを使用してコピーする点に注意
+		//※処理中、ロックを取得する
+		inline node_type* pushCopying(const node_type& src)
 		{
-			if (m_state == PUSH_BEGINNING || m_state == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
+			return _pushCopying(src);
+		}
+	private:
+		//プッシュ（本体）
+		template<typename... Tx>
+		node_type* _push(Tx... args)
+		{
+			if (m_status == PUSH_BEGINNING || m_status == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
 			node_type* obj = pushBegin(args...);
 			if (!obj)
 				return nullptr;
 			return pushEnd();
 		}
-		//プッシュ開始
-		//※空きノードを取得し、コンストラクタが呼び出される
+	public:
+		//プッシュ
+		//※パラメータ渡し
+		//※オブジェクトのコンストラクタが呼び出される
+		//※処理中、ロックを取得する
 		template<typename... Tx>
-		node_type* pushBegin(Tx... args)
+		inline node_type* push(Tx... args)
 		{
-			if (m_state == PUSH_BEGINNING || m_state == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
+			return _push(args...);
+		}
+	private:
+		//プッシュ開始（本体）
+		template<typename... Tx>
+		node_type* _pushBegin(Tx... args)
+		{
+			if (m_status == PUSH_BEGINNING || m_status == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
 			node_type* obj = ref_new();
 			if (!obj)
 				return nullptr;
 			obj = new(obj)node_type(args...);//コンストラクタ呼び出し
 			if (obj)
-				m_state = PUSH_BEGINNING;
+				m_status = PUSH_BEGINNING;
 			return obj;
 		}
-		//プッシュ終了
-		//※追加した新規ノードを上に移動
-		node_type* pushEnd()
+	public:
+		//プッシュ開始
+		//※空きノードを取得し、コンストラクタが呼び出される
+		//※処理が成功すると、ロックを取得した状態になる（pushEndで解放する）
+		template<typename... Tx>
+		inline node_type* pushBegin(Tx... args)
 		{
-			if (m_state != PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
+			m_lock.lock();//ロックを取得（そのまま関数を抜ける）
+			node_type* obj = _pushBegin(args...);//プッシュ開始
+			if (!obj)
+				m_lock.unlock();//プッシュ失敗時はロック解放
+			return obj;
+		}
+	private:
+		//プッシュ終了（本体）
+		node_type* _pushEnd()
+		{
+			if (m_status != PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
 				return nullptr;
 			node_type* obj = ref_new();
 			if (!obj)
 				return nullptr;
 			++m_used;
-			m_state = PUSH_ENDED;
+			m_status = PUSH_ENDED;
 			//末端の葉ノードとして登録された新規ノードを上方に移動
 			return upHeap(obj);
 		}
-		//プッシュ取り消し
-		bool pushCancel()
+	public:
+		//プッシュ終了
+		//※追加した新規ノードを上に移動
+		//※pushBeginで取得したロックを解放する
+		inline node_type* pushEnd()
 		{
-			if (m_state != PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
+			const bool unlock = (m_status == PUSH_BEGINNING);//プッシュ開始中ならアンロックする
+			node_type* new_obj = _pushEnd();//プッシュ終了
+			if (unlock)
+				m_lock.unlock();//ロック解放
+			return new_obj;
+		}
+	private:
+		//プッシュ取り消し（本体）
+		bool _pushCancel()
+		{
+			if (m_status != PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
 				return false;
-			m_state = PUSH_CANCELLED;
+			m_status = PUSH_CANCELLED;
 			return true;
 		}
-		//ポップ
-		//※オブジェクトのコピーを受け取る領域を渡す
-		//※オブジェクトのデストラクタが呼び出される ※コピー後に実行
-		bool popCopying(node_type& dst)
+	public:
+		//プッシュ取り消し
+		//※pushBeginで取得したロックを解放する
+		inline bool pushCancel()
 		{
-			if (m_state == PUSH_BEGINNING || m_state == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			const bool unlock = (m_status == PUSH_BEGINNING);//プッシュ開始中ならアンロックする
+			const bool result = _pushCancel();//プッシュ取り消し
+			if (unlock)
+				m_lock.unlock();//ロック解放
+			return result;
+		}
+	private:
+		//ポップ（本体）
+		bool _popCopying(node_type& dst)
+		{
+			if (m_status == PUSH_BEGINNING || m_status == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return false;
 			const node_type* obj = popBegin();
 			if (!obj)
@@ -325,30 +999,51 @@ namespace bin_heap
 			dst = *obj;
 			return popEnd();
 		}
-		//ポップ開始
-		//※根ノード取得
-		node_type* popBegin()
+	public:
+		//ポップ
+		//※オブジェクトのコピーを受け取る領域を渡す
+		//※オブジェクトのデストラクタが呼び出される ※コピー後に実行
+		//※処理中、ロックを取得する
+		inline bool popCopying(node_type& dst)
 		{
-			if (m_state == PUSH_BEGINNING || m_state == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
+			return _popCopying(dst);
+		}
+	private:
+		//ポップ開始（本体）
+		node_type* _popBegin()
+		{
+			if (m_status == PUSH_BEGINNING || m_status == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
 			node_type* obj = ref_top();
 			if (obj)
-				m_state = POP_BEGINNING;
+				m_status = POP_BEGINNING;
 			return obj;
 		}
-		//ポップ終了
-		//※オブジェクトのデストラクタが呼び出される
-		//※削除した根ノードの隙間を埋めるために、以降のノードを上に移動
-		bool popEnd()
+	public:
+		//ポップ開始
+		//※根ノード取得
+		//※処理が成功すると、ロックを取得した状態になる（popEndで解放する）
+		node_type* popBegin()
 		{
-			if (m_state != POP_BEGINNING)//ポップ開始中以外なら処理しない
+			m_lock.lock();//ロックを取得（そのまま関数を抜ける）
+			node_type* obj = _popBegin();//ポップ開始
+			if (!obj)
+				m_lock.unlock();//プッシュ失敗時はロック解放
+			return obj;
+		}
+	private:
+		//ポップ終了（本体）
+		bool _popEnd()
+		{
+			if (m_status != POP_BEGINNING)//ポップ開始中以外なら処理しない
 				return false;
 			node_type* obj = ref_bottom();
 			if (!obj)
 				return false;
 			ope_type::callDestructor(obj);//デストラクタ呼び出し
 			operator delete(obj, obj);//（作法として）deleteオペレータ呼び出し
-			m_state = POP_ENDED;
+			m_status = POP_ENDED;
 			//根ノードがポップされたので、末端の葉ノードを根ノードに上書きした上で、それを下方に移動
 			node_type* top_obj = _ref_top();
 			*top_obj = *obj;
@@ -356,15 +1051,44 @@ namespace bin_heap
 			downHeap(top_obj);
 			return true;
 		}
-		//ポップ取り消し
-		bool popCancel()
+	public:
+		//ポップ終了
+		//※オブジェクトのデストラクタが呼び出される
+		//※削除した根ノードの隙間を埋めるために、以降のノードを上に移動
+		//※popBeginで取得したロックを解放する
+		inline bool popEnd()
 		{
-			if (m_state != POP_BEGINNING)//ポップ開始中以外なら処理しない
+			const bool unlock = (m_status == POP_BEGINNING);//ポップ開始中ならアンロックする
+			const bool result = _popEnd();//ポップ終了
+			if (unlock)
+				m_lock.unlock();//ロック解放
+			return result;
+		}
+	private:
+		//ポップ取り消し（本体）
+		bool _popCancel()
+		{
+			if (m_status != POP_BEGINNING)//ポップ開始中以外なら処理しない
 				return false;
-			m_state = POP_CANCELLED;
+			m_status = POP_CANCELLED;
 			return true;
 		}
+	public:
+		//ポップ取り消し
+		//※popBeginで取得したロックを解放する
+		inline bool popCancel()
+		{
+			const bool unlock = (m_status == POP_BEGINNING);//ポップ開始中ならアンロックする
+			const bool result = _popCancel();//ポップ取り消し
+			if (unlock)
+				m_lock.unlock();//ロック解放
+			return result;
+		}
+	public:
 		//ノードを上方に移動
+		//※ロックを取得しないで処理するので注意！
+		//　（局所的なロックで済む処理ではないため）
+		//　必ず呼び出し元でロックを取得すること！
 		node_type* upHeap(node_type* obj)
 		{
 			int index = ref_index(obj);
@@ -385,6 +1109,9 @@ namespace bin_heap
 			return obj;
 		}
 		//ノードを下方に移動
+		//※ロックを取得しないで処理するので注意！
+		//　（局所的なロックで済む処理ではないため）
+		//　必ず呼び出し元でロックを取得すること！
 		node_type* downHeap(node_type* obj)
 		{
 			int index = ref_index(obj);
@@ -416,8 +1143,9 @@ namespace bin_heap
 			}
 			return obj;
 		}
-		//クリア
-		void clear()
+	private:
+		//クリア（本体）
+		void _clear()
 		{
 			node_type* obj_end = end();
 			for (node_type* obj = begin(); obj < obj_end; ++obj)
@@ -428,11 +1156,19 @@ namespace bin_heap
 			m_used = 0;
 		}
 	public:
+		//クリア
+		//※処理中、ロックを取得する
+		inline void clear()
+		{
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
+			_clear();
+		}
+	public:
 		//コンストラクタ
 		//※キー比較処理を渡す
 		container() :
 			m_used(0),
-			m_state(IDLE)
+			m_status(IDLE)
 		{}
 		//デストラクタ
 		~container()
@@ -444,10 +1180,12 @@ namespace bin_heap
 		//フィールド
 		unsigned char m_table[TABLE_SIZE][sizeof(value_type)];//データテーブル
 		int m_used;//使用数
-		state_t m_state;//ステート
+		status_t m_status;//ステータス
+		mutable lock_type m_lock;//ロックオブジェクト
 	};
 	//--------------------
 	//安全なプッシュ／ポップ操作クラス
+	//※操作状態を記憶し、デストラクタで必ず完了させる
 	template<class CON>
 	class operation_guard
 	{
@@ -455,73 +1193,73 @@ namespace bin_heap
 		//型
 		typedef CON container_type;//コンテナ型
 		typedef typename CON::node_type node_type;//ノード型
-		typedef typename CON::state_t state_t;//ステート型
+		typedef typename CON::status_t status_t;//ステータス型
 	public:
 		//アクセッサ
-		state_t state() const { return m_state; }//ステートを取得
+		status_t status() const { return m_status; }//ステータスを取得
 	public:
 		//プッシュ開始
 		template<typename... Tx>
 		node_type* pushBegin(Tx... args)
 		{
-			if (m_state == state_t::PUSH_BEGINNING || m_state == state_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			if (m_status == status_t::PUSH_BEGINNING || m_status == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
 			node_type* node = m_container.pushBegin(args...);//プッシュ開始
 			if (node)
-				m_state = state_t::PUSH_BEGINNING;//ステート変更
+				m_status = status_t::PUSH_BEGINNING;//ステータス変更
 			return node;
 		}
 		//プッシュ終了
 		node_type* pushEnd()
 		{
-			if (m_state != state_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
+			if (m_status != status_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
 				return nullptr;
 			node_type* node = m_container.pushEnd();//プッシュ終了
-			m_state = state_t::PUSH_ENDED;//ステート変更
+			m_status = status_t::PUSH_ENDED;//ステータス変更
 			return node;
 		}
 		//プッシュ取り消し
 		bool pushCancel()
 		{
-			if (m_state != state_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
+			if (m_status != status_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
 				return false;
 			m_container.pushCancel();//プッシュ取り消し
-			m_state = state_t::PUSH_CANCELLED;//ステート変更
+			m_status = status_t::PUSH_CANCELLED;//ステータス変更
 			return true;
 		}
 		//ポップ開始
 		node_type* popBegin()
 		{
-			if (m_state == state_t::PUSH_BEGINNING || m_state == state_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			if (m_status == status_t::PUSH_BEGINNING || m_status == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
 			node_type* node = m_container.popBegin();//ポップ開始
 			if (node)
-				m_state = state_t::POP_BEGINNING;//ステート変更
+				m_status = status_t::POP_BEGINNING;//ステータス変更
 			return node;
 		}
 		//ポップ終了
 		bool popEnd()
 		{
-			if (m_state != state_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
+			if (m_status != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
 				return false;
 			const bool result = m_container.popEnd();//ポップ終了
-			m_state = state_t::POP_ENDED;//ステート変更
+			m_status = status_t::POP_ENDED;//ステータス変更
 			return result;
 		}
 		//ポップ取り消し
 		bool popCancel()
 		{
-			if (m_state != state_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
+			if (m_status != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
 				return false;
 			m_container.popCancel();//ポップ取り消し
-			m_state = state_t::POP_CANCELLED;//ステート変更
+			m_status = status_t::POP_CANCELLED;//ステータス変更
 			return true;
 		}
 	public:
 		//コンストラクタ
 		operation_guard(container_type& container) :
 			m_container(container),
-			m_state(state_t::IDLE)
+			m_status(status_t::IDLE)
 		{}
 		//デストラクタ
 		~operation_guard()
@@ -532,12 +1270,12 @@ namespace bin_heap
 	private:
 		//フィールド
 		container_type& m_container;//コンテナ
-		state_t m_state;//ステート
+		status_t m_status;//ステータス
 	};
 	//--------------------
 	//基本型定義マクロ消去
 	#undef DECLARE_OPE_TYPES
-}//namespace bin_heap
+}//namespace binary_heap
 
 //--------------------------------------------------------------------------------
 //プライオリティキュー
@@ -545,7 +1283,6 @@ namespace bin_heap
 //--------------------------------------------------------------------------------
 
 #include <utility>//C++11 std::move用
-#include <mutex>//C++11 std::mutex用
 
 namespace priority_queue
 {
@@ -555,7 +1292,7 @@ namespace priority_queue
 	//  //template<class OPE_TYPE, typename NODE_TYPE, int _NODES_MAX>
 	//  //struct base_ope_t;
 	//  //struct 派生構造体名 : public priority_queue::base_ope_t<派生構造体, ノード型, 優先度型, シーケンス番号型>
-	//	struct ope_t : public priority_queue::ope_t<ope_t, data_t, int, unsigned int>
+	//	struct ope_t : public priority_queue::base_ope_t<ope_t, data_t, int, unsigned int>
 	//	{
 	//		//優先度を取得
 	//		inline static priority_type getPrior(const node_type& node){ return node.m_priority; }
@@ -567,15 +1304,13 @@ namespace priority_queue
 	//		//シーケンス番号を更新
 	//		inline static void setSeqNo(node_type& node, const seq_type seq_no) const { node.m_seqNo = seq_no; }
 	//		
-	//		//優先度を比較
-	//		//Return value:
-	//		//  0 ... lhs == rhs
-	//		//  1 ... lhs > rhs
-	//		// -1 ... lhs < rhs
-	//		inline static int compareProior(const priority_type lhs, const priority_type rhs)
-	//		{
-	//			return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
-	//		}
+	//		//優先度を比較 ※必要に応じて定義
+	//		inline static int compareProior(const priority_type lhs, const priority_type rhs){ return ???; }
+	//		
+	//		//ロック型 ※必要に応じて定義
+	//		//※ロックでコンテナ操作をスレッドセーフにしたい場合は、
+	//		//　有効なロック型（spin_lockなど）を lock_type 型として定義する。
+	//		typedef spin_lock lock_type;//ロックオブジェクト型
 	//	};
 	template<class OPE_TYPE, typename NODE_TYPE, typename PRIOR_TYPE = int, typename SEQ_TYPE = unsigned int>
 	struct base_ope_t
@@ -586,6 +1321,15 @@ namespace priority_queue
 		typedef PRIOR_TYPE priority_type;//優先度型
 		typedef SEQ_TYPE seq_type;//シーケンス番号型
 
+		//ロック型
+		typedef dummy_lock lock_type;//ロックオブジェクト型
+		//※デフォルトはダミーのため、一切ロック制御しない。
+		//※ロックでコンテナ操作をスレッドセーフにしたい場合は、
+		//　base_ope_tの派生クラスにて、有効なロック型（spin_lock など）を
+		//　lock_type 型として再定義する。
+		//【補足】コンテナには、あらかじめロック制御のための仕組みがソースコードレベルで
+		//　　　　仕込んであるが、有効な型を与えない限りは、実行時のオーバーヘッドは一切ない。
+
 		//シーケンス番号を比較
 		inline static bool lessSeqNo(const seq_type lhs, const seq_type rhs)
 		{
@@ -595,12 +1339,12 @@ namespace priority_queue
 		//優先度を比較
 		//※デフォルト
 		//Return value:
-		//  0 ... lhs == rhs
-		//  1 ... lhs > rhs
-		// -1 ... lhs < rhs
+		//  0     ... lhs == rhs
+		//  1以上 ... lhs > rhs
+		// -1以下 ... lhs < rhs
 		inline static int comparePriority(const priority_type lhs, const priority_type rhs)
 		{
-			return lhs < rhs ? -1 : lhs > rhs ? 1 : 0;
+			return static_cast<int>(lhs)-static_cast<int>(rhs);
 		}
 
 		//キーを比較
@@ -615,7 +1359,7 @@ namespace priority_queue
 		}
 
 		//STLのstd::priority_queueと共用するための関数オブジェクト
-		inline bool operator()(const node_type& lhs, const node_type& rhs) const{ return less(lhs, rhs); }
+		inline bool operator()(const node_type& lhs, const node_type& rhs) const{ return ope_type::less(lhs, rhs); }
 
 		//デストラクタ呼び出し
 		static void callDestructor(node_type* obj){ obj->~NODE_TYPE(); }
@@ -624,6 +1368,7 @@ namespace priority_queue
 	//基本型定義マクロ
 	#define DECLARE_OPE_TYPES(OPE_TYPE) \
 		typedef OPE_TYPE ope_type; \
+		typedef ope_type pqueue_ope_type; \
 		typedef typename ope_type::node_type node_type; \
 		typedef node_type value_type; \
 		typedef value_type& reference; \
@@ -632,15 +1377,8 @@ namespace priority_queue
 		typedef const value_type* const_pointer; \
 		typedef std::size_t size_type; \
 		typedef typename ope_type::priority_type priority_type; \
-		typedef typename ope_type::seq_type seq_type;
-
-	//----------------------------------------
-	//プライオリティキューコンテナ用定数
-	enum auto_lock_attr_t : unsigned char//自動ロック属性
-	{
-		NEVER_LOCK,//ロックしない
-		AUTO_LOCK,//自動ロック
-	};
+		typedef typename ope_type::seq_type seq_type; \
+		typedef typename ope_type::lock_type lock_type;
 	//----------------------------------------
 	//プライオリティキューコンテナ
 	//※内部に二分ヒープを持つ
@@ -651,17 +1389,31 @@ namespace priority_queue
 	public:
 		//型
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		typedef bin_heap::container<ope_type, _TABLE_SIZE> bin_heap_type;//二分ヒープ型
-		typedef typename bin_heap_type::state_t state_t;//ステート型
+		struct heap_ope_t : public binary_heap::base_ope_t<heap_ope_t, node_type>//二分ヒープ操作型
+		{
+			//キーを比較
+			//※lhsの方が小さいければ true を返す
+			inline static bool less(const node_type& lhs, const node_type& rhs)
+			{
+				return pqueue_ope_type::less(lhs, rhs);
+			}
+
+			//ロック型
+			//※ロック型はデフォルトのままとし、二分ヒープ側ではロック制御を行わない
+			//typedef dummy_lock lock_type;//ロックオブジェクト型
+		};
+		typedef binary_heap::container<heap_ope_t, _TABLE_SIZE> heap_type;//二分ヒープ型
+		typedef typename heap_type::status_t status_t;//ステータス型
 	public:
 		//アクセッサ
-		inline const bin_heap_type& getHeap() const { return m_heap; }//二分ヒープ取得
-		inline bin_heap_type& getHeap(){ return m_heap; }//二分ヒープ取得
+		inline const heap_type& getHeap() const { return m_heap; }//二分ヒープ取得
+		inline heap_type& getHeap(){ return m_heap; }//二分ヒープ取得
 	public:
 		//キャストオペレータ
-		inline operator const bin_heap_type() const{ return m_heap; }//二分ヒープを返す
-		inline operator bin_heap_type(){ return m_heap; }//二分ヒープを返す
-		inline operator std::mutex(){ return m_lock; }//ミューテックスを返す
+		inline operator const heap_type() const{ return m_heap; }//二分ヒープを返す
+		inline operator heap_type(){ return m_heap; }//二分ヒープを返す
+		inline operator lock_type&(){ return m_lock; }//共有ロックオブジェクト
+		inline operator lock_type&() const { return m_lock; }//共有ロックオブジェクト ※mutable
 	public:
 		//メソッド
 		inline std::size_t max_size() const { return m_heap.max_aize(); }//最大要素数を取得
@@ -686,7 +1438,7 @@ namespace priority_queue
 		//エンキュー（本体）
 		node_type* _enqueueCopying(const node_type& obj)
 		{
-			if (m_heap.state() == state_t::PUSH_BEGINNING || m_heap.state() == state_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			if (m_heap.status() == status_t::PUSH_BEGINNING || m_heap.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
 			node_type obj_tmp(std::move(obj));
 			ope_type::setSeqNo(obj_tmp, getNextSeqNo());//シーケンス番号をセット
@@ -698,13 +1450,11 @@ namespace priority_queue
 		//※オブジェクトには、あらかじめ優先度を設定しておく必要がある
 		//※オブジェクトのコピーが２回発生する点に注意（少し遅くなる）
 		//　（シーケンス番号をセットするために1回テンポラリにコピーし、プッシュ時にさらにコピーする。）
+		//※ムーブコンストラクタとムーブオペレータを使用してコピーする点に注意
+		//※処理中、ロックを取得する
 		inline node_type* enqueueCopying(const node_type& obj)
 		{
-			if (m_autoLockAttr == AUTO_LOCK)
-			{
-				std::lock_guard<std::mutex> lock(m_lock);//関数終了時に自動的にロック解放
-				return _enqueueCopying(obj);
-			}
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
 			return _enqueueCopying(obj);
 		}
 	private:
@@ -712,7 +1462,7 @@ namespace priority_queue
 		template<typename... Tx>
 		node_type* _enqueue(const priority_type priority, Tx... args)
 		{
-			//if (m_heap.state() == state_t::PUSH_BEGINNING || m_heap.state() == state_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			//if (m_heap.status() == status_t::PUSH_BEGINNING || m_heap.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 			//	return nullptr;
 			node_type* obj = m_heap.pushBegin(args...);//二分ヒープにプッシュ開始
 			if (!obj)
@@ -727,14 +1477,11 @@ namespace priority_queue
 		//※パラメータ渡し
 		//※オブジェクトのコンストラクタが呼び出される
 		//※オブジェクトには、シーケンス番号が書き込まれる
+		//※処理中、ロックを取得する
 		template<typename... Tx>
 		inline node_type* enqueue(const priority_type priority, Tx... args)
 		{
-			if (m_autoLockAttr == AUTO_LOCK)
-			{
-				std::lock_guard<std::mutex> lock(m_lock);//関数終了時に自動的にロック解放
-				return _enqueue(priority, args...);
-			}
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
 			return _enqueue(priority, args...);
 		}
 	private:
@@ -742,7 +1489,7 @@ namespace priority_queue
 		template<typename... Tx>
 		node_type* _enqueueBegin(const priority_type priority, Tx... args)
 		{
-			//if (m_heap.state() == state_t::PUSH_BEGINNING || m_heap.state() == state_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			//if (m_heap.status() == status_t::PUSH_BEGINNING || m_heap.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 			//	return nullptr;
 			node_type* obj = m_heap.pushBegin(args...);//二分ヒープにプッシュ開始
 			if (!obj)
@@ -756,14 +1503,14 @@ namespace priority_queue
 		//※空きキュー取得
 		//※エンキュー完了時に enqueueEnd を呼び出す必要あり
 		//※この時点で、優先度とシーケンス番号が書き込まれる
+		//※処理が成功すると、ロックを取得した状態になる（enqueueEndで解放する）
 		template<typename... Tx>
 		inline node_type* enqueueBegin(const priority_type priority, Tx... args)
 		{
-			if (m_autoLockAttr == AUTO_LOCK)
-				m_lock.lock();//ロックを取得したまま関数を抜ける
+			m_lock.lock();//ロックを取得（そのまま関数を抜ける）
 			node_type* obj = _enqueueBegin(args...);//エンキュー開始
-			if (!obj && m_autoLockAttr == AUTO_LOCK)
-					m_lock.unlock();//プッシュ失敗時はロック解放
+			if (!obj)
+				m_lock.unlock();//プッシュ失敗時はロック解放
 			return obj;
 		}
 	private:
@@ -774,9 +1521,10 @@ namespace priority_queue
 		}
 	public:
 		//エンキュー終了
+		//※enqueueBeginで取得したロックを解放する
 		inline node_type* enqueueEnd()
 		{
-			const bool unlock = (m_autoLockAttr == AUTO_LOCK && m_heap.state() == state_t::PUSH_BEGINNING);//プッシュ開始中ならアンロックする
+			const bool unlock = (m_heap.status() == status_t::PUSH_BEGINNING);//プッシュ開始中ならアンロックする
 			node_type* new_obj = _enqueueEnd();//エンキュー終了
 			if (unlock)
 				m_lock.unlock();//ロック解放
@@ -786,15 +1534,16 @@ namespace priority_queue
 		//エンキュー取り消し（本体）
 		inline bool _enqueueCancel()
 		{
-			//if (m_heap.state() != state_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
+			//if (m_heap.status() != status_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
 			//	return;
 			return m_heap.pushCancel();//プッシュ取り消し
 		}
 	public:
 		//エンキュー取り消し
+		//※enqueueBeginで取得したロックを解放する
 		inline bool enqueueCancel()
 		{
-			const bool unlock = (m_autoLockAttr == AUTO_LOCK && m_heap.state() == state_t::PUSH_BEGINNING);//プッシュ開始中ならアンロックする
+			const bool unlock = (m_heap.status() == status_t::PUSH_BEGINNING);//プッシュ開始中ならアンロックする
 			const bool result = m_heap.pushCancel();//プッシュ取り消し
 			if (unlock)
 				m_lock.unlock();//ロック解放
@@ -804,7 +1553,7 @@ namespace priority_queue
 		//デキュー（本体）
 		bool _dequeueCopying(node_type& dst)
 		{
-			//if (m_heap.state() == state_t::PUSH_BEGINNING || m_heap.state() == state_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			//if (m_heap.status() == status_t::PUSH_BEGINNING || m_heap.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 			//	return nullptr;
 			const bool result = m_heap.popCopying(dst);//二分ヒープからポップ
 			if (!result)
@@ -816,13 +1565,10 @@ namespace priority_queue
 		//デキュー
 		//※オブジェクトのコピーを受け取る領域を渡す
 		//※オブジェクトのデストラクタが呼び出される ※コピー後に実行
+		//※処理中、ロックを取得する
 		inline bool dequeueCopying(node_type& dst)
 		{
-			if (m_autoLockAttr == AUTO_LOCK)
-			{
-				std::lock_guard<std::mutex> lock(m_lock);//関数終了時に自動的にロック解放
-				return _dequeueCopying(dst);
-			}
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
 			return _dequeueCopying(dst);
 		}
 	private:
@@ -830,7 +1576,7 @@ namespace priority_queue
 		//※デキュー完了時に dequeueEnd を呼び出す必要あり
 		node_type* _dequeueBegin()
 		{
-			//if (m_heap.state() == state_t::PUSH_BEGINNING || m_heap.state() == state_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			//if (m_heap.status() == status_t::PUSH_BEGINNING || m_heap.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 			//	return nullptr;
 			node_type* obj = m_heap.popBegin();//二分ヒープからポップ開始
 			if (!obj)
@@ -840,12 +1586,12 @@ namespace priority_queue
 	public:
 		//デキュー開始
 		//※デキュー完了時に dequeueEnd を呼び出す必要あり
+		//※処理が成功すると、ロックを取得した状態になる（dequeueEndで解放する）
 		inline node_type* dequeueBegin()
 		{
-			if (m_autoLockAttr == AUTO_LOCK)
-				m_lock.lock();//ロックを取得したまま関数を抜ける
+			m_lock.lock();//ロックを取得（そのまま関数を抜ける）
 			node_type* obj = _dequeueBegin();//デキュー開始
-			if (!obj && m_autoLockAttr == AUTO_LOCK)
+			if (!obj)
 				m_lock.unlock();//プッシュ失敗時はロック解放
 			return obj;
 		}
@@ -853,7 +1599,7 @@ namespace priority_queue
 		//デキュー終了（本体）
 		bool _dequeueEnd()
 		{
-			//if (m_heap.state() != state_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
+			//if (m_heap.status() != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
 			//	return false;
 			const bool result = m_heap.popEnd();//二分ヒープからポップ終了
 			checkAndResetSeqNo();//キューが空になったらシーケンス番号をリセットする
@@ -862,9 +1608,10 @@ namespace priority_queue
 	public:
 		//デキュー終了
 		//※オブジェクトのデストラクタが呼び出される
+		//※dequeueBeginで取得したロックを解放する
 		inline bool dequeueEnd()
 		{
-			const bool unlock = (m_autoLockAttr == AUTO_LOCK && m_heap.state() == state_t::POP_BEGINNING);//ポップ開始中ならアンロックする
+			const bool unlock = (m_heap.status() == status_t::POP_BEGINNING);//ポップ開始中ならアンロックする
 			const bool result = _dequeueEnd();//デキュー終了
 			if (unlock)
 				m_lock.unlock();//ロック解放
@@ -874,15 +1621,16 @@ namespace priority_queue
 		//デキュー取り消し（本体）
 		bool _dequeueCancel()
 		{
-			//if (m_heap.state() != state_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
+			//if (m_heap.status() != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
 			//	return false;
 			return m_heap.popCancel();//ポップ取り消し
 		}
 	public:
 		//デキュー取り消し
+		//※dequeueBeginで取得したロックを解放する
 		inline bool dequeueCancel()
 		{
-			const bool unlock = (m_autoLockAttr == AUTO_LOCK && m_heap.state() == state_t::POP_BEGINNING);//ポップ開始中ならアンロックする
+			const bool unlock = (m_heap.status() == status_t::POP_BEGINNING);//ポップ開始中ならアンロックする
 			const bool result = _dequeueCancel();//デキュー取り消し
 			if (unlock)
 				m_lock.unlock();//ロック解放
@@ -910,13 +1658,10 @@ namespace priority_queue
 		//※プライオリティを変更した時点でキューの位置が入れ替わる
 		//※シーケンス番号を再更新する
 		//※同じプライオリティに変更した場合、同じプライオリティのキューの一番最後に回される
+		//※処理中、ロックを取得する
 		inline node_type* changePriorityOnTop(const priority_type priority)
 		{
-			if (m_autoLockAttr == AUTO_LOCK)
-			{
-				std::lock_guard<std::mutex> lock(m_lock);//関数終了時に自動的にロック解放
-				return _changePriorityOnTop(priority);
-			}
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
 			return _changePriorityOnTop(priority);
 		}
 	private:
@@ -927,22 +1672,18 @@ namespace priority_queue
 		}
 	public:
 		//クリア
+		//※処理中、ロックを取得する
 		inline void clear()
 		{
-			if (m_autoLockAttr == AUTO_LOCK)
-			{
-				std::lock_guard<std::mutex> lock(m_lock);//関数終了時に自動的にロック解放
-				_clear();
-			}
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
 			_clear();
 		}
 	public:
 		//コンストラクタ
 		//※キー比較処理を渡す
-		container(const auto_lock_attr_t auto_lock_attr = NEVER_LOCK) :
+		container() :
 			m_heap(),
 			m_seqNo(0),
-			m_autoLockAttr(auto_lock_attr),
 			m_lock()
 		{}
 		//デストラクタ
@@ -953,14 +1694,14 @@ namespace priority_queue
 		}
 	private:
 		//フィールド
-		bin_heap_type m_heap;//二分ヒープ
+		heap_type m_heap;//二分ヒープ
 		int m_dummy;
 		seq_type m_seqNo;//シーケンス番号 ※mutable修飾子
-		auto_lock_attr_t m_autoLockAttr;//属性
-		std::mutex m_lock;//ミューテックス
+		mutable lock_type m_lock;//ロックオブジェクト
 	};
 	//--------------------
 	//安全なエンキュー／デキュー操作クラス
+	//※操作状態を記憶し、デストラクタで必ず完了させる
 	template<class CON>
 	class operation_guard
 	{
@@ -968,73 +1709,73 @@ namespace priority_queue
 		//型
 		typedef CON container_type;//コンテナ型
 		typedef typename CON::node_type node_type;//ノード型
-		typedef typename CON::state_t state_t;//ステート型
+		typedef typename CON::status_t status_t;//ステータス型
 	public:
 		//アクセッサ
-		state_t state() const { return m_state; }//ステートを取得
+		status_t status() const { return m_status; }//ステータスを取得
 	public:
 		//エンキュー開始
 		template<typename... Tx>
 		node_type* enqueueBegin(const typename CON::priority_type priority, Tx... args)
 		{
-			if (m_state == state_t::PUSH_BEGINNING || m_state == state_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			if (m_status == status_t::PUSH_BEGINNING || m_status == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
 			node_type* node = m_container.enqueueBegin(priority, args...);//エンキュー開始
 			if (node)
-				m_state = state_t::PUSH_BEGINNING;//ステート変更
+				m_status = status_t::PUSH_BEGINNING;//ステータス変更
 			return node;
 		}
 		//エンキュー終了
 		node_type* enqueueEnd()
 		{
-			if (m_state != state_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
+			if (m_status != status_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
 				return nullptr;
 			node_type* node = m_container.enqueueEnd();//エンキュー終了
-			m_state = state_t::PUSH_ENDED;//ステート変更
+			m_status = status_t::PUSH_ENDED;//ステータス変更
 			return node;
 		}
 		//エンキュー取り消し
 		bool enqueueCancel()
 		{
-			if (m_state != state_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
+			if (m_status != status_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
 				return nullptr;
 			m_container.enqueueCancel();//エンキュー取り消し
-			m_state = state_t::PUSH_CANCELLED;//ステート変更
+			m_status = status_t::PUSH_CANCELLED;//ステータス変更
 			return true;
 		}
 		//デキュー開始
 		node_type* dequeueBegin()
 		{
-			if (m_state == state_t::PUSH_BEGINNING || m_state == state_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			if (m_status == status_t::PUSH_BEGINNING || m_status == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
 			node_type* node = m_container.dequeueBegin();//デキュー開始
 			if (node)
-				m_state = state_t::POP_BEGINNING;//ステート変更
+				m_status = status_t::POP_BEGINNING;//ステータス変更
 			return node;
 		}
 		//デキュー終了
 		bool dequeueEnd()
 		{
-			if (m_state != state_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
+			if (m_status != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
 				return false;
 			const bool result = m_container.dequeueEnd();//デキュー終了
-			m_state = state_t::POP_ENDED;//ステート変更
+			m_status = status_t::POP_ENDED;//ステータス変更
 			return result;
 		}
 		//デキュー取り消し
 		bool dequeueCancel()
 		{
-			if (m_state != state_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
+			if (m_status != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
 				return false;
 			m_container.dequeueCancel();//デキュー取り消し
-			m_state = state_t::POP_CANCELLED;//ステート変更
+			m_status = status_t::POP_CANCELLED;//ステータス変更
 			return true;
 		}
 	public:
 		//コンストラクタ
 		operation_guard(container_type& container) :
 			m_container(container),
-			m_state(state_t::IDLE)
+			m_status(status_t::IDLE)
 		{}
 		//デストラクタ
 		~operation_guard()
@@ -1045,7 +1786,7 @@ namespace priority_queue
 	private:
 		//フィールド
 		container_type& m_container;//コンテナ
-		state_t m_state;//ステート
+		status_t m_status;//ステータス
 	};
 	//--------------------
 	//基本型定義マクロ消去
@@ -1148,7 +1889,23 @@ struct data_t
 };
 //----------------------------------------
 //テストデータ操作クラス
-struct ope_t : public priority_queue::base_ope_t<ope_t, data_t, PRIORITY, int>
+struct heap_ope_t : public binary_heap::base_ope_t<heap_ope_t, data_t>
+{
+	//キーを比較
+	//※lhsの方が小さいければ true を返す
+	//※派生クラスでの実装が必要
+	inline static bool less(const node_type& lhs, const node_type& rhs)
+	{
+		return lhs.m_priority < rhs.m_priority;//優先度のみを比較
+	}
+	
+	//ロック型
+	//※デフォルト（dummy_lock）のままとする
+	//typedef spin_lock lock_type;//ロックオブジェクト型
+};
+//----------------------------------------
+//テストデータ操作クラス
+struct pqueue_ope_t : public priority_queue::base_ope_t<pqueue_ope_t, data_t, PRIORITY, int>
 {
 	//優先度を取得
 	inline static priority_type getPrior(const node_type& node){ return node.m_priority; }
@@ -1159,6 +1916,10 @@ struct ope_t : public priority_queue::base_ope_t<ope_t, data_t, PRIORITY, int>
 	inline static seq_type getSeqNo(const node_type& node){ return node.m_seqNo; }
 	//シーケンス番号を更新
 	inline static void setSeqNo(node_type& node, const seq_type seq_no){ node.m_seqNo = seq_no; }
+
+	//ロック型
+	//※デフォルト（dummy_lock）のままとする
+	//typedef spin_lock lock_type;//ロックオブジェクト型
 };
 
 //----------------------------------------
@@ -1174,13 +1935,78 @@ inline int printf_detail(const char* fmt, ...){ return 0; }
 #endif//PRINT_TEST_DATA_DETAIL
 
 //----------------------------------------
+//木を表示
+template<class HEAP>
+void showTree(const HEAP& heap)
+{
+	printf("--- Show tree (count=%d) ---\n", heap.size());
+	//static const int depth_limit = 5;//最大でも5段階目までを表示（0段階目から数えるので最大で6段階表示される→最大：1+2+4+8+16+32=63個）
+	static const int depth_limit = 4;//最大でも4段階目までを表示（0段階目から数えるので最大で5段階表示される→最大：1+2+4+8+16=31個）
+	const int _depth_max = heap.depth_max();
+	printf("depth_max=%d (limit for showing=%d)\n", _depth_max, depth_limit);
+	const int depth_max = _depth_max <= depth_limit ? _depth_max : depth_limit;
+	const int width_max = static_cast<int>(std::pow(2, depth_max));
+	for (int depth = 0; depth <= depth_max; ++depth)
+	{
+		const int width = static_cast<int>(std::pow(2, depth));
+		static const int label_len = 6;
+		const int print_width = (width_max * label_len) / width;
+		const int print_indent = (print_width - label_len) / 2;
+		for (int breath = 0; breath < width; ++breath)
+		{
+			const data_t* node = heap.ref_top();
+			int breath_tmp = breath;
+			for (int depth_tmp = depth - 1; node; --depth_tmp)
+			{
+				if (depth_tmp < 0)
+					break;
+				node = heap.ref_child(node, (breath_tmp & (0x1 << depth_tmp)) != 0x0);
+			}
+			if (node)
+			{
+				{
+					int c = 0;
+					for (; c < print_indent / 2; ++c)
+						printf(" ");
+					if (heap.ref_child_l(node) && c < print_indent)
+					{
+						printf(".");
+						++c;
+					}
+					for (; c < print_indent; ++c)
+						printf(heap.ref_child_l(node) ? "-" : " ");
+				}
+				printf("%s%1d:%2d%s", heap.ref_child_l(node) ? "{" : "[", node->m_priority, node->m_val, heap.ref_child_r(node) ? "}" : "]");
+				{
+					int c = 0;
+					for (; c < print_indent / 2; ++c)
+						printf(heap.ref_child_r(node) ? "-" : " ");
+					if (heap.ref_child_r(node) && c < print_indent)
+					{
+						printf(".");
+						++c;
+					}
+					for (; c < print_indent; ++c)
+						printf(" ");
+				}
+			}
+			else
+			{
+				for (int c = 0; c < print_width; ++c)
+					printf(" ");
+			}
+		}
+		printf("\n");
+	}
+};
+
+//----------------------------------------
 //テストメイン
 int main(const int argc, const char* argv[])
 {
 	//プライオリティキューコンテナ生成
-	typedef priority_queue::container<ope_t, TEST_DATA_MAX> container_type;
-	typedef container_type::bin_heap_type bin_heap_type;
-	container_type con(priority_queue::AUTO_LOCK);
+	typedef priority_queue::container<pqueue_ope_t, TEST_DATA_MAX> pqueue_type;
+	pqueue_type con;
 
 	//--------------------
 	//プライオリティキューのテスト
@@ -1227,7 +2053,7 @@ int main(const int argc, const char* argv[])
 			//※エンキュー終了時にはポインタが変わる点にも注意。
 			#elif USE_ENQUEUE_TYPE == 3
 			{
-				priority_queue::operation_guard<container_type> ope(con);//エンキュー／デキュー操作用クラス
+				priority_queue::operation_guard<pqueue_type> ope(con);//エンキュー／デキュー操作用クラス
 				data_t* obj = ope.enqueueBegin(priority);//この時点で優先度とシーケンス番号がセットされ、ロックが取得される
 				                                         //※返り値は、処理ブロック内でしか（enqueueEnd/enqueueCancel呼び出しまでしか）有効ではないポインタなので注意
 				obj->m_val = val;
@@ -1272,68 +2098,7 @@ int main(const int argc, const char* argv[])
 #endif
 
 	//木を表示
-	auto showTree = [](const bin_heap_type& heap)
-	{
-		printf("--- Show tree (count=%d) ---\n", heap.size());
-		static const int depth_limit = 5;//最大でも5段階目までを表示（0段階目から数えるので最大で6段階表示される→最大：1+2+4+8+16+32個）
-		const int _depth_max = heap.depth_max();
-		printf("depth_max=%d (limit for showing=%d)\n", _depth_max, depth_limit);
-		const int depth_max = _depth_max <= depth_limit ? _depth_max : depth_limit;
-		const int width_max = static_cast<int>(std::pow(2, depth_max));
-		for (int depth = 0; depth <= depth_max; ++depth)
-		{
-			const int width = static_cast<int>(std::pow(2, depth));
-			static const int label_len = 6;
-			const int print_width = (width_max * label_len) / width;
-			const int print_indent = (print_width - label_len) / 2;
-			for (int breath = 0; breath < width; ++breath)
-			{
-				const data_t* node = heap.ref_top();
-				int breath_tmp = breath;
-				for (int depth_tmp = depth - 1; node; --depth_tmp)
-				{
-					if (depth_tmp < 0)
-						break;
-					node = heap.ref_child(node, (breath_tmp & (0x1 << depth_tmp)) != 0x0);
-				}
-				if (node)
-				{
-					{
-						int c = 0;
-						for (; c < print_indent / 2; ++c)
-							printf(" ");
-						if (heap.ref_child_l(node) && c < print_indent)
-						{
-							printf(".");
-							++c;
-						}
-						for (; c < print_indent; ++c)
-							printf(heap.ref_child_l(node) ? "-" : " ");
-					}
-					printf("%s%1d:%2d%s", heap.ref_child_l(node) ? "{" : "[", node->m_priority, node->m_val, heap.ref_child_r(node) ? "}" : "]");
-					{
-						int c = 0;
-						for (; c < print_indent / 2; ++c)
-							printf(heap.ref_child_r(node) ? "-" : " ");
-						if (heap.ref_child_r(node) && c < print_indent)
-						{
-							printf(".");
-							++c;
-						}
-						for (; c < print_indent; ++c)
-							printf(" ");
-					}
-				}
-				else
-				{
-					for (int c = 0; c < print_width; ++c)
-						printf(" ");
-				}
-			}
-			printf("\n");
-		}
-	};
-	showTree(con);
+	showTree(con.getHeap());
 
 	//デキュー
 	auto dequeue = [&con](const int pop_limit)
@@ -1360,7 +2125,7 @@ int main(const int argc, const char* argv[])
 			//※最後にデストラクタが呼び出される。
 			#elif USE_DEQUEUE_TYPE == 2
 			{
-				priority_queue::operation_guard<container_type> ope(con);//エンキュー／デキュー操作用クラス
+				priority_queue::operation_guard<pqueue_type> ope(con);//エンキュー／デキュー操作用クラス
 				data_t* obj = ope.dequeueBegin();//この時点でロックが取得される
 				                                 //※返り値は、処理ブロック内でしか（dequeueEnd/dequeueCancel呼び出しまでしか）有効ではないポインタなので注意
 				if (!obj)
@@ -1377,7 +2142,7 @@ int main(const int argc, const char* argv[])
 		printf("\n");
 	};
 	dequeue(3);
-	showTree(con);//木を表示
+	showTree(con.getHeap());//木を表示
 
 	//先頭（根）ノードの優先度を変更
 	auto changePriorityOnTop = [&con](const PRIORITY new_priority)
@@ -1391,25 +2156,27 @@ int main(const int argc, const char* argv[])
 	changePriorityOnTop(HIGHEST);
 	changePriorityOnTop(LOWER);
 	changePriorityOnTop(HIGHER);
-	showTree(con);//木を表示
+	showTree(con.getHeap());//木を表示
 	
 	//デキュー
 	dequeue(TEST_DATA_REG_NUM / 2);
-	showTree(con);//木を表示
+	showTree(con.getHeap());//木を表示
 
 	//デキュー
 	dequeue(TEST_DATA_REG_NUM);
-	showTree(con);//木を表示
+	showTree(con.getHeap());//木を表示
 
 	//--------------------
 	//【挙動比較用】二分ヒープのテスト
 	//※プライオリティキューと異なり、ポップ時に、プッシュ時（エンキュー時）の順序性が保証されていないことが確認できる
 	printf("\n");
 	printf("--------------------------------------------------------------------------------\n");
-	printf("[Test for bin_heap::container(Binary Heap)]\n");
+	printf("[Test for binary_heap::container(Binary Heap)]\n");
 	printf("\n");
 
-	bin_heap_type heap;
+	//ヒープコンテナ生成
+	typedef binary_heap::container<heap_ope_t, TEST_DATA_MAX> heap_type;
+	heap_type heap;
 
 	//二分ヒープでノードをプッシュ
 	auto pushNodesBinHeap = [&heap]()
@@ -1443,7 +2210,7 @@ int main(const int argc, const char* argv[])
 			//【プッシュ方法③】
 			#elif USE_PUSH_TYPE == 3
 			{
-				bin_heap::operation_guard<bin_heap_type> ope(heap);
+				binary_heap::operation_guard<heap_type> ope(heap);
 				data_t* obj = ope.pushBegin(priority, val);//※返り値は、処理ブロック内でしか（pushEnd/pushCancel呼び出しまでしか）有効ではないポインタなので注意
 				printf_detail("[%d:%2d]\n", obj->m_priority, obj->m_val);
 				//obj = ope.popEnd();//明示的なポップ終了を行うと、正しいオブジェクトの参照を取得できる
@@ -1477,7 +2244,7 @@ int main(const int argc, const char* argv[])
 			//【推奨】【ポップ方法②】
 			#elif USE_POP_TYPE == 2
 			{
-				bin_heap::operation_guard<bin_heap_type> ope(heap);
+				binary_heap::operation_guard<heap_type> ope(heap);
 				data_t* obj = ope.popBegin();//※返り値は、処理ブロック内でしか（popEnd/popCancel呼び出しまでしか）有効ではないポインタなので注意
 				if (!obj)
 					break;
@@ -1503,7 +2270,8 @@ int main(const int argc, const char* argv[])
 	printf("[Test for std::priority_queue(STL)]\n");
 	printf("\n");
 	
-	std::priority_queue<data_t, std::vector<data_t>, ope_t> stl;
+	std::priority_queue<data_t, std::vector<data_t>, heap_ope_t> stl;
+	//std::priority_queue<data_t, std::vector<data_t>, pqueue_ope_t> stl;
 
 	//STLでノードをプッシュ
 	auto pushNodesSTL = [&stl]()
@@ -1552,11 +2320,11 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	enqueue();//エンキュー
-	showTree(con);//木を表示
+	showTree(con.getHeap());//木を表示
 	dequeue(TEST_DATA_REG_NUM / 2);//デキュー
-	showTree(con);//木を表示
+	showTree(con.getHeap());//木を表示
 	dequeue(TEST_DATA_REG_NUM);//デキュー
-	showTree(con);//木を表示
+	showTree(con.getHeap());//木を表示
 
 	//--------------------
 	//プライオリティキューのクリアのテスト
@@ -1566,11 +2334,11 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 
 	enqueue();//エンキュー
-	showTree(con);//木を表示
+	showTree(con.getHeap());//木を表示
 	printf("--- Clear ---\n");
 	con.clear();//クリア
 	printf("OK\n");
-	showTree(con);//木を表示
+	showTree(con.getHeap());//木を表示
 
 	//--------------------
 	//ポインタ変数をキューイングする場合のテスト
@@ -1586,6 +2354,10 @@ int main(const int argc, const char* argv[])
 			inline static void setPrior(node_type& node, const priority_type priority){ node->m_priority = priority; }
 			inline static seq_type getSeqNo(const node_type& node){ return node->m_seqNo; }
 			inline static void setSeqNo(node_type& node, const seq_type seq_no){ node->m_seqNo = seq_no; }
+
+			//ロック型
+			//※デフォルト（dummy_lock）のままとする
+			//typedef spin_lock lock_type;//ロックオブジェクト型
 		};
 		
 		//プライオリティキュー

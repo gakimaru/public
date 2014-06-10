@@ -41,6 +41,598 @@ static const int TEST_DATA_STACK_DEPTH_MAX = 32;//テストデータの赤黒木操作用スタ
 #include <stdlib.h>
 
 //--------------------------------------------------------------------------------
+//自作ロッククラス
+//--------------------------------------------------------------------------------
+
+#include <atomic>//C++11 std::atomic用
+#include <thread>//C++11 std::this_thread::sleep_for用
+#include <chrono>//C++11 std::chrono::milliseconds用
+
+//--------------------------------------------------------------------------------
+//スピンロック
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//スピンロッククラス
+//※サイズは4バイト(std::atomic_flag一つ分のサイズ)
+class spin_lock
+{
+public:
+	//定数
+	static const int DEFAULT_SPIN_COUNT = 1000;//スピンロックカウントのデフォルト値
+public:
+	//ロック取得
+	void lock(const int spin_count = DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (true)
+		{
+			if (!m_lock.test_and_set())
+				return;
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//ロック取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock()
+	{
+		return m_lock.test_and_set() == false;
+	}
+	//ロック解放
+	inline void unlock()
+	{
+		m_lock.clear();
+	}
+public:
+	//コンストラクタ
+	inline spin_lock()
+	{
+		m_lock.clear();
+	}
+	//デストラクタ
+	inline ~spin_lock()
+	{}
+private:
+	//フィールド
+	std::atomic_flag m_lock;//ロック用フラグ
+};
+
+//----------------------------------------
+//スピンロッククラス（軽量版）
+//※サイズは1バイト
+//※spin_lockの方が速い
+class lw_spin_lock
+{
+public:
+	//ロック取得
+	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (true)
+		{
+			bool prev = false;
+			if (!m_lock.compare_exchange_weak(prev, true))
+				return;
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//ロック取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock()
+	{
+		bool prev = false;
+		return m_lock.compare_exchange_weak(prev, true) == false;
+	}
+	//ロック解放
+	inline void unlock()
+	{
+		m_lock.store(false);
+	}
+public:
+	//コンストラクタ
+	inline lw_spin_lock()
+	{
+		m_lock.store(false);//ロック用フラグ
+	}
+	//デストラクタ
+	inline ~lw_spin_lock()
+	{}
+private:
+	//フィールド
+	std::atomic_bool m_lock;//ロック用フラグ
+};
+
+//----------------------------------------
+//共有（リード・ライト）スピンロッククラス
+//※サイズは4バイト
+//※排他ロック（ライトロック）を優先する
+//※読み込み操作（共有ロック）が込み合っている途中で割り込んで
+//　書き込み操作（排他ロック）を行いたい時に用いる
+//※排他ロックが常に最優先されるわけではない。
+//　共有ロックがロックを開放する前に排他ロックがロックを
+//　取得することを許可する仕組みで実装する。その場合、
+//　共有ロックが全て解放されるのを待ってから処理を続行する。
+//　そのため、別の排他ロックが待ち状態になっても、
+//　共有ロックより先にロックを取得することは保証しない。
+class shared_spin_lock
+{
+public:
+	//定数
+	static const int DEFAULT_COUNTER = 0x01000000;//ロックが取得されていない時のデフォルトのカウンタ
+
+public:
+	//共有ロック（リードロック）取得
+	void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (1)
+		{
+			const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+			if (lock_counter > 0)
+				return;//ロック取得成功
+			m_lockCounter.fetch_add(1);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//共有ロック（リードロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock_shared()
+	{
+		const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+		if (lock_counter >= 0)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//排他ロック（ライトロック）取得
+	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (1)
+		{
+			const int lock_counter = m_lockCounter.fetch_sub(DEFAULT_COUNTER);//カウンタを更新
+			if (lock_counter == DEFAULT_COUNTER)
+				return;//ロック取得成功
+			if (lock_counter > 0)	//他が排他ロックを取得していないので、現在の共有ロックが全て解放されるのを待つ
+			{						//※カウンタを更新したままなので、後続の共有ロック／排他ロックは取得できない。
+				while (m_lockCounter.load() != 0)//カウンタが0になるのを待つ
+				{
+					if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+					{
+						std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+						spin_count_now = spin_count;
+					}
+				}
+				return;//ロック取得成功
+			}
+			m_lockCounter.fetch_add(DEFAULT_COUNTER);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//排他ロック（ライトロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock()
+	{
+		const int lock_counter = m_lockCounter.fetch_sub(DEFAULT_COUNTER);//カウンタを更新
+		if (lock_counter == DEFAULT_COUNTER)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(DEFAULT_COUNTER);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lockCounter.fetch_add(DEFAULT_COUNTER);//カウンタを戻す
+	}
+public:
+	//コンストラクタ
+	inline shared_spin_lock() :
+		m_lockCounter(DEFAULT_COUNTER)
+	{}
+	//デストラクタ
+	inline ~shared_spin_lock()
+	{}
+private:
+	//フィールド
+	std::atomic<int> m_lockCounter;//ロックカウンタ
+};
+
+//----------------------------------------
+//共有（リード・ライト）スピンロッククラス（軽量版）
+//※サイズは4バイト
+//※排他ロック（ライトロック）を優先しない
+//※読み込み操作（共有ロック）が込み合っていると、
+//　書き込み操作（排他ロック）が待たされるので注意。
+class lw_shared_spin_lock
+{
+public:
+	//共有ロック（リードロック）取得
+	void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (1)
+		{
+			const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+			if (lock_counter > 0)
+				return;//ロック取得成功
+			m_lockCounter.fetch_add(1);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//共有ロック（リードロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock_shared()
+	{
+		const int lock_counter = m_lockCounter.fetch_sub(1);//カウンタを更新
+		if (lock_counter >= 0)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//排他ロック（ライトロック）取得
+	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		int spin_count_now = spin_count;
+		while (1)
+		{
+			const int lock_counter = m_lockCounter.fetch_sub(shared_spin_lock::DEFAULT_COUNTER);//カウンタを更新
+			if (lock_counter == shared_spin_lock::DEFAULT_COUNTER)
+				return;//ロック取得成功
+			m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//カウンタを戻してリトライ
+			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
+				spin_count_now = spin_count;
+			}
+		}
+	}
+	//排他ロック（ライトロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	bool try_lock()
+	{
+		const int lock_counter = m_lockCounter.fetch_sub(shared_spin_lock::DEFAULT_COUNTER);//カウンタを更新
+		if (lock_counter == shared_spin_lock::DEFAULT_COUNTER)
+			return true;//ロック取得成功
+		m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//カウンタを戻す
+		return false;//ロック取得失敗
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lockCounter.fetch_add(1);//カウンタを戻す
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//カウンタを戻す
+	}
+public:
+	//コンストラクタ
+	inline lw_shared_spin_lock() :
+		m_lockCounter(shared_spin_lock::DEFAULT_COUNTER)
+	{}
+	//デストラクタ
+	inline ~lw_shared_spin_lock()
+	{}
+private:
+	//フィールド
+	std::atomic<int> m_lockCounter;//ロックカウンタ
+};
+
+//----------------------------------------
+//非共有（排他）スピンロッククラス
+//※サイズは4バイト
+//※共有ロッククラスと同一のインターフェースで、
+//　共有ロックを行わないクラス
+//※共有ロックのヘルパークラスやロックガードを使用する処理に対して、
+//　完全な排他制御を行いたい時に使用する。
+class unshared_spin_lock
+{
+public:
+	//共有ロック（リードロック）取得
+	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//共有ロック（リードロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock_shared()
+	{
+		return m_lock.try_lock();
+	}
+	//排他ロック（ライトロック）取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//排他ロック（ライトロック）取得を試行
+	//※取得に成功した場合、trueが返るので、ロックを解放する必要がある
+	inline bool try_lock()
+	{
+		return m_lock.try_lock();
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lock.unlock();
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lock.unlock();
+	}
+public:
+	//コンストラクタ
+	unshared_spin_lock() :
+		m_lock()
+	{}
+	//デストラクタ
+	~unshared_spin_lock()
+	{}
+private:
+	//フィールド
+	spin_lock m_lock;//ロックオブジェクト
+};
+
+//--------------------------------------------------------------------------------
+//ダミーロック
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//ダミーロッククラス
+//※spin_lockやstd::mutexと同様のロックインターフェースを持つが、実際には何もしないクラス
+class dummy_lock
+{
+public:
+	//ロック取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		//何もしない
+	}
+	//ロック取得を試行
+	inline bool try_lock()
+	{
+		//何もしない
+		return true;
+	}
+	//ロック解放
+	inline void unlock()
+	{
+		//何もしない
+	}
+public:
+	//コンストラクタ
+	inline dummy_lock()
+	{}
+	//デストラクタ
+	~dummy_lock()
+	{}
+};
+
+//----------------------------------------
+//ダミー共有（リード・ライト）ロッククラス
+//※shared_spin_lockやstd::shared_lockと同様のロックインターフェースを持つが、実際には何もしないクラス
+class dummy_shared_lock
+{
+public:
+	//共有ロック（リードロック）取得
+	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		//何もしない
+	}
+	//共有ロック（リードロック）取得を試行
+	inline bool try_lock_shared()
+	{
+		//何もしない
+		return true;
+	}
+	//排他ロック（ライトロック）取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		//何もしない
+	}
+	//排他ロック（ライトロック）取得を試行
+	inline bool try_lock()
+	{
+		//何もしない
+		return true;
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		//何もしない
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		//何もしない
+	}
+public:
+	//コンストラクタ
+	inline dummy_shared_lock()
+	{}
+	//デストラクタ
+	~dummy_shared_lock()
+	{}
+};
+
+//--------------------------------------------------------------------------------
+//ロックヘルパー
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//ロックヘルパークラス
+//※実装を隠ぺいしてロックを操作するためのヘルパークラス
+template<class T>
+class lock_helper
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//メソッド
+
+	//ロック取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//ロック取得を試行
+	inline bool try_lock()
+	{
+		return m_lock.try_lock();
+	}
+	//ロック解放
+	inline void unlock()
+	{
+		m_lock.unlock();
+	}
+public:
+	//コンストラクタ
+	inline lock_helper(lock_type& lock) :
+		m_lock(lock)
+	{}
+	//デストラクタ
+	inline ~lock_helper()
+	{}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//----------------------------------------
+//共有（リード・ライト）ロックヘルパークラス
+//※実装を隠ぺいして共有（リード・ライト）ロックを操作するためのヘルパークラス
+template<class T>
+class shared_lock_helper
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//メソッド
+
+	//共有ロック（リードロック）取得
+	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock_shared(spin_count);
+	}
+	//共有ロック（リードロック）取得を試行
+	inline bool try_lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		return m_lock.try_lock_shared(spin_count);
+	}
+	//排他ロック（ライトロック）取得
+	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		m_lock.lock(spin_count);
+	}
+	//排他ロック（ライトロック）取得を試行
+	inline bool try_lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
+	{
+		return m_lock.try_lock(spin_count);
+	}
+	//共有ロック（リードロック）解放
+	inline void unlock_shared()
+	{
+		m_lock.unlock_shared();
+	}
+	//排他ロック（ライトロック）解放
+	inline void unlock()
+	{
+		m_lock.unlock();
+	}
+public:
+	//コンストラクタ
+	inline shared_lock_helper(lock_type& lock) :
+		m_lock(lock)
+	{}
+	//デストラクタ
+	inline ~shared_lock_helper()
+	{}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//--------------------------------------------------------------------------------
+//ロックガード（スコープロック）
+//--------------------------------------------------------------------------------
+
+//----------------------------------------
+//ロックガードクラス（スコープロック）
+//※スコープロックで通常ロックもしくは排他ロック（ライトロック）のロック取得と解放を行う
+template<class T>
+class lock_guard
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//コンストラクタ
+	inline lock_guard(lock_type& lock, const int spin_count = spin_lock::DEFAULT_SPIN_COUNT) :
+		m_lock(lock)
+	{
+		m_lock.lock(spin_count);
+	}
+	//デストラクタ
+	inline ~lock_guard()
+	{
+		m_lock.unlock();
+	}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//----------------------------------------
+//共有（リード・ライト）ロックガードクラス（スコープロック）
+//※スコープロックで共有ロック（リードロック）のロック取得と解放を行う
+template<class T>
+class shared_lock_guard
+{
+public:
+	typedef T lock_type;//ロックオブジェクト型
+public:
+	//コンストラクタ
+	inline shared_lock_guard(lock_type& lock, const int spin_count = spin_lock::DEFAULT_SPIN_COUNT) :
+		m_lock(lock)
+	{
+		m_lock.lock_shared(spin_count);
+	}
+	//デストラクタ
+	inline ~shared_lock_guard()
+	{
+		m_lock.unlock_shared();
+	}
+private:
+	//フィールド
+	lock_type& m_lock;//ロックオブジェクトの参照
+};
+
+//--------------------------------------------------------------------------------
 //赤黒木（red-black tree）
 //--------------------------------------------------------------------------------
 //データ構造とアルゴリズム
@@ -112,7 +704,7 @@ namespace rb_tree
 	//赤黒木ノード操作用基底テンプレートクラス
 	//※下記のような派生クラス（CRTP）を定義して使用する
 	//  //struct クラス名 : public rb_tree::base_ope_t<クラス名, ノード型, キー型, スタックの最大の深さ = 32>
-	//	struct ope_t : public rb_tree::ope_t<ope_t, data_t, int>
+	//	struct ope_t : public rb_tree::base_ope_t<ope_t, data_t, int>
 	//	{
 	//		//子ノードを取得
 	//		inline static const node_type* getChildL(const node_type& node){ return ???; }//大（右）側
@@ -129,8 +721,13 @@ namespace rb_tree
 	//		//キーを取得
 	//		inline static key_type getKey(const node_type& node){ return ???; }
 	//		
-	//		//キーを比較 ※デフォルトと変えたい場合
+	//		//キーを比較 ※必要に応じて定義
 	//		inline static int compareKey(const key_type lhs, const key_type rhs){ return ???; }
+	//		
+	//		//ロック型 ※必要に応じて定義
+	//		//※共有ロック（リード・ライトロック）でコンテナ操作をスレッドセーフにしたい場合は、
+	//		//　有効な共有ロック型（shared_spin_lockなど）を lock_type 型として定義する。
+	//		typedef shared_spin_lock lock_type;//ロックオブジェクト型
 	//	};
 	template<class OPE_TYPE, typename NODE_TYPE, typename KEY_TYPE, int _STACK_DEPTH_MAX = 32>
 	struct base_ope_t
@@ -147,7 +744,28 @@ namespace rb_tree
 		typedef OPE_TYPE ope_type;//ノード操作型
 		typedef NODE_TYPE node_type;//ノード型
 		typedef KEY_TYPE key_type;//キー型
-		
+
+		//ロック型
+		typedef dummy_shared_lock lock_type;//ロックオブジェクト型
+		//※デフォルトはダミーのため、一切ロック制御しない。
+		//※共有ロック（リード・ライトロック）でコンテナ操作をスレッドセーフにしたい場合は、
+		//　base_ope_tの派生クラスにて、有効な共有ロック型（shared_spin_lock など）を
+		//　lock_type 型として再定義する。
+		//【補足①】コンテナには、あらかじめロック制御のための仕組みがソースコードレベルで
+		//　　　　　仕込んであるが、有効な型を与えない限りは、実行時のオーバーヘッドは一切ない。
+		//【補足②】スレッドセーフ化した場合、書き込み時の排他ロックは行われるようになるが、
+		//　　　　　読み込み時の共有ロックは行っていない。読み込み時のロックは局所的なロックで
+		//　　　　　済まないため、ユーザーが任意に対応しなければならない。
+		//　　　　　（例）
+		//　　　　　    {
+		//　　　　　        shared_lock_guard lock(container);//コンテナオブジェクトを渡して共有ロック
+		//　　　　　                                          //※コンテナオブジェクトはロック
+		//　　　　　                                          //　オブジェクト（lock_type）として振る舞える
+		//　　　　　        //...
+		//　　　　　        //一連のイテレータ操作など
+		//　　　　　        //...
+		//　　　　　    }//スコープを抜ける時に自動的にロック解放
+
 		//子ノードを取得 ※const外し(remove_const)
 		inline static node_type* getChildL_rc(node_type& node){ return const_cast<node_type*>(ope_type::getChildL(const_cast<const node_type&>(node))); }//大（右）側
 		inline static node_type* getChildS_rc(node_type& node){ return const_cast<node_type*>(ope_type::getChildS(const_cast<const node_type&>(node))); }//小（左）側
@@ -235,7 +853,8 @@ namespace rb_tree
 		typedef const value_type* const_pointer; \
 		typedef std::size_t size_type; \
 		typedef stack_t<ope_type> stack_type; \
-		typedef typename stack_type::info_t stack_info_type;
+		typedef typename stack_type::info_t stack_info_type; \
+		typedef typename ope_type::lock_type lock_type;
 	//----------------------------------------
 	//デバッグ用補助関数
 #ifdef DEBUG_PRINT_FOR_ADD
@@ -1906,6 +2525,8 @@ namespace rb_tree
 			inline operator const node_type() const { return *m_node; }
 			inline operator node_type&(){ return *m_node; }
 			inline operator key_type() const { return ope_type::getKey(*m_node); }
+			inline operator lock_type&(){ return m_lock; }//ロックオブジェクト
+			inline operator lock_type&() const { return m_lock; }//ロックオブジェクト ※mutable
 		public:
 			//オペレータ
 			inline const node_type& operator*() const { return *m_node; }
@@ -2287,11 +2908,25 @@ namespace rb_tree
 		//メソッド：追加／削除系
 		//※std::mapと異なり、ノードを直接指定し、結果をbool型で受け取る
 		//※要素のメモリ確保／削除を行わない点に注意
-		inline node_type* insert(const node_type& node){ return addNode<ope_type>(const_cast<node_type*>(&node), m_root); }
-		inline node_type* erase(const node_type& node){ return removeNode<ope_type>(&node, m_root); }
-		inline node_type* erase(const key_type key){ return removeNode<ope_type>(at(key), m_root); }
+		//※処理中、排他ロック（ライトロック）を取得する
+		inline node_type* insert(const node_type& node)
+		{
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
+			return addNode<ope_type>(const_cast<node_type*>(&node), m_root);
+		}
+		inline node_type* erase(const node_type& node)
+		{
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
+			return removeNode<ope_type>(&node, m_root);
+		}
+		inline node_type* erase(const key_type key)
+		{
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
+			return removeNode<ope_type>(at(key), m_root);
+		}
 		node_type* clear()
 		{ 
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			node_type* root = m_root;
 			m_root = nullptr;
 			return root;
@@ -2351,6 +2986,7 @@ namespace rb_tree
 	private:
 		//フィールド
 		node_type* m_root;//根ノード
+		mutable lock_type m_lock;//ロックオブジェクト
 	};
 }//namespace rb_tree
 
@@ -2409,6 +3045,10 @@ struct ope_t : public rb_tree::base_ope_t<ope_t, data_t, int, TEST_DATA_STACK_DE
 	//キーを比較
 	//※デフォルトのままとする
 	//inline static int compareKey(const key_type lhs, const key_type rhs);
+
+	//ロック型
+	//※デフォルト（dummy_shared_lock）のままとする
+	//typedef shared_spin_lock lock_type;//ロックオブジェクト型
 };
 
 //----------------------------------------

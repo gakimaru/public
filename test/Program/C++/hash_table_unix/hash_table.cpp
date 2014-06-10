@@ -1,21 +1,14 @@
 //--------------------------------------------------------------------------------
 //ハッシュテーブルテスト用設定とコンパイラスイッチ
-static const int TEST_DATA_TABLE_SIZE = 100000;//テストデータテーブルサイズ
-//static const int TEST_DATA_TABLE_SIZE = 20;//テストデータテーブルサイズ
+//static const int TEST_DATA_TABLE_SIZE = 500000;//テストデータテーブルサイズ
+static const int TEST_DATA_TABLE_SIZE = 20;//テストデータテーブルサイズ
 
-//#define PRINT_TEST_DATA_DETAIL//テストデータの詳細を表示する場合は、このマクロを有効化する
+#define PRINT_TEST_DATA_DETAIL//テストデータの詳細を表示する場合は、このマクロを有効化する
 //#define TEST_DATA_WATCH_CONSTRUCTOR//コンストラクタ／デストラクタ／代入演算子の動作を確認する場合、このマクロを有効化する
 
 #define USE_GCC//GCC版でコンパイルするときは、このマクロを有効化する
 
 #include <cstddef>//sｔd::size_t用
-
-//【C++11仕様】thread_local：スレッドローカルストレージ（TLS）修飾子
-#ifdef USE_GCC
-#define thread_local __thread//GCC用
-#else//USE_GCC
-#define thread_local __declspec(thread)//VC++用
-#endif//USE_GCC
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -283,15 +276,16 @@ struct makeStaticPrimeGE{
 //自作ロッククラス
 //--------------------------------------------------------------------------------
 
-#include <thread>
-#include <atomic>
+#include <atomic>//C++11 std::atomic用
+#include <thread>//C++11 std::this_thread::sleep_for用
+#include <chrono>//C++11 std::chrono::milliseconds用
 
 //--------------------------------------------------------------------------------
 //スピンロック
 //--------------------------------------------------------------------------------
 
 //----------------------------------------
-//スピンロック
+//スピンロッククラス
 //※サイズは4バイト(std::atomic_flag一つ分のサイズ)
 class spin_lock
 {
@@ -309,7 +303,7 @@ public:
 				return;
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
 				spin_count_now = spin_count;
 			}
 		}
@@ -340,8 +334,9 @@ private:
 };
 
 //----------------------------------------
-//スピンロック（軽量版）
+//スピンロッククラス（軽量版）
 //※サイズは1バイト
+//※spin_lockの方が速い
 class lw_spin_lock
 {
 public:
@@ -356,7 +351,7 @@ public:
 				return;
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
 				spin_count_now = spin_count;
 			}
 		}
@@ -388,7 +383,7 @@ private:
 };
 
 //----------------------------------------
-//共有スピンロッククラス（リード・ライトロッククラス）
+//共有（リード・ライト）スピンロッククラス
 //※サイズは4バイト
 //※排他ロック（ライトロック）を優先する
 //※読み込み操作（共有ロック）が込み合っている途中で割り込んで
@@ -403,7 +398,7 @@ class shared_spin_lock
 {
 public:
 	//定数
-	static const int DEFAULT_COUNTER = 0x01000000;//ロックが取得されていない時のデフォルトのカウンター
+	static const int DEFAULT_COUNTER = 0x01000000;//ロックが取得されていない時のデフォルトのカウンタ
 
 public:
 	//共有ロック（リードロック）取得
@@ -418,7 +413,7 @@ public:
 			m_lockCounter.fetch_add(1);//カウンタを戻してリトライ
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
 				spin_count_now = spin_count;
 			}
 		}
@@ -448,7 +443,7 @@ public:
 				{
 					if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 					{
-						std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+						std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
 						spin_count_now = spin_count;
 					}
 				}
@@ -457,7 +452,7 @@ public:
 			m_lockCounter.fetch_add(DEFAULT_COUNTER);//カウンタを戻してリトライ
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
 				spin_count_now = spin_count;
 			}
 		}
@@ -492,11 +487,11 @@ public:
 	{}
 private:
 	//フィールド
-	std::atomic<int> m_lockCounter;//ロックカウンター
+	std::atomic<int> m_lockCounter;//ロックカウンタ
 };
 
 //----------------------------------------
-//共有スピンロッククラス（リード・ライトロッククラス）（軽量版）
+//共有（リード・ライト）スピンロッククラス（軽量版）
 //※サイズは4バイト
 //※排他ロック（ライトロック）を優先しない
 //※読み込み操作（共有ロック）が込み合っていると、
@@ -516,7 +511,7 @@ public:
 			m_lockCounter.fetch_add(1);//カウンタを戻してリトライ
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
 				spin_count_now = spin_count;
 			}
 		}
@@ -543,7 +538,7 @@ public:
 			m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//カウンタを戻してリトライ
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//スリープ（コンテキストスイッチ）
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//コンテキストスイッチ（ゼロスリープ）
 				spin_count_now = spin_count;
 			}
 		}
@@ -578,11 +573,11 @@ public:
 	{}
 private:
 	//フィールド
-	std::atomic<int> m_lockCounter;//ロックカウンター
+	std::atomic<int> m_lockCounter;//ロックカウンタ
 };
 
 //----------------------------------------
-//非共有スピンロッククラス（リード・ライトロッククラス）
+//非共有（排他）スピンロッククラス
 //※サイズは4バイト
 //※共有ロッククラスと同一のインターフェースで、
 //　共有ロックを行わないクラス
@@ -655,6 +650,7 @@ public:
 	inline bool try_lock()
 	{
 		//何もしない
+		return true;
 	}
 	//ロック解放
 	inline void unlock()
@@ -671,37 +667,39 @@ public:
 };
 
 //----------------------------------------
-//ダミー共有ロッククラス
+//ダミー共有（リード・ライト）ロッククラス
 //※shared_spin_lockやstd::shared_lockと同様のロックインターフェースを持つが、実際には何もしないクラス
 class dummy_shared_lock
 {
 public:
-	//リード・ロック取得
+	//共有ロック（リードロック）取得
 	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		//何もしない
 	}
-	//リード・ロック取得を試行
+	//共有ロック（リードロック）取得を試行
 	inline bool try_lock_shared()
 	{
 		//何もしない
+		return true;
 	}
-	//ライト・ロック取得
+	//排他ロック（ライトロック）取得
 	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		//何もしない
 	}
-	//ライト・ロック取得を試行
+	//排他ロック（ライトロック）取得を試行
 	inline bool try_lock()
 	{
 		//何もしない
+		return true;
 	}
-	//リード・ロック解放
+	//共有ロック（リードロック）解放
 	inline void unlock_shared()
 	{
 		//何もしない
 	}
-	//ライト・ロック解放
+	//排他ロック（ライトロック）解放
 	inline void unlock()
 	{
 		//何もしない
@@ -759,8 +757,8 @@ private:
 };
 
 //----------------------------------------
-//共有ロックヘルパークラス
-//※実装を隠ぺいして共有ロックを操作するためのヘルパークラス
+//共有（リード・ライト）ロックヘルパークラス
+//※実装を隠ぺいして共有（リード・ライト）ロックを操作するためのヘルパークラス
 template<class T>
 class shared_lock_helper
 {
@@ -842,7 +840,7 @@ private:
 };
 
 //----------------------------------------
-//共有ロックガードクラス（スコープロック）
+//共有（リード・ライト）ロックガードクラス（スコープロック）
 //※スコープロックで共有ロック（リードロック）のロック取得と解放を行う
 template<class T>
 class shared_lock_guard
@@ -919,13 +917,17 @@ namespace hash_table
 	//  //template<class OPE_TYPE, typename KEY_TYPE, typename VALUE_TYPE, KEY_TYPE _KEY_MIN = 0u, KEY_TYPE _KEY_MAX = 0xffffffffu, KEY_TYPE _INVALID_KEY = 0xffffffffu>
 	//  //struct base_ope_t;
 	//  //struct 派生構造体名 : public hash_table::base_ope_t<派生構造体, キー型, 値型, キーの最小値= 0u, キーの最大値 = 0xffffffffu, 不正なキー = 0xffffffffu>
-	//	struct ope_t : public hash_table::ope_t<ope_t, crc32_t, data_t, 500>
+	//	struct ope_t : public hash_table::base_ope_t<ope_t, crc32_t, data_t, 500>
 	//	{
-	//		//キーを取得
+	//		//データ置換属性 ※必要に応じて定義
+	//		static const replace_attr_t REPLACE_ATTR = REPLACE;//キーが重複するデータは置換して登録する
+	//
+	//		//キーを取得 ※必要に応じて定義
 	//		inline static key_type getKey(const value_type& value){ return ???; }
 	//		
-	//		//ロック型
-	//		//※リード・ライトロックを使用する際にだけ宣言
+	//		//ロック型 ※必要に応じて定義
+	//		//※共有ロック（リード・ライトロック）でコンテナ操作をスレッドセーフにしたい場合は、
+	//		//　有効な共有ロック型（shared_spin_lockなど）を lock_type 型として定義する。
 	//		typedef shared_spin_lock lock_type;//ロックオブジェクト型
 	//	};
 	template<class OPE_TYPE, typename KEY_TYPE, typename VALUE_TYPE, KEY_TYPE _KEY_MIN = 0u, KEY_TYPE _KEY_MAX = 0xffffffffu, KEY_TYPE _INVALID_KEY = 0xffffffffu>
@@ -935,6 +937,14 @@ namespace hash_table
 		static const KEY_TYPE KEY_MIN = _KEY_MIN;//キーの最小値
 		static const KEY_TYPE KEY_MAX = _KEY_MAX;//キーの最大値
 		static const KEY_TYPE INVALID_KEY = _INVALID_KEY;//不正なキー
+		
+		//データ置換属性
+		enum replace_attr_t
+		{
+			NEVER_REPLACE,//キーが重複するデータは登録できない（置換しない）
+			REPLACE,//キーが重複するデータは置換して登録する
+		};
+		static const replace_attr_t REPLACE_ATTR = NEVER_REPLACE;//キーが重複するデータは登録できない（置換しない）
 
 		//型
 		typedef OPE_TYPE ope_type;//データ操作型
@@ -943,7 +953,25 @@ namespace hash_table
 
 		//ロック型
 		typedef dummy_shared_lock lock_type;//ロックオブジェクト型
-		
+		//※デフォルトはダミーのため、一切ロック制御しない。
+		//※共有ロック（リード・ライトロック）でコンテナ操作をスレッドセーフにしたい場合は、
+		//　base_ope_tの派生クラスにて、有効な共有ロック型（shared_spin_lock など）を
+		//　lock_type 型として再定義する。
+		//【補足①】コンテナには、あらかじめロック制御のための仕組みがソースコードレベルで
+		//　　　　　仕込んであるが、有効な型を与えない限りは、実行時のオーバーヘッドは一切ない。
+		//【補足②】スレッドセーフ化した場合、書き込み時の排他ロックは行われるようになるが、
+		//　　　　　読み込み時の共有ロックは行っていない。読み込み時のロックは局所的なロックで
+		//　　　　　済まないため、ユーザーが任意に対応しなければならない。
+		//　　　　　（例）
+		//　　　　　    {
+		//　　　　　        shared_lock_guard lock(container);//コンテナオブジェクトを渡して共有ロック
+		//　　　　　                                          //※コンテナオブジェクトはロック
+		//　　　　　                                          //　オブジェクト（lock_type）として振る舞える
+		//　　　　　        //...
+		//　　　　　        //一連のイテレータ操作など
+		//　　　　　        //...
+		//　　　　　    }//スコープを抜ける時に自動的にロック解放
+
 		//デストラクタ呼び出し
 		static void callDestructor(value_type* obj){ obj->~VALUE_TYPE(); }
 	};
@@ -960,14 +988,6 @@ namespace hash_table
 		typedef std::size_t size_type; \
 		typedef std::size_t index_type; \
 		typedef typename ope_type::lock_type lock_type;
-
-	//----------------------------------------
-	//ハッシュテーブルコンテナ用定数
-	enum replace_attr_t : unsigned char//データ置換属性
-	{
-		NEVER_REPLACE,//キーが重複するデータは登録できない（置換しない）
-		REPLACE,//キーが重複するデータは置換して登録する
-	};
 	//----------------------------------------
 	//ハッシュテーブルコンテナ
 	template<class OPE_TYPE, std::size_t _TABLE_SIZE, std::size_t _AUTO_REHASH_RATIO = 25, int _FINDING_CYCLE_LIMIT = 0, std::size_t _INDEX_STEP_BASE = 5>
@@ -1205,7 +1225,7 @@ namespace hash_table
 			//ムーブオペレータ
 			iterator& operator=(const_iterator&& rhs)
 			{
-				m_set = rhs.m_set;
+				m_set = std::move(rhs.m_set);
 				return *this;
 			}
 			//コピーオペレータ
@@ -1235,7 +1255,7 @@ namespace hash_table
 			//ムーブコンストラクタ
 			iterator(const_iterator&& obj) :
 				m_con(obj.m_con),
-				m_set(obj.m_set)
+				m_set(std::move(obj.m_set))
 			{}
 			//コピーコンストラクタ
 			inline iterator(const_iterator& obj) :
@@ -1260,7 +1280,6 @@ namespace hash_table
 		};
 	public:
 		//アクセッサ
-		inline replace_attr_t getReplaceAttr() const { return m_replaceAttr; }//置換属性を取得
 		inline size_type getOriginalTableSize() const { return ORIGINAL_TABLE_SIZE; }//指定されたテーブルサイズを取得
 		inline size_type getTableSize() const { return TABLE_SIZE; }//（実際の）テーブルサイズを取得
 		inline size_type getTableSizeExtended() const { return TABLE_SIZE_EXTENDED; }//指定のテーブルサイズからの増分を取得
@@ -1329,8 +1348,8 @@ namespace hash_table
 		inline index_type calcNextIndex(const key_type key, const index_type index) const { return (index + calcIndexStep(key)) % TABLE_SIZE; }//次のインデックスを計算（指定のインデックスに歩幅を加算）
 	public:
 		//インデックスを取得
-		//※マルチスレッドで処理する際は、一連の処理ブロック全体の前後で
-		//　リードロックの取得を行うようにすること。
+		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
 		index_type getFirstIndex() const
 		{
 			if (m_usingCount == 0 || m_deletedCount == m_usingCount)
@@ -1378,8 +1397,8 @@ namespace hash_table
 			return INVALID_INDEX;
 		}
 		//イテレータを取得
-		//※マルチスレッドで処理する際は、一連の処理ブロック全体の前後で
-		//　リードロックの取得を行うようにすること。
+		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
 		inline const_iterator begin() const
 		{
 			const index_type index = getFirstIndex();//先頭インデックスを取得
@@ -1396,7 +1415,7 @@ namespace hash_table
 		inline const_iterator cbegin() const { return this->begin(); }
 		inline const_iterator cend() const { return this->end(); }
 	private:
-		//キーで検索してインデックスを取得（本体）
+		//キーで検索してインデックスを取得（共通）
 		index_type _findIndexCommon(const key_type key) const
 		{
 			if (m_usingCount == 0 || m_deletedCount == m_usingCount)
@@ -1414,8 +1433,6 @@ namespace hash_table
 			return INVALID_INDEX;
 		}
 		//キーで検索してインデックスを取得
-		//※マルチスレッドで処理する際は、一連の処理ブロック全体の前後で
-		//　リードロックの取得を行うようにすること。
 		inline index_type _findIndex(const key_type key) const{ return _findIndexCommon(key); }
 		inline index_type _findIndex(const char* key) const{ return _findIndexCommon(calcCRC32(key)); }
 		inline index_type _findIndex(const std::string& key) const{ return _findIndexCommon(key.c_str()); }
@@ -1466,7 +1483,7 @@ namespace hash_table
 			if (m_usingCount == TABLE_SIZE && m_deletedCount == 0)
 				return nullptr;
 			index_type index = _findIndexCommon(key);
-			if (m_replaceAttr == NEVER_REPLACE && index != INVALID_INDEX)//同じキーが既に割り当て済みなら割り当て失敗
+			if (ope_type::REPLACE_ATTR == ope_type::NEVER_REPLACE && index != INVALID_INDEX)//同じキーが既に割り当て済みなら割り当て失敗
 				return nullptr;
 			int find_cycle = 0;
 			if (index != INVALID_INDEX)
@@ -1509,7 +1526,7 @@ namespace hash_table
 		//※処理中、排他ロック（ライトロック）を取得する
 		inline value_type* assign(const key_type key)
 		{
-			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			return _assign(key);
 		}
 		inline value_type* assign(const char* key){ return assign(calcCRC32(key)); }
@@ -1532,7 +1549,7 @@ namespace hash_table
 		//※処理中、排他ロック（ライトロック）を取得する
 		inline value_type* insert(const key_type key, const value_type& value)
 		{
-			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			return _insert(key, value);
 		}
 		inline value_type* insert(const char* key, const value_type& value){ return insert(calcCRC32(key), value); }
@@ -1560,7 +1577,7 @@ namespace hash_table
 		template<typename... Tx>
 		inline value_type* emplace(const key_type key, Tx... args)//const Tx&... args とも書ける
 		{
-			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			return _emplace(key, args...);
 		}
 		template<typename... Tx>
@@ -1603,7 +1620,7 @@ namespace hash_table
 		//※処理中、排他ロック（ライトロック）を取得する
 		inline bool erase(const key_type key)
 		{
-			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			return _erase(key);
 		}
 		inline bool erase(const char* key){ return erase(calcCRC32(key)); }
@@ -1663,7 +1680,7 @@ namespace hash_table
 		//※処理中、排他ロック（ライトロック）を取得する
 		inline bool rehash()
 		{
-			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			return _rehash();
 		}
 	private:
@@ -1686,18 +1703,17 @@ namespace hash_table
 		//※処理中、排他ロック（ライトロック）を取得する
 		inline void clear()
 		{
-			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得
+			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			_clear();
 		}
 	public:
 		//コンストラクタ
-		container(const replace_attr_t replace_attr = NEVER_REPLACE) :
+		container() :
 			m_using(),
 			m_deleted(),
 			m_usingCount(0),
 			m_deletedCount(0),
-			m_maxFindingCycle(0),
-			m_replaceAttr(replace_attr)
+			m_maxFindingCycle(0)
 		{}
 		//デストラクタ
 		~container()
@@ -1710,8 +1726,7 @@ namespace hash_table
 		int m_usingCount;//使用中データ数 ※登録を削除しても減らない（リハッシュ時には調整される）
 		int m_deletedCount;//削除済みデータ数
 		int m_maxFindingCycle;//検索時の最大巡回回数 ※登録を削除しても減らない（リハッシュ時には調整される）
-		replace_attr_t m_replaceAttr;//データ置換属性
-		mutable lock_type m_lock;//共有ライトオブジェクト
+		mutable lock_type m_lock;//ロックオブジェクト
 	};
 	//--------------------
 	//基本型定義マクロ消去
@@ -1858,11 +1873,16 @@ struct data_t
 #include <functional>//C++11 std::function用
 struct ope_t : public hash_table::base_ope_t<ope_t, crc32_t, data_t>
 {
+	//データ置換属性
+	//※デフォルト（NEVER_REPLACE）のままとする
+	//static const replace_attr_t REPLACE_ATTR = REPLACE;//キーが重複するデータは置換して登録する
+	
 	//キーを取得
 	inline static key_type getKey(const value_type& value){ return value.m_key; }
 
-	//リード・ライトロックを使用する
-	typedef shared_spin_lock lock_type;
+	//ロック型
+	//※デフォルト（dummy_shared_lock）のままとする
+	//typedef shared_spin_lock lock_type;//ロックオブジェクト型
 };
 
 //----------------------------------------
@@ -1910,7 +1930,7 @@ int main(const int argc, const char* argv[])
 	printf("  equalPrev=%d\n", makeStaticPrimeLE<x>::value);
 	printf("  equalNext=%d\n", makeStaticPrimeGE<x>::value);
 #endif
-	bool b = isPrime(952789);
+
 #if 0
 	//--------------------
 	//素数計算のテスト
@@ -2032,7 +2052,7 @@ int main(const int argc, const char* argv[])
 	printf("Hash Table Test\n");
 	printf("--------------------------------------------------------------------------------\n");
 	typedef hash_table::container<ope_t, TEST_DATA_TABLE_SIZE, 0, 0> container_type;//自動リハッシュなし, 検索巡回回数制限なし
-	container_type* con = new container_type(hash_table::NEVER_REPLACE);//置換なし
+	container_type* con = new container_type();
 
 	//ハッシュテーブルの基本情報表示
 	auto printTableParameter = [&con]()
@@ -2050,7 +2070,6 @@ int main(const int argc, const char* argv[])
 		printf(".getKeyMin()=%u\n", con->getKeyMin());
 		printf(".getKeyMax()=%u\n", con->getKeyMax());
 		printf(".getKeyRange()=%u\n", con->getKeyRange());
-		printf(".getReplaceAttr()=%u\n", con->getReplaceAttr());
 	};
 	printTableParameter();
 
@@ -2383,7 +2402,7 @@ int main(const int argc, const char* argv[])
 	printf("============================================================\n");
 	begin_time = printElapsedTime(begin_time, true);//処理時間表示
 
-	//--------------------
+	//----------------------------------------------------------------------------------------------------
 	//【比較用】【STL版】ハッシュテーブルテスト
 	printf("\n");
 	printf("--------------------------------------------------------------------------------\n");
@@ -2628,7 +2647,7 @@ int main(const int argc, const char* argv[])
 	printf("============================================================\n");
 	printElapsedTime(begin_time, true);//処理時間表示
 
-	//--------------------
+	//----------------------------------------------------------------------------------------------------
 	//ポインタ型のハッシュテーブルテスト
 	{
 		printf("\n");
@@ -2639,11 +2658,16 @@ int main(const int argc, const char* argv[])
 		//操作型
 		struct p_ope_t : public hash_table::base_ope_t<p_ope_t, int, data_t*>
 		{
+			//データ置換属性
+			//※デフォルト（NEVER_REPLACE）のままとする
+			//static const replace_attr_t REPLACE_ATTR = REPLACE;//キーが重複するデータは置換して登録する
+			
 			//キーを取得
 			inline static key_type getKey(const value_type& value){ return value->m_key; }
 
-			//リード・ライトロックを使用する
-			typedef shared_spin_lock lock_type;
+			//ロック型
+			//※デフォルト（dummy_shared_lock）のままとする
+			//typedef shared_spin_lock lock_type;//ロックオブジェクト型
 		};
 
 		//ハッシュテーブル
@@ -2674,12 +2698,12 @@ int main(const int argc, const char* argv[])
 
 		//ロック取得テスト
 		{
-			shared_lock_guard<p_ope_t::lock_type> lock(p_con);
+			shared_lock_guard<p_ope_t::lock_type> lock(p_con);//共有ロック（リードロック）取得（処理ブロックを抜ける時に自動開放）
 			printObj(20);
 		}
 	}
 
-	//--------------------
+	//----------------------------------------------------------------------------------------------------
 	//関数型のハッシュテーブルテスト
 	//※スクリプトなどから関数名（文字列）で関数を実行するような用途を想定
 	{

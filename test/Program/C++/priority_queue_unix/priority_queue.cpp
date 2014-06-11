@@ -3,7 +3,9 @@
 static const int TEST_DATA_PRIOR_MIN = 1;//テストデータの最小プライオリティ
 static const int TEST_DATA_PRIOR_MAX = 5;//テストデータの最大プライオリティ
 static const int TEST_DATA_MAX = 128;//テストデータの最大登録可能数
-static const int TEST_DATA_REG_NUM = 60;//テストデータの登録数
+static const int TEST_DATA_REG_NUM = 20;//テストデータの登録数
+//static const int TEST_DATA_MAX = 1000000;//テストデータの最大登録可能数
+//static const int TEST_DATA_REG_NUM = 1000000;//テストデータの登録数
 
 #define PRINT_TEST_DATA_DETAIL//テストデーの詳細タを表示する場合は、このマクロを有効化する
 //#define TEST_DATA_WATCH_CONSTRUCTOR//コンストラクタ／デストラクタ／代入演算子の動作を確認する場合、このマクロを有効化する
@@ -636,16 +638,16 @@ template<class T>
 struct _swapObjects{
 	inline static void exec(T& val1, T& val2)
 	{
-#if 1//ムーブオペレータを使用して入れ替え（#include <utility> の std::swap() と同じ）
+	#if 1//ムーブオペレータを使用して入れ替え（#include <utility> の std::swap() と同じ）
 		T tmp = std::move(std::move(val2));
 		val2 = std::move(val1);
 		val1 = std::move(tmp);
-#else//コンストラクタ／オペレータの呼び出しを避けて単純なメモリコピー
+	#else//コンストラクタ／オペレータの呼び出しを避けて単純なメモリコピー
 		char tmp[sizeof(T)];
 		memcpy(tmp, &val2, sizeof(T));
 		memcpy(&val2, &val1, sizeof(T));
 		memcpy(&val1, tmp, sizeof(T));
-#endif
+	#endif
 	}
 };
 template<class T>
@@ -705,7 +707,9 @@ inline void swapValues(T& val1, T& val2)
 //・任意の構造のプライオリティキューに適用。
 //--------------------------------------------------------------------------------
 
-#include <cstddef>//std::size_t用
+#include <cstddef>//std::size_t, std::ptrdiff_t用
+//#include <cstdint>//std::intptr_t用
+#include <iterator>//std::iterator用
 
 namespace binary_heap
 {
@@ -767,11 +771,83 @@ namespace binary_heap
 		typedef value_type* pointer; \
 		typedef const value_type* const_pointer; \
 		typedef std::size_t size_type; \
+		typedef std::size_t index_type; \
 		typedef typename ope_type::lock_type lock_type;
+	//--------------------
+	//二分ヒープ操作関数：親のインデックス計算
+	inline static std::size_t calcParent(const std::size_t index){ return (index - 1) >> 1; }
+	//--------------------
+	//二分ヒープ操作関数：子のインデックス計算
+	inline static std::size_t calcChildL(const std::size_t index){ return (index << 1) + 1; }
+	inline static std::size_t calcChildR(const std::size_t index){ return calcChildL(index) + 1; }
+	//--------------------
+	//二分ヒープ操作関数：アップヒープ
+	//※ノードを上方に移動
+	template<class OPE_TYPE, class PREDICATE>
+	static typename OPE_TYPE::node_type* upHeap(typename OPE_TYPE::node_type* top, const std::size_t size, typename OPE_TYPE::node_type* now, PREDICATE less)
+	{
+		DECLARE_OPE_TYPES(OPE_TYPE);
+		std::ptrdiff_t index = now - top;
+		std::ptrdiff_t _size = static_cast<std::ptrdiff_t>(size);
+		if (index < 0 || index >= _size)
+			return nullptr;
+		while (index != 0)
+		{
+			index = calcParent(index);
+			node_type* parent = top + index;
+			if (!less(*parent, *now))
+				break;
+			swapValues(*parent, *now);
+			now = parent;
+		}
+		return now;
+	}
+	//--------------------
+	//二分ヒープ操作関数：ダウンヒープ
+	//※ノードを下方に移動
+	template<class OPE_TYPE, class PREDICATE>
+	static typename OPE_TYPE::node_type* downHeap(typename OPE_TYPE::node_type* top, const std::size_t size, typename OPE_TYPE::node_type* now, PREDICATE less)
+	{
+		DECLARE_OPE_TYPES(OPE_TYPE);
+		std::ptrdiff_t index = now - top;
+		std::ptrdiff_t _size = static_cast<std::ptrdiff_t>(size);
+		if (index < 0 || index >= _size)
+			return nullptr;
+		while (true)
+		{
+			index = calcChildL(index);
+			if (index >= _size)
+				break;
+			node_type* child = top + index;
+			node_type* child_r = child + 1;
+			bool is_swap = false;
+			if (index + 1 < _size && !less(*child_r, *child) && !less(*child_r, *now))
+			{
+				is_swap = true;
+				child = child_r;
+				++index;
+			}
+			else if (!less(*child, *now))
+			{
+				is_swap = true;
+			}
+			if (!is_swap)
+				break;
+			swapValues(*child, *now);
+			now = child;
+		}
+		return now;
+	}
+	
 	//----------------------------------------
 	//二分ヒープコンテナ
 	//※固定配列と使用中の要素数を持つ
-	//※std::priority_queueとはあまり互換性がなく、イテレータにも対応しない
+	//※std::vectorとstd::priority_queueを一つにしたようなコンテナ。
+	//　なお、emplace()メソッドには非対応。
+	//※データのコピーを避けて処理効率を向上させるために、
+	//　pushBegin()～pushEnd()、popBegin()～popEnd()
+	//　というメソッドを用意している。内部のバッファを直接参照するので高速。
+	//　なお、begin～end の間はロックが行われる点に注意。
 	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
 	class container
 	{
@@ -781,6 +857,7 @@ namespace binary_heap
 	public:
 		//定数
 		static const std::size_t TABLE_SIZE = _TABLE_SIZE;//配列要素数
+		static const index_type INVALID_INDEX = 0xffffffffu;//無効なインデックス
 		enum status_t//ステータス
 		{
 			IDLE = 0,//アイドル
@@ -790,6 +867,534 @@ namespace binary_heap
 			POP_BEGINNING,//ポップ開始中
 			POP_ENDED,//ポップ終了した
 			POP_CANCELLED,//ポップ取り消した
+		};
+	public:
+		//--------------------
+		//イテレータ宣言
+		class iterator;
+		class reverse_iterator;
+		typedef const iterator const_iterator;
+		typedef const reverse_iterator const_reverse_iterator;
+		//--------------------
+		//イテレータ
+		class iterator : public std::iterator<std::random_access_iterator_tag, value_type>
+		{
+			friend class container;
+			friend class reverse_iterator;
+		public:
+			//キャストオペレータ
+			inline operator bool() const { return m_index != INVALID_INDEX; }
+			inline operator const value_type() const { return *m_value; }
+			inline operator value_type&(){ return *m_value; }
+			inline operator const value_type*() const { return m_value; }
+			inline operator value_type*(){ return m_value; }
+		public:
+			//オペレータ
+			inline const value_type& operator*() const { return *m_value; }
+			inline value_type& operator*(){ return *m_value; }
+			inline const_pointer operator->() const { return m_value; }
+			inline pointer operator->(){ return m_value; }
+			inline const_iterator operator[](const int index) const
+			{
+				iterator ite(*m_con);
+				ite.pudate(0);
+				ite += index;
+				return std::move(ite);
+			}
+			inline iterator operator[](const int index)
+			{
+				iterator ite(*m_con);
+				ite.pudate(0);
+				ite += index;
+				return std::move(ite);
+			}
+			//比較オペレータ
+			inline bool operator==(const_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX && rhs.m_index == INVALID_INDEX ? true :
+				       m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				       m_index == rhs.m_set.index;
+			}
+			inline bool operator!=(const_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX && rhs.m_index == INVALID_INDEX ? false :
+				       m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? true :
+				       m_index != rhs.m_index;
+			}
+			inline bool operator>(const_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				       m_index > rhs.m_index;
+			}
+			inline bool operator>=(const_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				       m_index >= rhs.m_index;
+			}
+			inline bool operator<(const_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				       m_index < rhs.m_index;
+			}
+			inline bool operator<=(const_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				       m_index <= rhs.m_index;
+			}
+			//演算オペレータ
+			inline const_iterator& operator++() const
+			{
+				pudate(m_index + 1);
+				return *this;
+			}
+			inline const_iterator& operator--() const
+			{
+				pudate(m_index - 1);
+				return *this;
+			}
+			inline iterator& operator++()
+			{
+				pudate(m_index + 1);
+				return *this;
+			}
+			inline iterator& operator--()
+			{
+				pudate(m_index - 1);
+				return *this;
+			}
+			inline const_iterator operator++(int) const
+			{
+				iterator ite(*this);
+				++(*this);
+				return ite;
+			}
+			inline const_iterator operator--(int) const
+			{
+				iterator ite(*this);
+				--(*this);
+				return ite;
+			}
+			inline iterator operator++(int)
+			{
+				iterator ite(*this);
+				++(*this);
+				return ite;
+			}
+			inline iterator operator--(int)
+			{
+				iterator ite(*this);
+				--(*this);
+				return ite;
+			}
+			const_iterator& operator+=(const int val) const
+			{
+				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
+					++(*this);
+				return *this;
+			}
+			const_iterator& operator-=(const int val) const
+			{
+				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
+					--(*this);
+				return *this;
+			}
+			iterator& operator+=(const int val)
+			{
+				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
+					++(*this);
+				return *this;
+			}
+			iterator& operator-=(const int val)
+			{
+				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
+					--(*this);
+				return *this;
+			}
+			inline const_iterator operator+(const int val) const
+			{
+				iterator ite(*this);
+				ite += val;
+				return ite;
+			}
+			inline const_iterator operator-(const int val) const
+			{
+				iterator ite(*this);
+				ite -= val;
+				return ite;
+			}
+			inline iterator operator+(const int val)
+			{
+				iterator ite(*this);
+				ite += val;
+				return ite;
+			}
+			inline iterator operator-(const int val)
+			{
+				iterator ite(*this);
+				ite -= val;
+				return ite;
+			}
+		public:
+			//ムーブオペレータ
+			inline iterator& operator=(const_iterator&& rhs)
+			{
+				m_con = rhs.m_con;
+				m_index = rhs.m_index;
+				m_value = rhs.m_value;
+				return *this;
+			}
+			iterator& operator=(const_reverse_iterator&& rhs);
+			//コピーオペレータ
+			inline iterator& operator=(const_iterator& rhs)
+			{
+				m_con = rhs.m_con;
+				m_index = rhs.m_index;
+				m_value = rhs.m_value;
+				return *this;
+			}
+			iterator& operator=(const_reverse_iterator& rhs);
+		public:
+			//アクセッサ
+			inline index_type getIndex() const { return m_index; }//インデックス
+			inline const value_type* getValue() const { return m_value; }//現在の値
+			inline value_type* getValue(){ return m_value; }//現在の値
+		private:
+			//メソッド
+			void pudate(const index_type index) const
+			{
+				if (index == INVALID_INDEX || index >= static_cast<index_type>(m_con->m_used))
+				{
+					m_index = INVALID_INDEX;
+					m_value = nullptr;
+				}
+				else
+				{
+					m_index = index;
+					m_value = const_cast<value_type*>(m_con->_ref_node(m_index));
+				}
+			}
+		public:
+			//ムーブコンストラクタ
+			iterator(const_iterator&& obj) :
+				m_con(obj.m_con),
+				m_index(obj.m_index),
+				m_value(obj.m_value)
+			{}
+			iterator(const_reverse_iterator&& obj);
+			//コピーコンストラクタ
+			inline iterator(const_iterator& obj) :
+				m_con(obj.m_con),
+				m_index(obj.m_index),
+				m_value(obj.m_value)
+			{}
+			iterator(const_reverse_iterator& obj);
+			//コンストラクタ
+			inline iterator(const container& con, const bool is_end = false) :
+				m_con(&con),
+				m_index(INVALID_INDEX),
+				m_value(nullptr)
+			{
+				if (!is_end)
+					pudate(0);
+			}
+			inline iterator() :
+				m_con(nullptr),
+				m_index(INVALID_INDEX),
+				m_value(nullptr)
+			{}
+			//デストラクタ
+			inline ~iterator()
+			{}
+		protected:
+			//フィールド
+			const container* m_con;//コンテナ
+			mutable std::size_t m_index;//現在のインデックス
+			mutable value_type* m_value;//現在の値
+		};
+		//--------------------
+		//リバースイテレータ
+		class reverse_iterator : public std::reverse_iterator<iterator>
+		{
+			friend class container;
+			friend class iterator;
+		public:
+			//キャストオペレータ
+			inline operator bool() const { return m_index != INVALID_INDEX; }
+			inline operator const value_type() const { return *m_value; }
+			inline operator value_type&(){ return *m_value; }
+			inline operator const value_type*() const { return m_value; }
+			inline operator value_type*(){ return m_value; }
+		public:
+			//オペレータ
+			inline const value_type& operator*() const { return *m_value; }
+			inline value_type& operator*(){ return *m_value; }
+			inline const_pointer operator->() const { return m_value; }
+			inline pointer operator->(){ return m_value; }
+			inline const_reverse_iterator operator[](const int index) const
+			{
+				reverse_iterator ite(*m_con);
+				ite.pudate(m_con->m_used - 1);
+				ite += index;
+				return std::move(ite);
+			}
+			inline reverse_iterator operator[](const int index)
+			{
+				reverse_iterator ite(*m_con);
+				ite.pudate(m_con->m_used - 1);
+				ite += index;
+				return std::move(ite);
+			}
+		public:
+			//比較オペレータ
+			inline bool operator==(const_reverse_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX && rhs.m_index == INVALID_INDEX ? true :
+				       m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				       rhs.m_index == m_index;
+			}
+			inline bool operator!=(const_reverse_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX && rhs.m_index == INVALID_INDEX ? false :
+				       m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? true :
+				       rhs.m_index != m_index;
+			}
+			inline bool operator>(const_reverse_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				       rhs.m_index > m_index;
+			}
+			inline bool operator>=(const_reverse_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				       rhs.m_index >= m_index;
+			}
+			inline bool operator<(const_reverse_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				       rhs.m_index < m_index;
+			}
+			inline bool operator<=(const_reverse_iterator& rhs) const
+			{
+				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				       rhs.m_index <= m_index;
+			}
+			//演算オペレータ
+			inline const_reverse_iterator& operator++() const
+			{
+				pudate(m_index - 1);
+				return *this;
+			}
+			inline const_reverse_iterator& operator--() const
+			{
+				pudate(m_index + 1);
+				return *this;
+			}
+			inline reverse_iterator& operator++()
+			{
+				pudate(m_index - 1);
+				return *this;
+			}
+			inline reverse_iterator& operator--()
+			{
+				pudate(m_index + 1);
+				return *this;
+			}
+			inline const_reverse_iterator operator++(int) const
+			{
+				reverse_iterator ite(*this);
+				++(*this);
+				return ite;
+			}
+			inline const_reverse_iterator operator--(int) const
+			{
+				reverse_iterator ite(*this);
+				--(*this);
+				return ite;
+			}
+			inline reverse_iterator operator++(int)
+			{
+				reverse_iterator ite(*this);
+				++(*this);
+				return ite;
+			}
+			inline reverse_iterator operator--(int)
+			{
+				reverse_iterator ite(*this);
+				--(*this);
+				return ite;
+			}
+			const_reverse_iterator& operator+=(const int val) const
+			{
+				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
+					++(*this);
+				return *this;
+			}
+			const_reverse_iterator& operator-=(const int val) const
+			{
+				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
+					--(*this);
+				return *this;
+			}
+			reverse_iterator& operator+=(const int val)
+			{
+				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
+					++(*this);
+				return *this;
+			}
+			reverse_iterator& operator-=(const int val)
+			{
+				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
+					--(*this);
+				return *this;
+			}
+			inline const_reverse_iterator operator+(const int val) const
+			{
+				reverse_iterator ite(*this);
+				ite += val;
+				return ite;
+			}
+			inline const_reverse_iterator operator-(const int val) const
+			{
+				reverse_iterator ite(*this);
+				ite -= val;
+				return ite;
+			}
+			inline reverse_iterator operator+(const int val)
+			{
+				reverse_iterator ite(*this);
+				ite += val;
+				return ite;
+			}
+			inline reverse_iterator operator-(const int val)
+			{
+				reverse_iterator ite(*this);
+				ite -= val;
+				return ite;
+			}
+		public:
+			//ムーブオペレータ
+			inline reverse_iterator& operator=(const_reverse_iterator&& rhs)
+			{
+				m_con = rhs.m_con;
+				m_index = rhs.m_index;
+				m_value = rhs.m_value;
+				return *this;
+			}
+			inline reverse_iterator& operator=(const_iterator&& rhs)
+			{
+				m_con = rhs.m_con;
+				m_index = rhs.m_index;
+				if (m_index != INVALID_INDEX)
+					++(*this);
+				else
+					pudate(m_con->m_used - 1);//末尾インデックスを取得
+				return *this;
+			}
+			//コピーオペレータ
+			inline reverse_iterator& operator=(const_reverse_iterator& rhs)
+			{
+				m_con = rhs.m_con;
+				m_index = rhs.m_index;
+				m_value = rhs.m_value;
+				return *this;
+			}
+			inline reverse_iterator& operator=(const_iterator& rhs)
+			{
+				m_con = rhs.m_con;
+				m_index = rhs.m_index;
+				if (m_index != INVALID_INDEX)
+					++(*this);
+				else
+					pudate(m_con->m_used - 1);//末尾インデックスを取得
+				return *this;
+			}
+		public:
+			//アクセッサ
+			inline index_type getIndex() const { return m_index; }//インデックス
+			inline const value_type* getValue() const { return m_value; }//現在の値
+			inline value_type* getValue(){ return m_value; }//現在の値
+		private:
+			//メソッド
+			inline void pudate(const index_type index) const
+			{
+				if (index == INVALID_INDEX || index >= static_cast<index_type>(m_con->m_used))
+				{
+					m_index = INVALID_INDEX;
+					m_value = nullptr;
+				}
+				else
+				{
+					m_index = index;
+					m_value = const_cast<value_type*>(m_con->_ref_node(m_index));
+				}
+			}
+		public:
+			//ベースを取得
+			inline const_iterator base() const
+			{
+				iterator ite(*this);
+				return std::move(ite);
+			}
+			inline iterator base()
+			{
+				iterator ite(*this);
+				return std::move(ite);
+			}
+		public:
+			//ムーブコンストラクタ
+			inline reverse_iterator(const_reverse_iterator&& obj) :
+				m_con(obj.m_con),
+				m_index(obj.m_index),
+				m_value(obj.m_value)
+			{}
+			inline reverse_iterator(const_iterator&& obj) :
+				m_con(obj.m_con),
+				m_index(obj.m_index),
+				m_value(obj.m_value)
+			{
+				if (m_index != INVALID_INDEX)
+					++(*this);
+				else
+					pudate(m_con->m_used - 1);//末尾インデックスを取得
+			}
+			//コピーコンストラクタ
+			inline reverse_iterator(const_reverse_iterator& obj) :
+				m_con(obj.m_con),
+				m_index(obj.m_index),
+				m_value(obj.m_value)
+			{}
+			inline reverse_iterator(const_iterator& obj) :
+				m_con(obj.m_con),
+				m_index(obj.m_index),
+				m_value(obj.m_value)
+			{
+				if (m_index != INVALID_INDEX)
+					++(*this);
+				else
+					pudate(m_con->m_used - 1);//末尾インデックスを取得
+			}
+			//コンストラクタ
+			inline reverse_iterator(const container& con, const bool is_end = false) :
+				m_con(&con),
+				m_index(INVALID_INDEX),
+				m_value(nullptr)
+			{
+				if (!is_end)
+					pudate(m_con->m_used - 1);//末尾インデックスを取得
+			}
+			inline reverse_iterator() :
+				m_con(nullptr),
+				m_index(INVALID_INDEX),
+				m_value(nullptr)
+			{}
+			//デストラクタ
+			inline ~reverse_iterator()
+			{}
+		protected:
+			//フィールド
+			const container* m_con;//コンテナ
+			mutable std::size_t m_index;//現在のインデックス
+			mutable value_type* m_value;//現在の値
 		};
 	public:
 		//アクセッサ
@@ -836,20 +1441,16 @@ namespace binary_heap
 		inline const node_type* ref_top() const { return m_used == 0 ? nullptr : _ref_top(); }//先頭ノード参照
 		inline const node_type* ref_bottom() const { return m_used == 0 ? nullptr : _ref_bottom(); }//終端ノード参照
 		inline const node_type* ref_new() const { return m_used == TABLE_SIZE ? nullptr : _ref_new(); }//新規ノード参照
-		inline const node_type* begin() const { return m_used == 0 ? nullptr : _ref_top(); }//開始ノード
-		inline const node_type* end() const { return m_used == 0 ? nullptr : _ref_new(); }//終了ノード
 		inline node_type* ref_node(const int index){ return  const_cast<node_type*>(const_cast<const container*>(this)->ref_node()); }//ノード参照
 		inline node_type* ref_top(){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_top()); }//先頭ノード参照
 		inline node_type* ref_bottom(){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_bottom()); }//終端ノード参照
 		inline node_type* ref_new(){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_new()); }//新規ノード参照
-		inline node_type* begin(){ return const_cast<node_type*>(const_cast<const container*>(this)->begin()); }//開始ノード
-		inline node_type* end(){ return const_cast<node_type*>(const_cast<const container*>(this)->end()); }//終了ノード
 	private:
 		inline int _adj_index(const int index) const { return index >= 0 && index < TABLE_SIZE ? index : -1; }//インデックスを範囲内に補正
 		inline int _ref_index(const node_type* node) const{ return node - _ref_top(); }//ノードをインデックスに変換 ※範囲チェックなし
-		inline int _calc_parent(const int index) const { return (index - 1) >> 1; }//親インデックス計算 ※範囲チェックなし
-		inline int _calc_child_l(const int index) const { return (index << 1) + 1; }//左側の子インデックス計算 ※範囲チェックなし
-		inline int _calc_child_r(const int index) const { return _calc_child_l(index) + 1; }//右側の子インデックス計算 ※範囲チェックなし
+		inline int _calc_parent(const int index) const { return binary_heap::calcParent(index); }//親インデックス計算 ※範囲チェックなし
+		inline int _calc_child_l(const int index) const { return binary_heap::calcChildL(index); }//左側の子インデックス計算 ※範囲チェックなし
+		inline int _calc_child_r(const int index) const { return binary_heap::calcChildR(index); }//右側の子インデックス計算 ※範囲チェックなし
 	public:
 		inline int ref_index(const node_type* node) const{ return _adj_index(_ref_index(node)); }//ノードをインデックスに変換
 		inline int calc_parent(const int index) const { return _adj_index(_calc_parent(index)); }//親インデックス計算
@@ -865,10 +1466,78 @@ namespace binary_heap
 		inline node_type* ref_child_r(const int index){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child_r(index)); }//左側の子ノード参照
 		inline node_type* ref_child(const int index, const bool is_right){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child(index, is_right)); }//子ノード参照
 	public:
+		inline const node_type* top() const { return ref_top(); }//先頭ノード参照
+		inline node_type* top(){ return ref_top(); }//先頭ノード参照
 		inline bool less(const node_type& lhs, const node_type& rhs) const { return ope_type::less(lhs, rhs); }//キー比較
+		//イテレータを取得
+		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
+		inline const_iterator cbegin() const
+		{
+			iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline const_iterator cend() const
+		{
+			iterator ite(*this, true);
+			return std::move(ite);
+		}
+		inline const_iterator begin() const
+		{
+			iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline const_iterator end() const
+		{
+			iterator ite(*this, true);
+			return std::move(ite);
+		}
+		inline iterator begin()
+		{
+			iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline iterator end()
+		{
+			iterator ite(*this, true);
+			return std::move(ite);
+		}
+		//リバースイテレータを取得
+		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
+		inline const_reverse_iterator crbegin() const
+		{
+			reverse_iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline const_reverse_iterator crend() const
+		{
+			reverse_iterator ite(*this, true);
+			return std::move(ite);
+		}
+		inline const_reverse_iterator rbegin() const
+		{
+			reverse_iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline const_reverse_iterator rend() const
+		{
+			reverse_iterator ite(*this, true);
+			return std::move(ite);
+		}
+		inline reverse_iterator rbegin()
+		{
+			reverse_iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline reverse_iterator rend()
+		{
+			reverse_iterator ite(*this, true);
+			return std::move(ite);
+		}
 	private:
-		//プッシュ（本体）
-		node_type* _pushCopying(const node_type& src)
+		//プッシュ（本体）：ムーブ
+		node_type* _pushCopying(const node_type&& src)
 		{
 			if (m_status == PUSH_BEGINNING || m_status == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
@@ -879,12 +1548,29 @@ namespace binary_heap
 			m_status = PUSH_BEGINNING;
 			return pushEnd();
 		}
+		//プッシュ（本体）：コピー
+		node_type* _pushCopying(const node_type& src)
+		{
+			if (m_status == PUSH_BEGINNING || m_status == POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+				return nullptr;
+			node_type* obj = ref_new();
+			if (!obj)
+				return nullptr;
+			*obj = src;
+			m_status = PUSH_BEGINNING;
+			return pushEnd();
+		}
 	public:
 		//プッシュ
 		//※オブジェクト渡し
 		//※オブジェクトのコピーが発生する点に注意（少し遅くなる）
 		//※ムーブオペレータを使用してコピーする点に注意
 		//※処理中、ロックを取得する
+		inline node_type* pushCopying(const node_type&& src)
+		{
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
+			return _pushCopying(std::move(src));
+		}
 		inline node_type* pushCopying(const node_type& src)
 		{
 			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
@@ -1046,7 +1732,7 @@ namespace binary_heap
 			m_status = POP_ENDED;
 			//根ノードがポップされたので、末端の葉ノードを根ノードに上書きした上で、それを下方に移動
 			node_type* top_obj = _ref_top();
-			*top_obj = *obj;
+			*top_obj = std::move(*obj);
 			--m_used;
 			downHeap(top_obj);
 			return true;
@@ -1091,22 +1777,7 @@ namespace binary_heap
 		//　必ず呼び出し元でロックを取得すること！
 		node_type* upHeap(node_type* obj)
 		{
-			int index = ref_index(obj);
-			if (index < 0)
-				return nullptr;
-			while (index != 0)
-			{
-				index = _calc_parent(index);
-				node_type* parent = _ref_node(index);
-				if (less(*parent, *obj))
-				{
-					swapValues(*parent, *obj);
-					obj = parent;
-				}
-				else
-					break;
-			}
-			return obj;
+			return binary_heap::upHeap<ope_type>(_ref_top(), m_used, obj, ope_type::less);
 		}
 		//ノードを下方に移動
 		//※ロックを取得しないで処理するので注意！
@@ -1114,34 +1785,7 @@ namespace binary_heap
 		//　必ず呼び出し元でロックを取得すること！
 		node_type* downHeap(node_type* obj)
 		{
-			int index = ref_index(obj);
-			if (index < 0)
-				return nullptr;
-			while (true)
-			{
-				index = _calc_child_l(index);
-				if (index >= m_used)
-					break;
-				node_type* child = _ref_node(index);
-				node_type* child_r = index + 1 < m_used ? child + 1 : nullptr;
-				bool is_swap = false;
-				if (child_r && !less(*child_r, *child) && !less(*child_r, *obj))
-				{
-					is_swap = true;
-					child = child_r;
-					++index;
-				}
-				else if (!less(*child, *obj))
-				{
-					is_swap = true;
-				}
-				if (is_swap)
-					swapValues(*child, *obj);
-				else
-					break;
-				obj = child;
-			}
-			return obj;
+			return binary_heap::downHeap<ope_type>(_ref_top(), m_used, obj, ope_type::less);
 		}
 	private:
 		//クリア（本体）
@@ -1165,7 +1809,6 @@ namespace binary_heap
 		}
 	public:
 		//コンストラクタ
-		//※キー比較処理を渡す
 		container() :
 			m_used(0),
 			m_status(IDLE)
@@ -1183,6 +1826,60 @@ namespace binary_heap
 		status_t m_status;//ステータス
 		mutable lock_type m_lock;//ロックオブジェクト
 	};
+	//イテレータのムーブオペレータ
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
+	//typename container<OPE_TYPE, _TABLE_SIZE>::iterator& container<OPE_TYPE, _TABLE_SIZE>::iterator::operator=(typename container<OPE_TYPE, _TABLE_SIZE>::const_reverse_iterator&& rhs)//GCCはOK, VC++はNG
+	typename container<OPE_TYPE, _TABLE_SIZE>::iterator& container<OPE_TYPE, _TABLE_SIZE>::iterator::operator=(const typename container<OPE_TYPE, _TABLE_SIZE>::reverse_iterator&& rhs)//VC++もOK
+	{
+		m_con = rhs.m_con;
+		m_index = rhs.m_index;
+		m_value = rhs.m_value;
+		if (m_index != INVALID_INDEX)
+			++(*this);
+		else
+			pudate(0);//先頭インデックスを取得
+		return *this;
+	}
+	//イテレータのコピーオペレータ
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
+	//typename container<OPE_TYPE, _TABLE_SIZE>::iterator& container<OPE_TYPE, _TABLE_SIZE>::iterator::operator=(typename container<OPE_TYPE, _TABLE_SIZE>::const_reverse_iterator& rhs)//GCCはOK, VC++はNG
+	typename container<OPE_TYPE, _TABLE_SIZE>::iterator& container<OPE_TYPE, _TABLE_SIZE>::iterator::operator=(const typename container<OPE_TYPE, _TABLE_SIZE>::reverse_iterator& rhs)//VC++もOK
+	{
+		m_con = rhs.m_con;
+		m_index = rhs.m_index;
+		m_value = rhs.m_value;
+		if (m_index != INVALID_INDEX)
+			++(*this);
+		else
+			pudate(0);//先頭インデックスを取得
+		return *this;
+	}
+	//イテレータのムーブコンストラクタ
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
+	//container<OPE_TYPE, _TABLE_SIZE>::iterator::iterator(typename container<OPE_TYPE, _TABLE_SIZE>::const_reverse_iterator&& obj) ://GCCはOK, VC++はNG
+	container<OPE_TYPE, _TABLE_SIZE>::iterator::iterator(const typename container<OPE_TYPE, _TABLE_SIZE>::reverse_iterator&& obj) ://VC++もOK
+		m_con(obj.m_con),
+		m_index(obj.m_index),
+		m_value(obj.m_value)
+	{
+		if (m_index != INVALID_INDEX)
+			++(*this);
+		else
+			pudate(0);//先頭インデックスを取得
+	}
+	//イテレータのコピーコンストラクタ
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
+	//container<OPE_TYPE, _TABLE_SIZE>::iterator::iterator(typename container<OPE_TYPE, _TABLE_SIZE>::const_reverse_iterator& obj) ://GCCはOK, VC++はNG
+	container<OPE_TYPE, _TABLE_SIZE>::iterator::iterator(const typename container<OPE_TYPE, _TABLE_SIZE>::reverse_iterator& obj) ://VC++もOK
+		m_con(obj.m_con),
+		m_index(obj.m_index),
+		m_value(obj.m_value)
+	{
+		if (m_index != INVALID_INDEX)
+			++(*this);
+		else
+			pudate(0);//先頭インデックスを取得
+	}
 	//--------------------
 	//安全なプッシュ／ポップ操作クラス
 	//※操作状態を記憶し、デストラクタで必ず完了させる
@@ -1295,9 +1992,9 @@ namespace priority_queue
 	//	struct ope_t : public priority_queue::base_ope_t<ope_t, data_t, int, unsigned int>
 	//	{
 	//		//優先度を取得
-	//		inline static priority_type getPrior(const node_type& node){ return node.m_priority; }
+	//		inline static priority_type getPriority(const node_type& node){ return node.m_priority; }
 	//		//優先度を更新
-	//		inline static void setPrior(node_type& node, const priority_type priority){ node.m_priority = priority; }
+	//		inline static void setPriority(node_type& node, const priority_type priority){ node.m_priority = priority; }
 	//		
 	//		//シーケンス番号を取得
 	//		inline static seq_type getSeqNo(const node_type& node){ return node.m_seqNo; }
@@ -1320,7 +2017,7 @@ namespace priority_queue
 		typedef NODE_TYPE node_type;//ノード型
 		typedef PRIOR_TYPE priority_type;//優先度型
 		typedef SEQ_TYPE seq_type;//シーケンス番号型
-
+		
 		//ロック型
 		typedef dummy_lock lock_type;//ロックオブジェクト型
 		//※デフォルトはダミーのため、一切ロック制御しない。
@@ -1355,7 +2052,7 @@ namespace priority_queue
 		}
 		inline static bool less(const node_type& lhs, const node_type& rhs)
 		{
-			return _lessSeqNo(ope_type::comparePriority(ope_type::getPrior(lhs), ope_type::getPrior(rhs)), ope_type::getSeqNo(lhs), ope_type::getSeqNo(rhs));
+			return _lessSeqNo(ope_type::comparePriority(ope_type::getPriority(lhs), ope_type::getPriority(rhs)), ope_type::getSeqNo(lhs), ope_type::getSeqNo(rhs));
 		}
 
 		//STLのstd::priority_queueと共用するための関数オブジェクト
@@ -1363,12 +2060,36 @@ namespace priority_queue
 
 		//デストラクタ呼び出し
 		static void callDestructor(node_type* obj){ obj->~NODE_TYPE(); }
+
+		//コンテナ操作型
+		struct container_ope_type
+		{
+			typedef OPE_TYPE adapter_ope_type;//コンテナアダプタのノード操作型
+			typedef container_ope_type ope_type;//ノード操作型
+			typedef NODE_TYPE node_type;//ノード型
+			
+			//キーを比較
+			//※lhsの方が小さいければ true を返す
+			inline static bool less(const node_type& lhs, const node_type& rhs)
+			{
+				return adapter_ope_type::less(lhs, rhs);
+			}
+
+			//STLのstd::priority_queueと共用するための関数オブジェクト
+			inline bool operator()(const node_type& lhs, const node_type& rhs) const{ return adapter_ope_type::less(lhs, rhs); }
+
+			//デストラクタ呼び出し
+			static void callDestructor(node_type* obj){ obj->~NODE_TYPE(); }
+			
+			//ロック型
+			typedef dummy_lock lock_type;//ロックオブジェクト型
+			//※コンテナ側でのロックは使用しない
+		};
 	};
 	//--------------------
 	//基本型定義マクロ
 	#define DECLARE_OPE_TYPES(OPE_TYPE) \
 		typedef OPE_TYPE ope_type; \
-		typedef ope_type pqueue_ope_type; \
 		typedef typename ope_type::node_type node_type; \
 		typedef node_type value_type; \
 		typedef value_type& reference; \
@@ -1380,69 +2101,67 @@ namespace priority_queue
 		typedef typename ope_type::seq_type seq_type; \
 		typedef typename ope_type::lock_type lock_type;
 	//----------------------------------------
-	//プライオリティキューコンテナ
-	//※内部に二分ヒープを持つ
+	//プライオリティキューコンテナアダプタ
+	//※コンテナのデフォルトは二分ヒープ（binary_heap::container）。
+	//　同じインターフェースを持ったクラスなら、置き換えて使用可能。
 	//※std::priority_queueとはあまり互換性がなく、イテレータにも対応しない
-	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
-	class container
+	//※イテレータが必要なら、container_adapter::container_type にキャストして
+	//　コンテナを取り出せば操作可能。
+	//※データのコピーを避けて処理効率を向上させるために、
+	//　enqueueBegin()～enqueueEnd()、dequeueBegin()～dequeueEnd()
+	//　というメソッドを用意している。内部のバッファを直接参照するので高速。
+	//　なお、begin～end の間はロックが行われる点に注意。
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE, class CONTAINER_TYPE = binary_heap::container<typename OPE_TYPE::container_ope_type, _TABLE_SIZE> >
+	class container_adapter
 	{
 	public:
 		//型
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		struct heap_ope_t : public binary_heap::base_ope_t<heap_ope_t, node_type>//二分ヒープ操作型
-		{
-			//キーを比較
-			//※lhsの方が小さいければ true を返す
-			inline static bool less(const node_type& lhs, const node_type& rhs)
-			{
-				return pqueue_ope_type::less(lhs, rhs);
-			}
-
-			//ロック型
-			//※ロック型はデフォルトのままとし、二分ヒープ側ではロック制御を行わない
-			//typedef dummy_lock lock_type;//ロックオブジェクト型
-		};
-		typedef binary_heap::container<heap_ope_t, _TABLE_SIZE> heap_type;//二分ヒープ型
-		typedef typename heap_type::status_t status_t;//ステータス型
+		typedef CONTAINER_TYPE container_type;//コンテナ型
+		typedef typename container_type::status_t status_t;//ステータス型
 	public:
 		//アクセッサ
-		inline const heap_type& getHeap() const { return m_heap; }//二分ヒープ取得
-		inline heap_type& getHeap(){ return m_heap; }//二分ヒープ取得
+		inline const container_type& getContainer() const { return m_container; }//コンテナ取得
+		inline container_type& getContainer(){ return m_container; }//コンテナ取得
 	public:
 		//キャストオペレータ
-		inline operator const heap_type() const{ return m_heap; }//二分ヒープを返す
-		inline operator heap_type(){ return m_heap; }//二分ヒープを返す
+		inline operator const container_type&() const{ return m_container; }//コンテナを返す
+		inline operator container_type&(){ return m_container; }//コンテナを返す
 		inline operator lock_type&(){ return m_lock; }//共有ロックオブジェクト
 		inline operator lock_type&() const { return m_lock; }//共有ロックオブジェクト ※mutable
 	public:
 		//メソッド
-		inline std::size_t max_size() const { return m_heap.max_aize(); }//最大要素数を取得
-		inline std::size_t capacity() const { return m_heap.capacity(); }//最大要素数を取得
-		inline std::size_t size() const { return m_heap.size(); }//使用中の要素数を取得
-		inline bool empty() const { return m_heap.empty(); }//空か？
-	public:
-		inline const node_type* begin() const { return m_heap.begin(); }//開始ノード
-		inline const node_type* end() const { return m_heap.end(); }//終了ノード
-		inline node_type* begin(){ return m_heap.begin(); }//開始ノード
-		inline node_type* end(){ return m_heap.end(); }//終了ノード
+		inline std::size_t max_size() const { return m_container.max_aize(); }//最大要素数を取得
+		inline std::size_t capacity() const { return m_container.capacity(); }//最大要素数を取得
+		inline std::size_t size() const { return m_container.size(); }//使用中の要素数を取得
+		inline bool empty() const { return m_container.empty(); }//空か？
 	private:
 		//シーケンス番号発行
 		inline seq_type getNextSeqNo(){ return m_seqNo++; }
 		//可能ならシーケンス番号をリセット
 		inline void checkAndResetSeqNo()
 		{
-			if (m_heap.empty())
+			if (m_container.empty())
 				m_seqNo = 0;
 		}
 	private:
-		//エンキュー（本体）
+		//エンキュー（本体）：ムーブ
+		node_type* _enqueueCopying(const node_type&& obj)
+		{
+			if (m_container.status() == status_t::PUSH_BEGINNING || m_container.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+				return nullptr;
+			node_type obj_tmp(std::move(obj));//一時オブジェクトにムーブ
+			ope_type::setSeqNo(obj_tmp, getNextSeqNo());//シーケンス番号をセット
+			return m_container.pushCopying(std::move(obj_tmp));//コンテナにプッシュ（ムーブ）
+		}
+		//エンキュー（本体）：コピー
 		node_type* _enqueueCopying(const node_type& obj)
 		{
-			if (m_heap.status() == status_t::PUSH_BEGINNING || m_heap.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			if (m_container.status() == status_t::PUSH_BEGINNING || m_container.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
-			node_type obj_tmp(std::move(obj));
+			node_type obj_tmp(obj);//一時オブジェクトにコピー
 			ope_type::setSeqNo(obj_tmp, getNextSeqNo());//シーケンス番号をセット
-			return m_heap.pushCopying(obj_tmp);//二分ヒープにプッシュ
+			return m_container.pushCopying(std::move(obj_tmp));//コンテナにプッシュ（ムーブ）
 		}
 	public:
 		//エンキュー
@@ -1452,6 +2171,11 @@ namespace priority_queue
 		//　（シーケンス番号をセットするために1回テンポラリにコピーし、プッシュ時にさらにコピーする。）
 		//※ムーブコンストラクタとムーブオペレータを使用してコピーする点に注意
 		//※処理中、ロックを取得する
+		inline node_type* enqueueCopying(const node_type&& obj)
+		{
+			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
+			return _enqueueCopying(std::move(obj));
+		}
 		inline node_type* enqueueCopying(const node_type& obj)
 		{
 			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
@@ -1462,14 +2186,14 @@ namespace priority_queue
 		template<typename... Tx>
 		node_type* _enqueue(const priority_type priority, Tx... args)
 		{
-			//if (m_heap.status() == status_t::PUSH_BEGINNING || m_heap.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			//if (m_container.status() == status_t::PUSH_BEGINNING || m_container.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 			//	return nullptr;
-			node_type* obj = m_heap.pushBegin(args...);//二分ヒープにプッシュ開始
+			node_type* obj = m_container.pushBegin(args...);//コンテナにプッシュ開始
 			if (!obj)
 				return nullptr;
-			ope_type::setPrior(*obj, priority);//優先度を設定
+			ope_type::setPriority(*obj, priority);//優先度を設定
 			ope_type::setSeqNo(*obj, getNextSeqNo());//シーケンス番号をセット
-			obj = m_heap.pushEnd();//二分ヒープにプッシュ終了
+			obj = m_container.pushEnd();//コンテナにプッシュ終了
 			return obj;
 		}
 	public:
@@ -1489,12 +2213,12 @@ namespace priority_queue
 		template<typename... Tx>
 		node_type* _enqueueBegin(const priority_type priority, Tx... args)
 		{
-			//if (m_heap.status() == status_t::PUSH_BEGINNING || m_heap.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			//if (m_container.status() == status_t::PUSH_BEGINNING || m_container.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 			//	return nullptr;
-			node_type* obj = m_heap.pushBegin(args...);//二分ヒープにプッシュ開始
+			node_type* obj = m_container.pushBegin(args...);//コンテナにプッシュ開始
 			if (!obj)
 				return nullptr;
-			ope_type::setPrior(*obj, priority);//優先度を設定
+			ope_type::setPriority(*obj, priority);//優先度を設定
 			ope_type::setSeqNo(*obj, getNextSeqNo());//シーケンス番号を設定
 			return obj;
 		}
@@ -1517,14 +2241,16 @@ namespace priority_queue
 		//エンキュー終了（本体）
 		inline node_type* _enqueueEnd()
 		{
-			return m_heap.pushEnd();//二分ヒープにプッシュ終了
+			//if (m_container.status() != status_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
+			//	return;
+			return m_container.pushEnd();//コンテナにプッシュ終了
 		}
 	public:
 		//エンキュー終了
 		//※enqueueBeginで取得したロックを解放する
 		inline node_type* enqueueEnd()
 		{
-			const bool unlock = (m_heap.status() == status_t::PUSH_BEGINNING);//プッシュ開始中ならアンロックする
+			const bool unlock = (m_container.status() == status_t::PUSH_BEGINNING);//プッシュ開始中ならアンロックする
 			node_type* new_obj = _enqueueEnd();//エンキュー終了
 			if (unlock)
 				m_lock.unlock();//ロック解放
@@ -1534,17 +2260,17 @@ namespace priority_queue
 		//エンキュー取り消し（本体）
 		inline bool _enqueueCancel()
 		{
-			//if (m_heap.status() != status_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
+			//if (m_container.status() != status_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
 			//	return;
-			return m_heap.pushCancel();//プッシュ取り消し
+			return m_container.pushCancel();//プッシュ取り消し
 		}
 	public:
 		//エンキュー取り消し
 		//※enqueueBeginで取得したロックを解放する
 		inline bool enqueueCancel()
 		{
-			const bool unlock = (m_heap.status() == status_t::PUSH_BEGINNING);//プッシュ開始中ならアンロックする
-			const bool result = m_heap.pushCancel();//プッシュ取り消し
+			const bool unlock = (m_container.status() == status_t::PUSH_BEGINNING);//プッシュ開始中ならアンロックする
+			const bool result = m_container.pushCancel();//プッシュ取り消し
 			if (unlock)
 				m_lock.unlock();//ロック解放
 			return result;
@@ -1553,9 +2279,9 @@ namespace priority_queue
 		//デキュー（本体）
 		bool _dequeueCopying(node_type& dst)
 		{
-			//if (m_heap.status() == status_t::PUSH_BEGINNING || m_heap.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			//if (m_container.status() == status_t::PUSH_BEGINNING || m_container.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 			//	return nullptr;
-			const bool result = m_heap.popCopying(dst);//二分ヒープからポップ
+			const bool result = m_container.popCopying(dst);//コンテナからポップ
 			if (!result)
 				return false;
 			checkAndResetSeqNo();//キューが空になったらシーケンス番号をリセットする
@@ -1576,9 +2302,9 @@ namespace priority_queue
 		//※デキュー完了時に dequeueEnd を呼び出す必要あり
 		node_type* _dequeueBegin()
 		{
-			//if (m_heap.status() == status_t::PUSH_BEGINNING || m_heap.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
+			//if (m_container.status() == status_t::PUSH_BEGINNING || m_container.status() == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 			//	return nullptr;
-			node_type* obj = m_heap.popBegin();//二分ヒープからポップ開始
+			node_type* obj = m_container.popBegin();//コンテナからポップ開始
 			if (!obj)
 				return nullptr;
 			return obj;
@@ -1599,9 +2325,9 @@ namespace priority_queue
 		//デキュー終了（本体）
 		bool _dequeueEnd()
 		{
-			//if (m_heap.status() != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
+			//if (m_container.status() != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
 			//	return false;
-			const bool result = m_heap.popEnd();//二分ヒープからポップ終了
+			const bool result = m_container.popEnd();//コンテナからポップ終了
 			checkAndResetSeqNo();//キューが空になったらシーケンス番号をリセットする
 			return result;
 		}
@@ -1611,7 +2337,7 @@ namespace priority_queue
 		//※dequeueBeginで取得したロックを解放する
 		inline bool dequeueEnd()
 		{
-			const bool unlock = (m_heap.status() == status_t::POP_BEGINNING);//ポップ開始中ならアンロックする
+			const bool unlock = (m_container.status() == status_t::POP_BEGINNING);//ポップ開始中ならアンロックする
 			const bool result = _dequeueEnd();//デキュー終了
 			if (unlock)
 				m_lock.unlock();//ロック解放
@@ -1621,16 +2347,16 @@ namespace priority_queue
 		//デキュー取り消し（本体）
 		bool _dequeueCancel()
 		{
-			//if (m_heap.status() != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
+			//if (m_container.status() != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
 			//	return false;
-			return m_heap.popCancel();//ポップ取り消し
+			return m_container.popCancel();//ポップ取り消し
 		}
 	public:
 		//デキュー取り消し
 		//※dequeueBeginで取得したロックを解放する
 		inline bool dequeueCancel()
 		{
-			const bool unlock = (m_heap.status() == status_t::POP_BEGINNING);//ポップ開始中ならアンロックする
+			const bool unlock = (m_container.status() == status_t::POP_BEGINNING);//ポップ開始中ならアンロックする
 			const bool result = _dequeueCancel();//デキュー取り消し
 			if (unlock)
 				m_lock.unlock();//ロック解放
@@ -1640,18 +2366,18 @@ namespace priority_queue
 		//※デキューしない
 		inline const node_type* top() const
 		{
-			return m_heap.ref_top();//二分ヒープの先頭（根）ノードを取得
+			return m_container.top();//コンテナの先頭（根）ノードを取得
 		}
 	private:
 		//先頭（根）キューのプライオリティ変更（本体）
 		node_type* _changePriorityOnTop(const priority_type priority)
 		{
-			node_type* obj = m_heap.ref_top();
+			node_type* obj = m_container.top();
 			if (!obj)
 				return nullptr;
-			ope_type::setPrior(*obj, priority);//優先度を更新
+			ope_type::setPriority(*obj, priority);//優先度を更新
 			ope_type::setSeqNo(*obj, getNextSeqNo());//シーケンス番号を更新
-			return m_heap.downHeap(obj);//ダウンヒープ
+			return m_container.downHeap(obj);//ダウンヒープ
 		}
 	public:
 		//先頭（根）キューのプライオリティ変更
@@ -1664,11 +2390,16 @@ namespace priority_queue
 			lock_guard<lock_type> lock(m_lock);//ロック取得（関数を抜ける時に自動開放）
 			return _changePriorityOnTop(priority);
 		}
+		//※ロックなし版（top()参照～プライオリティ変更までを任意にロックするならこちらを使用する）
+		inline node_type* changePriorityOnTopWithoutLock(const priority_type priority)
+		{
+			return _changePriorityOnTop(priority);
+		}
 	private:
 		//クリア（本体）
 		inline void _clear()
 		{
-			m_heap.clear();
+			m_container.clear();
 		}
 	public:
 		//クリア
@@ -1680,21 +2411,20 @@ namespace priority_queue
 		}
 	public:
 		//コンストラクタ
-		//※キー比較処理を渡す
-		container() :
-			m_heap(),
+		container_adapter() :
+			m_container(),
 			m_seqNo(0),
 			m_lock()
 		{}
 		//デストラクタ
-		~container()
+		~container_adapter()
 		{
 			enqueueCancel();//エンキュー取り消し
 			dequeueCancel();//デキュー取り消し
 		}
 	private:
 		//フィールド
-		heap_type m_heap;//二分ヒープ
+		container_type m_container;//コンテナ
 		int m_dummy;
 		seq_type m_seqNo;//シーケンス番号 ※mutable修飾子
 		mutable lock_type m_lock;//ロックオブジェクト
@@ -1707,7 +2437,7 @@ namespace priority_queue
 	{
 	public:
 		//型
-		typedef CON container_type;//コンテナ型
+		typedef CON container_adapter_type;//コンテナアダプター型
 		typedef typename CON::node_type node_type;//ノード型
 		typedef typename CON::status_t status_t;//ステータス型
 	public:
@@ -1720,7 +2450,7 @@ namespace priority_queue
 		{
 			if (m_status == status_t::PUSH_BEGINNING || m_status == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
-			node_type* node = m_container.enqueueBegin(priority, args...);//エンキュー開始
+			node_type* node = m_containerAdapter.enqueueBegin(priority, args...);//エンキュー開始
 			if (node)
 				m_status = status_t::PUSH_BEGINNING;//ステータス変更
 			return node;
@@ -1730,7 +2460,7 @@ namespace priority_queue
 		{
 			if (m_status != status_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
 				return nullptr;
-			node_type* node = m_container.enqueueEnd();//エンキュー終了
+			node_type* node = m_containerAdapter.enqueueEnd();//エンキュー終了
 			m_status = status_t::PUSH_ENDED;//ステータス変更
 			return node;
 		}
@@ -1739,7 +2469,7 @@ namespace priority_queue
 		{
 			if (m_status != status_t::PUSH_BEGINNING)//プッシュ開始中以外なら処理しない
 				return nullptr;
-			m_container.enqueueCancel();//エンキュー取り消し
+			m_containerAdapter.enqueueCancel();//エンキュー取り消し
 			m_status = status_t::PUSH_CANCELLED;//ステータス変更
 			return true;
 		}
@@ -1748,7 +2478,7 @@ namespace priority_queue
 		{
 			if (m_status == status_t::PUSH_BEGINNING || m_status == status_t::POP_BEGINNING)//プッシュ／ポップ開始中なら処理しない
 				return nullptr;
-			node_type* node = m_container.dequeueBegin();//デキュー開始
+			node_type* node = m_containerAdapter.dequeueBegin();//デキュー開始
 			if (node)
 				m_status = status_t::POP_BEGINNING;//ステータス変更
 			return node;
@@ -1758,7 +2488,7 @@ namespace priority_queue
 		{
 			if (m_status != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
 				return false;
-			const bool result = m_container.dequeueEnd();//デキュー終了
+			const bool result = m_containerAdapter.dequeueEnd();//デキュー終了
 			m_status = status_t::POP_ENDED;//ステータス変更
 			return result;
 		}
@@ -1767,14 +2497,14 @@ namespace priority_queue
 		{
 			if (m_status != status_t::POP_BEGINNING)//ポップ開始中以外なら処理しない
 				return false;
-			m_container.dequeueCancel();//デキュー取り消し
+			m_containerAdapter.dequeueCancel();//デキュー取り消し
 			m_status = status_t::POP_CANCELLED;//ステータス変更
 			return true;
 		}
 	public:
 		//コンストラクタ
-		operation_guard(container_type& container) :
-			m_container(container),
+		operation_guard(container_adapter_type& container_adapter) :
+			m_containerAdapter(container_adapter),
 			m_status(status_t::IDLE)
 		{}
 		//デストラクタ
@@ -1785,7 +2515,7 @@ namespace priority_queue
 		}
 	private:
 		//フィールド
-		container_type& m_container;//コンテナ
+		container_adapter_type& m_containerAdapter;//コンテナアダプタ
 		status_t m_status;//ステータス
 	};
 	//--------------------
@@ -1815,8 +2545,9 @@ enum PRIORITY : short
 struct data_t
 {
 	PRIORITY m_priority;//優先度
-	int m_seqNo;//シーケンス番号
+	unsigned int m_seqNo;//シーケンス番号
 	int m_val;//データ
+	int m_data[2];
 
 	//コンストラクタ
 	data_t(const PRIORITY priority, const int val) :
@@ -1824,6 +2555,8 @@ struct data_t
 		m_seqNo(0),
 		m_val(val)
 	{
+		m_data[0] = 99;
+		m_data[1] = 99;
 	#ifdef TEST_DATA_WATCH_CONSTRUCTOR
 		printf("data_t::constructor(%d, %d)\n", priority, val);
 		//printf("    m_priority=%d, m_seqNo=%d, m_val=%d\n", m_priority, m_seqNo, m_val);
@@ -1905,12 +2638,12 @@ struct heap_ope_t : public binary_heap::base_ope_t<heap_ope_t, data_t>
 };
 //----------------------------------------
 //テストデータ操作クラス
-struct pqueue_ope_t : public priority_queue::base_ope_t<pqueue_ope_t, data_t, PRIORITY, int>
+struct ope_t : public priority_queue::base_ope_t<ope_t, data_t, PRIORITY, int>
 {
 	//優先度を取得
-	inline static priority_type getPrior(const node_type& node){ return node.m_priority; }
+	inline static priority_type getPriority(const node_type& node){ return node.m_priority; }
 	//優先度を更新
-	inline static void setPrior(node_type& node, const priority_type priority){ node.m_priority = priority; }
+	inline static void setPriority(node_type& node, const priority_type priority){ node.m_priority = priority; }
 	
 	//シーケンス番号を取得
 	inline static seq_type getSeqNo(const node_type& node){ return node.m_seqNo; }
@@ -1939,11 +2672,12 @@ inline int printf_detail(const char* fmt, ...){ return 0; }
 template<class HEAP>
 void showTree(const HEAP& heap)
 {
-	printf("--- Show tree (count=%d) ---\n", heap.size());
+	printf_detail("\n");
+	printf_detail("--- Show tree (count=%d) ---\n", heap.size());
 	//static const int depth_limit = 5;//最大でも5段階目までを表示（0段階目から数えるので最大で6段階表示される→最大：1+2+4+8+16+32=63個）
 	static const int depth_limit = 4;//最大でも4段階目までを表示（0段階目から数えるので最大で5段階表示される→最大：1+2+4+8+16=31個）
 	const int _depth_max = heap.depth_max();
-	printf("depth_max=%d (limit for showing=%d)\n", _depth_max, depth_limit);
+	printf_detail("depth_max=%d (limit for showing=%d)\n", _depth_max, depth_limit);
 	const int depth_max = _depth_max <= depth_limit ? _depth_max : depth_limit;
 	const int width_max = static_cast<int>(std::pow(2, depth_max));
 	for (int depth = 0; depth <= depth_max; ++depth)
@@ -1967,36 +2701,36 @@ void showTree(const HEAP& heap)
 				{
 					int c = 0;
 					for (; c < print_indent / 2; ++c)
-						printf(" ");
+						printf_detail(" ");
 					if (heap.ref_child_l(node) && c < print_indent)
 					{
-						printf(".");
+						printf_detail(".");
 						++c;
 					}
 					for (; c < print_indent; ++c)
-						printf(heap.ref_child_l(node) ? "-" : " ");
+						printf_detail(heap.ref_child_l(node) ? "-" : " ");
 				}
-				printf("%s%1d:%2d%s", heap.ref_child_l(node) ? "{" : "[", node->m_priority, node->m_val, heap.ref_child_r(node) ? "}" : "]");
+				printf_detail("%s%1d:%2d%s", heap.ref_child_l(node) ? "{" : "[", node->m_priority, node->m_val, heap.ref_child_r(node) ? "}" : "]");
 				{
 					int c = 0;
 					for (; c < print_indent / 2; ++c)
-						printf(heap.ref_child_r(node) ? "-" : " ");
+						printf_detail(heap.ref_child_r(node) ? "-" : " ");
 					if (heap.ref_child_r(node) && c < print_indent)
 					{
-						printf(".");
+						printf_detail(".");
 						++c;
 					}
 					for (; c < print_indent; ++c)
-						printf(" ");
+						printf_detail(" ");
 				}
 			}
 			else
 			{
 				for (int c = 0; c < print_width; ++c)
-					printf(" ");
+					printf_detail(" ");
 			}
 		}
-		printf("\n");
+		printf_detail("\n");
 	}
 };
 
@@ -2005,24 +2739,28 @@ void showTree(const HEAP& heap)
 int main(const int argc, const char* argv[])
 {
 	//プライオリティキューコンテナ生成
-	typedef priority_queue::container<pqueue_ope_t, TEST_DATA_MAX> pqueue_type;
-	pqueue_type con;
+	typedef priority_queue::container_adapter<ope_t, TEST_DATA_MAX> pqueue_t;
+	pqueue_t* con = new pqueue_t();
+
+	//処理時間計測開始
+	const std::chrono::system_clock::time_point begin_time = std::chrono::system_clock::now();
+	std::chrono::system_clock::time_point prev_time = begin_time;
 
 	//--------------------
 	//プライオリティキューのテスト
 	printf("--------------------------------------------------------------------------------\n");
-	printf("[Test for priority_queue::container(Priority Queue)]\n");
-	printf("\n");
+	printf("[Test for priority_queue::container_adapter(Priority Queue)]\n");
 
 	//エンキュー
 	auto enqueue = [&con]()
 	{
+		printf("\n");
 		printf("--- Enqueue ---\n");
 		std::mt19937 rand_engine;
 		rand_engine.seed(0);
 		std::uniform_int_distribution<int> rand_dist(TEST_DATA_PRIOR_MIN, TEST_DATA_PRIOR_MAX);
 		{
-			data_t* obj = con.enqueue(NORMAL, 0);
+			data_t* obj = con->enqueue(NORMAL, 0);
 			printf_detail("[%d:%2d(seq=%d)]\n", obj->m_priority, obj->m_val, obj->m_seqNo);
 		}
 		for (int val = 1; val < TEST_DATA_REG_NUM; ++val)
@@ -2034,7 +2772,7 @@ int main(const int argc, const char* argv[])
 			#if USE_ENQUEUE_TYPE == 1
 			{
 				data_t new_obj(priority, val);
-				data_t* obj = con.enqueueCopying(new_obj);
+				data_t* obj = con->enqueueCopying(new_obj);
 				printf_detail("[%d:%2d(seq=%d)]\n", obj->m_priority, obj->m_val, obj->m_seqNo);
 			}
 			//【推奨】【エンキュー方法②】コンストラクタパラメータを渡して登録する方法
@@ -2042,7 +2780,7 @@ int main(const int argc, const char* argv[])
 			//※コンストラクタが呼び出される。
 			#elif USE_ENQUEUE_TYPE == 2
 			{
-				data_t* obj = con.enqueue(priority, val);//優先度とコンストラクタパラメータを渡して登録
+				data_t* obj = con->enqueue(priority, val);//優先度とコンストラクタパラメータを渡して登録
 				printf_detail("[%d:%2d(seq=%d)]\n", obj->m_priority, obj->m_val, obj->m_seqNo);
 			}
 			//【エンキュー方法③】新規キュー（オブジェクト）の参照を受け取って値をセットする方法
@@ -2053,9 +2791,9 @@ int main(const int argc, const char* argv[])
 			//※エンキュー終了時にはポインタが変わる点にも注意。
 			#elif USE_ENQUEUE_TYPE == 3
 			{
-				priority_queue::operation_guard<pqueue_type> ope(con);//エンキュー／デキュー操作用クラス
+				priority_queue::operation_guard<pqueue_t> ope(*con);//エンキュー／デキュー操作用クラス
 				data_t* obj = ope.enqueueBegin(priority);//この時点で優先度とシーケンス番号がセットされ、ロックが取得される
-				                                         //※返り値は、処理ブロック内でしか（enqueueEnd/enqueueCancel呼び出しまでしか）有効ではないポインタなので注意
+				                                         //※戻り値は、処理ブロック内でしか（enqueueEnd/enqueueCancel呼び出しまでしか）有効ではないポインタなので注意
 				obj->m_val = val;
 				printf_detail("[%d:%2d(seq=%d)]\n", obj->m_priority, obj->m_val, obj->m_seqNo);
 				//処理ブロックを抜ける時に自動的にデキューが終了し、ロックが解放される。
@@ -2066,16 +2804,31 @@ int main(const int argc, const char* argv[])
 			}
 			#endif//USE_ENQUEUE_TYPE
 		}
-		printf_detail("\n");
 	};
 	enqueue();
+
+	//経過時間を表示
+	auto printElapsedTime = [](const std::chrono::system_clock::time_point& prev_time, const bool is_show) -> std::chrono::system_clock::time_point
+	{
+		//最終経過時間表示
+		const auto now_time = std::chrono::system_clock::now();
+		const auto duration = now_time - prev_time;
+		const double elapsed_time = static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count()) / 1000000000.;
+		if (is_show)
+			printf("*elapsed_time=%.9llf sec\n", elapsed_time);
+		return now_time;
+	};
+	prev_time = printElapsedTime(prev_time, true);
 
 #if 0
 	//範囲に基づくforループテスト
 	auto printNodesTest1 = [&con]()
 	{
+		printf("\n");
 		printf("--- Test for C++11 for(:) ---\n");
-		for (const data_t& o : con)
+		typedef pqueue_t::container_type container_t;
+		container_t& heap = *con;
+		for (const data_t& o : heap)
 			printf("[%1d:%2d] ", o.m_priority, o.m_val);
 		printf("\n");
 	};
@@ -2086,8 +2839,18 @@ int main(const int argc, const char* argv[])
 	//std::for_eachテスト
 	auto printNodesTest2 = [&con]()
 	{
+		printf("\n");
 		printf("--- Test for std::for_each() ---\n");
-		std::for_each(con.begin(), con.end(), [](data_t& o)
+		typedef pqueue_t::container_type container_t;
+		container_t& heap = *con;
+		printf("iterator\n");
+		std::for_each(heap.begin(), heap.end(), [](data_t& o)
+			{
+				printf("[%1d:%2d] ", o.m_priority, o.m_val);
+			}
+		);
+		printf("reverse_iterator\n");
+		std::for_each(heap.rbegin(), heap.rend(), [](data_t& o)
 			{
 				printf("[%1d:%2d] ", o.m_priority, o.m_val);
 			}
@@ -2097,40 +2860,139 @@ int main(const int argc, const char* argv[])
 	printNodesTest2();
 #endif
 
+#if 0//イテレータとロック取得のテスト
+	{
+		printf("\n");
+		typedef pqueue_t::container_type container_t;
+		container_t& heap = *con;
+		lock_guard<container_t::lock_type> lock(heap);
+		container_t::iterator ite = heap.begin();
+		container_t::reverse_iterator rite = heap.rbegin();
+		container_t::iterator ite_end = heap.end();
+		container_t::reverse_iterator rite_end = heap.rend();
+		container_t::iterator ite2 = heap.rbegin();
+		container_t::reverse_iterator rite2 = heap.begin();
+		container_t::iterator ite2_end = heap.rend();
+		container_t::reverse_iterator rite2_end = heap.end();
+		printf("constructor\n");
+		if (ite) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
+		if (rite) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
+		if (ite_end) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
+		if (rite_end) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
+		if (ite2) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite->m_val);
+		if (rite2) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
+		if (ite2_end) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
+		if (rite2_end) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
+		printf("copy operator\n");
+		ite = heap.begin();
+		rite = heap.rbegin();
+		ite_end = heap.end();
+		rite_end = heap.rend();
+		ite2 = heap.rbegin();
+		rite2 = heap.begin();
+		ite2_end = heap.rend();
+		rite2_end = heap.end();
+		if (ite) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
+		if (rite) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
+		if (ite_end) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
+		if (rite_end) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
+		if (ite2) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite->m_val);
+		if (rite2) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
+		if (ite2_end) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
+		if (rite2_end) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
+		for (int i = 0; i <= 3; ++i)
+		{
+			printf("[%d]\n", i);
+			ite = ite[i];
+			rite = rite[i];
+			ite_end = ite_end[i];
+			rite_end = rite_end[i];
+			ite2 = ite2[i];
+			rite2 = rite2[i];
+			ite2_end = ite2_end[i];
+			rite2_end = rite2_end[i];
+			if (ite) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
+			if (rite) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
+			if (ite_end) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
+			if (rite_end) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
+			if (ite2) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite->m_val);
+			if (rite2) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
+			if (ite2_end) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
+			if (rite2_end) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
+		}
+		printf("+= 3\n");
+		ite += 3;
+		rite += 3;
+		ite_end += 3;
+		rite_end += 3;
+		ite2 += 3;
+		rite2 += 3;
+		ite2_end += 3;
+		rite2_end += 3;
+		if (ite) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
+		if (rite) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
+		if (ite_end) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
+		if (rite_end) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
+		if (ite2) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite->m_val);
+		if (rite2) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
+		if (ite2_end) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
+		if (rite2_end) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
+		printf("-= 3\n");
+		ite -= 3;
+		rite -= 3;
+		ite_end -= 3;
+		rite_end -= 3;
+		ite2 -= 3;
+		rite2 -= 3;
+		ite2_end -= 3;
+		rite2_end -= 3;
+		if (ite) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
+		if (rite) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
+		if (ite_end) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
+		if (rite_end) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
+		if (ite2) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite->m_val);
+		if (rite2) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
+		if (ite2_end) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
+		if (rite2_end) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
+	}
+#endif
+
 	//木を表示
-	showTree(con.getHeap());
+	showTree(con->getContainer());
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
 
 	//デキュー
 	auto dequeue = [&con](const int pop_limit)
 	{
+		printf("\n");
 		printf("--- Dequeue ---\n");
 		for (int i = 0; i < pop_limit; ++i)
 		{
-			#define USE_DEQUEUE_TYPE 2
-			//【デキュー方法①】情報取得用のオブジェクトを受け渡す
+			#define USE_DEQUEUE_TYPE 1
+			//【推奨】【デキュー方法①】情報取得用のオブジェクトを受け渡す
 			//※オブジェクトのコピーが発生する。
 			//※デストラクタが呼び出される。（コピー後に実行）
 			#if USE_DEQUEUE_TYPE == 1
 			{
 				data_t node;
-				const bool result = con.dequeueCopying(node);
+				const bool result = con->dequeueCopying(node);
 				if (!result)
 					break;
-				printf("[%1d:%2d] ", node.m_priority, node.m_val);
+				printf_detail("[%1d:%2d] ", node.m_priority, node.m_val);
 			}
-			//【推奨】【デキュー方法②】キュー（オブジェクト）の参照を受け取る方法
+			//【デキュー方法②】キュー（オブジェクト）の参照を受け取る方法
 			//※オブジェクトのコピーは発生しない。
 			//※明示的に終了処理を呼び出し、ロックを解放しなければならない点に注意。
 			//　（エンキュー／デキュー操作用クラスを使用することで、処理ブロックを抜ける時に自動敵にロックが解放される）
 			//※最後にデストラクタが呼び出される。
 			#elif USE_DEQUEUE_TYPE == 2
 			{
-				priority_queue::operation_guard<pqueue_type> ope(con);//エンキュー／デキュー操作用クラス
+				priority_queue::operation_guard<pqueue_t> ope(*con);//エンキュー／デキュー操作用クラス
 				data_t* obj = ope.dequeueBegin();//この時点でロックが取得される
-				                                 //※返り値は、処理ブロック内でしか（dequeueEnd/dequeueCancel呼び出しまでしか）有効ではないポインタなので注意
+				                                 //※戻り値は、処理ブロック内でしか（dequeueEnd/dequeueCancel呼び出しまでしか）有効ではないポインタなので注意
 				if (!obj)
 					break;
-				printf("[%1d:%2d] ", obj->m_priority, obj->m_val);
+				printf_detail("[%1d:%2d] ", obj->m_priority, obj->m_val);
 				//処理ブロックを抜ける時に自動的にデキューが終了し、ロックが解放される。
 				//※受け取ったポインタを処理ブロックの外で参照すると、誤った情報を参照することになるので注意。
 				//※明示的にデキュー終了／取り消しを実行することも可能。
@@ -2139,32 +3001,53 @@ int main(const int argc, const char* argv[])
 			}
 			#endif//USE_DEQUEUE_TYPE
 		}
-		printf("\n");
+		printf_detail("\n");
 	};
 	dequeue(3);
-	showTree(con.getHeap());//木を表示
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+
+	//木を表示
+	showTree(con->getContainer());
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
 
 	//先頭（根）ノードの優先度を変更
 	auto changePriorityOnTop = [&con](const PRIORITY new_priority)
 	{
+		printf("\n");
 		printf("--- Change Priority ---\n");
-		const data_t* node = con.top();//先頭ノードを取得（ポップされない）
+		const data_t* node = con->top();//先頭ノードを取得（ポップされない）
 		printf("[%1d:%2d(seq=%d)]", node->m_priority, node->m_val, node->m_seqNo);
-		node = con.changePriorityOnTop(new_priority);//優先度を変更（変更後、キューが再配置される）
+		node = con->changePriorityOnTop(new_priority);//優先度を変更（変更後、キューが再配置される）
 		printf(" -> [%1d:%2d(seq=%d)]\n", node->m_priority, node->m_val, node->m_seqNo);
 	};
 	changePriorityOnTop(HIGHEST);
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+	
 	changePriorityOnTop(LOWER);
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+	
 	changePriorityOnTop(HIGHER);
-	showTree(con.getHeap());//木を表示
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+	
+	//木を表示
+	showTree(con->getContainer());
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
 	
 	//デキュー
 	dequeue(TEST_DATA_REG_NUM / 2);
-	showTree(con.getHeap());//木を表示
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+	
+	//木を表示
+	showTree(con->getContainer());
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
 
 	//デキュー
 	dequeue(TEST_DATA_REG_NUM);
-	showTree(con.getHeap());//木を表示
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+	
+	//木を表示
+	showTree(con->getContainer());
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
 
 	//--------------------
 	//【挙動比較用】二分ヒープのテスト
@@ -2172,21 +3055,21 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("--------------------------------------------------------------------------------\n");
 	printf("[Test for binary_heap::container(Binary Heap)]\n");
-	printf("\n");
 
 	//ヒープコンテナ生成
-	typedef binary_heap::container<heap_ope_t, TEST_DATA_MAX> heap_type;
-	heap_type heap;
+	typedef binary_heap::container<heap_ope_t, TEST_DATA_MAX> heap_t;
+	heap_t* heap = new heap_t();
 
 	//二分ヒープでノードをプッシュ
 	auto pushNodesBinHeap = [&heap]()
 	{
+		printf("\n");
 		printf("--- Push nodes(Binary Heap) ---\n");
 		std::mt19937 rand_engine;
 		rand_engine.seed(0);
 		std::uniform_int_distribution<int> rand_dist(TEST_DATA_PRIOR_MIN, TEST_DATA_PRIOR_MAX);
 		{
-			data_t* obj =heap.push(NORMAL, 0);
+			data_t* obj =heap->push(NORMAL, 0);
 			printf_detail("[%d:%2d]\n", obj->m_priority, obj->m_val);
 		}
 		for (int val = 1; val < TEST_DATA_REG_NUM; ++val)
@@ -2198,68 +3081,82 @@ int main(const int argc, const char* argv[])
 			#if USE_PUSH_TYPE == 1
 			{
 				data_t new_obj(priority, val);
-				data_t* obj = heap.pushCopying(new_obj);
+				data_t* obj = heap->pushCopying(new_obj);
 				printf_detail("[%d:%2d]\n", obj->m_priority, obj->m_val);
 			}
 			//【推奨】【プッシュ方法②】
 			#elif USE_PUSH_TYPE == 2
 			{
-				data_t* obj = heap.push(priority, val);
+				data_t* obj = heap->push(priority, val);
 				printf_detail("[%d:%2d]\n", obj->m_priority, obj->m_val);
 			}
 			//【プッシュ方法③】
 			#elif USE_PUSH_TYPE == 3
 			{
-				binary_heap::operation_guard<heap_type> ope(heap);
-				data_t* obj = ope.pushBegin(priority, val);//※返り値は、処理ブロック内でしか（pushEnd/pushCancel呼び出しまでしか）有効ではないポインタなので注意
+				binary_heap::operation_guard<container_type> ope(*heap);
+				data_t* obj = ope.pushBegin(priority, val);//※戻り値は、処理ブロック内でしか（pushEnd/pushCancel呼び出しまでしか）有効ではないポインタなので注意
 				printf_detail("[%d:%2d]\n", obj->m_priority, obj->m_val);
 				//obj = ope.popEnd();//明示的なポップ終了を行うと、正しいオブジェクトの参照を取得できる
 			}
 			#endif//USE_PUSH_TYPE
 		}
-		printf_detail("\n");
 	};
 	pushNodesBinHeap();
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
 
 	//木を表示
-	showTree(heap);
+	showTree(*heap);
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
 	
 	//二分ヒープでノードをポップ
 	auto popNodesBinHeap  = [&heap](const int pop_limit)
 	{
+		printf("\n");
 		printf("--- Pop nodes(Binary Heap) ---\n");
 		for (int i = 0; i < pop_limit; ++i)
 		{
 			//※上記プライオリティキューで説明した、２種類のポップ方法が使える
-			#define USE_POP_TYPE 2
-			//【ポップ方法①】
+			#define USE_POP_TYPE 1
+			//【推奨】【ポップ方法①】
 			#if USE_POP_TYPE == 1
 			{
 				data_t node;
-				const bool result = heap.popCopying(node);
+				const bool result = heap->popCopying(node);
 				if (!result)
 					break;
-				printf("[%1d:%2d] ", node.m_priority, node.m_val);
+				printf_detail("[%1d:%2d] ", node.m_priority, node.m_val);
 			}
-			//【推奨】【ポップ方法②】
+			//【ポップ方法②】
 			#elif USE_POP_TYPE == 2
 			{
-				binary_heap::operation_guard<heap_type> ope(heap);
-				data_t* obj = ope.popBegin();//※返り値は、処理ブロック内でしか（popEnd/popCancel呼び出しまでしか）有効ではないポインタなので注意
+				binary_heap::operation_guard<heap_t> ope(*heap);
+				data_t* obj = ope.popBegin();//※戻り値は、処理ブロック内でしか（popEnd/popCancel呼び出しまでしか）有効ではないポインタなので注意
 				if (!obj)
 					break;
-				printf("[%1d:%2d] ", obj->m_priority, obj->m_val);
+				printf_detail("[%1d:%2d] ", obj->m_priority, obj->m_val);
 			}
 			#endif//USE_POP_TYPE
 		}
-		printf("\n");
+		printf_detail("\n");
 	};
 	popNodesBinHeap(TEST_DATA_REG_NUM / 2);
-	showTree(heap);//木を表示
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+
+	//木を表示
+	showTree(*heap);
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
 
 	//ノードをポップ
 	popNodesBinHeap(TEST_DATA_REG_NUM);
-	showTree(heap);//木を表示
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+
+	//木を表示
+	showTree(*heap);
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
+
+	//インスタンスを破棄
+	delete heap;
+	heap = nullptr;
 
 	//--------------------
 	//【挙動比較用】STLのstd::priority_queueテスト
@@ -2268,90 +3165,133 @@ int main(const int argc, const char* argv[])
 	printf("\n");
 	printf("--------------------------------------------------------------------------------\n");
 	printf("[Test for std::priority_queue(STL)]\n");
-	printf("\n");
 	
-	std::priority_queue<data_t, std::vector<data_t>, heap_ope_t> stl;
-	//std::priority_queue<data_t, std::vector<data_t>, pqueue_ope_t> stl;
+	//優先度付きキューコンテナ生成
+	typedef std::priority_queue<data_t, std::vector<data_t>, heap_ope_t> stl_container_type;
+	//typedef std::priority_queue<data_t, std::vector<data_t>, ope_t> stl_container_type;
+	stl_container_type* stl_heap = new stl_container_type();
 
 	//STLでノードをプッシュ
-	auto pushNodesSTL = [&stl]()
+	auto pushNodesSTL = [&stl_heap]()
 	{
+		printf("\n");
 		printf("--- Push nodes(STL) ---\n");
 		std::mt19937 rand_engine;
 		rand_engine.seed(0);
 		std::uniform_int_distribution<int> rand_dist(TEST_DATA_PRIOR_MIN, TEST_DATA_PRIOR_MAX);
 		{
 			data_t obj(NORMAL, 0);
-			stl.push(obj);
+			stl_heap->push(obj);
 			printf_detail("[%d:%2d]\n", obj.m_priority, obj.m_val);
 		}
 		for (int val = 1; val < TEST_DATA_REG_NUM; ++val)
 		{
 			const PRIORITY priority = static_cast<PRIORITY>(rand_dist(rand_engine));
 			data_t obj(priority, val);
-			stl.push(obj);
+			stl_heap->push(obj);
 			printf_detail("[%d:%2d]\n", obj.m_priority, obj.m_val);
+		}
+	};
+	pushNodesSTL();
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+
+	//STLでノードをポップ
+	auto popNodesSTL = [&stl_heap](const int pop_limit)
+	{
+		printf("\n");
+		printf("--- Pop nodes(STL) ---\n");
+		for (int i = 0; i < pop_limit && !stl_heap->empty(); ++i)
+		{
+			data_t node = stl_heap->top();
+			printf_detail("[%1d:%2d] ", node.m_priority, node.m_val);
+			stl_heap->pop();
 		}
 		printf_detail("\n");
 	};
-	pushNodesSTL();
-
-	//STLでノードをポップ
-	auto popNodesSTL = [&stl](const int pop_limit)
-	{
-		printf("--- Pop nodes(STL) ---\n");
-		for (int i = 0; i < pop_limit && !stl.empty(); ++i)
-		{
-			data_t node = stl.top();
-			printf("[%1d:%2d] ", node.m_priority, node.m_val);
-			stl.pop();
-		}
-		printf("\n");
-	};
 	popNodesSTL(TEST_DATA_REG_NUM / 2);
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+	
 	popNodesSTL(TEST_DATA_REG_NUM);
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+
+	//インスタンスを破棄
+	delete stl_heap;
+	stl_heap = nullptr;
 
 	//--------------------
 	//【挙動比較用】プライオリティキューの再テスト
 	//※上記の二分ヒープ／STLのテストと同一の流れのテストを実施
 	printf("\n");
 	printf("--------------------------------------------------------------------------------\n");
-	printf("[Test for priority_queue::container(Priority Queue)] *Second time\n");
-	printf("\n");
+	printf("[Test for priority_queue::container_adapter(Priority Queue)] *Second time\n");
 
-	enqueue();//エンキュー
-	showTree(con.getHeap());//木を表示
-	dequeue(TEST_DATA_REG_NUM / 2);//デキュー
-	showTree(con.getHeap());//木を表示
-	dequeue(TEST_DATA_REG_NUM);//デキュー
-	showTree(con.getHeap());//木を表示
+	//エンキュー
+	enqueue();
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+	
+	//木を表示
+	showTree(con->getContainer());
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
+	
+	//デキュー
+	dequeue(TEST_DATA_REG_NUM / 2);
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+	
+	//木を表示
+	showTree(con->getContainer());
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
+	
+	//デキュー
+	dequeue(TEST_DATA_REG_NUM);
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+	
+	//木を表示
+	showTree(con->getContainer());
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
 
 	//--------------------
 	//プライオリティキューのクリアのテスト
 	printf("\n");
 	printf("--------------------------------------------------------------------------------\n");
-	printf("[Test for priority_queue::container(Priority Queue)] *Clear\n");
-	printf("\n");
+	printf("[Test for priority_queue::container_adapter(Priority Queue)] *Clear\n");
+		
+	//エンキュー
+	enqueue();
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
 
-	enqueue();//エンキュー
-	showTree(con.getHeap());//木を表示
+	//木を表示
+	showTree(con->getContainer());
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
+
+	printf("\n");
 	printf("--- Clear ---\n");
-	con.clear();//クリア
+	
+	//クリア
+	con->clear();
 	printf("OK\n");
-	showTree(con.getHeap());//木を表示
+	prev_time = printElapsedTime(prev_time, true);//経過時間を表示
+
+	//木を表示
+	showTree(con->getContainer());
+	prev_time = printElapsedTime(prev_time, false);//経過時間を表示
+
+	//インスタンスを破棄
+	delete con;
+	con = nullptr;
 
 	//--------------------
 	//ポインタ変数をキューイングする場合のテスト
 	{
 		printf("\n");
 		printf("--------------------------------------------------------------------------------\n");
-		printf("[Test for priority_queue::container(Priority Queue)] *Pointer\n");
-		
+		printf("[Test for priority_queue::container_adapter(Priority Queue)] *Pointer\n");
+		printf("\n");
+
 		//操作型
 		struct p_ope_t : public priority_queue::base_ope_t<p_ope_t, data_t*, PRIORITY, int>
 		{
-			inline static priority_type getPrior(const node_type& node){ return node->m_priority; }
-			inline static void setPrior(node_type& node, const priority_type priority){ node->m_priority = priority; }
+			inline static priority_type getPriority(const node_type& node){ return node->m_priority; }
+			inline static void setPriority(node_type& node, const priority_type priority){ node->m_priority = priority; }
 			inline static seq_type getSeqNo(const node_type& node){ return node->m_seqNo; }
 			inline static void setSeqNo(node_type& node, const seq_type seq_no){ node->m_seqNo = seq_no; }
 
@@ -2361,7 +3301,7 @@ int main(const int argc, const char* argv[])
 		};
 		
 		//プライオリティキュー
-		priority_queue::container<p_ope_t, TEST_DATA_MAX> p_con;
+		priority_queue::container_adapter<p_ope_t, 100> p_con;
 		
 		//エンキュー
 		data_t obj1(NORMAL, 1);
@@ -2380,7 +3320,7 @@ int main(const int argc, const char* argv[])
 		{
 			data_t* obj_p = nullptr;
 			p_con.dequeueCopying(obj_p);
-			printf("pop: [%1d:%2d](seq=%d)\n", obj_p->m_priority, obj_p->m_val, obj_p->m_seqNo);
+			printf_detail("pop: [%1d:%2d](seq=%d)\n", obj_p->m_priority, obj_p->m_val, obj_p->m_seqNo);
 		};
 		dequeuObj();
 		dequeuObj();
@@ -2388,6 +3328,11 @@ int main(const int argc, const char* argv[])
 		dequeuObj();
 		dequeuObj();
 	}
+
+	//終了
+	printf("\n");
+	printf("--- end ---\n");
+	printElapsedTime(begin_time, true);//経過時間を表示
 
 	return EXIT_SUCCESS;
 }

@@ -157,7 +157,7 @@ depth_max=-1 (limit for showing=4)
 [2:17]
 [4:18]
 [5:19]
-*elapsed_time=0.000000000 sec
+*elapsed_time=0.001001200 sec
 
 --- Pop nodes(STL) ---
 [5: 1] [5: 2] [5: 6] [5:14] [5:19] [4: 5] [4: 3] [4:10] [4: 8] [4:18] 
@@ -169,7 +169,6 @@ depth_max=-1 (limit for showing=4)
 
 --------------------------------------------------------------------------------
 [Test for priority_queue::container_adapter(Priority Queue)] *Second time
-
 --- Enqueue ---
 [3: 0(seq=0)]
 [5: 1(seq=1)]
@@ -221,7 +220,6 @@ depth_max=-1 (limit for showing=4)
 
 --------------------------------------------------------------------------------
 [Test for priority_queue::container_adapter(Priority Queue)] *Clear
-
 --- Enqueue ---
 [3: 0(seq=0)]
 [5: 1(seq=1)]
@@ -254,15 +252,14 @@ depth_max=4 (limit for showing=4)
 [3: 7][2:16][2:17][3: 0][1: 4]                                                                  
 
 --- Clear ---
-OK
 *elapsed_time=0.000000000 sec
+OK
 
 --- Show tree (count=0) ---
 depth_max=-1 (limit for showing=4)
 
 --------------------------------------------------------------------------------
 [Test for priority_queue::container_adapter(Priority Queue)] *Pointer
-
 pop: [5: 4](seq=3)
 pop: [4: 2](seq=1)
 pop: [3: 1](seq=0)
@@ -270,4 +267,4 @@ pop: [2: 3](seq=2)
 pop: [1: 5](seq=4)
 
 --- end ---
-*elapsed_time=0.001000900 sec
+*elapsed_time=0.001001200 sec

@@ -960,7 +960,11 @@ namespace rb_tree
 		//コピーオペレータ
 		inline stack_t& operator=(const stack_t& rhs)
 		{
-			return operator=(std::move(rhs));
+			//return operator=(std::move(rhs));
+			m_depth = rhs.m_depth;
+			if (m_depth > 0)
+				memcpy(m_array, rhs.m_array, sizeof(info_t)* m_depth);
+			return *this;
 		}
 		//ムーブコンストラクタ
 		inline stack_t(const stack_t&& obj) :
@@ -971,8 +975,11 @@ namespace rb_tree
 		}
 		//コピーコンストラクタ
 		inline stack_t(const stack_t& obj) :
-			stack_t(std::move(obj))
-		{}
+			m_depth(obj.m_depth)
+		{
+			if (m_depth > 0)
+				memcpy(m_array, obj.m_array, sizeof(info_t)* m_depth);
+		}
 		//コンストラクタ
 		inline stack_t() :
 			m_depth(0)
@@ -2548,7 +2555,7 @@ namespace rb_tree
 			inline const_pointer operator->() const { return m_node; }
 			inline pointer operator->(){ return m_node; }
 		#if 1//std::bidirectional_iterator_tag には本来必要ではない
-			const_iterator operator[](const int index) const
+			inline const_iterator operator[](const int index) const
 			{
 				iterator ite(m_root, false);
 				ite += index;
@@ -2556,7 +2563,9 @@ namespace rb_tree
 			}
 			inline iterator operator[](const int index)
 			{
-				return std::move(*const_cast<iterator*>(&(*const_cast<const_iterator*>(this))[index]));
+				iterator ite(m_root, false);
+				ite += index;
+				return std::move(ite);
 			}
 		#endif
 			//比較オペレータ
@@ -2689,7 +2698,7 @@ namespace rb_tree
 			//ムーブオペレータ
 			inline iterator& operator=(const_iterator&& rhs)
 			{
-				m_stack = rhs.m_stack;
+				m_stack = std::move(rhs.m_stack);
 				m_root = rhs.m_root;
 				m_node = rhs.m_node;
 				return *this;
@@ -2698,27 +2707,27 @@ namespace rb_tree
 			//コピーオペレータ
 			inline iterator& operator=(const_iterator& rhs)
 			{
-				return operator=(std::move(rhs));
+				m_stack = rhs.m_stack;
+				m_root = rhs.m_root;
+				m_node = rhs.m_node;
+				return *this;
 			}
-			inline iterator& operator=(const_reverse_iterator& rhs)
-			{
-				return operator=(std::move(rhs));
-			}
+			iterator& operator=(const_reverse_iterator& rhs);
 		public:
 			//ムーブコンストラクタ
 			inline iterator(const_iterator&& obj) :
-				m_stack(obj.m_stack),
+				m_stack(std::move(obj.m_stack)),
 				m_root(obj.m_root),
 				m_node(obj.m_node)
 			{}
 			iterator(const_reverse_iterator&& obj);
 			//コピーコンストラクタ
 			inline iterator(const_iterator& obj) :
-				iterator(std::move(obj))
+				m_stack(obj.m_stack),
+				m_root(obj.m_root),
+				m_node(obj.m_node)
 			{}
-			inline iterator(const_reverse_iterator& obj) :
-				iterator(std::move(obj))
-			{}
+			iterator(const_reverse_iterator& obj);
 			//コンストラクタ
 			inline iterator() :
 				m_stack(),
@@ -2733,6 +2742,11 @@ namespace rb_tree
 				if (!is_end)
 					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
 			}
+			inline iterator(stack_type&& stack, const node_type* root, node_type* node) :
+				m_stack(std::move(stack)),
+				m_root(root),
+				m_node(node)
+			{}
 			inline iterator(stack_type& stack, const node_type* root, node_type* node) :
 				m_stack(stack),
 				m_root(root),
@@ -2766,7 +2780,7 @@ namespace rb_tree
 			inline const_pointer operator->() const { return m_node; }
 			inline pointer operator->(){ return m_node; }
 		#if 1//std::bidirectional_iterator_tag には本来必要ではない
-			const_reverse_iterator operator[](const int index) const
+			inline const_reverse_iterator operator[](const int index) const
 			{
 				reverse_iterator ite(m_root, false);
 				ite += index;
@@ -2774,7 +2788,9 @@ namespace rb_tree
 			}
 			inline reverse_iterator operator[](const int index)
 			{
-				return std::move(*const_cast<reverse_iterator*>(&(*const_cast<const_reverse_iterator*>(this))[index]));
+				reverse_iterator ite(m_root, false);
+				ite += index;
+				return std::move(ite);
 			}
 		#endif
 		public:
@@ -2908,7 +2924,7 @@ namespace rb_tree
 			//ムーブオペレータ
 			inline reverse_iterator& operator=(const_reverse_iterator&& rhs)
 			{
-				m_stack = rhs.m_stack;
+				m_stack = std::move(rhs.m_stack);
 				m_root = rhs.m_root;
 				m_node = rhs.m_node;
 				return *this;
@@ -2932,11 +2948,26 @@ namespace rb_tree
 			//コピーオペレータ
 			inline reverse_iterator& operator=(const_reverse_iterator& rhs)
 			{
-				return operator=(std::move(rhs));
+				m_stack = rhs.m_stack;
+				m_root = rhs.m_root;
+				m_node = rhs.m_node;
+				return *this;
 			}
 			inline reverse_iterator& operator=(const_iterator& rhs)
 			{
-				return operator=(std::move(rhs));
+				m_root = rhs.m_root;
+				m_node = rhs.m_node;
+				if (m_node)
+				{
+					m_stack = rhs.m_stack;
+					++(*this);
+				}
+				else
+				{
+					m_stack.reset();
+					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+				}
+				return *this;
 			}
 		public:
 			//ベースを取得
@@ -2953,7 +2984,7 @@ namespace rb_tree
 		public:
 			//ムーブコンストラクタ
 			inline reverse_iterator(const_reverse_iterator&& obj) :
-				m_stack(obj.m_stack),
+				m_stack(std::move(obj.m_stack)),
 				m_root(obj.m_root),
 				m_node(obj.m_node)
 			{}
@@ -2975,11 +3006,26 @@ namespace rb_tree
 			}
 			//コピーコンストラクタ
 			inline reverse_iterator(const_reverse_iterator& obj) :
-				reverse_iterator(std::move(obj))
+				m_stack(obj.m_stack),
+				m_root(obj.m_root),
+				m_node(obj.m_node)
 			{}
 			inline reverse_iterator(const_iterator& obj) :
-				reverse_iterator(std::move(obj))
-			{}
+				m_stack(),
+				m_root(obj.m_root),
+				m_node(obj.m_node)
+			{
+				if (m_node)
+				{
+					m_stack = obj.m_stack;
+					++(*this);
+				}
+				else
+				{
+					m_stack.reset();
+					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+				}
+			}
 			//コンストラクタ
 			inline reverse_iterator() :
 				m_stack(),
@@ -2994,6 +3040,11 @@ namespace rb_tree
 				if (!is_end)
 					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
 			}
+			inline reverse_iterator(stack_type&& stack, const node_type* root, node_type* node) :
+				m_stack(std::move(stack)),
+				m_root(root),
+				m_node(node)
+			{}
 			inline reverse_iterator(stack_type& stack, const node_type* root, node_type* node) :
 				m_stack(stack),
 				m_root(root),
@@ -3169,7 +3220,7 @@ namespace rb_tree
 		{}
 		//コピーコンストラクタ
 		container(const container& con) :
-			container(std::move(con))
+			m_root(con.m_root)
 		{}
 		//コンストラクタ
 		container() :
@@ -3202,7 +3253,26 @@ namespace rb_tree
 		}
 		return *this;
 	}
-	//イテレータのコピーコンストラクタ
+	//イテレータのコピーオペレータ
+	template<class OPE_TYPE>
+	//typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(typename container<OPE_TYPE>::const_reverse_iterator& rhs)//GCCはOK, VC++はNG
+	typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(const typename container<OPE_TYPE>::reverse_iterator& rhs)//VC++もOK
+	{
+		m_root = rhs.m_root;
+		m_node = rhs.m_node;
+		if (m_node)
+		{
+			m_stack = rhs.m_stack;
+			++(*this);
+		}
+		else
+		{
+			m_stack.reset();
+			m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+		}
+		return *this;
+	}
+	//イテレータのムーブコンストラクタ
 	template<class OPE_TYPE>
 	//container<OPE_TYPE>::iterator::iterator(typename container<OPE_TYPE>::const_reverse_iterator&& obj) ://GCCはOK, VC++はNG
 	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator&& obj) ://VC++もOK
@@ -3213,6 +3283,25 @@ namespace rb_tree
 		if (m_node)
 		{
 			m_stack = std::move(obj.m_stack);
+			++(*this);
+		}
+		else
+		{
+			m_stack.reset();
+			m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+		}
+	}
+	//イテレータのコピーコンストラクタ
+	template<class OPE_TYPE>
+	//container<OPE_TYPE>::iterator::iterator(typename container<OPE_TYPE>::const_reverse_iterator& obj) ://GCCはOK, VC++はNG
+	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator& obj) ://VC++もOK
+		m_stack(),
+		m_root(obj.m_root),
+		m_node(obj.m_node)
+	{
+		if (m_node)
+		{
+			m_stack = obj.m_stack;
 			++(*this);
 		}
 		else

@@ -1065,7 +1065,13 @@ namespace hash_table
 			//コピーオペレータ
 			inline set& operator=(const set& rhs)
 			{
-				return operator=(std::move(rhs));
+				//return operator=(std::move(rhs));
+				m_index = rhs.m_index;
+				m_primaryIndex = rhs.m_primaryIndex;
+				m_key = rhs.m_key;
+				m_value = rhs.m_value;
+				m_isDeleted = rhs.m_isDeleted;
+				return *this;
 			}
 			
 			//メソッド
@@ -1089,7 +1095,11 @@ namespace hash_table
 			{}
 			//コピーコンストラクタ
 			inline set(const set& obj) :
-				set(std::move(obj))
+				m_index(obj.m_index),
+				m_primaryIndex(obj.m_primaryIndex),
+				m_key(obj.m_key),
+				m_value(obj.m_value),
+				m_isDeleted(obj.m_isDeleted)
 			{}
 			//コストラクタ
 			inline set(const index_type index, const index_type primary_index, const key_type key, const value_type* value, const bool is_deleted) :
@@ -1277,6 +1287,7 @@ namespace hash_table
 			//ムーブオペレータ
 			inline iterator& operator=(const_iterator&& rhs)
 			{
+				m_con = rhs.m_con;
 				m_set = std::move(rhs.m_set);
 				return *this;
 			}
@@ -1286,13 +1297,12 @@ namespace hash_table
 			//コピーオペレータ
 			inline iterator& operator=(const_iterator& rhs)
 			{
-				return operator=(std::move(rhs));
+				m_con = rhs.m_con;
+				m_set = rhs.m_set;
+				return *this;
 			}
 		#if 1//std::forward_iterator_tag には本来必要ではない
-			inline iterator& operator=(const_reverse_iterator& rhs)
-			{
-				return operator=(std::move(rhs));
-			}
+			iterator& operator=(const_reverse_iterator& rhs);
 		#endif
 		public:
 			//アクセッサ
@@ -1323,22 +1333,21 @@ namespace hash_table
 		#endif
 			//コピーコンストラクタ
 			inline iterator(const_iterator& obj) :
-				iterator(std::move(obj))
+				m_con(obj.m_con),
+				m_set(obj.m_set)
 			{}
 		#if 1//std::forward_iterator_tag には本来必要ではない
-			inline iterator(const_reverse_iterator& obj) :
-				iterator(std::move(obj))
+			iterator(const_reverse_iterator& obj);
 		#endif
-			{}
 			//コンストラクタ
-			iterator(const container& con, const bool is_end = false) :
+			inline iterator(const container& con, const bool is_end = false) :
 				m_con(&con),
 				m_set(INVALID_INDEX, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false)
 			{
 				if (!is_end)
 					updateSet(m_con->getFirstIndex());//先頭インデックスを取得
 			}
-			iterator() :
+			inline iterator() :
 				m_con(nullptr),
 				m_set(INVALID_INDEX, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false)
 			{}
@@ -1395,7 +1404,7 @@ namespace hash_table
 			{
 				return m_set.m_index == INVALID_INDEX && rhs.m_set.m_index == INVALID_INDEX ? true :
 				       m_set.m_index == INVALID_INDEX || rhs.m_set.m_index == INVALID_INDEX ? false :
-					   rhs.m_set.m_index != m_set.m_index;
+					   rhs.m_set.m_index == m_set.m_index;
 			}
 			inline bool operator!=(const_reverse_iterator& rhs) const
 			{
@@ -1521,13 +1530,13 @@ namespace hash_table
 			inline reverse_iterator& operator=(const_reverse_iterator&& rhs)
 			{
 				m_con = rhs.m_con;
-				m_set = rhs.m_set;
+				m_set = std::move(rhs.m_set);
 				return *this;
 			}
 			inline reverse_iterator& operator=(const_iterator&& rhs)
 			{
 				m_con = rhs.m_con;
-				m_set = rhs.m_set;
+				m_set = std::move(rhs.m_set);
 				if (m_set.m_index != INVALID_INDEX)
 					++(*this);
 				else
@@ -1537,11 +1546,19 @@ namespace hash_table
 			//コピーオペレータ
 			inline reverse_iterator& operator=(const_reverse_iterator& rhs)
 			{
-				return operator=(std::move(rhs));
+				m_con = rhs.m_con;
+				m_set = rhs.m_set;
+				return *this;
 			}
 			inline reverse_iterator& operator=(const_iterator& rhs)
 			{
-				return operator=(std::move(rhs));
+				m_con = rhs.m_con;
+				m_set = rhs.m_set;
+				if (m_set.m_index != INVALID_INDEX)
+					++(*this);
+				else
+					updateSet(m_con->getLastIndex());//末尾インデックスを取得
+				return *this;
 			}
 		public:
 			//アクセッサ
@@ -1577,11 +1594,11 @@ namespace hash_table
 			//ムーブコンストラクタ
 			inline reverse_iterator(const_reverse_iterator&& obj) :
 				m_con(obj.m_con),
-				m_set(obj.m_set)
+				m_set(std::move(obj.m_set))
 			{}
 			inline reverse_iterator(const_iterator&& obj) :
 				m_con(obj.m_con),
-				m_set(obj.m_set)
+				m_set(std::move(obj.m_set))
 			{
 				if (m_set.m_index != INVALID_INDEX)
 					++(*this);
@@ -1590,20 +1607,27 @@ namespace hash_table
 			}
 			//コピーコンストラクタ
 			inline reverse_iterator(const_reverse_iterator& obj) :
-				reverse_iterator(std::move(obj))
+				m_con(obj.m_con),
+				m_set(obj.m_set)
 			{}
 			inline reverse_iterator(const_iterator& obj) :
-				reverse_iterator(std::move(obj))
-			{}
+				m_con(obj.m_con),
+				m_set(obj.m_set)
+			{
+				if (m_set.m_index != INVALID_INDEX)
+					++(*this);
+				else
+					updateSet(m_con->getLastIndex());//末尾インデックスを取得
+			}
 			//コンストラクタ
-			reverse_iterator(const container& con, const bool is_end = false) :
+			inline reverse_iterator(const container& con, const bool is_end = false) :
 				m_con(&con),
 				m_set(INVALID_INDEX, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false)
 			{
 				if (!is_end)
 					updateSet(m_con->getLastIndex());//末尾インデックスを取得
 			}
-			reverse_iterator() :
+			inline reverse_iterator() :
 				m_con(nullptr),
 				m_set(INVALID_INDEX, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false)
 			{}
@@ -2123,6 +2147,19 @@ namespace hash_table
 	typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator& container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::operator=(const typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::reverse_iterator&& rhs)//VC++もOK
 	{
 		m_con = rhs.m_con;
+		m_set = std::move(rhs.m_set);
+		if (m_set.m_index != INVALID_INDEX)
+			++(*this);
+		else
+			updateSet(m_con->getFirstIndex());//先頭インデックスを取得
+		return *this;
+	}
+	//イテレータのコピーオペレータ
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE, std::size_t _AUTO_REHASH_RATIO, int _FINDING_CYCLE_LIMIT, std::size_t _INDEX_STEP_BASE>
+	//typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator& container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::operator=(typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::const_reverse_iterator& rhs)//GCCはOK, VC++はNG
+	typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator& container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::operator=(const typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::reverse_iterator& rhs)//VC++もOK
+	{
+		m_con = rhs.m_con;
 		m_set = rhs.m_set;
 		if (m_set.m_index != INVALID_INDEX)
 			++(*this);
@@ -2130,10 +2167,22 @@ namespace hash_table
 			updateSet(m_con->getFirstIndex());//先頭インデックスを取得
 		return *this;
 	}
-	//イテレータのコピーコンストラクタ
+	//イテレータのムーブコンストラクタ
 	template<class OPE_TYPE, std::size_t _TABLE_SIZE, std::size_t _AUTO_REHASH_RATIO, int _FINDING_CYCLE_LIMIT, std::size_t _INDEX_STEP_BASE>
 	//container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::iterator(typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::const_reverse_iterator&& obj) ://GCCはOK, VC++はNG
 	container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::iterator(const typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::reverse_iterator&& obj) ://VC++もOK
+		m_con(obj.m_con),
+		m_set(std::move(obj.m_set))
+	{
+		if (m_set.m_index != INVALID_INDEX)
+			++(*this);
+		else
+			updateSet(m_con->getFirstIndex());//先頭インデックスを取得
+	}
+	//イテレータのコピーコンストラクタ
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE, std::size_t _AUTO_REHASH_RATIO, int _FINDING_CYCLE_LIMIT, std::size_t _INDEX_STEP_BASE>
+	//container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::iterator(typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::const_reverse_iterator& obj) ://GCCはOK, VC++はNG
+	container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::iterator(const typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::reverse_iterator& obj) ://VC++もOK
 		m_con(obj.m_con),
 		m_set(obj.m_set)
 	{

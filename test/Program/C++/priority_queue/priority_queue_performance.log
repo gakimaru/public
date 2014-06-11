@@ -1,0 +1,79 @@
+--------------------------------------------------------------------------------
+[Test for priority_queue::container_adapter(Priority Queue)]
+
+--- Enqueue ---
+*elapsed_time=0.048044900 sec
+
+--- Dequeue ---
+*elapsed_time=0.000000000 sec
+
+--- Change Priority ---
+[5:14(seq=14)] -> [5:14(seq=1000000)]
+*elapsed_time=0.000000000 sec
+
+--- Change Priority ---
+[5:19(seq=19)] -> [2:19(seq=1000001)]
+*elapsed_time=0.000000000 sec
+
+--- Change Priority ---
+[5:22(seq=22)] -> [4:22(seq=1000002)]
+*elapsed_time=0.000000000 sec
+
+--- Dequeue ---
+*elapsed_time=0.119112800 sec
+
+--- Dequeue ---
+*elapsed_time=0.124118400 sec
+
+--------------------------------------------------------------------------------
+[Test for binary_heap::container(Binary Heap)]
+
+--- Push nodes(Binary Heap) ---
+*elapsed_time=0.047044200 sec
+
+--- Pop nodes(Binary Heap) ---
+*elapsed_time=0.039037200 sec
+
+--- Pop nodes(Binary Heap) ---
+*elapsed_time=0.077073300 sec
+
+--------------------------------------------------------------------------------
+[Test for std::priority_queue(STL)]
+
+--- Push nodes(STL) ---
+*elapsed_time=0.069066800 sec
+
+--- Pop nodes(STL) ---
+*elapsed_time=0.040036900 sec
+
+--- Pop nodes(STL) ---
+*elapsed_time=0.051049500 sec
+
+--------------------------------------------------------------------------------
+[Test for priority_queue::container_adapter(Priority Queue)] *Second time
+
+--- Enqueue ---
+*elapsed_time=0.061057200 sec
+
+--- Dequeue ---
+*elapsed_time=0.107102500 sec
+
+--- Dequeue ---
+*elapsed_time=0.112105800 sec
+
+--------------------------------------------------------------------------------
+[Test for priority_queue::container_adapter(Priority Queue)] *Clear
+
+--- Enqueue ---
+*elapsed_time=0.060057400 sec
+
+--- Clear ---
+OK
+*elapsed_time=0.000000000 sec
+
+--------------------------------------------------------------------------------
+[Test for priority_queue::container_adapter(Priority Queue)] *Pointer
+
+
+--- end ---
+*elapsed_time=0.956908700 sec

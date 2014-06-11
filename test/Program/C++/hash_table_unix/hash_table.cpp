@@ -1052,9 +1052,25 @@ namespace hash_table
 			inline const value_type* operator->() const { return m_value; }
 			inline value_type* operator->(){ return m_value; }
 
+			//ムーブオペレータ
+			inline set& operator=(const set&& rhs)
+			{
+				m_index = rhs.m_index;
+				m_primaryIndex = rhs.m_primaryIndex;
+				m_key = rhs.m_key;
+				m_value = rhs.m_value;
+				m_isDeleted = rhs.m_isDeleted;
+				return *this;
+			}
+			//コピーオペレータ
+			inline set& operator=(const set& rhs)
+			{
+				return operator=(std::move(rhs));
+			}
+			
 			//メソッド
 			inline bool isPrimaryIndex() const { return m_index == m_primaryIndex; }//実際のインデックスは、本来のインデックスと一致するか？
-			void update(const index_type index, const index_type primary_index, const key_type key, const value_type* value, const bool is_deleted)
+			inline void update(const index_type index, const index_type primary_index, const key_type key, const value_type* value, const bool is_deleted)
 			{
 				m_index = index;
 				m_primaryIndex = primary_index;
@@ -1063,8 +1079,20 @@ namespace hash_table
 				m_isDeleted = is_deleted;
 			}
 
+			//ムーブコンストラクタ
+			inline set(const set&& obj) :
+				m_index(obj.m_index),
+				m_primaryIndex(obj.m_primaryIndex),
+				m_key(obj.m_key),
+				m_value(obj.m_value),
+				m_isDeleted(obj.m_isDeleted)
+			{}
+			//コピーコンストラクタ
+			inline set(const set& obj) :
+				set(std::move(obj))
+			{}
 			//コストラクタ
-			set(const index_type index, const index_type primary_index, const key_type key, const value_type* value, const bool is_deleted) :
+			inline set(const index_type index, const index_type primary_index, const key_type key, const value_type* value, const bool is_deleted) :
 				m_index(index),
 				m_primaryIndex(primary_index),
 				m_key(key),
@@ -1074,14 +1102,22 @@ namespace hash_table
 		};
 	public:
 		//--------------------
-		//イテレータ
+		//イテレータ宣言
 		class iterator;
+		class reverse_iterator;
 		typedef const iterator const_iterator;
-		class iterator : public std::iterator<std::forward_iterator_tag, value_type>
+		typedef const reverse_iterator const_reverse_iterator;
+		//--------------------
+		//イテレータ
+		class iterator : public std::iterator<std::forward_iterator_tag, value_type>//本来は std::forward_iterator_tag で十分
+		//class iterator : public std::iterator<std::bidirectional_iterator_tag, value_type>
+		//class iterator : public std::iterator<std::random_access_iterator_tag, value_type>
 		{
 			friend class container;
+			friend class reverse_iterator;
 		public:
 			//キャストオペレータ
+			inline operator bool() const { return m_set.m_index != INVALID_INDEX; }
 			inline operator const set() const { return *m_set; }
 			inline operator set&(){ return *m_set; }
 			inline operator const value_type() const { return *m_set.m_value; }
@@ -1093,8 +1129,24 @@ namespace hash_table
 			//オペレータ
 			inline const set& operator*() const { return m_set; }
 			inline set& operator*(){ return m_set; }
-			inline const value_type* operator->() const { return m_set.value; }
-			inline value_type* operator->(){ return m_set.value; }
+			inline const_pointer operator->() const { return m_set.m_value; }
+			inline pointer operator->(){ return m_set.m_value; }
+		#if 1//std::forward_iterator_tag, std::bidirectional_iterator_tag には本来必要ではない
+			inline const_iterator operator[](const int index) const
+			{
+				iterator ite(*m_con);
+				ite.updateSet(m_con->getFirstIndex());
+				ite += index;
+				return std::move(ite);
+			}
+			inline iterator operator[](const int index)
+			{
+				iterator ite(*m_con);
+				ite.updateSet(m_con->getFirstIndex());
+				ite += index;
+				return std::move(ite);
+			}
+		#endif
 			//比較オペレータ
 			inline bool operator==(const_iterator& rhs) const
 			{
@@ -1131,43 +1183,43 @@ namespace hash_table
 			//演算オペレータ
 			inline const_iterator& operator++() const
 			{
-				updateSet(m_con.getNextIndex(m_set.m_index));
+				updateSet(m_con->getNextIndex(m_set.m_index));
 				return *this;
 			}
 			inline const_iterator& operator--() const
 			{
-				updateSet(m_con.getPrevIndex(m_set.m_index));
+				updateSet(m_con->getPrevIndex(m_set.m_index));
 				return *this;
 			}
 			inline iterator& operator++()
 			{
-				updateSet(m_con.getNextIndex(m_set.m_index));
+				updateSet(m_con->getNextIndex(m_set.m_index));
 				return *this;
 			}
 			inline iterator& operator--()
 			{
-				updateSet(m_con.getPrevIndex(m_set.m_index));
+				updateSet(m_con->getPrevIndex(m_set.m_index));
 				return *this;
 			}
-			const_iterator operator++(int) const
+			inline const_iterator operator++(int) const
 			{
 				iterator ite(*this);
 				++(*this);
 				return ite;
 			}
-			const_iterator operator--(int) const
+			inline const_iterator operator--(int) const
 			{
 				iterator ite(*this);
 				--(*this);
 				return ite;
 			}
-			iterator operator++(int)
+			inline iterator operator++(int)
 			{
 				iterator ite(*this);
 				++(*this);
 				return ite;
 			}
-			iterator operator--(int)
+			inline iterator operator--(int)
 			{
 				iterator ite(*this);
 				--(*this);
@@ -1175,47 +1227,47 @@ namespace hash_table
 			}
 			const_iterator& operator+=(const int val) const
 			{
-				for (int i = 0; i < val; ++i)
+				for (int i = 0; i < val && m_set.m_index != INVALID_INDEX; ++i)
 					++(*this);
 				return *this;
 			}
 			const_iterator& operator-=(const int val) const
 			{
-				for (int i = 0; i < val; ++i)
+				for (int i = 0; i < val && m_set.m_index != INVALID_INDEX; ++i)
 					--(*this);
 				return *this;
 			}
 			iterator& operator+=(const int val)
 			{
-				for (int i = 0; i < val; ++i)
+				for (int i = 0; i < val && m_set.m_index != INVALID_INDEX; ++i)
 					++(*this);
 				return *this;
 			}
 			iterator& operator-=(const int val)
 			{
-				for (int i = 0; i < val; ++i)
+				for (int i = 0; i < val && m_set.m_index != INVALID_INDEX; ++i)
 					--(*this);
 				return *this;
 			}
-			const_iterator operator+(const int val) const
+			inline const_iterator operator+(const int val) const
 			{
 				iterator ite(*this);
 				ite += val;
 				return ite;
 			}
-			const_iterator operator-(const int val) const
+			inline const_iterator operator-(const int val) const
 			{
 				iterator ite(*this);
 				ite -= val;
 				return ite;
 			}
-			iterator operator+(const int val)
+			inline iterator operator+(const int val)
 			{
 				iterator ite(*this);
 				ite += val;
 				return ite;
 			}
-			iterator operator-(const int val)
+			inline iterator operator-(const int val)
 			{
 				iterator ite(*this);
 				ite -= val;
@@ -1223,13 +1275,271 @@ namespace hash_table
 			}
 		public:
 			//ムーブオペレータ
-			iterator& operator=(const_iterator&& rhs)
+			inline iterator& operator=(const_iterator&& rhs)
 			{
 				m_set = std::move(rhs.m_set);
 				return *this;
 			}
+		#if 1//std::forward_iterator_tag には本来必要ではない
+			iterator& operator=(const_reverse_iterator&& rhs);
+		#endif
 			//コピーオペレータ
 			inline iterator& operator=(const_iterator& rhs)
+			{
+				return operator=(std::move(rhs));
+			}
+		#if 1//std::forward_iterator_tag には本来必要ではない
+			inline iterator& operator=(const_reverse_iterator& rhs)
+			{
+				return operator=(std::move(rhs));
+			}
+		#endif
+		public:
+			//アクセッサ
+			inline index_type getIndex() const { return m_set.m_index; }//（実際の）インデックス
+			inline index_type getPrimaryIndex() const { return m_set.m_primaryIndex; }//本来のインデックス
+			inline key_type getKey() const { return m_set.m_key; }//現在のキー
+			inline const value_type* getValue() const { return m_set.m_value; }//現在の値
+			inline value_type* getValue(){ return m_set.m_value; }//現在の値
+			inline bool isDeleted() const { return m_set.m_isDeleted; }//削除済み
+			inline bool isPrimaryIndex() const { return m_set.isPrimaryIndex(); }//本来のインデックスか？
+		private:
+			//メソッド
+			void updateSet(const index_type index) const
+			{
+				if (index == INVALID_INDEX)
+					m_set.update(INVALID_INDEX, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false);
+				else
+					m_set.update(index, m_con->calcIndex(m_con->m_keyTable[index]), m_con->m_keyTable[index], reinterpret_cast<const value_type*>(m_con->m_table[index]), m_con->m_deleted[index]);
+			}
+		public:
+			//ムーブコンストラクタ
+			iterator(const_iterator&& obj) :
+				m_con(obj.m_con),
+				m_set(std::move(obj.m_set))
+			{}
+		#if 1//std::forward_iterator_tag には本来必要ではない
+			iterator(const_reverse_iterator&& obj);
+		#endif
+			//コピーコンストラクタ
+			inline iterator(const_iterator& obj) :
+				iterator(std::move(obj))
+			{}
+		#if 1//std::forward_iterator_tag には本来必要ではない
+			inline iterator(const_reverse_iterator& obj) :
+				iterator(std::move(obj))
+		#endif
+			{}
+			//コンストラクタ
+			iterator(const container& con, const bool is_end = false) :
+				m_con(&con),
+				m_set(INVALID_INDEX, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false)
+			{
+				if (!is_end)
+					updateSet(m_con->getFirstIndex());//先頭インデックスを取得
+			}
+			iterator() :
+				m_con(nullptr),
+				m_set(INVALID_INDEX, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false)
+			{}
+			//デストラクタ
+			inline ~iterator()
+			{}
+		protected:
+			//フィールド
+			const container* m_con;//コンテナ
+			mutable set m_set;//現在のキー/値/削除済みフラグ
+		};
+	#if 1//std::forward_iterator_tag には本来必要ではない
+		//--------------------
+		//リバースイテレータ
+		class reverse_iterator : public std::reverse_iterator<iterator>
+		{
+			friend class container;
+			friend class iterator;
+		public:
+			//キャストオペレータ
+			inline operator bool() const { return m_set.m_index != INVALID_INDEX; }
+			inline operator const set() const { return *m_set; }
+			inline operator set&(){ return *m_set; }
+			inline operator const value_type() const { return *m_set.m_value; }
+			inline operator value_type&(){ return *m_set.m_value; }
+			inline operator const value_type*() const { return m_set.m_value; }
+			inline operator value_type*(){ return m_set.m_value; }
+			inline operator key_type() const { return m_set.m_key; }
+		public:
+			//オペレータ
+			inline const set& operator*() const { return m_set; }
+			inline set& operator*(){ return m_set; }
+			inline const_pointer operator->() const { return m_set.m_value; }
+			inline pointer operator->(){ return m_set.m_value; }
+		#if 1//std::forward_iterator_tag, std::bidirectional_iterator_tag には本来必要ではない
+			inline const_reverse_iterator operator[](const int index) const
+			{
+				reverse_iterator ite(*m_con);
+				ite.updateSet(m_con->getLastIndex());
+				ite += index;
+				return std::move(ite);
+			}
+			inline reverse_iterator operator[](const int index)
+			{
+				reverse_iterator ite(*m_con);
+				ite.updateSet(m_con->getLastIndex());
+				ite += index;
+				return std::move(ite);
+			}
+		#endif
+		public:
+			//比較オペレータ
+			inline bool operator==(const_reverse_iterator& rhs) const
+			{
+				return m_set.m_index == INVALID_INDEX && rhs.m_set.m_index == INVALID_INDEX ? true :
+				       m_set.m_index == INVALID_INDEX || rhs.m_set.m_index == INVALID_INDEX ? false :
+					   rhs.m_set.m_index != m_set.m_index;
+			}
+			inline bool operator!=(const_reverse_iterator& rhs) const
+			{
+				return m_set.m_index == INVALID_INDEX && rhs.m_set.m_index == INVALID_INDEX ? false :
+				       m_set.m_index == INVALID_INDEX || rhs.m_set.m_index == INVALID_INDEX ? true :
+					   rhs.m_set.m_index != m_set.m_index;
+			}
+			inline bool operator>(const_reverse_iterator& rhs) const
+			{
+				return m_set.m_index == INVALID_INDEX || rhs.m_set.m_index == INVALID_INDEX ? false :
+				       rhs.m_set.m_index > m_set.m_index;
+			}
+			inline bool operator>=(const_reverse_iterator& rhs) const
+			{
+				return m_set.m_index == INVALID_INDEX || rhs.m_set.m_index == INVALID_INDEX ? false :
+				       rhs.m_set.m_index >= m_set.m_index;
+			}
+			inline bool operator<(const_reverse_iterator& rhs) const
+			{
+				return m_set.m_index == INVALID_INDEX || rhs.m_set.m_index == INVALID_INDEX ? false :
+				       rhs.m_set.m_index < m_set.m_index;
+			}
+			inline bool operator<=(const_reverse_iterator& rhs) const
+			{
+				return m_set.m_index == INVALID_INDEX || rhs.m_set.m_index == INVALID_INDEX ? false :
+				       rhs.m_set.m_index <= m_set.m_index;
+			}
+			//演算オペレータ
+			inline const_reverse_iterator& operator++() const
+			{
+				updateSet(m_con->getPrevIndex(m_set.m_index));
+				return *this;
+			}
+			inline const_reverse_iterator& operator--() const
+			{
+				updateSet(m_con->getNextIndex(m_set.m_index));
+				return *this;
+			}
+			inline reverse_iterator& operator++()
+			{
+				updateSet(m_con->getPrevIndex(m_set.m_index));
+				return *this;
+			}
+			inline reverse_iterator& operator--()
+			{
+				updateSet(m_con->getNextIndex(m_set.m_index));
+				return *this;
+			}
+			inline const_reverse_iterator operator++(int) const
+			{
+				reverse_iterator ite(*this);
+				++(*this);
+				return ite;
+			}
+			inline const_reverse_iterator operator--(int) const
+			{
+				reverse_iterator ite(*this);
+				--(*this);
+				return ite;
+			}
+			inline reverse_iterator operator++(int)
+			{
+				reverse_iterator ite(*this);
+				++(*this);
+				return ite;
+			}
+			inline reverse_iterator operator--(int)
+			{
+				reverse_iterator ite(*this);
+				--(*this);
+				return ite;
+			}
+			const_reverse_iterator& operator+=(const int val) const
+			{
+				for (int i = 0; i < val && m_set.m_index != INVALID_INDEX; ++i)
+					++(*this);
+				return *this;
+			}
+			const_reverse_iterator& operator-=(const int val) const
+			{
+				for (int i = 0; i < val && m_set.m_index != INVALID_INDEX; ++i)
+					--(*this);
+				return *this;
+			}
+			reverse_iterator& operator+=(const int val)
+			{
+				for (int i = 0; i < val && m_set.m_index != INVALID_INDEX; ++i)
+					++(*this);
+				return *this;
+			}
+			reverse_iterator& operator-=(const int val)
+			{
+				for (int i = 0; i < val && m_set.m_index != INVALID_INDEX; ++i)
+					--(*this);
+				return *this;
+			}
+			inline const_reverse_iterator operator+(const int val) const
+			{
+				reverse_iterator ite(*this);
+				ite += val;
+				return ite;
+			}
+			inline const_reverse_iterator operator-(const int val) const
+			{
+				reverse_iterator ite(*this);
+				ite -= val;
+				return ite;
+			}
+			inline reverse_iterator operator+(const int val)
+			{
+				reverse_iterator ite(*this);
+				ite += val;
+				return ite;
+			}
+			inline reverse_iterator operator-(const int val)
+			{
+				reverse_iterator ite(*this);
+				ite -= val;
+				return ite;
+			}
+		public:
+			//ムーブオペレータ
+			inline reverse_iterator& operator=(const_reverse_iterator&& rhs)
+			{
+				m_con = rhs.m_con;
+				m_set = rhs.m_set;
+				return *this;
+			}
+			inline reverse_iterator& operator=(const_iterator&& rhs)
+			{
+				m_con = rhs.m_con;
+				m_set = rhs.m_set;
+				if (m_set.m_index != INVALID_INDEX)
+					++(*this);
+				else
+					updateSet(m_con->getLastIndex());//末尾インデックスを取得
+				return *this;
+			}
+			//コピーオペレータ
+			inline reverse_iterator& operator=(const_reverse_iterator& rhs)
+			{
+				return operator=(std::move(rhs));
+			}
+			inline reverse_iterator& operator=(const_iterator& rhs)
 			{
 				return operator=(std::move(rhs));
 			}
@@ -1249,35 +1559,63 @@ namespace hash_table
 				if (index == INVALID_INDEX)
 					m_set.update(INVALID_INDEX, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false);
 				else
-					m_set.update(index, m_con.calcIndex(m_con.m_keyTable[index]), m_con.m_keyTable[index], reinterpret_cast<const value_type*>(m_con.m_table[index]), m_con.m_deleted[index]);
+					m_set.update(index, m_con->calcIndex(m_con->m_keyTable[index]), m_con->m_keyTable[index], reinterpret_cast<const value_type*>(m_con->m_table[index]), m_con->m_deleted[index]);
+			}
+		public:
+			//ベースを取得
+			inline const_iterator base() const
+			{
+				iterator ite(*this);
+				return std::move(ite);
+			}
+			inline iterator base()
+			{
+				iterator ite(*this);
+				return std::move(ite);
 			}
 		public:
 			//ムーブコンストラクタ
-			iterator(const_iterator&& obj) :
+			inline reverse_iterator(const_reverse_iterator&& obj) :
 				m_con(obj.m_con),
-				m_set(std::move(obj.m_set))
+				m_set(obj.m_set)
 			{}
+			inline reverse_iterator(const_iterator&& obj) :
+				m_con(obj.m_con),
+				m_set(obj.m_set)
+			{
+				if (m_set.m_index != INVALID_INDEX)
+					++(*this);
+				else
+					updateSet(m_con->getLastIndex());//末尾インデックスを取得
+			}
 			//コピーコンストラクタ
-			inline iterator(const_iterator& obj) :
-				iterator(std::move(obj))
+			inline reverse_iterator(const_reverse_iterator& obj) :
+				reverse_iterator(std::move(obj))
+			{}
+			inline reverse_iterator(const_iterator& obj) :
+				reverse_iterator(std::move(obj))
 			{}
 			//コンストラクタ
-			iterator(const container& con) :
-				m_con(con),
-				m_set(0, nullptr, false)
-			{}
-			iterator(const container& con, const index_type index, const key_type key, const value_type* value, const bool is_deleted) :
-				m_con(con),
-				m_set(index, con.calcIndex(key), key, value, is_deleted)
+			reverse_iterator(const container& con, const bool is_end = false) :
+				m_con(&con),
+				m_set(INVALID_INDEX, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false)
+			{
+				if (!is_end)
+					updateSet(m_con->getLastIndex());//末尾インデックスを取得
+			}
+			reverse_iterator() :
+				m_con(nullptr),
+				m_set(INVALID_INDEX, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false)
 			{}
 			//デストラクタ
-			inline ~iterator()
+			inline ~reverse_iterator()
 			{}
 		protected:
 			//フィールド
-			const container& m_con;//コンテナ
+			const container* m_con;//コンテナ
 			mutable set m_set;//現在のキー/値/削除済みフラグ
 		};
+	#endif
 	public:
 		//アクセッサ
 		inline size_type getOriginalTableSize() const { return ORIGINAL_TABLE_SIZE; }//指定されたテーブルサイズを取得
@@ -1399,21 +1737,71 @@ namespace hash_table
 		//イテレータを取得
 		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
 		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
+		inline const_iterator cbegin() const
+		{
+			iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline const_iterator cend() const
+		{
+			iterator ite(*this, true);
+			return std::move(ite);
+		}
 		inline const_iterator begin() const
 		{
-			const index_type index = getFirstIndex();//先頭インデックスを取得
-			if (index == INVALID_INDEX)
-				return iterator(*this, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false);
-			return iterator(*this, index, m_keyTable[index], reinterpret_cast<const value_type*>(m_table[index]), m_deleted[index]);
+			iterator ite(*this, false);
+			return std::move(ite);
 		}
 		inline const_iterator end() const
 		{
-			return iterator(*this, INVALID_INDEX, ope_type::INVALID_KEY, nullptr, false);
+			iterator ite(*this, true);
+			return std::move(ite);
 		}
-		inline iterator begin(){ return const_cast<const container*>(this)->begin(); }
-		inline iterator end(){ return const_cast<const container*>(this)->end(); }
-		inline const_iterator cbegin() const { return this->begin(); }
-		inline const_iterator cend() const { return this->end(); }
+		inline iterator begin()
+		{
+			iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline iterator end()
+		{
+			iterator ite(*this, true);
+			return std::move(ite);
+		}
+	#if 1//std::forward_iterator_tag には本来必要ではない
+		//リバースイテレータを取得
+		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
+		inline const_reverse_iterator crbegin() const
+		{
+			reverse_iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline const_reverse_iterator crend() const
+		{
+			reverse_iterator ite(*this, true);
+			return std::move(ite);
+		}
+		inline const_reverse_iterator rbegin() const
+		{
+			reverse_iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline const_reverse_iterator rend() const
+		{
+			reverse_iterator ite(*this, true);
+			return std::move(ite);
+		}
+		inline reverse_iterator rbegin()
+		{
+			reverse_iterator ite(*this, false);
+			return std::move(ite);
+		}
+		inline reverse_iterator rend()
+		{
+			reverse_iterator ite(*this, true);
+			return std::move(ite);
+		}
+	#endif
 	private:
 		//キーで検索してインデックスを取得（共通）
 		index_type _findIndexCommon(const key_type key) const
@@ -1728,6 +2116,33 @@ namespace hash_table
 		int m_maxFindingCycle;//検索時の最大巡回回数 ※登録を削除しても減らない（リハッシュ時には調整される）
 		mutable lock_type m_lock;//ロックオブジェクト
 	};
+#if 1//std::forward_iterator_tag には本来必要ではない
+	//イテレータのムーブオペレータ
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE, std::size_t _AUTO_REHASH_RATIO, int _FINDING_CYCLE_LIMIT, std::size_t _INDEX_STEP_BASE>
+	//typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator& container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::operator=(typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::const_reverse_iterator&& rhs)//GCCはOK, VC++はNG
+	typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator& container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::operator=(const typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::reverse_iterator&& rhs)//VC++もOK
+	{
+		m_con = rhs.m_con;
+		m_set = rhs.m_set;
+		if (m_set.m_index != INVALID_INDEX)
+			++(*this);
+		else
+			updateSet(m_con->getFirstIndex());//先頭インデックスを取得
+		return *this;
+	}
+	//イテレータのコピーコンストラクタ
+	template<class OPE_TYPE, std::size_t _TABLE_SIZE, std::size_t _AUTO_REHASH_RATIO, int _FINDING_CYCLE_LIMIT, std::size_t _INDEX_STEP_BASE>
+	//container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::iterator(typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::const_reverse_iterator&& obj) ://GCCはOK, VC++はNG
+	container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::iterator::iterator(const typename container<OPE_TYPE, _TABLE_SIZE, _AUTO_REHASH_RATIO, _FINDING_CYCLE_LIMIT, _INDEX_STEP_BASE>::reverse_iterator&& obj) ://VC++もOK
+		m_con(obj.m_con),
+		m_set(obj.m_set)
+	{
+		if (m_set.m_index != INVALID_INDEX)
+			++(*this);
+		else
+			updateSet(m_con->getFirstIndex());//先頭インデックスを取得
+	}
+#endif
 	//--------------------
 	//基本型定義マクロ消去
 	#undef DECLARE_OPE_TYPES
@@ -1871,6 +2286,7 @@ struct data_t
 //----------------------------------------
 //テストデータ操作クラス
 #include <functional>//C++11 std::function用
+#include <algorithm>//C++11 std::for_each用
 struct ope_t : public hash_table::base_ope_t<ope_t, crc32_t, data_t>
 {
 	//データ置換属性
@@ -2051,8 +2467,8 @@ int main(const int argc, const char* argv[])
 	printf("--------------------------------------------------------------------------------\n");
 	printf("Hash Table Test\n");
 	printf("--------------------------------------------------------------------------------\n");
-	typedef hash_table::container<ope_t, TEST_DATA_TABLE_SIZE, 0, 0> container_type;//自動リハッシュなし, 検索巡回回数制限なし
-	container_type* con = new container_type();
+	typedef hash_table::container<ope_t, TEST_DATA_TABLE_SIZE, 0, 0> container_t;//自動リハッシュなし, 検索巡回回数制限なし
+	container_t* con = new container_t();
 
 	//ハッシュテーブルの基本情報表示
 	auto printTableParameter = [&con]()
@@ -2171,7 +2587,7 @@ int main(const int argc, const char* argv[])
 	{
 		printf_detail("\n");
 		printf_detail("--- Print Table ---\n");
-		//for (container_type::set& set : +con)
+		//for (container_t::set& set : *con)
 		for (auto& set : *con)
 		{
 			printf_detail("%c[%6d](%6d) key=%08x, name=\"%s\", value=%d (bucket=%d, bucket_size=%d)%s\n", set.isPrimaryIndex() ? ' ' : '*', set.m_index, set.m_primaryIndex, set.m_key, set->m_name, set->m_value, con->bucket(set.m_key), con->bucket_size(set.m_index), set.m_isDeleted ? " <DELETED>" : "");
@@ -2180,6 +2596,100 @@ int main(const int argc, const char* argv[])
 		prev_time = printElapsedTime(prev_time, is_print);
 	};
 	printTable();
+
+#if 0//イテレータとロック取得のテスト
+	{
+		shared_lock_guard<container_t::lock_type> lock(*con);
+		container_t::iterator ite = con->begin();
+		container_t::reverse_iterator rite = con->rbegin();
+		container_t::iterator ite_end = con->end();
+		container_t::reverse_iterator rite_end = con->rend();
+		container_t::iterator ite2 = con->rbegin();
+		container_t::reverse_iterator rite2 = con->begin();
+		container_t::iterator ite2_end = con->rend();
+		container_t::reverse_iterator rite2_end = con->end();
+		printf("constructor\n");
+		if (ite) printf("ite:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite.isDeleted() ? '*' : ' ', ite.getIndex(), ite.getPrimaryIndex(), ite->m_key, ite->m_name, ite->m_value);
+		if (rite) printf("rite:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite.isDeleted() ? '*' : ' ', rite.getIndex(), rite.getPrimaryIndex(), rite->m_key, rite->m_name, rite->m_value);
+		if (ite_end) printf("ite_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite_end.isDeleted() ? '*' : ' ', ite_end.getIndex(), ite_end.getPrimaryIndex(), ite_end->m_key, ite_end->m_name, ite_end->m_value);
+		if (rite_end) printf("rite_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite_end.isDeleted() ? '*' : ' ', rite_end.getIndex(), rite_end.getPrimaryIndex(), rite_end->m_key, rite_end->m_name, rite_end->m_value);
+		if (ite2) printf("ite2:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite2.isDeleted() ? '*' : ' ', ite2.getIndex(), ite2.getPrimaryIndex(), ite2->m_key, ite2->m_name, ite2->m_value);
+		if (rite2) printf("rite2:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite2.isDeleted() ? '*' : ' ', rite2.getIndex(), rite2.getPrimaryIndex(), rite2->m_key, rite2->m_name, rite2->m_value);
+		if (ite2_end) printf("ite2_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite2_end.isDeleted() ? '*' : ' ', ite2_end.getIndex(), ite2_end.getPrimaryIndex(), ite2_end->m_key, ite2_end->m_name, ite2_end->m_value);
+		if (rite2_end) printf("rite2_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite2_end.isDeleted() ? '*' : ' ', rite2_end.getIndex(), rite2_end.getPrimaryIndex(), rite2_end->m_key, rite2_end->m_name, rite2_end->m_value);
+		printf("copy operator\n");
+		ite = con->begin();
+		rite = con->rbegin();
+		ite_end = con->end();
+		rite_end = con->rend();
+		ite2 = con->rbegin();
+		rite2 = con->begin();
+		ite2_end = con->rend();
+		rite2_end = con->end();
+		if (ite) printf("ite:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite.isDeleted() ? '*' : ' ', ite.getIndex(), ite.getPrimaryIndex(), ite->m_key, ite->m_name, ite->m_value);
+		if (rite) printf("rite:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite.isDeleted() ? '*' : ' ', rite.getIndex(), rite.getPrimaryIndex(), rite->m_key, rite->m_name, rite->m_value);
+		if (ite_end) printf("ite_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite_end.isDeleted() ? '*' : ' ', ite_end.getIndex(), ite_end.getPrimaryIndex(), ite_end->m_key, ite_end->m_name, ite_end->m_value);
+		if (rite_end) printf("rite_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite_end.isDeleted() ? '*' : ' ', rite_end.getIndex(), rite_end.getPrimaryIndex(), rite_end->m_key, rite_end->m_name, rite_end->m_value);
+		if (ite2) printf("ite2:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite2.isDeleted() ? '*' : ' ', ite2.getIndex(), ite2.getPrimaryIndex(), ite2->m_key, ite2->m_name, ite2->m_value);
+		if (rite2) printf("rite2:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite2.isDeleted() ? '*' : ' ', rite2.getIndex(), rite2.getPrimaryIndex(), rite2->m_key, rite2->m_name, rite2->m_value);
+		if (ite2_end) printf("ite2_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite2_end.isDeleted() ? '*' : ' ', ite2_end.getIndex(), ite2_end.getPrimaryIndex(), ite2_end->m_key, ite2_end->m_name, ite2_end->m_value);
+		if (rite2_end) printf("rite2_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite2_end.isDeleted() ? '*' : ' ', rite2_end.getIndex(), rite2_end.getPrimaryIndex(), rite2_end->m_key, rite2_end->m_name, rite2_end->m_value);
+		for (int i = 0; i <= 3; ++i)
+		{
+			printf("[%d]\n", i);
+			ite = ite[i];
+			rite = rite[i];
+			ite_end = ite_end[i];
+			rite_end = rite_end[i];
+			ite2 = ite2[i];
+			rite2 = rite2[i];
+			ite2_end = ite2_end[i];
+			rite2_end = rite2_end[i];
+			if (ite) printf("ite:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite.isDeleted() ? '*' : ' ', ite.getIndex(), ite.getPrimaryIndex(), ite->m_key, ite->m_name, ite->m_value);
+			if (rite) printf("rite:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite.isDeleted() ? '*' : ' ', rite.getIndex(), rite.getPrimaryIndex(), rite->m_key, rite->m_name, rite->m_value);
+			if (ite_end) printf("ite_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite_end.isDeleted() ? '*' : ' ', ite_end.getIndex(), ite_end.getPrimaryIndex(), ite_end->m_key, ite_end->m_name, ite_end->m_value);
+			if (rite_end) printf("rite_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite_end.isDeleted() ? '*' : ' ', rite_end.getIndex(), rite_end.getPrimaryIndex(), rite_end->m_key, rite_end->m_name, rite_end->m_value);
+			if (ite2) printf("ite2:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite2.isDeleted() ? '*' : ' ', ite2.getIndex(), ite2.getPrimaryIndex(), ite2->m_key, ite2->m_name, ite2->m_value);
+			if (rite2) printf("rite2:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite2.isDeleted() ? '*' : ' ', rite2.getIndex(), rite2.getPrimaryIndex(), rite2->m_key, rite2->m_name, rite2->m_value);
+			if (ite2_end) printf("ite2_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite2_end.isDeleted() ? '*' : ' ', ite2_end.getIndex(), ite2_end.getPrimaryIndex(), ite2_end->m_key, ite2_end->m_name, ite2_end->m_value);
+			if (rite2_end) printf("rite2_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite2_end.isDeleted() ? '*' : ' ', rite2_end.getIndex(), rite2_end.getPrimaryIndex(), rite2_end->m_key, rite2_end->m_name, rite2_end->m_value);
+		}
+		printf("+= 3\n");
+		ite += 3;
+		rite += 3;
+		ite_end += 3;
+		rite_end += 3;
+		ite2 += 3;
+		rite2 += 3;
+		ite2_end += 3;
+		rite2_end += 3;
+		if (ite) printf("ite:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite.isDeleted() ? '*' : ' ', ite.getIndex(), ite.getPrimaryIndex(), ite->m_key, ite->m_name, ite->m_value);
+		if (rite) printf("rite:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite.isDeleted() ? '*' : ' ', rite.getIndex(), rite.getPrimaryIndex(), rite->m_key, rite->m_name, rite->m_value);
+		if (ite_end) printf("ite_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite_end.isDeleted() ? '*' : ' ', ite_end.getIndex(), ite_end.getPrimaryIndex(), ite_end->m_key, ite_end->m_name, ite_end->m_value);
+		if (rite_end) printf("rite_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite_end.isDeleted() ? '*' : ' ', rite_end.getIndex(), rite_end.getPrimaryIndex(), rite_end->m_key, rite_end->m_name, rite_end->m_value);
+		if (ite2) printf("ite2:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite2.isDeleted() ? '*' : ' ', ite2.getIndex(), ite2.getPrimaryIndex(), ite2->m_key, ite2->m_name, ite2->m_value);
+		if (rite2) printf("rite2:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite2.isDeleted() ? '*' : ' ', rite2.getIndex(), rite2.getPrimaryIndex(), rite2->m_key, rite2->m_name, rite2->m_value);
+		if (ite2_end) printf("ite2_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite2_end.isDeleted() ? '*' : ' ', ite2_end.getIndex(), ite2_end.getPrimaryIndex(), ite2_end->m_key, ite2_end->m_name, ite2_end->m_value);
+		if (rite2_end) printf("rite2_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite2_end.isDeleted() ? '*' : ' ', rite2_end.getIndex(), rite2_end.getPrimaryIndex(), rite2_end->m_key, rite2_end->m_name, rite2_end->m_value);
+		printf("-= 3\n");
+		ite -= 3;
+		rite -= 3;
+		ite_end -= 3;
+		rite_end -= 3;
+		ite2 -= 3;
+		rite2 -= 3;
+		ite2_end -= 3;
+		rite2_end -= 3;
+		if (ite) printf("ite:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite.isDeleted() ? '*' : ' ', ite.getIndex(), ite.getPrimaryIndex(), ite->m_key, ite->m_name, ite->m_value);
+		if (rite) printf("rite:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite.isDeleted() ? '*' : ' ', rite.getIndex(), rite.getPrimaryIndex(), rite->m_key, rite->m_name, rite->m_value);
+		if (ite_end) printf("ite_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite_end.isDeleted() ? '*' : ' ', ite_end.getIndex(), ite_end.getPrimaryIndex(), ite_end->m_key, ite_end->m_name, ite_end->m_value);
+		if (rite_end) printf("rite_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite_end.isDeleted() ? '*' : ' ', rite_end.getIndex(), rite_end.getPrimaryIndex(), rite_end->m_key, rite_end->m_name, rite_end->m_value);
+		if (ite2) printf("ite2:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite2.isDeleted() ? '*' : ' ', ite2.getIndex(), ite2.getPrimaryIndex(), ite2->m_key, ite2->m_name, ite2->m_value);
+		if (rite2) printf("rite2:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite2.isDeleted() ? '*' : ' ', rite2.getIndex(), rite2.getPrimaryIndex(), rite2->m_key, rite2->m_name, rite2->m_value);
+		if (ite2_end) printf("ite2_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", ite2_end.isDeleted() ? '*' : ' ', ite2_end.getIndex(), ite2_end.getPrimaryIndex(), ite2_end->m_key, ite2_end->m_name, ite2_end->m_value);
+		if (rite2_end) printf("rite2_end:%c[%d](%d) key=0x%08x, name=\"%s\", value=%d\n", rite2_end.isDeleted() ? '*' : ' ', rite2_end.getIndex(), rite2_end.getPrimaryIndex(), rite2_end->m_key, rite2_end->m_name, rite2_end->m_value);
+	}
+#endif
 
 	//ハッシュテーブルアクセス
 	auto findTable = [&con, &printElapsedTime, &prev_time]()
@@ -2232,7 +2742,7 @@ int main(const int argc, const char* argv[])
 			//※イテレータを返す
 			#elif USE_FIND_TYPE == 3
 			{
-				container_type::iterator ite = con->find(name);
+				container_t::iterator ite = con->find(name);
 				obj = ite;
 				if (obj)
 				{
@@ -2408,8 +2918,8 @@ int main(const int argc, const char* argv[])
 	printf("--------------------------------------------------------------------------------\n");
 	printf("[STL] Hash Table Test\n");
 	printf("--------------------------------------------------------------------------------\n");
-	typedef std::unordered_map<crc32_t, data_t> stl_container_type;
-	stl_container_type* stl_con = new stl_container_type();
+	typedef std::unordered_map<crc32_t, data_t> stl_container_t;
+	stl_container_t* stl_con = new stl_container_t();
 	stl_con->reserve(TEST_DATA_TABLE_SIZE);
 
 	//ハッシュテーブルの基本情報表示
@@ -2474,11 +2984,11 @@ int main(const int argc, const char* argv[])
 	{
 		printf_detail("\n");
 		printf_detail("--- [STL] Print Table ---\n");
-		//for (container_type::set& set : +con)
+		//for (container_t::set& set : +con)
 		for (auto& pair : *stl_con)
 		{
 			const crc32_t key = pair.first;
-			const stl_container_type::size_type index = stl_con->bucket(key);
+			const stl_container_t::size_type index = stl_con->bucket(key);
 			printf_detail("[%6d] key=%08x, name=\"%s\", value=%d (bucket=%d, bucket_size=%d)\n", index, key, pair.second.m_name, pair.second.m_value, index, stl_con->bucket_size(index));
 		}
 		const bool is_print = false;
@@ -2503,7 +3013,7 @@ int main(const int argc, const char* argv[])
 			if (ite != stl_con->end())
 			{
 				const crc32_t key = ite->first;
-				const stl_container_type::size_type index = stl_con->bucket(key);
+				const stl_container_t::size_type index = stl_con->bucket(key);
 				printf_detail("OK  key=%08x, name=\"%s\", value=%d (bucket=%d, bucket_size=%d)\n", key, ite->second.m_name, ite->second.m_value, index, stl_con->bucket_size(index));
 				++find_success;
 			}

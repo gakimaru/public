@@ -7,22 +7,22 @@
 
 //static const int TEST_DATA_COUNT = 1000000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 500000;//テストデータ件数（最大）
-//static const int TEST_DATA_COUNT = 100000;//テストデータ件数（最大）
+static const int TEST_DATA_COUNT = 100000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 50000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 20000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 10000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 5000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 1000;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 100;//テストデータ件数（最大）
-static const int TEST_DATA_COUNT = 32;//テストデータ件数（最大）
+//static const int TEST_DATA_COUNT = 32;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 10;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 5;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 3;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 2;//テストデータ件数（最大）
 //static const int TEST_DATA_COUNT = 1;//テストデータ件数（最大）
 
-#define TEST_DATA_SAME_KEY_NUM 1//テストデータに登録する同一キーデータの数（各キーのデータを指定数ずつ登録） ※安定ソートの挙動確認用
-//#define TEST_DATA_SAME_KEY_NUM 3//テストデータに登録する同一キーデータの数（各キーのデータを指定数ずつ登録） ※安定ソートの挙動確認用
+//#define TEST_DATA_SAME_KEY_NUM 1//テストデータに登録する同一キーデータの数（各キーのデータを指定数ずつ登録） ※安定ソートの挙動確認用
+#define TEST_DATA_SAME_KEY_NUM 3//テストデータに登録する同一キーデータの数（各キーのデータを指定数ずつ登録） ※安定ソートの挙動確認用
 
 //#define TEST_DATA_SIZE 512//テストデータ一件のサイズ
 //#define TEST_DATA_SIZE 256//テストデータ一件のサイズ

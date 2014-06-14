@@ -155,6 +155,9 @@
      |  |  |-[callPoint]                ... ★コールポイントのサンプルプログラム　※デバッグプリント処理を含む
      |  |  |-[callPoint_unix]           ... ★コールポイントのサンプルプログラム（unix系＋GCC）
      |  |  |
+     |  |  |-[dynamic_array]            ... ★動的配列のサンプルプログラム
+     |  |  |-[dynamic_array_unix]       ... ★動的配列のサンプルプログラム（unix系＋GCC）
+     |  |  |
      |  |  |-[constexpr]                ... constexpr のテスト
      |  |  |
      |  |  |-[cpu_cache_test]           ... ★CPUキャッシュを効率的に使用する方法のテスト

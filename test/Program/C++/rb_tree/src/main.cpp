@@ -2537,23 +2537,22 @@ namespace rb_tree
 		typedef const reverse_iterator const_reverse_iterator;
 		//--------------------
 		//イテレータ
-		class iterator : public std::iterator<std::bidirectional_iterator_tag, node_type>//本来は std::bidirectional_iterator_tag で十分
-		//class iterator : public std::iterator<std::random_access_iterator_tag, value_type>
+		class iterator : public std::iterator<std::bidirectional_iterator_tag, node_type>
 		{
 			friend class container;
 			friend class reverse_iterator;
 		public:
 			//キャストオペレータ
-			inline operator bool() const { return m_node != nullptr; }
-			inline operator const node_type() const { return *m_node; }
-			inline operator node_type&(){ return *m_node; }
-			inline operator key_type() const { return ope_type::getKey(*m_node); }
+			inline operator bool() const { return isExist(); }
+			inline operator const node_type() const { return *getNode(); }
+			inline operator node_type&(){ return *getNode(); }
+			inline operator key_type() const { return ope_type::getKey(*getNode()); }
 		public:
 			//オペレータ
-			inline const_reference operator*() const { return *m_node; }
-			inline reference operator*(){ return *m_node; }
-			inline const_pointer operator->() const { return m_node; }
-			inline pointer operator->(){ return m_node; }
+			inline const_reference operator*() const { return *getNode(); }
+			inline reference operator*(){ return *getNode(); }
+			inline const_pointer operator->() const { return getNode(); }
+			inline pointer operator->(){ return getNode(); }
 		#if 1//std::bidirectional_iterator_tag には本来必要ではない
 			inline const_iterator operator[](const int index) const
 			{
@@ -2571,55 +2570,67 @@ namespace rb_tree
 			//比較オペレータ
 			inline bool operator==(const_iterator& rhs) const
 			{
-				return m_node == nullptr && rhs.m_node == nullptr ? true :
-				       m_node == nullptr || rhs.m_node == nullptr ? false :
+				return !isEnabled() || !rhs.isEnabled() ? false :
+				       m_isEnd && rhs.m_isEnd ? true :
+				       m_isEnd || rhs.m_isEnd ? false :
 				       ope_type::eq(*m_node, *rhs);
 			}
 			inline bool operator!=(const_iterator& rhs) const
 			{
-				return m_node == nullptr && rhs.m_node == nullptr ? false :
-				       m_node == nullptr || rhs.m_node == nullptr ? true :
-					   ope_type::ne(*m_node, *rhs);
+				return !isEnabled() || !rhs.isEnabled() ? false :
+				       m_isEnd && rhs.m_isEnd ? false :
+				       m_isEnd || rhs.m_isEnd ? true :
+				       ope_type::ne(*m_node, *rhs);
 			}
 			inline bool operator>(const_iterator& rhs) const
 			{
-				return m_node == nullptr || rhs.m_node == nullptr ? false :
+				return !isEnabled() || !rhs.isEnabled() ? false :
+				       m_isEnd && !rhs.m_isEnd ? true :
+				       m_isEnd || rhs.m_isEnd ? false :
 				       ope_type::gt(*m_node, *rhs);
 			}
 			inline bool operator>=(const_iterator& rhs) const
 			{
-				return m_node == nullptr || rhs.m_node == nullptr ? false :
+				return !isEnabled() || !rhs.isEnabled() ? false :
+				       m_isEnd && rhs.m_isEnd ? true :
+				       m_isEnd && !rhs.m_isEnd ? true :
+				       m_isEnd || rhs.m_isEnd ? false :
 				       ope_type::ge(*m_node, *rhs);
 			}
 			inline bool operator<(const_iterator& rhs) const
 			{
-				return m_node == nullptr || rhs.m_node == nullptr ? false :
+				return !isEnabled() || !rhs.isEnabled() ? false :
+				       !m_isEnd && rhs.m_isEnd ? true :
+				       m_isEnd || rhs.m_isEnd ? false :
 				       ope_type::lt(*m_node, *rhs);
 			}
 			inline bool operator<=(const_iterator& rhs) const
 			{
-				return m_node == nullptr || rhs.m_node == nullptr ? false :
+				return !isEnabled() || !rhs.isEnabled() ? false :
+				       m_isEnd && rhs.m_isEnd ? true :
+				       !m_isEnd && rhs.m_isEnd ? true :
+				       m_isEnd || rhs.m_isEnd ? false :
 				       ope_type::le(*m_node, *rhs);
 			}
 			//演算オペレータ
 			inline const_iterator& operator++() const
 			{
-				m_node = const_cast<node_type*>(getNextNode<ope_type>(m_node, m_stack));
+				updateNext();
 				return *this;
 			}
 			inline const_iterator& operator--() const
 			{
-				m_node = const_cast<node_type*>(getPrevNode<ope_type>(m_node, m_stack));
+				updatePrev();
 				return *this;
 			}
 			inline iterator& operator++()
 			{
-				m_node = const_cast<node_type*>(getNextNode<ope_type>(m_node, m_stack));
+				updateNext();
 				return *this;
 			}
 			inline iterator& operator--()
 			{
-				m_node = const_cast<node_type*>(getPrevNode<ope_type>(m_node, m_stack));
+				updatePrev();
 				return *this;
 			}
 			inline const_iterator operator++(int) const
@@ -2646,28 +2657,24 @@ namespace rb_tree
 				--(*this);
 				return ite;
 			}
-			const_iterator& operator+=(const int val) const
+			inline const_iterator& operator+=(const int val) const
 			{
-				for (int i = 0; i < val && this->m_node; ++i)
-					++(*this);
+				updateForward(val);
 				return *this;
 			}
-			const_iterator& operator-=(const int val) const
+			inline const_iterator& operator-=(const int val) const
 			{
-				for (int i = 0; i < val && this->m_node; ++i)
-					--(*this);
+				updateBackward(val);
 				return *this;
 			}
-			iterator& operator+=(const int val)
+			inline iterator& operator+=(const int val)
 			{
-				for (int i = 0; i < val && this->m_node; ++i)
-					++(*this);
+				updateForward(val);
 				return *this;
 			}
-			iterator& operator-=(const int val)
+			inline iterator& operator-=(const int val)
 			{
-				for (int i = 0; i < val && this->m_node; ++i)
-					--(*this);
+				updateBackward(val);
 				return *this;
 			}
 			inline const_iterator operator+(const int val) const
@@ -2701,6 +2708,7 @@ namespace rb_tree
 				m_stack = std::move(rhs.m_stack);
 				m_root = rhs.m_root;
 				m_node = rhs.m_node;
+				m_isEnd = rhs.m_isEnd;
 				return *this;
 			}
 			iterator& operator=(const_reverse_iterator&& rhs);
@@ -2710,47 +2718,112 @@ namespace rb_tree
 				m_stack = rhs.m_stack;
 				m_root = rhs.m_root;
 				m_node = rhs.m_node;
+				m_isEnd = rhs.m_isEnd;
 				return *this;
 			}
 			iterator& operator=(const_reverse_iterator& rhs);
+		public:
+			//アクセッサ
+			inline bool isExist() const { return m_node != nullptr; }
+			inline bool isNotExist() const { return !isExist(); }
+			inline bool isEnabled() const { return m_node != nullptr || m_isEnd; }
+			inline bool isNotEnabled() const { return !isEnabled(); }
+			inline bool isEnd() const { return m_isEnd; }//終端か？
+			inline const node_type* getRoot() const { return m_root; }//根ノード
+			inline node_type* getRoot(){ return m_root; }//根ノード
+			inline const node_type* getNode() const { return m_node; }//現在のノード
+			inline node_type* getNode(){ return m_node; }//現在のノード
+		private:
+			//メソッド
+			inline void updateNext() const
+			{
+				node_type* prev = m_node;
+				m_node = const_cast<node_type*>(getNextNode<ope_type>(m_node, m_stack));
+				m_isEnd = (prev && !m_node);
+			}
+			inline void updatePrev() const
+			{
+				if (m_isEnd)
+				{
+					m_stack.reset();
+					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+					m_isEnd = false;
+					return;
+				}
+				m_node = const_cast<node_type*>(getPrevNode<ope_type>(m_node, m_stack));
+				m_isEnd = false;
+			}
+			void updateForward(const int step) const
+			{
+				int _step = step;
+				node_type* prev = m_node;
+				while (_step > 0 && m_node)
+				{
+					m_node = const_cast<node_type*>(getNextNode<ope_type>(m_node, m_stack));
+					--_step;
+				}
+				m_isEnd = (prev && !m_node && _step == 0);
+			}
+			void updateBackward(const int step) const
+			{
+				int _step = step;
+				if (_step > 0 && m_isEnd)
+				{
+					m_stack.reset();
+					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+					--_step;
+				}
+				while (_step > 0 && m_node)
+				{
+					m_node = const_cast<node_type*>(getPrevNode<ope_type>(m_node, m_stack));
+					--_step;
+				}
+				m_isEnd = false;
+			}
 		public:
 			//ムーブコンストラクタ
 			inline iterator(const_iterator&& obj) :
 				m_stack(std::move(obj.m_stack)),
 				m_root(obj.m_root),
-				m_node(obj.m_node)
+				m_node(obj.m_node),
+				m_isEnd(obj.m_isEnd)
 			{}
 			iterator(const_reverse_iterator&& obj);
 			//コピーコンストラクタ
 			inline iterator(const_iterator& obj) :
 				m_stack(obj.m_stack),
 				m_root(obj.m_root),
-				m_node(obj.m_node)
+				m_node(obj.m_node),
+				m_isEnd(obj.m_isEnd)
 			{}
 			iterator(const_reverse_iterator& obj);
 			//コンストラクタ
-			inline iterator() :
-				m_stack(),
-				m_root(nullptr),
-				m_node(nullptr)
-			{}
-			inline iterator(const node_type* root, const bool is_end = false) :
+			inline iterator(const node_type* root, const bool is_end) :
 				m_stack(),
 				m_root(root),
-				m_node(nullptr)
+				m_node(nullptr),
+				m_isEnd(is_end)
 			{
 				if (!is_end)
 					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
 			}
-			inline iterator(stack_type&& stack, const node_type* root, node_type* node) :
+			inline iterator(stack_type&& stack, const node_type* root, node_type* node, const bool is_end) :
 				m_stack(std::move(stack)),
 				m_root(root),
-				m_node(node)
+				m_node(node),
+				m_isEnd(is_end)
 			{}
-			inline iterator(stack_type& stack, const node_type* root, node_type* node) :
+			inline iterator(stack_type& stack, const node_type* root, node_type* node, const bool is_end) :
 				m_stack(stack),
 				m_root(root),
-				m_node(node)
+				m_node(node),
+				m_isEnd(is_end)
+			{}
+			inline iterator() :
+				m_stack(),
+				m_root(nullptr),
+				m_node(nullptr),
+				m_isEnd(false)
 			{}
 			//デストラクタ
 			inline ~iterator()
@@ -2760,25 +2833,27 @@ namespace rb_tree
 			mutable stack_type m_stack;//スタック
 			const node_type* m_root;//根ノード
 			mutable node_type* m_node;//現在のノード
+			mutable bool m_isEnd;//終端か？
 		};
 		//--------------------
 		//リバースイテレータ
-		class reverse_iterator : public std::reverse_iterator<iterator>
+		//class reverse_iterator : public std::reverse_iterator<iterator>
+		class reverse_iterator : public std::iterator<std::bidirectional_iterator_tag, node_type>
 		{
 			friend class container;
 			friend class iterator;
 		public:
 			//キャストオペレータ
-			inline operator bool() const { return m_node != nullptr; }
-			inline operator const node_type() const { return *m_node; }
-			inline operator node_type&(){ return *m_node; }
-			inline operator key_type() const { return ope_type::getKey(*m_node); }
+			inline operator bool() const { return isExist(); }
+			inline operator const node_type() const { return *getNode(); }
+			inline operator node_type&(){ return *getNode(); }
+			inline operator key_type() const { return ope_type::getKey(*getNode()); }
 		public:
 			//オペレータ
-			inline const_reference operator*() const { return *m_node; }
-			inline reference operator*(){ return *m_node; }
-			inline const_pointer operator->() const { return m_node; }
-			inline pointer operator->(){ return m_node; }
+			inline const_reference operator*() const { return *getNode(); }
+			inline reference operator*(){ return *getNode(); }
+			inline const_pointer operator->() const { return getNode(); }
+			inline pointer operator->(){ return getNode(); }
 		#if 1//std::bidirectional_iterator_tag には本来必要ではない
 			inline const_reverse_iterator operator[](const int index) const
 			{
@@ -2797,55 +2872,67 @@ namespace rb_tree
 			//比較オペレータ
 			inline bool operator==(const_reverse_iterator& rhs) const
 			{
-				return m_node == nullptr && rhs.m_node == nullptr ? true :
-				       m_node == nullptr || rhs.m_node == nullptr ? false :
-					   ope_type::eq(*rhs, *m_node);
+				return !rhs.isEnabled() || !isEnabled() ? false :
+				       rhs.m_isEnd && m_isEnd ? true :
+				       rhs.m_isEnd || m_isEnd ? false :
+				       ope_type::eq(*rhs, *m_node);
 			}
 			inline bool operator!=(const_reverse_iterator& rhs) const
 			{
-				return m_node == nullptr && rhs.m_node == nullptr ? false :
-				       m_node == nullptr || rhs.m_node == nullptr ? true :
+				return !rhs.isEnabled() || !isEnabled() ? false :
+				       rhs.m_isEnd && m_isEnd ? false :
+				       rhs.m_isEnd || m_isEnd ? true :
 					   ope_type::ne(*rhs, *m_node);
 			}
 			inline bool operator>(const_reverse_iterator& rhs) const
 			{
-				return m_node == nullptr || rhs.m_node == nullptr ? false :
+				return !rhs.isEnabled() || !isEnabled() ? false :
+				       rhs.m_isEnd && !m_isEnd ? true :
+				       rhs.m_isEnd || m_isEnd ? false :
 				       ope_type::gt(*rhs, *m_node);
 			}
 			inline bool operator>=(const_reverse_iterator& rhs) const
 			{
-				return m_node == nullptr || rhs.m_node == nullptr ? false :
+				return !rhs.isEnabled() || !isEnabled() ? false :
+				       rhs.m_isEnd && m_isEnd ? true :
+				       rhs.m_isEnd && !m_isEnd ? true :
+				       rhs.m_isEnd || m_isEnd ? false :
 				       ope_type::ge(*rhs, *m_node);
 			}
 			inline bool operator<(const_reverse_iterator& rhs) const
 			{
-				return m_node == nullptr || rhs.m_node == nullptr ? false :
+				return !rhs.isEnabled() || !isEnabled() ? false :
+				       !rhs.m_isEnd && m_isEnd ? true :
+				       rhs.m_isEnd || m_isEnd ? false :
 				       ope_type::lt(*rhs, *m_node);
 			}
 			inline bool operator<=(const_reverse_iterator& rhs) const
 			{
-				return m_node == nullptr || rhs.m_node == nullptr ? false :
+				return !rhs.isEnabled() || !isEnabled() ? false :
+				       rhs.m_isEnd && m_isEnd ? true :
+				       !rhs.m_isEnd && m_isEnd ? true :
+				       rhs.m_isEnd || m_isEnd ? false :
 				       ope_type::le(*rhs, *m_node);
 			}
 			//演算オペレータ
 			inline const_reverse_iterator& operator++() const
 			{
-				m_node = const_cast<node_type*>(getPrevNode<ope_type>(m_node, m_stack));
+				updateNext();
 				return *this;
 			}
 			inline const_reverse_iterator& operator--() const
 			{
-				m_node = const_cast<node_type*>(getNextNode<ope_type>(m_node, m_stack));
+				updatePrev();
 				return *this;
 			}
 			inline reverse_iterator& operator++()
 			{
-				m_node = const_cast<node_type*>(getPrevNode<ope_type>(m_node, m_stack));
+				updateNext();
 				return *this;
 			}
 			inline reverse_iterator& operator--()
 			{
-				m_node = const_cast<node_type*>(getNextNode<ope_type>(m_node, m_stack));
+				updatePrev();
 				return *this;
 			}
 			inline const_reverse_iterator operator++(int) const
@@ -2872,28 +2959,24 @@ namespace rb_tree
 				--(*this);
 				return ite;
 			}
-			const_reverse_iterator& operator+=(const int val) const
+			inline const_reverse_iterator& operator+=(const int val) const
 			{
-				for (int i = 0; i < val && this->m_node; ++i)
-					++(*this);
+				updateForward(val);
 				return *this;
 			}
-			const_reverse_iterator& operator-=(const int val) const
+			inline const_reverse_iterator& operator-=(const int val) const
 			{
-				for (int i = 0; i < val && this->m_node; ++i)
-					--(*this);
+				updateBackward(val);
 				return *this;
 			}
-			reverse_iterator& operator+=(const int val)
+			inline reverse_iterator& operator+=(const int val)
 			{
-				for (int i = 0; i < val && this->m_node; ++i)
-					++(*this);
+				updateForward(val);
 				return *this;
 			}
-			reverse_iterator& operator-=(const int val)
+			inline reverse_iterator& operator-=(const int val)
 			{
-				for (int i = 0; i < val && this->m_node; ++i)
-					--(*this);
+				updateBackward(val);
 				return *this;
 			}
 			inline const_reverse_iterator operator+(const int val) const
@@ -2927,12 +3010,14 @@ namespace rb_tree
 				m_stack = std::move(rhs.m_stack);
 				m_root = rhs.m_root;
 				m_node = rhs.m_node;
+				m_isEnd = rhs.m_isEnd;
 				return *this;
 			}
 			inline reverse_iterator& operator=(const_iterator&& rhs)
 			{
 				m_root = rhs.m_root;
 				m_node = rhs.m_node;
+				m_isEnd = false;
 				if (m_node)
 				{
 					m_stack = std::move(rhs.m_stack);
@@ -2941,7 +3026,8 @@ namespace rb_tree
 				else
 				{
 					m_stack.reset();
-					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+					if (rhs.m_isEnd)
+						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
 				}
 				return *this;
 			}
@@ -2951,12 +3037,14 @@ namespace rb_tree
 				m_stack = rhs.m_stack;
 				m_root = rhs.m_root;
 				m_node = rhs.m_node;
+				m_isEnd = rhs.m_isEnd;
 				return *this;
 			}
 			inline reverse_iterator& operator=(const_iterator& rhs)
 			{
 				m_root = rhs.m_root;
 				m_node = rhs.m_node;
+				m_isEnd = false;
 				if (m_node)
 				{
 					m_stack = rhs.m_stack;
@@ -2965,9 +3053,68 @@ namespace rb_tree
 				else
 				{
 					m_stack.reset();
-					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+					if (rhs.m_isEnd)
+						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
 				}
 				return *this;
+			}
+		public:
+			//アクセッサ
+			inline bool isExist() const { return m_node != nullptr; }
+			inline bool isNotExist() const { return !isExist(); }
+			inline bool isEnabled() const { return m_node != nullptr || m_isEnd; }
+			inline bool isNotEnabled() const { return !isEnabled(); }
+			inline bool isEnd() const { return m_isEnd; }//終端か？
+			inline const node_type* getRoot() const { return m_root; }//根ノード
+			inline node_type* getRoot(){ return m_root; }//根ノード
+			inline const node_type* getNode() const { return m_node; }//現在のノード
+			inline node_type* getNode(){ return m_node; }//現在のノード
+		public:
+			//メソッド
+			inline void updateNext() const
+			{
+				node_type* prev = m_node;
+				m_node = const_cast<node_type*>(getPrevNode<ope_type>(m_node, m_stack));
+				m_isEnd = (prev && !m_node);
+			}
+			inline void updatePrev() const
+			{
+				if (m_isEnd)
+				{
+					m_stack.reset();
+					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+					m_isEnd = false;
+					return;
+				}
+				m_node = const_cast<node_type*>(getNextNode<ope_type>(m_node, m_stack));
+				m_isEnd = false;
+			}
+			void updateForward(const int step) const
+			{
+				int _step = step;
+				node_type* prev = m_node;
+				while (_step > 0 && m_node)
+				{
+					m_node = const_cast<node_type*>(getPrevNode<ope_type>(m_node, m_stack));
+					--_step;
+				}
+				m_isEnd = (prev && !m_node && _step == 0);
+			}
+			void updateBackward(const int step) const
+			{
+				int _step = step;
+				if (_step > 0 && m_isEnd)
+				{
+					m_stack.reset();
+					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+					--_step;
+				}
+				while (_step > 0 && m_node)
+				{
+					m_node = const_cast<node_type*>(getNextNode<ope_type>(m_node, m_stack));
+					--_step;
+				}
+				m_isEnd = false;
 			}
 		public:
 			//ベースを取得
@@ -2986,12 +3133,14 @@ namespace rb_tree
 			inline reverse_iterator(const_reverse_iterator&& obj) :
 				m_stack(std::move(obj.m_stack)),
 				m_root(obj.m_root),
-				m_node(obj.m_node)
+				m_node(obj.m_node),
+				m_isEnd(obj.m_isEnd)
 			{}
 			inline reverse_iterator(const_iterator&& obj) :
 				m_stack(),
 				m_root(obj.m_root),
-				m_node(obj.m_node)
+				m_node(obj.m_node),
+				m_isEnd(false)
 			{
 				if (m_node)
 				{
@@ -3001,19 +3150,22 @@ namespace rb_tree
 				else
 				{
 					m_stack.reset();
-					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+					if (obj.m_isEnd)
+						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
 				}
 			}
 			//コピーコンストラクタ
 			inline reverse_iterator(const_reverse_iterator& obj) :
 				m_stack(obj.m_stack),
 				m_root(obj.m_root),
-				m_node(obj.m_node)
+				m_node(obj.m_node),
+				m_isEnd(obj.m_isEnd)
 			{}
 			inline reverse_iterator(const_iterator& obj) :
 				m_stack(),
 				m_root(obj.m_root),
-				m_node(obj.m_node)
+				m_node(obj.m_node),
+				m_isEnd(obj.m_isEnd)
 			{
 				if (m_node)
 				{
@@ -3023,32 +3175,37 @@ namespace rb_tree
 				else
 				{
 					m_stack.reset();
-					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+					if (obj.m_isEnd)
+						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
 				}
 			}
 			//コンストラクタ
-			inline reverse_iterator() :
-				m_stack(),
-				m_root(nullptr),
-				m_node(nullptr)
-			{}
-			inline reverse_iterator(const node_type* root, const bool is_end = false) :
+			inline reverse_iterator(const node_type* root, const bool is_end) :
 				m_stack(),
 				m_root(root),
-				m_node(nullptr)
+				m_node(nullptr),
+				m_isEnd(is_end)
 			{
 				if (!is_end)
 					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
 			}
-			inline reverse_iterator(stack_type&& stack, const node_type* root, node_type* node) :
+			inline reverse_iterator(stack_type&& stack, const node_type* root, node_type* node, const bool is_end) :
 				m_stack(std::move(stack)),
 				m_root(root),
-				m_node(node)
+				m_node(node),
+				m_isEnd(is_end)
 			{}
-			inline reverse_iterator(stack_type& stack, const node_type* root, node_type* node) :
+			inline reverse_iterator(stack_type& stack, const node_type* root, node_type* node, const bool is_end) :
 				m_stack(stack),
 				m_root(root),
-				m_node(node)
+				m_node(node),
+				m_isEnd(is_end)
+			{}
+			inline reverse_iterator() :
+				m_stack(),
+				m_root(nullptr),
+				m_node(nullptr),
+				m_isEnd(false)
 			{}
 			//デストラクタ
 			inline ~reverse_iterator()
@@ -3058,6 +3215,7 @@ namespace rb_tree
 			mutable stack_type m_stack;//スタック
 			const node_type* m_root;//根ノード
 			mutable node_type* m_node;//現在のノード
+			mutable bool m_isEnd;//終端か？
 		};
 	public:
 		//アクセッサ
@@ -3241,6 +3399,7 @@ namespace rb_tree
 	{
 		m_root = rhs.m_root;
 		m_node = rhs.m_node;
+		m_isEnd = false;
 		if (m_node)
 		{
 			m_stack = std::move(rhs.m_stack);
@@ -3249,7 +3408,8 @@ namespace rb_tree
 		else
 		{
 			m_stack.reset();
-			m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+			if (rhs.m_isEnd)
+				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
 		}
 		return *this;
 	}
@@ -3260,6 +3420,7 @@ namespace rb_tree
 	{
 		m_root = rhs.m_root;
 		m_node = rhs.m_node;
+		m_isEnd = false;
 		if (m_node)
 		{
 			m_stack = rhs.m_stack;
@@ -3268,7 +3429,8 @@ namespace rb_tree
 		else
 		{
 			m_stack.reset();
-			m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+			if (rhs.m_isEnd)
+				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
 		}
 		return *this;
 	}
@@ -3278,7 +3440,8 @@ namespace rb_tree
 	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator&& obj) ://VC++もOK
 		m_stack(),
 		m_root(obj.m_root),
-		m_node(obj.m_node)
+		m_node(obj.m_node),
+		m_isEnd(false)
 	{
 		if (m_node)
 		{
@@ -3288,7 +3451,8 @@ namespace rb_tree
 		else
 		{
 			m_stack.reset();
-			m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+			if (obj.m_isEnd)
+				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
 		}
 	}
 	//イテレータのコピーコンストラクタ
@@ -3297,7 +3461,8 @@ namespace rb_tree
 	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator& obj) ://VC++もOK
 		m_stack(),
 		m_root(obj.m_root),
-		m_node(obj.m_node)
+		m_node(obj.m_node),
+		m_isEnd(false)
 	{
 		if (m_node)
 		{
@@ -3307,7 +3472,8 @@ namespace rb_tree
 		else
 		{
 			m_stack.reset();
-			m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+			if (obj.m_isEnd)
+				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
 		}
 	}
 	//--------------------
@@ -3323,6 +3489,27 @@ namespace rb_tree
 #include <random>//C++11 std::random用
 #include <chrono>//C++11 時間計測用
 #include <type_traits>//C++11 時間計測用
+
+//----------------------------------------
+//テスト用補助関数
+#ifdef PRINT_TEST_DATA_DETAIL
+template<typename... Tx>
+inline int printf_detail(const char* fmt, Tx... args)
+{
+	return printf(fmt, args...);
+}
+#else//PRINT_TEST_DATA_DETAIL
+inline int printf_detail(const char* fmt, ...){ return 0; }
+#endif//PRINT_TEST_DATA_DETAIL
+#ifdef PRINT_TEST_DATA_SEARCH
+template<typename... Tx>
+inline int printf_dbg_search(const char* fmt, Tx... args)
+{
+	return printf(fmt, args...);
+}
+#else//PRINT_TEST_DATA_SEARCH
+inline int printf_dbg_search(const char* fmt, ...){ return 0; }
+#endif//PRINT_TEST_DATA_SEARCH
 
 //----------------------------------------
 //テストデータ
@@ -3375,27 +3562,6 @@ struct ope_t : public rb_tree::base_ope_t<ope_t, data_t, int, TEST_DATA_STACK_DE
 	//※デフォルト（dummy_shared_lock）のままとする
 	//typedef shared_spin_lock lock_type;//ロックオブジェクト型
 };
-
-//----------------------------------------
-//テスト用補助関数
-#ifdef PRINT_TEST_DATA_DETAIL
-template<typename... Tx>
-inline int printf_detail(const char* fmt, Tx... args)
-{
-	return printf(fmt, args...);
-}
-#else//PRINT_TEST_DATA_DETAIL
-inline int printf_detail(const char* fmt, ...){ return 0; }
-#endif//PRINT_TEST_DATA_DETAIL
-#ifdef PRINT_TEST_DATA_SEARCH
-template<typename... Tx>
-inline int printf_dbg_search(const char* fmt, Tx... args)
-{
-	return printf(fmt, args...);
-}
-#else//PRINT_TEST_DATA_SEARCH
-inline int printf_dbg_search(const char* fmt, ...){ return 0; }
-#endif//PRINT_TEST_DATA_SEARCH
 
 //----------------------------------------
 //テストメイン
@@ -3695,14 +3861,14 @@ int main(const int argc, const char* argv[])
 		container_t::iterator ite2_end = con.rend();
 		container_t::reverse_iterator rite2_end = con.end();
 		printf("constructor\n");
-		if (ite) printf("ite:key=%d\n", ite->m_key);
-		if (rite) printf("rite:key=%d\n", rite->m_key);
-		if (ite_end) printf("ite_end:key=%d\n", ite_end->m_key);
-		if (rite_end) printf("rite_end:key=%d\n", rite_end->m_key);
-		if (ite2) printf("ite2:key=%d\n", ite2->m_key);
-		if (rite2) printf("rite2:key=%d\n", rite2->m_key);
-		if (ite2_end) printf("ite2_end:key=%d\n", ite2_end->m_key);
-		if (rite2_end) printf("rite2_end:key=%d\n", rite2_end->m_key);
+		if (ite.isExist()) printf("ite:key=%d\n", ite->m_key);
+		if (rite.isExist()) printf("rite:key=%d\n", rite->m_key);
+		if (ite_end.isExist()) printf("ite_end:key=%d\n", ite_end->m_key);
+		if (rite_end.isExist()) printf("rite_end:key=%d\n", rite_end->m_key);
+		if (ite2.isExist()) printf("ite2:key=%d\n", ite2->m_key);
+		if (rite2.isExist()) printf("rite2:key=%d\n", rite2->m_key);
+		if (ite2_end.isExist()) printf("ite2_end:key=%d\n", ite2_end->m_key);
+		if (rite2_end.isExist()) printf("rite2_end:key=%d\n", rite2_end->m_key);
 		printf("copy operator\n");
 		ite = con.begin();
 		rite = con.rbegin();
@@ -3712,14 +3878,14 @@ int main(const int argc, const char* argv[])
 		rite2 = con.begin();
 		ite2_end = con.rend();
 		rite2_end = con.end();
-		if (ite) printf("ite:key=%d\n", ite->m_key);
-		if (rite) printf("rite:key=%d\n", rite->m_key);
-		if (ite_end) printf("ite_end:key=%d\n", ite_end->m_key);
-		if (rite_end) printf("rite_end:key=%d\n", rite_end->m_key);
-		if (ite2) printf("ite2:key=%d\n", ite2->m_key);
-		if (rite2) printf("rite2:key=%d\n", rite2->m_key);
-		if (ite2_end) printf("ite2_end:key=%d\n", ite2_end->m_key);
-		if (rite2_end) printf("rite2_end:key=%d\n", rite2_end->m_key);
+		if (ite.isExist()) printf("ite:key=%d\n", ite->m_key);
+		if (rite.isExist()) printf("rite:key=%d\n", rite->m_key);
+		if (ite_end.isExist()) printf("ite_end:key=%d\n", ite_end->m_key);
+		if (rite_end.isExist()) printf("rite_end:key=%d\n", rite_end->m_key);
+		if (ite2.isExist()) printf("ite2:key=%d\n", ite2->m_key);
+		if (rite2.isExist()) printf("rite2:key=%d\n", rite2->m_key);
+		if (ite2_end.isExist()) printf("ite2_end:key=%d\n", ite2_end->m_key);
+		if (rite2_end.isExist()) printf("rite2_end:key=%d\n", rite2_end->m_key);
 		for (int i = 0; i <= 3; ++i)
 		{
 			printf("[%d]\n", i);
@@ -3731,14 +3897,14 @@ int main(const int argc, const char* argv[])
 			rite2 = rite2[i];
 			ite2_end = ite2_end[i];
 			rite2_end = rite2_end[i];
-			if (ite) printf("ite:key=%d\n", ite->m_key);
-			if (rite) printf("rite:key=%d\n", rite->m_key);
-			if (ite_end) printf("ite_end:key=%d\n", ite_end->m_key);
-			if (rite_end) printf("rite_end:key=%d\n", rite_end->m_key);
-			if (ite2) printf("ite2:key=%d\n", ite2->m_key);
-			if (rite2) printf("rite2:key=%d\n", rite2->m_key);
-			if (ite2_end) printf("ite2_end:key=%d\n", ite2_end->m_key);
-			if (rite2_end) printf("rite2_end:key=%d\n", rite2_end->m_key);
+			if (ite.isExist()) printf("ite:key=%d\n", ite->m_key);
+			if (rite.isExist()) printf("rite:key=%d\n", rite->m_key);
+			if (ite_end.isExist()) printf("ite_end:key=%d\n", ite_end->m_key);
+			if (rite_end.isExist()) printf("rite_end:key=%d\n", rite_end->m_key);
+			if (ite2.isExist()) printf("ite2:key=%d\n", ite2->m_key);
+			if (rite2.isExist()) printf("rite2:key=%d\n", rite2->m_key);
+			if (ite2_end.isExist()) printf("ite2_end:key=%d\n", ite2_end->m_key);
+			if (rite2_end.isExist()) printf("rite2_end:key=%d\n", rite2_end->m_key);
 		}
 		printf("+= 7\n");
 		ite += 7;
@@ -3749,14 +3915,14 @@ int main(const int argc, const char* argv[])
 		rite2 += 7;
 		ite2_end += 7;
 		rite2_end += 7;
-		if (ite) printf("ite:key=%d\n", ite->m_key);
-		if (rite) printf("rite:key=%d\n", rite->m_key);
-		if (ite_end) printf("ite_end:key=%d\n", ite_end->m_key);
-		if (rite_end) printf("rite_end:key=%d\n", rite_end->m_key);
-		if (ite2) printf("ite2:key=%d\n", ite2->m_key);
-		if (rite2) printf("rite2:key=%d\n", rite2->m_key);
-		if (ite2_end) printf("ite2_end:key=%d\n", ite2_end->m_key);
-		if (rite2_end) printf("rite2_end:key=%d\n", rite2_end->m_key);
+		if (ite.isExist()) printf("ite:key=%d\n", ite->m_key);
+		if (rite.isExist()) printf("rite:key=%d\n", rite->m_key);
+		if (ite_end.isExist()) printf("ite_end:key=%d\n", ite_end->m_key);
+		if (rite_end.isExist()) printf("rite_end:key=%d\n", rite_end->m_key);
+		if (ite2.isExist()) printf("ite2:key=%d\n", ite2->m_key);
+		if (rite2.isExist()) printf("rite2:key=%d\n", rite2->m_key);
+		if (ite2_end.isExist()) printf("ite2_end:key=%d\n", ite2_end->m_key);
+		if (rite2_end.isExist()) printf("rite2_end:key=%d\n", rite2_end->m_key);
 		printf("-= 7\n");
 		ite -= 7;
 		rite -= 7;
@@ -3766,14 +3932,14 @@ int main(const int argc, const char* argv[])
 		rite2 -= 7;
 		ite2_end -= 7;
 		rite2_end -= 7;
-		if (ite) printf("ite:key=%d\n", ite->m_key);
-		if (rite) printf("rite:key=%d\n", rite->m_key);
-		if (ite_end) printf("ite_end:key=%d\n", ite_end->m_key);
-		if (rite_end) printf("rite_end:key=%d\n", rite_end->m_key);
-		if (ite2) printf("ite2:key=%d\n", ite2->m_key);
-		if (rite2) printf("rite2:key=%d\n", rite2->m_key);
-		if (ite2_end) printf("ite2_end:key=%d\n", ite2_end->m_key);
-		if (rite2_end) printf("rite2_end:key=%d\n", rite2_end->m_key);
+		if (ite.isExist()) printf("ite:key=%d\n", ite->m_key);
+		if (rite.isExist()) printf("rite:key=%d\n", rite->m_key);
+		if (ite_end.isExist()) printf("ite_end:key=%d\n", ite_end->m_key);
+		if (rite_end.isExist()) printf("rite_end:key=%d\n", rite_end->m_key);
+		if (ite2.isExist()) printf("ite2:key=%d\n", ite2->m_key);
+		if (rite2.isExist()) printf("rite2:key=%d\n", rite2->m_key);
+		if (ite2_end.isExist()) printf("ite2_end:key=%d\n", ite2_end->m_key);
+		if (rite2_end.isExist()) printf("rite2_end:key=%d\n", rite2_end->m_key);
 	}
 #endif
 

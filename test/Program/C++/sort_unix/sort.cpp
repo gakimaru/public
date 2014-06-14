@@ -30,12 +30,51 @@
 //--------------------------------------------------------------------------------
 
 //========================================
-//ソート補助処理
+//ソート／探索補助処理
 //========================================
 
 //----------------------------------------
+//ソート用標準プレディケート関数オブジェクト：less
+//※対象オブジェクトが operator<に対応している必要あり
+template<typename T>
+struct less{
+	inline bool operator()(const T& val1, const T& val2) const
+	{
+		return val1 < val2;
+	}
+};
+//----------------------------------------
+//探索用標準プレディケート関数オブジェクト：eqal_to
+//※対象オブジェクトが operator==に対応している必要あり
+template<typename T>
+struct equal_to{
+	template<typename V>
+	inline bool operator()(const T& val1, const V& val2) const
+	{
+		return val1 == val2;
+	}
+};
+//----------------------------------------
+//探索用標準比較関数オブジェクト：compare_to
+//※対象オブジェクトが operator==, operator<に対応している必要あり
+template<typename T>
+struct compare_to{
+	template<typename V>
+	inline int operator()(const T& val1, const V& val2) const
+	{
+		if (val1 == val2)
+			return 0;
+		else if (val1 < val2)
+			return 1;
+		else//if (val1 > val2)
+			return -1;
+	}
+};
+
+//----------------------------------------
 //比較ソート処理オーバーロード関数用マクロ
-#define sortFuncSet(func_name) \
+//※プレディケート関数指定版
+#define sortFuncSetByUserPredicate(func_name) \
 	template<class T, std::size_t N, class PREDICATE> \
 	inline std::size_t func_name(T(&array)[N], PREDICATE predicate) \
 	{ \
@@ -58,36 +97,42 @@
 	{ \
 		std::size_t size = con.size(); \
 		return size == 0 ? 0 : func_name(&(con.at(0)), size, predicate); \
-	} \
+	}
+//※標準プレディケート関数使用版
+#define sortFuncSetByDefaultPredicate(func_name) \
 	template<class T> \
 	inline std::size_t func_name(T* array, const std::size_t size) \
 	{ \
-		return func_name(array, size, std::less<T>()); \
+		return func_name(array, size, less<T>()); \
 	} \
 	template<class T, std::size_t N> \
 	inline std::size_t func_name(T(&array)[N]) \
 	{ \
-		return func_name(array, std::less<T>()); \
+		return func_name(array, less<T>()); \
 	} \
 	template<class T> \
 	inline std::size_t func_name(T* begin, T* end) \
 	{ \
-		return func_name(begin, end, std::less<T>()); \
+		return func_name(begin, end, less<T>()); \
 	} \
 	template<class ITERATOR> \
 	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end) \
 	{ \
-		return func_name(begin, end, std::less<typename ITERATOR::value_type>()); \
+		return func_name(begin, end, less<typename ITERATOR::value_type>()); \
 	} \
 	template<class CONTAINER> \
 	inline std::size_t func_name(CONTAINER& con) \
 	{ \
-		return func_name(con, std::less<typename CONTAINER::value_type>()); \
+		return func_name(con, less<typename CONTAINER::value_type>()); \
 	}
+#define sortFuncSet(func_name) \
+	sortFuncSetByUserPredicate(func_name) \
+	sortFuncSetByDefaultPredicate(func_name)
 
 //----------------------------------------
 //非比較ソート処理オーバーロード関数用マクロ
-#define distributedSortFuncSet(func_name) \
+//※キー取得用関数オブジェクト指定版
+#define distributedSortFuncSetByUserFunctor(func_name) \
 	template<class T, std::size_t N, class GET_KEY_FUNCTOR> \
 	inline std::size_t func_name(T(&array)[N], GET_KEY_FUNCTOR get_key_functor) \
 	{ \
@@ -111,61 +156,343 @@
 		std::size_t size = con.size(); \
 		return size == 0 ? 0 : func_name(&(con.at(0)), size, get_key_functor); \
 	}
+#define distributedSortFuncSet(func_name) \
+	distributedSortFuncSetByUserFunctor(func_name)
 
 //----------------------------------------
 //探索処理オーバーロード関数用マクロ
-#define searchFuncSet(func_name) \
-	template<class T, class PREDICATE_OR_COMPARE> \
-	inline const T* func_name(const T* array, const std::size_t size, PREDICATE_OR_COMPARE predicate_or_compare) \
+#define searchFuncSetByUserFunc(func_name) \
+	template<class T, class PREDICATE_OR_COMPARISON> \
+	inline const T* func_name(const T* array, const std::size_t size, PREDICATE_OR_COMPARISON predicate_or_comparison) \
 	{ \
-		return func_name(const_cast<T*>(array), size, predicate_or_compare); \
+		return func_name(const_cast<T*>(array), size, predicate_or_comparison); \
 	} \
-	template<class T, std::size_t N, class PREDICATE_OR_COMPARE> \
-	inline T* func_name(T(&array)[N], PREDICATE_OR_COMPARE predicate_or_compare) \
+	template<class T, std::size_t N, class PREDICATE_OR_COMPARISON> \
+	inline T* func_name(T(&array)[N], PREDICATE_OR_COMPARISON predicate_or_comparison) \
 	{ \
-		return func_name(array, N, predicate_or_compare); \
+		return func_name(array, N, predicate_or_comparison); \
 	} \
-	template<class T, std::size_t N, class PREDICATE_OR_COMPARE> \
-	inline const T* func_name(const T(&array)[N], PREDICATE_OR_COMPARE predicate_or_compare) \
+	template<class T, std::size_t N, class PREDICATE_OR_COMPARISON> \
+	inline const T* func_name(const T(&array)[N], PREDICATE_OR_COMPARISON predicate_or_comparison) \
 	{ \
-		return func_name(const_cast<T*>(array), N, predicate_or_compare); \
+		return func_name(const_cast<T*>(array), N, predicate_or_comparison); \
 	} \
-	template<class T, class PREDICATE_OR_COMPARE> \
-	inline T* func_name(T* begin, T* end, PREDICATE_OR_COMPARE predicate_or_compare) \
-	{ \
-		const std::size_t size = end - begin; \
-		return size == 0 ? nullptr : func_name(begin, size, predicate_or_compare); \
-	} \
-	template<class T, class PREDICATE_OR_COMPARE> \
-	inline const T* func_name(const T* begin, const T* end, PREDICATE_OR_COMPARE predicate_or_compare) \
+	template<class T, class PREDICATE_OR_COMPARISON> \
+	inline T* func_name(T* begin, T* end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
 	{ \
 		const std::size_t size = end - begin; \
-		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, predicate_or_compare); \
+		return size == 0 ? nullptr : func_name(begin, size, predicate_or_comparison); \
 	} \
-	template<class ITERATOR, class PREDICATE_OR_COMPARE> \
-	inline typename ITERATOR::value_type* func_name(ITERATOR& begin, ITERATOR& end, PREDICATE_OR_COMPARE predicate_or_compare) \
+	template<class T, class PREDICATE_OR_COMPARISON> \
+	inline const T* func_name(const T* begin, const T* end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
 	{ \
 		const std::size_t size = end - begin; \
-		return size == 0 ? nullptr : func_name(&begin[0], size, predicate_or_compare); \
+		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, predicate_or_comparison); \
 	} \
-	template<class ITERATOR, class PREDICATE_OR_COMPARE> \
-	inline const typename ITERATOR::value_type* func_name(const ITERATOR& begin, const ITERATOR& end, PREDICATE_OR_COMPARE predicate_or_compare) \
+	template<class ITERATOR, class PREDICATE_OR_COMPARISON> \
+	inline typename ITERATOR::value_type* func_name(ITERATOR& begin, ITERATOR& end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
 	{ \
 		const std::size_t size = end - begin; \
-		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, predicate_or_compare); \
+		return size == 0 ? nullptr : func_name(&begin[0], size, predicate_or_comparison); \
 	} \
-	template<class CONTAINER, class PREDICATE_OR_COMPARE> \
-	inline typename CONTAINER::value_type* func_name(CONTAINER& con, PREDICATE_OR_COMPARE predicate_or_compare) \
+	template<class ITERATOR, class PREDICATE_OR_COMPARISON> \
+	inline const typename ITERATOR::value_type* func_name(const ITERATOR& begin, const ITERATOR& end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, predicate_or_comparison); \
+	} \
+	template<class CONTAINER, class PREDICATE_OR_COMPARISON> \
+	inline typename CONTAINER::value_type* func_name(CONTAINER& con, PREDICATE_OR_COMPARISON predicate_or_comparison) \
 	{ \
 		const std::size_t size = con.size(); \
-		return size == 0 ? nullptr : func_name(&(con.at(0)), size, predicate_or_compare); \
+		return size == 0 ? nullptr : func_name(&(con.at(0)), size, predicate_or_comparison); \
 	} \
-	template<class CONTAINER, class PREDICATE_OR_COMPARE> \
-	inline const typename CONTAINER::value_type* func_name(const CONTAINER& con, PREDICATE_OR_COMPARE predicate_or_compare) \
+	template<class CONTAINER, class PREDICATE_OR_COMPARISON> \
+	inline const typename CONTAINER::value_type* func_name(const CONTAINER& con, PREDICATE_OR_COMPARISON predicate_or_comparison) \
 	{ \
 		const std::size_t size = con.size(); \
-		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, predicate_or_compare); \
+		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, predicate_or_comparison); \
 	}
+//※探索値指定版：プレディケート関数と値で比較
+#define searchFuncSetPredicateAndValue(func_name) \
+	template<class T, typename V, class PREDICATE> \
+	inline T* func_name##Value(T* array, const std::size_t size, const V& value, PREDICATE predicate) \
+	{ \
+		auto _equal = [&value, &predicate](T& val1) -> bool { return predicate(val1, value); }; \
+		return func_name(array, size, _equal); \
+	} \
+	template<class T, typename V, class PREDICATE> \
+	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value, PREDICATE predicate) \
+	{ \
+		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
+		return func_name(const_cast<T*>(array), size, _equal); \
+	} \
+	template<class T, std::size_t N, typename V, class PREDICATE> \
+	inline T* func_name##Value(T(&array)[N], const V& value, PREDICATE predicate) \
+	{ \
+		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
+		return func_name(array, N, _equal); \
+	} \
+	template<class T, std::size_t N, typename V, class PREDICATE> \
+	inline const T* func_name##Value(const T(&array)[N], const V& value, PREDICATE predicate) \
+	{ \
+		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
+		return func_name(const_cast<T*>(array), N, _equal); \
+	} \
+	template<class T, typename V, class PREDICATE> \
+	inline T* func_name##Value(T* begin, T* end, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(begin, size, _equal); \
+	} \
+	template<class T, typename V, class PREDICATE> \
+	inline const T* func_name##Value(const T* begin, const T* end, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _equal); \
+	} \
+	template<class ITERATOR, typename V, class PREDICATE> \
+	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value, &predicate](const typename ITERATOR::value_type& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&begin[0], size, _equal); \
+	} \
+	template<class ITERATOR, typename V, class PREDICATE> \
+	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value, &predicate](const typename ITERATOR::value_type& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _equal); \
+	} \
+	template<class CONTAINER, typename V, class PREDICATE> \
+	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _equal = [&value, &predicate](const typename CONTAINER::value_type& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _equal); \
+	} \
+	template<class CONTAINER, typename V, class PREDICATE> \
+	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _equal = [&value, &predicate](const typename CONTAINER::value_type& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _equal); \
+	}
+//※探索値指定版：標準のプレディケート関数と値で比較
+#define searchFuncSetByDefaultPredicateAndValue(func_name) \
+	template<class T, typename V> \
+	inline T* func_name##Value(T* array, const std::size_t size, const V& value) \
+	{ \
+		auto _equal = [&value](T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return func_name(array, size, _equal); \
+	} \
+	template<class T, typename V> \
+	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value) \
+	{ \
+		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return func_name(const_cast<T*>(array), size, _equal); \
+	} \
+	template<class T, std::size_t N, typename V> \
+	inline T* func_name##Value(T(&array)[N], const V& value) \
+	{ \
+		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return func_name(array, N, _equal); \
+	} \
+	template<class T, std::size_t N, typename V> \
+	inline const T* func_name##Value(const T(&array)[N], const V& value) \
+	{ \
+		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return func_name(const_cast<T*>(array), N, _equal); \
+	} \
+	template<class T, typename V> \
+	inline T* func_name##Value(T* begin, T* end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(begin, size, _equal); \
+	} \
+	template<class T, typename V> \
+	inline const T* func_name##Value(const T* begin, const T* end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _equal); \
+	} \
+	template<class ITERATOR, typename V> \
+	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value](const typename ITERATOR::value_type& val1) -> bool { return equal_to<typename ITERATOR::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&begin[0], size, _equal); \
+	} \
+	template<class ITERATOR, typename V> \
+	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value](const typename ITERATOR::value_type& val1) -> bool { return equal_to<typename ITERATOR::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _equal); \
+	} \
+	template<class CONTAINER, typename V> \
+	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _equal = [&value](const typename CONTAINER::value_type& val1) -> bool { return equal_to<typename CONTAINER::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _equal); \
+	} \
+	template<class CONTAINER, typename V> \
+	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _equal = [&value](const typename CONTAINER::value_type& val1) -> bool { return equal_to<typename CONTAINER::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _equal); \
+	}
+#define searchFuncSetByPredicate(func_name) \
+	searchFuncSetByUserFunc(func_name) \
+	searchFuncSetPredicateAndValue(func_name) \
+	searchFuncSetByDefaultPredicateAndValue(func_name)
+//※探索値指定版：比較関数と値で比較
+#define searchFuncSetByComparisonAndValue(func_name) \
+	template<class T, typename V, class COMPARISON> \
+	inline T* func_name##Value(T* array, const std::size_t size, const V& value, COMPARISON comparison) \
+	{ \
+		auto _comparison = [&value, &comparison](T& val1) -> int { return comparison(val1, value); }; \
+		return func_name(array, size, _comparison); \
+	} \
+	template<class T, typename V, class COMPARISON> \
+	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value, COMPARISON comparison) \
+	{ \
+		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
+		return func_name(const_cast<T*>(array), size, _comparison); \
+	} \
+	template<class T, std::size_t N, typename V, class COMPARISON> \
+	inline T* func_name##Value(T(&array)[N], const V& value, COMPARISON comparison) \
+	{ \
+		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
+		return func_name(array, N, _comparison); \
+	} \
+	template<class T, std::size_t N, typename V, class COMPARISON> \
+	inline const T* func_name##Value(const T(&array)[N], const V &value, COMPARISON comparison) \
+	{ \
+		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
+		return func_name(const_cast<T*>(array), N, _comparison); \
+	} \
+	template<class T, typename V, class COMPARISON> \
+	inline T* func_name##Value(T* begin, T* end, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(begin, size, _comparison); \
+	} \
+	template<class T, typename V, class COMPARISON> \
+	inline const T* func_name##Value(const T* begin, const T* end, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _comparison); \
+	} \
+	template<class ITERATOR, typename V, class COMPARISON> \
+	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value, &comparison](const typename ITERATOR::value_type& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&begin[0], size, _comparison); \
+	} \
+	template<class ITERATOR, typename V, class COMPARISON> \
+	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value, &comparison](const typename ITERATOR::value_type& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _comparison); \
+	} \
+	template<class CONTAINER, typename V, class COMPARISON> \
+	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _comparison = [&value, &comparison](const typename CONTAINER::value_type& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _comparison); \
+	} \
+	template<class CONTAINER, typename V, class COMPARISON> \
+	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _comparison = [&value, &comparison](const typename CONTAINER::value_type& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _comparison); \
+	}
+//※探索値指定版：標準比較関数と値で比較
+#define searchFuncSetByDefaultComparisonAndValue(func_name) \
+	template<class T, typename V> \
+	inline T* func_name##Value(T* array, const std::size_t size, const V& value) \
+	{ \
+		auto _comparison = [&value](T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return func_name(array, size, _comparison); \
+	} \
+	template<class T, typename V> \
+	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value) \
+	{ \
+		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return func_name(const_cast<T*>(array), size, _comparison); \
+	} \
+	template<class T, std::size_t N, typename V> \
+	inline T* func_name##Value(T(&array)[N], const V& value) \
+	{ \
+		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return func_name(array, N, _comparison); \
+	} \
+	template<class T, std::size_t N, typename V> \
+	inline const T* func_name##Value(const T(&array)[N], const V &value) \
+	{ \
+		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return func_name(const_cast<T*>(array), N, _comparison); \
+	} \
+	template<class T, typename V> \
+	inline T* func_name##Value(T* begin, T* end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(begin, size, _comparison); \
+	} \
+	template<class T, typename V> \
+	inline const T* func_name##Value(const T* begin, const T* end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _comparison); \
+	} \
+	template<class ITERATOR, typename V> \
+	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value](const typename ITERATOR::value_type& val1) -> int { return compare_to<typename ITERATOR::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&begin[0], size, _comparison); \
+	} \
+	template<class ITERATOR, typename V> \
+	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value](const typename ITERATOR::value_type& val1) -> int { return compare_to<typename ITERATOR::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _comparison); \
+	} \
+	template<class CONTAINER, typename V> \
+	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _comparison = [&value](const typename CONTAINER::value_type& val1) -> int { return compare_to<typename CONTAINER::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _comparison); \
+	} \
+	template<class CONTAINER, typename V> \
+	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _comparison = [&value](const typename CONTAINER::value_type& val1) -> int { return compare_to<typename CONTAINER::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _comparison); \
+	}
+#define searchFuncSetByComparison(func_name) \
+	searchFuncSetByUserFunc(func_name) \
+	searchFuncSetByComparisonAndValue(func_name) \
+	searchFuncSetByDefaultComparisonAndValue(func_name)
 
 //----------------------------------------
 //整列状態確認
@@ -2045,7 +2372,7 @@ distributedSortFuncSet(radixSort);
 template<class T, class PREDICATE>
 T* linearSearch(T* array, const std::size_t size, PREDICATE predicate)
 {
-	if (!array || size <= 1)
+	if (!array || size == 0)
 		return nullptr;
 	T* now = array;
 	for (std::size_t i = 0; i < size; ++i, ++now)//順次探索
@@ -2055,7 +2382,7 @@ T* linearSearch(T* array, const std::size_t size, PREDICATE predicate)
 	}
 	return nullptr;//探索失敗
 }
-searchFuncSet(linearSearch);
+searchFuncSetByPredicate(linearSearch);
 
 //----------------------------------------
 //アルゴリズム：二分探索
@@ -2065,10 +2392,10 @@ searchFuncSet(linearSearch);
 //・最悪計算時間：O(log n)
 //・探索失敗時：  O(log n)
 //----------------------------------------
-template<class T, class COMPARE>
-T* binarySearch(T* array, const std::size_t size, COMPARE compare)
+template<class T, class COMPARISON>
+T* binarySearch(T* array, const std::size_t size, COMPARISON comparison)
 {
-	if (!array || size <= 1)
+	if (!array || size == 0)
 		return nullptr;
 	std::size_t range = size;
 	T* begin = array;
@@ -2076,14 +2403,14 @@ T* binarySearch(T* array, const std::size_t size, COMPARE compare)
 	{
 		const std::size_t range_half = range / 2;//探索範囲の半分の範囲
 		T* mid = begin + range_half;//探索範囲の中心要素
-		const int comp = compare(*mid);//中心要素を探索キーと比較
+		const int comp = comparison(*mid);//中心要素を探索キーと比較
 		if (comp == 0)//中心要素が探索キーと一致
 		{
 			//遡ってキーの開始点を探す
 			while (mid > array)
 			{
 				T* prev = mid - 1;
-				if (compare(*prev) != 0)
+				if (comparison(*prev) != 0)
 					break;
 				mid = prev;
 			}
@@ -2101,7 +2428,7 @@ T* binarySearch(T* array, const std::size_t size, COMPARE compare)
 	}
 	return nullptr;
 }
-searchFuncSet(binarySearch);
+searchFuncSetByComparison(binarySearch);
 
 //--------------------------------------------------------------------------------
 //各種ソートアルゴリズムテスト
@@ -2160,9 +2487,13 @@ auto predicate_lambda = [](const data_t& lhs, const data_t& rhs) -> bool
 };
 //二項比較オペレータ
 //※sort関数に比較関数の指定を省略した場合、このオペレータが使用される
-inline bool operator <(const data_t& lhs, const data_t& rhs){ return lhs.m_key < rhs.m_key; }
+inline bool operator<(const data_t& lhs, const data_t& rhs){ return lhs.m_key < rhs.m_key; }
 //※sort関数にstd::greater<T>()を指定した場合、このオペレータが使用される
-inline bool operator >(const data_t& lhs, const data_t& rhs){ return lhs.m_key > rhs.m_key; }
+inline bool operator>(const data_t& lhs, const data_t& rhs){ return lhs.m_key > rhs.m_key; }
+//※linearSearch関数／binarySearch関数に比較関数の指定を省略した場合、このオペレータが使用される
+inline bool operator==(const data_t& lhs, const int rhs){ return lhs.m_key == rhs; }
+//※binarySearch関数に比較関数の指定を省略した場合、このオペレータが使用される
+inline bool operator<(const data_t& lhs, const int rhs){ return lhs.m_key < rhs; }
 
 //デフォルト
 //#define predicate_default predicate_func
@@ -2652,21 +2983,6 @@ int main(const int argc, const char* argv[])
 	auto bubble_sort = [](array_t* array) -> std::size_t
 	{
 		return bubbleSort(*array, predicate_default);
-		
-		//その他のソート指定方法
-		//return bubbleSort(&array->at(0), array->size(), predicate_default);
-		//return bubbleSort(array->_Elems, predicate_default);
-		//return bubbleSort(&array->at(0), &array->at(array->size() - 1) + 1, predicate_default);
-		//return bubbleSort(array->begin(), array->end(), predicate_default);
-		//return bubbleSort(*array, predicate_default);
-		//比較関数を省略する方法 ※ operator<(const T&, const T&) が定義されている必要あり
-		//return bubbleSort(&array->at(0), array->size());
-		//return bubbleSort(array->_Elems);
-		//return bubbleSort(&array->at(0), &array->at(array->size() - 1) + 1);
-		//return bubbleSort(array->begin(), array->end());
-		//return bubbleSort(*array);
-		//専用の比較関数を設けず、比較を逆転する方法 ※ operator>(const T&, const T&) が定義されている必要あり
-		//return bubbleSort(*array, std::greater<data_t>());
 	};
 	const sum_t sum_bubble = measureAll("Bubble sort", bubble_sort);
 	printf("\n");
@@ -2887,63 +3203,167 @@ int main(const int argc, const char* argv[])
 	printf("* <S> ... Stable sort algorithm.\n");
 	printf("\n");
 
+#if 0
+	//----------------------------------------
+	//バリエーションテスト
+
+#if 1
+	//----------------------------------------
+	//ソートのバリエーション
+	{
+		//コンテナを直接渡してソートする方法
+		array_t& arr = *array_shuffle1;
+		const std::size_t reuslt = bubbleSort(arr, predicate_default);
+		//その他のソート指定方法
+		const std::size_t reuslt1 = bubbleSort(&arr.at(0), arr.size(), predicate_default);
+		//const std::size_t reuslt2 = bubbleSort(arr._Elems, predicate_default);//VC++
+		const std::size_t reuslt3 = bubbleSort(&arr.at(0), &arr.at(arr.size() - 1) + 1, predicate_default);
+		const std::size_t reuslt4 = bubbleSort(arr.begin(), arr.end(), predicate_default);
+		const std::size_t reuslt5 = bubbleSort(arr, predicate_default);
+		//比較関数を省略する方法 ※ operator<(const T&, const T&) が定義されている必要あり
+		const std::size_t reuslt6 = bubbleSort(&arr.at(0), arr.size());
+		//const std::size_t reuslt7 = bubbleSort(arr._Elems);//VC++
+		const std::size_t reuslt8 = bubbleSort(&arr.at(0), &arr.at(arr.size() - 1) + 1);
+		const std::size_t reuslt9 = bubbleSort(arr.begin(), arr.end());
+		const std::size_t reuslt10 = bubbleSort(arr);
+		//専用の比較関数を設けず、比較を逆転する方法 ※ operator>(const T&, const T&) が定義されている必要あり
+		const std::size_t reuslt11 = bubbleSort(arr, std::greater<data_t>());
+	}
+#endif
+	
 #if 1
 	//----------------------------------------
 	//探索テスト
-
+#if 1
 	//線形探索
 	{
 		for (int target = -1; target < 40; ++target)
 		{
-			auto search_pred = [&target](const data_t& data) -> bool { return data.m_key == target; };
-			//array_t& arr = *array_shuffle1;
-			//const array_t& const_arr = *array_shuffle1;
-			//const data_t* data1 = linearSearch(arr, search_pred);
-			//const data_t* data2 = linearSearch(const_arr, search_pred);
-			//const data_t* data3 = linearSearch(arr.begin(), arr.end(), search_pred);
-			//const data_t* data4 = linearSearch(arr.cbegin(), arr.cend(), search_pred);
-			//const data_t* data5 = linearSearch(const_arr.begin(), const_arr.end(), search_pred);
-			//const data_t* data6 = linearSearch(arr._Elems, search_pred);
-			//const data_t* data7 = linearSearch(const_arr._Elems, search_pred);
-			//const data_t* data8 = linearSearch(&arr.at(0), arr.size(), search_pred);
-			//const data_t* data9 = linearSearch(&const_arr.at(0), const_arr.size(), search_pred);
-			//const data_t* data10 = linearSearch(&arr.at(0), &arr.at(0) + arr.size(), search_pred);
-			//const data_t* data11 = linearSearch(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), search_pred);
-			const data_t* data = linearSearch(*array_shuffle1, search_pred);
-			if (data)
-				printf("target=%d, linearSearch=[%d, %d]\n", target, data->m_key, data->m_seqNo);
+			const data_t* data_def = linearSearchValue(*array_shuffle1, target);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1_def = linearSearchValue(arr, target);
+				const data_t* data2_def = linearSearchValue(const_arr, target);
+				const data_t* data3_def = linearSearchValue(arr.begin(), arr.end(), target);
+				const data_t* data4_def = linearSearchValue(arr.cbegin(), arr.cend(), target);
+				const data_t* data5_def = linearSearchValue(const_arr.begin(), const_arr.end(), target);
+				//const data_t* data6_def = linearSearchValue(arr._Elems, target);//VC++
+				//const data_t* data7_def = linearSearchValue(const_arr._Elems, target);//VC++
+				const data_t* data8_def = linearSearchValue(&arr.at(0), arr.size(), target);
+				const data_t* data9_def = linearSearchValue(&const_arr.at(0), const_arr.size(), target);
+				const data_t* data10_def = linearSearchValue(&arr.at(0), &arr.at(0) + arr.size(), target);
+				const data_t* data11_def = linearSearchValue(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), target);
+			}
+			auto search_predicate = [&target](const data_t& data) -> bool { return data.m_key == target; };
+			const data_t* data = linearSearch(*array_shuffle1, search_predicate);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1 = linearSearch(arr, search_predicate);
+				const data_t* data2 = linearSearch(const_arr, search_predicate);
+				const data_t* data3 = linearSearch(arr.begin(), arr.end(), search_predicate);
+				const data_t* data4 = linearSearch(arr.cbegin(), arr.cend(), search_predicate);
+				const data_t* data5 = linearSearch(const_arr.begin(), const_arr.end(), search_predicate);
+				//const data_t* data6 = linearSearch(arr._Elems, search_predicate);//VC++
+				//const data_t* data7 = linearSearch(const_arr._Elems, search_predicate);//VC++
+				const data_t* data8 = linearSearch(&arr.at(0), arr.size(), search_predicate);
+				const data_t* data9 = linearSearch(&const_arr.at(0), const_arr.size(), search_predicate);
+				const data_t* data10 = linearSearch(&arr.at(0), &arr.at(0) + arr.size(), search_predicate);
+				const data_t* data11 = linearSearch(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), search_predicate);
+			}
+			auto search_predicate_val = [](const data_t& data, const int target) -> bool { return data.m_key == target; };
+			const data_t* data_val = linearSearchValue(*array_shuffle1, target, search_predicate_val);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1_val = linearSearchValue(arr, target, search_predicate_val);
+				const data_t* data2_val = linearSearchValue(const_arr, target, search_predicate_val);
+				const data_t* data3_val = linearSearchValue(arr.begin(), arr.end(), target, search_predicate_val);
+				const data_t* data4_val = linearSearchValue(arr.cbegin(), arr.cend(), target, search_predicate_val);
+				const data_t* data5_val = linearSearchValue(const_arr.begin(), const_arr.end(), target, search_predicate_val);
+				//const data_t* data6_val = linearSearchValue(arr._Elems, target, search_predicate_val);//VC++
+				//const data_t* data7_val = linearSearchValue(const_arr._Elems, target, search_predicate_val);//VC++
+				const data_t* data8_val = linearSearchValue(&arr.at(0), arr.size(), target, search_predicate_val);
+				const data_t* data9_val = linearSearchValue(&const_arr.at(0), const_arr.size(), target, search_predicate_val);
+				const data_t* data10_val = linearSearchValue(&arr.at(0), &arr.at(0) + arr.size(), target, search_predicate_val);
+				const data_t* data11_val = linearSearchValue(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), target, search_predicate_val);
+			}
+
+			if (data_def)
+				printf("target=%d, linearSearch=[%d, %d]\n", target, data_def->m_key, data_def->m_seqNo);
 			else
 				printf("target=%d, linearSearch=nullptr\n", target);
 		}
 	}
+#endif
 
+#if 1
 	//二分探索
 	{
 		auto sort_pred = [](const data_t& lhs, const data_t& rhs) -> bool { return lhs.m_key < rhs.m_key; };
 		introSort(*array_shuffle1, sort_pred);
 		for (int target = -1; target < 40; ++target)
 		{
-			auto search_compare = [&target](const data_t& data) -> int { return target - data.m_key; };
-			//array_t& arr = *array_shuffle1;
-			//const array_t& const_arr = *array_shuffle1;
-			//const data_t* data1 = binarySearch(arr, search_compare);
-			//const data_t* data2 = binarySearch(const_arr, search_compare);
-			//const data_t* data3 = binarySearch(arr.begin(), arr.end(), search_compare);
-			//const data_t* data4 = binarySearch(arr.cbegin(), arr.cend(), search_compare);
-			//const data_t* data5 = binarySearch(const_arr.begin(), const_arr.end(), search_compare);
-			//const data_t* data6 = binarySearch(arr._Elems, search_compare);
-			//const data_t* data7 = binarySearch(const_arr._Elems, search_compare);
-			//const data_t* data8 = binarySearch(&arr.at(0), arr.size(), search_compare);
-			//const data_t* data9 = binarySearch(&const_arr.at(0), const_arr.size(), search_compare);
-			//const data_t* data10 = binarySearch(&arr.at(0), &arr.at(0) + arr.size(), search_compare);
-			//const data_t* data11 = binarySearch(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), search_compare);
-			const data_t* data = binarySearch(*array_shuffle1, search_compare);
-			if (data)
-				printf("target=%d, binarySearch=[%d, %d]\n", target, data->m_key, data->m_seqNo);
+			const data_t* data_def = binarySearchValue(*array_shuffle1, target);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1_def = binarySearchValue(arr, target);
+				const data_t* data2_def = binarySearchValue(const_arr, target);
+				const data_t* data3_def = binarySearchValue(arr.begin(), arr.end(), target);
+				const data_t* data4_def = binarySearchValue(arr.cbegin(), arr.cend(), target);
+				const data_t* data5_def = binarySearchValue(const_arr.begin(), const_arr.end(), target);
+				//const data_t* data6_def = binarySearchValue(arr._Elems, target);//VC++
+				//const data_t* data7_def = binarySearchValue(const_arr._Elems, target);//VC++
+				const data_t* data8_def = binarySearchValue(&arr.at(0), arr.size(), target);
+				const data_t* data9_def = binarySearchValue(&const_arr.at(0), const_arr.size(), target);
+				const data_t* data10_def = binarySearchValue(&arr.at(0), &arr.at(0) + arr.size(), target);
+				const data_t* data11_def = binarySearchValue(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), target);
+			}
+			auto search_comparison = [&target](const data_t& data) -> int { return target - data.m_key; };
+			const data_t* data = binarySearch(*array_shuffle1, search_comparison);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1 = binarySearch(arr, search_comparison);
+				const data_t* data2 = binarySearch(const_arr, search_comparison);
+				const data_t* data3 = binarySearch(arr.begin(), arr.end(), search_comparison);
+				const data_t* data4 = binarySearch(arr.cbegin(), arr.cend(), search_comparison);
+				const data_t* data5 = binarySearch(const_arr.begin(), const_arr.end(), search_comparison);
+				//const data_t* data6 = binarySearch(arr._Elems, search_comparison);//VC++
+				//const data_t* data7 = binarySearch(const_arr._Elems, search_comparison);//VC++
+				const data_t* data8 = binarySearch(&arr.at(0), arr.size(), search_comparison);
+				const data_t* data9 = binarySearch(&const_arr.at(0), const_arr.size(), search_comparison);
+				const data_t* data10 = binarySearch(&arr.at(0), &arr.at(0) + arr.size(), search_comparison);
+				const data_t* data11 = binarySearch(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), search_comparison);
+			}
+			auto search_comparison_val = [](const data_t& data, const int target) -> int { return target - data.m_key; };
+			const data_t* data_val = binarySearch(*array_shuffle1, search_comparison);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1_val = binarySearchValue(arr, target, search_comparison_val);
+				const data_t* data2_val = binarySearchValue(const_arr, target, search_comparison_val);
+				const data_t* data3_val = binarySearchValue(arr.begin(), arr.end(), target, search_comparison_val);
+				const data_t* data4_val = binarySearchValue(arr.cbegin(), arr.cend(), target, search_comparison_val);
+				const data_t* data5_val = binarySearchValue(const_arr.begin(), const_arr.end(), target, search_comparison_val);
+				//const data_t* data6_val = binarySearchValue(arr._Elems, target, search_comparison_val);//VC++
+				//const data_t* data7_val = binarySearchValue(const_arr._Elems, target, search_comparison_val);//VC++
+				const data_t* data8_val = binarySearchValue(&arr.at(0), arr.size(), target, search_comparison_val);
+				const data_t* data9_val = binarySearchValue(&const_arr.at(0), const_arr.size(), target, search_comparison_val);
+				const data_t* data10_val = binarySearchValue(&arr.at(0), &arr.at(0) + arr.size(), target, search_comparison_val);
+				const data_t* data11_val = binarySearchValue(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), target, search_comparison_val);
+			}
+
+			if (data_def)
+				printf("target=%d, binarySearch=[%d, %d]\n", target, data_def->m_key, data_def->m_seqNo);
 			else
 				printf("target=%d, binarySearch=nullptr\n", target);
 		}
 	}
+#endif
+#endif
 #endif
 
 	//----------------------------------------
@@ -2959,7 +3379,7 @@ int main(const int argc, const char* argv[])
 	printf("============================================================\n");
 	printElapsedTime(begin_time, true);//処理時間表示
 
-#if 1
+#if 0
 	//ポインタ変数のソート処理動作確認
 	{
 		printf("\n");

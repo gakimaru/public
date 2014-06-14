@@ -7,7 +7,7 @@ static const int TEST_DATA_REG_NUM = 20;//テストデータの登録数
 //static const int TEST_DATA_MAX = 1000000;//テストデータの最大登録可能数
 //static const int TEST_DATA_REG_NUM = 1000000;//テストデータの登録数
 
-#define PRINT_TEST_DATA_DETAIL//テストデーの詳細タを表示する場合は、このマクロを有効化する
+#define PRINT_TEST_DATA_DETAIL//テストデータの詳細タを表示する場合は、このマクロを有効化する
 //#define TEST_DATA_WATCH_CONSTRUCTOR//コンストラクタ／デストラクタ／代入演算子の動作を確認する場合、このマクロを有効化する
 
 #include <stdio.h>
@@ -684,8 +684,6 @@ inline void swapValues(T& val1, T& val2)
 //・固定配列で実装し、一切メモリ確保・削除をしない。
 //・ノード連結のポインタを使用しない。
 //　一般的な二分ヒープと同じく、配列の順序に基づいて連結する。
-//・コンテナには対応するが、イテレータには対応しない。
-//　ただし、配列のポインタをそのまま返すだけの begin(), end() 関数は実装する。
 //・この二分ヒープをプライオリティキューに利用した場合、
 //　デキュー（pop）時に、エンキュー（push）の順序性は保証されない。
 //　※この挙動はSTLと同じ。
@@ -710,6 +708,7 @@ inline void swapValues(T& val1, T& val2)
 #include <cstddef>//std::size_t, std::ptrdiff_t用
 //#include <cstdint>//std::intptr_t用
 #include <iterator>//std::iterator用
+#include <new>//配置new,配置delete用
 
 namespace binary_heap
 {
@@ -856,7 +855,7 @@ namespace binary_heap
 		DECLARE_OPE_TYPES(OPE_TYPE);
 	public:
 		//定数
-		static const std::size_t TABLE_SIZE = _TABLE_SIZE;//配列要素数
+		static const size_type TABLE_SIZE = _TABLE_SIZE;//配列要素数
 		static const index_type INVALID_INDEX = 0xffffffffu;//無効なインデックス
 		enum status_t//ステータス
 		{
@@ -883,83 +882,79 @@ namespace binary_heap
 			friend class reverse_iterator;
 		public:
 			//キャストオペレータ
-			inline operator bool() const { return m_index != INVALID_INDEX; }
-			inline operator const value_type() const { return *m_value; }
-			inline operator value_type&(){ return *m_value; }
-			inline operator const value_type*() const { return m_value; }
-			inline operator value_type*(){ return m_value; }
+			inline operator bool() const { return isExist(); }
+			inline operator const value_type&() const { return *getValue(); }
+			inline operator value_type&(){ return *getValue(); }
+			inline operator const value_type*() const { return getValue(); }
+			inline operator value_type*(){ return getValue(); }
 		public:
 			//オペレータ
-			inline const value_type& operator*() const { return *m_value; }
-			inline value_type& operator*(){ return *m_value; }
-			inline const_pointer operator->() const { return m_value; }
-			inline pointer operator->(){ return m_value; }
+			inline const value_type& operator*() const { return *getValue(); }
+			inline value_type& operator*(){ return *getValue(); }
+			inline const_pointer operator->() const { return getValue(); }
+			inline pointer operator->(){ return getValue(); }
 			inline const_iterator operator[](const int index) const
 			{
-				iterator ite(*m_con);
-				ite.pudate(0);
-				ite += index;
+				iterator ite(*m_con, false);
+				ite.update(index);
 				return std::move(ite);
 			}
 			inline iterator operator[](const int index)
 			{
-				iterator ite(*m_con);
-				ite.pudate(0);
-				ite += index;
+				iterator ite(*m_con, false);
+				ite.update(index);
 				return std::move(ite);
 			}
 			//比較オペレータ
 			inline bool operator==(const_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX && rhs.m_index == INVALID_INDEX ? true :
-				       m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
-				       m_index == rhs.m_set.index;
+				return !isEnabled() || !rhs.isEnabled() ? false :
+				       m_index == rhs.index;
 			}
 			inline bool operator!=(const_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX && rhs.m_index == INVALID_INDEX ? false :
-				       m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? true :
+				return !isEnabled() || !rhs.isEnabled() ? false :
 				       m_index != rhs.m_index;
 			}
 			inline bool operator>(const_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				return !isEnabled() || !rhs.isEnabled() ? false :
 				       m_index > rhs.m_index;
 			}
 			inline bool operator>=(const_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				return !isEnabled() || !rhs.isEnabled() ? false :
 				       m_index >= rhs.m_index;
 			}
 			inline bool operator<(const_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				return !isEnabled() || !rhs.isEnabled() ? false :
 				       m_index < rhs.m_index;
 			}
 			inline bool operator<=(const_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				return !isEnabled() || !rhs.isEnabled() ? false :
 				       m_index <= rhs.m_index;
 			}
 			//演算オペレータ
 			inline const_iterator& operator++() const
 			{
-				pudate(m_index + 1);
+				addIndexAndUpdate(1);
 				return *this;
 			}
 			inline const_iterator& operator--() const
 			{
-				pudate(m_index - 1);
+				addIndexAndUpdate(-1);
 				return *this;
 			}
 			inline iterator& operator++()
 			{
-				pudate(m_index + 1);
+				addIndexAndUpdate(1);
 				return *this;
 			}
 			inline iterator& operator--()
 			{
-				pudate(m_index - 1);
+				addIndexAndUpdate(-1);
 				return *this;
 			}
 			inline const_iterator operator++(int) const
@@ -986,28 +981,24 @@ namespace binary_heap
 				--(*this);
 				return ite;
 			}
-			const_iterator& operator+=(const int val) const
+			inline const_iterator& operator+=(const int val) const
 			{
-				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
-					++(*this);
+				addIndexAndUpdate(val);
 				return *this;
 			}
-			const_iterator& operator-=(const int val) const
+			inline const_iterator& operator-=(const int val) const
 			{
-				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
-					--(*this);
+				addIndexAndUpdate(-val);
 				return *this;
 			}
-			iterator& operator+=(const int val)
+			inline iterator& operator+=(const int val)
 			{
-				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
-					++(*this);
+				addIndexAndUpdate(val);
 				return *this;
 			}
-			iterator& operator-=(const int val)
+			inline iterator& operator-=(const int val)
 			{
-				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
-					--(*this);
+				addIndexAndUpdate(-val);
 				return *this;
 			}
 			inline const_iterator operator+(const int val) const
@@ -1055,14 +1046,20 @@ namespace binary_heap
 			iterator& operator=(const_reverse_iterator& rhs);
 		public:
 			//アクセッサ
+			inline bool isExist() const { return m_index != INVALID_INDEX && m_index < m_con->m_used; }
+			inline bool isNotExist() const { return !isExist(); }
+			inline bool isEnabled() const { return m_index != INVALID_INDEX; }
+			inline bool isNotEnabled() const { return !isEnabled(); }
+			inline bool isEnd() const { return m_index == m_con->m_size; }//終端か？
 			inline index_type getIndex() const { return m_index; }//インデックス
 			inline const value_type* getValue() const { return m_value; }//現在の値
 			inline value_type* getValue(){ return m_value; }//現在の値
 		private:
 			//メソッド
-			void pudate(const index_type index) const
+			void update(const index_type index) const
 			{
-				if (index == INVALID_INDEX || index >= static_cast<index_type>(m_con->m_used))
+				//if (index == INVALID_INDEX || index < 0 || index > static_cast<index_type>(m_con->m_used))
+				if (index > static_cast<index_type>(m_con->m_used))
 				{
 					m_index = INVALID_INDEX;
 					m_value = nullptr;
@@ -1072,6 +1069,10 @@ namespace binary_heap
 					m_index = index;
 					m_value = const_cast<value_type*>(m_con->_ref_node(m_index));
 				}
+			}
+			inline void addIndexAndUpdate(const int add) const
+			{
+				update(m_index + add);
 			}
 		public:
 			//ムーブコンストラクタ
@@ -1089,13 +1090,15 @@ namespace binary_heap
 			{}
 			iterator(const_reverse_iterator& obj);
 			//コンストラクタ
-			inline iterator(const container& con, const bool is_end = false) :
+			inline iterator(const container& con, const bool is_end) :
 				m_con(&con),
 				m_index(INVALID_INDEX),
 				m_value(nullptr)
 			{
 				if (!is_end)
-					pudate(0);
+					update(0);//先頭データ
+				else
+					update(m_con->m_used);//末尾データ
 			}
 			inline iterator() :
 				m_con(nullptr),
@@ -1108,95 +1111,92 @@ namespace binary_heap
 		protected:
 			//フィールド
 			const container* m_con;//コンテナ
-			mutable std::size_t m_index;//現在のインデックス
+			mutable index_type m_index;//現在のインデックス
 			mutable value_type* m_value;//現在の値
 		};
 		//--------------------
 		//リバースイテレータ
-		class reverse_iterator : public std::reverse_iterator<iterator>
+		//class reverse_iterator : public std::reverse_iterator<iterator>
+		class reverse_iterator : public std::iterator<std::random_access_iterator_tag, value_type>
 		{
 			friend class container;
 			friend class iterator;
 		public:
 			//キャストオペレータ
-			inline operator bool() const { return m_index != INVALID_INDEX; }
-			inline operator const value_type() const { return *m_value; }
-			inline operator value_type&(){ return *m_value; }
-			inline operator const value_type*() const { return m_value; }
-			inline operator value_type*(){ return m_value; }
+			inline operator bool() const { return isExist(); }
+			inline operator const value_type&() const { return *getValue(); }
+			inline operator value_type&(){ return *getValue(); }
+			inline operator const value_type*() const { return getValue(); }
+			inline operator value_type*(){ return getValue(); }
 		public:
 			//オペレータ
-			inline const value_type& operator*() const { return *m_value; }
-			inline value_type& operator*(){ return *m_value; }
-			inline const_pointer operator->() const { return m_value; }
-			inline pointer operator->(){ return m_value; }
+			inline const value_type& operator*() const { return *getValue(); }
+			inline value_type& operator*(){ return *getValue(); }
+			inline const_pointer operator->() const { return getValue(); }
+			inline pointer operator->(){ return getValue(); }
 			inline const_reverse_iterator operator[](const int index) const
 			{
-				reverse_iterator ite(*m_con);
-				ite.pudate(m_con->m_used - 1);
-				ite += index;
+				reverse_iterator ite(*m_con, false);
+				ite.update(m_con->m_used - index);
 				return std::move(ite);
 			}
 			inline reverse_iterator operator[](const int index)
 			{
-				reverse_iterator ite(*m_con);
-				ite.pudate(m_con->m_used - 1);
-				ite += index;
+				reverse_iterator ite(*m_con, false);
+				ite.update(m_con->m_used - index);
 				return std::move(ite);
 			}
 		public:
 			//比較オペレータ
 			inline bool operator==(const_reverse_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX && rhs.m_index == INVALID_INDEX ? true :
-				       m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				return !rhs.isEnabled() || !isEnabled() ? false :
 				       rhs.m_index == m_index;
 			}
 			inline bool operator!=(const_reverse_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX && rhs.m_index == INVALID_INDEX ? false :
-				       m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? true :
+				return !rhs.isEnabled() || !isEnabled() ? false :
 				       rhs.m_index != m_index;
 			}
 			inline bool operator>(const_reverse_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				return !rhs.isEnabled() || !isEnabled() ? false :
 				       rhs.m_index > m_index;
 			}
 			inline bool operator>=(const_reverse_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				return !rhs.isEnabled() || !isEnabled() ? false :
 				       rhs.m_index >= m_index;
 			}
 			inline bool operator<(const_reverse_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				return !rhs.isEnabled() || !isEnabled() ? false :
 				       rhs.m_index < m_index;
 			}
 			inline bool operator<=(const_reverse_iterator& rhs) const
 			{
-				return m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX ? false :
+				return !rhs.isEnabled() || !isEnabled() ? false :
 				       rhs.m_index <= m_index;
 			}
 			//演算オペレータ
 			inline const_reverse_iterator& operator++() const
 			{
-				pudate(m_index - 1);
+				addIndexAndUpdate(1);
 				return *this;
 			}
 			inline const_reverse_iterator& operator--() const
 			{
-				pudate(m_index + 1);
+				addIndexAndUpdate(-1);
 				return *this;
 			}
 			inline reverse_iterator& operator++()
 			{
-				pudate(m_index - 1);
+				addIndexAndUpdate(1);
 				return *this;
 			}
 			inline reverse_iterator& operator--()
 			{
-				pudate(m_index + 1);
+				addIndexAndUpdate(-1);
 				return *this;
 			}
 			inline const_reverse_iterator operator++(int) const
@@ -1223,28 +1223,24 @@ namespace binary_heap
 				--(*this);
 				return ite;
 			}
-			const_reverse_iterator& operator+=(const int val) const
+			inline const_reverse_iterator& operator+=(const int val) const
 			{
-				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
-					++(*this);
+				addIndexAndUpdate(val);
 				return *this;
 			}
-			const_reverse_iterator& operator-=(const int val) const
+			inline const_reverse_iterator& operator-=(const int val) const
 			{
-				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
-					--(*this);
+				addIndexAndUpdate(-val);
 				return *this;
 			}
-			reverse_iterator& operator+=(const int val)
+			inline reverse_iterator& operator+=(const int val)
 			{
-				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
-					++(*this);
+				addIndexAndUpdate(val);
 				return *this;
 			}
-			reverse_iterator& operator-=(const int val)
+			inline reverse_iterator& operator-=(const int val)
 			{
-				for (int i = 0; i < val && m_index != INVALID_INDEX; ++i)
-					--(*this);
+				addIndexAndUpdate(-val);
 				return *this;
 			}
 			inline const_reverse_iterator operator+(const int val) const
@@ -1284,10 +1280,7 @@ namespace binary_heap
 			{
 				m_con = rhs.m_con;
 				m_index = rhs.m_index;
-				if (m_index != INVALID_INDEX)
-					++(*this);
-				else
-					pudate(m_con->m_used - 1);//末尾インデックスを取得
+				m_value = rhs.m_value;
 				return *this;
 			}
 			//コピーオペレータ
@@ -1302,22 +1295,25 @@ namespace binary_heap
 			{
 				m_con = rhs.m_con;
 				m_index = rhs.m_index;
-				if (m_index != INVALID_INDEX)
-					++(*this);
-				else
-					pudate(m_con->m_used - 1);//末尾インデックスを取得
+				m_value = rhs.m_value;
 				return *this;
 			}
 		public:
 			//アクセッサ
-			inline index_type getIndex() const { return m_index; }//インデックス
-			inline const value_type* getValue() const { return m_value; }//現在の値
-			inline value_type* getValue(){ return m_value; }//現在の値
+			inline bool isExist() const { return m_index != INVALID_INDEX && m_index > 0; }
+			inline bool isNotExist() const { return !isExist(); }
+			inline bool isEnabled() const { return m_index != INVALID_INDEX; }
+			inline bool isNotEnabled() const { return !isEnabled(); }
+			inline bool isEnd() const { return m_index == 0; }//終端か？
+			inline index_type getIndex() const { return m_index - 1; }//インデックス
+			inline const value_type* getValue() const { return m_value - 1; }//現在の値
+			inline value_type* getValue(){ return m_value - 1; }//現在の値
 		private:
 			//メソッド
-			inline void pudate(const index_type index) const
+			void update(const index_type index) const
 			{
-				if (index == INVALID_INDEX || index >= static_cast<index_type>(m_con->m_used))
+				//if (index == INVALID_INDEX || index < 0 || index > static_cast<index_type>(m_con->m_used))
+				if (index > static_cast<index_type>(m_con->m_used))
 				{
 					m_index = INVALID_INDEX;
 					m_value = nullptr;
@@ -1327,6 +1323,10 @@ namespace binary_heap
 					m_index = index;
 					m_value = const_cast<value_type*>(m_con->_ref_node(m_index));
 				}
+			}
+			inline void addIndexAndUpdate(const int add) const
+			{
+				update(m_index - add);
 			}
 		public:
 			//ベースを取得
@@ -1351,12 +1351,7 @@ namespace binary_heap
 				m_con(obj.m_con),
 				m_index(obj.m_index),
 				m_value(obj.m_value)
-			{
-				if (m_index != INVALID_INDEX)
-					++(*this);
-				else
-					pudate(m_con->m_used - 1);//末尾インデックスを取得
-			}
+			{}
 			//コピーコンストラクタ
 			inline reverse_iterator(const_reverse_iterator& obj) :
 				m_con(obj.m_con),
@@ -1367,20 +1362,17 @@ namespace binary_heap
 				m_con(obj.m_con),
 				m_index(obj.m_index),
 				m_value(obj.m_value)
-			{
-				if (m_index != INVALID_INDEX)
-					++(*this);
-				else
-					pudate(m_con->m_used - 1);//末尾インデックスを取得
-			}
+			{}
 			//コンストラクタ
-			inline reverse_iterator(const container& con, const bool is_end = false) :
+			inline reverse_iterator(const container& con, const bool is_end) :
 				m_con(&con),
 				m_index(INVALID_INDEX),
 				m_value(nullptr)
 			{
 				if (!is_end)
-					pudate(m_con->m_used - 1);//末尾インデックスを取得
+					update(m_con->m_used);//末尾データ
+				else
+					update(0);//先頭データ
 			}
 			inline reverse_iterator() :
 				m_con(nullptr),
@@ -1393,7 +1385,7 @@ namespace binary_heap
 		protected:
 			//フィールド
 			const container* m_con;//コンテナ
-			mutable std::size_t m_index;//現在のインデックス
+			mutable index_type m_index;//現在のインデックス
 			mutable value_type* m_value;//現在の値
 		};
 	public:
@@ -1409,9 +1401,9 @@ namespace binary_heap
 		inline operator lock_type&() const { return m_lock; }//共有ロックオブジェクト ※mutable
 	public:
 		//メソッド
-		inline std::size_t max_size() const { return TABLE_SIZE; }//最大要素数を取得
-		inline std::size_t capacity() const { return TABLE_SIZE; }//最大要素数を取得
-		inline std::size_t size() const { return m_used; }//使用中の要素数を取得
+		inline size_type max_size() const { return TABLE_SIZE; }//最大要素数を取得
+		inline size_type capacity() const { return TABLE_SIZE; }//最大要素数を取得
+		inline size_type size() const { return m_used; }//使用中の要素数を取得
 		inline bool empty() const { return m_used == 0; }//空か？
 	public:
 		int depth_max() const//最大の深さを取得
@@ -1791,8 +1783,10 @@ namespace binary_heap
 		//クリア（本体）
 		void _clear()
 		{
-			node_type* obj_end = end();
-			for (node_type* obj = begin(); obj < obj_end; ++obj)
+			if (m_used == 0)
+				return;
+			node_type* obj_end = _ref_top() + m_used;
+			for (node_type* obj = _ref_top(); obj < obj_end; ++obj)
 			{
 				ope_type::callDestructor(obj);//デストラクタ呼び出し
 				operator delete(obj, obj);//（作法として）deleteオペレータ呼び出し
@@ -1822,7 +1816,7 @@ namespace binary_heap
 	private:
 		//フィールド
 		unsigned char m_table[TABLE_SIZE][sizeof(value_type)];//データテーブル
-		int m_used;//使用数
+		size_type m_used;//使用数
 		status_t m_status;//ステータス
 		mutable lock_type m_lock;//ロックオブジェクト
 	};
@@ -1834,10 +1828,6 @@ namespace binary_heap
 		m_con = rhs.m_con;
 		m_index = rhs.m_index;
 		m_value = rhs.m_value;
-		if (m_index != INVALID_INDEX)
-			++(*this);
-		else
-			pudate(0);//先頭インデックスを取得
 		return *this;
 	}
 	//イテレータのコピーオペレータ
@@ -1848,10 +1838,6 @@ namespace binary_heap
 		m_con = rhs.m_con;
 		m_index = rhs.m_index;
 		m_value = rhs.m_value;
-		if (m_index != INVALID_INDEX)
-			++(*this);
-		else
-			pudate(0);//先頭インデックスを取得
 		return *this;
 	}
 	//イテレータのムーブコンストラクタ
@@ -1861,12 +1847,7 @@ namespace binary_heap
 		m_con(obj.m_con),
 		m_index(obj.m_index),
 		m_value(obj.m_value)
-	{
-		if (m_index != INVALID_INDEX)
-			++(*this);
-		else
-			pudate(0);//先頭インデックスを取得
-	}
+	{}
 	//イテレータのコピーコンストラクタ
 	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
 	//container<OPE_TYPE, _TABLE_SIZE>::iterator::iterator(typename container<OPE_TYPE, _TABLE_SIZE>::const_reverse_iterator& obj) ://GCCはOK, VC++はNG
@@ -1874,12 +1855,7 @@ namespace binary_heap
 		m_con(obj.m_con),
 		m_index(obj.m_index),
 		m_value(obj.m_value)
-	{
-		if (m_index != INVALID_INDEX)
-			++(*this);
-		else
-			pudate(0);//先頭インデックスを取得
-	}
+	{}
 	//--------------------
 	//安全なプッシュ／ポップ操作クラス
 	//※操作状態を記憶し、デストラクタで必ず完了させる
@@ -2131,9 +2107,9 @@ namespace priority_queue
 		inline operator lock_type&() const { return m_lock; }//共有ロックオブジェクト ※mutable
 	public:
 		//メソッド
-		inline std::size_t max_size() const { return m_container.max_aize(); }//最大要素数を取得
-		inline std::size_t capacity() const { return m_container.capacity(); }//最大要素数を取得
-		inline std::size_t size() const { return m_container.size(); }//使用中の要素数を取得
+		inline size_type max_size() const { return m_container.max_aize(); }//最大要素数を取得
+		inline size_type capacity() const { return m_container.capacity(); }//最大要素数を取得
+		inline size_type size() const { return m_container.size(); }//使用中の要素数を取得
 		inline bool empty() const { return m_container.empty(); }//空か？
 	private:
 		//シーケンス番号発行
@@ -2533,6 +2509,18 @@ namespace priority_queue
 #include <queue>//std::priority_queue用※比較テスト用
 
 //----------------------------------------
+//テスト用補助関数
+#ifdef PRINT_TEST_DATA_DETAIL
+template<typename... Tx>
+inline int printf_detail(const char* fmt, Tx... args)
+{
+	return printf(fmt, args...);
+}
+#else//PRINT_TEST_DATA_DETAIL
+inline int printf_detail(const char* fmt, ...){ return 0; }
+#endif//PRINT_TEST_DATA_DETAIL
+
+//----------------------------------------
 //テストデータ
 enum PRIORITY : short
 {
@@ -2654,18 +2642,6 @@ struct ope_t : public priority_queue::base_ope_t<ope_t, data_t, PRIORITY, int>
 	//※デフォルト（dummy_lock）のままとする
 	//typedef spin_lock lock_type;//ロックオブジェクト型
 };
-
-//----------------------------------------
-//テスト用補助関数
-#ifdef PRINT_TEST_DATA_DETAIL
-template<typename... Tx>
-inline int printf_detail(const char* fmt, Tx... args)
-{
-	return printf(fmt, args...);
-}
-#else//PRINT_TEST_DATA_DETAIL
-inline int printf_detail(const char* fmt, ...){ return 0; }
-#endif//PRINT_TEST_DATA_DETAIL
 
 //----------------------------------------
 //木を表示
@@ -2843,13 +2819,14 @@ int main(const int argc, const char* argv[])
 		printf("--- Test for std::for_each() ---\n");
 		typedef pqueue_t::container_type container_t;
 		container_t& heap = *con;
-		printf("iterator\n");
+		printf("iterator:         ");
 		std::for_each(heap.begin(), heap.end(), [](data_t& o)
 			{
 				printf("[%1d:%2d] ", o.m_priority, o.m_val);
 			}
 		);
-		printf("reverse_iterator\n");
+		printf("\n");
+		printf("reverse_iterator: ");
 		std::for_each(heap.rbegin(), heap.rend(), [](data_t& o)
 			{
 				printf("[%1d:%2d] ", o.m_priority, o.m_val);
@@ -2875,14 +2852,14 @@ int main(const int argc, const char* argv[])
 		container_t::iterator ite2_end = heap.rend();
 		container_t::reverse_iterator rite2_end = heap.end();
 		printf("constructor\n");
-		if (ite) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
-		if (rite) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
-		if (ite_end) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
-		if (rite_end) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
-		if (ite2) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite->m_val);
-		if (rite2) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
-		if (ite2_end) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
-		if (rite2_end) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
+		if (ite.isExist()) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
+		if (rite.isExist()) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
+		if (ite_end.isExist()) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
+		if (rite_end.isExist()) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
+		if (ite2.isExist()) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite2->m_val);
+		if (rite2.isExist()) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
+		if (ite2_end.isExist()) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
+		if (rite2_end.isExist()) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
 		printf("copy operator\n");
 		ite = heap.begin();
 		rite = heap.rbegin();
@@ -2892,14 +2869,14 @@ int main(const int argc, const char* argv[])
 		rite2 = heap.begin();
 		ite2_end = heap.rend();
 		rite2_end = heap.end();
-		if (ite) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
-		if (rite) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
-		if (ite_end) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
-		if (rite_end) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
-		if (ite2) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite->m_val);
-		if (rite2) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
-		if (ite2_end) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
-		if (rite2_end) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
+		if (ite.isExist()) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
+		if (rite.isExist()) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
+		if (ite_end.isExist()) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
+		if (rite_end.isExist()) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
+		if (ite2.isExist()) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite2->m_val);
+		if (rite2.isExist()) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
+		if (ite2_end.isExist()) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
+		if (rite2_end.isExist()) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
 		for (int i = 0; i <= 3; ++i)
 		{
 			printf("[%d]\n", i);
@@ -2911,14 +2888,14 @@ int main(const int argc, const char* argv[])
 			rite2 = rite2[i];
 			ite2_end = ite2_end[i];
 			rite2_end = rite2_end[i];
-			if (ite) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
-			if (rite) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
-			if (ite_end) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
-			if (rite_end) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
-			if (ite2) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite->m_val);
-			if (rite2) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
-			if (ite2_end) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
-			if (rite2_end) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
+			if (ite.isExist()) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
+			if (rite.isExist()) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
+			if (ite_end.isExist()) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
+			if (rite_end.isExist()) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
+			if (ite2.isExist()) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite2->m_val);
+			if (rite2.isExist()) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
+			if (ite2_end.isExist()) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
+			if (rite2_end.isExist()) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
 		}
 		printf("+= 3\n");
 		ite += 3;
@@ -2929,14 +2906,14 @@ int main(const int argc, const char* argv[])
 		rite2 += 3;
 		ite2_end += 3;
 		rite2_end += 3;
-		if (ite) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
-		if (rite) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
-		if (ite_end) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
-		if (rite_end) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
-		if (ite2) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite->m_val);
-		if (rite2) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
-		if (ite2_end) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
-		if (rite2_end) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
+		if (ite.isExist()) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
+		if (rite.isExist()) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
+		if (ite_end.isExist()) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
+		if (rite_end.isExist()) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
+		if (ite2.isExist()) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite2->m_val);
+		if (rite2.isExist()) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
+		if (ite2_end.isExist()) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
+		if (rite2_end.isExist()) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
 		printf("-= 3\n");
 		ite -= 3;
 		rite -= 3;
@@ -2946,14 +2923,14 @@ int main(const int argc, const char* argv[])
 		rite2 -= 3;
 		ite2_end -= 3;
 		rite2_end -= 3;
-		if (ite) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
-		if (rite) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
-		if (ite_end) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
-		if (rite_end) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
-		if (ite2) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite->m_val);
-		if (rite2) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
-		if (ite2_end) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
-		if (rite2_end) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
+		if (ite.isExist()) printf("ite:[%d] priority=%d, seqNo=%d, value=%d\n", ite.getIndex(), ite->m_priority, ite->m_seqNo, ite->m_val);
+		if (rite.isExist()) printf("rite:[%d] priority=%d, seqNo=%d, value=%d\n", rite.getIndex(), rite->m_priority, rite->m_seqNo, rite->m_val);
+		if (ite_end.isExist()) printf("ite_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite_end.getIndex(), ite_end->m_priority, ite_end->m_seqNo, ite_end->m_val);
+		if (rite_end.isExist()) printf("rite_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite_end.getIndex(), rite_end->m_priority, rite_end->m_seqNo, rite_end->m_val);
+		if (ite2.isExist()) printf("ite2:[%d] priority=%d, seqNo=%d, value=%d\n", ite2.getIndex(), ite2->m_priority, ite2->m_seqNo, ite2->m_val);
+		if (rite2.isExist()) printf("rite2:[%d] priority=%d, seqNo=%d, value=%d\n", rite2.getIndex(), rite2->m_priority, rite2->m_seqNo, rite2->m_val);
+		if (ite2_end.isExist()) printf("ite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_priority, ite2_end->m_seqNo, ite2_end->m_val);
+		if (rite2_end.isExist()) printf("rite2_end:[%d] priority=%d, seqNo=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_priority, rite2_end->m_seqNo, rite2_end->m_val);
 	}
 #endif
 

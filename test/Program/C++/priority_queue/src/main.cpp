@@ -971,69 +971,107 @@ namespace binary_heap
 			{
 				iterator ite(*this);
 				++(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline const_iterator operator--(int) const
 			{
 				iterator ite(*this);
 				--(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline iterator operator++(int)
 			{
 				iterator ite(*this);
 				++(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline iterator operator--(int)
 			{
 				iterator ite(*this);
 				--(*this);
-				return ite;
+				return std::move(ite);
 			}
-			inline const_iterator& operator+=(const int val) const
+			inline const_iterator& operator+=(const typename iterator::difference_type rhs) const
 			{
-				addIndexAndUpdate(val);
+				addIndexAndUpdate(rhs);
 				return *this;
 			}
-			inline const_iterator& operator-=(const int val) const
+			inline const_iterator& operator+=(const std::size_t rhs) const
 			{
-				addIndexAndUpdate(-val);
+				return operator+=(static_cast<typename iterator::difference_type>(rhs));
+			}
+			inline const_iterator& operator-=(const typename iterator::difference_type rhs) const
+			{
+				addIndexAndUpdate(-rhs);
 				return *this;
 			}
-			inline iterator& operator+=(const int val)
+			inline const_iterator& operator-=(const std::size_t rhs) const
 			{
-				addIndexAndUpdate(val);
+				return operator-=(static_cast<typename iterator::difference_type>(rhs));
+			}
+			inline iterator& operator+=(const typename iterator::difference_type rhs)
+			{
+				addIndexAndUpdate(rhs);
 				return *this;
 			}
-			inline iterator& operator-=(const int val)
+			inline iterator& operator+=(const std::size_t rhs)
 			{
-				addIndexAndUpdate(-val);
+				return operator+=(static_cast<typename iterator::difference_type>(rhs));
+			}
+			inline iterator& operator-=(const typename iterator::difference_type rhs)
+			{
+				addIndexAndUpdate(-rhs);
 				return *this;
 			}
-			inline const_iterator operator+(const int val) const
+			inline iterator& operator-=(const std::size_t rhs)
 			{
-				iterator ite(*this);
-				ite += val;
-				return ite;
+				return operator-=(static_cast<typename iterator::difference_type>(rhs));
 			}
-			inline const_iterator operator-(const int val) const
+			inline const_iterator operator+(const typename iterator::difference_type rhs) const
 			{
 				iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite += rhs;
+				return std::move(ite);
 			}
-			inline iterator operator+(const int val)
+			inline const_iterator operator+(const std::size_t rhs) const
 			{
-				iterator ite(*this);
-				ite += val;
-				return ite;
+				return std::move(operator+(static_cast<typename iterator::difference_type>(rhs)));
 			}
-			inline iterator operator-(const int val)
+			inline const_iterator operator-(const typename iterator::difference_type rhs) const
 			{
 				iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite -= rhs;
+				return std::move(ite);
+			}
+			inline const_iterator operator-(const std::size_t rhs) const
+			{
+				return std::move(operator-(static_cast<typename iterator::difference_type>(rhs)));
+			}
+			inline iterator operator+(const typename iterator::difference_type rhs)
+			{
+				iterator ite(*this);
+				ite += rhs;
+				return std::move(ite);
+			}
+			inline iterator operator+(const std::size_t rhs)
+			{
+				return std::move(operator+(static_cast<typename iterator::difference_type>(rhs)));
+			}
+			inline iterator operator-(const typename iterator::difference_type rhs)
+			{
+				iterator ite(*this);
+				ite -= rhs;
+				return std::move(ite);
+			}
+			inline iterator operator-(const std::size_t rhs)
+			{
+				return std::move(operator-(static_cast<typename iterator::difference_type>(rhs)));
+			}
+			inline typename iterator::difference_type operator-(const iterator rhs)
+			{
+				if (m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX || m_index < rhs.m_index)
+					return 0;
+				return m_index - rhs.m_index;
 			}
 		public:
 			//ムーブオペレータ
@@ -1213,69 +1251,107 @@ namespace binary_heap
 			{
 				reverse_iterator ite(*this);
 				++(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline const_reverse_iterator operator--(int) const
 			{
 				reverse_iterator ite(*this);
 				--(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline reverse_iterator operator++(int)
 			{
 				reverse_iterator ite(*this);
 				++(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline reverse_iterator operator--(int)
 			{
 				reverse_iterator ite(*this);
 				--(*this);
-				return ite;
+				return std::move(ite);
 			}
-			inline const_reverse_iterator& operator+=(const int val) const
+			inline const_reverse_iterator& operator+=(const typename reverse_iterator::difference_type rhs) const
 			{
-				addIndexAndUpdate(val);
+				addIndexAndUpdate(rhs);
 				return *this;
 			}
-			inline const_reverse_iterator& operator-=(const int val) const
+			inline const_reverse_iterator& operator+=(const std::size_t rhs) const
 			{
-				addIndexAndUpdate(-val);
+				return operator+=(static_cast<typename reverse_iterator::difference_type>(rhs));
+			}
+			inline const_reverse_iterator& operator-=(const typename reverse_iterator::difference_type rhs) const
+			{
+				addIndexAndUpdate(-rhs);
 				return *this;
 			}
-			inline reverse_iterator& operator+=(const int val)
+			inline const_reverse_iterator& operator-=(const std::size_t rhs) const
 			{
-				addIndexAndUpdate(val);
+				return operator-=(static_cast<typename reverse_iterator::difference_type>(rhs));
+			}
+			inline reverse_iterator& operator+=(const typename reverse_iterator::difference_type rhs)
+			{
+				addIndexAndUpdate(rhs);
 				return *this;
 			}
-			inline reverse_iterator& operator-=(const int val)
+			inline reverse_iterator& operator+=(const std::size_t rhs)
 			{
-				addIndexAndUpdate(-val);
+				return operator+=(static_cast<typename reverse_iterator::difference_type>(rhs));
+			}
+			inline reverse_iterator& operator-=(const typename reverse_iterator::difference_type rhs)
+			{
+				addIndexAndUpdate(-rhs);
 				return *this;
 			}
-			inline const_reverse_iterator operator+(const int val) const
+			inline reverse_iterator& operator-=(const std::size_t rhs)
 			{
-				reverse_iterator ite(*this);
-				ite += val;
-				return ite;
+				return operator-=(static_cast<typename reverse_iterator::difference_type>(rhs));
 			}
-			inline const_reverse_iterator operator-(const int val) const
+			inline const_reverse_iterator operator+(const typename reverse_iterator::difference_type rhs) const
 			{
 				reverse_iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite += rhs;
+				return std::move(ite);
 			}
-			inline reverse_iterator operator+(const int val)
+			inline const_reverse_iterator operator+(const std::size_t rhs) const
 			{
-				reverse_iterator ite(*this);
-				ite += val;
-				return ite;
+				return std::move(operator+(static_cast<typename reverse_iterator::difference_type>(rhs)));
 			}
-			inline reverse_iterator operator-(const int val)
+			inline const_reverse_iterator operator-(const typename reverse_iterator::difference_type rhs) const
 			{
 				reverse_iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite -= rhs;
+				return std::move(ite);
+			}
+			inline const_reverse_iterator operator-(const std::size_t rhs) const
+			{
+				return std::move(operator-(static_cast<typename reverse_iterator::difference_type>(rhs)));
+			}
+			inline reverse_iterator operator+(const typename reverse_iterator::difference_type rhs)
+			{
+				reverse_iterator ite(*this);
+				ite += rhs;
+				return std::move(ite);
+			}
+			inline reverse_iterator operator+(const std::size_t rhs)
+			{
+				return std::move(operator+(static_cast<typename reverse_iterator::difference_type>(rhs)));
+			}
+			inline reverse_iterator operator-(const typename reverse_iterator::difference_type rhs)
+			{
+				reverse_iterator ite(*this);
+				ite -= rhs;
+				return std::move(ite);
+			}
+			inline reverse_iterator operator-(const std::size_t rhs)
+			{
+				return std::move(operator-(static_cast<typename reverse_iterator::difference_type>(rhs)));
+			}
+			inline typename reverse_iterator::difference_type operator-(const reverse_iterator rhs)
+			{
+				if (m_index == INVALID_INDEX || rhs.m_index == INVALID_INDEX || rhs.m_index < m_index)
+					return 0;
+				return rhs.m_index - m_index;
 			}
 		public:
 			//ムーブオペレータ

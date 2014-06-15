@@ -2637,70 +2637,106 @@ namespace rb_tree
 			{
 				iterator ite(*this);
 				++(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline const_iterator operator--(int) const
 			{
 				iterator ite(*this);
 				--(*this);
-				return ite;
+				return  std::move(ite);
 			}
 			inline iterator operator++(int)
 			{
 				iterator ite(*this);
 				++(*this);
-				return ite;
+				return  std::move(ite);
 			}
 			inline iterator operator--(int)
 			{
 				iterator ite(*this);
 				--(*this);
-				return ite;
+				return  std::move(ite);
 			}
-			inline const_iterator& operator+=(const int val) const
+			inline const_iterator& operator+=(const typename iterator::difference_type rhs) const
 			{
-				updateForward(val);
+				updateForward(rhs);
 				return *this;
 			}
-			inline const_iterator& operator-=(const int val) const
+			inline const_iterator& operator+=(const std::size_t rhs) const
 			{
-				updateBackward(val);
+				return operator+=(static_cast<typename iterator::difference_type>(rhs));
+			}
+			inline const_iterator& operator-=(const typename iterator::difference_type rhs) const
+			{
+				updateBackward(rhs);
 				return *this;
 			}
-			inline iterator& operator+=(const int val)
+			inline const_iterator& operator-=(const std::size_t rhs) const
 			{
-				updateForward(val);
+				return operator-=(static_cast<typename iterator::difference_type>(rhs));
+			}
+			inline iterator& operator+=(const typename iterator::difference_type rhs)
+			{
+				updateForward(rhs);
 				return *this;
 			}
-			inline iterator& operator-=(const int val)
+			inline iterator& operator+=(const std::size_t rhs)
 			{
-				updateBackward(val);
+				return operator+=(static_cast<typename iterator::difference_type>(rhs));
+			}
+			inline iterator& operator-=(const typename iterator::difference_type rhs)
+			{
+				updateBackward(rhs);
 				return *this;
 			}
-			inline const_iterator operator+(const int val) const
+			inline iterator& operator-=(const std::size_t rhs)
+			{
+				return operator-=(static_cast<typename iterator::difference_type>(rhs));
+			}
+			inline const_iterator operator+(const typename iterator::difference_type rhs) const
 			{
 				iterator ite(*this);
-				ite += val;
-				return ite;
+				ite += rhs;
+				return  std::move(ite);
 			}
-			inline const_iterator operator-(const int val) const
+			inline const_iterator operator+(const std::size_t rhs) const
+			{
+				return std::move(operator+(static_cast<typename iterator::difference_type>(rhs)));
+			}
+			inline const_iterator operator-(const typename iterator::difference_type rhs) const
 			{
 				iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite -= rhs;
+				return  std::move(ite);
 			}
-			inline iterator operator+(const int val)
+			inline const_iterator operator-(const std::size_t rhs) const
+			{
+				return std::move(operator-(static_cast<typename iterator::difference_type>(rhs)));
+			}
+			inline iterator operator+(const typename iterator::difference_type rhs)
 			{
 				iterator ite(*this);
-				ite += val;
-				return ite;
+				ite += rhs;
+				return  std::move(ite);
 			}
-			inline iterator operator-(const int val)
+			inline iterator operator+(const std::size_t rhs)
+			{
+				return std::move(operator+(static_cast<typename iterator::difference_type>(rhs)));
+			}
+			inline iterator operator-(const typename iterator::difference_type rhs)
 			{
 				iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite -= rhs;
+				return  std::move(ite);
 			}
+			inline iterator operator-(const std::size_t rhs)
+			{
+				return std::move(operator-(static_cast<typename iterator::difference_type>(rhs)));
+			}
+			//inline typename iterator::difference_type operator-(const iterator rhs)
+			//{
+			//	return ???;
+			//}
 		public:
 			//ムーブオペレータ
 			inline iterator& operator=(const_iterator&& rhs)
@@ -2939,70 +2975,106 @@ namespace rb_tree
 			{
 				reverse_iterator ite(*this);
 				++(*this);
-				return ite;
+				return  std::move(ite);
 			}
 			inline const_reverse_iterator operator--(int) const
 			{
 				reverse_iterator ite(*this);
 				--(*this);
-				return ite;
+				return  std::move(ite);
 			}
 			inline reverse_iterator operator++(int)
 			{
 				reverse_iterator ite(*this);
 				++(*this);
-				return ite;
+				return  std::move(ite);
 			}
 			inline reverse_iterator operator--(int)
 			{
 				reverse_iterator ite(*this);
 				--(*this);
-				return ite;
+				return  std::move(ite);
 			}
-			inline const_reverse_iterator& operator+=(const int val) const
+			inline const_reverse_iterator& operator+=(const typename reverse_iterator::difference_type rhs) const
 			{
-				updateForward(val);
+				updateForward(rhs);
 				return *this;
 			}
-			inline const_reverse_iterator& operator-=(const int val) const
+			inline const_reverse_iterator& operator+=(const std::size_t rhs) const
 			{
-				updateBackward(val);
+				return operator+=(static_cast<typename reverse_iterator::difference_type>(rhs));
+			}
+			inline const_reverse_iterator& operator-=(const typename reverse_iterator::difference_type rhs) const
+			{
+				updateBackward(rhs);
 				return *this;
 			}
-			inline reverse_iterator& operator+=(const int val)
+			inline const_reverse_iterator& operator-=(const std::size_t rhs) const
 			{
-				updateForward(val);
+				return operator-=(static_cast<typename reverse_iterator::difference_type>(rhs));
+			}
+			inline reverse_iterator& operator+=(const typename reverse_iterator::difference_type rhs)
+			{
+				updateForward(rhs);
 				return *this;
 			}
-			inline reverse_iterator& operator-=(const int val)
+			inline reverse_iterator& operator+=(const std::size_t rhs)
 			{
-				updateBackward(val);
+				return operator+=(static_cast<typename reverse_iterator::difference_type>(rhs));
+			}
+			inline reverse_iterator& operator-=(const typename reverse_iterator::difference_type rhs)
+			{
+				updateBackward(rhs);
 				return *this;
 			}
-			inline const_reverse_iterator operator+(const int val) const
+			inline reverse_iterator& operator-=(const std::size_t rhs)
+			{
+				return operator-=(static_cast<typename reverse_iterator::difference_type>(rhs));
+			}
+			inline const_reverse_iterator operator+(const typename reverse_iterator::difference_type rhs) const
 			{
 				reverse_iterator ite(*this);
-				ite += val;
-				return ite;
+				ite += rhs;
+				return  std::move(ite);
 			}
-			inline const_reverse_iterator operator-(const int val) const
+			inline const_reverse_iterator operator+(const std::size_t rhs) const
+			{
+				return std::move(operator+(static_cast<typename reverse_iterator::difference_type>(rhs)));
+			}
+			inline const_reverse_iterator operator-(const typename reverse_iterator::difference_type rhs) const
 			{
 				reverse_iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite -= rhs;
+				return  std::move(ite);
 			}
-			inline reverse_iterator operator+(const int val)
+			inline const_reverse_iterator operator-(const std::size_t rhs) const
+			{
+				return std::move(operator-(static_cast<typename reverse_iterator::difference_type>(rhs)));
+			}
+			inline reverse_iterator operator+(const typename reverse_iterator::difference_type rhs)
 			{
 				reverse_iterator ite(*this);
-				ite += val;
-				return ite;
+				ite += rhs;
+				return  std::move(ite);
 			}
-			inline reverse_iterator operator-(const int val)
+			inline reverse_iterator operator+(const std::size_t rhs)
+			{
+				return std::move(operator+(static_cast<typename reverse_iterator::difference_type>(rhs)));
+			}
+			inline reverse_iterator operator-(const typename reverse_iterator::difference_type rhs)
 			{
 				reverse_iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite -= rhs;
+				return  std::move(ite);
 			}
+			inline reverse_iterator operator-(const std::size_t rhs)
+			{
+				return std::move(operator-(static_cast<typename reverse_iterator::difference_type>(rhs)));
+			}
+			//inline typename reverse_iterator::difference_type operator-(const reverse_iterator rhs)
+			//{
+			//	return ???;
+			//}
 		public:
 			//ムーブオペレータ
 			inline reverse_iterator& operator=(const_reverse_iterator&& rhs)
@@ -3343,15 +3415,15 @@ namespace rb_tree
 			ite.m_node = const_cast<node_type*>(searchNode<ope_type>(m_root, key, ite.m_stack, type));
 			return ite;
 		}
-		const_iterator find(const key_type key, const match_type_t type = FOR_MATCH) const
+		inline const_iterator find(const key_type key, const match_type_t type = FOR_MATCH) const
 		{
 			const_iterator ite;
-			return _find(ite, key, type);
+			return std::move(_find(ite, key, type));
 		}
-		iterator find(const key_type key, const match_type_t type = FOR_MATCH)
+		inline iterator find(const key_type key, const match_type_t type = FOR_MATCH)
 		{
 			iterator ite;
-			return _find(ite, key, type);
+			return std::move(_find(ite, key, type));
 		}
 		inline std::size_t count(const key_type key) const { return countNodes<ope_type>(m_root, key); }
 		const_iterator& _equal_range(const_iterator& ite, const key_type key) const
@@ -3361,15 +3433,15 @@ namespace rb_tree
 				++ite;
 			return ite;
 		}
-		const_iterator equal_range(const key_type key) const
+		inline const_iterator equal_range(const key_type key) const
 		{
 			const_iterator ite;
-			return _equal_range(ite, key);
+			return std::move(_equal_range(ite, key));
 		}
-		iterator equal_range(const key_type key)
+		inline iterator equal_range(const key_type key)
 		{
 			iterator ite;
-			return _equal_range(ite, key);
+			return std::move(_equal_range(ite, key));
 		}
 	public:
 		//ムーブコンストラクタ

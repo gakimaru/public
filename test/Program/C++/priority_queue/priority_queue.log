@@ -203,7 +203,7 @@ depth_max=4 (limit for showing=4)
 
 --- Dequeue ---
 [5: 1] [5: 2] [5: 6] [5:14] [5:19] [4: 3] [4: 5] [4: 8] [4:10] [4:15] 
-*elapsed_time=0.001000800 sec
+*elapsed_time=0.000000000 sec
 
 --- Show tree (count=10) ---
 depth_max=3 (limit for showing=4)
@@ -270,4 +270,4 @@ pop: [2: 3](seq=2)
 pop: [1: 5](seq=4)
 
 --- end ---
-*elapsed_time=0.001000800 sec
+*elapsed_time=0.002001400 sec

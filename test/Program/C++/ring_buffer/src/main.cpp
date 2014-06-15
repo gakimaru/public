@@ -1,7 +1,7 @@
 //--------------------------------------------------------------------------------
 //リングバッファテスト用設定とコンパイラスイッチ
 static const int TEST_DATA_NUM = 10;//大量登録テストデータの登録数
-//static const int TEST_DATA_NUM = 1000000;//大量登録テストデータの登録数
+//static const int TEST_DATA_NUM = 10000000;//大量登録テストデータの登録数
 
 #define PRINT_TEST_DATA_DETAIL//テストデータの詳細タを表示する場合は、このマクロを有効化する
 //#define TEST_DATA_WATCH_CONSTRUCTOR//コンストラクタ／デストラクタ／代入演算子の動作を確認する場合、このマクロを有効化する
@@ -623,7 +623,7 @@ struct less{
 	}
 };
 //----------------------------------------
-//探索用標準プレディケート関数オブジェクト：eqal_to
+//線形探索用標準プレディケート関数オブジェクト：eqal_to
 //※対象オブジェクトが operator==に対応している必要あり
 template<typename T>
 struct equal_to{
@@ -634,7 +634,7 @@ struct equal_to{
 	}
 };
 //----------------------------------------
-//探索用標準比較関数オブジェクト：compare_to
+//二分探索用標準比較関数オブジェクト：compare_to
 //※対象オブジェクトが operator==, operator<に対応している必要あり
 template<typename T>
 struct compare_to{
@@ -777,12 +777,139 @@ inline void iteratorRotateValues(ITERATOR val1, ITERATOR val2, int step)
 //----------------------------------------
 //イテレータの差（要素数）を返す
 template<class ITERATOR>
-inline int iteratorDistance(ITERATOR begin, ITERATOR end)
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::input_iterator_tag)
 {
-	int size = 0;
+	typename ITERATOR::difference_type size = 0;
 	for (; begin < end; ++begin)
 		++size;
 	return size;
+}
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::output_iterator_tag)
+{
+	typename ITERATOR::difference_type size = 0;
+	for (; begin < end; ++begin)
+		++size;
+	return size;
+}
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::forward_iterator_tag)
+{
+	typename ITERATOR::difference_type size = 0;
+	for (; begin < end; ++begin)
+		++size;
+	return size;
+}
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::bidirectional_iterator_tag)
+{
+	typename ITERATOR::difference_type size = 0;
+	for (; begin < end; ++begin)
+		++size;
+	return size;
+}
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::random_access_iterator_tag)
+{
+	return end - begin;
+}
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end)
+{
+	typename ITERATOR::iterator_category category;
+	return iteratorDifference(begin, end, category);
+}
+
+//----------------------------------------
+//for-each
+template<class ITERATOR, class FUNCTOR>
+void forEach(ITERATOR begin, ITERATOR end, FUNCTOR functor)
+{
+	for (; begin < end; ++begin)
+	{
+		functor(*begin);
+	}
+}
+template<class CONTAINER, class FUNCTOR>
+void forEach(CONTAINER container, FUNCTOR functor)
+{
+	typename CONTAINER::iterator begin = container.begin();
+	typename CONTAINER::iterator end = container.end();
+	forEach(begin, end, functor);
+}
+template<typename T, std::size_t N, class FUNCTOR>
+void forEach(T(&array)[N], FUNCTOR functor)
+{
+	T* begin = array;
+	T* end = array + N;
+	forEach(begin, end, functor);
+}
+template<typename T, std::size_t N, class FUNCTOR>
+void forEach(const T(&array)[N], FUNCTOR functor)
+{
+	const T* begin = array;
+	const T* end = array + N;
+	forEach(begin, end, functor);
+}
+template<typename T, class FUNCTOR>
+void forEach(T* array, const std::size_t size, FUNCTOR functor)
+{
+	T* begin = array;
+	T* end = array + size;
+	forEach(begin, end, functor);
+}
+template<typename T, class FUNCTOR>
+void forEach(const T* array, const std::size_t size, FUNCTOR functor)
+{
+	const T* begin = array;
+	const T* end = array + size;
+	forEach(begin, end, functor);
+}
+//----------------------------------------
+//reverse for-each
+template<class ITERATOR, class FUNCTOR>
+void reverseForEach(ITERATOR begin, ITERATOR end, FUNCTOR functor)
+{
+	while (begin > end)
+	{
+		--begin;
+		functor(*begin);
+	}
+}
+template<class CONTAINER, class FUNCTOR>
+void reverseForEach(CONTAINER container, FUNCTOR functor)
+{
+	typename CONTAINER::reverse_iterator rbegin = container.rbegin();
+	typename CONTAINER::reverse_iterator rend = container.rend();
+	forEach(rbegin, rend, functor);//リバースイテレータ＋forEachで処理
+}
+template<typename T, std::size_t N, class FUNCTOR>
+void reverseForEach(T(&array)[N], FUNCTOR functor)
+{
+	T* begin = array + N;
+	T* end = array;
+	reverseForEach(begin, end, functor);
+}
+template<typename T, std::size_t N, class FUNCTOR>
+void reverseForEach(const T(&array)[N], FUNCTOR functor)
+{
+	const T* begin = array + N;
+	const T* end = array;
+	reverseForEach(begin, end, functor);
+}
+template<typename T, class FUNCTOR>
+void reverseForEach(T* array, const std::size_t size, FUNCTOR functor)
+{
+	T* begin = array + size;
+	T* end = array;
+	reverseForEach(begin, end, functor);
+}
+template<typename T, class FUNCTOR>
+void reverseForEach(const T* array, const std::size_t size, FUNCTOR functor)
+{
+	const T* begin = array + size;
+	const T* end = array;
+	reverseForEach(begin, end, functor);
 }
 
 //========================================
@@ -847,7 +974,7 @@ std::size_t iteratorShellSort(ITERATOR begin, ITERATOR end, PREDICATE predicate)
 	if (begin == end)
 		return 0;
 	std::size_t swapped_count = 0;
-	const int size = iteratorDistance(begin, end);
+	const typename ITERATOR::difference_type size = iteratorDifference(begin, end);
 	const int h_max = size / 3;
 	int h = 1;
 	while (h <= h_max)
@@ -883,6 +1010,130 @@ std::size_t iteratorShellSort(ITERATOR begin, ITERATOR end, PREDICATE predicate)
 	return swapped_count;
 }
 iteratorSortFuncSet(iteratorShellSort);
+
+//========================================
+//ソートアルゴリズム分類：混成ソート
+//========================================
+
+//----------------------------------------
+//アルゴリズム：イントロソート ※イテレータ対応版
+//----------------------------------------
+//・最良計算時間：O(n log n)
+//・平均計算時間：O(n log n)
+//・最悪計算時間：O(n log n)
+//・メモリ使用量：O(n log n) ※ループ処理版は O(32*2)
+//・安定性：　　　×
+//----------------------------------------
+template<class ITERATOR, class PREDICATE>
+std::size_t _iteratorIntroSort(ITERATOR begin, ITERATOR end, PREDICATE predicate)
+{
+	int depth_max = 0;//ヒープソートに切り替える再帰（スタック）の深さ
+	typename ITERATOR::difference_type size = iteratorDifference(begin, end);
+	for (std::size_t size_tmp = size; size_tmp > 1; size_tmp >>= 1, ++depth_max);
+	//--------------------
+	//クイックソート：スタック処理版
+	//※再帰処理版は省略
+	static const std::size_t SIZE_THRESHOLD = 16;//32;//挿入ソートに切り替える件数
+	std::size_t swapped_count = 0;
+	struct stack_t
+	{
+		ITERATOR begin;
+		ITERATOR end;
+		int depth;
+	};
+	static const int STACK_DEPTH_MAX = 32 * 2;
+	stack_t stack[STACK_DEPTH_MAX];
+	//最初の配列をスタックにプッシュ
+	stack_t* stack_p = &stack[0];
+	stack_p->begin = begin;
+	stack_p->end = end;
+	stack_p->depth = depth_max;
+	int stack_curr = 1;//スタック位置
+	while (stack_curr > 0)
+	{
+		//配列をスタックから取得
+		stack_p = &stack[--stack_curr];
+		ITERATOR _begin_range = std::move(stack_p->begin);
+		ITERATOR _end_range = std::move(stack_p->end);
+		const typename ITERATOR::difference_type _size = iteratorDifference(_begin_range, _end_range);
+		const int _depth = stack_p->depth;
+		//配列の範囲情報
+		ITERATOR _begin = _begin_range;
+		ITERATOR _end = _end_range - 1;
+		//軸を決定
+		ITERATOR _mid = _begin + (_size >> 1);
+		ITERATOR _pivot =
+			predicate(_begin, _mid) ?
+				predicate(_mid, _end) ?
+					_mid :
+					predicate(_end, _begin) ?
+						_begin :
+						_end :
+				predicate(_end, _mid) ?
+					_mid :
+					predicate(_begin, _end) ?
+						_begin :
+						_end;
+		//軸未満の配列と軸以上の配列に二分
+		while (true)
+		{
+			while (predicate(_begin, _pivot))
+				++_begin;
+			while (predicate(_pivot, _end))
+				--_end;
+			if (_begin >= _end)
+				break;
+			iteratorSwapValues(_begin, _end);
+			_pivot = _pivot == _begin ? _end : _pivot == _end ? _begin : _pivot;//軸の位置調整（軸の位置も入れ替わるため）
+			++swapped_count;
+			++_begin;
+			--_end;
+		}
+		//recursive = 0 : 軸未満の配列をプッシュ
+		//            1 : 軸以上の配列をプッシュ
+		for (int recursive = 0; recursive < 2; ++recursive)
+		{
+			ITERATOR _new_begin = recursive == 0 ? _begin_range : _end + 1;
+			ITERATOR _new_end = recursive == 0 ? _begin : _end_range;
+			const typename ITERATOR::difference_type _new_size = _new_end - _new_begin;
+			const int _new_depth = _depth - 1;
+			if (_new_size >= 1)
+			{
+				if (_new_size < SIZE_THRESHOLD)
+				{
+					//swapped_count += iteratorInsertionSort(_new_begin, _new_end, predicate);//【本来の処理】挿入ソートに切り替え
+					//swapped_count += iteratorCombSort(_new_begin, _new_end, predicate);//【改良】コムソートに切り替え
+					swapped_count += iteratorShellSort(_new_begin, _new_end, predicate);//【改良】シェルソートに切り替え
+				}
+				else if (_new_depth == 0)
+				{
+					//swapped_count += iteratorHeapSort(_new_begin, _new_end, predicate);//【本来の処理】ヒープソートに切り替え
+					//swapped_count += iteratorCombSort(_new_begin, _new_end, predicate);//【改良】コムソートに切り替え
+					swapped_count += iteratorShellSort(_new_begin, _new_end, predicate);//【改良】シェルソートに切り替え
+				}
+				else
+				{
+					//再帰
+					stack_p = &stack[stack_curr++];
+					stack_p->begin = _new_begin;
+					stack_p->end = _new_end;
+					stack_p->depth = _new_depth;
+				}
+			}
+		}
+	}
+	return swapped_count;
+}
+template<class ITERATOR, class PREDICATE>
+inline std::size_t iteratorIntroSort(ITERATOR begin, ITERATOR end, PREDICATE predicate)
+{
+	if (begin == end)
+		return 0;
+	if (iteratorCalcUnordered(begin, end, predicate) == 0)
+		return 0;
+	return _iteratorIntroSort(begin, end, predicate);
+}
+iteratorSortFuncSet(iteratorIntroSort);
 
 //========================================
 //探索アルゴリズム
@@ -924,7 +1175,7 @@ ITERATOR iteratorBinarySearch(ITERATOR begin, ITERATOR end, COMPARISON compariso
 {
 	if (begin == end)
 		return end;
-	const int size = iteratorDistance(begin, end);
+	const int size = iteratorDifference(begin, end);
 	int range = size;
 	while (true)
 	{
@@ -1194,69 +1445,107 @@ namespace ring_buffer
 			{
 				iterator ite(*this);
 				++(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline const_iterator operator--(int) const
 			{
 				iterator ite(*this);
 				--(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline iterator operator++(int)
 			{
 				iterator ite(*this);
 				++(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline iterator operator--(int)
 			{
 				iterator ite(*this);
 				--(*this);
-				return ite;
+				return std::move(ite);
 			}
-			inline const_iterator& operator+=(const int val) const
+			inline const_iterator& operator+=(const typename iterator::difference_type rhs) const
 			{
-				addIndexAndUpdate(val);
+				addIndexAndUpdate(rhs);
 				return *this;
 			}
-			inline const_iterator& operator-=(const int val) const
+			inline const_iterator& operator+=(const std::size_t rhs) const
 			{
-				addIndexAndUpdate(-val);
+				return operator+=(static_cast<typename iterator::difference_type>(rhs));
+			}
+			inline const_iterator& operator-=(const typename iterator::difference_type rhs) const
+			{
+				addIndexAndUpdate(-rhs);
 				return *this;
 			}
-			inline iterator& operator+=(const int val)
+			inline const_iterator& operator-=(const std::size_t rhs) const
 			{
-				addIndexAndUpdate(val);
+				return operator-=(static_cast<typename iterator::difference_type>(rhs));
+			}
+			inline iterator& operator+=(const typename iterator::difference_type rhs)
+			{
+				addIndexAndUpdate(rhs);
 				return *this;
 			}
-			inline iterator& operator-=(const int val)
+			inline iterator& operator+=(const std::size_t rhs)
 			{
-				addIndexAndUpdate(-val);
+				return operator+=(static_cast<typename iterator::difference_type>(rhs));
+			}
+			inline iterator& operator-=(const typename iterator::difference_type rhs)
+			{
+				addIndexAndUpdate(-rhs);
 				return *this;
 			}
-			inline const_iterator operator+(const int val) const
+			inline iterator& operator-=(const std::size_t rhs)
 			{
-				iterator ite(*this);
-				ite += val;
-				return ite;
+				return operator-=(static_cast<typename iterator::difference_type>(rhs));
 			}
-			inline const_iterator operator-(const int val) const
+			inline const_iterator operator+(const typename iterator::difference_type rhs) const
 			{
 				iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite += rhs;
+				return std::move(ite);
 			}
-			inline iterator operator+(const int val)
+			inline const_iterator operator+(const std::size_t rhs) const
 			{
-				iterator ite(*this);
-				ite += val;
-				return ite;
+				return std::move(operator+(static_cast<typename iterator::difference_type>(rhs)));
 			}
-			inline iterator operator-(const int val)
+			inline const_iterator operator-(const typename iterator::difference_type rhs) const
 			{
 				iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite -= rhs;
+				return std::move(ite);
+			}
+			inline const_iterator operator-(const std::size_t rhs) const
+			{
+				return std::move(operator-(static_cast<typename iterator::difference_type>(rhs)));
+			}
+			inline iterator operator+(const typename iterator::difference_type rhs)
+			{
+				iterator ite(*this);
+				ite += rhs;
+				return std::move(ite);
+			}
+			inline iterator operator+(const std::size_t rhs)
+			{
+				return std::move(operator+(static_cast<typename iterator::difference_type>(rhs)));
+			}
+			inline iterator operator-(const typename iterator::difference_type rhs)
+			{
+				iterator ite(*this);
+				ite -= rhs;
+				return std::move(ite);
+			}
+			inline iterator operator-(const std::size_t rhs)
+			{
+				return std::move(operator-(static_cast<typename iterator::difference_type>(rhs)));
+			}
+			inline typename iterator::difference_type operator-(const iterator rhs)
+			{
+				if (m_logicalIndex == INVALID_INDEX || rhs.m_logicalIndex == INVALID_INDEX || m_logicalIndex < rhs.m_logicalIndex)
+					return 0;
+				return m_logicalIndex - rhs.m_logicalIndex;
 			}
 		public:
 			//ムーブオペレータ
@@ -1445,69 +1734,107 @@ namespace ring_buffer
 			{
 				reverse_iterator ite(*this);
 				++(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline const_reverse_iterator operator--(int) const
 			{
 				reverse_iterator ite(*this);
 				--(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline reverse_iterator operator++(int)
 			{
 				reverse_iterator ite(*this);
 				++(*this);
-				return ite;
+				return std::move(ite);
 			}
 			inline reverse_iterator operator--(int)
 			{
 				reverse_iterator ite(*this);
 				--(*this);
-				return ite;
+				return std::move(ite);
 			}
-			inline const_reverse_iterator& operator+=(const int val) const
+			inline const_reverse_iterator& operator+=(const typename reverse_iterator::difference_type rhs) const
 			{
-				addIndexAndUpdate(val);
+				addIndexAndUpdate(rhs);
 				return *this;
 			}
-			inline const_reverse_iterator& operator-=(const int val) const
+			inline const_reverse_iterator& operator+=(const std::size_t rhs) const
 			{
-				addIndexAndUpdate(-val);
+				return operator+=(static_cast<typename reverse_iterator::difference_type>(rhs));
+			}
+			inline const_reverse_iterator& operator-=(const typename reverse_iterator::difference_type rhs) const
+			{
+				addIndexAndUpdate(-rhs);
 				return *this;
 			}
-			inline reverse_iterator& operator+=(const int val)
+			inline const_reverse_iterator& operator-=(const std::size_t rhs) const
 			{
-				addIndexAndUpdate(val);
+				return operator-=(static_cast<typename reverse_iterator::difference_type>(rhs));
+			}
+			inline reverse_iterator& operator+=(const typename reverse_iterator::difference_type rhs)
+			{
+				addIndexAndUpdate(rhs);
 				return *this;
 			}
-			inline reverse_iterator& operator-=(const int val)
+			inline reverse_iterator& operator+=(const std::size_t rhs)
 			{
-				addIndexAndUpdate(-val);
+				return operator+=(static_cast<typename reverse_iterator::difference_type>(rhs));
+			}
+			inline reverse_iterator& operator-=(const typename reverse_iterator::difference_type rhs)
+			{
+				addIndexAndUpdate(-rhs);
 				return *this;
 			}
-			inline const_reverse_iterator operator+(const int val) const
+			inline reverse_iterator& operator-=(const std::size_t rhs)
 			{
-				reverse_iterator ite(*this);
-				ite += val;
-				return ite;
+				return operator-=(static_cast<typename reverse_iterator::difference_type>(rhs));
 			}
-			inline const_reverse_iterator operator-(const int val) const
+			inline const_reverse_iterator operator+(const typename reverse_iterator::difference_type rhs) const
 			{
 				reverse_iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite += rhs;
+				return std::move(ite);
 			}
-			inline reverse_iterator operator+(const int val)
+			inline const_reverse_iterator operator+(const std::size_t rhs) const
 			{
-				reverse_iterator ite(*this);
-				ite += val;
-				return ite;
+				return std::move(operator+(static_cast<typename reverse_iterator::difference_type>(rhs)));
 			}
-			inline reverse_iterator operator-(const int val)
+			inline const_reverse_iterator operator-(const typename reverse_iterator::difference_type rhs) const
 			{
 				reverse_iterator ite(*this);
-				ite -= val;
-				return ite;
+				ite -= rhs;
+				return std::move(ite);
+			}
+			inline const_reverse_iterator operator-(const std::size_t rhs) const
+			{
+				return std::move(operator-(static_cast<typename reverse_iterator::difference_type>(rhs)));
+			}
+			inline reverse_iterator operator+(const typename reverse_iterator::difference_type rhs)
+			{
+				reverse_iterator ite(*this);
+				ite += rhs;
+				return std::move(ite);
+			}
+			inline reverse_iterator operator+(const std::size_t rhs)
+			{
+				return std::move(operator+(static_cast<typename reverse_iterator::difference_type>(rhs)));
+			}
+			inline reverse_iterator operator-(const typename reverse_iterator::difference_type rhs)
+			{
+				reverse_iterator ite(*this);
+				ite -= rhs;
+				return std::move(ite);
+			}
+			inline reverse_iterator operator-(const std::size_t rhs)
+			{
+				return std::move(operator-(static_cast<typename reverse_iterator::difference_type>(rhs)));
+			}
+			inline typename reverse_iterator::difference_type operator-(const reverse_iterator rhs)
+			{
+				if (m_logicalIndex == INVALID_INDEX || rhs.m_logicalIndex == INVALID_INDEX || rhs.m_logicalIndex < m_logicalIndex)
+					return 0;
+				return rhs.m_logicalIndex - m_logicalIndex;
 			}
 		public:
 			//ムーブオペレータ
@@ -2096,7 +2423,10 @@ namespace ring_buffer
 			{
 				value_type* dst = _ref_element(_dst_pos);
 				value_type* src = _ref_element(_src_pos);
-				*dst = std::move(*src);
+				if (_dst_pos >= m_size)
+					new(dst)value_type(std::move(*src));//ムーブコンストラクタ
+				else
+					*dst = std::move(*src);//ムーブオペレータ
 				++_dst_pos;
 				++_src_pos;
 			}
@@ -2110,7 +2440,10 @@ namespace ring_buffer
 			{
 				value_type* dst = _ref_element(_dst_pos);
 				value_type* src = _ref_element(_src_pos);
-				*dst = std::move(*src);
+				if (_dst_pos >= m_size)
+					new(dst)value_type(std::move(*src));//ムーブコンストラクタ
+				else
+					*dst = std::move(*src);//ムーブオペレータ
 				--_dst_pos;
 				--_src_pos;
 			}
@@ -2244,13 +2577,13 @@ namespace ring_buffer
 		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
 		void sort()
 		{
-			iteratorShellSort(begin(), end(), typename ope_type::sort_predicate());
+			iteratorIntroSort(begin(), end(), typename ope_type::sort_predicate());
 		}
 		//※プレディケート関数指定版
 		template<class PREDICATE>
 		void sort(PREDICATE predicate)
 		{
-			iteratorShellSort(begin(), end(), predicate);
+			iteratorIntroSort(begin(), end(), predicate);
 		}
 		//安定ソート
 		//※挿入ソートを使用
@@ -2511,6 +2844,11 @@ struct data_t
 		return m_key < key;
 	}
 };
+//※std::binary_searchを使用する場合は、このオペレータも必要
+static bool operator<(const int key, const data_t& rhs)
+{
+	return key < rhs.m_key;
+}
 //----------------------------------------
 //テストデータ操作クラス①：デフォルトのまま使う
 struct ope_t : public ring_buffer::base_ope_t<ope_t, data_t>{};
@@ -2571,7 +2909,7 @@ int main(const int argc, const char* argv[])
 {
 	//--------------------
 	//テスト①：プリミティブ型の配列を扱う場合
-	//※一部リングバッファ固有のテストを行うが、基本的に動的配列のテストと同じ
+	//※一部リングバッファ固有のテストを行うが、基本的に動的配列のテストとほとんど同じ
 	{
 		printf("--------------------------------------------------------------------------------\n");
 		printf("[Test for ring_buffer::container(Primitive type)]\n");
@@ -2590,6 +2928,8 @@ int main(const int argc, const char* argv[])
 		{
 			printf("offset=%d, size=%d, max_size=%d\n", con.offset(), con.size(), con.max_size());
 			printf("array=");
+			if (con.empty())
+				printf("(empty)");
 			for (auto val : con)
 				printf(" %d", val);
 			printf("\n");
@@ -2598,7 +2938,10 @@ int main(const int argc, const char* argv[])
 		//データを逆順に表示
 		auto printReverse = [&con]()
 		{
+			printf("offset=%d, size=%d, max_size=%d\n", con.offset(), con.size(), con.max_size());
 			printf("array(reverse)=");
+			if (con.empty())
+				printf("(empty)");
 			std::for_each(con.rbegin(), con.rend(),
 				[](int val)
 				{
@@ -2609,7 +2952,7 @@ int main(const int argc, const char* argv[])
 		};
 
 		//--------------------------------------------------------------------------------
-		//※リングバッファ固有のテスト①（ここから）※これ以外は動的配列のテストと全く同じ
+		//※リングバッファ固有のテスト①（ここから）※これ以外は動的配列のテストとほとんど同じ
 		
 		//末尾に連続プッシュ(1)
 		auto continuous_push_back = [&con](const int num)
@@ -2653,23 +2996,6 @@ int main(const int argc, const char* argv[])
 		continuous_push_back(20);
 		printAll();//全件表示
 		//printReverse();//全件逆順表示
-
-	#if 0
-		con.sort(reverse_pred);//高速ソート
-		printAll();//全件表示
-		con.sort();//高速ソート
-		printAll();//全件表示
-		con.stable_sort(reverse_pred);//安定ソート
-		printAll();//全件表示
-		con.stable_sort();//安定ソート
-		printAll();//全件表示
-		find(1);
-		find(2);
-		find(3);
-		binary_search(1);
-		binary_search(2);
-		binary_search(3);
-	#endif
 
 		//先頭から連続ポップ(2)
 		continuous_pop_front(25);
@@ -2724,6 +3050,15 @@ int main(const int argc, const char* argv[])
 		printAll();//全件表示
 		//printReverse();//全件逆順表示
 
+		//10件ほどデータの開始位置をずらす
+		{
+			for (int i = 0; i < 10; ++i)
+			{
+				con.push_back(0);
+				con.pop_front();
+			}
+		}
+
 		//--------------------------------------------------------------------------------
 		//※リングバッファ固有のテスト①（ここまで）
 
@@ -2757,6 +3092,8 @@ int main(const int argc, const char* argv[])
 		printf("[sort]\n");
 		con.sort();//高速ソート
 		//con.stable_sort();//安定ソート
+		//std::sort(con.begin(), con.end());//高速ソート(STL版)
+		//std::stable_sort(con.begin(), con.end());//安定ソート(STL版)
 		printAll();//全件表示
 
 		//逆順にソート ※カスタムプレディケート関数を使用
@@ -2765,6 +3102,8 @@ int main(const int argc, const char* argv[])
 		auto reverse_pred = [](const int lhs, const int rhs) -> bool {return lhs > rhs; };
 		con.sort(reverse_pred);//高速ソート
 		//con.stable_sort(reverse_pred);//安定ソート
+		//std::sort(con.begin(), con.end(), reverse_pred);//高速ソート(STL版)
+		//std::stable_sort(con.begin(), con.end(), reverse_pred);//安定ソート(STL版)
 		printAll();//全件表示
 
 		//ポップ(1)
@@ -2783,18 +3122,19 @@ int main(const int argc, const char* argv[])
 		{
 			int pop_val;
 			con.pop_back(pop_val);//値のコピーを受け取って末尾を削除
-			printf("pop_backl=[%d]\n", pop_val);
+			printf("pop_back=[%d]\n", pop_val);
 			printAll();//全件表示
 		}
 
-		//検索
+		//線形検索
 		printf("\n");
 		printf("[find]\n");
 		printAll();//全件表示
 		auto find = [&con](const int val)
 		{
 			printf("find_value(%d)=", val);
-			auto ite = con.find_value(val);//探索
+			auto ite = con.find_value(val);//線形探索
+			//auto ite = std::find(con.begin(), con.end(), val);//線形探索(STL版)
 			if (ite.isExist())
 			{
 				printf("%d", *ite);
@@ -2820,6 +3160,9 @@ int main(const int argc, const char* argv[])
 			auto ite = con.binary_search_value(val);//二分探索
 			if (ite.isExist())
 			{
+			//if(std::binary_search(con.begin(), con.end(), val))//二分探索(STL版)
+			//{
+			//	auto ite = std::lower_bound(con.begin(), con.end(), val);
 				printf("%d", *ite);
 				--ite;
 				if (ite.isExist())
@@ -2841,6 +3184,25 @@ int main(const int argc, const char* argv[])
 		binary_search(5);
 		binary_search(6);
 		binary_search(7);
+
+	#if 0
+		{
+			con.sort(reverse_pred);//高速ソート
+			printAll();//全件表示
+			con.sort();//高速ソート
+			printAll();//全件表示
+			con.stable_sort(reverse_pred);//安定ソート
+			printAll();//全件表示
+			con.stable_sort();//安定ソート
+			printAll();//全件表示
+			find(1);
+			find(2);
+			find(3);
+			binary_search(1);
+			binary_search(2);
+			binary_search(3);
+		}
+	#endif
 
 		//削除１：イテレータと数で指定
 		printf("\n");
@@ -2885,11 +3247,18 @@ int main(const int argc, const char* argv[])
 		printf("[assign]\n");
 		con.assign(-1, 0);//※-1で最大要素数全件に割り当て
 		printAll();//全件表示
+
+		//クリア
+		printf("\n");
+		printf("[clear]\n");
+		con.clear();
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
 	}
 
 	//--------------------
 	//テスト②：ユーザー定義型を扱う場合
-	//※一部リングバッファ固有のテストを行うが、基本的に動的配列のテストと同じ
+	//※一部リングバッファ固有のテストを行うが、基本的に動的配列のテストとほとんど同じ
 	{
 		printf("--------------------------------------------------------------------------------\n");
 		printf("[Test for ring_buffer::container(User defined type)]\n");
@@ -2935,6 +3304,7 @@ int main(const int argc, const char* argv[])
 		//データを逆順に表示
 		auto printReverse = [&con]()
 		{
+			printf("offset=%d, size=%d, max_size=%d\n", con.offset(), con.size(), con.max_size());
 			printf("array(reverse)=");
 			if (con.empty())
 			{
@@ -2951,7 +3321,7 @@ int main(const int argc, const char* argv[])
 		};
 
 		//--------------------------------------------------------------------------------
-		//※リングバッファ固有のテスト②（ここから）※これ以外は動的配列のテストと全く同じ
+		//※リングバッファ固有のテスト②（ここから）※これ以外は動的配列のテストとほとんど同じ
 
 		//末尾に連続プッシュ(1)
 		auto continuous_push_back = [&con](const int num)
@@ -3068,6 +3438,15 @@ int main(const int argc, const char* argv[])
 		printAll();//全件表示
 		//printReverse();//全件逆順表示
 
+		//10件ほどデータの開始位置をずらす
+		{
+			for (int i = 0; i < 10; ++i)
+			{
+				con.push_back(0, 0);
+				con.pop_front();
+			}
+		}
+
 		//--------------------------------------------------------------------------------
 		//※リングバッファ固有のテスト②（ここまで）
 
@@ -3115,6 +3494,8 @@ int main(const int argc, const char* argv[])
 		printf("[sort]\n");
 		con.sort();//高速ソート
 		//con.stable_sort();//安定ソート
+		//std::sort(con.begin(), con.end());//高速ソート(STL版)
+		//std::stable_sort(con.begin(), con.end());//安定ソート(STL版)
 		printAll();//全件表示
 
 		//逆順にソート ※カスタムプレディケート関数を使用
@@ -3123,6 +3504,8 @@ int main(const int argc, const char* argv[])
 		auto reverse_pred = [](const data_t& lhs, const data_t& rhs) -> bool {return lhs.m_key > rhs.m_key; };
 		con.sort(reverse_pred);//高速ソート
 		//con.stable_sort(reverse_pred);//安定ソート
+		//std::sort(con.begin(), con.end(), reverse_pred);//高速ソート(STL版)
+		//std::stable_sort(con.begin(), con.end(), reverse_pred);//安定ソート(STL版)
 		printAll();//全件表示
 
 	#if 0
@@ -3239,14 +3622,15 @@ int main(const int argc, const char* argv[])
 			printAll();//全件表示
 		}
 
-		//検索
+		//線形検索
 		printf("\n");
 		printf("[find]\n");
 		printAll();//全件表示
 		auto find = [&con](const int key)
 		{
 			printf("find_value(key=%d)=", key);
-			auto ite = con.find_value(key);//探索
+			auto ite = con.find_value(key);//線形探索
+			//auto ite = std::find(con.begin(), con.end(), key);//線形探索(STL版)
 			if (ite.isExist())
 			{
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
@@ -3272,6 +3656,9 @@ int main(const int argc, const char* argv[])
 			auto ite = con.binary_search_value(key);//二分探索
 			if (ite.isExist())
 			{
+			//if (std::binary_search(con.begin(), con.end(), key))//二分探索(STL版)
+			//{
+			//	auto ite = std::lower_bound(con.begin(), con.end(), key);
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
 				--ite;
 				if (ite.isExist())
@@ -3365,12 +3752,12 @@ int main(const int argc, const char* argv[])
 		printf("[clear]\n");
 		con.clear();
 		printAll();//全件表示
-		printReverse();//全件表示
+		//printReverse();//全件逆順表示
 	}
 
 	//--------------------
 	//テスト③：ソート、探索の設定を変える
-	//※動的配列のテストと同じ
+	//※動的配列のテストとほとんど同じ
 	{
 		printf("--------------------------------------------------------------------------------\n");
 		printf("[Test for ring_buffer::container(User defined type with custom operator type)]\n");
@@ -3385,6 +3772,15 @@ int main(const int argc, const char* argv[])
 		//コンテナのインスタンス生成時に配列を渡せない場合は、sertArray() を使用する
 		//container_t con;
 		//con.assign_array(array);
+
+		//10件ほどデータの開始位置をずらす
+		{
+			for (int i = 0; i < 10; ++i)
+			{
+				con.push_back(0, 0);
+				con.pop_front();
+			}
+		}
 
 		//データ登録１：push_back()メソッド＋コンストラクタパラメータ（コンストラクタ呼び出しを行う）
 		printf("\n");
@@ -3544,7 +3940,7 @@ int main(const int argc, const char* argv[])
 
 	//--------------------
 	//テスト④：データ設定済みの既存の配列を扱う
-	//※動的配列のテストと同じ
+	//※動的配列のテストとほとんど同じ
 	{
 		printf("--------------------------------------------------------------------------------\n");
 		printf("[Test for ring_buffer::container(User defined type for existing data)]\n");
@@ -3603,7 +3999,7 @@ int main(const int argc, const char* argv[])
 
 	//--------------------
 	//テスト⑤：ロック制御を行う
-	//※動的配列のテストと同じ
+	//※動的配列のテストとほとんど同じ
 	{
 		printf("--------------------------------------------------------------------------------\n");
 		printf("[Test for ring_buffer::container(User defined type for multi-thread)]\n");
@@ -3614,7 +4010,7 @@ int main(const int argc, const char* argv[])
 
 	//--------------------
 	//テスト⑥：大量登録テスト
-	//※std::vectorをstd::dequeに置き換えただけで、動的配列のテストと同じ
+	//※std::vectorをstd::dequeに置き換えただけで、動的配列のテストとほとんど同じ
 	{
 		//経過時間を表示
 		auto printElapsedTime = [](const std::chrono::system_clock::time_point& prev_time, const bool is_show) -> std::chrono::system_clock::time_point
@@ -3651,6 +4047,15 @@ int main(const int argc, const char* argv[])
 			con->clear();
 			prev_time = printElapsedTime(prev_time, true);
 
+			//5件ほどデータの開始位置をずらす
+			{
+				for (int i = 0; i < 5; ++i)
+				{
+					con->push_back(0, 0);
+					con->pop_front();
+				}
+			}
+
 			//データを登録
 			printf("\n");
 			printf("[push_back() * %d]\n", TEST_DATA_NUM);
@@ -3665,23 +4070,14 @@ int main(const int argc, const char* argv[])
 			}
 			prev_time = printElapsedTime(prev_time, true);
 
-			//逆順ソート
+			//イテレータ(1)
 			printf("\n");
-			printf("[reverse sort]\n");
-			auto reverse_sort = [](const data_t& lhs, const data_t& rhs){return lhs.m_key > rhs.m_key; };
-			con->sort(reverse_sort);
-			prev_time = printElapsedTime(prev_time, true);
-
-			//正順ソート
-			printf("\n");
-			printf("[sort]\n");
-			con->sort();
-			prev_time = printElapsedTime(prev_time, true);
-
-			//イテレータ
-			printf("\n");
-			printf("[iterator]\n");
+			printf("[iterator(1)]\n");
 			{
+				printf_detail("offset=%d, size=%d, max_size=%d\n", con->offset(), con->size(), con->max_size());
+				printf_detail("array=");
+				if (con->empty())
+					printf_detail("(empty)");
 				int num = 0;
 				for (const data_t& value : *con)
 				{
@@ -3693,12 +4089,49 @@ int main(const int argc, const char* argv[])
 			}
 			prev_time = printElapsedTime(prev_time, true);
 
+			//逆順ソート
+			printf("\n");
+			printf("[reverse sort]\n");
+			auto reverse_sort = [](const data_t& lhs, const data_t& rhs){return lhs.m_key > rhs.m_key; };
+			con->sort(reverse_sort);
+			prev_time = printElapsedTime(prev_time, true);
+
+			//イテレータ(2)
+			printf("\n");
+			printf("[iterator(2)]\n");
+			{
+				printf_detail("offset=%d, size=%d, max_size=%d\n", con->offset(), con->size(), con->max_size());
+				printf_detail("array=");
+				if (con->empty())
+					printf_detail("(empty)");
+				int num = 0;
+				forEach(*con, [&num](const data_t& value)
+					{
+						printf_detail(" [%d:%d]", value.m_key, value.m_val);
+						++num;
+					}
+				);
+				printf_detail("\n");
+				printf("num=%d\n", num);
+			}
+			prev_time = printElapsedTime(prev_time, true);
+
+			//正順ソート
+			printf("\n");
+			printf("[sort]\n");
+			con->sort();
+			prev_time = printElapsedTime(prev_time, true);
+
 			//リバースイテレータ
 			printf("\n");
 			printf("[reverse_iterator]\n");
 			{
+				printf_detail("offset=%d, size=%d, max_size=%d\n", con->offset(), con->size(), con->max_size());
+				printf_detail("array=");
+				if (con->empty())
+					printf_detail("(empty)");
 				int num = 0;
-				std::for_each(con->rbegin(), con->rend(), [&num](const data_t& value)
+				reverseForEach(*con, [&num](const data_t& value)
 					{
 						printf_detail(" [%d:%d]", value.m_key, value.m_val);
 						++num;
@@ -3730,7 +4163,7 @@ int main(const int argc, const char* argv[])
 			printf("[binary_search_value]\n");
 			{
 				int num = 0;
-				for (int i = 0; i < TEST_DATA_NUM; i += (TEST_DATA_NUM / 1000 + 1))
+				for (int i = 0; i < TEST_DATA_NUM; ++i)
 				{
 					container_t::iterator ite = std::move(con->binary_search_value(i));
 					printf_detail(" [%d:%d]", ite->m_key, ite->m_val);
@@ -3758,7 +4191,7 @@ int main(const int argc, const char* argv[])
 
 		{
 			printf("--------------------------------------------------------------------------------\n");
-			printf("[Test for performance std::vector]\n");
+			printf("[Test for performance std::deque]\n");
 
 			const std::chrono::system_clock::time_point begin_time = std::chrono::system_clock::now();
 			std::chrono::system_clock::time_point prev_time = begin_time;
@@ -3768,6 +4201,7 @@ int main(const int argc, const char* argv[])
 			printf("[create container & assign() * %d]\n", TEST_DATA_NUM);
 			typedef std::deque<data_t> container_t;
 			container_t* con = new container_t();//std::dequeコンテナを生成
+			//con->reserve(TEST_DATA_NUM);//std::dequeにreserve()はない
 			{
 				data_t prototype(0, 0);
 				con->assign(TEST_DATA_NUM, prototype);
@@ -3779,6 +4213,16 @@ int main(const int argc, const char* argv[])
 			printf("[clear() * %d]\n", TEST_DATA_NUM);
 			con->clear();
 			prev_time = printElapsedTime(prev_time, true);
+
+			//5件ほどデータの開始位置をずらす
+			{
+				data_t value(0, 0);
+				for (int i = 0; i < 5; ++i)
+				{
+					con->push_back(value);
+					con->pop_front();
+				}
+			}
 
 			//データを登録
 			printf("\n");
@@ -3795,23 +4239,14 @@ int main(const int argc, const char* argv[])
 			}
 			prev_time = printElapsedTime(prev_time, true);
 
-			//逆順ソート
+			//イテレータ(1)
 			printf("\n");
-			printf("[reverse sort]\n");
-			auto reverse_sort = [](const data_t& lhs, const data_t& rhs){return lhs.m_key > rhs.m_key; };
-			std::sort(con->begin(), con->end(), reverse_sort);
-			prev_time = printElapsedTime(prev_time, true);
-
-			//正順ソート
-			printf("\n");
-			printf("[sort]\n");
-			std::sort(con->begin(), con->end());
-			prev_time = printElapsedTime(prev_time, true);
-
-			//イテレータ
-			printf("\n");
-			printf("[iterator]\n");
+			printf("[iterator(1)]\n");
 			{
+				printf_detail("size=%d, max_size=%d\n", con->size(), con->max_size());
+				printf_detail("array=");
+				if (con->empty())
+					printf_detail("(empty)");
 				int num = 0;
 				for (const data_t& value : *con)
 				{
@@ -3823,10 +4258,47 @@ int main(const int argc, const char* argv[])
 			}
 			prev_time = printElapsedTime(prev_time, true);
 
+			//逆順ソート
+			printf("\n");
+			printf("[reverse sort]\n");
+			auto reverse_sort = [](const data_t& lhs, const data_t& rhs){return lhs.m_key > rhs.m_key; };
+			std::sort(con->begin(), con->end(), reverse_sort);
+			prev_time = printElapsedTime(prev_time, true);
+
+			//イテレータ(2)
+			printf("\n");
+			printf("[iterator(2)]\n");
+			{
+				printf_detail("size=%d, max_size=%d\n", con->size(), con->max_size());
+				printf_detail("array=");
+				if (con->empty())
+					printf_detail("(empty)");
+				int num = 0;
+				std::for_each(con->begin(), con->end(), [&num](const data_t& value)
+					{
+						printf_detail(" [%d:%d]", value.m_key, value.m_val);
+						++num;
+					}
+				);
+				printf_detail("\n");
+				printf("num=%d\n", num);
+			}
+			prev_time = printElapsedTime(prev_time, true);
+
+			//正順ソート
+			printf("\n");
+			printf("[sort]\n");
+			std::sort(con->begin(), con->end());
+			prev_time = printElapsedTime(prev_time, true);
+
 			//リバースイテレータ
 			printf("\n");
 			printf("[reverse_iterator]\n");
 			{
+				printf_detail("size=%d, max_size=%d\n", con->size(), con->max_size());
+				printf_detail("array=");
+				if (con->empty())
+					printf_detail("(empty)");
 				int num = 0;
 				std::for_each(con->rbegin(), con->rend(), [&num](const data_t& value)
 					{
@@ -3860,7 +4332,7 @@ int main(const int argc, const char* argv[])
 			printf("[binary_search_value]\n");
 			{
 				int num = 0;
-				for (int i = 0; i < TEST_DATA_NUM; i += (TEST_DATA_NUM / 1000 + 1))
+				for (int i = 0; i < TEST_DATA_NUM; ++i)
 				{
 					container_t::iterator ite = std::lower_bound(con->begin(), con->end(), i);
 					printf_detail(" [%d:%d]", ite->m_key, ite->m_val);
@@ -3893,7 +4365,7 @@ int main(const int argc, const char* argv[])
 
 //--------------------
 //テスト⑤：ロック制御を行う
-//※動的配列のテストと同じ
+//※動的配列のテストとほとんど同じ
 
 #include <thread>//C++11 std::thread用
 #include <mutex>//C++11 std::mutex用

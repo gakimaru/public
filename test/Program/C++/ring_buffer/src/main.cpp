@@ -1,7 +1,7 @@
 //--------------------------------------------------------------------------------
-//動的配列テスト用設定とコンパイラスイッチ
+//リングバッファテスト用設定とコンパイラスイッチ
 static const int TEST_DATA_NUM = 10;//大量登録テストデータの登録数
-//static const int TEST_DATA_NUM = 10000000;//大量登録テストデータの登録数
+//static const int TEST_DATA_NUM = 1000000;//大量登録テストデータの登録数
 
 #define PRINT_TEST_DATA_DETAIL//テストデータの詳細タを表示する場合は、このマクロを有効化する
 //#define TEST_DATA_WATCH_CONSTRUCTOR//コンストラクタ／デストラクタ／代入演算子の動作を確認する場合、このマクロを有効化する
@@ -652,572 +652,137 @@ struct compare_to{
 
 //----------------------------------------
 //比較ソート処理オーバーロード関数用マクロ
-//※プレディケート関数指定版
-#define sortFuncSetByUserPredicate(func_name) \
-	template<class T, std::size_t N, class PREDICATE> \
-	inline std::size_t func_name(T(&array)[N], PREDICATE predicate) \
-	{ \
-		return func_name(array, N, predicate); \
-	} \
-	template<class T, class PREDICATE> \
-	inline std::size_t func_name(T* begin, T* end, PREDICATE predicate) \
-	{ \
-		const std::size_t size = end - begin; \
-		return size == 0 ? 0 : func_name(begin, size, predicate); \
-	} \
-	template<class ITERATOR, class PREDICATE> \
-	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end, PREDICATE predicate) \
-	{ \
-		const std::size_t size = end - begin; \
-		return size == 0 ? 0 : func_name(&begin[0], size, predicate); \
-	} \
-	template<class CONTAINER, class PREDICATE> \
-	inline std::size_t func_name(CONTAINER& con, PREDICATE predicate) \
-	{ \
-		std::size_t size = con.size(); \
-		return size == 0 ? 0 : func_name(&(con.at(0)), size, predicate); \
-	}
+//※イテレータ対応版
 //※標準プレディケート関数使用版
-#define sortFuncSetByDefaultPredicate(func_name) \
-	template<class T> \
-	inline std::size_t func_name(T* array, const std::size_t size) \
-	{ \
-		return func_name(array, size, less<T>()); \
-	} \
-	template<class T, std::size_t N> \
-	inline std::size_t func_name(T(&array)[N]) \
-	{ \
-		return func_name(array, less<T>()); \
-	} \
-	template<class T> \
-	inline std::size_t func_name(T* begin, T* end) \
-	{ \
-		return func_name(begin, end, less<T>()); \
-	} \
+#define iteratorSortFuncSetByDefaultPredicate(func_name) \
 	template<class ITERATOR> \
-	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end) \
-	{ \
-		return func_name(begin, end, less<typename ITERATOR::value_type>()); \
-	} \
-	template<class CONTAINER> \
-	inline std::size_t func_name(CONTAINER& con) \
-	{ \
-		return func_name(con, less<typename CONTAINER::value_type>()); \
-	}
-#define sortFuncSet(func_name) \
-	sortFuncSetByUserPredicate(func_name) \
-	sortFuncSetByDefaultPredicate(func_name)
-
-//----------------------------------------
-//非比較ソート処理オーバーロード関数用マクロ
-//※キー取得用関数オブジェクト指定版
-#define distributedSortFuncSetByUserFunctor(func_name) \
-	template<class T, std::size_t N, class GET_KEY_FUNCTOR> \
-	inline std::size_t func_name(T(&array)[N], GET_KEY_FUNCTOR get_key_functor) \
-	{ \
-		return func_name(array, N, get_key_functor); \
-	} \
-	template<class T, class GET_KEY_FUNCTOR> \
-	inline std::size_t func_name(T* begin, T* end, GET_KEY_FUNCTOR get_key_functor) \
-	{ \
-		const std::size_t size = end - begin; \
-		return size == 0 ? 0 : func_name(begin, size, get_key_functor); \
-	} \
-	template<class ITERATOR, class GET_KEY_FUNCTOR> \
-	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end, GET_KEY_FUNCTOR get_key_functor) \
-	{ \
-		const std::size_t size = end - begin; \
-		return size == 0 ? 0 : func_name(&begin[0], size, get_key_functor); \
-	} \
-	template<class CONTAINER, class GET_KEY_FUNCTOR> \
-	inline std::size_t func_name(CONTAINER& con, GET_KEY_FUNCTOR get_key_functor) \
-	{ \
-		std::size_t size = con.size(); \
-		return size == 0 ? 0 : func_name(&(con.at(0)), size, get_key_functor); \
-	}
-#define distributedSortFuncSet(func_name) \
-	distributedSortFuncSetByUserFunctor(func_name)
+	inline std::size_t func_name(ITERATOR begin, ITERATOR end) \
+{ \
+	typedef typename ITERATOR::value_type value_type; \
+	return func_name(begin, end, less<value_type>()); \
+}
+#define iteratorSortFuncSet(func_name) \
+	iteratorSortFuncSetByDefaultPredicate(func_name)
 
 //----------------------------------------
 //探索処理オーバーロード関数用マクロ
-#define searchFuncSetByUserFunc(func_name) \
-	template<class T, class PREDICATE_OR_COMPARISON> \
-	inline const T* func_name(const T* array, const std::size_t size, PREDICATE_OR_COMPARISON predicate_or_comparison) \
-	{ \
-		return func_name(const_cast<T*>(array), size, predicate_or_comparison); \
-	} \
-	template<class T, std::size_t N, class PREDICATE_OR_COMPARISON> \
-	inline T* func_name(T(&array)[N], PREDICATE_OR_COMPARISON predicate_or_comparison) \
-	{ \
-		return func_name(array, N, predicate_or_comparison); \
-	} \
-	template<class T, std::size_t N, class PREDICATE_OR_COMPARISON> \
-	inline const T* func_name(const T(&array)[N], PREDICATE_OR_COMPARISON predicate_or_comparison) \
-	{ \
-		return func_name(const_cast<T*>(array), N, predicate_or_comparison); \
-	} \
-	template<class T, class PREDICATE_OR_COMPARISON> \
-	inline T* func_name(T* begin, T* end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
-	{ \
-		const std::size_t size = end - begin; \
-		return size == 0 ? nullptr : func_name(begin, size, predicate_or_comparison); \
-	} \
-	template<class T, class PREDICATE_OR_COMPARISON> \
-	inline const T* func_name(const T* begin, const T* end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
-	{ \
-		const std::size_t size = end - begin; \
-		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, predicate_or_comparison); \
-	} \
-	template<class ITERATOR, class PREDICATE_OR_COMPARISON> \
-	inline typename ITERATOR::value_type* func_name(ITERATOR& begin, ITERATOR& end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
-	{ \
-		const std::size_t size = end - begin; \
-		return size == 0 ? nullptr : func_name(&begin[0], size, predicate_or_comparison); \
-	} \
-	template<class ITERATOR, class PREDICATE_OR_COMPARISON> \
-	inline const typename ITERATOR::value_type* func_name(const ITERATOR& begin, const ITERATOR& end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
-	{ \
-		const std::size_t size = end - begin; \
-		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, predicate_or_comparison); \
-	} \
-	template<class CONTAINER, class PREDICATE_OR_COMPARISON> \
-	inline typename CONTAINER::value_type* func_name(CONTAINER& con, PREDICATE_OR_COMPARISON predicate_or_comparison) \
-	{ \
-		const std::size_t size = con.size(); \
-		return size == 0 ? nullptr : func_name(&(con.at(0)), size, predicate_or_comparison); \
-	} \
-	template<class CONTAINER, class PREDICATE_OR_COMPARISON> \
-	inline const typename CONTAINER::value_type* func_name(const CONTAINER& con, PREDICATE_OR_COMPARISON predicate_or_comparison) \
-	{ \
-		const std::size_t size = con.size(); \
-		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, predicate_or_comparison); \
-	}
+//※イテレータ対応版
 //※探索値指定版：プレディケート関数と値で比較
-#define searchFuncSetPredicateAndValue(func_name) \
-	template<class T, typename V, class PREDICATE> \
-	inline T* func_name##Value(T* array, const std::size_t size, const V& value, PREDICATE predicate) \
-	{ \
-		auto _equal = [&value, &predicate](T& val1) -> bool { return predicate(val1, value); }; \
-		return func_name(array, size, _equal); \
-	} \
-	template<class T, typename V, class PREDICATE> \
-	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value, PREDICATE predicate) \
-	{ \
-		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
-		return func_name(const_cast<T*>(array), size, _equal); \
-	} \
-	template<class T, std::size_t N, typename V, class PREDICATE> \
-	inline T* func_name##Value(T(&array)[N], const V& value, PREDICATE predicate) \
-	{ \
-		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
-		return func_name(array, N, _equal); \
-	} \
-	template<class T, std::size_t N, typename V, class PREDICATE> \
-	inline const T* func_name##Value(const T(&array)[N], const V& value, PREDICATE predicate) \
-	{ \
-		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
-		return func_name(const_cast<T*>(array), N, _equal); \
-	} \
-	template<class T, typename V, class PREDICATE> \
-	inline T* func_name##Value(T* begin, T* end, const V& value, PREDICATE predicate) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
-		return size == 0 ? nullptr : func_name(begin, size, _equal); \
-	} \
-	template<class T, typename V, class PREDICATE> \
-	inline const T* func_name##Value(const T* begin, const T* end, const V& value, PREDICATE predicate) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
-		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _equal); \
-	} \
+#define iteratorSearchFuncSetPredicateAndValue(func_name) \
 	template<class ITERATOR, typename V, class PREDICATE> \
-	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value, PREDICATE predicate) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _equal = [&value, &predicate](const typename ITERATOR::value_type& val1) -> bool { return predicate(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&begin[0], size, _equal); \
-	} \
-	template<class ITERATOR, typename V, class PREDICATE> \
-	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value, PREDICATE predicate) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _equal = [&value, &predicate](const typename ITERATOR::value_type& val1) -> bool { return predicate(val1, value); }; \
-		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _equal); \
-	} \
-	template<class CONTAINER, typename V, class PREDICATE> \
-	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value, PREDICATE predicate) \
-	{ \
-		const std::size_t size = con.size(); \
-		auto _equal = [&value, &predicate](const typename CONTAINER::value_type& val1) -> bool { return predicate(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _equal); \
-	} \
-	template<class CONTAINER, typename V, class PREDICATE> \
-	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value, PREDICATE predicate) \
-	{ \
-		const std::size_t size = con.size(); \
-		auto _equal = [&value, &predicate](const typename CONTAINER::value_type& val1) -> bool { return predicate(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _equal); \
-	}
+	inline ITERATOR func_name##Value(ITERATOR begin, ITERATOR end, const V& value, PREDICATE predicate) \
+{ \
+	typedef typename ITERATOR::value_type value_type; \
+	auto _equal = [&value, &predicate](value_type& val1) -> bool { return predicate(val1, value); }; \
+	return std::move(func_name(begin, end, _equal)); \
+}
 //※探索値指定版：標準のプレディケート関数と値で比較
-#define searchFuncSetByDefaultPredicateAndValue(func_name) \
-	template<class T, typename V> \
-	inline T* func_name##Value(T* array, const std::size_t size, const V& value) \
-	{ \
-		auto _equal = [&value](T& val1) -> bool { return equal_to<T>()(val1, value); }; \
-		return func_name(array, size, _equal); \
-	} \
-	template<class T, typename V> \
-	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value) \
-	{ \
-		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
-		return func_name(const_cast<T*>(array), size, _equal); \
-	} \
-	template<class T, std::size_t N, typename V> \
-	inline T* func_name##Value(T(&array)[N], const V& value) \
-	{ \
-		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
-		return func_name(array, N, _equal); \
-	} \
-	template<class T, std::size_t N, typename V> \
-	inline const T* func_name##Value(const T(&array)[N], const V& value) \
-	{ \
-		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
-		return func_name(const_cast<T*>(array), N, _equal); \
-	} \
-	template<class T, typename V> \
-	inline T* func_name##Value(T* begin, T* end, const V& value) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(begin, size, _equal); \
-	} \
-	template<class T, typename V> \
-	inline const T* func_name##Value(const T* begin, const T* end, const V& value) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _equal); \
-	} \
+#define iteratorSearchFuncSetByDefaultPredicateAndValue(func_name) \
 	template<class ITERATOR, typename V> \
-	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _equal = [&value](const typename ITERATOR::value_type& val1) -> bool { return equal_to<typename ITERATOR::value_type>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&begin[0], size, _equal); \
-	} \
-	template<class ITERATOR, typename V> \
-	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _equal = [&value](const typename ITERATOR::value_type& val1) -> bool { return equal_to<typename ITERATOR::value_type>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _equal); \
-	} \
-	template<class CONTAINER, typename V> \
-	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value) \
-	{ \
-		const std::size_t size = con.size(); \
-		auto _equal = [&value](const typename CONTAINER::value_type& val1) -> bool { return equal_to<typename CONTAINER::value_type>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _equal); \
-	} \
-	template<class CONTAINER, typename V> \
-	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value) \
-	{ \
-		const std::size_t size = con.size(); \
-		auto _equal = [&value](const typename CONTAINER::value_type& val1) -> bool { return equal_to<typename CONTAINER::value_type>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _equal); \
-	}
-#define searchFuncSetByPredicate(func_name) \
-	searchFuncSetByUserFunc(func_name) \
-	searchFuncSetPredicateAndValue(func_name) \
-	searchFuncSetByDefaultPredicateAndValue(func_name)
+	inline ITERATOR func_name##Value(ITERATOR begin, ITERATOR end, const V& value) \
+{ \
+	typedef typename ITERATOR::value_type value_type; \
+	auto _equal = [&value](value_type& val1) -> bool { return equal_to<value_type>()(val1, value); }; \
+	return std::move(func_name(begin, end, _equal)); \
+}
+#define iteratorSearchFuncSetByPredicate(func_name) \
+	iteratorSearchFuncSetPredicateAndValue(func_name) \
+	iteratorSearchFuncSetByDefaultPredicateAndValue(func_name)
 //※探索値指定版：比較関数と値で比較
-#define searchFuncSetByComparisonAndValue(func_name) \
-	template<class T, typename V, class COMPARISON> \
-	inline T* func_name##Value(T* array, const std::size_t size, const V& value, COMPARISON comparison) \
-	{ \
-		auto _comparison = [&value, &comparison](T& val1) -> int { return comparison(val1, value); }; \
-		return func_name(array, size, _comparison); \
-	} \
-	template<class T, typename V, class COMPARISON> \
-	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value, COMPARISON comparison) \
-	{ \
-		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
-		return func_name(const_cast<T*>(array), size, _comparison); \
-	} \
-	template<class T, std::size_t N, typename V, class COMPARISON> \
-	inline T* func_name##Value(T(&array)[N], const V& value, COMPARISON comparison) \
-	{ \
-		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
-		return func_name(array, N, _comparison); \
-	} \
-	template<class T, std::size_t N, typename V, class COMPARISON> \
-	inline const T* func_name##Value(const T(&array)[N], const V &value, COMPARISON comparison) \
-	{ \
-		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
-		return func_name(const_cast<T*>(array), N, _comparison); \
-	} \
-	template<class T, typename V, class COMPARISON> \
-	inline T* func_name##Value(T* begin, T* end, const V& value, COMPARISON comparison) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
-		return size == 0 ? nullptr : func_name(begin, size, _comparison); \
-	} \
-	template<class T, typename V, class COMPARISON> \
-	inline const T* func_name##Value(const T* begin, const T* end, const V& value, COMPARISON comparison) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
-		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _comparison); \
-	} \
+#define iteratorSearchFuncSetByComparisonAndValue(func_name) \
 	template<class ITERATOR, typename V, class COMPARISON> \
-	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value, COMPARISON comparison) \
+	inline ITERATOR func_name##Value(ITERATOR begin, ITERATOR end, const V& value, COMPARISON comparison) \
 	{ \
-		const std::size_t size = end - begin; \
-		auto _comparison = [&value, &comparison](const typename ITERATOR::value_type& val1) -> int { return comparison(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&begin[0], size, _comparison); \
-	} \
-	template<class ITERATOR, typename V, class COMPARISON> \
-	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value, COMPARISON comparison) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _comparison = [&value, &comparison](const typename ITERATOR::value_type& val1) -> int { return comparison(val1, value); }; \
-		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _comparison); \
-	} \
-	template<class CONTAINER, typename V, class COMPARISON> \
-	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value, COMPARISON comparison) \
-	{ \
-		const std::size_t size = con.size(); \
-		auto _comparison = [&value, &comparison](const typename CONTAINER::value_type& val1) -> int { return comparison(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _comparison); \
-	} \
-	template<class CONTAINER, typename V, class COMPARISON> \
-	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value, COMPARISON comparison) \
-	{ \
-		const std::size_t size = con.size(); \
-		auto _comparison = [&value, &comparison](const typename CONTAINER::value_type& val1) -> int { return comparison(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _comparison); \
+		typedef typename ITERATOR::value_type value_type; \
+		auto _comparison = [&value, &comparison](value_type& val1) -> int { return comparison(val1, value); }; \
+		return func_name(begin, end, _comparison); \
 	}
 //※探索値指定版：標準比較関数と値で比較
-#define searchFuncSetByDefaultComparisonAndValue(func_name) \
-	template<class T, typename V> \
-	inline T* func_name##Value(T* array, const std::size_t size, const V& value) \
-	{ \
-		auto _comparison = [&value](T& val1) -> int { return compare_to<T>()(val1, value); }; \
-		return func_name(array, size, _comparison); \
-	} \
-	template<class T, typename V> \
-	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value) \
-	{ \
-		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
-		return func_name(const_cast<T*>(array), size, _comparison); \
-	} \
-	template<class T, std::size_t N, typename V> \
-	inline T* func_name##Value(T(&array)[N], const V& value) \
-	{ \
-		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
-		return func_name(array, N, _comparison); \
-	} \
-	template<class T, std::size_t N, typename V> \
-	inline const T* func_name##Value(const T(&array)[N], const V &value) \
-	{ \
-		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
-		return func_name(const_cast<T*>(array), N, _comparison); \
-	} \
-	template<class T, typename V> \
-	inline T* func_name##Value(T* begin, T* end, const V& value) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(begin, size, _comparison); \
-	} \
-	template<class T, typename V> \
-	inline const T* func_name##Value(const T* begin, const T* end, const V& value) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _comparison); \
-	} \
+#define iteratorSearchFuncSetByDefaultComparisonAndValue(func_name) \
 	template<class ITERATOR, typename V> \
-	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value) \
+	inline ITERATOR func_name##Value(ITERATOR begin, ITERATOR end, const V& value) \
 	{ \
-		const std::size_t size = end - begin; \
-		auto _comparison = [&value](const typename ITERATOR::value_type& val1) -> int { return compare_to<typename ITERATOR::value_type>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&begin[0], size, _comparison); \
-	} \
-	template<class ITERATOR, typename V> \
-	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value) \
-	{ \
-		const std::size_t size = end - begin; \
-		auto _comparison = [&value](const typename ITERATOR::value_type& val1) -> int { return compare_to<typename ITERATOR::value_type>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _comparison); \
-	} \
-	template<class CONTAINER, typename V> \
-	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value) \
-	{ \
-		const std::size_t size = con.size(); \
-		auto _comparison = [&value](const typename CONTAINER::value_type& val1) -> int { return compare_to<typename CONTAINER::value_type>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _comparison); \
-	} \
-	template<class CONTAINER, typename V> \
-	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value) \
-	{ \
-		const std::size_t size = con.size(); \
-		auto _comparison = [&value](const typename CONTAINER::value_type& val1) -> int { return compare_to<typename CONTAINER::value_type>()(val1, value); }; \
-		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _comparison); \
+		typedef typename ITERATOR::value_type value_type; \
+		auto _comparison = [&value](value_type& val1) -> int { return compare_to<value_type>()(val1, value); }; \
+		return func_name(begin, end, _comparison); \
 	}
-#define searchFuncSetByComparison(func_name) \
-	searchFuncSetByUserFunc(func_name) \
-	searchFuncSetByComparisonAndValue(func_name) \
-	searchFuncSetByDefaultComparisonAndValue(func_name)
+#define iteratorSearchFuncSetByComparison(func_name) \
+	iteratorSearchFuncSetByComparisonAndValue(func_name) \
+	iteratorSearchFuncSetByDefaultComparisonAndValue(func_name)
 
 //----------------------------------------
-//整列状態確認
-template<class T, class PREDICATE>
-inline std::size_t calcUnordered(const T* array, const std::size_t size, PREDICATE predicate)
+//整列状態確認 ※イテレータ対応版
+template<class ITERATOR, class PREDICATE>
+inline std::size_t iteratorCalcUnordered(ITERATOR begin, ITERATOR end, PREDICATE predicate)
 {
 	std::size_t unordered = 0;
-	const T* prev = array;
-	const T* now = prev + 1;
-	for (std::size_t i = 1; i < size; ++i, ++now, ++prev)
+	ITERATOR prev = begin;
+	ITERATOR now = begin;
+	++now;
+	for (;now != end; ++now, ++prev)
 	{
 		if (predicate(*now, *prev))
 			++unordered;
 	}
 	return unordered;
 }
-sortFuncSet(calcUnordered);
+iteratorSortFuncSet(iteratorCalcUnordered);
 
 //----------------------------------------
-//データの入れ替え
-template<class T>
-struct _swapArithmetic{
-	inline static void exec(T& val1, T& val2)
-	{
-		T tmp;
-		tmp = val2;
-		val2 = val1;
-		val1 = tmp;
-	}
-};
-template<class T>
-struct _swapArithmetic<T*>{
-	inline static void exec(T*& val1, T*& val2)
-	{
-		T* tmp;
-		tmp = val2;
-		val2 = val1;
-		val1 = tmp;
-	}
-};
-template<class T>
-struct _swapObjects{
-	inline static void exec(T& val1, T& val2)
-	{
-	#if 1//ムーブコンストラクタとムーブオペレータを使用して入れ替え（#include <utility> の std::swap() と同じ）
-		T tmp = std::move(val2);
-		val2 = std::move(val1);
-		val1 = std::move(tmp);
-	#else//コンストラクタ／オペレータの呼び出しを避けて単純なメモリコピー
-		char tmp[sizeof(T)];
-		memcpy(tmp, &val2, sizeof(T));
-		memcpy(&val2, &val1, sizeof(T));
-		memcpy(&val1, tmp, sizeof(T));
-	#endif
-	}
-};
-template<class T>
-struct _swapObjects<T*>{
-	inline static void exec(T*& val1, T*& val2)
-	{
-		_swapArithmetic<T*>::exec(val1, val2);
-	}
-};
-//データ入れ替え関数（直接使用する関数）
-template<class T>
-inline void swapValues(T& val1, T& val2)
+//データの入れ替え ※イテレータ対応版
+template<class ITERATOR>
+inline void iteratorSwapValues(ITERATOR val1, ITERATOR val2)
 {
-	std::conditional<std::is_arithmetic<T>::value,
-		_swapArithmetic<T>,
-		_swapObjects<T>
-	>::type::exec(val1, val2);
+	typedef typename ITERATOR::value_type value_type;
+#if 1//ムーブコンストラクタとムーブオペレータを使用して入れ替え（#include <utility> の std::swap() と同じ）
+	value_type tmp = std::move(*val2);
+	*val2 = std::move(*val1);
+	*val1 = std::move(tmp);
+#else//コンストラクタ／オペレータの呼び出しを避けて単純なメモリコピー
+	char tmp[sizeof(value_type)];
+	memcpy(tmp, &*val2, sizeof(value_type));
+	memcpy(&*val2, &*val1, sizeof(value_type));
+	memcpy(&*val1, tmp, sizeof(value_type));
+#endif
 }
 
 //----------------------------------------
-//データのローテーション
-template<class T>
-struct _rotateArithmetic{
-	inline static void exec(T* val1, T* val2, int step)
-	{
-		T tmp;
-		tmp = *val2;
-		while (val1 != val2)
-		{
-			T* val2_prev = val2 - step;
-			*val2 = *val2_prev;
-			val2 = val2_prev;
-		}
-		*val1 = tmp;
-	}
-};
-template<class T>
-struct _rotateArithmetic<T*>{
-	inline static void exec(T** val1, T** val2, int step)
-	{
-		T* tmp;
-		tmp = *val2;
-		while (val1 != val2)
-		{
-			T** val2_prev = val2 - step;
-			*val2 = *val2_prev;
-			val2 = val2_prev;
-		}
-		*val1 = tmp;
-	}
-};
-template<class T>
-struct _rotateObjects{
-	inline static void exec(T* val1, T* val2, int step)
-	{
-	#if 1//ムーブコンストラクタとムーブオペレータを使用して入れ替え
-		T tmp = std::move(*val2);
-		while (val1 != val2)
-		{
-			T* val2_prev = val2 - step;
-			*val2 = std::move(*val2_prev);
-			val2 = val2_prev;
-		}
-		*val1 = std::move(tmp);
-	#else//コンストラクタ／オペレータの呼び出しを避けて単純なメモリコピー
-		char tmp[sizeof(T)];
-		memcpy(tmp, val2, sizeof(T));
-		while (val1 != val2)
-		{
-			T* val2_prev = val2 - step;
-			memcpy(val2, val2_prev, sizeof(T));
-			val2 = val2_prev;
-		}
-		memcpy(val1, tmp, sizeof(T));
-	#endif
-	}
-};
-template<class T>
-struct _rotateObjects<T*>{
-	inline static void exec(T** val1, T** val2, int step)
-	{
-		_rotateArithmetic<T*>::exec(val1, val2, step);
-	}
-};
-//データローテーション関数（直接使用する関数）
-template<class T>
-inline void rotateValues(T* val1, T* val2, int step)
+//データのローテーション ※イテレータ対応版
+template<class ITERATOR>
+inline void iteratorRotateValues(ITERATOR val1, ITERATOR val2, int step)
 {
-	std::conditional<std::is_arithmetic<T>::value,
-		_rotateArithmetic<T>,
-		_rotateObjects<T>
-	>::type::exec(val1, val2, step);
+	typedef typename ITERATOR::value_type value_type;
+#if 1//ムーブコンストラクタとムーブオペレータを使用して入れ替え
+	value_type tmp = std::move(*val2);
+	while (val1 != val2)
+	{
+		ITERATOR val2_prev = val2 - step;
+		*val2 = std::move(*val2_prev);
+		val2 = val2_prev;
+	}
+	*val1 = std::move(tmp);
+#else//コンストラクタ／オペレータの呼び出しを避けて単純なメモリコピー
+	char tmp[sizeof(value_type)];
+	memcpy(tmp, &*val2, sizeof(value_type));
+	while (val1 != val2)
+	{
+		ITERATOR val2_prev = val2 - step;
+		memcpy(&*val2, &*val2_prev, sizeof(value_type));
+		val2 = val2_prev;
+	}
+	memcpy(&*val1, tmp, sizeof(value_type));
+#endif
+}
+
+//----------------------------------------
+//イテレータの差（要素数）を返す
+template<class ITERATOR>
+inline int iteratorDistance(ITERATOR begin, ITERATOR end)
+{
+	int size = 0;
+	for (; begin < end; ++begin)
+		++size;
+	return size;
 }
 
 //========================================
@@ -1225,7 +790,7 @@ inline void rotateValues(T* val1, T* val2, int step)
 //========================================
 
 //----------------------------------------
-//アルゴリズム：挿入ソート
+//アルゴリズム：挿入ソート ※イテレータ対応版
 //----------------------------------------
 //・最良計算時間：O(n)
 //・平均計算時間：O(n^2)
@@ -1233,22 +798,23 @@ inline void rotateValues(T* val1, T* val2, int step)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
 //----------------------------------------
-template<class T, class PREDICATE>
-std::size_t insertionSort(T* array, const std::size_t size, PREDICATE predicate)
+template<class ITERATOR, class PREDICATE>
+std::size_t iteratorInsertionSort(ITERATOR begin, ITERATOR end, PREDICATE predicate)
 {
-	if (!array || size <= 1)
+	if (begin == end)
 		return 0;
 	std::size_t swapped_count = 0;
-	const T* end = array + size;
-	T* now = array;
-	T* next = now + 1;
+	ITERATOR now = begin;
+	ITERATOR next = begin;
+	++next;
 	while (next < end)
 	{
 		if (predicate(*next, *now))
 		{
-			T* min = now;
-			T* prev = now - 1;
-			while (prev >= array)
+			ITERATOR min = now;
+			ITERATOR prev = now;
+			--prev;
+			while (prev >= begin)
 			{
 				if (predicate(*next, *prev))
 					min = prev;
@@ -1256,7 +822,7 @@ std::size_t insertionSort(T* array, const std::size_t size, PREDICATE predicate)
 					break;
 				--prev;
 			}
-			rotateValues(min, next, 1);
+			iteratorRotateValues(min, next, 1);
 			++swapped_count;
 		}
 		++now;
@@ -1264,10 +830,10 @@ std::size_t insertionSort(T* array, const std::size_t size, PREDICATE predicate)
 	}
 	return swapped_count;
 }
-sortFuncSet(insertionSort);
+iteratorSortFuncSet(iteratorInsertionSort);
 
 //----------------------------------------
-//アルゴリズム：シェルソート
+//アルゴリズム：シェルソート ※イテレータ対応版
 //----------------------------------------
 //・最良計算時間：O(n)
 //・平均計算時間：O(n log^2 n) or O(n^3/2)
@@ -1275,28 +841,30 @@ sortFuncSet(insertionSort);
 //・メモリ使用量：O(1)
 //・安定性：　　　×
 //----------------------------------------
-template<class T, class PREDICATE>
-std::size_t shellSort(T* array, const std::size_t size, PREDICATE predicate)
+template<class ITERATOR, class PREDICATE>
+std::size_t iteratorShellSort(ITERATOR begin, ITERATOR end, PREDICATE predicate)
 {
-	if (!array || size <= 1)
+	if (begin == end)
 		return 0;
 	std::size_t swapped_count = 0;
-	const T* end = array + size;
-	const std::size_t h_max = size / 3;
-	std::size_t h = 1;
+	const int size = iteratorDistance(begin, end);
+	const int h_max = size / 3;
+	int h = 1;
 	while (h <= h_max)
 		h = 3 * h + 1;
 	while (h > 0)
 	{
-		T* now = array;
-		T* next = now + h;
+		ITERATOR now = begin;
+		ITERATOR next = begin;
+		next += h;
 		while (next < end)
 		{
 			if (predicate(*next, *now))
 			{
-				T* min = now;
-				T* prev = now - h;
-				while (prev >= array)
+				ITERATOR min = now;
+				ITERATOR prev = now;
+				prev -= h;
+				while (prev >= begin)
 				{
 					if (predicate(*next, *prev))
 						min = prev;
@@ -1304,7 +872,7 @@ std::size_t shellSort(T* array, const std::size_t size, PREDICATE predicate)
 						break;
 					prev -= h;
 				}
-				rotateValues(min, next, h);
+				iteratorRotateValues(min, next, h);
 				++swapped_count;
 			}
 			++now;
@@ -1314,183 +882,61 @@ std::size_t shellSort(T* array, const std::size_t size, PREDICATE predicate)
 	}
 	return swapped_count;
 }
-sortFuncSet(shellSort);
-
-//========================================
-//ソートアルゴリズム分類：混成ソート
-//========================================
-
-//----------------------------------------
-//アルゴリズム：イントロソート
-//----------------------------------------
-//・最良計算時間：O(n log n)
-//・平均計算時間：O(n log n)
-//・最悪計算時間：O(n log n)
-//・メモリ使用量：O(n log n) ※ループ処理版は O(32*2)
-//・安定性：　　　×
-//----------------------------------------
-template<class T, class PREDICATE>
-std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
-{
-	int depth_max = 0;//ヒープソートに切り替える再帰（スタック）の深さ
-	for (std::size_t size_tmp = size; size_tmp > 1; size_tmp >>= 1, ++depth_max);
-	//--------------------
-	//クイックソート：スタック処理版
-	//※再帰処理版は省略
-	static const std::size_t SIZE_THRESHOLD = 16;//32;//挿入ソートに切り替える件数
-	std::size_t swapped_count = 0;
-	struct stack_t
-	{
-		T* array;
-		std::size_t size;
-		int depth;
-	};
-	static const int STACK_DEPTH_MAX = 32 * 2;
-	stack_t stack[STACK_DEPTH_MAX];
-	//最初の配列をスタックにプッシュ
-	stack_t* stack_p = &stack[0];
-	stack_p->array = array;
-	stack_p->size = size;
-	stack_p->depth = depth_max;
-	int stack_curr = 1;//スタック位置
-	while (stack_curr > 0)
-	{
-		//配列をスタックから取得
-		stack_p = &stack[--stack_curr];
-		T* _array = stack_p->array;
-		const size_t _size = stack_p->size;
-		const int _depth = stack_p->depth;
-		//配列の範囲情報
-		const T* term = _array + _size;
-		T* begin = _array;
-		T* end = _array + _size - 1;
-		//軸を決定
-		const T* mid = _array + (_size >> 1);
-		const T* pivot =
-			predicate(*begin, *mid) ?
-			predicate(*mid, *end) ?
-		mid :
-			predicate(*end, *begin) ?
-		begin :
-		  end :
-			  predicate(*end, *mid) ?
-		  mid :
-			  predicate(*begin, *end) ?
-		  begin :
-				end;
-		//軸未満の配列と軸以上の配列に二分
-		while (true)
-		{
-			while (predicate(*begin, *pivot))
-				++begin;
-			while (predicate(*pivot, *end))
-				--end;
-			if (begin >= end)
-				break;
-			swapValues(*begin, *end);
-			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//軸の位置調整（軸の位置も入れ替わるため）
-			++swapped_count;
-			++begin;
-			--end;
-		}
-		//recursive = 0 : 軸未満の配列をプッシュ
-		//            1 : 軸以上の配列をプッシュ
-		for (int recursive = 0; recursive < 2; ++recursive)
-		{
-			T* new_array = recursive == 0 ? _array : end + 1;
-			const std::size_t new_size = recursive == 0 ? begin - _array : term - end - 1;
-			const int new_depth = _depth - 1;
-			if (new_size >= 1)
-			{
-				if (new_size < SIZE_THRESHOLD)
-				{
-					//swapped_count += insertionSort(new_array, new_size, predicate);//【本来の処理】挿入ソートに切り替え
-					//swapped_count += combSort(new_array, new_size, predicate);//【改良】コムソートに切り替え
-					swapped_count += shellSort(new_array, new_size, predicate);//【改良】シェルソートに切り替え
-				}
-				else if (new_depth == 0)
-				{
-					//swapped_count += heapSort(new_array, new_size, predicate);//【本来の処理】ヒープソートに切り替え
-					//swapped_count += combSort(new_array, new_size, predicate);//【改良】コムソートに切り替え
-					swapped_count += shellSort(new_array, new_size, predicate);//【改良】シェルソートに切り替え
-				}
-				else
-				{
-					//再帰
-					stack_p = &stack[stack_curr++];
-					stack_p->array = new_array;
-					stack_p->size = new_size;
-					stack_p->depth = new_depth;
-				}
-			}
-		}
-	}
-	return swapped_count;
-}
-template<class T, class PREDICATE>
-inline std::size_t introSort(T* array, const std::size_t size, PREDICATE predicate)
-{
-	if (!array || size <= 1)
-		return 0;
-	if (calcUnordered(array, size, predicate) == 0)
-		return 0;
-	return _introSort(array, size, predicate);
-}
-sortFuncSet(introSort);
+iteratorSortFuncSet(iteratorShellSort);
 
 //========================================
 //探索アルゴリズム
 //========================================
 
 //----------------------------------------
-//アルゴリズム：線形探索
+//アルゴリズム：線形探索 ※イテレータ対応版
 //----------------------------------------
 //・最良計算時間：O(1)
 //・平均計算時間：O(n/2)
 //・最悪計算時間：O(n)
 //・探索失敗時：  O(n)
 //----------------------------------------
-template<class T, class PREDICATE>
-T* linearSearch(T* array, const std::size_t size, PREDICATE predicate)
+template<class  ITERATOR, class PREDICATE>
+ITERATOR iteratorLinearSearch(ITERATOR begin, ITERATOR end, PREDICATE predicate)
 {
-	if (!array || size == 0)
-		return nullptr;
-	T* now = array;
-	for (std::size_t i = 0; i < size; ++i, ++now)//順次探索
+	if (begin == end)
+		return end;
+	ITERATOR now = begin;
+	for (; now != end; ++now)//順次探索
 	{
 		if (predicate(*now))//探索キーと一致したら終了
 			return now;
 	}
-	return nullptr;//探索失敗
+	return end;//探索失敗
 }
-searchFuncSetByPredicate(linearSearch);
+iteratorSearchFuncSetByPredicate(iteratorLinearSearch);
 
 //----------------------------------------
-//アルゴリズム：二分探索
+//アルゴリズム：二分探索 ※イテレータ対応版
 //----------------------------------------
 //・最良計算時間：O(1)
 //・平均計算時間：O(log n)
 //・最悪計算時間：O(log n)
 //・探索失敗時：  O(log n)
 //----------------------------------------
-template<class T, class COMPARISON>
-T* binarySearch(T* array, const std::size_t size, COMPARISON comparison)
+template<class  ITERATOR, class COMPARISON>
+ITERATOR iteratorBinarySearch(ITERATOR begin, ITERATOR end, COMPARISON comparison)
 {
-	if (!array || size == 0)
-		return nullptr;
-	std::size_t range = size;
-	T* begin = array;
+	if (begin == end)
+		return end;
+	const int size = iteratorDistance(begin, end);
+	int range = size;
 	while (true)
 	{
-		const std::size_t range_half = range / 2;//探索範囲の半分の範囲
-		T* mid = begin + range_half;//探索範囲の中心要素
+		const int range_half = range / 2;//探索範囲の半分の範囲
+		ITERATOR mid = begin + range_half;//探索範囲の中心要素
 		const int comp = comparison(*mid);//中心要素を探索キーと比較
 		if (comp == 0)//中心要素が探索キーと一致
 		{
 			//遡ってキーの開始点を探す
-			while (mid > array)
+			while (mid > begin)
 			{
-				T* prev = mid - 1;
+				ITERATOR prev = mid - 1;
 				if (comparison(*prev) != 0)
 					break;
 				mid = prev;
@@ -1498,7 +944,7 @@ T* binarySearch(T* array, const std::size_t size, COMPARISON comparison)
 			return mid;//探索終了
 		}
 		if (range_half == 0)//探索範囲が残っていなければ探索失敗
-			return nullptr;
+			return end;
 		if (comp < 0)//探索キーが中心要素より小さかった場合、次に中心より前の範囲に絞って探索する
 			range = range_half;
 		else//if (comp > 0)//探索キーが中心要素より大きかった場合、次に中心より後の範囲に絞って探索する
@@ -1507,16 +953,16 @@ T* binarySearch(T* array, const std::size_t size, COMPARISON comparison)
 			range -= (range_half + 1);
 		}
 	}
-	return nullptr;
+	return end;
 }
-searchFuncSetByComparison(binarySearch);
+iteratorSearchFuncSetByComparison(iteratorBinarySearch);
 
 //--------------------------------------------------------------------------------
-//動的配列
+//リングバッファ
 //--------------------------------------------------------------------------------
 //データ構造とアルゴリズム
 //【特徴】
-//・単純な一次配列である。
+//・単純な一次配列をリングバッファとして管理する。
 //・配列の要素数を超えない範囲で、有効要素数を動的に変化させて管理する。
 //・有効要素の増減に伴い、コンストラクタ／デストラクタの呼び出しを行う。
 //--------------------------------------------------------------------------------
@@ -1526,7 +972,7 @@ searchFuncSetByComparison(binarySearch);
 //・アルゴリズムとデータ本体を分離したコンテナとする。
 //・コンテナ自体は要素の実体を持たずメモリ確保も行わない。
 //・コンストラクタで受けとった配列の参照を扱う。
-//・STL（std::vector）との違いは下記の通り
+//・STL（std::deque）との違いは下記の通り
 //    - 固定長配列である。
 //    - 赤黒木コンテナ（rb_tree）の実装と合わせた構造にしており、
 //　　  操作用テンプレート構造体を用いる。
@@ -1543,15 +989,15 @@ searchFuncSetByComparison(binarySearch);
 #include <new>//配置new,配置delete用
 #include <algorithm>//C++11 std::move用
 
-namespace dynamic_array
+namespace ring_buffer
 {
 	//--------------------
-	//動的配列操作用テンプレート構造体
+	//リングバッファ操作用テンプレート構造体
 	//※CRTPを活用し、下記のような派生構造体を作成して使用する
 	//  //template<class OPE_TYPE, typename VALUE_TYPE>
 	//  //struct base_ope_t;
-	//  //struct 派生構造体名 : public dynamic_array::base_ope_t<派生構造体, 要素型>
-	//	struct ope_t : public dynamic_array::base_ope_t<ope_t, data_t>
+	//  //struct 派生構造体名 : public ring_buffer::base_ope_t<派生構造体, 要素型>
+	//	struct ope_t : public ring_buffer::base_ope_t<ope_t, data_t>
 	//	{
 	//		//ソート用プレディケート関数オブジェクト
 	//		//※必要に応じて実装する
@@ -1643,7 +1089,7 @@ namespace dynamic_array
 		AUTO_CLEAR,//自動クリアし、残っている要素のデストラクタを呼び出す
 	};
 	//----------------------------------------
-	//動的配列コンテナ
+	//リングバッファコンテナ
 	template<class OPE_TYPE>
 	class container
 	{
@@ -1679,48 +1125,49 @@ namespace dynamic_array
 			inline value_type& operator*(){ return *getValue(); }
 			inline const_pointer operator->() const { return getValue(); }
 			inline pointer operator->(){ return getValue(); }
-			inline const_iterator operator[](const int index) const
+			inline const_iterator operator[](const int logical_index) const
 			{
 				iterator ite(*m_con, false);
-				ite.update(index);
+				ite.update(logical_index);
 				return std::move(ite);
 			}
-			inline iterator operator[](const int index)
+			inline iterator operator[](const int logical_index)
 			{
 				iterator ite(*m_con, false);
-				ite.update(index);
+				ite.update(logical_index);
 				return std::move(ite);
 			}
+	public:
 			//比較オペレータ
 			inline bool operator==(const_iterator& rhs) const
 			{
 				return !isEnabled() || !rhs.isEnabled() ? false :
-				       m_index == rhs.index;
+				       m_logicalIndex == rhs.m_logicalIndex;
 			}
 			inline bool operator!=(const_iterator& rhs) const
 			{
 				return !isEnabled() || !rhs.isEnabled() ? false :
-				       m_index != rhs.m_index;
+				       m_logicalIndex != rhs.m_logicalIndex;
 			}
 			inline bool operator>(const_iterator& rhs) const
 			{
 				return !isEnabled() || !rhs.isEnabled() ? false :
-				       m_index > rhs.m_index;
+				       m_logicalIndex > rhs.m_logicalIndex;
 			}
 			inline bool operator>=(const_iterator& rhs) const
 			{
 				return !isEnabled() || !rhs.isEnabled() ? false :
-				       m_index >= rhs.m_index;
+				       m_logicalIndex >= rhs.m_logicalIndex;
 			}
 			inline bool operator<(const_iterator& rhs) const
 			{
 				return !isEnabled() || !rhs.isEnabled() ? false :
-				       m_index < rhs.m_index;
+				       m_logicalIndex < rhs.m_logicalIndex;
 			}
 			inline bool operator<=(const_iterator& rhs) const
 			{
 				return !isEnabled() || !rhs.isEnabled() ? false :
-				       m_index <= rhs.m_index;
+				       m_logicalIndex <= rhs.m_logicalIndex;
 			}
 			//演算オペレータ
 			inline const_iterator& operator++() const
@@ -1816,7 +1263,7 @@ namespace dynamic_array
 			inline iterator& operator=(const_iterator&& rhs)
 			{
 				m_con = rhs.m_con;
-				m_index = rhs.m_index;
+				m_logicalIndex = rhs.m_logicalIndex;
 				m_value = rhs.m_value;
 				return *this;
 			}
@@ -1825,60 +1272,62 @@ namespace dynamic_array
 			inline iterator& operator=(const_iterator& rhs)
 			{
 				m_con = rhs.m_con;
-				m_index = rhs.m_index;
+				m_logicalIndex = rhs.m_logicalIndex;
 				m_value = rhs.m_value;
 				return *this;
 			}
 			iterator& operator=(const_reverse_iterator& rhs);
 		public:
 			//アクセッサ
-			inline bool isExist() const { return m_index != INVALID_INDEX && m_index < m_con->m_size; }
+			inline bool isExist() const { return m_logicalIndex != INVALID_INDEX && m_logicalIndex < m_con->m_size; }
 			inline bool isNotExist() const { return !isExist(); }
-			inline bool isEnabled() const { return m_index != INVALID_INDEX; }
+			inline bool isEnabled() const { return m_logicalIndex != INVALID_INDEX; }
 			inline bool isNotEnabled() const { return !isEnabled(); }
-			inline bool isEnd() const { return m_index == m_con->m_size; }//終端か？
-			inline index_type getIndex() const { return m_index; }//インデックス
+			inline bool isEnd() const { return m_logicalIndex == m_con->m_size; }//終端か？
+			inline index_type getRealIndex() const { return m_logicalIndex == INVALID_INDEX ? INVALID_INDEX : m_con->_to_real_index(m_logicalIndex); }//物理インデックス
+			inline index_type getIndex() const { return m_logicalIndex; }//論理インデックス
 			inline const value_type* getValue() const { return m_value; }//現在の値
 			inline value_type* getValue(){ return m_value; }//現在の値
 		private:
 			//メソッド
-			void update(const index_type index) const
+			void update(const index_type logical_index) const
 			{
-				//if (index == INVALID_INDEX || index < 0 || index > static_cast<index_type>(m_con->m_size))
-				if (index > static_cast<index_type>(m_con->m_size))
+				//if (logical_index == INVALID_INDEX || logical_index < 0 || logical_index > static_cast<index_type>(m_con->m_size))
+				if (logical_index > static_cast<index_type>(m_con->m_size))
 				{
-					m_index = INVALID_INDEX;
+					m_logicalIndex = INVALID_INDEX;
 					m_value = nullptr;
 				}
 				else
 				{
-					m_index = index;
-					m_value = const_cast<value_type*>(m_con->_ref_element(m_index));
+					m_logicalIndex = logical_index;
+					const index_type real_index = m_con->_to_real_index(m_logicalIndex);
+					m_value = const_cast<value_type*>(m_con->_ref_real_element(real_index));
 				}
 			}
 			inline void addIndexAndUpdate(const int add) const
 			{
-				update(m_index + add);
+				update(m_logicalIndex + add);
 			}
 		public:
 			//ムーブコンストラクタ
 			iterator(const_iterator&& obj) :
 				m_con(obj.m_con),
-				m_index(obj.m_index),
+				m_logicalIndex(obj.m_logicalIndex),
 				m_value(obj.m_value)
 			{}
 			iterator(const_reverse_iterator&& obj);
 			//コピーコンストラクタ
 			inline iterator(const_iterator& obj) :
 				m_con(obj.m_con),
-				m_index(obj.m_index),
+				m_logicalIndex(obj.m_logicalIndex),
 				m_value(obj.m_value)
 			{}
 			iterator(const_reverse_iterator& obj);
 			//コンストラクタ
 			inline iterator(const container& con, const bool is_end) :
 				m_con(&con),
-				m_index(INVALID_INDEX),
+				m_logicalIndex(INVALID_INDEX),
 				m_value(nullptr)
 			{
 				if (!is_end)
@@ -1886,16 +1335,16 @@ namespace dynamic_array
 				else
 					update(m_con->m_size);//末尾データ
 			}
-			inline iterator(const container& con, const index_type index) :
+			inline iterator(const container& con, const index_type logical_index) :
 				m_con(&con),
-				m_index(INVALID_INDEX),
+				m_logicalIndex(INVALID_INDEX),
 				m_value(nullptr)
 			{
-				update(index);
+				update(logical_index);
 			}
 			inline iterator() :
 				m_con(nullptr),
-				m_index(INVALID_INDEX),
+				m_logicalIndex(INVALID_INDEX),
 				m_value(nullptr)
 			{}
 			//デストラクタ
@@ -1904,7 +1353,7 @@ namespace dynamic_array
 		protected:
 			//フィールド
 			const container* m_con;//コンテナ
-			mutable index_type m_index;//現在のインデックス
+			mutable index_type m_logicalIndex;//現在の論理インデックス
 			mutable value_type* m_value;//現在の値
 		};
 		//--------------------
@@ -1927,16 +1376,16 @@ namespace dynamic_array
 			inline value_type& operator*(){ return *getValue(); }
 			inline const_pointer operator->() const { return getValue(); }
 			inline pointer operator->(){ return getValue(); }
-			inline const_reverse_iterator operator[](const int index) const
+			inline const_reverse_iterator operator[](const int logical_index) const
 			{
 				reverse_iterator ite(*m_con, false);
-				ite.update(m_con->m_size - index);
+				ite.update(m_con->m_size - logical_index);
 				return std::move(ite);
 			}
-			inline reverse_iterator operator[](const int index)
+			inline reverse_iterator operator[](const int logical_index)
 			{
 				reverse_iterator ite(*m_con, false);
-				ite.update(m_con->m_size - index);
+				ite.update(m_con->m_size - logical_index);
 				return std::move(ite);
 			}
 		public:
@@ -1944,32 +1393,32 @@ namespace dynamic_array
 			inline bool operator==(const_reverse_iterator& rhs) const
 			{
 				return !rhs.isEnabled() || !isEnabled() ? false :
-				       rhs.m_index == m_index;
+				       rhs.m_logicalIndex == m_logicalIndex;
 			}
 			inline bool operator!=(const_reverse_iterator& rhs) const
 			{
 				return !rhs.isEnabled() || !isEnabled() ? false :
-				       rhs.m_index != m_index;
+				       rhs.m_logicalIndex != m_logicalIndex;
 			}
 			inline bool operator>(const_reverse_iterator& rhs) const
 			{
 				return !rhs.isEnabled() || !isEnabled() ? false :
-				       rhs.m_index > m_index;
+				       rhs.m_logicalIndex > m_logicalIndex;
 			}
 			inline bool operator>=(const_reverse_iterator& rhs) const
 			{
 				return !rhs.isEnabled() || !isEnabled() ? false :
-				       rhs.m_index >= m_index;
+				       rhs.m_logicalIndex >= m_logicalIndex;
 			}
 			inline bool operator<(const_reverse_iterator& rhs) const
 			{
 				return !rhs.isEnabled() || !isEnabled() ? false :
-				       rhs.m_index < m_index;
+				       rhs.m_logicalIndex < m_logicalIndex;
 			}
 			inline bool operator<=(const_reverse_iterator& rhs) const
 			{
 				return !rhs.isEnabled() || !isEnabled() ? false :
-				       rhs.m_index <= m_index;
+				       rhs.m_logicalIndex <= m_logicalIndex;
 			}
 			//演算オペレータ
 			inline const_reverse_iterator& operator++() const
@@ -2065,61 +1514,63 @@ namespace dynamic_array
 			inline reverse_iterator& operator=(const_reverse_iterator&& rhs)
 			{
 				m_con = rhs.m_con;
-				m_index = rhs.m_index;
+				m_logicalIndex = rhs.m_logicalIndex;
 				m_value = rhs.m_value;
 				return *this;
 			}
 			inline reverse_iterator& operator=(const_iterator&& rhs)
 			{
 				m_con = rhs.m_con;
-				m_index = rhs.m_index;
-				update(m_index);
+				m_logicalIndex = rhs.m_logicalIndex;
+				update(m_logicalIndex);
 				return *this;
 			}
 			//コピーオペレータ
 			inline reverse_iterator& operator=(const_reverse_iterator& rhs)
 			{
 				m_con = rhs.m_con;
-				m_index = rhs.m_index;
+				m_logicalIndex = rhs.m_logicalIndex;
 				m_value = rhs.m_value;
 				return *this;
 			}
 			inline reverse_iterator& operator=(const_iterator& rhs)
 			{
 				m_con = rhs.m_con;
-				m_index = rhs.m_index;
-				update(m_index);
+				m_logicalIndex = rhs.m_logicalIndex;
+				update(m_logicalIndex);
 				return *this;
 			}
 		public:
 			//アクセッサ
-			inline bool isExist() const { return m_index != INVALID_INDEX && m_index > 0; }
+			inline bool isExist() const { return m_logicalIndex != INVALID_INDEX && m_logicalIndex > 0; }
 			inline bool isNotExist() const { return !isExist(); }
-			inline bool isEnabled() const { return m_index != INVALID_INDEX; }
+			inline bool isEnabled() const { return m_logicalIndex != INVALID_INDEX; }
 			inline bool isNotEnabled() const { return !isEnabled(); }
-			inline bool isEnd() const { return m_index == 0; }//終端か？
-			inline index_type getIndex() const { return m_index - 1; }//インデックス
+			inline bool isEnd() const { return m_logicalIndex == 0; }//終端か？
+			inline index_type getRealIndex() const { return m_logicalIndex == INVALID_INDEX ? INVALID_INDEX : m_con->_to_real_index(m_logicalIndex); }//物理インデックス
+			inline index_type getIndex() const { return m_logicalIndex - 1; }//論理インデックス
 			inline const value_type* getValue() const { return m_value; }//現在の値
 			inline value_type* getValue(){ return m_value; }//現在の値
 		private:
 			//メソッド
-			void update(const index_type index) const
+			void update(const index_type logical_index) const
 			{
-				//if (index == INVALID_INDEX || index < 0 || index > static_cast<index_type>(m_con->m_size))
-				if (index > static_cast<index_type>(m_con->m_size))
+				//if (logical_index == INVALID_INDEX || logical_index < 0 || index > static_cast<index_type>(m_con->m_size))
+				if (logical_index > static_cast<index_type>(m_con->m_size))
 				{
-					m_index = INVALID_INDEX;
+					m_logicalIndex = INVALID_INDEX;
 					m_value = nullptr;
 				}
 				else
 				{
-					m_index = index;
-					m_value = const_cast<value_type*>(m_con->_ref_element(m_index)) - 1;
+					m_logicalIndex = logical_index;
+					const index_type real_index = m_con->_to_real_index(m_logicalIndex);
+					m_value = real_index == 0 ? const_cast<value_type*>(m_con->_ref_real_element(m_con->m_maxSize - 1)) : const_cast<value_type*>(m_con->_ref_real_element(real_index - 1));
 				}
 			}
 			inline void addIndexAndUpdate(const int add) const
 			{
-				update(m_index - add);
+				update(m_logicalIndex - add);
 			}
 		public:
 			//ベースを取得
@@ -2137,33 +1588,33 @@ namespace dynamic_array
 			//ムーブコンストラクタ
 			inline reverse_iterator(const_reverse_iterator&& obj) :
 				m_con(obj.m_con),
-				m_index(obj.m_index),
+				m_logicalIndex(obj.m_logicalIndex),
 				m_value(obj.m_value)
 			{}
 			inline reverse_iterator(const_iterator&& obj) :
 				m_con(obj.m_con),
-				m_index(obj.m_index),
+				m_logicalIndex(obj.m_logicalIndex),
 				m_value(nullptr)
 			{
-				update(obj.m_index);
+				update(m_logicalIndex);
 			}
 			//コピーコンストラクタ
 			inline reverse_iterator(const_reverse_iterator& obj) :
 				m_con(obj.m_con),
-				m_index(obj.m_index),
+				m_logicalIndex(obj.m_logicalIndex),
 				m_value(obj.m_value)
 			{}
 			inline reverse_iterator(const_iterator& obj) :
 				m_con(obj.m_con),
-				m_index(obj.m_index),
+				m_logicalIndex(obj.m_logicalIndex),
 				m_value(nullptr)
 			{
-				update(m_index);
+				update(m_logicalIndex);
 			}
 			//コンストラクタ
 			inline reverse_iterator(const container& con, const bool is_end) :
 				m_con(&con),
-				m_index(INVALID_INDEX),
+				m_logicalIndex(INVALID_INDEX),
 				m_value(nullptr)
 			{
 				if (!is_end)
@@ -2171,16 +1622,16 @@ namespace dynamic_array
 				else
 					update(0);//先頭データ
 			}
-			inline reverse_iterator(const container& con, const index_type index) :
+			inline reverse_iterator(const container& con, const index_type logical_index) :
 				m_con(&con),
-				m_index(INVALID_INDEX),
+				m_logicalIndex(INVALID_INDEX),
 				m_value(nullptr)
 			{
-				update(index);
+				update(logical_index);
 			}
 			inline reverse_iterator() :
 				m_con(nullptr),
-				m_index(INVALID_INDEX),
+				m_logicalIndex(INVALID_INDEX),
 				m_value(nullptr)
 			{}
 			//デストラクタ
@@ -2189,15 +1640,15 @@ namespace dynamic_array
 		protected:
 			//フィールド
 			const container* m_con;//コンテナ
-			mutable index_type m_index;//現在のインデックス
+			mutable index_type m_logicalIndex;//現在の物理インデックス
 			mutable value_type* m_value;//現在の値
 		};
 	public:
 		//アクセッサ
-		inline const value_type* at(const int index) const { return ref_element(index); }
-		inline value_type* at(const int index){ return ref_element(index); }
-		inline const value_type* operator[](const int index) const { return ref_element(index); }
-		inline value_type* operator[](const int index){ return ref_element(index); }
+		inline const value_type* at(const int logical_index) const { return ref_element(logical_index); }
+		inline value_type* at(const int logical_index){ return ref_element(logical_index); }
+		inline const value_type* operator[](const int logical_index) const { return ref_element(logical_index); }
+		inline value_type* operator[](const int logical_index){ return ref_element(logical_index); }
 		auto_clear_attr_t getAutoClearAttr() const { return m_autoClearAttr; }//コンテナ破棄時に残っている要素の自動クリア属性を取得
 		void setAutoClearAttr(const auto_clear_attr_t attr){ m_autoClearAttr = attr; }//コンテナ破棄時に残っている要素の自動クリア属性を変更
 	public:
@@ -2206,40 +1657,64 @@ namespace dynamic_array
 		inline operator lock_type&() const { return m_lock; }//共有ロックオブジェクト ※mutable
 	public:
 		//メソッド
-		inline size_type max_size_real() const { return m_maxSizeReal; }//最大要素数（実際の最大要素数）を取得
 		inline size_type max_size() const { return m_maxSize; }//最大要素数を取得
 		inline size_type capacity() const { return m_maxSize; }//最大要素数を取得
 		inline size_type size() const { return m_size; }//使用中の要素数を取得
 		inline size_type remain() const { return m_maxSize - m_size; }//残りの要素数を取得
 		inline bool empty() const { return m_size == 0; }//空か？
 		inline bool full() const { return m_size == m_maxSize; }//満杯か？
+		inline index_type offset() const { return m_offset; }//有効要素の先頭インデックス（オフセット）
 	private:
 		//※範囲チェックなし
-		inline const value_type* _ref_element(const index_type index) const { return &m_array[index]; }//要素参照
+		inline index_type _to_real_index(const index_type logical_index) const//論理インデックスを物理インデックスに変換
+		{
+			const index_type real_index = m_offset + logical_index;
+			return real_index < m_maxSize ? real_index : real_index - m_maxSize;
+		}
+		inline index_type _to_logical_index(const index_type real_index) const//物理インデックスを論理インデックスに変換
+		{
+			return real_index > m_offset ? real_index - m_offset : real_index + m_maxSize - m_offset;
+		}
+		inline size_type _front_new_real_index() const//先頭の新規インデックス
+		{
+			return m_offset == 0 ? m_maxSize - 1 : m_offset - 1;
+		}
+		inline size_type _back_new_real_index() const//末尾の新規インデックス
+		{
+			const index_type new_real_index = m_offset + m_size;
+			return new_real_index < m_maxSize ? new_real_index : new_real_index - m_maxSize;
+		}
+		inline const value_type* _ref_real_element(const index_type real_index) const { return &m_array[real_index]; }//要素参照
+		inline const value_type* _ref_element(const index_type logical_index) const { return &m_array[_to_real_index(logical_index)]; }//要素参照
 		inline const value_type* _ref_front() const { return _ref_element(0); }//先頭要素参照
 		inline const value_type* _ref_back() const { return _ref_element(m_size - 1); }//末尾要素参照
-		inline const value_type* _ref_new() const { return _ref_element(m_size); }//新規要素参照
-		inline value_type* _ref_element(const index_type index){ return &m_array[index]; }//要素参照
+		inline const value_type* _ref_front_new() const { return _ref_real_element(_front_new_real_index()); }//先頭の新規要素参照
+		inline const value_type* _ref_back_new() const { return _ref_real_element(_back_new_real_index()); }//末尾の新規要素参照
+		inline value_type* _ref_real_element(const index_type real_index){ return &m_array[real_index]; }//要素参照
+		inline value_type* _ref_element(const index_type logical_index){ return &m_array[_to_real_index(logical_index)]; }//要素参照
 		inline value_type* _ref_front(){ return _ref_element(0); }//先頭要素参照
 		inline value_type* _ref_back(){ return _ref_element(m_size - 1); }//末尾要素参照
-		inline value_type* _ref_new(){ return _ref_element(m_size); }//新規要素参照
+		inline value_type* _ref_front_new(){ return _ref_real_element(_front_new_real_index()); }//先頭の新規要素参照
+		inline value_type* _ref_back_new(){ return _ref_real_element(_back_new_real_index()); }//末尾の新規要素参照
 	public:
 		//※範囲チェックあり
-		//inline const value_type* ref_element(const index_type index) const { return index >= 0 && index < m_size ? _ref_element(index) : nullptr; }//要素参照
-		inline const value_type* ref_element(const index_type index) const { return index < m_size ? _ref_element(index) : nullptr; }//要素参照
+		//inline const value_type* ref_element(const index_type logical_index) const { return logical_index >= 0 && logical_index < m_size ? _ref_element(logical_index) : nullptr; }//要素参照
+		inline const value_type* ref_element(const index_type logical_index) const { return logical_index < m_size ? _ref_element(logical_index) : nullptr; }//要素参照
 		inline const value_type* ref_front() const { return m_size == 0 ? nullptr : _ref_front(); }//先頭要素参照
 		inline const value_type* ref_back() const { return m_size == 0 ? nullptr : _ref_back(); }//末尾要素参照
-		inline const value_type* ref_new() const { return m_size == m_maxSize ? nullptr : _ref_new(); }//新規要素参照
-		inline value_type* ref_element(const index_type index){ return  const_cast<value_type*>(const_cast<const container*>(this)->ref_element(index)); }//要素参照
+		inline const value_type* ref_front_new() const { return m_size == m_maxSize ? nullptr : _ref_front_new(); }//先頭の新規要素参照
+		inline const value_type* ref_back_new() const { return m_size == m_maxSize ? nullptr : _ref_back_new(); }//末尾の新規要素参照
+		inline value_type* ref_element(const index_type logical_index){ return  const_cast<value_type*>(const_cast<const container*>(this)->ref_element(logical_index)); }//要素参照
 		inline value_type* ref_front(){ return const_cast<value_type*>(const_cast<const container*>(this)->ref_front()); }//先頭要素参照
 		inline value_type* ref_back(){ return const_cast<value_type*>(const_cast<const container*>(this)->ref_back()); }//末尾要素参照
-		inline value_type* ref_new(){ return const_cast<value_type*>(const_cast<const container*>(this)->ref_new()); }//新規要素参照
+		inline value_type* ref_front_new(){ return const_cast<value_type*>(const_cast<const container*>(this)->ref_front_new()); }//先頭の新規要素参照
+		inline value_type* ref_back_new(){ return const_cast<value_type*>(const_cast<const container*>(this)->ref_back_new()); }//末尾の新規要素参照
 	private:
-		//inline index_type _adj_index(const index_type index) const { return index >= 0 && index < m_maxSize ? index : INVALID_INDEX; }//インデックスを範囲内に補正
-		inline index_type _adj_index(const index_type index) const { return index < m_maxSize ? index : INVALID_INDEX; }//インデックスを範囲内に補正
-		inline index_type _ref_index(const value_type* node) const{ return node - _ref_front(); }//要素をインデックスに変換 ※範囲チェックなし
+		inline int _adj_logical_index(const int logical_index) const { return logical_index >= 0 && logical_index < m_maxSize ? logical_index : INVALID_INDEX; }//論理インデックスを範囲内に補正
+		inline int _ref_real_index(const value_type* node) const{ return node - _ref_front(); }//要素を物理インデックスに変換 ※範囲チェックなし
+		inline int _ref_logical_index(const value_type* node) const{ return _to_logical_index(_ref_real_index(node)); }//要素を論理インデックスに変換 ※範囲チェックなし
 	public:
-		inline index_type ref_index(const value_type* node) const{ return _adj_index(_ref_index(node)); }//要素をインデックスに変換
+		inline int ref_logical_index(const value_type* node) const{ return _adj_logical_index(_ref_logical_index(node)); }//要素を論理インデックスに変換
 	public:
 		inline const value_type* front() const { return ref_front(); }//先頭要素参照
 		inline value_type* front(){ return ref_front(); }//先頭要素参照
@@ -2329,65 +1804,14 @@ namespace dynamic_array
 			if (m_array && m_autoClearAttr == AUTO_CLEAR)
 				clear();//クリア
 			m_array = array;
-			m_maxSizeReal = max_size;
 			m_maxSize = max_size;
 			m_size = size < 0 || static_cast<size_type>(size) >= m_maxSize ? m_maxSize : static_cast<size_type>(size);
+			m_offset = 0;
 		}
 		//※voidポインタとバッファサイズ数指定版
 		void assign_array(void* buff_ptr, const size_type buff_size, const int size = 0)
 		{
 			assign_array(static_cast<value_type*>(buff_ptr), buff_size / sizeof(value_type), size);
-		}
-		//最大要素数の変更（新しい最大要素数を返す）
-		//※名前に反して拡大・縮小が可能
-		//※使用中の要素数以下にはできない
-		//※実際の最大要素数以上にはできない
-		//※実際の配列の範囲を超えないことは保証しない
-		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
-		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
-		inline size_type reserve(const size_type max_size)
-		{
-			if (max_size < m_size)
-				m_maxSize = m_size;
-			else if (max_size > m_maxSizeReal)
-				m_maxSize = m_maxSizeReal;
-			else
-				m_maxSize = max_size;
-			return m_maxSize;
-		}
-		//最大要素数の変更（新しい最大要素数を返す）
-		//※名前に反して拡大・縮小が可能
-		//※使用中の要素数以下にもできる（削除された要素はデストラクタを呼び出す）
-		//※実際の配列の範囲を超えないことは保証しない
-		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
-		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
-		size_type shrink(const size_type max_size)
-		{
-			if (max_size < m_size)
-			{
-				value_type* value = _ref_element(max_size);
-				for (index_type index = max_size; index < m_size; ++index, ++value)
-				{
-					ope_type::callDestructor(value);//デストラクタ呼び出し
-					operator delete(value, value);//（作法として）deleteオペレータ呼び出し
-				}
-				m_size = max_size;
-				m_maxSize = m_size;
-			}
-			else if (max_size > m_maxSizeReal)
-				m_maxSize = m_maxSizeReal;
-			else
-				m_maxSize = max_size;
-			return m_maxSize;
-		}
-		//最大要素数の変更（新しい最大要素数を返す）
-		//※現在使用中のサイズに合わせる
-		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
-		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
-		size_type shrink_to_fit()
-		{
-			m_maxSize = m_size;
-			return m_maxSize;
 		}
 		//使用中のサイズを変更（新しいサイズを返す）
 		//※新しい要素にはnew_valueをセットし、削除された要素はデストラクタを呼び出す
@@ -2400,15 +1824,17 @@ namespace dynamic_array
 			const size_type _size = size < 0 ? m_maxSize : static_cast<size_type>(size) < m_maxSize ? static_cast<size_type>(size) : m_maxSize;
 			if (_size > m_size)
 			{
-				value_type* value = _ref_element(m_size);
-				for (index_type index = m_size; index < _size; ++index, ++value)
+				for (index_type index = m_size; index < _size; ++index)
+				{
+					value_type* value = _ref_element(index);
 					*value = new_value;//新しい値を初期化
+				}
 			}
 			else if (_size < m_size)
 			{
-				value_type* value = _ref_element(_size);
-				for (index_type index = _size; index < m_size; ++index, ++value)
+				for (index_type index = _size; index < m_size; ++index)
 				{
+					value_type* value = _ref_element(index);
 					ope_type::callDestructor(value);//デストラクタ呼び出し
 					operator delete(value, value);//（作法として）deleteオペレータ呼び出し
 				}
@@ -2423,15 +1849,17 @@ namespace dynamic_array
 			const size_type _size = size < 0 ? m_maxSize : static_cast<size_type>(size) < m_maxSize ? static_cast<size_type>(size) : m_maxSize;
 			if (_size > m_size)
 			{
-				value_type* value = _ref_element(m_size);
-				for (index_type index = m_size; index < _size; ++index, ++value)
+				for (index_type index = m_size; index < _size; ++index)
+				{
+					value_type* value = _ref_element(index);
 					new(value)value_type(args...);//コンストラクタ呼び出し
+				}
 			}
 			else if (_size < m_size)
 			{
-				value_type* value = _ref_element(size);
-				for (index_type index = size; index < m_size; ++index, ++value)
+				for (index_type index = size; index < m_size; ++index)
 				{
+					value_type* value = _ref_element(index);
 					ope_type::callDestructor(value);//デストラクタ呼び出し
 					operator delete(value, value);//（作法として）deleteオペレータ呼び出し
 				}
@@ -2463,17 +1891,19 @@ namespace dynamic_array
 			const size_type _size = size < 0 ? m_maxSize : static_cast<size_type>(size) < m_maxSize ? static_cast<size_type>(size) : m_maxSize;
 			//{
 			//	const size_type used_size = _size < m_size ? _size : m_size;
-			//	value_type* value = _ref_front();
-			//	for (index_type index = 0; index < used_size; ++index, ++value)
+			//	for (index_type index = 0; index < used_size; ++index)
 			//	{
+			//		value_type* value = _ref_element(index);
 			//		ope_type::callDestructor(value);//デストラクタ呼び出し
 			//		operator delete(value, value);//（作法として）deleteオペレータ呼び出し
 			//	}
 			//}
 			{
-				value_type* value = _ref_front();
-				for (index_type index = 0; index < _size; ++index, ++value)
+				for (index_type index = 0; index < _size; ++index)
+				{
+					value_type* value = _ref_element(index);
 					*value = new_value;//データを上書き
+				}
 			}
 			if(m_size < _size)
 				m_size = _size;
@@ -2487,21 +1917,64 @@ namespace dynamic_array
 			const size_type _size = size < 0 ? m_maxSize : static_cast<size_type>(size) < m_maxSize ? static_cast<size_type>(size) : m_maxSize;
 			{
 				const size_type used_size = _size < m_size ? _size : m_size;
-				value_type* value = _ref_front();
-				for (index_type index = 0; index < used_size; ++index, ++value)
+				for (index_type index = 0; index < used_size; ++index)
 				{
+					value_type* value = _ref_element(index);
 					ope_type::callDestructor(value);//デストラクタ呼び出し
 					operator delete(value, value);//（作法として）deleteオペレータ呼び出し
 				}
 			}
 			{
-				value_type* value = _ref_front();
-				for (index_type index = 0; index < _size; ++index, ++value)
+				for (index_type index = 0; index < _size; ++index)
+				{
+					value_type* value = _ref_element(index);
 					new(value)value_type(args...);//コンストラクタ呼び出し
+				}
 			}
 			if (m_size < _size)
 				m_size = _size;
 			return m_size;
+		}
+		//先頭に要素を追加
+		//※オブジェクト渡し
+		//※オブジェクトのコピーが発生する点に注意（少し遅くなる）
+		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
+		inline value_type* push_front(const value_type&& src)//ムーブ版
+		{
+			value_type* obj = ref_front_new();//サイズチェック含む
+			if (!obj)
+				return nullptr;
+			*obj = std::move(src);
+			++m_size;
+			m_offset = m_offset == 0 ? m_maxSize - 1 : m_offset - 1;
+			return obj;
+		}
+		inline value_type* push_front(const value_type& src)//コピー版
+		{
+			value_type* obj = ref_front_new();//サイズチェック含む
+			if (!obj)
+				return nullptr;
+			*obj = src;
+			++m_size;
+			m_offset = m_offset == 0 ? m_maxSize - 1 : m_offset - 1;
+			return obj;
+		}
+		//先頭に要素を追加
+		//※パラメータ渡し
+		//※オブジェクトのコンストラクタが呼び出される
+		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
+		template<typename... Tx>
+		value_type* push_front(Tx... args)
+		{
+			value_type* obj = ref_front_new();//サイズチェック含む
+			if (!obj)
+				return nullptr;
+			new(obj)value_type(args...);//コンストラクタ呼び出し
+			++m_size;
+			m_offset = m_offset == 0 ? m_maxSize - 1 : m_offset - 1;
+			return obj;
 		}
 		//末尾に要素を追加
 		//※オブジェクト渡し
@@ -2510,7 +1983,7 @@ namespace dynamic_array
 		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
 		inline value_type* push_back(const value_type&& src)//ムーブ版
 		{
-			value_type* obj = ref_new();//サイズチェック含む
+			value_type* obj = ref_back_new();//サイズチェック含む
 			if (!obj)
 				return nullptr;
 			*obj = std::move(src);
@@ -2519,7 +1992,7 @@ namespace dynamic_array
 		}
 		inline value_type* push_back(const value_type& src)//コピー版
 		{
-			value_type* obj = ref_new();//サイズチェック含む
+			value_type* obj = ref_back_new();//サイズチェック含む
 			if (!obj)
 				return nullptr;
 			*obj = src;
@@ -2534,12 +2007,40 @@ namespace dynamic_array
 		template<typename... Tx>
 		value_type* push_back(Tx... args)
 		{
-			value_type* obj = ref_new();//サイズチェック含む
+			value_type* obj = ref_back_new();//サイズチェック含む
 			if (!obj)
 				return nullptr;
 			new(obj)value_type(args...);//コンストラクタ呼び出し
 			++m_size;
 			return obj;
+		}
+		//先頭の要素を削除
+		//※オブジェクトのデストラクタが呼び出される
+		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
+		bool pop_front()
+		{
+			if (m_size == 0)
+				return false;
+			value_type* value = const_cast<value_type*>(ref_front());
+			ope_type::callDestructor(value);//デストラクタ呼び出し
+			operator delete(value, value);//（作法として）deleteオペレータ呼び出し
+			--m_size;
+			m_offset = m_offset == m_maxSize - 1 ? 0 : m_offset + 1;
+			return true;
+		}
+		//※オブジェクトの値を受け取る
+		bool pop_front(value_type& value)
+		{
+			if (m_size == 0)
+				return false;
+			value_type* obj = const_cast<value_type*>(ref_front());
+			value = std::move(*obj);//ムーブ
+			ope_type::callDestructor(obj);//デストラクタ呼び出し
+			operator delete(obj, obj);//（作法として）deleteオペレータ呼び出し
+			--m_size;
+			m_offset = m_offset == m_maxSize - 1 ? 0 : m_offset + 1;
+			return true;
 		}
 		//末尾の要素を削除
 		//※オブジェクトのデストラクタが呼び出される
@@ -2549,7 +2050,7 @@ namespace dynamic_array
 		{
 			if (m_size == 0)
 				return false;
-			value_type* value = const_cast<value_type*>(ref_back());
+			value_type* value = const_cast<value_type*>(ref_front());
 			ope_type::callDestructor(value);//デストラクタ呼び出し
 			operator delete(value, value);//（作法として）deleteオペレータ呼び出し
 			--m_size;
@@ -2576,37 +2077,42 @@ namespace dynamic_array
 		{
 			if (m_size == 0)
 				return;
-			value_type* value = _ref_front();
-			for (size_type i = 0; i < m_size; ++i, ++value)
+			for (size_type i = 0; i < m_size; ++i)
 			{
+				value_type* value = _ref_element(i);
 				ope_type::callDestructor(value);//デストラクタ呼び出し
 				operator delete(value, value);//（作法として）deleteオペレータ呼び出し
 			}
 			m_size = 0;
+			m_offset = 0;
 		}
 	private:
 		//要素の移動（昇順）
 		void move_asc(const index_type dst_pos, const index_type src_pos, const size_type num)
 		{
-			value_type* dst = _ref_element(dst_pos);
-			value_type* src = _ref_element(src_pos);
+			index_type _dst_pos = dst_pos;
+			index_type _src_pos = src_pos;
 			for (size_type i = 0; i < num; ++i)
 			{
+				value_type* dst = _ref_element(_dst_pos);
+				value_type* src = _ref_element(_src_pos);
 				*dst = std::move(*src);
-				++dst;
-				++src;
+				++_dst_pos;
+				++_src_pos;
 			}
 		}
 		//要素の移動（降順）
 		void move_desc(const index_type dst_pos, const index_type src_pos, const size_type num)
 		{
-			value_type* dst = _ref_element(dst_pos + num - 1);
-			value_type* src = _ref_element(src_pos + num - 1);
+			index_type _dst_pos = dst_pos + num - 1;
+			index_type _src_pos = src_pos + num - 1;
 			for (size_type i = 0; i < num; ++i)
 			{
+				value_type* dst = _ref_element(_dst_pos);
+				value_type* src = _ref_element(_src_pos);
 				*dst = std::move(*src);
-				--dst;
-				--src;
+				--_dst_pos;
+				--_src_pos;
 			}
 		}
 	public:
@@ -2631,9 +2137,13 @@ namespace dynamic_array
 			//要素数変更
 			m_size += _num;
 			//挿入
-			value_type* new_value = _ref_element(index);
-			for (size_type i = 0; i < _num; ++i, ++new_value)
+			index_type _index = index;
+			for (size_type i = 0; i < _num; ++i)
+			{
+				value_type* new_value = _ref_element(_index);
 				*new_value = value;
+				++_index;
+			}
 			//終了
 			iterator now(*this, index);
 			return std::move(now);
@@ -2656,9 +2166,13 @@ namespace dynamic_array
 			//要素数変更
 			m_size += _num;
 			//挿入
-			value_type* new_value = _ref_element(index);
-			for (size_type i = 0; i < _num; ++i, ++new_value)
+			index_type _index = index;
+			for (size_type i = 0; i < _num; ++i)
+			{
+				value_type* new_value = _ref_element(_index);
 				new(new_value)value_type(args...);
+				++_index;
+			}
 			//終了
 			iterator now(*this, index);
 			return std::move(now);
@@ -2671,11 +2185,13 @@ namespace dynamic_array
 			const size_type _num = num < 0 || num > remain ? remain : num;
 			const size_type move_num = m_size - index;
 			//削除
-			value_type* delete_value = _ref_element(index);
-			for (size_type i = 0; i < _num; ++i, ++delete_value)
+			index_type _index = index;
+			for (size_type i = 0; i < _num; ++i)
 			{
+				value_type* delete_value = _ref_element(_index);
 				ope_type::callDestructor(delete_value);//デストラクタ呼び出し
 				operator delete(delete_value, delete_value);//（作法として）deleteオペレータ呼び出し
+				++_index;
 			}
 			//移動
 			move_asc(index, index + _num, move_num);
@@ -2722,19 +2238,19 @@ namespace dynamic_array
 		}
 	public:
 		//ソート
-		//※イントロソートを使用
+		//※シェルソートを使用
 		//※ope_type::sort_predicate() を使用して探索（標準では、データ型の operator<() に従って探索）
 		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
 		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
 		void sort()
 		{
-			introSort(_ref_front(), m_size, typename ope_type::sort_predicate());
+			iteratorShellSort(begin(), end(), typename ope_type::sort_predicate());
 		}
 		//※プレディケート関数指定版
 		template<class PREDICATE>
 		void sort(PREDICATE predicate)
 		{
-			introSort(_ref_front(), m_size, predicate);
+			iteratorShellSort(begin(), end(), predicate);
 		}
 		//安定ソート
 		//※挿入ソートを使用
@@ -2743,13 +2259,13 @@ namespace dynamic_array
 		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
 		void stable_sort()
 		{
-			insertionSort(_ref_front(), m_size, typename ope_type::sort_predicate());
+			iteratorInsertionSort(begin(), end(), typename ope_type::sort_predicate());
 		}
 		//※プレディケート関数指定版
 		template<class PREDICATE>
 		void stable_sort(PREDICATE predicate)
 		{
-			insertionSort(_ref_front(), m_size, predicate);
+			iteratorInsertionSort(begin(), end(), predicate);
 		}
 	public:
 		//線形探索
@@ -2760,29 +2276,23 @@ namespace dynamic_array
 		template<typename V>
 		iterator find_value(const V& value)
 		{
-			value_type* found = linearSearchValue(_ref_front(), m_size, value, typename ope_type::find_predicate());
-			const index_type index = found ? _ref_index(found) : INVALID_INDEX;
-			iterator ite(*this, index);
-			return std::move(ite);
+			iterator found = iteratorLinearSearchValue(begin(), end(), value, typename ope_type::find_predicate());
+			return std::move(found);
 		}
 		//※比較関数＋値指定版
 		template<typename V, class PREDICATE>
 		iterator find_value(const V& value, PREDICATE predicate)
 		{
-			value_type* found = linearSearchValue(_ref_front(), m_size, value, predicate);
-			const index_type index = found ? _ref_index(found) : INVALID_INDEX;
-			iterator ite(*this, index);
-			return std::move(ite);
+			iterator found = iteratorLinearSearchValue(begin(), end(), value, predicate);
+			return std::move(found);
 		}
 		//※比較関数指定版
 		//※値の指定は関数に含んでおく（クロ―ジャを用いるなどする）
 		template<class PREDICATE>
 		iterator find(PREDICATE predicate)
 		{
-			value_type* found = linearSearch(_ref_front(), m_size, predicate);
-			const index_type index = found ? _ref_index(found) : INVALID_INDEX;
-			iterator ite(*this, index);
-			return std::move(ite);
+			iterator found = iteratorLinearSearch(begin(), end(), predicate);
+			return std::move(found);
 		}
 		//二分探索
 		//※探索値指定版
@@ -2792,29 +2302,23 @@ namespace dynamic_array
 		template<typename V>
 		iterator binary_search_value(const V& value)
 		{
-			value_type* found = binarySearchValue(_ref_front(), m_size, value, typename ope_type::search_comparison());
-			const index_type index = found ? _ref_index(found) : INVALID_INDEX;
-			iterator ite(*this, index);
-			return std::move(ite);
+			iterator found = iteratorBinarySearchValue(begin(), end(), value, typename ope_type::search_comparison());
+			return std::move(found);
 		}
 		//※比較関数＋値指定版
 		template<typename V, class COMPARISON>
 		iterator binary_search_value(const V& value, COMPARISON comparison)
 		{
-			value_type* found = binarySearchValue(_ref_front(), m_size, value, comparison);
-			const index_type index = found ? _ref_index(found) : INVALID_INDEX;
-			iterator ite(*this, index);
-			return std::move(ite);
+			iterator found = iteratorBinarySearchValue(begin(), end(), value, comparison);
+			return std::move(found);
 		}
 		//※比較関数指定版
 		//※値の指定は関数に含んでおく（クロ―ジャを用いるなどする）
 		template<class COMPARISON>
 		iterator binary_search(COMPARISON comparison)
 		{
-			value_type* found = binarySearch(_ref_front(), m_size, comparison);
-			const index_type index = found ? _ref_index(found) : INVALID_INDEX;
-			iterator ite(*this, index);
-			return std::move(ite);
+			iterator found = iteratorBinarySearch(begin(), end(), comparison);
+			return std::move(found);
 		}
 	public:
 		//コンストラクタ
@@ -2823,33 +2327,33 @@ namespace dynamic_array
 		template<size_type N>
 		container(value_type(&array)[N], const int size = 0, const auto_clear_attr_t auto_clear_attr = NEVER_CLEAR) :
 			m_array(array),
-			m_maxSizeReal(N),
 			m_maxSize(N),
 			m_size(size < 0 || static_cast<size_type>(size) >= m_maxSize ? m_maxSize : static_cast<size_type>(size)),
+			m_offset(0),
 			m_autoClearAttr(auto_clear_attr)
 		{}
 		//※ポインタと配列要素数指定版
 		container(value_type* array, const size_type max_size, const int size = 0, const auto_clear_attr_t auto_clear_attr = NEVER_CLEAR) :
 			m_array(array),
-			m_maxSizeReal(max_size),
 			m_maxSize(max_size),
 			m_size(size < 0 || static_cast<size_type>(size) >= m_maxSize ? m_maxSize : static_cast<size_type>(size)),
+			m_offset(0),
 			m_autoClearAttr(auto_clear_attr)
 		{}
 		//※voidポインタとバッファサイズ数指定版
 		container(void* buff_ptr, const size_type buff_size, const int size = 0, const auto_clear_attr_t auto_clear_attr = NEVER_CLEAR) :
 			m_array(static_cast<value_type*>(buff_ptr)),
-			m_maxSizeReal(buff_size / sizeof(value_type)),
-			m_maxSize(m_maxSizeReal),
+			m_maxSize(buff_size / sizeof(value_type)),
 			m_size(size < 0 || static_cast<size_type>(size) >= m_maxSize ? m_maxSize : static_cast<size_type>(size)),
+			m_offset(0),
 			m_autoClearAttr(auto_clear_attr)
 		{}
 		//デフォルトコンストラクタ
 		container() :
 			m_array(nullptr),
-			m_maxSizeReal(0),
 			m_maxSize(0),
 			m_size(0),
+			m_offset(0),
 			m_autoClearAttr(NEVER_CLEAR)
 		{}
 		//デストラクタ
@@ -2862,9 +2366,9 @@ namespace dynamic_array
 	private:
 		//フィールド
 		value_type* m_array;//配列の先頭
-		size_type m_maxSizeReal;//実際（初期）の最大要素数
 		size_type m_maxSize;//最大要素数（後から変更可能なサイズ）
 		size_type m_size;//使用中の要素数
+		index_type m_offset;//有効要素の先頭インデックス（オフセット）
 		auto_clear_attr_t m_autoClearAttr;//コンテナ破棄時に残っている要素の自動クリア属性
 		mutable lock_type m_lock;//ロックオブジェクト
 	};
@@ -2874,8 +2378,8 @@ namespace dynamic_array
 	typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(const typename container<OPE_TYPE>::reverse_iterator&& rhs)//VC++もOK
 	{
 		m_con = rhs.m_con;
-		m_index = rhs.m_index;
-		update(m_index);
+		m_logicalIndex = rhs.m_logicalIndex;
+		update(m_logicalIndex);
 		return *this;
 	}
 	//イテレータのコピーオペレータ
@@ -2884,8 +2388,8 @@ namespace dynamic_array
 	typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(const typename container<OPE_TYPE>::reverse_iterator& rhs)//VC++もOK
 	{
 		m_con = rhs.m_con;
-		m_index = rhs.m_index;
-		update(m_index);
+		m_logicalIndex = rhs.m_logicalIndex;
+		update(m_logicalIndex);
 		return *this;
 	}
 	//イテレータのムーブコンストラクタ
@@ -2893,32 +2397,32 @@ namespace dynamic_array
 	//container<OPE_TYPE>::iterator::iterator(typename container<OPE_TYPE>::const_reverse_iterator&& obj) ://GCCはOK, VC++はNG
 	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator&& obj) ://VC++もOK
 		m_con(obj.m_con),
-		m_index(obj.m_index),
+		m_logicalIndex(obj.m_logicalIndex),
 		m_value(nullptr)
 	{
-		update(m_index);
+		update(m_logicalIndex);
 	}
 	//イテレータのコピーコンストラクタ
 	template<class OPE_TYPE>
 	//container<OPE_TYPE>::iterator::iterator(typename container<OPE_TYPE>::const_reverse_iterator& obj) ://GCCはOK, VC++はNG
 	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator& obj) ://VC++もOK
 		m_con(obj.m_con),
-		m_index(obj.m_index),
+		m_logicalIndex(obj.m_logicalIndex),
 		m_value(nullptr)
 	{
-		update(m_index);
+		update(m_logicalIndex);
 	}
 	//--------------------
 	//基本型定義マクロ消去
 	#undef DECLARE_OPE_TYPES
-}//namespace dynamic_array
+}//namespace ring_buffer
 
 //--------------------------------------------------------------------------------
-//動的配列テスト
+//リングバッファテスト
 //--------------------------------------------------------------------------------
 
 #include <algorithm>//std::for_each用
-#include <vector>//std::vector用（比較用）
+#include <deque>//std::deque用（比較用）
 
 //----------------------------------------
 //テスト用補助関数
@@ -3009,10 +2513,10 @@ struct data_t
 };
 //----------------------------------------
 //テストデータ操作クラス①：デフォルトのまま使う
-struct ope_t : public dynamic_array::base_ope_t<ope_t, data_t>{};
+struct ope_t : public ring_buffer::base_ope_t<ope_t, data_t>{};
 //----------------------------------------
 //テストデータ操作クラス②：ソート／探索方法をデフォルトから変える
-struct another_ope_t : public dynamic_array::base_ope_t<ope_t, data_t>
+struct another_ope_t : public ring_buffer::base_ope_t<ope_t, data_t>
 {
 	//ソート用プレディケート関数オブジェクト
 	//※m_valメンバーを基準にソート
@@ -3040,7 +2544,7 @@ struct another_ope_t : public dynamic_array::base_ope_t<ope_t, data_t>
 			return rhs - lhs.m_val;
 		}
 	};
-	
+
 	//デストラクタ呼び出しを禁止したい場合、
 	//この空のメソッドを定義する。
 	inline static void callDestructor(value_type* obj)
@@ -3050,7 +2554,7 @@ struct another_ope_t : public dynamic_array::base_ope_t<ope_t, data_t>
 };
 //----------------------------------------
 //テストデータ操作クラス③：ロックを有効化する
-struct mt_ope_t : public dynamic_array::base_ope_t<mt_ope_t, data_t>
+struct mt_ope_t : public ring_buffer::base_ope_t<mt_ope_t, data_t>
 {
 	//ロック型
 	typedef shared_spin_lock lock_type;//ロックオブジェクトを指定
@@ -3067,23 +2571,24 @@ int main(const int argc, const char* argv[])
 {
 	//--------------------
 	//テスト①：プリミティブ型の配列を扱う場合
+	//※一部リングバッファ固有のテストを行うが、基本的に動的配列のテストと同じ
 	{
 		printf("--------------------------------------------------------------------------------\n");
-		printf("[Test for dynamic_array::container(Primitive type)]\n");
-		
+		printf("[Test for ring_buffer::container(Primitive type)]\n");
+
 		int arr[20];//配列
 
 		//int型用のデータ操作クラス定義
-		struct ope_t : public dynamic_array::base_ope_t<ope_t, int>{};
+		struct ope_t : public ring_buffer::base_ope_t<ope_t, int>{};
 
 		//コンテナ生成
-		//※既存の配列を渡して動的配列コンテナとして扱う
-		dynamic_array::container<ope_t> con(arr);//配列要素数を自動取得
+		//※既存の配列を渡してリングバッファコンテナとして扱う
+		ring_buffer::container<ope_t> con(arr);//配列要素数を自動取得
 
 		//データを表示
 		auto printAll = [&con]()
 		{
-			printf("size=%d, max_size=%d(%d)\n", con.size(), con.max_size(), con.max_size_real());
+			printf("offset=%d, size=%d, max_size=%d\n", con.offset(), con.size(), con.max_size());
 			printf("array=");
 			for (auto val : con)
 				printf(" %d", val);
@@ -3096,12 +2601,131 @@ int main(const int argc, const char* argv[])
 			printf("array(reverse)=");
 			std::for_each(con.rbegin(), con.rend(),
 				[](int val)
-			{
-				printf(" %d", val);
-			}
+				{
+					printf(" %d", val);
+				}
 			);
 			printf("\n");
 		};
+
+		//--------------------------------------------------------------------------------
+		//※リングバッファ固有のテスト①（ここから）※これ以外は動的配列のテストと全く同じ
+		
+		//末尾に連続プッシュ(1)
+		auto continuous_push_back = [&con](const int num)
+		{
+			printf("\n");
+			printf("[push_back * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				const int val = i;
+				printf("push_back(%d) ... ", val);
+				if (con.push_back(val))
+					printf("OK\n");
+				else
+					printf("NG!\n");
+			}
+		};
+		continuous_push_back(10);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//先頭から連続ポップ(1)
+		auto continuous_pop_front = [&con](const int num)
+		{
+			printf("\n");
+			printf("[pop_front * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				int val;
+				printf("pop_front() ... ");
+				if (con.pop_front(val))
+					printf("OK [%d]\n", val);
+				else
+					printf("NG!\n");
+			}
+		};
+		continuous_pop_front(5);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//末尾に連続プッシュ(2)
+		continuous_push_back(20);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+	#if 0
+		con.sort(reverse_pred);//高速ソート
+		printAll();//全件表示
+		con.sort();//高速ソート
+		printAll();//全件表示
+		con.stable_sort(reverse_pred);//安定ソート
+		printAll();//全件表示
+		con.stable_sort();//安定ソート
+		printAll();//全件表示
+		find(1);
+		find(2);
+		find(3);
+		binary_search(1);
+		binary_search(2);
+		binary_search(3);
+	#endif
+
+		//先頭から連続ポップ(2)
+		continuous_pop_front(25);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//先頭に連続プッシュ(1)
+		auto continuous_push_front = [&con](const int num)
+		{
+			printf("\n");
+			printf("[push_front * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				const int val = 1000 + i;
+				printf("push_front(%d) ... ", val);
+				if (con.push_front(val))
+					printf("OK\n");
+				else
+					printf("NG!\n");
+			}
+		};
+		continuous_push_front(10);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//末尾から連続ポップ(1)
+		auto continuous_pop_back = [&con](const int num)
+		{
+			printf("\n");
+			printf("[pop_back * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				int val;
+				printf("pop_back() ... ");
+				if (con.pop_back(val))
+					printf("OK [%d]\n", val);
+				else
+					printf("NG!\n");
+			}
+		};
+		continuous_pop_back(5);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//先頭に連続プッシュ(2)
+		continuous_push_front(20);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//末尾から連続ポップ(2)
+		continuous_pop_back(25);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//--------------------------------------------------------------------------------
+		//※リングバッファ固有のテスト①（ここまで）
 
 		//値を追加
 		printf("\n");
@@ -3159,7 +2783,7 @@ int main(const int argc, const char* argv[])
 		{
 			int pop_val;
 			con.pop_back(pop_val);//値のコピーを受け取って末尾を削除
-			printf("pop_back=[%d]\n", pop_val);
+			printf("pop_backl=[%d]\n", pop_val);
 			printAll();//全件表示
 		}
 
@@ -3256,12 +2880,6 @@ int main(const int argc, const char* argv[])
 		con.resize(5);//要素数=5に縮小
 		printAll();//全件表示
 
-		//最大サイズを縮小
-		printf("\n");
-		printf("[shrink_to_fit]\n");
-		con.shrink_to_fit();
-		printAll();//全件表示
-
 		//データ割り当て
 		printf("\n");
 		printf("[assign]\n");
@@ -3271,21 +2889,22 @@ int main(const int argc, const char* argv[])
 
 	//--------------------
 	//テスト②：ユーザー定義型を扱う場合
+	//※一部リングバッファ固有のテストを行うが、基本的に動的配列のテストと同じ
 	{
 		printf("--------------------------------------------------------------------------------\n");
-		printf("[Test for dynamic_array::container(User defined type)]\n");
+		printf("[Test for ring_buffer::container(User defined type)]\n");
 
 		//配列データ
 		data_t array[20];
 		//※この宣言だと、デフォルトコンストラクタとデストラクタが呼び出される点に注意
 
-		//動的配列コンテナ生成
-		typedef dynamic_array::container<ope_t> container_t;
+		//リングバッファコンテナ生成
+		typedef ring_buffer::container<ope_t> container_t;
 		container_t con(array);//※配列要素数を自動取得
 		//container_t con(&array[0], 10);//※要素数を明示的に受け渡す方法
 		//char buff[1024];
-		//container_t con(buff, sizeof(buff), dynamic_array::AUTO_CLEAR);//バッファとバッファサイズを受け渡す方法＋コンテナ破棄時に自動クリア属性追加
-		//                                                               //（コンテナのデストラクタで、残っている要素のデストラクタを呼び出す。デフォルトは自動クリアなし）
+		//container_t con(buff, sizeof(buff), ring_buffer::AUTO_CLEAR);//バッファとバッファサイズを受け渡す方法＋コンテナ破棄時に自動クリア属性追加
+		//                                                             //（コンテナのデストラクタで、残っている要素のデストラクタを呼び出す。デフォルトは自動クリアなし）
 		//container_t con;//初期状態で配列の割り当てをせずにコンテナを生成する場合
 
 		//後から配列を割り当てる場合は assign_array() を使用する
@@ -3293,13 +2912,13 @@ int main(const int argc, const char* argv[])
 		//con.assign_array(array);//※配列要素数を自動取得
 		//con.assign_array(&array[0], 10);//※要素数を明示的に受け渡す方法
 		//char buff[1024];
-		//con.assign_array(buff, sizeof(buff), dynamic_array::AUTO_CLEAR);//バッファとバッファサイズを受け渡す方法＋コンテナ破棄時に自動クリア属性追加
-		//                                                                //（コンテナのデストラクタで、残っている要素のデストラクタを呼び出す。デフォルトは自動クリアなし）
+		//con.assign_array(buff, sizeof(buff), ring_buffer::AUTO_CLEAR);//バッファとバッファサイズを受け渡す方法＋コンテナ破棄時に自動クリア属性追加
+		//                                                              //（コンテナのデストラクタで、残っている要素のデストラクタを呼び出す。デフォルトは自動クリアなし）
 
 		//データを表示
 		auto printAll = [&con]()
 		{
-			printf("size=%d, max_size=%d(%d)\n", con.size(), con.max_size(), con.max_size_real());
+			printf("offset=%d, size=%d, max_size=%d\n", con.offset(), con.size(), con.max_size());
 			printf("array=");
 			if (con.empty())
 			{
@@ -3324,12 +2943,133 @@ int main(const int argc, const char* argv[])
 			}
 			std::for_each(con.rbegin(), con.rend(),
 				[](data_t& data)
-			{
-				printf(" [%d:%d]", data.m_key, data.m_val);
-			}
+				{
+					printf(" [%d:%d]", data.m_key, data.m_val);
+				}
 			);
 			printf("\n");
 		};
+
+		//--------------------------------------------------------------------------------
+		//※リングバッファ固有のテスト②（ここから）※これ以外は動的配列のテストと全く同じ
+
+		//末尾に連続プッシュ(1)
+		auto continuous_push_back = [&con](const int num)
+		{
+			printf("\n");
+			printf("[push_back * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				const int key = i;
+				const int val = 100 + i;
+				printf("push_back(%d:%d) ... ", key, val);
+				if (con.push_back(key, val))
+					printf("OK\n");
+				else
+					printf("NG!\n");
+			}
+		};
+		continuous_push_back(10);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//先頭から連続ポップ(1)
+		auto continuous_pop_front = [&con](const int num)
+		{
+			printf("\n");
+			printf("[pop_front * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				data_t val;
+				printf("pop_front() ... ");
+				if (con.pop_front(val))
+					printf("OK [%d:%d]\n", val.m_key, val.m_val);
+				else
+					printf("NG!\n");
+			}
+		};
+		continuous_pop_front(5);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//末尾に連続プッシュ(2)
+		continuous_push_back(20);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+	#if 0
+		con.sort(reverse_pred);//高速ソート
+		printAll();//全件表示
+		con.sort();//高速ソート
+		printAll();//全件表示
+		con.stable_sort(reverse_pred);//安定ソート
+		printAll();//全件表示
+		con.stable_sort();//安定ソート
+		printAll();//全件表示
+		find(1);
+		find(2);
+		find(3);
+		binary_search(1);
+		binary_search(2);
+		binary_search(3);
+	#endif
+
+		//先頭から連続ポップ(2)
+		continuous_pop_front(25);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//先頭に連続プッシュ(1)
+		auto continuous_push_front = [&con](const int num)
+		{
+			printf("\n");
+			printf("[push_front * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				const int key = 1000 + i;
+				const int val = 100 + i;
+				printf("push_front(%d:%d) ... ", key, val);
+				if (con.push_front(key, val))
+					printf("OK\n");
+				else
+					printf("NG!\n");
+			}
+		};
+		continuous_push_front(10);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//末尾から連続ポップ(1)
+		auto continuous_pop_back = [&con](const int num)
+		{
+			printf("\n");
+			printf("[pop_back * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				data_t val;
+				printf("pop_back() ... ");
+				if (con.pop_back(val))
+					printf("OK [%d:%d]\n", val.m_key, val.m_val);
+				else
+					printf("NG!\n");
+			}
+		};
+		continuous_pop_back(5);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//先頭に連続プッシュ(2)
+		continuous_push_front(20);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//末尾から連続ポップ(2)
+		continuous_pop_back(25);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//--------------------------------------------------------------------------------
+		//※リングバッファ固有のテスト②（ここまで）
 
 		//データ登録１：push_back()メソッド＋コンストラクタパラメータ（コンストラクタ呼び出しを行う）
 		printf("\n");
@@ -3397,14 +3137,14 @@ int main(const int argc, const char* argv[])
 			container_t::reverse_iterator rite2 = con.begin();
 			container_t::iterator ite2_end = con.rend();
 			container_t::reverse_iterator rite2_end = con.end();
-			if (ite.isExist()) printf("ite:[%d] key=%d, value=%d\n", ite.getIndex(), ite->m_key, ite->m_val);
-			if (rite.isExist()) printf("rite:[%d] key=%d, value=%d\n", rite.getIndex(), rite->m_key, rite->m_val);
-			if (ite_end.isExist()) printf("ite_end:[%d] key=%d, value=%d\n", ite_end.getIndex(), ite_end->m_key, ite_end->m_val);
-			if (rite_end.isExist()) printf("rite_end:[%d] key=%d, value=%d\n", rite_end.getIndex(), rite_end->m_key, rite_end->m_val);
-			if (ite2.isExist()) printf("ite2:[%d] key=%d, value=%d\n", ite2.getIndex(), ite2->m_key, ite2->m_val);
-			if (rite2.isExist()) printf("rite2:[%d] key=%d, value=%d\n", rite2.getIndex(), rite2->m_key, rite2->m_val);
-			if (ite2_end.isExist()) printf("ite2_end:[%d] key=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_key, ite2_end->m_val);
-			if (rite2_end.isExist()) printf("rite2_end:[%d] key=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_key, rite2_end->m_val);
+			if (ite.isExist()) printf("ite:[%d(%d)] key=%d, value=%d\n", ite.getIndex(), ite.getRealIndex(), ite->m_key, ite->m_val);
+			if (rite.isExist()) printf("rite:[%d(%d)] key=%d, value=%d\n", rite.getIndex(), rite.getRealIndex(), rite->m_key, rite->m_val);
+			if (ite_end.isExist()) printf("ite_end:[%d(%d)] key=%d, value=%d\n", ite_end.getIndex(), ite_end.getRealIndex(), ite_end->m_key, ite_end->m_val);
+			if (rite_end.isExist()) printf("rite_end:[%d(%d)] key=%d, value=%d\n", rite_end.getIndex(), rite_end.getRealIndex(), rite_end->m_key, rite_end->m_val);
+			if (ite2.isExist()) printf("ite2:[%d(%d)] key=%d, value=%d\n", ite2.getIndex(), ite2.getRealIndex(), ite2->m_key, ite2->m_val);
+			if (rite2.isExist()) printf("rite2:[%d(%d)] key=%d, value=%d\n", rite2.getIndex(), rite2.getRealIndex(), rite2->m_key, rite2->m_val);
+			if (ite2_end.isExist()) printf("ite2_end:[%d(%d)] key=%d, value=%d\n", ite2_end.getIndex(), ite2_end.getRealIndex(), ite2_end->m_key, ite2_end->m_val);
+			if (rite2_end.isExist()) printf("rite2_end:[%d(%d)] key=%d, value=%d\n", rite2_end.getIndex(), rite2_end.getRealIndex(), rite2_end->m_key, rite2_end->m_val);
 			printf("copy operator\n");
 			ite = con.begin();
 			rite = con.rbegin();
@@ -3414,14 +3154,14 @@ int main(const int argc, const char* argv[])
 			rite2 = con.begin();
 			ite2_end = con.rend();
 			rite2_end = con.end();
-			if (ite.isExist()) printf("ite:[%d] key=%d, value=%d\n", ite.getIndex(), ite->m_key, ite->m_val);
-			if (rite.isExist()) printf("rite:[%d] key=%d, value=%d\n", rite.getIndex(), rite->m_key, rite->m_val);
-			if (ite_end.isExist()) printf("ite_end:[%d] key=%d, value=%d\n", ite_end.getIndex(), ite_end->m_key, ite_end->m_val);
-			if (rite_end.isExist()) printf("rite_end:[%d] key=%d, value=%d\n", rite_end.getIndex(), rite_end->m_key, rite_end->m_val);
-			if (ite2.isExist()) printf("ite2:[%d] key=%d, value=%d\n", ite2.getIndex(), ite2->m_key, ite2->m_val);
-			if (rite2.isExist()) printf("rite2:[%d] key=%d, value=%d\n", rite2.getIndex(), rite2->m_key, rite2->m_val);
-			if (ite2_end.isExist()) printf("ite2_end:[%d] key=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_key, ite2_end->m_val);
-			if (rite2_end.isExist()) printf("rite2_end:[%d] key=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_key, rite2_end->m_val);
+			if (ite.isExist()) printf("ite:[%d(%d)] key=%d, value=%d\n", ite.getIndex(), ite.getRealIndex(), ite->m_key, ite->m_val);
+			if (rite.isExist()) printf("rite:[%d(%d)] key=%d, value=%d\n", rite.getIndex(), rite.getRealIndex(), rite->m_key, rite->m_val);
+			if (ite_end.isExist()) printf("ite_end:[%d(%d)] key=%d, value=%d\n", ite_end.getIndex(), ite_end.getRealIndex(), ite_end->m_key, ite_end->m_val);
+			if (rite_end.isExist()) printf("rite_end:[%d(%d)] key=%d, value=%d\n", rite_end.getIndex(), rite_end.getRealIndex(), rite_end->m_key, rite_end->m_val);
+			if (ite2.isExist()) printf("ite2:[%d(%d)] key=%d, value=%d\n", ite2.getIndex(), ite2.getRealIndex(), ite2->m_key, ite2->m_val);
+			if (rite2.isExist()) printf("rite2:[%d(%d)] key=%d, value=%d\n", rite2.getIndex(), rite2.getRealIndex(), rite2->m_key, rite2->m_val);
+			if (ite2_end.isExist()) printf("ite2_end:[%d(%d)] key=%d, value=%d\n", ite2_end.getIndex(), ite2_end.getRealIndex(), ite2_end->m_key, ite2_end->m_val);
+			if (rite2_end.isExist()) printf("rite2_end:[%d(%d)] key=%d, value=%d\n", rite2_end.getIndex(), rite2_end.getRealIndex(), rite2_end->m_key, rite2_end->m_val);
 			for (int i = 0; i <= 3; ++i)
 			{
 				printf("[%d]\n", i);
@@ -3433,14 +3173,14 @@ int main(const int argc, const char* argv[])
 				rite2 = rite2[i];
 				ite2_end = ite2_end[i];
 				rite2_end = rite2_end[i];
-				if (ite.isExist()) printf("ite:[%d] key=%d, value=%d\n", ite.getIndex(), ite->m_key, ite->m_val);
-				if (rite.isExist()) printf("rite:[%d] key=%d, value=%d\n", rite.getIndex(), rite->m_key, rite->m_val);
-				if (ite_end.isExist()) printf("ite_end:[%d] key=%d, value=%d\n", ite_end.getIndex(), ite_end->m_key, ite_end->m_val);
-				if (rite_end.isExist()) printf("rite_end:[%d] key=%d, value=%d\n", rite_end.getIndex(), rite_end->m_key, rite_end->m_val);
-				if (ite2.isExist()) printf("ite2:[%d] key=%d, value=%d\n", ite2.getIndex(), ite2->m_key, ite2->m_val);
-				if (rite2.isExist()) printf("rite2:[%d] key=%d, value=%d\n", rite2.getIndex(), rite2->m_key, rite2->m_val);
-				if (ite2_end.isExist()) printf("ite2_end:[%d] key=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_key, ite2_end->m_val);
-				if (rite2_end.isExist()) printf("rite2_end:[%d] key=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_key, rite2_end->m_val);
+				if (ite.isExist()) printf("ite:[%d(%d)] key=%d, value=%d\n", ite.getIndex(), ite.getRealIndex(), ite->m_key, ite->m_val);
+				if (rite.isExist()) printf("rite:[%d(%d)] key=%d, value=%d\n", rite.getIndex(), rite.getRealIndex(), rite->m_key, rite->m_val);
+				if (ite_end.isExist()) printf("ite_end:[%d(%d)] key=%d, value=%d\n", ite_end.getIndex(), ite_end.getRealIndex(), ite_end->m_key, ite_end->m_val);
+				if (rite_end.isExist()) printf("rite_end:[%d(%d)] key=%d, value=%d\n", rite_end.getIndex(), rite_end.getRealIndex(), rite_end->m_key, rite_end->m_val);
+				if (ite2.isExist()) printf("ite2:[%d(%d)] key=%d, value=%d\n", ite2.getIndex(), ite2.getRealIndex(), ite2->m_key, ite2->m_val);
+				if (rite2.isExist()) printf("rite2:[%d(%d)] key=%d, value=%d\n", rite2.getIndex(), rite2.getRealIndex(), rite2->m_key, rite2->m_val);
+				if (ite2_end.isExist()) printf("ite2_end:[%d(%d)] key=%d, value=%d\n", ite2_end.getIndex(), ite2_end.getRealIndex(), ite2_end->m_key, ite2_end->m_val);
+				if (rite2_end.isExist()) printf("rite2_end:[%d(%d)] key=%d, value=%d\n", rite2_end.getIndex(), rite2_end.getRealIndex(), rite2_end->m_key, rite2_end->m_val);
 			}
 			printf("+= 3\n");
 			ite += 3;
@@ -3451,14 +3191,14 @@ int main(const int argc, const char* argv[])
 			rite2 += 3;
 			ite2_end += 3;
 			rite2_end += 3;
-			if (ite.isExist()) printf("ite:[%d] key=%d, value=%d\n", ite.getIndex(), ite->m_key, ite->m_val);
-			if (rite.isExist()) printf("rite:[%d] key=%d, value=%d\n", rite.getIndex(), rite->m_key, rite->m_val);
-			if (ite_end.isExist()) printf("ite_end:[%d] key=%d, value=%d\n", ite_end.getIndex(), ite_end->m_key, ite_end->m_val);
-			if (rite_end.isExist()) printf("rite_end:[%d] key=%d, value=%d\n", rite_end.getIndex(), rite_end->m_key, rite_end->m_val);
-			if (ite2.isExist()) printf("ite2:[%d] key=%d, value=%d\n", ite2.getIndex(), ite2->m_key, ite2->m_val);
-			if (rite2.isExist()) printf("rite2:[%d] key=%d, value=%d\n", rite2.getIndex(), rite2->m_key, rite2->m_val);
-			if (ite2_end.isExist()) printf("ite2_end:[%d] key=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_key, ite2_end->m_val);
-			if (rite2_end.isExist()) printf("rite2_end:[%d] key=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_key, rite2_end->m_val);
+			if (ite.isExist()) printf("ite:[%d(%d)] key=%d, value=%d\n", ite.getIndex(), ite.getRealIndex(), ite->m_key, ite->m_val);
+			if (rite.isExist()) printf("rite:[%d(%d)] key=%d, value=%d\n", rite.getIndex(), rite.getRealIndex(), rite->m_key, rite->m_val);
+			if (ite_end.isExist()) printf("ite_end:[%d(%d)] key=%d, value=%d\n", ite_end.getIndex(), ite_end.getRealIndex(), ite_end->m_key, ite_end->m_val);
+			if (rite_end.isExist()) printf("rite_end:[%d(%d)] key=%d, value=%d\n", rite_end.getIndex(), rite_end.getRealIndex(), rite_end->m_key, rite_end->m_val);
+			if (ite2.isExist()) printf("ite2:[%d(%d)] key=%d, value=%d\n", ite2.getIndex(), ite2.getRealIndex(), ite2->m_key, ite2->m_val);
+			if (rite2.isExist()) printf("rite2:[%d(%d)] key=%d, value=%d\n", rite2.getIndex(), rite2.getRealIndex(), rite2->m_key, rite2->m_val);
+			if (ite2_end.isExist()) printf("ite2_end:[%d(%d)] key=%d, value=%d\n", ite2_end.getIndex(), ite2_end.getRealIndex(), ite2_end->m_key, ite2_end->m_val);
+			if (rite2_end.isExist()) printf("rite2_end:[%d(%d)] key=%d, value=%d\n", rite2_end.getIndex(), rite2_end.getRealIndex(), rite2_end->m_key, rite2_end->m_val);
 			printf("-= 3\n");
 			ite -= 3;
 			rite -= 3;
@@ -3468,34 +3208,34 @@ int main(const int argc, const char* argv[])
 			rite2 -= 3;
 			ite2_end -= 3;
 			rite2_end -= 3;
-			if (ite.isExist()) printf("ite:[%d] key=%d, value=%d\n", ite.getIndex(), ite->m_key, ite->m_val);
-			if (rite.isExist()) printf("rite:[%d] key=%d, value=%d\n", rite.getIndex(), rite->m_key, rite->m_val);
-			if (ite_end.isExist()) printf("ite_end:[%d] key=%d, value=%d\n", ite_end.getIndex(), ite_end->m_key, ite_end->m_val);
-			if (rite_end.isExist()) printf("rite_end:[%d] key=%d, value=%d\n", rite_end.getIndex(), rite_end->m_key, rite_end->m_val);
-			if (ite2.isExist()) printf("ite2:[%d] key=%d, value=%d\n", ite2.getIndex(), ite2->m_key, ite2->m_val);
-			if (rite2.isExist()) printf("rite2:[%d] key=%d, value=%d\n", rite2.getIndex(), rite2->m_key, rite2->m_val);
-			if (ite2_end.isExist()) printf("ite2_end:[%d] key=%d, value=%d\n", ite2_end.getIndex(), ite2_end->m_key, ite2_end->m_val);
-			if (rite2_end.isExist()) printf("rite2_end:[%d] key=%d, value=%d\n", rite2_end.getIndex(), rite2_end->m_key, rite2_end->m_val);
+			if (ite.isExist()) printf("ite:[%d(%d)] key=%d, value=%d\n", ite.getIndex(), ite.getRealIndex(), ite->m_key, ite->m_val);
+			if (rite.isExist()) printf("rite:[%d(%d)] key=%d, value=%d\n", rite.getIndex(), rite.getRealIndex(), rite->m_key, rite->m_val);
+			if (ite_end.isExist()) printf("ite_end:[%d(%d)] key=%d, value=%d\n", ite_end.getIndex(), ite_end.getRealIndex(), ite_end->m_key, ite_end->m_val);
+			if (rite_end.isExist()) printf("rite_end:[%d(%d)] key=%d, value=%d\n", rite_end.getIndex(), rite_end.getRealIndex(), rite_end->m_key, rite_end->m_val);
+			if (ite2.isExist()) printf("ite2:[%d(%d)] key=%d, value=%d\n", ite2.getIndex(), ite2.getRealIndex(), ite2->m_key, ite2->m_val);
+			if (rite2.isExist()) printf("rite2:[%d(%d)] key=%d, value=%d\n", rite2.getIndex(), rite2.getRealIndex(), rite2->m_key, rite2->m_val);
+			if (ite2_end.isExist()) printf("ite2_end:[%d(%d)] key=%d, value=%d\n", ite2_end.getIndex(), ite2_end.getRealIndex(), ite2_end->m_key, ite2_end->m_val);
+			if (rite2_end.isExist()) printf("rite2_end:[%d(%d)] key=%d, value=%d\n", rite2_end.getIndex(), rite2_end.getRealIndex(), rite2_end->m_key, rite2_end->m_val);
 		}
 	#endif
 
-		//ポップ(1)
+		//末尾をポップ(1)
 		printf("\n");
 		printf("[pop_back(1)]\n");
 		{
-			const data_t* val = con.back();//末尾の値を取得
+			data_t* val = con.back();//末尾の値を取得
 			printf("back=[%d:%d]\n", val->m_key, val->m_val);
 			con.pop_back();//末尾を削除
 			printAll();//全件表示
 		}
 
-		//ポップ(2)
+		//末尾をポップ(2)
 		printf("\n");
 		printf("[pop_back(2)]\n");
 		{
-			data_t pop_val;
-			con.pop_back(pop_val);//値のコピーを受け取って末尾を削除
-			printf("pop_back=[%d:%d]\n", pop_val.m_key, pop_val.m_val);
+			data_t val;
+			con.pop_back(val);//値のコピーを受け取って末尾を削除
+			printf("pop_back:val=[%d:%d]\n", val.m_key, val.m_val);
 			printAll();//全件表示
 		}
 
@@ -3603,12 +3343,6 @@ int main(const int argc, const char* argv[])
 		con.resize(5);//要素数=5に縮小
 		printAll();//全件表示
 
-		//最大サイズを縮小
-		printf("\n");
-		printf("[shrink_to_fit]\n");
-		con.shrink_to_fit();
-		printAll();//全件表示
-
 		//データ割り当て１：assign()メソッド＋コンストラクタパラメータ（コンストラクタ呼び出しを行う）
 		printf("\n");
 		printf("[assign(1)]\n");
@@ -3625,19 +3359,27 @@ int main(const int argc, const char* argv[])
 			con.assign(-1, prototype);//※-1で最大要素数全件に割り当て
 			printAll();//全件表示
 		}
+
+		//クリア
+		printf("\n");
+		printf("[clear]\n");
+		con.clear();
+		printAll();//全件表示
+		printReverse();//全件表示
 	}
 
 	//--------------------
 	//テスト③：ソート、探索の設定を変える
+	//※動的配列のテストと同じ
 	{
 		printf("--------------------------------------------------------------------------------\n");
-		printf("[Test for dynamic_array::container(User defined type with custom operator type)]\n");
+		printf("[Test for ring_buffer::container(User defined type with custom operator type)]\n");
 
 		//配列データ
 		data_t array[20];
 
-		//動的配列コンテナ生成
-		typedef dynamic_array::container<another_ope_t> container_t;
+		//リングバッファコンテナ生成
+		typedef ring_buffer::container<another_ope_t> container_t;
 		container_t con(array);
 
 		//コンテナのインスタンス生成時に配列を渡せない場合は、sertArray() を使用する
@@ -3661,7 +3403,7 @@ int main(const int argc, const char* argv[])
 		//データを表示
 		auto printAll = [&con]()
 		{
-			printf("size=%d, max_size=%d(%d)\n", con.size(), con.max_size(), con.max_size_real());
+			printf("offset=%d, size=%d, max_size=%d\n", con.offset(), con.size(), con.max_size());
 			printf("array=");
 			if (con.empty())
 			{
@@ -3802,12 +3544,13 @@ int main(const int argc, const char* argv[])
 
 	//--------------------
 	//テスト④：データ設定済みの既存の配列を扱う
+	//※動的配列のテストと同じ
 	{
 		printf("--------------------------------------------------------------------------------\n");
-		printf("[Test for dynamic_array::container(User defined type for existing data)]\n");
+		printf("[Test for ring_buffer::container(User defined type for existing data)]\n");
 
 		//データ設定済みの既存の配列
-		data_t array[] = 
+		data_t array[] =
 		{
 			{ 6, 111 },
 			{ 2, 103 },
@@ -3823,17 +3566,17 @@ int main(const int argc, const char* argv[])
 			{ 6, 112 },
 		};
 
-		//設定済みのデータを残したまま、動的配列コンテナのデータとして活用
-		dynamic_array::container<ope_t> con(array, -1);//第二引数で使用中のデータサイズを指定（-1で全域）
-		
+		//設定済みのデータを残したまま、リングバッファコンテナのデータとして活用
+		ring_buffer::container<ope_t> con(array, -1);//第二引数で使用中のデータサイズを指定（-1で全域）
+
 		//コンテナのインスタンス生成時に配列を渡せない場合は、sertArray() を使用する
-		//dynamic_array::container<ope_t> con;
+		//ring_buffer::container<ope_t> con;
 		//con.assign_array(array, -1);//第二引数で使用中のデータサイズを指定（-1で全域）
 
 		//データを表示
 		auto printAll = [&con]()
 		{
-			printf("size=%d, max_size=%d(%d)\n", con.size(), con.max_size(), con.max_size_real());
+			printf("offset=%d, size=%d, max_size=%d\n", con.offset(), con.size(), con.max_size());
 			printf("array=");
 			if (con.empty())
 			{
@@ -3860,16 +3603,18 @@ int main(const int argc, const char* argv[])
 
 	//--------------------
 	//テスト⑤：ロック制御を行う
+	//※動的配列のテストと同じ
 	{
 		printf("--------------------------------------------------------------------------------\n");
-		printf("[Test for dynamic_array::container(User defined type for multi-thread)]\n");
+		printf("[Test for ring_buffer::container(User defined type for multi-thread)]\n");
 
-		testThread<dynamic_array::container<ope_t> >("normal container");//ロックなし版のスレッド
-		testThread<dynamic_array::container<mt_ope_t> >("multi-thread container");//ロックあり版のスレッド
+		testThread<ring_buffer::container<ope_t> >("normal container");//ロックなし版のスレッド
+		testThread<ring_buffer::container<mt_ope_t> >("multi-thread container");//ロックあり版のスレッド
 	}
 
 	//--------------------
 	//テスト⑥：大量登録テスト
+	//※std::vectorをstd::dequeに置き換えただけで、動的配列のテストと同じ
 	{
 		//経過時間を表示
 		auto printElapsedTime = [](const std::chrono::system_clock::time_point& prev_time, const bool is_show) -> std::chrono::system_clock::time_point
@@ -3885,7 +3630,7 @@ int main(const int argc, const char* argv[])
 		
 		{
 			printf("--------------------------------------------------------------------------------\n");
-			printf("[Test for performance dynamic_array]\n");
+			printf("[Test for performance ring_buffer]\n");
 			
 			const std::chrono::system_clock::time_point begin_time = std::chrono::system_clock::now();
 			std::chrono::system_clock::time_point prev_time = begin_time;
@@ -3895,8 +3640,8 @@ int main(const int argc, const char* argv[])
 			printf("[create container & assign() * %d]\n", TEST_DATA_NUM);
 			const std::size_t buff_size = sizeof(data_t)* TEST_DATA_NUM;
 			char* buff = new char[buff_size];
-			typedef dynamic_array::container<ope_t> container_t;
-			container_t* con = new container_t(buff, buff_size, 0, dynamic_array::AUTO_CLEAR);//コンテナ生成（バッファを割り当て）
+			typedef ring_buffer::container<ope_t> container_t;
+			container_t* con = new container_t(buff, buff_size, 0, ring_buffer::AUTO_CLEAR);//コンテナ生成（バッファを割り当て）
 			con->assign(-1, 0, 0);//全件初期化
 			prev_time = printElapsedTime(prev_time, true);
 
@@ -3985,7 +3730,7 @@ int main(const int argc, const char* argv[])
 			printf("[binary_search_value]\n");
 			{
 				int num = 0;
-				for (int i = 0; i < TEST_DATA_NUM; ++i)
+				for (int i = 0; i < TEST_DATA_NUM; i += (TEST_DATA_NUM / 1000 + 1))
 				{
 					container_t::iterator ite = std::move(con->binary_search_value(i));
 					printf_detail(" [%d:%d]", ite->m_key, ite->m_val);
@@ -4021,9 +3766,8 @@ int main(const int argc, const char* argv[])
 			//データを初期化
 			printf("\n");
 			printf("[create container & assign() * %d]\n", TEST_DATA_NUM);
-			typedef std::vector<data_t> container_t;
-			container_t* con = new container_t();//std::vectorコンテナを生成
-			con->reserve(TEST_DATA_NUM);
+			typedef std::deque<data_t> container_t;
+			container_t* con = new container_t();//std::dequeコンテナを生成
 			{
 				data_t prototype(0, 0);
 				con->assign(TEST_DATA_NUM, prototype);
@@ -4116,7 +3860,7 @@ int main(const int argc, const char* argv[])
 			printf("[binary_search_value]\n");
 			{
 				int num = 0;
-				for (int i = 0; i < TEST_DATA_NUM; ++i)
+				for (int i = 0; i < TEST_DATA_NUM; i += (TEST_DATA_NUM / 1000 + 1))
 				{
 					container_t::iterator ite = std::lower_bound(con->begin(), con->end(), i);
 					printf_detail(" [%d:%d]", ite->m_key, ite->m_val);
@@ -4130,7 +3874,7 @@ int main(const int argc, const char* argv[])
 			//データを破棄
 			printf("\n");
 			printf("[delete container]\n");
-			delete con;//std::vectorコンテナを破棄
+			delete con;//std::dequeコンテナを破棄
 			con = nullptr;
 			prev_time = printElapsedTime(prev_time, true);
 
@@ -4149,6 +3893,7 @@ int main(const int argc, const char* argv[])
 
 //--------------------
 //テスト⑤：ロック制御を行う
+//※動的配列のテストと同じ
 
 #include <thread>//C++11 std::thread用
 #include <mutex>//C++11 std::mutex用
@@ -4164,11 +3909,11 @@ void testThread(const char* container_type)
 
 	printf("\n");
 	printf("[%s]\n", container_type);
-	
+
 	//配列データ
 	data_t array[100];
 
-	//動的配列コンテナ生成
+	//リングバッファコンテナ生成
 	container_t con(array);
 
 	//条件変数
@@ -4239,7 +3984,7 @@ void testThread(const char* container_type)
 		{
 			shared_lock_guard<lock_type> lock(con);//リード・ロック取得 ※コンテナを渡してスコープロック
 			printf("(%s)\n", caption);
-			printf("size=%d, max_size=%d(%d)\n", con.size(), con.max_size(), con.max_size_real());
+			printf("offset=%d, size=%d, max_size=%d\n", con.offset(), con.size(), con.max_size());
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
 			printf("array=");
 			if (con.empty())

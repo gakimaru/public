@@ -638,7 +638,7 @@ template<class T>
 struct _swapObjects{
 	inline static void exec(T& val1, T& val2)
 	{
-	#if 1//ムーブオペレータを使用して入れ替え（#include <utility> の std::swap() と同じ）
+	#if 1//ムーブコンストラクタとムーブオペレータを使用して入れ替え（#include <utility> の std::swap() と同じ）
 		T tmp = std::move(std::move(val2));
 		val2 = std::move(val1);
 		val1 = std::move(tmp);
@@ -786,9 +786,9 @@ namespace binary_heap
 	static typename OPE_TYPE::node_type* upHeap(typename OPE_TYPE::node_type* top, const std::size_t size, typename OPE_TYPE::node_type* now, PREDICATE less)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		std::ptrdiff_t index = now - top;
-		std::ptrdiff_t _size = static_cast<std::ptrdiff_t>(size);
-		if (index < 0 || index >= _size)
+		index_type index = now - top;
+		//if (index < 0 || index >= size)
+		if (index >= size)
 			return nullptr;
 		while (index != 0)
 		{
@@ -808,27 +808,36 @@ namespace binary_heap
 	static typename OPE_TYPE::node_type* downHeap(typename OPE_TYPE::node_type* top, const std::size_t size, typename OPE_TYPE::node_type* now, PREDICATE less)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		std::ptrdiff_t index = now - top;
-		std::ptrdiff_t _size = static_cast<std::ptrdiff_t>(size);
-		if (index < 0 || index >= _size)
+		index_type index = now - top;
+		//if (index < 0 || index > size)
+		if (index >= size)
 			return nullptr;
+		const size_type size_1 = size - 1;
 		while (true)
 		{
 			index = calcChildL(index);
-			if (index >= _size)
+			if (index > size_1)
 				break;
 			node_type* child = top + index;
-			node_type* child_r = child + 1;
+			const bool l_is_less = less(*child, *now);
 			bool is_swap = false;
-			if (index + 1 < _size && !less(*child_r, *child) && !less(*child_r, *now))
+			if (index == size_1)
 			{
-				is_swap = true;
-				child = child_r;
-				++index;
+				if (!l_is_less)
+					is_swap = true;
 			}
-			else if (!less(*child, *now))
+			else//if (index < size_1)
 			{
-				is_swap = true;
+				node_type* child_r = child + 1;
+				const bool r_is_less = less(*child_r, *now);
+				if (!r_is_less && (l_is_less || !less(*child_r, *child)))
+				{
+					is_swap = true;
+					child = child_r;
+					++index;
+				}
+				else if (!l_is_less)
+					is_swap = true;
 			}
 			if (!is_swap)
 				break;
@@ -905,6 +914,7 @@ namespace binary_heap
 				ite.update(index);
 				return std::move(ite);
 			}
+		public:
 			//比較オペレータ
 			inline bool operator==(const_iterator& rhs) const
 			{
@@ -1280,7 +1290,7 @@ namespace binary_heap
 			{
 				m_con = rhs.m_con;
 				m_index = rhs.m_index;
-				m_value = rhs.m_value;
+				update(m_index);
 				return *this;
 			}
 			//コピーオペレータ
@@ -1295,7 +1305,7 @@ namespace binary_heap
 			{
 				m_con = rhs.m_con;
 				m_index = rhs.m_index;
-				m_value = rhs.m_value;
+				update(m_index);
 				return *this;
 			}
 		public:
@@ -1306,8 +1316,8 @@ namespace binary_heap
 			inline bool isNotEnabled() const { return !isEnabled(); }
 			inline bool isEnd() const { return m_index == 0; }//終端か？
 			inline index_type getIndex() const { return m_index - 1; }//インデックス
-			inline const value_type* getValue() const { return m_value - 1; }//現在の値
-			inline value_type* getValue(){ return m_value - 1; }//現在の値
+			inline const value_type* getValue() const { return m_value; }//現在の値
+			inline value_type* getValue(){ return m_value; }//現在の値
 		private:
 			//メソッド
 			void update(const index_type index) const
@@ -1321,7 +1331,7 @@ namespace binary_heap
 				else
 				{
 					m_index = index;
-					m_value = const_cast<value_type*>(m_con->_ref_node(m_index));
+					m_value = const_cast<value_type*>(m_con->_ref_node(m_index)) - 1;
 				}
 			}
 			inline void addIndexAndUpdate(const int add) const
@@ -1350,8 +1360,10 @@ namespace binary_heap
 			inline reverse_iterator(const_iterator&& obj) :
 				m_con(obj.m_con),
 				m_index(obj.m_index),
-				m_value(obj.m_value)
-			{}
+				m_value(nullptr)
+			{
+				update(m_index);
+			}
 			//コピーコンストラクタ
 			inline reverse_iterator(const_reverse_iterator& obj) :
 				m_con(obj.m_con),
@@ -1361,8 +1373,10 @@ namespace binary_heap
 			inline reverse_iterator(const_iterator& obj) :
 				m_con(obj.m_con),
 				m_index(obj.m_index),
-				m_value(obj.m_value)
-			{}
+				m_value(nullptr)
+			{
+				update(m_index);
+			}
 			//コンストラクタ
 			inline reverse_iterator(const container& con, const bool is_end) :
 				m_con(&con),
@@ -1404,7 +1418,9 @@ namespace binary_heap
 		inline size_type max_size() const { return TABLE_SIZE; }//最大要素数を取得
 		inline size_type capacity() const { return TABLE_SIZE; }//最大要素数を取得
 		inline size_type size() const { return m_used; }//使用中の要素数を取得
+		inline size_type remain() const { return TABLE_SIZE - m_used; }//残りの要素数を取得
 		inline bool empty() const { return m_used == 0; }//空か？
+		inline bool full() const { return m_used == TABLE_SIZE; }//満杯か？
 	public:
 		int depth_max() const//最大の深さを取得
 		{
@@ -1420,43 +1436,45 @@ namespace binary_heap
 			return depth;
 		}
 	private:
-		inline const node_type* _ref_node(const int index) const { return reinterpret_cast<const node_type*>(&m_table[index]); }//ノード参照
+		inline const node_type* _ref_node(const index_type index) const { return reinterpret_cast<const node_type*>(&m_table[index]); }//ノード参照
 		inline const node_type* _ref_top() const { return _ref_node(0); }//先頭ノード参照
 		inline const node_type* _ref_bottom() const { return _ref_node(m_used - 1); }//終端ノード参照
 		inline const node_type* _ref_new() const { return _ref_node(m_used); }//新規ノード参照
-		inline node_type* _ref_node(const int index){ return reinterpret_cast<node_type*>(&m_table[index]); }//ノード参照
+		inline node_type* _ref_node(const index_type index){ return reinterpret_cast<node_type*>(&m_table[index]); }//ノード参照
 		inline node_type* _ref_top(){ return _ref_node(0); }//先頭ノード参照
 		inline node_type* _ref_bottom(){ return _ref_node(m_used - 1); }//終端ノード参照
 		inline node_type* _ref_new(){ return _ref_node(m_used); }//新規ノード参照
 	public:
-		inline const node_type* ref_node(const int index) const { return index >= 0 && index < static_cast<int>(m_used) ? _ref_node(index) : nullptr; }//ノード参照
+		//inline const node_type* ref_node(const index_type index) const { return index >= 0 && index < m_used ? _ref_node(index) : nullptr; }//ノード参照
+		inline const node_type* ref_node(const index_type index) const { return index < m_used ? _ref_node(index) : nullptr; }//ノード参照
 		inline const node_type* ref_top() const { return m_used == 0 ? nullptr : _ref_top(); }//先頭ノード参照
 		inline const node_type* ref_bottom() const { return m_used == 0 ? nullptr : _ref_bottom(); }//終端ノード参照
 		inline const node_type* ref_new() const { return m_used == TABLE_SIZE ? nullptr : _ref_new(); }//新規ノード参照
-		inline node_type* ref_node(const int index){ return  const_cast<node_type*>(const_cast<const container*>(this)->ref_node()); }//ノード参照
+		inline node_type* ref_node(const index_type index){ return  const_cast<node_type*>(const_cast<const container*>(this)->ref_node(index)); }//ノード参照
 		inline node_type* ref_top(){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_top()); }//先頭ノード参照
 		inline node_type* ref_bottom(){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_bottom()); }//終端ノード参照
 		inline node_type* ref_new(){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_new()); }//新規ノード参照
 	private:
-		inline int _adj_index(const int index) const { return index >= 0 && index < TABLE_SIZE ? index : -1; }//インデックスを範囲内に補正
-		inline int _ref_index(const node_type* node) const{ return node - _ref_top(); }//ノードをインデックスに変換 ※範囲チェックなし
-		inline int _calc_parent(const int index) const { return binary_heap::calcParent(index); }//親インデックス計算 ※範囲チェックなし
-		inline int _calc_child_l(const int index) const { return binary_heap::calcChildL(index); }//左側の子インデックス計算 ※範囲チェックなし
-		inline int _calc_child_r(const int index) const { return binary_heap::calcChildR(index); }//右側の子インデックス計算 ※範囲チェックなし
+		//inline index_type _adj_index(const index_type index) const { return index >= 0 && index < TABLE_SIZE ? index : INVALID_INDEX; }//インデックスを範囲内に補正
+		inline index_type _adj_index(const index_type index) const { return index < TABLE_SIZE ? index : INVALID_INDEX; }//インデックスを範囲内に補正
+		inline index_type _ref_index(const node_type* node) const{ return node - _ref_top(); }//ノードをインデックスに変換 ※範囲チェックなし
+		inline index_type _calc_parent(const index_type index) const { return binary_heap::calcParent(index); }//親インデックス計算 ※範囲チェックなし
+		inline index_type _calc_child_l(const index_type index) const { return binary_heap::calcChildL(index); }//左側の子インデックス計算 ※範囲チェックなし
+		inline index_type _calc_child_r(const index_type index) const { return binary_heap::calcChildR(index); }//右側の子インデックス計算 ※範囲チェックなし
 	public:
-		inline int ref_index(const node_type* node) const{ return _adj_index(_ref_index(node)); }//ノードをインデックスに変換
-		inline int calc_parent(const int index) const { return _adj_index(_calc_parent(index)); }//親インデックス計算
-		inline int calc_child_l(const int index) const { return _adj_index(_calc_child_l(index)); }//左側の子インデックス計算
-		inline int calc_child_r(const int index) const { return _adj_index(_calc_child_r(index)); }//右側の子インデックス計算
-		inline int calc_child(const int index, const bool is_right) const { return is_right ? calc_child_r(index) : calc_child_l(index); }//子インデックス計算
+		inline index_type ref_index(const node_type* node) const{ return _adj_index(_ref_index(node)); }//ノードをインデックスに変換
+		inline index_type calc_parent(const index_type index) const { return _adj_index(_calc_parent(index)); }//親インデックス計算
+		inline index_type calc_child_l(const index_type index) const { return _adj_index(_calc_child_l(index)); }//左側の子インデックス計算
+		inline index_type calc_child_r(const index_type index) const { return _adj_index(_calc_child_r(index)); }//右側の子インデックス計算
+		inline index_type calc_child(const int index, const bool is_right) const { return is_right ? calc_child_r(index) : calc_child_l(index); }//子インデックス計算
 		inline const node_type* ref_parent(const node_type* node) const { return ref_node(_calc_parent(_ref_index(node))); }//親ノード参照
 		inline const node_type* ref_child_l(const node_type* node) const { return ref_node(_calc_child_l(_ref_index(node))); }//左側の子ノード参照
-		inline const node_type* ref_child_r(const node_type* node) const { return ref_node(_calc_child_r(_ref_index(node))); }//左側の子ノード参照
+		inline const node_type* ref_child_r(const node_type* node) const { return ref_node(_calc_child_r(_ref_index(node))); }//右側の子ノード参照
 		inline const node_type* ref_child(const node_type* node, const bool is_right) const { return is_right ? ref_child_r(node) : ref_child_l(node); }//子ノード参照
-		inline node_type* ref_parent(const int index){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_parent(index)); }//親ノード参照
-		inline node_type* ref_child_l(const int index){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child_l(index)); }//左側の子ノード参照
-		inline node_type* ref_child_r(const int index){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child_r(index)); }//左側の子ノード参照
-		inline node_type* ref_child(const int index, const bool is_right){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child(index, is_right)); }//子ノード参照
+		inline node_type* ref_parent(const index_type index){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_parent(index)); }//親ノード参照
+		inline node_type* ref_child_l(const index_type index){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child_l(index)); }//左側の子ノード参照
+		inline node_type* ref_child_r(const index_type index){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child_r(index)); }//左側の子ノード参照
+		inline node_type* ref_child(const index_type index, const bool is_right){ return const_cast<node_type*>(const_cast<const container*>(this)->ref_child(index, is_right)); }//子ノード参照
 	public:
 		inline const node_type* top() const { return ref_top(); }//先頭ノード参照
 		inline node_type* top(){ return ref_top(); }//先頭ノード参照
@@ -1827,7 +1845,7 @@ namespace binary_heap
 	{
 		m_con = rhs.m_con;
 		m_index = rhs.m_index;
-		m_value = rhs.m_value;
+		update(m_index);
 		return *this;
 	}
 	//イテレータのコピーオペレータ
@@ -1837,7 +1855,7 @@ namespace binary_heap
 	{
 		m_con = rhs.m_con;
 		m_index = rhs.m_index;
-		m_value = rhs.m_value;
+		update(m_index);
 		return *this;
 	}
 	//イテレータのムーブコンストラクタ
@@ -1846,16 +1864,20 @@ namespace binary_heap
 	container<OPE_TYPE, _TABLE_SIZE>::iterator::iterator(const typename container<OPE_TYPE, _TABLE_SIZE>::reverse_iterator&& obj) ://VC++もOK
 		m_con(obj.m_con),
 		m_index(obj.m_index),
-		m_value(obj.m_value)
-	{}
+		m_value(nullptr)
+	{
+		update(m_index);
+	}
 	//イテレータのコピーコンストラクタ
 	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
 	//container<OPE_TYPE, _TABLE_SIZE>::iterator::iterator(typename container<OPE_TYPE, _TABLE_SIZE>::const_reverse_iterator& obj) ://GCCはOK, VC++はNG
 	container<OPE_TYPE, _TABLE_SIZE>::iterator::iterator(const typename container<OPE_TYPE, _TABLE_SIZE>::reverse_iterator& obj) ://VC++もOK
 		m_con(obj.m_con),
 		m_index(obj.m_index),
-		m_value(obj.m_value)
-	{}
+		m_value(nullptr)
+	{
+		update(m_index);
+	}
 	//--------------------
 	//安全なプッシュ／ポップ操作クラス
 	//※操作状態を記憶し、デストラクタで必ず完了させる
@@ -2110,7 +2132,9 @@ namespace priority_queue
 		inline size_type max_size() const { return m_container.max_aize(); }//最大要素数を取得
 		inline size_type capacity() const { return m_container.capacity(); }//最大要素数を取得
 		inline size_type size() const { return m_container.size(); }//使用中の要素数を取得
+		inline size_type remain() const { return m_container.remain(); }//残りの要素数を取得
 		inline bool empty() const { return m_container.empty(); }//空か？
+		inline bool full() const { return m_container.full(); }//満杯か？
 	private:
 		//シーケンス番号発行
 		inline seq_type getNextSeqNo(){ return m_seqNo++; }

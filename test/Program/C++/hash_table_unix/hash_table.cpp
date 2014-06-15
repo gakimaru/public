@@ -1823,11 +1823,13 @@ namespace hash_table
 		}
 	public:
 		inline size_type max_size() const { return TABLE_SIZE; }//最大要素数を取得
-		//inline size_type capacity() const { return TABLE_SIZE; }//最大要素数を取得
+		inline size_type capacity() const { return TABLE_SIZE; }//最大要素数を取得
+		inline size_type size() const { return m_usingCount - m_deletedCount; }//使用中の要素数を取得
+		inline size_type remain() const { return TABLE_SIZE - size(); }//残りの要素数を取得
 		inline bool empty() const { return size() == 0; }//空か？
+		inline bool full() const { return size() == TABLE_SIZE; }//満杯か？
 		inline size_type bucket_count() const { return TABLE_SIZE; }//最大要素数を取得
 		inline size_type max_bucket_count() const { return TABLE_SIZE; }//最大要素数を取得
-		inline size_type size() const { return m_usingCount - m_deletedCount; }//使用中の要素数を取得
 		inline size_type bucket(const key_type key) const { return _findIndex(key); }//キーに対応するインデックスを取得
 		inline size_type bucket(const char* key) const { return _findIndex(key); }//キーに対応するインデックスを取得
 		inline size_type bucket(const std::string key) const { return _findIndex(key); }//キーに対応するインデックスを取得
@@ -2816,7 +2818,7 @@ int main(const int argc, const char* argv[])
 	};
 	printTable();
 
-#if 01//イテレータとロック取得のテスト
+#if 0//イテレータとロック取得のテスト
 	{
 		printf_detail("--- Reverse Iterator ---\n");
 		std::for_each(con->rbegin(), con->rend(), [&con](container_t::set& set)

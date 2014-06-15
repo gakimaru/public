@@ -602,6 +602,16 @@ template<class T>
 struct _rotateObjects{
 	inline static void exec(T* val1, T* val2, int step)
 	{
+	#if 1//ムーブコンストラクタとムーブオペレータを使用して入れ替え
+		T tmp = std::move(*val2);
+		while (val1 != val2)
+		{
+			T* val2_prev = val2 - step;
+			*val2 = std::move(*val2_prev);
+			val2 = val2_prev;
+		}
+		*val1 = std::move(tmp);
+	#else//コンストラクタ／オペレータの呼び出しを避けて単純なメモリコピー
 		char tmp[sizeof(T)];
 		memcpy(tmp, val2, sizeof(T));
 		while (val1 != val2)
@@ -611,6 +621,7 @@ struct _rotateObjects{
 			val2 = val2_prev;
 		}
 		memcpy(val1, tmp, sizeof(T));
+	#endif
 	}
 };
 template<class T>
@@ -1483,8 +1494,8 @@ std::size_t shellSort(T* array, const std::size_t size, PREDICATE predicate)
 		return 0;
 	std::size_t swapped_count = 0;
 	const T* end = array + size;
-	std::size_t h = 1;
 	const std::size_t h_max = size / 3;
+	std::size_t h = 1;
 	while (h <= h_max)
 		h = 3 * h + 1;
 	while (h > 0)

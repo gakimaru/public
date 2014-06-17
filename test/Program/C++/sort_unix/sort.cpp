@@ -647,7 +647,7 @@ template<class ITERATOR>
 inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::input_iterator_tag)
 {
 	typename ITERATOR::difference_type size = 0;
-	for (; begin < end; ++begin)
+	for (; begin != end; ++begin)
 		++size;
 	return size;
 }
@@ -655,7 +655,7 @@ template<class ITERATOR>
 inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::output_iterator_tag)
 {
 	typename ITERATOR::difference_type size = 0;
-	for (; begin < end; ++begin)
+	for (; begin != end; ++begin)
 		++size;
 	return size;
 }
@@ -663,7 +663,7 @@ template<class ITERATOR>
 inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::forward_iterator_tag)
 {
 	typename ITERATOR::difference_type size = 0;
-	for (; begin < end; ++begin)
+	for (; begin != end; ++begin)
 		++size;
 	return size;
 }
@@ -671,7 +671,7 @@ template<class ITERATOR>
 inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::bidirectional_iterator_tag)
 {
 	typename ITERATOR::difference_type size = 0;
-	for (; begin < end; ++begin)
+	for (; begin != end; ++begin)
 		++size;
 	return size;
 }
@@ -692,7 +692,7 @@ inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITE
 template<class ITERATOR, class FUNCTOR>
 void forEach(ITERATOR begin, ITERATOR end, FUNCTOR functor)
 {
-	for (; begin < end; ++begin)
+	for (; begin != end; ++begin)
 	{
 		functor(*begin);
 	}
@@ -737,7 +737,7 @@ void forEach(const T* array, const std::size_t size, FUNCTOR functor)
 template<class ITERATOR, class FUNCTOR>
 void reverseForEach(ITERATOR begin, ITERATOR end, FUNCTOR functor)
 {
-	while (begin > end)
+	while (begin != end)
 	{
 		--begin;
 		functor(*begin);
@@ -2548,26 +2548,17 @@ T* binarySearch(T* array, const std::size_t size, COMPARISON comparison)
 		return nullptr;
 	std::size_t range = size;
 	T* begin = array;
-	while(true)
+	T* found = nullptr;
+	while (true)
 	{
 		const std::size_t range_half = range / 2;//探索範囲の半分の範囲
 		T* mid = begin + range_half;//探索範囲の中心要素
 		const int comp = comparison(*mid);//中心要素を探索キーと比較
 		if (comp == 0)//中心要素が探索キーと一致
-		{
-			//遡ってキーの開始点を探す
-			while (mid > array)
-			{
-				T* prev = mid - 1;
-				if (comparison(*prev) != 0)
-					break;
-				mid = prev;
-			}
-			return mid;//探索終了
-		}
-		if (range_half == 0)//探索範囲が残っていなければ探索失敗
-			return nullptr;
-		if (comp < 0)//探索キーが中心要素より小さかった場合、次に中心より前の範囲に絞って探索する
+			found = mid;//発見した場所を記憶 ※見つかった位置の先頭を発見するため、探索を続行する
+		if (range_half == 0)//探索範囲が残っていなければ探索終了
+			break;
+		if (comp <= 0)//探索キーが中心要素より小さいか同じだった場合、次に中心より前の範囲に絞って探索する
 			range = range_half;
 		else//if (comp > 0)//探索キーが中心要素より大きかった場合、次に中心より後の範囲に絞って探索する
 		{
@@ -2575,7 +2566,13 @@ T* binarySearch(T* array, const std::size_t size, COMPARISON comparison)
 			range -= (range_half + 1);
 		}
 	}
-	return nullptr;
+	if (found && found != begin)//見つかった地点が先頭でなければ、一つ前を調べる
+	{
+		T* found_prev = found - 1;
+		if (comparison(*found_prev) == 0)//一つ前が一致するならそれを返す
+			found = found_prev;
+	}
+	return found;
 }
 searchFuncSetByComparison(binarySearch);
 

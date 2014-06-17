@@ -696,7 +696,7 @@ private:
 #include <assert.h>//assert用
 #include <cstddef>//srd::size_t用
 #include <iterator>//std::iterator用
-#include <utility>//std::move用
+#include <algorithm>//C++11 std::move用
 
 namespace rb_tree
 {
@@ -751,20 +751,6 @@ namespace rb_tree
 		//※共有ロック（リード・ライトロック）でコンテナ操作をスレッドセーフにしたい場合は、
 		//　base_ope_tの派生クラスにて、有効な共有ロック型（shared_spin_lock など）を
 		//　lock_type 型として再定義する。
-		//【補足①】コンテナには、あらかじめロック制御のための仕組みがソースコードレベルで
-		//　　　　　仕込んであるが、有効な型を与えない限りは、実行時のオーバーヘッドは一切ない。
-		//【補足②】スレッドセーフ化した場合、書き込み時の排他ロックは行われるようになるが、
-		//　　　　　読み込み時の共有ロックは行っていない。読み込み時のロックは局所的なロックで
-		//　　　　　済まないため、ユーザーが任意に対応しなければならない。
-		//　　　　　（例）
-		//　　　　　    {
-		//　　　　　        shared_lock_guard lock(container);//コンテナオブジェクトを渡して共有ロック
-		//　　　　　                                          //※コンテナオブジェクトはロック
-		//　　　　　                                          //　オブジェクト（lock_type）として振る舞える
-		//　　　　　        //...
-		//　　　　　        //一連のイテレータ操作など
-		//　　　　　        //...
-		//　　　　　    }//スコープを抜ける時に自動的にロック解放
 
 		//子ノードを取得 ※const外し(remove_const)
 		inline static node_type* getChildL_rc(node_type& node){ return const_cast<node_type*>(ope_type::getChildL(const_cast<const node_type&>(node))); }//大（右）側
@@ -2582,6 +2568,7 @@ namespace rb_tree
 				       m_isEnd || rhs.m_isEnd ? true :
 				       ope_type::ne(*m_node, *rhs);
 			}
+		#if 1//std::bidirectional_iterator_tag には本来必要ではない
 			inline bool operator>(const_iterator& rhs) const
 			{
 				return !isEnabled() || !rhs.isEnabled() ? false :
@@ -2612,6 +2599,7 @@ namespace rb_tree
 				       m_isEnd || rhs.m_isEnd ? false :
 				       ope_type::le(*m_node, *rhs);
 			}
+		#endif
 			//演算オペレータ
 			inline const_iterator& operator++() const
 			{
@@ -2657,6 +2645,7 @@ namespace rb_tree
 				--(*this);
 				return  std::move(ite);
 			}
+		#if 1//std::bidirectional_iterator_tag には本来必要ではない
 			inline const_iterator& operator+=(const typename iterator::difference_type rhs) const
 			{
 				updateForward(rhs);
@@ -2737,6 +2726,7 @@ namespace rb_tree
 			//{
 			//	return ???;
 			//}
+		#endif
 		public:
 			//ムーブオペレータ
 			inline iterator& operator=(const_iterator&& rhs)
@@ -2765,8 +2755,6 @@ namespace rb_tree
 			inline bool isEnabled() const { return m_node != nullptr || m_isEnd; }
 			inline bool isNotEnabled() const { return !isEnabled(); }
 			inline bool isEnd() const { return m_isEnd; }//終端か？
-			inline const node_type* getRoot() const { return m_root; }//根ノード
-			inline node_type* getRoot(){ return m_root; }//根ノード
 			inline const node_type* getNode() const { return m_node; }//現在のノード
 			inline node_type* getNode(){ return m_node; }//現在のノード
 		private:
@@ -2841,7 +2829,11 @@ namespace rb_tree
 				m_isEnd(is_end)
 			{
 				if (!is_end)
+				{
 					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+					if (!m_node)
+						m_isEnd = true;
+				}
 			}
 			inline iterator(stack_type&& stack, const node_type* root, node_type* node, const bool is_end) :
 				m_stack(std::move(stack)),
@@ -2920,6 +2912,7 @@ namespace rb_tree
 				       rhs.m_isEnd || m_isEnd ? true :
 					   ope_type::ne(*rhs, *m_node);
 			}
+		#if 1//std::bidirectional_iterator_tag には本来必要ではない
 			inline bool operator>(const_reverse_iterator& rhs) const
 			{
 				return !rhs.isEnabled() || !isEnabled() ? false :
@@ -2950,6 +2943,7 @@ namespace rb_tree
 				       rhs.m_isEnd || m_isEnd ? false :
 				       ope_type::le(*rhs, *m_node);
 			}
+		#endif
 			//演算オペレータ
 			inline const_reverse_iterator& operator++() const
 			{
@@ -2995,6 +2989,7 @@ namespace rb_tree
 				--(*this);
 				return  std::move(ite);
 			}
+		#if 1//std::bidirectional_iterator_tag には本来必要ではない
 			inline const_reverse_iterator& operator+=(const typename reverse_iterator::difference_type rhs) const
 			{
 				updateForward(rhs);
@@ -3075,6 +3070,7 @@ namespace rb_tree
 			//{
 			//	return ???;
 			//}
+		#endif
 		public:
 			//ムーブオペレータ
 			inline reverse_iterator& operator=(const_reverse_iterator&& rhs)
@@ -3137,8 +3133,6 @@ namespace rb_tree
 			inline bool isEnabled() const { return m_node != nullptr || m_isEnd; }
 			inline bool isNotEnabled() const { return !isEnabled(); }
 			inline bool isEnd() const { return m_isEnd; }//終端か？
-			inline const node_type* getRoot() const { return m_root; }//根ノード
-			inline node_type* getRoot(){ return m_root; }//根ノード
 			inline const node_type* getNode() const { return m_node; }//現在のノード
 			inline node_type* getNode(){ return m_node; }//現在のノード
 		public:
@@ -3259,7 +3253,11 @@ namespace rb_tree
 				m_isEnd(is_end)
 			{
 				if (!is_end)
+				{
 					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+					if (!m_node)
+						m_isEnd = true;
+				}
 			}
 			inline reverse_iterator(stack_type&& stack, const node_type* root, node_type* node, const bool is_end) :
 				m_stack(std::move(stack)),
@@ -3291,15 +3289,30 @@ namespace rb_tree
 		};
 	public:
 		//アクセッサ
-		inline const node_type* root() const { return m_root; }//根ノードを取得
-		inline node_type* root(){ return m_root; }//根ノードを取得
-		inline node_type*& root_ref(){ return m_root; }//根ノードの参照を取得
+		//※std::mapと異なり、ノードのポインタを返す
+		const node_type* at(const key_type key) const
+		{
+			stack_type stack;
+			return searchNode<ope_type>(m_root, key, stack, FOR_MATCH);
+		}
+		inline node_type* at(const key_type key){ return const_cast<node_type*>(const_cast<const container*>(this)->at(key)); }
+		inline const node_type* operator[](const key_type key) const { return at(key); }
+		inline node_type* operator[](const key_type key){ return at(key); }
 	public:
 		//キャストオペレータ
 		inline operator lock_type&(){ return m_lock; }//ロックオブジェクト
 		inline operator lock_type&() const { return m_lock; }//ロックオブジェクト ※mutable
 	public:
-		//メソッド：イテレータ系
+		//メソッド
+		//inline std::size_t max_size() const { return (不定); }
+		//inline std::size_t capacity() const { return (不定); }
+		inline std::size_t size() const { return countNodes<ope_type>(m_root); }//ノード数を取得
+		inline bool empty() const { return m_root == nullptr; }//木が空か？
+		inline int depth_max() const { return getDepthMax<ope_type>(m_root); }//木の深さを取得
+		inline const node_type* root() const { return m_root; }//根ノードを参照
+		inline node_type* root(){ return m_root; }//根ノードを参照
+		inline node_type*& root_ref(){ return m_root; }//根ノードの参照を取得
+		//イテレータを取得
 		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
 		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
 		inline const_iterator cbegin() const
@@ -3332,7 +3345,7 @@ namespace rb_tree
 			iterator ite(m_root, true);
 			return std::move(ite);
 		}
-		//メソッド：リバースイテレータ系
+		//リバースイテレータを取得
 		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
 		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
 		inline const_reverse_iterator crbegin() const
@@ -3365,56 +3378,55 @@ namespace rb_tree
 			reverse_iterator ite(m_root, true);
 			return std::move(ite);
 		}
-		//メソッド：容量系
-		//inline std::size_t max_size() const { return (不定); }
-		//inline std::size_t capacity() const { return (不定); }
-		inline std::size_t size() const { return countNodes<ope_type>(m_root); }//ノード数を取得
-		inline bool empty() const { return m_root == nullptr; }//木が空か？
-		inline int depth_max() const { return getDepthMax<ope_type>(m_root); }//木の深さを取得
-		//メソッド：要素アクセス系
-		//※std::mapと異なり、ノードのポインタを返す
-		const node_type* at(const key_type key) const
-		{
-			stack_type stack;
-			return searchNode<ope_type>(m_root, key, stack, FOR_MATCH);
-		}
-		inline node_type* at(const key_type key){ return const_cast<node_type*>(const_cast<const container*>(this)->at(key)); }
-		inline const node_type* operator[](const key_type key) const { return at(key); }
-		inline node_type* operator[](const key_type key){ return at(key); }
-		//メソッド：追加／削除系
-		//※std::mapと異なり、ノードを直接指定し、結果をbool型で受け取る
-		//※要素のメモリ確保／削除を行わない点に注意
-		//※処理中、排他ロック（ライトロック）を取得する
+		
+		//追加／削除系メソッド
+		//※std::mapと異なり、追加／削除対象のノードを直接指定し、結果をポインタで受け取る（成功したら、追加／削除したポインタを返す）
+		//※要素のメモリ確保／解放を行わない点に注意
+		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
+		
+		//ノードを挿入（連結に追加）
 		inline node_type* insert(const node_type& node)
 		{
-			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			return addNode<ope_type>(const_cast<node_type*>(&node), m_root);
 		}
+		//ノードを削除（連結解除）
 		inline node_type* erase(const node_type& node)
 		{
-			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			return removeNode<ope_type>(&node, m_root);
 		}
+		//ノードを削除（連結解除）
+		//※キー指定
 		inline node_type* erase(const key_type key)
 		{
-			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			return removeNode<ope_type>(at(key), m_root);
 		}
-		node_type* clear()
+		//全ノードをクリア
+		//※根ノードを返す
+		inline node_type* clear()
 		{ 
-			lock_guard<lock_type> lock(m_lock);//排他ロック（ライトロック）取得（関数を抜ける時に自動開放）
 			node_type* root = m_root;
 			m_root = nullptr;
 			return root;
 		}
-		//メソッド：検索系
+
+		//探索系メソッド
 		//※lower_bound(), upper_bound()には非対応
 		//※代わりに、find_nearestに対応
+		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロックの前後で共有ロック（リードロック）の取得と解放を行う必要がある
+
+	private:
+		//キーを探索
+		//※キーが一致する範囲の先頭のイテレータを返す
 		inline const_iterator& _find(const_iterator& ite, const key_type key, const match_type_t type = FOR_MATCH) const
 		{
 			ite.m_node = const_cast<node_type*>(searchNode<ope_type>(m_root, key, ite.m_stack, type));
 			return ite;
 		}
+	public:
+		//キーを探索
+		//※キーが一致する範囲の先頭のイテレータを返す
 		inline const_iterator find(const key_type key, const match_type_t type = FOR_MATCH) const
 		{
 			const_iterator ite;
@@ -3425,7 +3437,11 @@ namespace rb_tree
 			iterator ite;
 			return std::move(_find(ite, key, type));
 		}
+		//キーが一致するノードの数を返す
 		inline std::size_t count(const key_type key) const { return countNodes<ope_type>(m_root, key); }
+	private:
+		//キーが一致する範囲を返す
+		//※キーが一致する範囲の末尾（の次）のイテレータを返す
 		const_iterator& _equal_range(const_iterator& ite, const key_type key) const
 		{
 			ite.m_node = const_cast<node_type*>(searchNode<ope_type>(m_root, key, ite.m_stack, FOR_MATCH));
@@ -3433,6 +3449,9 @@ namespace rb_tree
 				++ite;
 			return ite;
 		}
+	public:
+		//キーが一致する範囲を返す
+		//※キーが一致する範囲の末尾（の次）のイテレータを返す
 		inline const_iterator equal_range(const key_type key) const
 		{
 			const_iterator ite;
@@ -3560,7 +3579,6 @@ namespace rb_tree
 #include <algorithm>//for_each用
 #include <random>//C++11 std::random用
 #include <chrono>//C++11 時間計測用
-#include <type_traits>//C++11 時間計測用
 
 //----------------------------------------
 //テスト用補助関数
@@ -3587,6 +3605,12 @@ inline int printf_dbg_search(const char* fmt, ...){ return 0; }
 //テストデータ
 struct data_t
 {
+	mutable const data_t* m_nodeS;//小（左）側の子ノード
+	mutable const data_t* m_nodeL;//大（右）側の子ノード
+	
+	bool m_isBlack;//ノードの色
+	int m_key;//キー
+	
 	//コンストラクタ
 	data_t(const int key) :
 		m_nodeS(nullptr),
@@ -3600,12 +3624,6 @@ struct data_t
 		m_isBlack(false),
 		m_key(0)
 	{}
-
-	//フィールド
-	const data_t* m_nodeS;//小（左）側の子ノード
-	const data_t* m_nodeL;//大（右）側の子ノード
-	bool m_isBlack;//ノードの色
-	int m_key;//キー
 };
 //----------------------------------------
 //テストデータ向けノード操作用クラス（CRTP）

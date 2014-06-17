@@ -155,8 +155,8 @@
      |  |  |-[callPoint]                ... ★コールポイントのサンプルプログラム　※デバッグプリント処理を含む
      |  |  |-[callPoint_unix]           ... ★コールポイントのサンプルプログラム（unix系＋GCC）
      |  |  |
-     |  |  |-[dynamic_array]            ... ★動的配列のサンプルプログラム
-     |  |  |-[dynamic_array_unix]       ... ★動的配列のサンプルプログラム（unix系＋GCC）
+     |  |  |-[dynamic_array]            ... ★動的配列コンテナのサンプルプログラム
+     |  |  |-[dynamic_array_unix]       ... ★動的配列コンテナのサンプルプログラム（unix系＋GCC）
      |  |  |
      |  |  |-[constexpr]                ... constexpr のテスト
      |  |  |
@@ -178,10 +178,13 @@
      |  |  |
      |  |  |-[hamming_code]             ... ★ハミング符号のサンプルプログラム ※Excelによるロジック確認（後にC++のサンプルプログラム追加予定）
      |  |  |
-     |  |  |-[hash_table]               ... ★ハッシュテーブルのサンプルプログラム ※素数判定・生成用のランタイム／メタ処理を含む
-     |  |  |-[hash_table_unix]          ... ★ハッシュテーブルのサンプルプログラム（unix系＋GCC）
+     |  |  |-[hash_table]               ... ★ハッシュテーブルコンテナのサンプルプログラム ※素数判定・生成用のランタイム／メタ処理を含む
+     |  |  |-[hash_table_unix]          ... ★ハッシュテーブルコンテナのサンプルプログラム（unix系＋GCC）
      |  |  |
      |  |  |-[Interprotation]           ... ☆補間計算のExcel表と、補間のサンプルプログラム（線形補間を使ったフェード処理）
+     |  |  |
+     |  |  |-[linked_list]              ... ★連結リストコンテナのサンプルプログラム
+     |  |  |-[linked_list_unix]         ... ★連結リストコンテナのサンプルプログラム（unix系＋GCC）
      |  |  |
      |  |  |-[lock_free_algorithm]      ... ★ロックフリーアルゴリズムのサンプルプログラム ※スタック／キュー／プールアロケータ
      |  |  |-[lock_free_algorithm_unix] ... ★ロックフリーアルゴリズムのサンプルプログラム（unix系＋GCC）
@@ -196,18 +199,18 @@
      |  |  |
      |  |  |-[PrecompiledHeader]        ... プリコンパイル済みヘッダーの確認
      |  |  |
-     |  |  |-[priority_queue]           ... ★二分ヒープ／プライオリティキューのサンプルプログラム
-     |  |  |-[priority_queue_unix]      ... ★二分ヒープ／プライオリティキューのサンプルプログラム（unix系＋GCC）
+     |  |  |-[priority_queue]           ... ★二分ヒープ／プライオリティキューコンテナのサンプルプログラム
+     |  |  |-[priority_queue_unix]      ... ★二分ヒープ／プライオリティキューコンテナのサンプルプログラム（unix系＋GCC）
      |  |  |
      |  |  |-[Random]                   ... 乱数のテスト
      |  |  |
-     |  |  |-[rb_tree]                  ... ★赤黒木（red-black tree）のサンプルプログラム
-     |  |  |-[rb_tree_unix]             ... ★赤黒木（red-black tree）のサンプルプログラム（unix系＋GCC）
+     |  |  |-[rb_tree]                  ... ★赤黒木（red-black tree）コンテナのサンプルプログラム
+     |  |  |-[rb_tree_unix]             ... ★赤黒木（red-black tree）コンテナのサンプルプログラム（unix系＋GCC）
      |  |  |
      |  |  |-[ResourceBuilderFactory]   ... ★リソースビルダーファクトリーのサンプル処理
      |  |  |
-     |  |  |-[ring_buffer]              ... ★リングバッファのサンプルプログラム
-     |  |  |-[ring_buffer_unix]         ... ★リングバッファのサンプルプログラム（unix系＋GCC）
+     |  |  |-[ring_buffer]              ... ★リングバッファコンテナのサンプルプログラム
+     |  |  |-[ring_buffer_unix]         ... ★リングバッファコンテナのサンプルプログラム（unix系＋GCC）
      |  |  |
      |  |  |-[RTTI]                     ... 実行時型情報（RTTI）の確認
      |  |  |

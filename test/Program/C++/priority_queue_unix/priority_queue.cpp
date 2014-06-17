@@ -885,7 +885,7 @@ namespace binary_heap
 		typedef const reverse_iterator const_reverse_iterator;
 		//--------------------
 		//イテレータ
-		class iterator : public std::iterator<std::random_access_iterator_tag, value_type>
+		class iterator : public std::iterator<std::input_iterator_tag, value_type>
 		{
 			friend class container;
 			friend class reverse_iterator;
@@ -893,15 +893,16 @@ namespace binary_heap
 			//キャストオペレータ
 			inline operator bool() const { return isExist(); }
 			inline operator const value_type&() const { return *getValue(); }
-			inline operator value_type&(){ return *getValue(); }
+			//inline operator value_type&(){ return *getValue(); }//std::input_iterator_tag には不要
 			inline operator const value_type*() const { return getValue(); }
-			inline operator value_type*(){ return getValue(); }
+			//inline operator value_type*(){ return getValue(); }//std::input_iterator_tag には不要
 		public:
 			//オペレータ
 			inline const value_type& operator*() const { return *getValue(); }
-			inline value_type& operator*(){ return *getValue(); }
+			//inline value_type& operator*(){ return *getValue(); }//std::input_iterator_tag には不要
 			inline const_pointer operator->() const { return getValue(); }
-			inline pointer operator->(){ return getValue(); }
+			//inline pointer operator->(){ return getValue(); }//std::input_iterator_tag には不要
+		#if 1//std::input_iterator_tag には本来必要ではない
 			inline const_iterator operator[](const int index) const
 			{
 				iterator ite(*m_con, false);
@@ -914,6 +915,7 @@ namespace binary_heap
 				ite.update(index);
 				return std::move(ite);
 			}
+		#endif
 		public:
 			//比較オペレータ
 			inline bool operator==(const_iterator& rhs) const
@@ -926,6 +928,7 @@ namespace binary_heap
 				return !isEnabled() || !rhs.isEnabled() ? false :
 				       m_index != rhs.m_index;
 			}
+		#if 1//std::input_iterator_tag には本来必要ではない
 			inline bool operator>(const_iterator& rhs) const
 			{
 				return !isEnabled() || !rhs.isEnabled() ? false :
@@ -946,51 +949,61 @@ namespace binary_heap
 				return !isEnabled() || !rhs.isEnabled() ? false :
 				       m_index <= rhs.m_index;
 			}
+		#endif
 			//演算オペレータ
 			inline const_iterator& operator++() const
 			{
 				addIndexAndUpdate(1);
 				return *this;
 			}
+		#if 1//std::input_iterator_tag には本来必要ではない
 			inline const_iterator& operator--() const
 			{
 				addIndexAndUpdate(-1);
 				return *this;
 			}
+		#endif
 			inline iterator& operator++()
 			{
 				addIndexAndUpdate(1);
 				return *this;
 			}
+		#if 1//std::input_iterator_tag には本来必要ではない
 			inline iterator& operator--()
 			{
 				addIndexAndUpdate(-1);
 				return *this;
 			}
+		#endif
 			inline const_iterator operator++(int) const
 			{
 				iterator ite(*this);
 				++(*this);
 				return std::move(ite);
 			}
+		#if 1//std::input_iterator_tag には本来必要ではない
 			inline const_iterator operator--(int) const
 			{
 				iterator ite(*this);
 				--(*this);
 				return std::move(ite);
 			}
+		#endif
 			inline iterator operator++(int)
 			{
 				iterator ite(*this);
 				++(*this);
 				return std::move(ite);
 			}
+		#if 1//std::input_iterator_tag には本来必要ではない
 			inline iterator operator--(int)
 			{
 				iterator ite(*this);
 				--(*this);
 				return std::move(ite);
 			}
+		#endif
+		#if 1//std::input_iterator_tag には本来必要ではない
 			inline const_iterator& operator+=(const typename iterator::difference_type rhs) const
 			{
 				addIndexAndUpdate(rhs);
@@ -1073,6 +1086,7 @@ namespace binary_heap
 					return 0;
 				return m_index - rhs.m_index;
 			}
+		#endif
 		public:
 			//ムーブオペレータ
 			inline iterator& operator=(const_iterator&& rhs)
@@ -1082,7 +1096,9 @@ namespace binary_heap
 				m_value = rhs.m_value;
 				return *this;
 			}
+		#if 1//std::input_iterator_tag には本来必要ではない
 			iterator& operator=(const_reverse_iterator&& rhs);
+		#endif
 			//コピーオペレータ
 			inline iterator& operator=(const_iterator& rhs)
 			{
@@ -1091,7 +1107,9 @@ namespace binary_heap
 				m_value = rhs.m_value;
 				return *this;
 			}
+		#if 1//std::input_iterator_tag には本来必要ではない
 			iterator& operator=(const_reverse_iterator& rhs);
+		#endif
 		public:
 			//アクセッサ
 			inline bool isExist() const { return m_index != INVALID_INDEX && m_index < m_con->m_used; }
@@ -1129,14 +1147,18 @@ namespace binary_heap
 				m_index(obj.m_index),
 				m_value(obj.m_value)
 			{}
+		#if 1//std::input_iterator_tag には本来必要ではない
 			iterator(const_reverse_iterator&& obj);
+		#endif
 			//コピーコンストラクタ
 			inline iterator(const_iterator& obj) :
 				m_con(obj.m_con),
 				m_index(obj.m_index),
 				m_value(obj.m_value)
 			{}
+		#if 1//std::input_iterator_tag には本来必要ではない
 			iterator(const_reverse_iterator& obj);
+		#endif
 			//コンストラクタ
 			inline iterator(const container& con, const bool is_end) :
 				m_con(&con),
@@ -1162,6 +1184,7 @@ namespace binary_heap
 			mutable index_type m_index;//現在のインデックス
 			mutable value_type* m_value;//現在の値
 		};
+	#if 1//std::input_iterator_tag には本来必要ではない
 		//--------------------
 		//リバースイテレータ
 		//class reverse_iterator : public std::reverse_iterator<iterator>
@@ -1173,15 +1196,15 @@ namespace binary_heap
 			//キャストオペレータ
 			inline operator bool() const { return isExist(); }
 			inline operator const value_type&() const { return *getValue(); }
-			inline operator value_type&(){ return *getValue(); }
+			//inline operator value_type&(){ return *getValue(); }//std::input_iterator_tag には不要
 			inline operator const value_type*() const { return getValue(); }
-			inline operator value_type*(){ return getValue(); }
+			//inline operator value_type*(){ return getValue(); }//std::input_iterator_tag には不要
 		public:
 			//オペレータ
 			inline const value_type& operator*() const { return *getValue(); }
-			inline value_type& operator*(){ return *getValue(); }
+			//inline value_type& operator*(){ return *getValue(); }//std::input_iterator_tag には不要
 			inline const_pointer operator->() const { return getValue(); }
-			inline pointer operator->(){ return getValue(); }
+			//inline pointer operator->(){ return getValue(); }//std::input_iterator_tag には不要
 			inline const_reverse_iterator operator[](const int index) const
 			{
 				reverse_iterator ite(*m_con, false);
@@ -1478,12 +1501,13 @@ namespace binary_heap
 			mutable index_type m_index;//現在のインデックス
 			mutable value_type* m_value;//現在の値
 		};
+	#endif
 	public:
 		//アクセッサ
 		inline const node_type* at(const int index) const { return ref_node(index); }
-		inline node_type* at(const int index){ return ref_node(index); }
+		//inline node_type* at(const int index){ return ref_node(index); }//直接変更禁止
 		inline const node_type* operator[](const int index) const { return ref_node(index); }
-		inline node_type* operator[](const int index){ return ref_node(index); }
+		//inline node_type* operator[](const int index){ return ref_node(index); }//直接変更禁止
 		inline status_t status() const { return m_status; }
 	public:
 		//キャストオペレータ
@@ -1914,6 +1938,7 @@ namespace binary_heap
 		status_t m_status;//ステータス
 		mutable lock_type m_lock;//ロックオブジェクト
 	};
+#if 1//std::input_iterator_tag には本来必要ではない
 	//イテレータのムーブオペレータ
 	template<class OPE_TYPE, std::size_t _TABLE_SIZE>
 	//typename container<OPE_TYPE, _TABLE_SIZE>::iterator& container<OPE_TYPE, _TABLE_SIZE>::iterator::operator=(typename container<OPE_TYPE, _TABLE_SIZE>::const_reverse_iterator&& rhs)//GCCはOK, VC++はNG
@@ -1954,6 +1979,7 @@ namespace binary_heap
 	{
 		update(m_index);
 	}
+#endif
 	//--------------------
 	//安全なプッシュ／ポップ操作クラス
 	//※操作状態を記憶し、デストラクタで必ず完了させる

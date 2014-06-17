@@ -3,6 +3,9 @@
 static const int TEST_DATA_NUM = 10;//大量登録テストデータの登録数
 //static const int TEST_DATA_NUM = 10000000;//大量登録テストデータの登録数
 
+static const int TEST_DATA_FIND_NUM = 100;//大量テストの線形探索回数
+static const int TEST_DATA_FIND_STEP = TEST_DATA_NUM > TEST_DATA_FIND_NUM ? TEST_DATA_NUM / TEST_DATA_FIND_NUM : 1;//大量テストの線形実行ステップ
+
 #define PRINT_TEST_DATA_DETAIL//テストデータの詳細タを表示する場合は、このマクロを有効化する
 //#define TEST_DATA_WATCH_CONSTRUCTOR//コンストラクタ／デストラクタ／代入演算子の動作を確認する場合、このマクロを有効化する
 
@@ -1226,7 +1229,7 @@ template<class ITERATOR>
 inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::input_iterator_tag)
 {
 	typename ITERATOR::difference_type size = 0;
-	for (; begin < end; ++begin)
+	for (; begin != end; ++begin)
 		++size;
 	return size;
 }
@@ -1234,7 +1237,7 @@ template<class ITERATOR>
 inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::output_iterator_tag)
 {
 	typename ITERATOR::difference_type size = 0;
-	for (; begin < end; ++begin)
+	for (; begin != end; ++begin)
 		++size;
 	return size;
 }
@@ -1242,7 +1245,7 @@ template<class ITERATOR>
 inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::forward_iterator_tag)
 {
 	typename ITERATOR::difference_type size = 0;
-	for (; begin < end; ++begin)
+	for (; begin != end; ++begin)
 		++size;
 	return size;
 }
@@ -1250,7 +1253,7 @@ template<class ITERATOR>
 inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::bidirectional_iterator_tag)
 {
 	typename ITERATOR::difference_type size = 0;
-	for (; begin < end; ++begin)
+	for (; begin != end; ++begin)
 		++size;
 	return size;
 }
@@ -1271,7 +1274,7 @@ inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITE
 template<class ITERATOR, class FUNCTOR>
 void forEach(ITERATOR begin, ITERATOR end, FUNCTOR functor)
 {
-	for (; begin < end; ++begin)
+	for (; begin != end; ++begin)
 	{
 		functor(*begin);
 	}
@@ -1316,7 +1319,7 @@ void forEach(const T* array, const std::size_t size, FUNCTOR functor)
 template<class ITERATOR, class FUNCTOR>
 void reverseForEach(ITERATOR begin, ITERATOR end, FUNCTOR functor)
 {
-	while (begin > end)
+	while (begin != end)
 	{
 		--begin;
 		functor(*begin);
@@ -1618,26 +1621,17 @@ T* binarySearch(T* array, const std::size_t size, COMPARISON comparison)
 		return nullptr;
 	std::size_t range = size;
 	T* begin = array;
+	T* found = nullptr;
 	while (true)
 	{
 		const std::size_t range_half = range / 2;//探索範囲の半分の範囲
 		T* mid = begin + range_half;//探索範囲の中心要素
 		const int comp = comparison(*mid);//中心要素を探索キーと比較
 		if (comp == 0)//中心要素が探索キーと一致
-		{
-			//遡ってキーの開始点を探す
-			while (mid > array)
-			{
-				T* prev = mid - 1;
-				if (comparison(*prev) != 0)
-					break;
-				mid = prev;
-			}
-			return mid;//探索終了
-		}
-		if (range_half == 0)//探索範囲が残っていなければ探索失敗
-			return nullptr;
-		if (comp < 0)//探索キーが中心要素より小さかった場合、次に中心より前の範囲に絞って探索する
+			found = mid;//発見した場所を記憶 ※見つかった位置の先頭を発見するため、探索を続行する
+		if (range_half == 0)//探索範囲が残っていなければ探索終了
+			break;
+		if (comp <= 0)//探索キーが中心要素より小さいか同じだった場合、次に中心より前の範囲に絞って探索する
 			range = range_half;
 		else//if (comp > 0)//探索キーが中心要素より大きかった場合、次に中心より後の範囲に絞って探索する
 		{
@@ -1645,7 +1639,13 @@ T* binarySearch(T* array, const std::size_t size, COMPARISON comparison)
 			range -= (range_half + 1);
 		}
 	}
-	return nullptr;
+	if (found && found != begin)//見つかった地点が先頭でなければ、一つ前を調べる
+	{
+		T* found_prev = found - 1;
+		if (comparison(*found_prev) == 0)//一つ前が一致するならそれを返す
+			found = found_prev;
+	}
+	return found;
 }
 searchFuncSetByComparison(binarySearch);
 
@@ -1731,7 +1731,7 @@ namespace dynamic_array
 		//ロック型
 		typedef dummy_shared_lock lock_type;//ロックオブジェクト型
 		//※デフォルトはダミーのため、一切ロック制御しない。
-		//※ロックでコンテナ操作をスレッドセーフにしたい場合は、
+		//※共有ロック（リード・ライトロック）でコンテナ操作をスレッドセーフにしたい場合は、
 		//　base_ope_tの派生クラスにて、有効なロック型（shared_spin_lock など）を
 		//　lock_type 型として再定義する。
 
@@ -2973,6 +2973,20 @@ namespace dynamic_array
 		{
 			insertionSort(_ref_front(), m_size, predicate);
 		}
+		//ソート済み状態チェック
+		//※ope_type::sort_predicate() を使用して探索（標準では、データ型の operator<() に従って探索）
+		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
+		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
+		bool is_ordered() const
+		{
+			return calcUnordered(_ref_front(), m_size, typename ope_type::sort_predicate()) == 0;
+		}
+		//※プレディケート関数指定版
+		template<class PREDICATE>
+		bool is_ordered(PREDICATE predicate) const
+		{
+			return calcUnordered(_ref_front(), m_size, predicate) == 0;
+		}
 	public:
 		//線形探索
 		//※探索値指定版
@@ -3140,7 +3154,9 @@ namespace dynamic_array
 //--------------------------------------------------------------------------------
 
 #include <algorithm>//std::for_each用
+#include <chrono>//C++11 時間計測用
 #include <vector>//std::vector用（比較用）
+#include <assert.h>//assert用
 
 //----------------------------------------
 //テスト用補助関数
@@ -3293,7 +3309,7 @@ extern void testThread(const char* container_type);
 int main(const int argc, const char* argv[])
 {
 	//--------------------
-	//テスト①：プリミティブ型の配列を扱う場合
+	//テスト①：基本ロジックテスト：プリミティブ型の配列を扱う場合
 	{
 		printf("--------------------------------------------------------------------------------\n");
 		printf("[Test for dynamic_array::container(Primitive type)]\n");
@@ -3517,7 +3533,7 @@ int main(const int argc, const char* argv[])
 	}
 
 	//--------------------
-	//テスト②：ユーザー定義型を扱う場合
+	//テスト②：基本ロジックテスト：ユーザー定義型を扱う場合
 	{
 		printf("--------------------------------------------------------------------------------\n");
 		printf("[Test for dynamic_array::container(User defined type)]\n");
@@ -3578,6 +3594,33 @@ int main(const int argc, const char* argv[])
 			);
 			printf("\n");
 		};
+#if 0
+{
+	con.push_back();
+	con.clear();
+	for (int i = 0; i < 100; ++i)
+	{
+		for (int j = 0; j <= i; ++j)
+		{
+			con.push_back(i, i * 100 + j);
+		}
+	}
+	printAll();
+	for (int i = 0; i < 100; ++i)
+	{
+		auto& ite = con.binary_search_value(i);
+		printf("binary_search(%d)=", i);
+		if (ite.isExist())
+		{
+			printf("[%d:%d]", ite->m_key, ite->m_val);
+			if (ite->m_val % 100 != 0)
+				printf(" !!!\n");
+		}
+		printf("\n");
+	}
+	con.clear();
+}
+#endif
 
 		//データ登録１：push_back()メソッド＋コンストラクタパラメータ（コンストラクタ呼び出しを行う）
 		printf("\n");
@@ -4207,6 +4250,7 @@ int main(const int argc, const char* argv[])
 			printf("[reverse sort]\n");
 			auto reverse_sort = [](const data_t& lhs, const data_t& rhs){return lhs.m_key > rhs.m_key; };
 			con->sort(reverse_sort);
+			assert(con->is_ordered(reverse_sort));
 			prev_time = printElapsedTime(prev_time, true);
 
 			//イテレータ(2)
@@ -4233,6 +4277,7 @@ int main(const int argc, const char* argv[])
 			printf("\n");
 			printf("[sort]\n");
 			con->sort();
+			assert(con->is_ordered());
 			prev_time = printElapsedTime(prev_time, true);
 
 			//リバースイテレータ
@@ -4255,12 +4300,28 @@ int main(const int argc, const char* argv[])
 			}
 			prev_time = printElapsedTime(prev_time, true);
 
+		#if 0
+			//逆順安定ソート
+			printf("\n");
+			printf("[reverse stable sort]\n");
+			con->stable_sort(reverse_sort);
+			assert(con->is_ordered(reverse_sort));
+			prev_time = printElapsedTime(prev_time, true);
+
+			//正順安定ソート
+			printf("\n");
+			printf("[stable sort]\n");
+			con->stable_sort();
+			assert(con->is_ordered());
+			prev_time = printElapsedTime(prev_time, true);
+		#endif
+
 			//線形探索
 			printf("\n");
 			printf("[find_value]\n");
 			{
 				int num = 0;
-				for (int i = 0; i < TEST_DATA_NUM; i += (TEST_DATA_NUM / 100 + 1))
+				for (int i = 0; i < TEST_DATA_NUM; i += TEST_DATA_FIND_STEP)
 				{
 					container_t::iterator ite = std::move(con->find_value(i));
 					printf_detail(" [%d:%d]", ite->m_key, ite->m_val);
@@ -4413,12 +4474,26 @@ int main(const int argc, const char* argv[])
 			}
 			prev_time = printElapsedTime(prev_time, true);
 
+		#if 0
+			//逆順安定ソート
+			printf("\n");
+			printf("[reverse stable sort]\n");
+			std::stable_sort(con->begin(), con->end(), reverse_sort);
+			prev_time = printElapsedTime(prev_time, true);
+
+			//正順安定ソート
+			printf("\n");
+			printf("[stable sort]\n");
+			std::stable_sort(con->begin(), con->end());
+			prev_time = printElapsedTime(prev_time, true);
+		#endif
+
 			//線形探索
 			printf("\n");
 			printf("[find_value]\n");
 			{
 				int num = 0;
-				for (int i = 0; i < TEST_DATA_NUM; i += (TEST_DATA_NUM / 100 + 1))
+				for (int i = 0; i < TEST_DATA_NUM; i += TEST_DATA_FIND_STEP)
 				{
 					container_t::iterator ite = std::find(con->begin(), con->end(), i);
 					printf_detail(" [%d:%d]", ite->m_key, ite->m_val);

@@ -1119,8 +1119,7 @@ namespace hash_table
 		typedef const reverse_iterator const_reverse_iterator;
 		//--------------------
 		//イテレータ
-		//class iterator : public std::iterator<std::forward_iterator_tag, value_type>//本来は std::forward_iterator_tag で十分
-		class iterator : public std::iterator<std::bidirectional_iterator_tag, value_type>
+		class iterator : public std::iterator<std::forward_iterator_tag, value_type>
 		{
 			friend class container;
 			friend class reverse_iterator;
@@ -1140,7 +1139,7 @@ namespace hash_table
 			inline set& operator*(){ return getSet(); }
 			inline const_pointer operator->() const { return getValue(); }
 			inline pointer operator->(){ return getValue(); }
-		#if 1//std::forward_iterator_tag, std::bidirectional_iterator_tag には本来必要ではない
+		#if 1//std::forward_iterator_tag には本来必要ではない
 			inline const_iterator operator[](const int index) const
 			{
 				iterator ite(*m_con, false);
@@ -1169,6 +1168,7 @@ namespace hash_table
 				       m_isEnd || rhs.m_isEnd ? true :
 				       m_set.m_index != rhs.m_set.m_index;
 			}
+		#if 1//std::forward_iterator_tag には本来必要ではない
 			inline bool operator>(const_iterator& rhs) const
 			{
 				return !isEnabled() || !rhs.isEnabled() ? false :
@@ -1199,51 +1199,62 @@ namespace hash_table
 				       m_isEnd || rhs.m_isEnd ? false :
 				       m_set.m_index <= rhs.m_set.m_index;
 			}
+		#endif
 			//演算オペレータ
 			inline const_iterator& operator++() const
 			{
 				updateNext();
 				return *this;
 			}
+		#if 1//std::forward_iterator_tag には本来必要ではない
+
 			inline const_iterator& operator--() const
 			{
 				updatePrev();
 				return *this;
 			}
+		#endif
 			inline iterator& operator++()
 			{
 				updateNext();
 				return *this;
 			}
+		#if 1//std::forward_iterator_tag には本来必要ではない
 			inline iterator& operator--()
 			{
 				updatePrev();
 				return *this;
 			}
+		#endif
 			inline const_iterator operator++(int) const
 			{
 				iterator ite(*this);
 				++(*this);
 				return std::move(ite);
 			}
+		#if 1//std::forward_iterator_tag には本来必要ではない
 			inline const_iterator operator--(int) const
 			{
 				iterator ite(*this);
 				--(*this);
 				return std::move(ite);
 			}
+		#endif
 			inline iterator operator++(int)
 			{
 				iterator ite(*this);
 				++(*this);
 				return std::move(ite);
 			}
+		#if 1//std::forward_iterator_tag には本来必要ではない
 			inline iterator operator--(int)
 			{
 				iterator ite(*this);
 				--(*this);
 				return std::move(ite);
 			}
+		#endif
+		#if 1//std::forward_iterator_tag には本来必要ではない
 			inline const_iterator& operator+=(const typename iterator::difference_type rhs) const
 			{
 				updateForward(rhs);
@@ -1324,6 +1335,7 @@ namespace hash_table
 			//{
 			//	return ???;
 			//}
+		#endif
 		public:
 			//ムーブオペレータ
 			inline iterator& operator=(const_iterator&& rhs)
@@ -1447,7 +1459,11 @@ namespace hash_table
 				m_isEnd(is_end)
 			{
 				if (!is_end)
+				{
 					update(m_con->getFirstIndex());//先頭インデックス
+					if (!m_set.m_value)
+						m_isEnd = true;
+				}
 			}
 			inline iterator() :
 				m_con(nullptr),
@@ -1467,7 +1483,7 @@ namespace hash_table
 		//--------------------
 		//リバースイテレータ
 		//class reverse_iterator : public std::reverse_iterator<iterator>
-		class reverse_iterator : public std::iterator<std::bidirectional_iterator_tag, value_type>
+		class reverse_iterator : public std::iterator<std::forward_iterator_tag, value_type>
 		{
 			friend class container;
 			friend class iterator;
@@ -1487,7 +1503,6 @@ namespace hash_table
 			inline set& operator*(){ return getSet(); }
 			inline const_pointer operator->() const { return getValue(); }
 			inline pointer operator->(){ return getValue(); }
-		#if 1//std::forward_iterator_tag, std::bidirectional_iterator_tag には本来必要ではない
 			inline const_reverse_iterator operator[](const int index) const
 			{
 				reverse_iterator ite(*m_con, false);
@@ -1500,7 +1515,6 @@ namespace hash_table
 				ite += index;
 				return std::move(ite);
 			}
-		#endif
 		public:
 			//比較オペレータ
 			inline bool operator==(const_reverse_iterator& rhs) const
@@ -1849,7 +1863,11 @@ namespace hash_table
 				m_isEnd(is_end)
 			{
 				if (!is_end)
+				{
 					update(m_con->getLastIndex());//末尾インデックス
+					if (!m_set.m_value)
+						m_isEnd = true;
+				}
 			}
 			inline reverse_iterator() :
 				m_con(nullptr),

@@ -2542,13 +2542,13 @@ namespace rb_tree
 		#if 1//std::bidirectional_iterator_tag には本来必要ではない
 			inline const_iterator operator[](const int index) const
 			{
-				iterator ite(m_root, false);
+				iterator ite(m_con->m_root, false);
 				ite += index;
 				return std::move(ite);
 			}
 			inline iterator operator[](const int index)
 			{
-				iterator ite(m_root, false);
+				iterator ite(m_con->m_root, false);
 				ite += index;
 				return std::move(ite);
 			}
@@ -2732,7 +2732,7 @@ namespace rb_tree
 			inline iterator& operator=(const_iterator&& rhs)
 			{
 				m_stack = std::move(rhs.m_stack);
-				m_root = rhs.m_root;
+				m_con = rhs.m_con;
 				m_node = rhs.m_node;
 				m_isEnd = rhs.m_isEnd;
 				return *this;
@@ -2742,7 +2742,7 @@ namespace rb_tree
 			inline iterator& operator=(const_iterator& rhs)
 			{
 				m_stack = rhs.m_stack;
-				m_root = rhs.m_root;
+				m_con = rhs.m_con;
 				m_node = rhs.m_node;
 				m_isEnd = rhs.m_isEnd;
 				return *this;
@@ -2770,7 +2770,7 @@ namespace rb_tree
 				if (m_isEnd)
 				{
 					m_stack.reset();
-					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_con->m_root, m_stack));
 					m_isEnd = false;
 					return;
 				}
@@ -2794,7 +2794,7 @@ namespace rb_tree
 				if (_step > 0 && m_isEnd)
 				{
 					m_stack.reset();
-					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root->m_root, m_stack));
 					--_step;
 				}
 				while (_step > 0 && m_node)
@@ -2808,7 +2808,7 @@ namespace rb_tree
 			//ムーブコンストラクタ
 			inline iterator(const_iterator&& obj) :
 				m_stack(std::move(obj.m_stack)),
-				m_root(obj.m_root),
+				m_con(obj.m_con),
 				m_node(obj.m_node),
 				m_isEnd(obj.m_isEnd)
 			{}
@@ -2816,40 +2816,40 @@ namespace rb_tree
 			//コピーコンストラクタ
 			inline iterator(const_iterator& obj) :
 				m_stack(obj.m_stack),
-				m_root(obj.m_root),
+				m_con(obj.m_con),
 				m_node(obj.m_node),
 				m_isEnd(obj.m_isEnd)
 			{}
 			iterator(const_reverse_iterator& obj);
 			//コンストラクタ
-			inline iterator(const node_type* root, const bool is_end) :
+			inline iterator(const container& con, const bool is_end) :
 				m_stack(),
-				m_root(root),
+				m_con(&con),
 				m_node(nullptr),
 				m_isEnd(is_end)
 			{
 				if (!is_end)
 				{
-					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_con->m_root, m_stack));
 					if (!m_node)
 						m_isEnd = true;
 				}
 			}
-			inline iterator(stack_type&& stack, const node_type* root, node_type* node, const bool is_end) :
+			inline iterator(stack_type&& stack, const container& con, node_type* node, const bool is_end) :
 				m_stack(std::move(stack)),
-				m_root(root),
+				m_con(&con),
 				m_node(node),
 				m_isEnd(is_end)
 			{}
-			inline iterator(stack_type& stack, const node_type* root, node_type* node, const bool is_end) :
+			inline iterator(stack_type& stack, const container& con, node_type* node, const bool is_end) :
 				m_stack(stack),
-				m_root(root),
+				m_con(con),
 				m_node(node),
 				m_isEnd(is_end)
 			{}
 			inline iterator() :
 				m_stack(),
-				m_root(nullptr),
+				m_con(nullptr),
 				m_node(nullptr),
 				m_isEnd(false)
 			{}
@@ -2859,7 +2859,7 @@ namespace rb_tree
 		protected:
 			//フィールド
 			mutable stack_type m_stack;//スタック
-			const node_type* m_root;//根ノード
+			const container* m_con;//コンテナ
 			mutable node_type* m_node;//現在のノード
 			mutable bool m_isEnd;//終端か？
 		};
@@ -2885,13 +2885,13 @@ namespace rb_tree
 		#if 1//std::bidirectional_iterator_tag には本来必要ではない
 			inline const_reverse_iterator operator[](const int index) const
 			{
-				reverse_iterator ite(m_root, false);
+				reverse_iterator ite(m_con->m_root, false);
 				ite += index;
 				return std::move(ite);
 			}
 			inline reverse_iterator operator[](const int index)
 			{
-				reverse_iterator ite(m_root, false);
+				reverse_iterator ite(m_con->m_root, false);
 				ite += index;
 				return std::move(ite);
 			}
@@ -3076,14 +3076,14 @@ namespace rb_tree
 			inline reverse_iterator& operator=(const_reverse_iterator&& rhs)
 			{
 				m_stack = std::move(rhs.m_stack);
-				m_root = rhs.m_root;
+				m_con = rhs.m_con;
 				m_node = rhs.m_node;
 				m_isEnd = rhs.m_isEnd;
 				return *this;
 			}
 			inline reverse_iterator& operator=(const_iterator&& rhs)
 			{
-				m_root = rhs.m_root;
+				m_con = rhs.m_con;
 				m_node = rhs.m_node;
 				m_isEnd = false;
 				if (m_node)
@@ -3095,7 +3095,7 @@ namespace rb_tree
 				{
 					m_stack.reset();
 					if (rhs.m_isEnd)
-						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_con->m_root, m_stack));
 				}
 				return *this;
 			}
@@ -3103,14 +3103,14 @@ namespace rb_tree
 			inline reverse_iterator& operator=(const_reverse_iterator& rhs)
 			{
 				m_stack = rhs.m_stack;
-				m_root = rhs.m_root;
+				m_con = rhs.m_con;
 				m_node = rhs.m_node;
 				m_isEnd = rhs.m_isEnd;
 				return *this;
 			}
 			inline reverse_iterator& operator=(const_iterator& rhs)
 			{
-				m_root = rhs.m_root;
+				m_con = rhs.m_con;
 				m_node = rhs.m_node;
 				m_isEnd = false;
 				if (m_node)
@@ -3122,7 +3122,7 @@ namespace rb_tree
 				{
 					m_stack.reset();
 					if (rhs.m_isEnd)
-						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_con->m_root, m_stack));
 				}
 				return *this;
 			}
@@ -3148,7 +3148,7 @@ namespace rb_tree
 				if (m_isEnd)
 				{
 					m_stack.reset();
-					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_con->m_root, m_stack));
 					m_isEnd = false;
 					return;
 				}
@@ -3172,7 +3172,7 @@ namespace rb_tree
 				if (_step > 0 && m_isEnd)
 				{
 					m_stack.reset();
-					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+					m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_con->m_root, m_stack));
 					--_step;
 				}
 				while (_step > 0 && m_node)
@@ -3198,13 +3198,13 @@ namespace rb_tree
 			//ムーブコンストラクタ
 			inline reverse_iterator(const_reverse_iterator&& obj) :
 				m_stack(std::move(obj.m_stack)),
-				m_root(obj.m_root),
+				m_con(obj.m_con),
 				m_node(obj.m_node),
 				m_isEnd(obj.m_isEnd)
 			{}
 			inline reverse_iterator(const_iterator&& obj) :
 				m_stack(),
-				m_root(obj.m_root),
+				m_con(obj.m_con),
 				m_node(obj.m_node),
 				m_isEnd(false)
 			{
@@ -3217,19 +3217,19 @@ namespace rb_tree
 				{
 					m_stack.reset();
 					if (obj.m_isEnd)
-						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_con->m_root, m_stack));
 				}
 			}
 			//コピーコンストラクタ
 			inline reverse_iterator(const_reverse_iterator& obj) :
 				m_stack(obj.m_stack),
-				m_root(obj.m_root),
+				m_con(obj.m_con),
 				m_node(obj.m_node),
 				m_isEnd(obj.m_isEnd)
 			{}
 			inline reverse_iterator(const_iterator& obj) :
 				m_stack(),
-				m_root(obj.m_root),
+				m_con(obj.m_con),
 				m_node(obj.m_node),
 				m_isEnd(obj.m_isEnd)
 			{
@@ -3242,38 +3242,38 @@ namespace rb_tree
 				{
 					m_stack.reset();
 					if (obj.m_isEnd)
-						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+						m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_con->m_root, m_stack));
 				}
 			}
 			//コンストラクタ
-			inline reverse_iterator(const node_type* root, const bool is_end) :
+			inline reverse_iterator(const container& con, const bool is_end) :
 				m_stack(),
-				m_root(root),
+				m_con(&con),
 				m_node(nullptr),
 				m_isEnd(is_end)
 			{
 				if (!is_end)
 				{
-					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_root, m_stack));
+					m_node = const_cast<node_type*>(getLargestNode<ope_type>(m_con->m_root, m_stack));
 					if (!m_node)
 						m_isEnd = true;
 				}
 			}
-			inline reverse_iterator(stack_type&& stack, const node_type* root, node_type* node, const bool is_end) :
+			inline reverse_iterator(stack_type&& stack, const container& con, node_type* node, const bool is_end) :
 				m_stack(std::move(stack)),
-				m_root(root),
+				m_con(&con),
 				m_node(node),
 				m_isEnd(is_end)
 			{}
-			inline reverse_iterator(stack_type& stack, const node_type* root, node_type* node, const bool is_end) :
+			inline reverse_iterator(stack_type& stack, const container& con, node_type* node, const bool is_end) :
 				m_stack(stack),
-				m_root(root),
+				m_con(&con),
 				m_node(node),
 				m_isEnd(is_end)
 			{}
 			inline reverse_iterator() :
 				m_stack(),
-				m_root(nullptr),
+				m_con(nullptr),
 				m_node(nullptr),
 				m_isEnd(false)
 			{}
@@ -3283,7 +3283,7 @@ namespace rb_tree
 		protected:
 			//フィールド
 			mutable stack_type m_stack;//スタック
-			const node_type* m_root;//根ノード
+			const container* m_con;//コンテナ
 			mutable node_type* m_node;//現在のノード
 			mutable bool m_isEnd;//終端か？
 		};
@@ -3317,32 +3317,32 @@ namespace rb_tree
 		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
 		inline const_iterator cbegin() const
 		{
-			iterator ite(m_root, false);
+			iterator ite(*this, false);
 			return std::move(ite);
 		}
 		inline const_iterator cend() const
 		{
-			iterator ite(m_root, true);
+			iterator ite(*this, true);
 			return std::move(ite);
 		}
 		inline const_iterator begin() const
 		{
-			iterator ite(m_root, false);
+			iterator ite(*this, false);
 			return std::move(ite);
 		}
 		inline const_iterator end() const
 		{
-			iterator ite(m_root, true);
+			iterator ite(*this, true);
 			return std::move(ite);
 		}
 		inline iterator begin()
 		{
-			iterator ite(m_root, false);
+			iterator ite(*this, false);
 			return std::move(ite);
 		}
 		inline iterator end()
 		{
-			iterator ite(m_root, true);
+			iterator ite(*this, true);
 			return std::move(ite);
 		}
 		//リバースイテレータを取得
@@ -3350,38 +3350,39 @@ namespace rb_tree
 		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
 		inline const_reverse_iterator crbegin() const
 		{
-			reverse_iterator ite(m_root, false);
+			reverse_iterator ite(*this, false);
 			return std::move(ite);
 		}
 		inline const_reverse_iterator crend() const
 		{
-			reverse_iterator ite(m_root, true);
+			reverse_iterator ite(*this, true);
 			return std::move(ite);
 		}
 		inline const_reverse_iterator rbegin() const
 		{
-			reverse_iterator ite(m_root, false);
+			reverse_iterator ite(*this, false);
 			return std::move(ite);
 		}
 		inline const_reverse_iterator rend() const
 		{
-			reverse_iterator ite(m_root, true);
+			reverse_iterator ite(*this, true);
 			return std::move(ite);
 		}
 		inline reverse_iterator rbegin()
 		{
-			reverse_iterator ite(m_root, false);
+			reverse_iterator ite(*this, false);
 			return std::move(ite);
 		}
 		inline reverse_iterator rend()
 		{
-			reverse_iterator ite(m_root, true);
+			reverse_iterator ite(*this, true);
 			return std::move(ite);
 		}
 		
 		//追加／削除系メソッド
 		//※std::mapと異なり、追加／削除対象のノードを直接指定し、結果をポインタで受け取る（成功したら、追加／削除したポインタを返す）
 		//※要素のメモリ確保／解放を行わない点に注意
+		//※emplace(), emplace_hint()には非対応
 		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
 		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
 		
@@ -3488,7 +3489,7 @@ namespace rb_tree
 	//typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(typename container<OPE_TYPE>::const_reverse_iterator&& rhs)//GCCはOK, VC++はNG
 	typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(const typename container<OPE_TYPE>::reverse_iterator&& rhs)//VC++もOK
 	{
-		m_root = rhs.m_root;
+		m_con = rhs.m_con;
 		m_node = rhs.m_node;
 		m_isEnd = false;
 		if (m_node)
@@ -3500,7 +3501,7 @@ namespace rb_tree
 		{
 			m_stack.reset();
 			if (rhs.m_isEnd)
-				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_con->m_root, m_stack));
 		}
 		return *this;
 	}
@@ -3509,7 +3510,7 @@ namespace rb_tree
 	//typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(typename container<OPE_TYPE>::const_reverse_iterator& rhs)//GCCはOK, VC++はNG
 	typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(const typename container<OPE_TYPE>::reverse_iterator& rhs)//VC++もOK
 	{
-		m_root = rhs.m_root;
+		m_con = rhs.m_con;
 		m_node = rhs.m_node;
 		m_isEnd = false;
 		if (m_node)
@@ -3521,7 +3522,7 @@ namespace rb_tree
 		{
 			m_stack.reset();
 			if (rhs.m_isEnd)
-				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_con->m_root, m_stack));
 		}
 		return *this;
 	}
@@ -3530,7 +3531,7 @@ namespace rb_tree
 	//container<OPE_TYPE>::iterator::iterator(typename container<OPE_TYPE>::const_reverse_iterator&& obj) ://GCCはOK, VC++はNG
 	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator&& obj) ://VC++もOK
 		m_stack(),
-		m_root(obj.m_root),
+		m_con(obj.m_con),
 		m_node(obj.m_node),
 		m_isEnd(false)
 	{
@@ -3543,7 +3544,7 @@ namespace rb_tree
 		{
 			m_stack.reset();
 			if (obj.m_isEnd)
-				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_con->m_root, m_stack));
 		}
 	}
 	//イテレータのコピーコンストラクタ
@@ -3551,7 +3552,7 @@ namespace rb_tree
 	//container<OPE_TYPE>::iterator::iterator(typename container<OPE_TYPE>::const_reverse_iterator& obj) ://GCCはOK, VC++はNG
 	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator& obj) ://VC++もOK
 		m_stack(),
-		m_root(obj.m_root),
+		m_con(obj.m_con),
 		m_node(obj.m_node),
 		m_isEnd(false)
 	{
@@ -3564,7 +3565,7 @@ namespace rb_tree
 		{
 			m_stack.reset();
 			if (obj.m_isEnd)
-				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_root, m_stack));
+				m_node = const_cast<node_type*>(getSmallestNode<ope_type>(m_con->m_root, m_stack));
 		}
 	}
 	//--------------------

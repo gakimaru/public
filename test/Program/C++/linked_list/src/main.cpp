@@ -13,9 +13,9 @@ static const int TEST_DATA_FIND_STEP = TEST_DATA_NUM > TEST_DATA_FIND_NUM ? TEST
 
 //--------------------------------------------------------------------------------
 //双方向連結リストのコンパイラスイッチ
-#define ENABLE_BINARY_SEARCH//二分探索を有効にする
-#define ENABLE_STABLE_SORT//安定ソートを有効にする
-#define USE_SHELL_SORT//通常ソートにシェルソートを使用する（無効化時は挿入ソートを使用）
+//#define ENABLE_BINARY_SEARCH//二分探索を有効にする
+//#define ENABLE_STABLE_SORT//安定ソートを有効にする
+//#define USE_SHELL_SORT//通常ソートにシェルソートを使用する（無効化時は挿入ソートを使用）
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -661,6 +661,7 @@ struct compare_to{
 	}
 };
 
+#if 0
 //----------------------------------------
 //比較ソート処理オーバーロード関数用マクロ
 //※イテレータ対応版
@@ -674,6 +675,7 @@ struct compare_to{
 	}
 #define iteratorSortFuncSet(func_name) \
 	iteratorSortFuncSetByDefaultPredicate(func_name)
+#endif
 
 //----------------------------------------
 //探索処理オーバーロード関数用マクロ
@@ -1033,7 +1035,7 @@ namespace linked_list
 			inline bool operator()(const node_type& lhs, const node_type& rhs) const { return less<node_type>()(lhs, rhs); }
 		};
 
-		//探索用プレディケート関数オブジェクト
+		//線形探索用プレディケート関数オブジェクト
 		//※trueで一致（探索成功）
 		struct find_predicate{
 			template<typename V>
@@ -1041,7 +1043,7 @@ namespace linked_list
 		};
 
 	#ifdef ENABLE_BINARY_SEARCH
-		//探索用比較関数オブジェクト
+		//二分探索用比較関数オブジェクト
 		//※0で一致（探索成功）、1以上でlhsの方が大きい、-1以下でrhsの方が大きい
 		struct search_comparison{
 			template<typename V>
@@ -2196,7 +2198,7 @@ namespace linked_list
 		//追加／削除系メソッド
 		//※std::listと異なり、追加／削除対象のノードを直接指定し、結果をポインタで受け取る（成功したら、追加／削除したポインタを返す）
 		//※要素のメモリ確保／解放を行わない点に注意
-		//※assign(), remove_if()には非対応
+		//※assign(), remove_if(), emplace(), emplace_front(), emplase_back()には非対応
 		//※insert_before()を追加
 		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
 		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
@@ -2385,7 +2387,7 @@ namespace linked_list
 	#endif//ENABLE_BINARY_SEARCH
 
 		//リスト操作系メソッド
-		//※merge(), reverse()には非対応
+		//※merge(), splice(), reverse(), unique()には非対応
 
 	public:
 		//ムーブコンストラクタ
@@ -2525,8 +2527,8 @@ inline int printf_dbg_search(const char* fmt, ...){ return 0; }
 //テストデータ
 struct data_t
 {
-	mutable const data_t* m_next;//次ノード
 	mutable const data_t* m_prev;//前ノード
+	mutable const data_t* m_next;//次ノード
 	
 	int m_key;//キー
 	int m_val;//値
@@ -2551,16 +2553,16 @@ struct data_t
 		return m_key < rhs.m_key;
 	}
 	//デフォルトの線形／二分探索用の比較演算子（必須ではない）
-#ifdef ENABLE_BINARY_SEARCH
 	inline bool operator==(const int key) const
 	{
 		return m_key == key;
 	}
-#endif//ENABLE_BINARY_SEARCH
+#ifdef ENABLE_BINARY_SEARCH
 	inline bool operator<(const int key) const
 	{
 		return m_key < key;
 	}
+#endif//ENABLE_BINARY_SEARCH
 };
 #ifdef ENABLE_BINARY_SEARCH
 //※std::binary_searchを使用する場合は、このオペレータも必要
@@ -2633,7 +2635,7 @@ int main(const int argc, const char* argv[])
 		printf("--------------------------------------------------------------------------------\n");
 		printf("[Test for linked_list::container(User defined type)]\n");
 
-		//連結リストコンテナ生成
+		//双方向連結リストコンテナ生成
 		typedef linked_list::container<ope_t> container_t;
 		container_t con;
 
@@ -3094,13 +3096,12 @@ int main(const int argc, const char* argv[])
 	}
 
 	//--------------------
-	//テスト③：ソート、探索の設定を変える
-	//※動的配列のテストとほとんど同じ
+	//テスト②：ソート、探索の設定を変える
 	{
 		printf("--------------------------------------------------------------------------------\n");
 		printf("[Test for linked_list::container(User defined type with custom operator type)]\n");
 
-		//連結リストコンテナ生成
+		//双方向連結リストコンテナ生成
 		typedef linked_list::container<another_ope_t> container_t;
 		container_t con;
 

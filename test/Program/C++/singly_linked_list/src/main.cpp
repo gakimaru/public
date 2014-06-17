@@ -1,47 +1,51 @@
 //--------------------------------------------------------------------------------
-//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆãƒ†ã‚¹ãƒˆç”¨è¨­å®šã¨ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã‚¹ã‚¤ãƒƒãƒ
-static const int TEST_DATA_NUM = 10;//å¤§é‡ç™»éŒ²ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®ç™»éŒ²æ•°
-//static const int TEST_DATA_NUM = 20000;//å¤§é‡ç™»éŒ²ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®ç™»éŒ²æ•°
+//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒgƒeƒXƒg—pİ’è‚ÆƒRƒ“ƒpƒCƒ‰ƒXƒCƒbƒ`
+static const int TEST_DATA_NUM = 10;//‘å—Ê“o˜^ƒeƒXƒgƒf[ƒ^‚Ì“o˜^”
+//static const int TEST_DATA_NUM = 50000;//‘å—Ê“o˜^ƒeƒXƒgƒf[ƒ^‚Ì“o˜^”
 
-static const int TEST_DATA_FIND_NUM = 1000;//å¤§é‡ãƒ†ã‚¹ãƒˆã®ç·šå½¢æ¢ç´¢å›æ•°
-static const int TEST_DATA_FIND_STEP = TEST_DATA_NUM > TEST_DATA_FIND_NUM ? TEST_DATA_NUM / TEST_DATA_FIND_NUM : 1;//å¤§é‡ãƒ†ã‚¹ãƒˆã®ç·šå½¢å®Ÿè¡Œã‚¹ãƒ†ãƒƒãƒ—
+static const int TEST_DATA_FIND_NUM = 1000;//‘å—ÊƒeƒXƒg‚ÌüŒ`’Tõ‰ñ”
+static const int TEST_DATA_FIND_STEP = TEST_DATA_NUM > TEST_DATA_FIND_NUM ? TEST_DATA_NUM / TEST_DATA_FIND_NUM : 1;//‘å—ÊƒeƒXƒg‚ÌüŒ`ÀsƒXƒeƒbƒv
 
-#define ENABLE_SORT_TEST//å¤§é‡ãƒ‡ãƒ¼ã‚¿ãƒ†ã‚¹ãƒˆã§ã‚½ãƒ¼ãƒˆã‚’å®Ÿè¡Œã™ã‚‹å ´åˆã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+#define ENABLE_SORT_TEST//‘å—Êƒf[ƒ^ƒeƒXƒg‚Åƒ\[ƒg‚ğÀs‚·‚éê‡A‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
 
-#define PRINT_TEST_DATA_DETAIL//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®è©³ç´°ã‚¿ã‚’è¡¨ç¤ºã™ã‚‹å ´åˆã¯ã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
-//#define TEST_DATA_WATCH_CONSTRUCTOR//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ä»£å…¥æ¼”ç®—å­ã®å‹•ä½œã‚’ç¢ºèªã™ã‚‹å ´åˆã€ã“ã®ãƒã‚¯ãƒ­ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
+#define PRINT_TEST_DATA_DETAIL//ƒeƒXƒgƒf[ƒ^‚ÌÚ×ƒ^‚ğ•\¦‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
+//#define TEST_DATA_WATCH_CONSTRUCTOR//ƒRƒ“ƒXƒgƒ‰ƒNƒ^^ƒfƒXƒgƒ‰ƒNƒ^^‘ã“ü‰‰Zq‚Ì“®ì‚ğŠm”F‚·‚éê‡A‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚é
 
 //--------------------------------------------------------------------------------
-//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã‚¹ã‚¤ãƒƒãƒ
-//#define ENABLE_BINARY_SEARCH//äºŒåˆ†æ¢ç´¢ã‚’æœ‰åŠ¹ã«ã™ã‚‹
-//#define ENABLE_STABLE_SORT//å®‰å®šã‚½ãƒ¼ãƒˆã‚’æœ‰åŠ¹ã«ã™ã‚‹
-//#define USE_SHELL_SORT//é€šå¸¸ã‚½ãƒ¼ãƒˆã«ã‚·ã‚§ãƒ«ã‚½ãƒ¼ãƒˆã‚’ä½¿ç”¨ã™ã‚‹ï¼ˆç„¡åŠ¹åŒ–æ™‚ã¯æŒ¿å…¥ã‚½ãƒ¼ãƒˆã‚’ä½¿ç”¨ï¼‰
+//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‚ÌƒRƒ“ƒpƒCƒ‰ƒXƒCƒbƒ`
+#define ENABLE_REVERSE_ITERATOR//ƒŠƒo[ƒXƒCƒeƒŒ[ƒ^‚ğ—LŒø‰»‚·‚éê‡‚ÍA‚±‚Ìƒ}ƒNƒ‚ğ—LŒø‰»‚·‚éy’ˆÓz’á‘¬ˆ—
+//#define ENABLE_BINARY_SEARCH//“ñ•ª’Tõ‚ğ—LŒø‚É‚·‚é ¦ƒŠƒo[ƒXƒCƒeƒŒ[ƒ^–³Œø‰»‚Í–³Œø
+//#define ENABLE_STABLE_SORT//ˆÀ’èƒ\[ƒg‚ğ—LŒø‚É‚·‚é
+
+#if defined(ENABLE_BINARY_SEARCH) && !defined(ENABLE_REVERSE_ITERATOR)
+#undef ENABLE_BINARY_SEARCH
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 
 //--------------------------------------------------------------------------------
-//è‡ªä½œãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹
+//©ìƒƒbƒNƒNƒ‰ƒX
 //--------------------------------------------------------------------------------
 
-#include <atomic>//C++11 std::atomicç”¨
-#include <thread>//C++11 std::this_thread::sleep_forç”¨
-#include <chrono>//C++11 std::chrono::millisecondsç”¨
+#include <atomic>//C++11 std::atomic—p
+#include <thread>//C++11 std::this_thread::sleep_for—p
+#include <chrono>//C++11 std::chrono::milliseconds—p
 
 //--------------------------------------------------------------------------------
-//ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯
+//ƒXƒsƒ“ƒƒbƒN
 //--------------------------------------------------------------------------------
 
 //----------------------------------------
-//ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹
-//â€»ã‚µã‚¤ã‚ºã¯4ãƒã‚¤ãƒˆ(std::atomic_flagä¸€ã¤åˆ†ã®ã‚µã‚¤ã‚º)
+//ƒXƒsƒ“ƒƒbƒNƒNƒ‰ƒX
+//¦ƒTƒCƒY‚Í4ƒoƒCƒg(std::atomic_flagˆê‚Â•ª‚ÌƒTƒCƒY)
 class spin_lock
 {
 public:
-	//å®šæ•°
-	static const int DEFAULT_SPIN_COUNT = 1000;//ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã‚«ã‚¦ãƒ³ãƒˆã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤
+	//’è”
+	static const int DEFAULT_SPIN_COUNT = 1000;//ƒXƒsƒ“ƒƒbƒNƒJƒEƒ“ƒg‚ÌƒfƒtƒHƒ‹ƒg’l
 public:
-	//ãƒ­ãƒƒã‚¯å–å¾—
+	//ƒƒbƒNæ“¾
 	void lock(const int spin_count = DEFAULT_SPIN_COUNT)
 	{
 		int spin_count_now = spin_count;
@@ -51,44 +55,44 @@ public:
 				return;
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚¹ã‚¤ãƒƒãƒï¼ˆã‚¼ãƒ­ã‚¹ãƒªãƒ¼ãƒ—ï¼‰
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ƒRƒ“ƒeƒLƒXƒgƒXƒCƒbƒ`iƒ[ƒƒXƒŠ[ƒvj
 				spin_count_now = spin_count;
 			}
 		}
 	}
-	//ãƒ­ãƒƒã‚¯å–å¾—ã‚’è©¦è¡Œ
-	//â€»å–å¾—ã«æˆåŠŸã—ãŸå ´åˆã€trueãŒè¿”ã‚‹ã®ã§ã€ãƒ­ãƒƒã‚¯ã‚’è§£æ”¾ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	//ƒƒbƒNæ“¾‚ğs
+	//¦æ“¾‚É¬Œ÷‚µ‚½ê‡Atrue‚ª•Ô‚é‚Ì‚ÅAƒƒbƒN‚ğ‰ğ•ú‚·‚é•K—v‚ª‚ ‚é
 	inline bool try_lock()
 	{
 		return m_lock.test_and_set() == false;
 	}
-	//ãƒ­ãƒƒã‚¯è§£æ”¾
+	//ƒƒbƒN‰ğ•ú
 	inline void unlock()
 	{
 		m_lock.clear();
 	}
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	inline spin_lock()
 	{
 		m_lock.clear();
 	}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	inline ~spin_lock()
 	{}
 private:
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-	std::atomic_flag m_lock;//ãƒ­ãƒƒã‚¯ç”¨ãƒ•ãƒ©ã‚°
+	//ƒtƒB[ƒ‹ƒh
+	std::atomic_flag m_lock;//ƒƒbƒN—pƒtƒ‰ƒO
 };
 
 //----------------------------------------
-//ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹ï¼ˆè»½é‡ç‰ˆï¼‰
-//â€»ã‚µã‚¤ã‚ºã¯1ãƒã‚¤ãƒˆ
-//â€»spin_lockã®æ–¹ãŒé€Ÿã„
+//ƒXƒsƒ“ƒƒbƒNƒNƒ‰ƒXiŒy—Ê”Åj
+//¦ƒTƒCƒY‚Í1ƒoƒCƒg
+//¦spin_lock‚Ì•û‚ª‘¬‚¢
 class lw_spin_lock
 {
 public:
-	//ãƒ­ãƒƒã‚¯å–å¾—
+	//ƒƒbƒNæ“¾
 	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		int spin_count_now = spin_count;
@@ -99,533 +103,533 @@ public:
 				return;
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚¹ã‚¤ãƒƒãƒï¼ˆã‚¼ãƒ­ã‚¹ãƒªãƒ¼ãƒ—ï¼‰
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ƒRƒ“ƒeƒLƒXƒgƒXƒCƒbƒ`iƒ[ƒƒXƒŠ[ƒvj
 				spin_count_now = spin_count;
 			}
 		}
 	}
-	//ãƒ­ãƒƒã‚¯å–å¾—ã‚’è©¦è¡Œ
-	//â€»å–å¾—ã«æˆåŠŸã—ãŸå ´åˆã€trueãŒè¿”ã‚‹ã®ã§ã€ãƒ­ãƒƒã‚¯ã‚’è§£æ”¾ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	//ƒƒbƒNæ“¾‚ğs
+	//¦æ“¾‚É¬Œ÷‚µ‚½ê‡Atrue‚ª•Ô‚é‚Ì‚ÅAƒƒbƒN‚ğ‰ğ•ú‚·‚é•K—v‚ª‚ ‚é
 	inline bool try_lock()
 	{
 		bool prev = false;
 		return m_lock.compare_exchange_weak(prev, true) == false;
 	}
-	//ãƒ­ãƒƒã‚¯è§£æ”¾
+	//ƒƒbƒN‰ğ•ú
 	inline void unlock()
 	{
 		m_lock.store(false);
 	}
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	inline lw_spin_lock()
 	{
-		m_lock.store(false);//ãƒ­ãƒƒã‚¯ç”¨ãƒ•ãƒ©ã‚°
+		m_lock.store(false);//ƒƒbƒN—pƒtƒ‰ƒO
 	}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	inline ~lw_spin_lock()
 	{}
 private:
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-	std::atomic_bool m_lock;//ãƒ­ãƒƒã‚¯ç”¨ãƒ•ãƒ©ã‚°
+	//ƒtƒB[ƒ‹ƒh
+	std::atomic_bool m_lock;//ƒƒbƒN—pƒtƒ‰ƒO
 };
 
 //----------------------------------------
-//å…±æœ‰ï¼ˆãƒªãƒ¼ãƒ‰ãƒ»ãƒ©ã‚¤ãƒˆï¼‰ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹
-//â€»ã‚µã‚¤ã‚ºã¯4ãƒã‚¤ãƒˆ
-//â€»æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰ã‚’å„ªå…ˆã™ã‚‹
-//â€»èª­ã¿è¾¼ã¿æ“ä½œï¼ˆå…±æœ‰ãƒ­ãƒƒã‚¯ï¼‰ãŒè¾¼ã¿åˆã£ã¦ã„ã‚‹é€”ä¸­ã§å‰²ã‚Šè¾¼ã‚“ã§
-//ã€€æ›¸ãè¾¼ã¿æ“ä½œï¼ˆæ’ä»–ãƒ­ãƒƒã‚¯ï¼‰ã‚’è¡Œã„ãŸã„æ™‚ã«ç”¨ã„ã‚‹
-//â€»æ’ä»–ãƒ­ãƒƒã‚¯ãŒå¸¸ã«æœ€å„ªå…ˆã•ã‚Œã‚‹ã‚ã‘ã§ã¯ãªã„ã€‚
-//ã€€å…±æœ‰ãƒ­ãƒƒã‚¯ãŒãƒ­ãƒƒã‚¯ã‚’é–‹æ”¾ã™ã‚‹å‰ã«æ’ä»–ãƒ­ãƒƒã‚¯ãŒãƒ­ãƒƒã‚¯ã‚’
-//ã€€å–å¾—ã™ã‚‹ã“ã¨ã‚’è¨±å¯ã™ã‚‹ä»•çµ„ã¿ã§å®Ÿè£…ã™ã‚‹ã€‚ãã®å ´åˆã€
-//ã€€å…±æœ‰ãƒ­ãƒƒã‚¯ãŒå…¨ã¦è§£æ”¾ã•ã‚Œã‚‹ã®ã‚’å¾…ã£ã¦ã‹ã‚‰å‡¦ç†ã‚’ç¶šè¡Œã™ã‚‹ã€‚
-//ã€€ãã®ãŸã‚ã€åˆ¥ã®æ’ä»–ãƒ­ãƒƒã‚¯ãŒå¾…ã¡çŠ¶æ…‹ã«ãªã£ã¦ã‚‚ã€
-//ã€€å…±æœ‰ãƒ­ãƒƒã‚¯ã‚ˆã‚Šå…ˆã«ãƒ­ãƒƒã‚¯ã‚’å–å¾—ã™ã‚‹ã“ã¨ã¯ä¿è¨¼ã—ãªã„ã€‚
+//‹¤—LiƒŠ[ƒhEƒ‰ƒCƒgjƒXƒsƒ“ƒƒbƒNƒNƒ‰ƒX
+//¦ƒTƒCƒY‚Í4ƒoƒCƒg
+//¦”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‚ğ—Dæ‚·‚é
+//¦“Ç‚İ‚İ‘€ìi‹¤—LƒƒbƒNj‚ª‚İ‡‚Á‚Ä‚¢‚é“r’†‚ÅŠ„‚è‚ñ‚Å
+//@‘‚«‚İ‘€ìi”r‘¼ƒƒbƒNj‚ğs‚¢‚½‚¢‚É—p‚¢‚é
+//¦”r‘¼ƒƒbƒN‚ªí‚ÉÅ—Dæ‚³‚ê‚é‚í‚¯‚Å‚Í‚È‚¢B
+//@‹¤—LƒƒbƒN‚ªƒƒbƒN‚ğŠJ•ú‚·‚é‘O‚É”r‘¼ƒƒbƒN‚ªƒƒbƒN‚ğ
+//@æ“¾‚·‚é‚±‚Æ‚ğ‹–‰Â‚·‚éd‘g‚İ‚ÅÀ‘•‚·‚éB‚»‚Ìê‡A
+//@‹¤—LƒƒbƒN‚ª‘S‚Ä‰ğ•ú‚³‚ê‚é‚Ì‚ğ‘Ò‚Á‚Ä‚©‚çˆ—‚ğ‘±s‚·‚éB
+//@‚»‚Ì‚½‚ßA•Ê‚Ì”r‘¼ƒƒbƒN‚ª‘Ò‚¿ó‘Ô‚É‚È‚Á‚Ä‚àA
+//@‹¤—LƒƒbƒN‚æ‚èæ‚ÉƒƒbƒN‚ğæ“¾‚·‚é‚±‚Æ‚Í•ÛØ‚µ‚È‚¢B
 class shared_spin_lock
 {
 public:
-	//å®šæ•°
-	static const int DEFAULT_COUNTER = 0x01000000;//ãƒ­ãƒƒã‚¯ãŒå–å¾—ã•ã‚Œã¦ã„ãªã„æ™‚ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚«ã‚¦ãƒ³ã‚¿
+	//’è”
+	static const int DEFAULT_COUNTER = 0x01000000;//ƒƒbƒN‚ªæ“¾‚³‚ê‚Ä‚¢‚È‚¢‚ÌƒfƒtƒHƒ‹ƒg‚ÌƒJƒEƒ“ƒ^
 
 public:
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰å–å¾—
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNjæ“¾
 	void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		int spin_count_now = spin_count;
 		while (1)
 		{
-			const int lock_counter = m_lockCounter.fetch_sub(1);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æ›´æ–°
+			const int lock_counter = m_lockCounter.fetch_sub(1);//ƒJƒEƒ“ƒ^‚ğXV
 			if (lock_counter > 0)
-				return;//ãƒ­ãƒƒã‚¯å–å¾—æˆåŠŸ
-			m_lockCounter.fetch_add(1);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã—ã¦ãƒªãƒˆãƒ©ã‚¤
+				return;//ƒƒbƒNæ“¾¬Œ÷
+			m_lockCounter.fetch_add(1);//ƒJƒEƒ“ƒ^‚ğ–ß‚µ‚ÄƒŠƒgƒ‰ƒC
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚¹ã‚¤ãƒƒãƒï¼ˆã‚¼ãƒ­ã‚¹ãƒªãƒ¼ãƒ—ï¼‰
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ƒRƒ“ƒeƒLƒXƒgƒXƒCƒbƒ`iƒ[ƒƒXƒŠ[ƒvj
 				spin_count_now = spin_count;
 			}
 		}
 	}
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰å–å¾—ã‚’è©¦è¡Œ
-	//â€»å–å¾—ã«æˆåŠŸã—ãŸå ´åˆã€trueãŒè¿”ã‚‹ã®ã§ã€ãƒ­ãƒƒã‚¯ã‚’è§£æ”¾ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNjæ“¾‚ğs
+	//¦æ“¾‚É¬Œ÷‚µ‚½ê‡Atrue‚ª•Ô‚é‚Ì‚ÅAƒƒbƒN‚ğ‰ğ•ú‚·‚é•K—v‚ª‚ ‚é
 	bool try_lock_shared()
 	{
-		const int lock_counter = m_lockCounter.fetch_sub(1);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æ›´æ–°
+		const int lock_counter = m_lockCounter.fetch_sub(1);//ƒJƒEƒ“ƒ^‚ğXV
 		if (lock_counter >= 0)
-			return true;//ãƒ­ãƒƒã‚¯å–å¾—æˆåŠŸ
-		m_lockCounter.fetch_add(1);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã™
-		return false;//ãƒ­ãƒƒã‚¯å–å¾—å¤±æ•—
+			return true;//ƒƒbƒNæ“¾¬Œ÷
+		m_lockCounter.fetch_add(1);//ƒJƒEƒ“ƒ^‚ğ–ß‚·
+		return false;//ƒƒbƒNæ“¾¸”s
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰å–å¾—
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNjæ“¾
 	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		int spin_count_now = spin_count;
 		while (1)
 		{
-			const int lock_counter = m_lockCounter.fetch_sub(DEFAULT_COUNTER);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æ›´æ–°
+			const int lock_counter = m_lockCounter.fetch_sub(DEFAULT_COUNTER);//ƒJƒEƒ“ƒ^‚ğXV
 			if (lock_counter == DEFAULT_COUNTER)
-				return;//ãƒ­ãƒƒã‚¯å–å¾—æˆåŠŸ
-			if (lock_counter > 0)	//ä»–ãŒæ’ä»–ãƒ­ãƒƒã‚¯ã‚’å–å¾—ã—ã¦ã„ãªã„ã®ã§ã€ç¾åœ¨ã®å…±æœ‰ãƒ­ãƒƒã‚¯ãŒå…¨ã¦è§£æ”¾ã•ã‚Œã‚‹ã®ã‚’å¾…ã¤
-			{						//â€»ã‚«ã‚¦ãƒ³ã‚¿ã‚’æ›´æ–°ã—ãŸã¾ã¾ãªã®ã§ã€å¾Œç¶šã®å…±æœ‰ãƒ­ãƒƒã‚¯ï¼æ’ä»–ãƒ­ãƒƒã‚¯ã¯å–å¾—ã§ããªã„ã€‚
-				while (m_lockCounter.load() != 0)//ã‚«ã‚¦ãƒ³ã‚¿ãŒ0ã«ãªã‚‹ã®ã‚’å¾…ã¤
+				return;//ƒƒbƒNæ“¾¬Œ÷
+			if (lock_counter > 0)	//‘¼‚ª”r‘¼ƒƒbƒN‚ğæ“¾‚µ‚Ä‚¢‚È‚¢‚Ì‚ÅAŒ»İ‚Ì‹¤—LƒƒbƒN‚ª‘S‚Ä‰ğ•ú‚³‚ê‚é‚Ì‚ğ‘Ò‚Â
+			{						//¦ƒJƒEƒ“ƒ^‚ğXV‚µ‚½‚Ü‚Ü‚È‚Ì‚ÅAŒã‘±‚Ì‹¤—LƒƒbƒN^”r‘¼ƒƒbƒN‚Íæ“¾‚Å‚«‚È‚¢B
+				while (m_lockCounter.load() != 0)//ƒJƒEƒ“ƒ^‚ª0‚É‚È‚é‚Ì‚ğ‘Ò‚Â
 				{
 					if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 					{
-						std::this_thread::sleep_for(std::chrono::milliseconds(0));//ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚¹ã‚¤ãƒƒãƒï¼ˆã‚¼ãƒ­ã‚¹ãƒªãƒ¼ãƒ—ï¼‰
+						std::this_thread::sleep_for(std::chrono::milliseconds(0));//ƒRƒ“ƒeƒLƒXƒgƒXƒCƒbƒ`iƒ[ƒƒXƒŠ[ƒvj
 						spin_count_now = spin_count;
 					}
 				}
-				return;//ãƒ­ãƒƒã‚¯å–å¾—æˆåŠŸ
+				return;//ƒƒbƒNæ“¾¬Œ÷
 			}
-			m_lockCounter.fetch_add(DEFAULT_COUNTER);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã—ã¦ãƒªãƒˆãƒ©ã‚¤
+			m_lockCounter.fetch_add(DEFAULT_COUNTER);//ƒJƒEƒ“ƒ^‚ğ–ß‚µ‚ÄƒŠƒgƒ‰ƒC
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚¹ã‚¤ãƒƒãƒï¼ˆã‚¼ãƒ­ã‚¹ãƒªãƒ¼ãƒ—ï¼‰
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ƒRƒ“ƒeƒLƒXƒgƒXƒCƒbƒ`iƒ[ƒƒXƒŠ[ƒvj
 				spin_count_now = spin_count;
 			}
 		}
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰å–å¾—ã‚’è©¦è¡Œ
-	//â€»å–å¾—ã«æˆåŠŸã—ãŸå ´åˆã€trueãŒè¿”ã‚‹ã®ã§ã€ãƒ­ãƒƒã‚¯ã‚’è§£æ”¾ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNjæ“¾‚ğs
+	//¦æ“¾‚É¬Œ÷‚µ‚½ê‡Atrue‚ª•Ô‚é‚Ì‚ÅAƒƒbƒN‚ğ‰ğ•ú‚·‚é•K—v‚ª‚ ‚é
 	bool try_lock()
 	{
-		const int lock_counter = m_lockCounter.fetch_sub(DEFAULT_COUNTER);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æ›´æ–°
+		const int lock_counter = m_lockCounter.fetch_sub(DEFAULT_COUNTER);//ƒJƒEƒ“ƒ^‚ğXV
 		if (lock_counter == DEFAULT_COUNTER)
-			return true;//ãƒ­ãƒƒã‚¯å–å¾—æˆåŠŸ
-		m_lockCounter.fetch_add(DEFAULT_COUNTER);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã™
-		return false;//ãƒ­ãƒƒã‚¯å–å¾—å¤±æ•—
+			return true;//ƒƒbƒNæ“¾¬Œ÷
+		m_lockCounter.fetch_add(DEFAULT_COUNTER);//ƒJƒEƒ“ƒ^‚ğ–ß‚·
+		return false;//ƒƒbƒNæ“¾¸”s
 	}
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰è§£æ”¾
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‰ğ•ú
 	inline void unlock_shared()
 	{
-		m_lockCounter.fetch_add(1);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã™
+		m_lockCounter.fetch_add(1);//ƒJƒEƒ“ƒ^‚ğ–ß‚·
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰è§£æ”¾
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‰ğ•ú
 	inline void unlock()
 	{
-		m_lockCounter.fetch_add(DEFAULT_COUNTER);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã™
+		m_lockCounter.fetch_add(DEFAULT_COUNTER);//ƒJƒEƒ“ƒ^‚ğ–ß‚·
 	}
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	inline shared_spin_lock() :
 		m_lockCounter(DEFAULT_COUNTER)
 	{}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	inline ~shared_spin_lock()
 	{}
 private:
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-	std::atomic<int> m_lockCounter;//ãƒ­ãƒƒã‚¯ã‚«ã‚¦ãƒ³ã‚¿
+	//ƒtƒB[ƒ‹ƒh
+	std::atomic<int> m_lockCounter;//ƒƒbƒNƒJƒEƒ“ƒ^
 };
 
 //----------------------------------------
-//å…±æœ‰ï¼ˆãƒªãƒ¼ãƒ‰ãƒ»ãƒ©ã‚¤ãƒˆï¼‰ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹ï¼ˆè»½é‡ç‰ˆï¼‰
-//â€»ã‚µã‚¤ã‚ºã¯4ãƒã‚¤ãƒˆ
-//â€»æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰ã‚’å„ªå…ˆã—ãªã„
-//â€»èª­ã¿è¾¼ã¿æ“ä½œï¼ˆå…±æœ‰ãƒ­ãƒƒã‚¯ï¼‰ãŒè¾¼ã¿åˆã£ã¦ã„ã‚‹ã¨ã€
-//ã€€æ›¸ãè¾¼ã¿æ“ä½œï¼ˆæ’ä»–ãƒ­ãƒƒã‚¯ï¼‰ãŒå¾…ãŸã•ã‚Œã‚‹ã®ã§æ³¨æ„ã€‚
+//‹¤—LiƒŠ[ƒhEƒ‰ƒCƒgjƒXƒsƒ“ƒƒbƒNƒNƒ‰ƒXiŒy—Ê”Åj
+//¦ƒTƒCƒY‚Í4ƒoƒCƒg
+//¦”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‚ğ—Dæ‚µ‚È‚¢
+//¦“Ç‚İ‚İ‘€ìi‹¤—LƒƒbƒNj‚ª‚İ‡‚Á‚Ä‚¢‚é‚ÆA
+//@‘‚«‚İ‘€ìi”r‘¼ƒƒbƒNj‚ª‘Ò‚½‚³‚ê‚é‚Ì‚Å’ˆÓB
 class lw_shared_spin_lock
 {
 public:
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰å–å¾—
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNjæ“¾
 	void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		int spin_count_now = spin_count;
 		while (1)
 		{
-			const int lock_counter = m_lockCounter.fetch_sub(1);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æ›´æ–°
+			const int lock_counter = m_lockCounter.fetch_sub(1);//ƒJƒEƒ“ƒ^‚ğXV
 			if (lock_counter > 0)
-				return;//ãƒ­ãƒƒã‚¯å–å¾—æˆåŠŸ
-			m_lockCounter.fetch_add(1);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã—ã¦ãƒªãƒˆãƒ©ã‚¤
+				return;//ƒƒbƒNæ“¾¬Œ÷
+			m_lockCounter.fetch_add(1);//ƒJƒEƒ“ƒ^‚ğ–ß‚µ‚ÄƒŠƒgƒ‰ƒC
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚¹ã‚¤ãƒƒãƒï¼ˆã‚¼ãƒ­ã‚¹ãƒªãƒ¼ãƒ—ï¼‰
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ƒRƒ“ƒeƒLƒXƒgƒXƒCƒbƒ`iƒ[ƒƒXƒŠ[ƒvj
 				spin_count_now = spin_count;
 			}
 		}
 	}
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰å–å¾—ã‚’è©¦è¡Œ
-	//â€»å–å¾—ã«æˆåŠŸã—ãŸå ´åˆã€trueãŒè¿”ã‚‹ã®ã§ã€ãƒ­ãƒƒã‚¯ã‚’è§£æ”¾ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNjæ“¾‚ğs
+	//¦æ“¾‚É¬Œ÷‚µ‚½ê‡Atrue‚ª•Ô‚é‚Ì‚ÅAƒƒbƒN‚ğ‰ğ•ú‚·‚é•K—v‚ª‚ ‚é
 	bool try_lock_shared()
 	{
-		const int lock_counter = m_lockCounter.fetch_sub(1);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æ›´æ–°
+		const int lock_counter = m_lockCounter.fetch_sub(1);//ƒJƒEƒ“ƒ^‚ğXV
 		if (lock_counter >= 0)
-			return true;//ãƒ­ãƒƒã‚¯å–å¾—æˆåŠŸ
-		m_lockCounter.fetch_add(1);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã™
-		return false;//ãƒ­ãƒƒã‚¯å–å¾—å¤±æ•—
+			return true;//ƒƒbƒNæ“¾¬Œ÷
+		m_lockCounter.fetch_add(1);//ƒJƒEƒ“ƒ^‚ğ–ß‚·
+		return false;//ƒƒbƒNæ“¾¸”s
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰å–å¾—
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNjæ“¾
 	void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		int spin_count_now = spin_count;
 		while (1)
 		{
-			const int lock_counter = m_lockCounter.fetch_sub(shared_spin_lock::DEFAULT_COUNTER);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æ›´æ–°
+			const int lock_counter = m_lockCounter.fetch_sub(shared_spin_lock::DEFAULT_COUNTER);//ƒJƒEƒ“ƒ^‚ğXV
 			if (lock_counter == shared_spin_lock::DEFAULT_COUNTER)
-				return;//ãƒ­ãƒƒã‚¯å–å¾—æˆåŠŸ
-			m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã—ã¦ãƒªãƒˆãƒ©ã‚¤
+				return;//ƒƒbƒNæ“¾¬Œ÷
+			m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//ƒJƒEƒ“ƒ^‚ğ–ß‚µ‚ÄƒŠƒgƒ‰ƒC
 			if (spin_count == 1 || spin_count > 1 && --spin_count_now == 0)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚¹ã‚¤ãƒƒãƒï¼ˆã‚¼ãƒ­ã‚¹ãƒªãƒ¼ãƒ—ï¼‰
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));//ƒRƒ“ƒeƒLƒXƒgƒXƒCƒbƒ`iƒ[ƒƒXƒŠ[ƒvj
 				spin_count_now = spin_count;
 			}
 		}
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰å–å¾—ã‚’è©¦è¡Œ
-	//â€»å–å¾—ã«æˆåŠŸã—ãŸå ´åˆã€trueãŒè¿”ã‚‹ã®ã§ã€ãƒ­ãƒƒã‚¯ã‚’è§£æ”¾ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNjæ“¾‚ğs
+	//¦æ“¾‚É¬Œ÷‚µ‚½ê‡Atrue‚ª•Ô‚é‚Ì‚ÅAƒƒbƒN‚ğ‰ğ•ú‚·‚é•K—v‚ª‚ ‚é
 	bool try_lock()
 	{
-		const int lock_counter = m_lockCounter.fetch_sub(shared_spin_lock::DEFAULT_COUNTER);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æ›´æ–°
+		const int lock_counter = m_lockCounter.fetch_sub(shared_spin_lock::DEFAULT_COUNTER);//ƒJƒEƒ“ƒ^‚ğXV
 		if (lock_counter == shared_spin_lock::DEFAULT_COUNTER)
-			return true;//ãƒ­ãƒƒã‚¯å–å¾—æˆåŠŸ
-		m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã™
-		return false;//ãƒ­ãƒƒã‚¯å–å¾—å¤±æ•—
+			return true;//ƒƒbƒNæ“¾¬Œ÷
+		m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//ƒJƒEƒ“ƒ^‚ğ–ß‚·
+		return false;//ƒƒbƒNæ“¾¸”s
 	}
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰è§£æ”¾
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‰ğ•ú
 	inline void unlock_shared()
 	{
-		m_lockCounter.fetch_add(1);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã™
+		m_lockCounter.fetch_add(1);//ƒJƒEƒ“ƒ^‚ğ–ß‚·
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰è§£æ”¾
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‰ğ•ú
 	inline void unlock()
 	{
-		m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//ã‚«ã‚¦ãƒ³ã‚¿ã‚’æˆ»ã™
+		m_lockCounter.fetch_add(shared_spin_lock::DEFAULT_COUNTER);//ƒJƒEƒ“ƒ^‚ğ–ß‚·
 	}
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	inline lw_shared_spin_lock() :
 		m_lockCounter(shared_spin_lock::DEFAULT_COUNTER)
 	{}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	inline ~lw_shared_spin_lock()
 	{}
 private:
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-	std::atomic<int> m_lockCounter;//ãƒ­ãƒƒã‚¯ã‚«ã‚¦ãƒ³ã‚¿
+	//ƒtƒB[ƒ‹ƒh
+	std::atomic<int> m_lockCounter;//ƒƒbƒNƒJƒEƒ“ƒ^
 };
 
 //----------------------------------------
-//éå…±æœ‰ï¼ˆæ’ä»–ï¼‰ã‚¹ãƒ”ãƒ³ãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹
-//â€»ã‚µã‚¤ã‚ºã¯4ãƒã‚¤ãƒˆ
-//â€»å…±æœ‰ãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹ã¨åŒä¸€ã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã§ã€
-//ã€€å…±æœ‰ãƒ­ãƒƒã‚¯ã‚’è¡Œã‚ãªã„ã‚¯ãƒ©ã‚¹
-//â€»å…±æœ‰ãƒ­ãƒƒã‚¯ã®ãƒ˜ãƒ«ãƒ‘ãƒ¼ã‚¯ãƒ©ã‚¹ã‚„ãƒ­ãƒƒã‚¯ã‚¬ãƒ¼ãƒ‰ã‚’ä½¿ç”¨ã™ã‚‹å‡¦ç†ã«å¯¾ã—ã¦ã€
-//ã€€å®Œå…¨ãªæ’ä»–åˆ¶å¾¡ã‚’è¡Œã„ãŸã„æ™‚ã«ä½¿ç”¨ã™ã‚‹ã€‚
+//”ñ‹¤—Li”r‘¼jƒXƒsƒ“ƒƒbƒNƒNƒ‰ƒX
+//¦ƒTƒCƒY‚Í4ƒoƒCƒg
+//¦‹¤—LƒƒbƒNƒNƒ‰ƒX‚Æ“¯ˆê‚ÌƒCƒ“ƒ^[ƒtƒF[ƒX‚ÅA
+//@‹¤—LƒƒbƒN‚ğs‚í‚È‚¢ƒNƒ‰ƒX
+//¦‹¤—LƒƒbƒN‚Ìƒwƒ‹ƒp[ƒNƒ‰ƒX‚âƒƒbƒNƒK[ƒh‚ğg—p‚·‚éˆ—‚É‘Î‚µ‚ÄA
+//@Š®‘S‚È”r‘¼§Œä‚ğs‚¢‚½‚¢‚Ég—p‚·‚éB
 class unshared_spin_lock
 {
 public:
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰å–å¾—
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNjæ“¾
 	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		m_lock.lock(spin_count);
 	}
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰å–å¾—ã‚’è©¦è¡Œ
-	//â€»å–å¾—ã«æˆåŠŸã—ãŸå ´åˆã€trueãŒè¿”ã‚‹ã®ã§ã€ãƒ­ãƒƒã‚¯ã‚’è§£æ”¾ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNjæ“¾‚ğs
+	//¦æ“¾‚É¬Œ÷‚µ‚½ê‡Atrue‚ª•Ô‚é‚Ì‚ÅAƒƒbƒN‚ğ‰ğ•ú‚·‚é•K—v‚ª‚ ‚é
 	inline bool try_lock_shared()
 	{
 		return m_lock.try_lock();
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰å–å¾—
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNjæ“¾
 	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		m_lock.lock(spin_count);
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰å–å¾—ã‚’è©¦è¡Œ
-	//â€»å–å¾—ã«æˆåŠŸã—ãŸå ´åˆã€trueãŒè¿”ã‚‹ã®ã§ã€ãƒ­ãƒƒã‚¯ã‚’è§£æ”¾ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNjæ“¾‚ğs
+	//¦æ“¾‚É¬Œ÷‚µ‚½ê‡Atrue‚ª•Ô‚é‚Ì‚ÅAƒƒbƒN‚ğ‰ğ•ú‚·‚é•K—v‚ª‚ ‚é
 	inline bool try_lock()
 	{
 		return m_lock.try_lock();
 	}
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰è§£æ”¾
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‰ğ•ú
 	inline void unlock_shared()
 	{
 		m_lock.unlock();
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰è§£æ”¾
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‰ğ•ú
 	inline void unlock()
 	{
 		m_lock.unlock();
 	}
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	unshared_spin_lock() :
 		m_lock()
 	{}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	~unshared_spin_lock()
 	{}
 private:
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-	spin_lock m_lock;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+	//ƒtƒB[ƒ‹ƒh
+	spin_lock m_lock;//ƒƒbƒNƒIƒuƒWƒFƒNƒg
 };
 
 //--------------------------------------------------------------------------------
-//ãƒ€ãƒŸãƒ¼ãƒ­ãƒƒã‚¯
+//ƒ_ƒ~[ƒƒbƒN
 //--------------------------------------------------------------------------------
 
 //----------------------------------------
-//ãƒ€ãƒŸãƒ¼ãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹
-//â€»spin_lockã‚„std::mutexã¨åŒæ§˜ã®ãƒ­ãƒƒã‚¯ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚’æŒã¤ãŒã€å®Ÿéš›ã«ã¯ä½•ã‚‚ã—ãªã„ã‚¯ãƒ©ã‚¹
+//ƒ_ƒ~[ƒƒbƒNƒNƒ‰ƒX
+//¦spin_lock‚âstd::mutex‚Æ“¯—l‚ÌƒƒbƒNƒCƒ“ƒ^[ƒtƒF[ƒX‚ğ‚Â‚ªAÀÛ‚É‚Í‰½‚à‚µ‚È‚¢ƒNƒ‰ƒX
 class dummy_lock
 {
 public:
-	//ãƒ­ãƒƒã‚¯å–å¾—
+	//ƒƒbƒNæ“¾
 	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
-		//ä½•ã‚‚ã—ãªã„
+		//‰½‚à‚µ‚È‚¢
 	}
-	//ãƒ­ãƒƒã‚¯å–å¾—ã‚’è©¦è¡Œ
+	//ƒƒbƒNæ“¾‚ğs
 	inline bool try_lock()
 	{
-		//ä½•ã‚‚ã—ãªã„
+		//‰½‚à‚µ‚È‚¢
 		return true;
 	}
-	//ãƒ­ãƒƒã‚¯è§£æ”¾
+	//ƒƒbƒN‰ğ•ú
 	inline void unlock()
 	{
-		//ä½•ã‚‚ã—ãªã„
+		//‰½‚à‚µ‚È‚¢
 	}
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	inline dummy_lock()
 	{}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	~dummy_lock()
 	{}
 };
 
 //----------------------------------------
-//ãƒ€ãƒŸãƒ¼å…±æœ‰ï¼ˆãƒªãƒ¼ãƒ‰ãƒ»ãƒ©ã‚¤ãƒˆï¼‰ãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹
-//â€»shared_spin_lockã‚„std::shared_lockã¨åŒæ§˜ã®ãƒ­ãƒƒã‚¯ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚’æŒã¤ãŒã€å®Ÿéš›ã«ã¯ä½•ã‚‚ã—ãªã„ã‚¯ãƒ©ã‚¹
+//ƒ_ƒ~[‹¤—LiƒŠ[ƒhEƒ‰ƒCƒgjƒƒbƒNƒNƒ‰ƒX
+//¦shared_spin_lock‚âstd::shared_lock‚Æ“¯—l‚ÌƒƒbƒNƒCƒ“ƒ^[ƒtƒF[ƒX‚ğ‚Â‚ªAÀÛ‚É‚Í‰½‚à‚µ‚È‚¢ƒNƒ‰ƒX
 class dummy_shared_lock
 {
 public:
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰å–å¾—
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNjæ“¾
 	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
-		//ä½•ã‚‚ã—ãªã„
+		//‰½‚à‚µ‚È‚¢
 	}
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰å–å¾—ã‚’è©¦è¡Œ
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNjæ“¾‚ğs
 	inline bool try_lock_shared()
 	{
-		//ä½•ã‚‚ã—ãªã„
+		//‰½‚à‚µ‚È‚¢
 		return true;
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰å–å¾—
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNjæ“¾
 	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
-		//ä½•ã‚‚ã—ãªã„
+		//‰½‚à‚µ‚È‚¢
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰å–å¾—ã‚’è©¦è¡Œ
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNjæ“¾‚ğs
 	inline bool try_lock()
 	{
-		//ä½•ã‚‚ã—ãªã„
+		//‰½‚à‚µ‚È‚¢
 		return true;
 	}
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰è§£æ”¾
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‰ğ•ú
 	inline void unlock_shared()
 	{
-		//ä½•ã‚‚ã—ãªã„
+		//‰½‚à‚µ‚È‚¢
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰è§£æ”¾
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‰ğ•ú
 	inline void unlock()
 	{
-		//ä½•ã‚‚ã—ãªã„
+		//‰½‚à‚µ‚È‚¢
 	}
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	inline dummy_shared_lock()
 	{}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	~dummy_shared_lock()
 	{}
 };
 
 //--------------------------------------------------------------------------------
-//ãƒ­ãƒƒã‚¯ãƒ˜ãƒ«ãƒ‘ãƒ¼
+//ƒƒbƒNƒwƒ‹ƒp[
 //--------------------------------------------------------------------------------
 
 //----------------------------------------
-//ãƒ­ãƒƒã‚¯ãƒ˜ãƒ«ãƒ‘ãƒ¼ã‚¯ãƒ©ã‚¹
-//â€»å®Ÿè£…ã‚’éš ãºã„ã—ã¦ãƒ­ãƒƒã‚¯ã‚’æ“ä½œã™ã‚‹ãŸã‚ã®ãƒ˜ãƒ«ãƒ‘ãƒ¼ã‚¯ãƒ©ã‚¹
+//ƒƒbƒNƒwƒ‹ƒp[ƒNƒ‰ƒX
+//¦À‘•‚ğ‰B‚Ø‚¢‚µ‚ÄƒƒbƒN‚ğ‘€ì‚·‚é‚½‚ß‚Ìƒwƒ‹ƒp[ƒNƒ‰ƒX
 template<class T>
 class lock_helper
 {
 public:
-	typedef T lock_type;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‹
+	typedef T lock_type;//ƒƒbƒNƒIƒuƒWƒFƒNƒgŒ^
 public:
-	//ãƒ¡ã‚½ãƒƒãƒ‰
+	//ƒƒ\ƒbƒh
 
-	//ãƒ­ãƒƒã‚¯å–å¾—
+	//ƒƒbƒNæ“¾
 	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		m_lock.lock(spin_count);
 	}
-	//ãƒ­ãƒƒã‚¯å–å¾—ã‚’è©¦è¡Œ
+	//ƒƒbƒNæ“¾‚ğs
 	inline bool try_lock()
 	{
 		return m_lock.try_lock();
 	}
-	//ãƒ­ãƒƒã‚¯è§£æ”¾
+	//ƒƒbƒN‰ğ•ú
 	inline void unlock()
 	{
 		m_lock.unlock();
 	}
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	inline lock_helper(lock_type& lock) :
 		m_lock(lock)
 	{}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	inline ~lock_helper()
 	{}
 private:
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-	lock_type& m_lock;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å‚ç…§
+	//ƒtƒB[ƒ‹ƒh
+	lock_type& m_lock;//ƒƒbƒNƒIƒuƒWƒFƒNƒg‚ÌQÆ
 };
 
 //----------------------------------------
-//å…±æœ‰ï¼ˆãƒªãƒ¼ãƒ‰ãƒ»ãƒ©ã‚¤ãƒˆï¼‰ãƒ­ãƒƒã‚¯ãƒ˜ãƒ«ãƒ‘ãƒ¼ã‚¯ãƒ©ã‚¹
-//â€»å®Ÿè£…ã‚’éš ãºã„ã—ã¦å…±æœ‰ï¼ˆãƒªãƒ¼ãƒ‰ãƒ»ãƒ©ã‚¤ãƒˆï¼‰ãƒ­ãƒƒã‚¯ã‚’æ“ä½œã™ã‚‹ãŸã‚ã®ãƒ˜ãƒ«ãƒ‘ãƒ¼ã‚¯ãƒ©ã‚¹
+//‹¤—LiƒŠ[ƒhEƒ‰ƒCƒgjƒƒbƒNƒwƒ‹ƒp[ƒNƒ‰ƒX
+//¦À‘•‚ğ‰B‚Ø‚¢‚µ‚Ä‹¤—LiƒŠ[ƒhEƒ‰ƒCƒgjƒƒbƒN‚ğ‘€ì‚·‚é‚½‚ß‚Ìƒwƒ‹ƒp[ƒNƒ‰ƒX
 template<class T>
 class shared_lock_helper
 {
 public:
-	typedef T lock_type;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‹
+	typedef T lock_type;//ƒƒbƒNƒIƒuƒWƒFƒNƒgŒ^
 public:
-	//ãƒ¡ã‚½ãƒƒãƒ‰
+	//ƒƒ\ƒbƒh
 
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰å–å¾—
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNjæ“¾
 	inline void lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		m_lock.lock_shared(spin_count);
 	}
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰å–å¾—ã‚’è©¦è¡Œ
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNjæ“¾‚ğs
 	inline bool try_lock_shared(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		return m_lock.try_lock_shared(spin_count);
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰å–å¾—
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNjæ“¾
 	inline void lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		m_lock.lock(spin_count);
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰å–å¾—ã‚’è©¦è¡Œ
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNjæ“¾‚ğs
 	inline bool try_lock(const int spin_count = spin_lock::DEFAULT_SPIN_COUNT)
 	{
 		return m_lock.try_lock(spin_count);
 	}
-	//å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰è§£æ”¾
+	//‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‰ğ•ú
 	inline void unlock_shared()
 	{
 		m_lock.unlock_shared();
 	}
-	//æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰è§£æ”¾
+	//”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‰ğ•ú
 	inline void unlock()
 	{
 		m_lock.unlock();
 	}
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	inline shared_lock_helper(lock_type& lock) :
 		m_lock(lock)
 	{}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	inline ~shared_lock_helper()
 	{}
 private:
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-	lock_type& m_lock;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å‚ç…§
+	//ƒtƒB[ƒ‹ƒh
+	lock_type& m_lock;//ƒƒbƒNƒIƒuƒWƒFƒNƒg‚ÌQÆ
 };
 
 //--------------------------------------------------------------------------------
-//ãƒ­ãƒƒã‚¯ã‚¬ãƒ¼ãƒ‰ï¼ˆã‚¹ã‚³ãƒ¼ãƒ—ãƒ­ãƒƒã‚¯ï¼‰
+//ƒƒbƒNƒK[ƒhiƒXƒR[ƒvƒƒbƒNj
 //--------------------------------------------------------------------------------
 
 //----------------------------------------
-//ãƒ­ãƒƒã‚¯ã‚¬ãƒ¼ãƒ‰ã‚¯ãƒ©ã‚¹ï¼ˆã‚¹ã‚³ãƒ¼ãƒ—ãƒ­ãƒƒã‚¯ï¼‰
-//â€»ã‚¹ã‚³ãƒ¼ãƒ—ãƒ­ãƒƒã‚¯ã§é€šå¸¸ãƒ­ãƒƒã‚¯ã‚‚ã—ãã¯æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰ã®ãƒ­ãƒƒã‚¯å–å¾—ã¨è§£æ”¾ã‚’è¡Œã†
+//ƒƒbƒNƒK[ƒhƒNƒ‰ƒXiƒXƒR[ƒvƒƒbƒNj
+//¦ƒXƒR[ƒvƒƒbƒN‚Å’ÊíƒƒbƒN‚à‚µ‚­‚Í”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‚ÌƒƒbƒNæ“¾‚Æ‰ğ•ú‚ğs‚¤
 template<class T>
 class lock_guard
 {
 public:
-	typedef T lock_type;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‹
+	typedef T lock_type;//ƒƒbƒNƒIƒuƒWƒFƒNƒgŒ^
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	inline lock_guard(lock_type& lock, const int spin_count = spin_lock::DEFAULT_SPIN_COUNT) :
 		m_lock(lock)
 	{
 		m_lock.lock(spin_count);
 	}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	inline ~lock_guard()
 	{
 		m_lock.unlock();
 	}
 private:
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-	lock_type& m_lock;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å‚ç…§
+	//ƒtƒB[ƒ‹ƒh
+	lock_type& m_lock;//ƒƒbƒNƒIƒuƒWƒFƒNƒg‚ÌQÆ
 };
 
 //----------------------------------------
-//å…±æœ‰ï¼ˆãƒªãƒ¼ãƒ‰ãƒ»ãƒ©ã‚¤ãƒˆï¼‰ãƒ­ãƒƒã‚¯ã‚¬ãƒ¼ãƒ‰ã‚¯ãƒ©ã‚¹ï¼ˆã‚¹ã‚³ãƒ¼ãƒ—ãƒ­ãƒƒã‚¯ï¼‰
-//â€»ã‚¹ã‚³ãƒ¼ãƒ—ãƒ­ãƒƒã‚¯ã§å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰ã®ãƒ­ãƒƒã‚¯å–å¾—ã¨è§£æ”¾ã‚’è¡Œã†
+//‹¤—LiƒŠ[ƒhEƒ‰ƒCƒgjƒƒbƒNƒK[ƒhƒNƒ‰ƒXiƒXƒR[ƒvƒƒbƒNj
+//¦ƒXƒR[ƒvƒƒbƒN‚Å‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‚ÌƒƒbƒNæ“¾‚Æ‰ğ•ú‚ğs‚¤
 template<class T>
 class shared_lock_guard
 {
 public:
-	typedef T lock_type;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‹
+	typedef T lock_type;//ƒƒbƒNƒIƒuƒWƒFƒNƒgŒ^
 public:
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	inline shared_lock_guard(lock_type& lock, const int spin_count = spin_lock::DEFAULT_SPIN_COUNT) :
 		m_lock(lock)
 	{
 		m_lock.lock_shared(spin_count);
 	}
-	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒfƒXƒgƒ‰ƒNƒ^
 	inline ~shared_lock_guard()
 	{
 		m_lock.unlock_shared();
 	}
 private:
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-	lock_type& m_lock;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å‚ç…§
+	//ƒtƒB[ƒ‹ƒh
+	lock_type& m_lock;//ƒƒbƒNƒIƒuƒWƒFƒNƒg‚ÌQÆ
 };
 
 //--------------------------------------------------------------------------------
-//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ 
+//ƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€
 //--------------------------------------------------------------------------------
 
-#include <algorithm>//C++11 std::moveç”¨
-#include <memory.h>//memcpyç”¨
+#include <algorithm>//C++11 std::move—p
+#include <memory.h>//memcpy—p
 
 //========================================
-//ã‚½ãƒ¼ãƒˆï¼æ¢ç´¢è£œåŠ©å‡¦ç†
+//ƒ\[ƒg^’Tõ•â•ˆ—
 //========================================
 
 //----------------------------------------
-//ã‚½ãƒ¼ãƒˆç”¨æ¨™æº–ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼šless
-//â€»å¯¾è±¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒ operator<ã«å¯¾å¿œã—ã¦ã„ã‚‹å¿…è¦ã‚ã‚Š
+//ƒ\[ƒg—p•W€ƒvƒŒƒfƒBƒP[ƒgŠÖ”ƒIƒuƒWƒFƒNƒgFless
+//¦‘ÎÛƒIƒuƒWƒFƒNƒg‚ª operator<‚É‘Î‰‚µ‚Ä‚¢‚é•K—v‚ ‚è
 template<typename T>
 struct less{
 	inline bool operator()(const T& val1, const T& val2) const
@@ -634,8 +638,8 @@ struct less{
 	}
 };
 //----------------------------------------
-//ç·šå½¢æ¢ç´¢ç”¨æ¨™æº–ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼šeqal_to
-//â€»å¯¾è±¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒ operator==ã«å¯¾å¿œã—ã¦ã„ã‚‹å¿…è¦ã‚ã‚Š
+//üŒ`’Tõ—p•W€ƒvƒŒƒfƒBƒP[ƒgŠÖ”ƒIƒuƒWƒFƒNƒgFeqal_to
+//¦‘ÎÛƒIƒuƒWƒFƒNƒg‚ª operator==‚É‘Î‰‚µ‚Ä‚¢‚é•K—v‚ ‚è
 template<typename T>
 struct equal_to{
 	template<typename V>
@@ -645,8 +649,8 @@ struct equal_to{
 	}
 };
 //----------------------------------------
-//äºŒåˆ†æ¢ç´¢ç”¨æ¨™æº–æ¯”è¼ƒé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼šcompare_to
-//â€»å¯¾è±¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒ operator==, operator<ã«å¯¾å¿œã—ã¦ã„ã‚‹å¿…è¦ã‚ã‚Š
+//“ñ•ª’Tõ—p•W€”äŠrŠÖ”ƒIƒuƒWƒFƒNƒgFcompare_to
+//¦‘ÎÛƒIƒuƒWƒFƒNƒg‚ª operator==, operator<‚É‘Î‰‚µ‚Ä‚¢‚é•K—v‚ ‚è
 template<typename T>
 struct compare_to{
 	template<typename V>
@@ -663,9 +667,9 @@ struct compare_to{
 
 #if 0
 //----------------------------------------
-//æ¯”è¼ƒã‚½ãƒ¼ãƒˆå‡¦ç†ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰é–¢æ•°ç”¨ãƒã‚¯ãƒ­
-//â€»ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿å¯¾å¿œç‰ˆ
-//â€»æ¨™æº–ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ä½¿ç”¨ç‰ˆ
+//”äŠrƒ\[ƒgˆ—ƒI[ƒo[ƒ[ƒhŠÖ”—pƒ}ƒNƒ
+//¦ƒCƒeƒŒ[ƒ^‘Î‰”Å
+//¦•W€ƒvƒŒƒfƒBƒP[ƒgŠÖ”g—p”Å
 #define iteratorSortFuncSetByDefaultPredicate(func_name) \
 	template<class ITERATOR> \
 	inline std::size_t func_name(ITERATOR begin, ITERATOR end) \
@@ -678,9 +682,9 @@ struct compare_to{
 #endif
 
 //----------------------------------------
-//æ¢ç´¢å‡¦ç†ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰é–¢æ•°ç”¨ãƒã‚¯ãƒ­
-//â€»ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿å¯¾å¿œç‰ˆ
-//â€»æ¢ç´¢å€¤æŒ‡å®šç‰ˆï¼šãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã¨å€¤ã§æ¯”è¼ƒ
+//’Tõˆ—ƒI[ƒo[ƒ[ƒhŠÖ”—pƒ}ƒNƒ
+//¦ƒCƒeƒŒ[ƒ^‘Î‰”Å
+//¦’Tõ’lw’è”ÅFƒvƒŒƒfƒBƒP[ƒgŠÖ”‚Æ’l‚Å”äŠr
 #define iteratorSearchFuncSetPredicateAndValue(func_name) \
 	template<class ITERATOR, typename V, class PREDICATE> \
 	inline ITERATOR func_name##Value(ITERATOR begin, ITERATOR end, const V& value, PREDICATE predicate) \
@@ -689,7 +693,7 @@ struct compare_to{
 		auto _equal = [&value, &predicate](value_type& val1) -> bool { return predicate(val1, value); }; \
 		return std::move(func_name(begin, end, _equal)); \
 	}
-//â€»æ¢ç´¢å€¤æŒ‡å®šç‰ˆï¼šæ¨™æº–ã®ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã¨å€¤ã§æ¯”è¼ƒ
+//¦’Tõ’lw’è”ÅF•W€‚ÌƒvƒŒƒfƒBƒP[ƒgŠÖ”‚Æ’l‚Å”äŠr
 #define iteratorSearchFuncSetByDefaultPredicateAndValue(func_name) \
 	template<class ITERATOR, typename V> \
 	inline ITERATOR func_name##Value(ITERATOR begin, ITERATOR end, const V& value) \
@@ -701,7 +705,7 @@ struct compare_to{
 #define iteratorSearchFuncSetByPredicate(func_name) \
 	iteratorSearchFuncSetPredicateAndValue(func_name) \
 	iteratorSearchFuncSetByDefaultPredicateAndValue(func_name)
-//â€»æ¢ç´¢å€¤æŒ‡å®šç‰ˆï¼šæ¯”è¼ƒé–¢æ•°ã¨å€¤ã§æ¯”è¼ƒ
+//¦’Tõ’lw’è”ÅF”äŠrŠÖ”‚Æ’l‚Å”äŠr
 #define iteratorSearchFuncSetByComparisonAndValue(func_name) \
 	template<class ITERATOR, typename V, class COMPARISON> \
 	inline ITERATOR func_name##Value(ITERATOR begin, ITERATOR end, const V& value, COMPARISON comparison) \
@@ -710,7 +714,7 @@ struct compare_to{
 		auto _comparison = [&value, &comparison](value_type& val1) -> int { return comparison(val1, value); }; \
 		return func_name(begin, end, _comparison); \
 	}
-//â€»æ¢ç´¢å€¤æŒ‡å®šç‰ˆï¼šæ¨™æº–æ¯”è¼ƒé–¢æ•°ã¨å€¤ã§æ¯”è¼ƒ
+//¦’Tõ’lw’è”ÅF•W€”äŠrŠÖ”‚Æ’l‚Å”äŠr
 #define iteratorSearchFuncSetByDefaultComparisonAndValue(func_name) \
 	template<class ITERATOR, typename V> \
 	inline ITERATOR func_name##Value(ITERATOR begin, ITERATOR end, const V& value) \
@@ -725,7 +729,7 @@ struct compare_to{
 
 #if 0
 //----------------------------------------
-//æ•´åˆ—çŠ¶æ…‹ç¢ºèª â€»ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿å¯¾å¿œç‰ˆ
+//®—ñó‘ÔŠm”F ¦ƒCƒeƒŒ[ƒ^‘Î‰”Å
 template<class ITERATOR, class PREDICATE>
 inline std::size_t iteratorCalcUnordered(ITERATOR begin, ITERATOR end, PREDICATE predicate)
 {
@@ -744,7 +748,7 @@ iteratorSortFuncSet(iteratorCalcUnordered);
 #endif
 
 //----------------------------------------
-//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®å·®ï¼ˆè¦ç´ æ•°ï¼‰ã‚’è¿”ã™
+//ƒCƒeƒŒ[ƒ^‚Ì·i—v‘f”j‚ğ•Ô‚·
 template<class ITERATOR>
 inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::input_iterator_tag)
 {
@@ -850,7 +854,7 @@ void reverseForEach(CONTAINER container, FUNCTOR functor)
 {
 	typename CONTAINER::reverse_iterator rbegin = container.rbegin();
 	typename CONTAINER::reverse_iterator rend = container.rend();
-	forEach(rbegin, rend, functor);//ãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ï¼‹forEachã§å‡¦ç†
+	forEach(rbegin, rend, functor);//ƒŠƒo[ƒXƒCƒeƒŒ[ƒ^{forEach‚Åˆ—
 }
 template<typename T, std::size_t N, class FUNCTOR>
 void reverseForEach(T(&array)[N], FUNCTOR functor)
@@ -882,16 +886,16 @@ void reverseForEach(const T* array, const std::size_t size, FUNCTOR functor)
 }
 
 //========================================
-//æ¢ç´¢ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ 
+//’TõƒAƒ‹ƒSƒŠƒYƒ€
 //========================================
 
 //----------------------------------------
-//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šç·šå½¢æ¢ç´¢ â€»ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿å¯¾å¿œç‰ˆ
+//ƒAƒ‹ƒSƒŠƒYƒ€FüŒ`’Tõ ¦ƒCƒeƒŒ[ƒ^‘Î‰”Å
 //----------------------------------------
-//ãƒ»æœ€è‰¯è¨ˆç®—æ™‚é–“ï¼šO(1)
-//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(n/2)
-//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n)
-//ãƒ»æ¢ç´¢å¤±æ•—æ™‚ï¼š  O(n)
+//EÅ—ÇŒvZŠÔFO(1)
+//E•½‹ÏŒvZŠÔFO(n/2)
+//EÅˆ«ŒvZŠÔFO(n)
+//E’Tõ¸”sF  O(n)
 //----------------------------------------
 template<class  ITERATOR, class PREDICATE>
 ITERATOR iteratorLinearSearch(ITERATOR begin, ITERATOR end, PREDICATE predicate)
@@ -899,22 +903,22 @@ ITERATOR iteratorLinearSearch(ITERATOR begin, ITERATOR end, PREDICATE predicate)
 	if (begin == end)
 		return end;
 	ITERATOR now = begin;
-	for (; now != end; ++now)//é †æ¬¡æ¢ç´¢
+	for (; now != end; ++now)//‡Ÿ’Tõ
 	{
-		if (predicate(*now))//æ¢ç´¢ã‚­ãƒ¼ã¨ä¸€è‡´ã—ãŸã‚‰çµ‚äº†
+		if (predicate(*now))//’TõƒL[‚Æˆê’v‚µ‚½‚çI—¹
 			return now;
 	}
-	return end;//æ¢ç´¢å¤±æ•—
+	return end;//’Tõ¸”s
 }
 iteratorSearchFuncSetByPredicate(iteratorLinearSearch);
 
 //----------------------------------------
-//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šäºŒåˆ†æ¢ç´¢ â€»ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿å¯¾å¿œç‰ˆ
+//ƒAƒ‹ƒSƒŠƒYƒ€F“ñ•ª’Tõ ¦ƒCƒeƒŒ[ƒ^‘Î‰”Å
 //----------------------------------------
-//ãƒ»æœ€è‰¯è¨ˆç®—æ™‚é–“ï¼šO(1)
-//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(log n)
-//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(log n)
-//ãƒ»æ¢ç´¢å¤±æ•—æ™‚ï¼š  O(log n)
+//EÅ—ÇŒvZŠÔFO(1)
+//E•½‹ÏŒvZŠÔFO(log n)
+//EÅˆ«ŒvZŠÔFO(log n)
+//E’Tõ¸”sF  O(log n)
 //----------------------------------------
 template<class  ITERATOR, class COMPARISON>
 ITERATOR iteratorBinarySearch(ITERATOR begin, ITERATOR end, COMPARISON comparison)
@@ -926,26 +930,26 @@ ITERATOR iteratorBinarySearch(ITERATOR begin, ITERATOR end, COMPARISON compariso
 	ITERATOR found = end;
 	while (true)
 	{
-		const int range_half = range / 2;//æ¢ç´¢ç¯„å›²ã®åŠåˆ†ã®ç¯„å›²
-		ITERATOR mid = begin + range_half;//æ¢ç´¢ç¯„å›²ã®ä¸­å¿ƒè¦ç´ 
-		const int comp = comparison(*mid);//ä¸­å¿ƒè¦ç´ ã‚’æ¢ç´¢ã‚­ãƒ¼ã¨æ¯”è¼ƒ
-		if (comp == 0)//ä¸­å¿ƒè¦ç´ ãŒæ¢ç´¢ã‚­ãƒ¼ã¨ä¸€è‡´
-			found = mid;//ç™ºè¦‹ã—ãŸå ´æ‰€ã‚’è¨˜æ†¶ â€»è¦‹ã¤ã‹ã£ãŸä½ç½®ã®å…ˆé ­ã‚’ç™ºè¦‹ã™ã‚‹ãŸã‚ã€æ¢ç´¢ã‚’ç¶šè¡Œã™ã‚‹
-		if (range_half == 0)//æ¢ç´¢ç¯„å›²ãŒæ®‹ã£ã¦ã„ãªã‘ã‚Œã°æ¢ç´¢çµ‚äº†
+		const int range_half = range / 2;//’Tõ”ÍˆÍ‚Ì”¼•ª‚Ì”ÍˆÍ
+		ITERATOR mid = begin + range_half;//’Tõ”ÍˆÍ‚Ì’†S—v‘f
+		const int comp = comparison(*mid);//’†S—v‘f‚ğ’TõƒL[‚Æ”äŠr
+		if (comp == 0)//’†S—v‘f‚ª’TõƒL[‚Æˆê’v
+			found = mid;//”­Œ©‚µ‚½êŠ‚ğ‹L‰¯ ¦Œ©‚Â‚©‚Á‚½ˆÊ’u‚Ìæ“ª‚ğ”­Œ©‚·‚é‚½‚ßA’Tõ‚ğ‘±s‚·‚é
+		if (range_half == 0)//’Tõ”ÍˆÍ‚ªc‚Á‚Ä‚¢‚È‚¯‚ê‚Î’TõI—¹
 			break;
-		if (comp <= 0)//æ¢ç´¢ã‚­ãƒ¼ãŒä¸­å¿ƒè¦ç´ ã‚ˆã‚Šå°ã•ã„ã‹åŒã˜ã ã£ãŸå ´åˆã€æ¬¡ã«ä¸­å¿ƒã‚ˆã‚Šå‰ã®ç¯„å›²ã«çµã£ã¦æ¢ç´¢ã™ã‚‹
+		if (comp <= 0)//’TõƒL[‚ª’†S—v‘f‚æ‚è¬‚³‚¢‚©“¯‚¶‚¾‚Á‚½ê‡AŸ‚É’†S‚æ‚è‘O‚Ì”ÍˆÍ‚Éi‚Á‚Ä’Tõ‚·‚é
 			range = range_half;
-		else//if (comp > 0)//æ¢ç´¢ã‚­ãƒ¼ãŒä¸­å¿ƒè¦ç´ ã‚ˆã‚Šå¤§ãã‹ã£ãŸå ´åˆã€æ¬¡ã«ä¸­å¿ƒã‚ˆã‚Šå¾Œã®ç¯„å›²ã«çµã£ã¦æ¢ç´¢ã™ã‚‹
+		else//if (comp > 0)//’TõƒL[‚ª’†S—v‘f‚æ‚è‘å‚«‚©‚Á‚½ê‡AŸ‚É’†S‚æ‚èŒã‚Ì”ÍˆÍ‚Éi‚Á‚Ä’Tõ‚·‚é
 		{
 			begin = mid + 1;
 			range -= (range_half + 1);
 		}
 	}
-	if (found != end && found != begin)//è¦‹ã¤ã‹ã£ãŸåœ°ç‚¹ãŒå…ˆé ­ã§ãªã‘ã‚Œã°ã€ä¸€ã¤å‰ã‚’èª¿ã¹ã‚‹
+	if (found != end && found != begin)//Œ©‚Â‚©‚Á‚½’n“_‚ªæ“ª‚Å‚È‚¯‚ê‚ÎAˆê‚Â‘O‚ğ’²‚×‚é
 	{
 		ITERATOR found_prev = found;
 		--found_prev;
-		if (comparison(*found_prev) == 0)//ä¸€ã¤å‰ãŒä¸€è‡´ã™ã‚‹ãªã‚‰ãã‚Œã‚’è¿”ã™
+		if (comparison(*found_prev) == 0)//ˆê‚Â‘O‚ªˆê’v‚·‚é‚È‚ç‚»‚ê‚ğ•Ô‚·
 			found = found_prev;
 	}
 	return found;
@@ -953,98 +957,91 @@ ITERATOR iteratorBinarySearch(ITERATOR begin, ITERATOR end, COMPARISON compariso
 iteratorSearchFuncSetByComparison(iteratorBinarySearch);
 
 //--------------------------------------------------------------------------------
-//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆï¼ˆdouble-linked listï¼‰
+//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒgidouble-linked listj
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
-//ã€æœ¬ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã«ãŠã‘ã‚‹å®Ÿè£…è¦ä»¶ã€‘
-//ãƒ»ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã«ã‚ˆã‚Šã€ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’æ±ç”¨åŒ–ã€‚
-//ãƒ»ãƒªãƒ³ã‚¯ã®æ–¹æ³•ã«æŸ”è»Ÿæ€§ã‚’æŒãŸã›ã€ã‹ã¤ã€virtualã‚’å¿…é ˆã¨ã—ãªã„ã‚ˆã†ã«ã€
-//ã€€ãƒ‡ãƒ¼ã‚¿æ§‹é€ ã¯è‡ªç”±ã¨ã™ã‚‹ã€‚
-//ã€€ï¼ˆãƒªãƒ³ã‚¯ã®å¤‰æ•°ã‚’ãƒã‚¤ãƒ³ã‚¿ã«ã—ã‚ˆã†ãŒã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«ã—ã‚ˆã†ãŒè‡ªç”±ï¼‰
-//ãƒ»ä»£ã‚ã‚Šã«ã€ãƒ‡ãƒ¼ã‚¿æ“ä½œå°‚ç”¨ã®ã‚¯ãƒ©ã‚¹ã‚’ãƒ¦ãƒ¼ã‚¶ãƒ¼å®šç¾©ã™ã‚‹ã“ã¨ã§ã€
-//ã€€å‡¦ç†ã«æ±ç”¨æ€§ã‚’æŒãŸã›ã‚‹ã€‚
-//ãƒ»ä¸€åˆ‡ãƒ¡ãƒ¢ãƒªæ“ä½œã¯è¡Œã‚ãšã€ãƒãƒ¼ãƒ‰ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å—ã‘å–ã£ã¦æ“ä½œã™ã‚‹
-//ã€€ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã®ã¿ã‚’æä¾›ã™ã‚‹ã€‚
-//ãƒ»std::listã‚’æ¨¡ã—ãŸã‚³ãƒ³ãƒ†ãƒŠã¨ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’åˆ©ç”¨å¯èƒ½ã¨ã™ã‚‹ã€‚
-//ã€€ãŸã ã—ã€ãƒ¡ãƒ¢ãƒªç®¡ç†ã‚’è¡Œã‚ãªã„ãŸã‚ã€è¤‡è£½ã‚’ä½œã‚‹ã‚ˆã†ãªãƒ¡ã‚½ãƒƒãƒ‰ã«ã¯å¯¾å¿œã—ãªã„ã€‚
-//ãƒ»ã‚³ãƒ³ãƒ†ãƒŠã¯ã€å…ˆé ­ãƒãƒ¼ãƒ‰ã¨æœ«å°¾ãƒãƒ¼ãƒ‰ã®ã¿ã‚’ä¿æŒã—ã€ä¸€åˆ‡ãƒ¡ãƒ¢ãƒªæ“ä½œã—ãªã„ã‚‚ã®ã¨ã™ã‚‹ã€‚
+//y–{ƒvƒƒOƒ‰ƒ€‚É‚¨‚¯‚éÀ‘•—vŒz
+//Eƒeƒ“ƒvƒŒ[ƒg‚É‚æ‚èAƒAƒ‹ƒSƒŠƒYƒ€‚ğ”Ä—p‰»B
+//EƒŠƒ“ƒN‚Ì•û–@‚É_“î«‚ğ‚½‚¹A‚©‚ÂAvirtual‚ğ•K{‚Æ‚µ‚È‚¢‚æ‚¤‚ÉA
+//@ƒf[ƒ^\‘¢‚Í©—R‚Æ‚·‚éB
+//@iƒŠƒ“ƒN‚Ì•Ï”‚ğƒ|ƒCƒ“ƒ^‚É‚µ‚æ‚¤‚ªƒCƒ“ƒfƒbƒNƒX‚É‚µ‚æ‚¤‚ª©—Rj
+//E‘ã‚í‚è‚ÉAƒf[ƒ^‘€ìê—p‚ÌƒNƒ‰ƒX‚ğƒ†[ƒU[’è‹`‚·‚é‚±‚Æ‚ÅA
+//@ˆ—‚É”Ä—p«‚ğ‚½‚¹‚éB
+//EˆêØƒƒ‚ƒŠ‘€ì‚Ís‚í‚¸Aƒm[ƒh‚ÌƒIƒuƒWƒFƒNƒg‚ğó‚¯æ‚Á‚Ä‘€ì‚·‚é
+//@ƒAƒ‹ƒSƒŠƒYƒ€‚Ì‚İ‚ğ’ñ‹Ÿ‚·‚éB
+//Estd::forward_list‚ğ–Í‚µ‚½ƒRƒ“ƒeƒi‚ÆƒCƒeƒŒ[ƒ^‚ğ—˜—p‰Â”\‚Æ‚·‚éB
+//@‚½‚¾‚µAƒƒ‚ƒŠŠÇ—‚ğs‚í‚È‚¢‚½‚ßA•¡»‚ğì‚é‚æ‚¤‚Èƒƒ\ƒbƒh‚É‚Í‘Î‰‚µ‚È‚¢B
+//EƒRƒ“ƒeƒi‚ÍAæ“ªƒm[ƒh‚Æ––”öƒm[ƒh‚Ì‚İ‚ğ•Û‚µAˆêØƒƒ‚ƒŠ‘€ì‚µ‚È‚¢‚à‚Ì‚Æ‚·‚éB
 //--------------------------------------------------------------------------------
 
-#include <cstddef>//srd::size_tç”¨
-#include <iterator>//std::iteratorç”¨
-#include <algorithm>//C++11 std::moveç”¨
+#include <cstddef>//srd::size_t—p
+#include <iterator>//std::iterator—p
+#include <algorithm>//C++11 std::move—p
 
-namespace linked_list
+namespace singly_linked_list
 {
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆãƒãƒ¼ãƒ‰æ“ä½œç”¨åŸºåº•ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚¯ãƒ©ã‚¹
-	//â€»ä¸‹è¨˜ã®ã‚ˆã†ãªæ´¾ç”Ÿã‚¯ãƒ©ã‚¹ï¼ˆCRTPï¼‰ã‚’å®šç¾©ã—ã¦ä½¿ç”¨ã™ã‚‹
-	//  //struct ã‚¯ãƒ©ã‚¹å : public linked_list::base_ope_t<ã‚¯ãƒ©ã‚¹å, ãƒãƒ¼ãƒ‰å‹>
-	//	struct ope_t : public linked_list::base_ope_t<ope_t, data_t>
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒgƒm[ƒh‘€ì—pŠî’êƒeƒ“ƒvƒŒ[ƒgƒNƒ‰ƒX
+	//¦‰º‹L‚Ì‚æ‚¤‚È”h¶ƒNƒ‰ƒXiCRTPj‚ğ’è‹`‚µ‚Äg—p‚·‚é
+	//  //struct ƒNƒ‰ƒX–¼ : public singly_linked_list::base_ope_t<ƒNƒ‰ƒX–¼, ƒm[ƒhŒ^>
+	//	struct ope_t : public singly_linked_list::base_ope_t<ope_t, data_t>
 	//	{
-	//		//å‰ãƒãƒ¼ãƒ‰ã‚’å–å¾—
-	//		inline static const node_type* getPrev(const node_type& node){ return ???; }
-	//		//å‰ãƒãƒ¼ãƒ‰ã‚’å¤‰æ›´
-	//		inline static void setPrev(node_type& node, const node_type* prev){ ??? = prev; }
-	//
-	//		//æ¬¡ãƒãƒ¼ãƒ‰ã‚’å–å¾—
+	//		//Ÿƒm[ƒh‚ğæ“¾
 	//		inline static const node_type* getNext(const node_type& node){ return ???; }
-	//		//æ¬¡ãƒãƒ¼ãƒ‰ã‚’å¤‰æ›´
+	//		//Ÿƒm[ƒh‚ğ•ÏX
 	//		inline static void setNext(node_type& node, const node_type* next){ ??? = next; }
 	//		
-	//		//ã‚½ãƒ¼ãƒˆç”¨ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
-	//		//â€»å¿…è¦ã«å¿œã˜ã¦å®Ÿè£…ã™ã‚‹
+	//		//ƒ\[ƒg—pƒvƒŒƒfƒBƒP[ƒgŠÖ”ƒIƒuƒWƒFƒNƒg
+	//		//¦•K—v‚É‰‚¶‚ÄÀ‘•‚·‚é
 	//		struct sort_predicate{
 	//			inline bool operator()(const node_type& lhs, const node_type& rhs) const { return lhs.??? < rhs.???; }
 	//		};
 	//
-	//		//æ¢ç´¢ç”¨ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
-	//		//â€»å¿…è¦ã«å¿œã˜ã¦å®Ÿè£…ã™ã‚‹
+	//		//üŒ`’Tõ—pƒvƒŒƒfƒBƒP[ƒgŠÖ”ƒIƒuƒWƒFƒNƒg
+	//		//¦•K—v‚É‰‚¶‚ÄÀ‘•‚·‚é
 	//		struct find_predicate{
 	//			inline bool operator()(const node_type& lhs, const ???& rhs) const { return lhs.??? == rhs; }
 	//		};
 	//		
-	//		//ãƒ­ãƒƒã‚¯å‹ â€»å¿…è¦ã«å¿œã˜ã¦å®šç¾©
-	//		//â€»å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ»ãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰ã§ã‚³ãƒ³ãƒ†ãƒŠæ“ä½œã‚’ã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ã«ã—ãŸã„å ´åˆã¯ã€
-	//		//ã€€æœ‰åŠ¹ãªå…±æœ‰ãƒ­ãƒƒã‚¯å‹ï¼ˆshared_spin_lockãªã©ï¼‰ã‚’ lock_type å‹ã¨ã—ã¦å®šç¾©ã™ã‚‹ã€‚
-	//		typedef shared_spin_lock lock_type;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‹
+	//		//ƒƒbƒNŒ^ ¦•K—v‚É‰‚¶‚Ä’è‹`
+	//		//¦‹¤—LƒƒbƒNiƒŠ[ƒhEƒ‰ƒCƒgƒƒbƒNj‚ÅƒRƒ“ƒeƒi‘€ì‚ğƒXƒŒƒbƒhƒZ[ƒt‚É‚µ‚½‚¢ê‡‚ÍA
+	//		//@—LŒø‚È‹¤—LƒƒbƒNŒ^ishared_spin_lock‚È‚Çj‚ğ lock_type Œ^‚Æ‚µ‚Ä’è‹`‚·‚éB
+	//		typedef shared_spin_lock lock_type;//ƒƒbƒNƒIƒuƒWƒFƒNƒgŒ^
 	//	};
 	template<class OPE_TYPE, typename NODE_TYPE>
 	struct base_ope_t
 	{
-		//å‹
-		typedef OPE_TYPE ope_type;//ãƒãƒ¼ãƒ‰æ“ä½œå‹
-		typedef NODE_TYPE node_type;//ãƒãƒ¼ãƒ‰å‹
+		//Œ^
+		typedef OPE_TYPE ope_type;//ƒm[ƒh‘€ìŒ^
+		typedef NODE_TYPE node_type;//ƒm[ƒhŒ^
 
-		//ãƒ­ãƒƒã‚¯å‹
-		typedef dummy_shared_lock lock_type;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‹
-		//â€»ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯ãƒ€ãƒŸãƒ¼ã®ãŸã‚ã€ä¸€åˆ‡ãƒ­ãƒƒã‚¯åˆ¶å¾¡ã—ãªã„ã€‚
-		//â€»å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ»ãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰ã§ã‚³ãƒ³ãƒ†ãƒŠæ“ä½œã‚’ã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ã«ã—ãŸã„å ´åˆã¯ã€
-		//ã€€base_ope_tã®æ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã«ã¦ã€æœ‰åŠ¹ãªå…±æœ‰ãƒ­ãƒƒã‚¯å‹ï¼ˆshared_spin_lock ãªã©ï¼‰ã‚’
-		//ã€€lock_type å‹ã¨ã—ã¦å†å®šç¾©ã™ã‚‹ã€‚
+		//ƒƒbƒNŒ^
+		typedef dummy_shared_lock lock_type;//ƒƒbƒNƒIƒuƒWƒFƒNƒgŒ^
+		//¦ƒfƒtƒHƒ‹ƒg‚Íƒ_ƒ~[‚Ì‚½‚ßAˆêØƒƒbƒN§Œä‚µ‚È‚¢B
+		//¦‹¤—LƒƒbƒNiƒŠ[ƒhEƒ‰ƒCƒgƒƒbƒNj‚ÅƒRƒ“ƒeƒi‘€ì‚ğƒXƒŒƒbƒhƒZ[ƒt‚É‚µ‚½‚¢ê‡‚ÍA
+		//@base_ope_t‚Ì”h¶ƒNƒ‰ƒX‚É‚ÄA—LŒø‚È‹¤—LƒƒbƒNŒ^ishared_spin_lock ‚È‚Çj‚ğ
+		//@lock_type Œ^‚Æ‚µ‚ÄÄ’è‹`‚·‚éB
 
-		//å‰ãƒãƒ¼ãƒ‰ã‚’å–å¾— â€»constå¤–ã—(remove_const)
-		inline static node_type* getPrev_rc(node_type& node){ return const_cast<node_type*>(ope_type::getPrev(const_cast<const node_type&>(node))); }
-		//æ¬¡ãƒãƒ¼ãƒ‰ã‚’å–å¾— â€»constå¤–ã—(remove_const)
+		//Ÿƒm[ƒh‚ğæ“¾ ¦constŠO‚µ(remove_const)
 		inline static node_type* getNext_rc(node_type& node){ return const_cast<node_type*>(ope_type::getNext(const_cast<const node_type&>(node))); }
 
-		//ã‚½ãƒ¼ãƒˆç”¨ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
-		//â€»trueã§lhsã®æ–¹ãŒå°ã•ã„ï¼ˆä¸¦ã³é †ãŒæ­£ã—ã„ï¼‰
+		//ƒ\[ƒg—pƒvƒŒƒfƒBƒP[ƒgŠÖ”ƒIƒuƒWƒFƒNƒg
+		//¦true‚Ålhs‚Ì•û‚ª¬‚³‚¢i•À‚Ñ‡‚ª³‚µ‚¢j
 		struct sort_predicate{
 			inline bool operator()(const node_type& lhs, const node_type& rhs) const { return less<node_type>()(lhs, rhs); }
 		};
 
-		//ç·šå½¢æ¢ç´¢ç”¨ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
-		//â€»trueã§ä¸€è‡´ï¼ˆæ¢ç´¢æˆåŠŸï¼‰
+		//’Tõ—pƒvƒŒƒfƒBƒP[ƒgŠÖ”ƒIƒuƒWƒFƒNƒg
+		//¦true‚Åˆê’vi’Tõ¬Œ÷j
 		struct find_predicate{
 			template<typename V>
 			inline bool operator()(const node_type& lhs, const V& rhs) const { return equal_to<node_type>()(lhs, rhs); }
 		};
 
 	#ifdef ENABLE_BINARY_SEARCH
-		//äºŒåˆ†æ¢ç´¢ç”¨æ¯”è¼ƒé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
-		//â€»0ã§ä¸€è‡´ï¼ˆæ¢ç´¢æˆåŠŸï¼‰ã€1ä»¥ä¸Šã§lhsã®æ–¹ãŒå¤§ãã„ã€-1ä»¥ä¸‹ã§rhsã®æ–¹ãŒå¤§ãã„
+		//’Tõ—p”äŠrŠÖ”ƒIƒuƒWƒFƒNƒg
+		//¦0‚Åˆê’vi’Tõ¬Œ÷jA1ˆÈã‚Ålhs‚Ì•û‚ª‘å‚«‚¢A-1ˆÈ‰º‚Århs‚Ì•û‚ª‘å‚«‚¢
 		struct search_comparison{
 			template<typename V>
 			inline int operator()(const node_type& lhs, const V& rhs) const { return compare_to<node_type>()(lhs, rhs); }
@@ -1052,7 +1049,7 @@ namespace linked_list
 	#endif//ENABLE_BINARY_SEARCH
 	};
 	//--------------------
-	//åŸºæœ¬å‹å®šç¾©ãƒã‚¯ãƒ­
+	//Šî–{Œ^’è‹`ƒ}ƒNƒ
 	#define DECLARE_OPE_TYPES(OPE_TYPE) \
 		typedef OPE_TYPE ope_type; \
 		typedef typename ope_type::node_type node_type; \
@@ -1065,7 +1062,7 @@ namespace linked_list
 		typedef std::size_t index_type; \
 		typedef typename ope_type::lock_type lock_type;
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã®æ¬¡ãƒãƒ¼ãƒ‰ã‚’å–å¾—
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fw’èƒm[ƒh‚ÌŸƒm[ƒh‚ğæ“¾
 	template<class OPE_TYPE>
 	const typename OPE_TYPE::node_type* getNextNode(const typename OPE_TYPE::node_type& target)
 	{
@@ -1075,7 +1072,7 @@ namespace linked_list
 		return node;
 	}
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã®å¾Œæ–¹ã®ãƒãƒ¼ãƒ‰ã‚’å–å¾—
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fw’èƒm[ƒh‚ÌŒã•û‚Ìƒm[ƒh‚ğæ“¾
 	template<class OPE_TYPE>
 	const typename OPE_TYPE::node_type* getForwardNode(const typename OPE_TYPE::node_type& target, std::size_t& step)
 	{
@@ -1089,47 +1086,7 @@ namespace linked_list
 		return node;
 	}
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã®å‰ãƒãƒ¼ãƒ‰ã‚’å–å¾—
-	template<class OPE_TYPE>
-	const typename OPE_TYPE::node_type* getPrevNode(const typename OPE_TYPE::node_type& target)
-	{
-		DECLARE_OPE_TYPES(OPE_TYPE);
-		const typename ope_type::node_type* node = &target;
-		node = ope_type::getPrev(*node);
-		return node;
-	}
-	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã®å‰æ–¹ã®ãƒãƒ¼ãƒ‰ã‚’å–å¾—
-	template<class OPE_TYPE>
-	const typename OPE_TYPE::node_type* getBackwardNode(const typename OPE_TYPE::node_type& target, std::size_t& step)
-	{
-		DECLARE_OPE_TYPES(OPE_TYPE);
-		const typename ope_type::node_type* node = &target;
-		while (step > 0 && node)
-		{
-			node = ope_type::getPrev(*node);
-			--step;
-		}
-		return node;
-	}
-	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã®å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å–å¾—
-	template<class OPE_TYPE>
-	const typename OPE_TYPE::node_type* getFirstNode(const typename OPE_TYPE::node_type& target)
-	{
-		DECLARE_OPE_TYPES(OPE_TYPE);
-		const typename ope_type::node_type* node = &target;
-		while (true)
-		{
-			const typename ope_type::node_type* prev = ope_type::getPrev(*node);
-			if (!prev)
-				return node;
-			node = prev;
-		}
-		return nullptr;//ãƒ€ãƒŸãƒ¼
-	}
-	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã®æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’å–å¾—
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fw’èƒm[ƒh‚Ì––”öƒm[ƒh‚ğæ“¾
 	template<class OPE_TYPE>
 	const typename OPE_TYPE::node_type* getLastNode(const typename OPE_TYPE::node_type& target)
 	{
@@ -1142,10 +1099,10 @@ namespace linked_list
 				return node;
 			node = next;
 		}
-		return nullptr;//ãƒ€ãƒŸãƒ¼
+		return nullptr;//ƒ_ƒ~[
 	}
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã®æ•°ã‚’æ•°ãˆã‚‹
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fw’èƒm[ƒh‚Ì”‚ğ”‚¦‚é
 	template<class OPE_TYPE>
 	std::size_t countNodes(const typename OPE_TYPE::node_type& target)
 	{
@@ -1160,42 +1117,86 @@ namespace linked_list
 			++num;
 			node = next;
 		}
-		return 0;//ãƒ€ãƒŸãƒ¼
+		return 0;//ƒ_ƒ~[
 	}
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã®æ¬¡ã«é€£çµ
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fw’èƒm[ƒh‚Ì‘Oƒm[ƒh‚ğæ“¾
+	//y’ˆÓz’á‘¬ˆ—ibackward‚ğw’è‚·‚é‚±‚Æ‚Å‚‘¬‰»‰Â”\j
+	//¦‚à‚µAtarget‚Ì’¼‘O‚à‚µ‚­‚Í‚»‚ê‚æ‚è‘O‚Ìƒm[ƒh‚ª•ª‚©‚Á‚Ä‚¢‚é‚È‚çA
+	//@‚»‚ê‚ğ backward ‚Éw’è‚·‚é‚±‚ÅŒŸõ”ÍˆÍ‚ª’Zk‚³‚êAˆ—Œø—¦‚ªŒüã‚·‚éB
+	//@nullptr‚ğw’è‚µ‚½ê‡Afirst‚©‚çtarget‚Ü‚Å’H‚éB
+	template<class OPE_TYPE>
+	const typename OPE_TYPE::node_type* getPrevNode(const typename OPE_TYPE::node_type& target, const typename OPE_TYPE::node_type* first, const typename OPE_TYPE::node_type* backward = nullptr)
+	{
+		DECLARE_OPE_TYPES(OPE_TYPE);
+		const typename ope_type::node_type* prev = nullptr;
+		const typename ope_type::node_type* node = backward;
+		if (!node)
+			node = first;
+		while (node != &target)
+		{
+			prev = node;
+			node = ope_type::getNext(*node);
+		}
+		return prev;
+	}
+	//--------------------
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fw’èƒm[ƒh‚Ì‘O•û‚Ìƒm[ƒh‚ğæ“¾
+	//y’ˆÓz’á‘¬ˆ—ibackward‚ğw’è‚·‚é‚±‚Æ‚Å‚‘¬‰»‰Â”\j
+	//¦‚à‚µAtarget‚Ì’¼‘O‚à‚µ‚­‚Í‚»‚ê‚æ‚è‘O‚Ìƒm[ƒh‚ª•ª‚©‚Á‚Ä‚¢‚é‚È‚çA
+	//@‚»‚ê‚ğ backward ‚Éw’è‚·‚é‚±‚ÅŒŸõ”ÍˆÍ‚ª’Zk‚³‚êAˆ—Œø—¦‚ªŒüã‚·‚éB
+	//@nullptr‚ğw’è‚µ‚½ê‡Afirst‚©‚çtarget‚Ü‚Å’H‚éB
+	template<class OPE_TYPE>
+	const typename OPE_TYPE::node_type* getBackwardNode(const typename OPE_TYPE::node_type& target, std::size_t& step, const typename OPE_TYPE::node_type* first, const typename OPE_TYPE::node_type* backward = nullptr)
+	{
+		DECLARE_OPE_TYPES(OPE_TYPE);
+		const typename ope_type::node_type* node = &target;
+		while (step > 0 && node)
+		{
+			node = getPrevNode<OPE_TYPE>(*node, first, backward);
+			--step;
+		}
+		return node;
+	}
+	//--------------------
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fw’èƒm[ƒh‚ÌŸ‚É˜AŒ‹
 	template<class OPE_TYPE>
 	typename OPE_TYPE::node_type* insertNodeAfter(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type& target, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
+		if (&target == nullptr)
+		{
+			ope_type::setNext(node, first);
+			first = &node;
+			return &node;
+		}
 		typename ope_type::node_type* next = const_cast<typename ope_type::node_type*>(ope_type::getNext(target));
 		if (!next)
 			last = &node;
-		else
-			ope_type::setPrev(*next, &node);
-		ope_type::setPrev(node, &target);
 		ope_type::setNext(target, &node);
 		ope_type::setNext(node, next);
 		return &node;
 	}
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã®å‰ã«é€£çµ
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fw’èƒm[ƒh‚Ì‘O‚É˜AŒ‹
+	//y’ˆÓz’á‘¬ˆ—ibackward‚ğw’è‚·‚é‚±‚Æ‚Å‚‘¬‰»‰Â”\j
+	//¦‚à‚µAtarget‚Ì’¼‘O‚à‚µ‚­‚Í‚»‚ê‚æ‚è‘O‚Ìƒm[ƒh‚ª•ª‚©‚Á‚Ä‚¢‚é‚È‚çA
+	//@‚»‚ê‚ğ backward ‚Éw’è‚·‚é‚±‚ÅŒŸõ”ÍˆÍ‚ª’Zk‚³‚êAˆ—Œø—¦‚ªŒüã‚·‚éB
+	//@nullptr‚ğw’è‚µ‚½ê‡Afirst‚©‚çtarget‚Ü‚Å’H‚éB
 	template<class OPE_TYPE>
-	typename OPE_TYPE::node_type* insertNodeBefore(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type& target, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
+	typename OPE_TYPE::node_type* insertNodeBefore(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type& target, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, const typename OPE_TYPE::node_type* backward = nullptr)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(ope_type::getPrev(target));
+		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(getPrevNode<OPE_TYPE>(target, first, backward));
 		if (!prev)
 			first = &node;
 		else
 			ope_type::setNext(*prev, &node);
 		ope_type::setNext(node, &target);
-		ope_type::setPrev(target, &node);
-		ope_type::setPrev(node, prev);
 		return &node;
 	}
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šå…ˆé ­ã«é€£çµ
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fæ“ª‚É˜AŒ‹
 	template<class OPE_TYPE>
 	typename OPE_TYPE::node_type* insertNodeBeginning(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
 	{
@@ -1204,18 +1205,15 @@ namespace linked_list
 		{
 			first = &node;
 			last = &node;
-			ope_type::setPrev(node, nullptr);
 			ope_type::setNext(node, nullptr);
 			return &node;
 		}
 		ope_type::setNext(node, first);
-		ope_type::setPrev(*first, &node);
-		ope_type::setPrev(node, nullptr);
 		first = &node;
 		return &node;
 	}
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæœ«å°¾ã«é€£çµ
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”F––”ö‚É˜AŒ‹
 	template<class OPE_TYPE>
 	typename OPE_TYPE::node_type* insertNodeEnd(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
 	{
@@ -1224,66 +1222,66 @@ namespace linked_list
 		{
 			first = &node;
 			last = &node;
-			ope_type::setPrev(node, nullptr);
 			ope_type::setNext(node, nullptr);
 			return &node;
 		}
-		ope_type::setPrev(node, last);
 		ope_type::setNext(*last, &node);
 		ope_type::setNext(node, nullptr);
 		last = &node;
 		return &node;
 	}
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã‚’é€£çµã‹ã‚‰å¤–ã™
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fw’èƒm[ƒh‚ğ˜AŒ‹‚©‚çŠO‚·
+	//y’ˆÓz’á‘¬ˆ—ibackward‚ğw’è‚·‚é‚±‚Æ‚Å‚‘¬‰»‰Â”\j
+	//¦‚à‚µAnode‚Ì’¼‘O‚à‚µ‚­‚Í‚»‚ê‚æ‚è‘O‚Ìƒm[ƒh‚ª•ª‚©‚Á‚Ä‚¢‚é‚È‚çA
+	//@‚»‚ê‚ğ backward ‚Éw’è‚·‚é‚±‚ÅŒŸõ”ÍˆÍ‚ª’Zk‚³‚êAˆ—Œø—¦‚ªŒüã‚·‚éB
+	//@nullptr‚ğw’è‚µ‚½ê‡Afirst‚©‚çnode‚Ü‚Å’H‚éB
 	template<class OPE_TYPE>
-	typename OPE_TYPE::node_type* removeNode(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
+	typename OPE_TYPE::node_type* removeNode(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, typename OPE_TYPE::node_type* backward = nullptr)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(ope_type::getPrev(node));
+		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(getPrevNode<OPE_TYPE>(node, first, backward));
 		typename ope_type::node_type* next = const_cast<typename ope_type::node_type*>(ope_type::getNext(node));
 		if (prev)
 			ope_type::setNext(*prev, next);
 		else
 			first = next;
-		if (next)
-			ope_type::setPrev(*next, prev);
-		else
+		if (!next)
 			last = prev;
-		ope_type::setPrev(node, nullptr);
 		ope_type::setNext(node, nullptr);
 		return &node;
 	}
 	//--------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆæ“ä½œé–¢æ•°ï¼šæŒ‡å®šãƒãƒ¼ãƒ‰ã®ç¯„å›²ã‚’é€£çµã‹ã‚‰å¤–ã™
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘€ìŠÖ”Fw’èƒm[ƒh‚Ì”ÍˆÍ‚ğ˜AŒ‹‚©‚çŠO‚·
+	//y’ˆÓz’á‘¬ˆ—ibackward‚ğw’è‚·‚é‚±‚Æ‚Å‚‘¬‰»‰Â”\j
+	//¦‚à‚µAstart‚Ì’¼‘O‚à‚µ‚­‚Í‚»‚ê‚æ‚è‘O‚Ìƒm[ƒh‚ª•ª‚©‚Á‚Ä‚¢‚é‚È‚çA
+	//@‚»‚ê‚ğ backward ‚Éw’è‚·‚é‚±‚ÅŒŸõ”ÍˆÍ‚ª’Zk‚³‚êAˆ—Œø—¦‚ªŒüã‚·‚éB
+	//@nullptr‚ğw’è‚µ‚½ê‡Afirst‚©‚çstart‚Ü‚Å’H‚éB
 	template<class OPE_TYPE>
-	typename OPE_TYPE::node_type* removeNodes(typename OPE_TYPE::node_type& start, typename OPE_TYPE::node_type& end, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
+	typename OPE_TYPE::node_type* removeNodes(typename OPE_TYPE::node_type& start, typename OPE_TYPE::node_type& end, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, typename OPE_TYPE::node_type* backward = nullptr)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(ope_type::getPrev(start));
+		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(getPrevNode<OPE_TYPE>(start, first, backward));
 		typename ope_type::node_type* next = &end;
-		typename ope_type::node_type* _end = next ? const_cast<typename ope_type::node_type*>(ope_type::getPrev(end)) : last;
+		typename ope_type::node_type* _end = next ? const_cast<typename ope_type::node_type*>(getPrevNode<OPE_TYPE>(end, first, &start)) : last;
 		if (prev)
 			ope_type::setNext(*prev, next);
 		else
 			first = next;
-		if (next)
-			ope_type::setPrev(*next, prev);
-		else
+		if (!next)
 			last = prev;
-		ope_type::setPrev(start, nullptr);
 		ope_type::setNext(*_end, nullptr);
 		return &start;
 	}
 
 	//========================================
-	//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ 
+	//ƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€
 	//========================================
 
 	//----------------------------------------
-	//æ¯”è¼ƒã‚½ãƒ¼ãƒˆå‡¦ç†ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰é–¢æ•°ç”¨ãƒã‚¯ãƒ­
-	//â€»é€£çµãƒªã‚¹ãƒˆå¯¾å¿œç‰ˆ
-	//â€»æ¨™æº–ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ä½¿ç”¨ç‰ˆ
+	//”äŠrƒ\[ƒgˆ—ƒI[ƒo[ƒ[ƒhŠÖ”—pƒ}ƒNƒ
+	//¦˜AŒ‹ƒŠƒXƒg‘Î‰”Å
+	//¦•W€ƒvƒŒƒfƒBƒP[ƒgŠÖ”g—p”Å
 	#define liskedListSortFuncSetByDefaultPredicate(func_name) \
 		template<class OPE_TYPE> \
 		inline std::size_t func_name(typename OPE_TYPE::node_type* first) \
@@ -1295,7 +1293,7 @@ namespace linked_list
 		liskedListSortFuncSetByDefaultPredicate(func_name)
 
 	//----------------------------------------
-	//æ•´åˆ—çŠ¶æ…‹ç¢ºèª â€»é€£çµãƒªã‚¹ãƒˆå¯¾å¿œç‰ˆ
+	//®—ñó‘ÔŠm”F ¦˜AŒ‹ƒŠƒXƒg‘Î‰”Å
 	template<class OPE_TYPE, class PREDICATE>
 	inline std::size_t linkedListCalcUnordered(const typename OPE_TYPE::node_type* start, PREDICATE predicate)
 	{
@@ -1314,20 +1312,22 @@ namespace linked_list
 	linkedListSortFuncSet(linkedListCalcUnordered);
 
 	//========================================
-	//ã‚½ãƒ¼ãƒˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ åˆ†é¡ï¼šæŒ¿å…¥ã‚½ãƒ¼ãƒˆ
+	//ƒ\[ƒgƒAƒ‹ƒSƒŠƒYƒ€•ª—ŞF‘}“üƒ\[ƒg
 	//========================================
 
 	//----------------------------------------
-	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šæŒ¿å…¥ã‚½ãƒ¼ãƒˆ â€»åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆå¯¾å¿œç‰ˆ
+	//ƒAƒ‹ƒSƒŠƒYƒ€F•ÏŒ`‘}“üƒ\[ƒg ¦•Ğ•ûŒü˜AŒ‹ƒŠƒXƒg‘Î‰”Å
 	//----------------------------------------
-	//ãƒ»æœ€è‰¯è¨ˆç®—æ™‚é–“ï¼šO(n)
-	//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(n^2)
-	//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n^2)
-	//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
-	//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€â—‹
+	//EÅ—ÇŒvZŠÔFO(n)
+	//E•½‹ÏŒvZŠÔFO(n^2)
+	//EÅˆ«ŒvZŠÔFO(n^2)
+	//Eƒƒ‚ƒŠg—p—ÊFO(1)
+	//EˆÀ’è«F@@@›
+	//----------------------------------------
+	//‘}“üæ‚Ì’Tõ‚ğæ“ª‚©‚çs‚¤•û®
 	//----------------------------------------
 	template<class OPE_TYPE, class PREDICATE>
-	std::size_t linkedListInsertionSort(typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, PREDICATE predicate)
+	std::size_t singlyLinkedListInsertionSort(typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, PREDICATE predicate)
 	{
 		typedef typename OPE_TYPE::node_type node_type;
 		if (!first || !OPE_TYPE::getNext(*first))
@@ -1339,18 +1339,17 @@ namespace linked_list
 		{
 			if (predicate(*next, *now))
 			{
-				node_type* min = now;
-				node_type* prev = const_cast<node_type*>(OPE_TYPE::getPrev(*now));
-				while (prev)
+				node_type* min_before = nullptr;
+				node_type* min = first;
+				while (min != now)
 				{
-					if (predicate(*next, *prev))
-						min = prev;
-					else
+					if (predicate(*next, *min))
 						break;
-					prev = const_cast<node_type*>(OPE_TYPE::getPrev(*prev));
+					min_before = min;
+					min = const_cast<node_type*>(OPE_TYPE::getNext(*min));
 				}
-				removeNode<OPE_TYPE>(*next, first, last);
-				insertNodeBefore<OPE_TYPE>(*next, *min, first, last);
+				removeNode<OPE_TYPE>(*next, first, last, now);
+				insertNodeBefore<OPE_TYPE>(*next, *min, first, last, min_before);
 				++swapped_count;
 				next = const_cast<node_type*>(OPE_TYPE::getNext(*now));
 			}
@@ -1362,114 +1361,50 @@ namespace linked_list
 		}
 		return swapped_count;
 	}
-	linkedListSortFuncSet(linkedListInsertionSort);
+	linkedListSortFuncSet(singlyLinkedListInsertionSort);
 
 	//----------------------------------------
-	//ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼šã‚·ã‚§ãƒ«ã‚½ãƒ¼ãƒˆ â€»åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆå¯¾å¿œç‰ˆ
-	//----------------------------------------
-	//ãƒ»æœ€è‰¯è¨ˆç®—æ™‚é–“ï¼šO(n)
-	//ãƒ»å¹³å‡è¨ˆç®—æ™‚é–“ï¼šO(n log^2 n) or O(n^3/2)
-	//ãƒ»æœ€æ‚ªè¨ˆç®—æ™‚é–“ï¼šO(n log^2 n)
-	//ãƒ»ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼šO(1)
-	//ãƒ»å®‰å®šæ€§ï¼šã€€ã€€ã€€Ã—
-	//----------------------------------------
-	template<class OPE_TYPE, class PREDICATE>
-	std::size_t linkedListShellSort(typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, PREDICATE predicate)
-	{
-		typedef typename OPE_TYPE::node_type node_type;
-		if (!first || !OPE_TYPE::getNext(*first))
-			return 0;
-		std::size_t swapped_count = 0;
-		std::size_t size = 0;
-		{
-			const node_type* node = first;
-			while (node)
-			{
-				++size;
-				node = OPE_TYPE::getNext(*node);
-			}
-		}
-		const int h_max = size / 3;
-		int h = 1;
-		while (h <= h_max)
-			h = 3 * h + 1;
-		while (h > 0)
-		{
-			node_type* now = first;
-			node_type* next = now;
-			for (int i = 0; i < h && next; ++i)
-				next = const_cast<node_type*>(OPE_TYPE::getNext(*next));
-			while (next)
-			{
-				if (predicate(*next, *now))
-				{
-					node_type* min = now;
-					node_type* prev = now;
-					for (int i = 0; i < h && prev; ++i)
-						prev = const_cast<node_type*>(OPE_TYPE::getPrev(*prev));
-					while (prev)
-					{
-						if (predicate(*next, *prev))
-							min = prev;
-						else
-							break;
-						for (int i = 0; i < h && prev; ++i)
-							prev = const_cast<node_type*>(OPE_TYPE::getPrev(*prev));
-					}
-					removeNode<OPE_TYPE>(*next, first, last);
-					insertNodeBefore<OPE_TYPE>(*next, *min, first, last);
-					++swapped_count;
-					next = now;
-					for (int i = 0; i < h && next; ++i)
-						next = const_cast<node_type*>(OPE_TYPE::getNext(*next));
-				}
-				else
-				{
-					now = const_cast<node_type*>(OPE_TYPE::getNext(*now));
-					next = const_cast<node_type*>(OPE_TYPE::getNext(*next));
-				}
-			}
-			h = (h - 1) / 3;
-		}
-		return swapped_count;
-	}
-	linkedListSortFuncSet(linkedListShellSort);
-
-	//----------------------------------------
-	//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆã‚³ãƒ³ãƒ†ãƒŠ
-	//â€»å…ˆé ­ãƒãƒ¼ãƒ‰ã¨æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’æŒã¤ã®ã¿
-	//â€»std::listã‚’æ¨¡ã—ãŸæ§‹é€ 
+	//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒgƒRƒ“ƒeƒi
+	//¦æ“ªƒm[ƒh‚Æ––”öƒm[ƒh‚ğ‚Â‚Ì‚İ
+	//¦std::forward_list‚ğ–Í‚µ‚½\‘¢
 	template<class OPE_TYPE>
 	class container
 	{
 	public:
-		//å‹
+		//Œ^
 		DECLARE_OPE_TYPES(OPE_TYPE);
 	public:
+		//’è”
+		static const std::size_t BEFORE_BEGIN = 0xffffffff;//before_begin¯•Êq
+	public:
 		//--------------------
-		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿å®£è¨€
+		//ƒCƒeƒŒ[ƒ^éŒ¾
 		class iterator;
-		class reverse_iterator;
 		typedef const iterator const_iterator;
+	#ifdef ENABLE_REVERSE_ITERATOR
+		class reverse_iterator;
 		typedef const reverse_iterator const_reverse_iterator;
+	#endif//ENABLE_REVERSE_ITERATOR
 		//--------------------
-		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
-		class iterator : public std::iterator<std::bidirectional_iterator_tag, node_type>
+		//ƒCƒeƒŒ[ƒ^
+		class iterator : public std::iterator<std::forward_iterator_tag, node_type>
 		{
 			friend class container;
+		#ifdef ENABLE_REVERSE_ITERATOR
 			friend class reverse_iterator;
+		#endif//ENABLE_REVERSE_ITERATOR
 		public:
-			//ã‚­ãƒ£ã‚¹ãƒˆã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
 			inline operator bool() const { return isExist(); }
 			inline operator const node_type() const { return *getNode(); }
 			inline operator node_type&(){ return *getNode(); }
 		public:
-			//ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//ƒIƒyƒŒ[ƒ^
 			inline const_reference operator*() const { return *getNode(); }
 			inline reference operator*(){ return *getNode(); }
 			inline const_pointer operator->() const { return getNode(); }
 			inline pointer operator->(){ return getNode(); }
-		#if 1//std::bidirectional_iterator_tag ã«ã¯æœ¬æ¥å¿…è¦ã§ã¯ãªã„
+		#if 1//std::forard_iterator_tag ‚É‚Í–{—ˆ•K—v‚Å‚Í‚È‚¢
 			inline const_iterator operator[](const int index) const
 			{
 				iterator ite(*m_con, false);
@@ -1483,7 +1418,7 @@ namespace linked_list
 				return std::move(ite);
 			}
 		#endif
-			//æ¯”è¼ƒã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//”äŠrƒIƒyƒŒ[ƒ^
 			inline bool operator==(const_iterator& rhs) const
 			{
 				return !isEnabled() || !rhs.isEnabled() ? false :
@@ -1498,52 +1433,60 @@ namespace linked_list
 				       m_isEnd || rhs.m_isEnd ? true :
 					   m_node != rhs.m_node;
 			}
-			//æ¼”ç®—ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//‰‰ZƒIƒyƒŒ[ƒ^
 			inline const_iterator& operator++() const
 			{
 				updateNext();
 				return *this;
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline const_iterator& operator--() const
 			{
 				updatePrev();
 				return *this;
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline iterator& operator++()
 			{
 				updateNext();
 				return *this;
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline iterator& operator--()
 			{
 				updatePrev();
 				return *this;
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline const_iterator operator++(int) const
 			{
 				iterator ite(*this);
 				++(*this);
 				return std::move(ite);
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline const_iterator operator--(int) const
 			{
 				iterator ite(*this);
 				--(*this);
 				return  std::move(ite);
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline iterator operator++(int)
 			{
 				iterator ite(*this);
 				++(*this);
 				return  std::move(ite);
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline iterator operator--(int)
 			{
 				iterator ite(*this);
 				--(*this);
 				return  std::move(ite);
 			}
-		#if 1//std::bidirectional_iterator_tag ã«ã¯æœ¬æ¥å¿…è¦ã§ã¯ãªã„
+		#endif//ENABLE_REVERSE_ITERATOR
+		#if 1//std::forward_iterator_tag ‚É‚Í–{—ˆ•K—v‚Å‚Í‚È‚¢
 			inline const_iterator& operator+=(const typename iterator::difference_type rhs) const
 			{
 				updateForward(rhs);
@@ -1553,6 +1496,7 @@ namespace linked_list
 			{
 				return operator+=(static_cast<typename iterator::difference_type>(rhs));
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline const_iterator& operator-=(const typename iterator::difference_type rhs) const
 			{
 				updateBackward(rhs);
@@ -1562,6 +1506,7 @@ namespace linked_list
 			{
 				return operator-=(static_cast<typename iterator::difference_type>(rhs));
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline iterator& operator+=(const typename iterator::difference_type rhs)
 			{
 				updateForward(rhs);
@@ -1571,6 +1516,7 @@ namespace linked_list
 			{
 				return operator+=(static_cast<typename iterator::difference_type>(rhs));
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline iterator& operator-=(const typename iterator::difference_type rhs)
 			{
 				updateBackward(rhs);
@@ -1580,6 +1526,7 @@ namespace linked_list
 			{
 				return operator-=(static_cast<typename iterator::difference_type>(rhs));
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline const_iterator operator+(const typename iterator::difference_type rhs) const
 			{
 				iterator ite(*this);
@@ -1590,6 +1537,7 @@ namespace linked_list
 			{
 				return std::move(operator+(static_cast<typename iterator::difference_type>(rhs)));
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline const_iterator operator-(const typename iterator::difference_type rhs) const
 			{
 				iterator ite(*this);
@@ -1600,6 +1548,7 @@ namespace linked_list
 			{
 				return std::move(operator-(static_cast<typename iterator::difference_type>(rhs)));
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline iterator operator+(const typename iterator::difference_type rhs)
 			{
 				iterator ite(*this);
@@ -1610,6 +1559,7 @@ namespace linked_list
 			{
 				return std::move(operator+(static_cast<typename iterator::difference_type>(rhs)));
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline iterator operator-(const typename iterator::difference_type rhs)
 			{
 				iterator ite(*this);
@@ -1624,9 +1574,10 @@ namespace linked_list
 			//{
 			//	return ???;
 			//}
+		#endif//ENABLE_REVERSE_ITERATOR
 		#endif
 		public:
-			//ãƒ ãƒ¼ãƒ–ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//ƒ€[ƒuƒIƒyƒŒ[ƒ^
 			inline iterator& operator=(const_iterator&& rhs)
 			{
 				m_con = rhs.m_con;
@@ -1634,8 +1585,10 @@ namespace linked_list
 				m_isEnd = rhs.m_isEnd;
 				return *this;
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			iterator& operator=(const_reverse_iterator&& rhs);
-			//ã‚³ãƒ”ãƒ¼ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+		#endif//ENABLE_REVERSE_ITERATOR
+			//ƒRƒs[ƒIƒyƒŒ[ƒ^
 			inline iterator& operator=(const_iterator& rhs)
 			{
 				m_con = rhs.m_con;
@@ -1643,27 +1596,43 @@ namespace linked_list
 				m_isEnd = rhs.m_isEnd;
 				return *this;
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			iterator& operator=(const_reverse_iterator& rhs);
+		#endif//ENABLE_REVERSE_ITERATOR
 		public:
-			//ã‚¢ã‚¯ã‚»ãƒƒã‚µ
-			inline bool isExist() const { return m_node != nullptr; }
+			//ƒAƒNƒZƒbƒT
+			inline bool isExist() const { return m_node != nullptr && m_node != reinterpret_cast<node_type*>(BEFORE_BEGIN); }
 			inline bool isNotExist() const { return !isExist(); }
 			inline bool isEnabled() const { return m_node != nullptr || m_isEnd; }
 			inline bool isNotEnabled() const { return !isEnabled(); }
-			inline bool isEnd() const { return m_isEnd; }//çµ‚ç«¯ã‹ï¼Ÿ
-			inline const node_type* getNode() const { return m_node; }//ç¾åœ¨ã®ãƒãƒ¼ãƒ‰
-			inline node_type* getNode(){ return m_node; }//ç¾åœ¨ã®ãƒãƒ¼ãƒ‰
+			inline bool isBeforeBegin() const { m_node != reinterpret_cast<node_type*>(BEFORE_BEGIN); }
+			inline bool isEnd() const { return m_isEnd; }//I’[‚©H
+			inline const node_type* getNode() const { return m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN) ? nullptr : m_node; }//Œ»İ‚Ìƒm[ƒh
+			inline node_type* getNode(){ return m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN) ? nullptr : m_node; }//Œ»İ‚Ìƒm[ƒh
 		private:
-			//ãƒ¡ã‚½ãƒƒãƒ‰
+			//ƒƒ\ƒbƒh
 			inline void updateNext() const
 			{
+				if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+				{
+					m_node = m_con->m_first;
+					m_isEnd = (m_con->m_first == nullptr);
+					return;
+				}
 				node_type* prev = m_node;
 				if (m_node)
 					m_node = const_cast<node_type*>(getNextNode<ope_type>(*m_node));
 				m_isEnd = (prev && !m_node);
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline void updatePrev() const
 			{
+				if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+				{
+					m_node = nullptr;
+					m_isEnd = false;
+					return;
+				}
 				if (m_isEnd)
 				{
 					m_node = const_cast<node_type*>(m_con->m_last);
@@ -1671,19 +1640,36 @@ namespace linked_list
 					return;
 				}
 				if (m_node)
-					m_node = const_cast<node_type*>(getPrevNode<ope_type>(*m_node));
+					m_node = const_cast<node_type*>(getPrevNode<ope_type>(*m_node, m_con->m_first, nullptr));
 				m_isEnd = false;
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			void updateForward(const std::size_t step) const
 			{
+				if (step == 0)
+					return;
 				std::size_t _step = step;
 				node_type* prev = m_node;
+				if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+				{
+					m_node = m_con->m_first;
+					--_step;
+				}
 				if (m_node)
 					m_node = const_cast<node_type*>(getForwardNode<ope_type>(*m_node, _step));
 				m_isEnd = (prev && !m_node && _step == 0);
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			void updateBackward(const std::size_t step) const
 			{
+				if (step == 0)
+					return;
+				if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+				{
+					m_node = nullptr;
+					m_isEnd = false;
+					return;
+				}
 				std::size_t _step = step;
 				if (_step > 0 && m_isEnd)
 				{
@@ -1691,25 +1677,40 @@ namespace linked_list
 					--_step;
 				}
 				if (m_node)
-					m_node = const_cast<node_type*>(getBackwardNode<ope_type>(*m_node, _step));
+					m_node = const_cast<node_type*>(getBackwardNode<ope_type>(*m_node, _step, m_con->m_first, nullptr));
 				m_isEnd = false;
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 		public:
-			//ãƒ ãƒ¼ãƒ–ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+			inline void updateBeforeBegin()
+			{
+				m_node = reinterpret_cast<node_type*>(BEFORE_BEGIN);
+				m_isEnd = false;
+			}
+			inline bool isBeforeBegin()
+			{
+				return m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN);
+			}
+		public:
+			//ƒ€[ƒuƒRƒ“ƒXƒgƒ‰ƒNƒ^
 			inline iterator(const_iterator&& obj) :
 				m_con(obj.m_con),
 				m_node(obj.m_node),
 				m_isEnd(obj.m_isEnd)
 			{}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			iterator(const_reverse_iterator&& obj);
-			//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+		#endif//ENABLE_REVERSE_ITERATOR
+			//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 			inline iterator(const_iterator& obj) :
 				m_con(obj.m_con),
 				m_node(obj.m_node),
 				m_isEnd(obj.m_isEnd)
 			{}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			iterator(const_reverse_iterator& obj);
-			//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+		#endif//ENABLE_REVERSE_ITERATOR
+			//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 			inline iterator(const container& con, const bool is_end) :
 				m_con(&con),
 				m_node(nullptr),
@@ -1732,34 +1733,35 @@ namespace linked_list
 				m_node(nullptr),
 				m_isEnd(false)
 			{}
-			//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+			//ƒfƒXƒgƒ‰ƒNƒ^
 			inline ~iterator()
 			{}
 		protected:
-			//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-			const container* m_con;//ã‚³ãƒ³ãƒ†ãƒŠ
-			mutable node_type* m_node;//ç¾åœ¨ã®ãƒãƒ¼ãƒ‰
-			mutable bool m_isEnd;//çµ‚ç«¯ã‹ï¼Ÿ
+			//ƒtƒB[ƒ‹ƒh
+			const container* m_con;//ƒRƒ“ƒeƒi
+			mutable node_type* m_node;//Œ»İ‚Ìƒm[ƒh
+			mutable bool m_isEnd;//I’[‚©H
 		};
+	#ifdef ENABLE_REVERSE_ITERATOR
 		//--------------------
-		//ãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+		//ƒŠƒo[ƒXƒCƒeƒŒ[ƒ^
 		//class reverse_iterator : public std::reverse_iterator<iterator>
-		class reverse_iterator : public std::iterator<std::bidirectional_iterator_tag, node_type>
+		class reverse_iterator : public std::iterator<std::forward_iterator_tag, node_type>
 		{
 			friend class container;
 			friend class iterator;
 		public:
-			//ã‚­ãƒ£ã‚¹ãƒˆã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
 			inline operator bool() const { return isExist(); }
 			inline operator const node_type() const { return *getNode(); }
 			inline operator node_type&(){ return *getNode(); }
 		public:
-			//ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//ƒIƒyƒŒ[ƒ^
 			inline const_reference operator*() const { return *getNode(); }
 			inline reference operator*(){ return *getNode(); }
 			inline const_pointer operator->() const { return getNode(); }
 			inline pointer operator->(){ return getNode(); }
-		#if 1//std::bidirectional_iterator_tag ã«ã¯æœ¬æ¥å¿…è¦ã§ã¯ãªã„
+		#if 1//std::bidirectional_iterator_tag ‚É‚Í–{—ˆ•K—v‚Å‚Í‚È‚¢
 			inline const_reverse_iterator operator[](const int index) const
 			{
 				reverse_iterator ite(*m_con, false);
@@ -1774,7 +1776,7 @@ namespace linked_list
 			}
 		#endif
 		public:
-			//æ¯”è¼ƒã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//”äŠrƒIƒyƒŒ[ƒ^
 			inline bool operator==(const_reverse_iterator& rhs) const
 			{
 				return !rhs.isEnabled() || !isEnabled() ? false :
@@ -1789,7 +1791,7 @@ namespace linked_list
 				       rhs.m_isEnd || m_isEnd ? true :
 					   m_node != rhs.m_node;
 			}
-			//æ¼”ç®—ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//‰‰ZƒIƒyƒŒ[ƒ^
 			inline const_reverse_iterator& operator++() const
 			{
 				updateNext();
@@ -1834,7 +1836,7 @@ namespace linked_list
 				--(*this);
 				return  std::move(ite);
 			}
-		#if 1//std::bidirectional_iterator_tag ã«ã¯æœ¬æ¥å¿…è¦ã§ã¯ãªã„
+		#if 1//std::bidirectional_iterator_tag ‚É‚Í–{—ˆ•K—v‚Å‚Í‚È‚¢
 			inline const_reverse_iterator& operator+=(const typename reverse_iterator::difference_type rhs) const
 			{
 				updateForward(rhs);
@@ -1917,7 +1919,7 @@ namespace linked_list
 			//}
 		#endif
 		public:
-			//ãƒ ãƒ¼ãƒ–ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//ƒ€[ƒuƒIƒyƒŒ[ƒ^
 			inline reverse_iterator& operator=(const_reverse_iterator&& rhs)
 			{
 				m_con = rhs.m_con;
@@ -1932,7 +1934,14 @@ namespace linked_list
 				m_isEnd = false;
 				if (m_node)
 				{
-					++(*this);
+					if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+					{
+						m_node = m_con->m_first;
+						if (!m_node)
+							m_isEnd = true;
+					}
+					else
+						++(*this);
 				}
 				else
 				{
@@ -1941,7 +1950,7 @@ namespace linked_list
 				}
 				return *this;
 			}
-			//ã‚³ãƒ”ãƒ¼ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+			//ƒRƒs[ƒIƒyƒŒ[ƒ^
 			inline reverse_iterator& operator=(const_reverse_iterator& rhs)
 			{
 				m_con = rhs.m_con;
@@ -1956,7 +1965,14 @@ namespace linked_list
 				m_isEnd = false;
 				if (m_node)
 				{
-					++(*this);
+					if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+					{
+						m_node = m_con->m_first;
+						if (!m_node)
+							m_isEnd = true;
+					}
+					else
+						++(*this);
 				}
 				else
 				{
@@ -1966,21 +1982,21 @@ namespace linked_list
 				return *this;
 			}
 		public:
-			//ã‚¢ã‚¯ã‚»ãƒƒã‚µ
+			//ƒAƒNƒZƒbƒT
 			inline bool isExist() const { return m_node != nullptr; }
 			inline bool isNotExist() const { return !isExist(); }
 			inline bool isEnabled() const { return m_node != nullptr || m_isEnd; }
 			inline bool isNotEnabled() const { return !isEnabled(); }
-			inline bool isEnd() const { return m_isEnd; }//çµ‚ç«¯ã‹ï¼Ÿ
-			inline const node_type* getNode() const { return m_node; }//ç¾åœ¨ã®ãƒãƒ¼ãƒ‰
-			inline node_type* getNode(){ return m_node; }//ç¾åœ¨ã®ãƒãƒ¼ãƒ‰
+			inline bool isEnd() const { return m_isEnd; }//I’[‚©H
+			inline const node_type* getNode() const { return m_node; }//Œ»İ‚Ìƒm[ƒh
+			inline node_type* getNode(){ return m_node; }//Œ»İ‚Ìƒm[ƒh
 		public:
-			//ãƒ¡ã‚½ãƒƒãƒ‰
+			//ƒƒ\ƒbƒh
 			inline void updateNext() const
 			{
 				node_type* prev = m_node;
 				if (m_node)
-					m_node = const_cast<node_type*>(getPrevNode<ope_type>(*m_node));
+					m_node = const_cast<node_type*>(getPrevNode<ope_type>(*m_node, m_con->m_first, nullptr));
 				m_isEnd = (prev && !m_node);
 			}
 			inline void updatePrev() const
@@ -2000,7 +2016,7 @@ namespace linked_list
 				std::size_t _step = step;
 				node_type* prev = m_node;
 				if (m_node)
-					m_node = const_cast<node_type*>(getBackwardNode<ope_type>(*m_node, _step));
+					m_node = const_cast<node_type*>(getBackwardNode<ope_type>(*m_node, _step, m_con->m_first, nullptr));
 				m_isEnd = (prev && !m_node && _step == 0);
 			}
 			void updateBackward(const std::size_t step) const
@@ -2016,7 +2032,7 @@ namespace linked_list
 				m_isEnd = false;
 			}
 		public:
-			//ãƒ™ãƒ¼ã‚¹ã‚’å–å¾—
+			//ƒx[ƒX‚ğæ“¾
 			inline const_iterator base() const
 			{
 				iterator ite(*this);
@@ -2028,7 +2044,7 @@ namespace linked_list
 				return std::move(ite);
 			}
 		public:
-			//ãƒ ãƒ¼ãƒ–ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+			//ƒ€[ƒuƒRƒ“ƒXƒgƒ‰ƒNƒ^
 			inline reverse_iterator(const_reverse_iterator&& obj) :
 				m_con(obj.m_con),
 				m_node(obj.m_node),
@@ -2041,7 +2057,14 @@ namespace linked_list
 			{
 				if (m_node)
 				{
-					++(*this);
+					if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+					{
+						m_node = m_con->m_first;
+						if (!m_node)
+							m_isEnd = true;
+					}
+					else
+						++(*this);
 				}
 				else
 				{
@@ -2049,7 +2072,7 @@ namespace linked_list
 						m_node = const_cast<node_type*>(m_con->m_last);
 				}
 			}
-			//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+			//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 			inline reverse_iterator(const_reverse_iterator& obj) :
 				m_con(obj.m_con),
 				m_node(obj.m_node),
@@ -2062,7 +2085,14 @@ namespace linked_list
 			{
 				if (m_node)
 				{
-					++(*this);
+					if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+					{
+						m_node = m_con->m_first;
+						if (!m_node)
+							m_isEnd = true;
+					}
+					else
+						++(*this);
 				}
 				else
 				{
@@ -2070,7 +2100,7 @@ namespace linked_list
 						m_node = const_cast<node_type*>(m_con->m_last);
 				}
 			}
-			//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+			//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 			inline reverse_iterator(const container& con, const bool is_end) :
 				m_con(&con),
 				m_node(nullptr),
@@ -2093,18 +2123,19 @@ namespace linked_list
 				m_node(nullptr),
 				m_isEnd(false)
 			{}
-			//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+			//ƒfƒXƒgƒ‰ƒNƒ^
 			inline ~reverse_iterator()
 			{}
 		protected:
-			//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-			const container* m_con;//ã‚³ãƒ³ãƒ†ãƒŠ
-			mutable node_type* m_node;//ç¾åœ¨ã®ãƒãƒ¼ãƒ‰
-			mutable bool m_isEnd;//çµ‚ç«¯ã‹ï¼Ÿ
+			//ƒtƒB[ƒ‹ƒh
+			const container* m_con;//ƒRƒ“ƒeƒi
+			mutable node_type* m_node;//Œ»İ‚Ìƒm[ƒh
+			mutable bool m_isEnd;//I’[‚©H
 		};
+	#endif//ENABLE_REVERSE_ITERATOR
 	public:
-		//ã‚¢ã‚¯ã‚»ãƒƒã‚µ
-		//â€»std::listã¨ç•°ãªã‚Šã€ãƒãƒ¼ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
+		//ƒAƒNƒZƒbƒT
+		//¦std::forward_list‚ÆˆÙ‚È‚èAƒm[ƒh‚Ìƒ|ƒCƒ“ƒ^‚ğ•Ô‚·
 		const node_type* at(const index_type index) const
 		{
 			return getForwardNode<ope_type>(m_first, index);
@@ -2113,24 +2144,30 @@ namespace linked_list
 		inline const node_type* operator[](const index_type index) const { return at(index); }
 		inline node_type* operator[](const index_type index){ return at(index); }
 	public:
-		//ã‚­ãƒ£ã‚¹ãƒˆã‚ªãƒšãƒ¬ãƒ¼ã‚¿
-		inline operator lock_type&(){ return m_lock; }//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
-		inline operator lock_type&() const { return m_lock; }//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ â€»mutable
+		//ƒLƒƒƒXƒgƒIƒyƒŒ[ƒ^
+		inline operator lock_type&(){ return m_lock; }//ƒƒbƒNƒIƒuƒWƒFƒNƒg
+		inline operator lock_type&() const { return m_lock; }//ƒƒbƒNƒIƒuƒWƒFƒNƒg ¦mutable
 	public:
-		//ãƒ¡ã‚½ãƒƒãƒ‰
-		//inline std::size_t max_size() const { return (ä¸å®š); }
-		//inline std::size_t capacity() const { return (ä¸å®š); }
-		inline std::size_t size() const { return m_first ? countNodes<ope_type>(*m_first) : 0; }//ãƒãƒ¼ãƒ‰æ•°ã‚’å–å¾—
-		inline bool empty() const { return m_first == nullptr; }//ç©ºã‹ï¼Ÿ
-		inline node_type* front(){ return m_first; }//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å‚ç…§
-		inline const node_type* front() const { return m_first; }//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å‚ç…§
-		inline node_type*& first_ref(){ return m_first; }//å…ˆé ­ãƒãƒ¼ãƒ‰ã®å‚ç…§ã‚’å–å¾—
-		inline node_type* back(){ return m_last; }//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’å‚ç…§
-		inline const node_type* back() const { return m_last; }//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’å‚ç…§
-		inline node_type*& last_ref(){ return m_last; }//æœ«å°¾ãƒãƒ¼ãƒ‰ã®å‚ç…§ã‚’å–å¾—
-		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
-		//â€»è‡ªå‹•çš„ãªå…±æœ‰ãƒ­ãƒƒã‚¯å–å¾—ã¯è¡Œã‚ãªã„ã®ã§ã€ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã§åˆ©ç”¨ã™ã‚‹éš›ã¯ã€
-		//ã€€ä¸€é€£ã®å‡¦ç†ãƒ–ãƒ­ãƒƒã‚¯å…¨ä½“ã®å‰å¾Œã§å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰ã®å–å¾—ã¨è§£æ”¾ã‚’è¡Œã†å¿…è¦ãŒã‚ã‚‹
+		//ƒƒ\ƒbƒh
+		//inline std::size_t max_size() const { return (•s’è); }
+		//inline std::size_t capacity() const { return (•s’è); }
+		inline std::size_t size() const { return m_first ? countNodes<ope_type>(*m_first) : 0; }//ƒm[ƒh”‚ğæ“¾
+		inline bool empty() const { return m_first == nullptr; }//‹ó‚©H
+		inline node_type* front(){ return m_first; }//æ“ªƒm[ƒh‚ğQÆ
+		inline const node_type* front() const { return m_first; }//æ“ªƒm[ƒh‚ğQÆ
+		inline node_type*& first_ref(){ return m_first; }//æ“ªƒm[ƒh‚ÌQÆ‚ğæ“¾
+		inline node_type* back(){ return m_last; }//––”öƒm[ƒh‚ğQÆ
+		inline const node_type* back() const { return m_last; }//––”öƒm[ƒh‚ğQÆ
+		inline node_type*& last_ref(){ return m_last; }//––”öƒm[ƒh‚ÌQÆ‚ğæ“¾
+		//ƒCƒeƒŒ[ƒ^‚ğæ“¾
+		//¦©“®“I‚È‹¤—LƒƒbƒNæ“¾‚Ís‚í‚È‚¢‚Ì‚ÅAƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚Å—˜—p‚·‚éÛ‚ÍA
+		//@ˆê˜A‚Ìˆ—ƒuƒƒbƒN‘S‘Ì‚Ì‘OŒã‚Å‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‚Ìæ“¾‚Æ‰ğ•ú‚ğs‚¤•K—v‚ª‚ ‚é
+		inline const_iterator cbefore_begin() const
+		{
+			iterator ite(*this, false);
+			ite.updateBeforeBegin();
+			return std::move(ite);
+		}
 		inline const_iterator cbegin() const
 		{
 			iterator ite(*this, false);
@@ -2139,6 +2176,12 @@ namespace linked_list
 		inline const_iterator cend() const
 		{
 			iterator ite(*this, true);
+			return std::move(ite);
+		}
+		inline const_iterator before_begin() const
+		{
+			iterator ite(*this, false);
+			ite.updateBeforeBegin();
 			return std::move(ite);
 		}
 		inline const_iterator begin() const
@@ -2151,6 +2194,12 @@ namespace linked_list
 			iterator ite(*this, true);
 			return std::move(ite);
 		}
+		inline iterator before_begin()
+		{
+			iterator ite(*this, false);
+			ite.updateBeforeBegin();
+			return std::move(ite);
+		}
 		inline iterator begin()
 		{
 			iterator ite(*this, false);
@@ -2161,9 +2210,12 @@ namespace linked_list
 			iterator ite(*this, true);
 			return std::move(ite);
 		}
-		//ãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
-		//â€»è‡ªå‹•çš„ãªå…±æœ‰ãƒ­ãƒƒã‚¯å–å¾—ã¯è¡Œã‚ãªã„ã®ã§ã€ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã§åˆ©ç”¨ã™ã‚‹éš›ã¯ã€
-		//ã€€ä¸€é€£ã®å‡¦ç†ãƒ–ãƒ­ãƒƒã‚¯å…¨ä½“ã®å‰å¾Œã§å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰ã®å–å¾—ã¨è§£æ”¾ã‚’è¡Œã†å¿…è¦ãŒã‚ã‚‹
+	#ifdef ENABLE_REVERSE_ITERATOR
+		//ƒŠƒo[ƒXƒCƒeƒŒ[ƒ^‚ğæ“¾
+		//¦©“®“I‚È‹¤—LƒƒbƒNæ“¾‚Ís‚í‚È‚¢‚Ì‚ÅAƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚Å—˜—p‚·‚éÛ‚ÍA
+		//@ˆê˜A‚Ìˆ—ƒuƒƒbƒN‘S‘Ì‚Ì‘OŒã‚Å‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‚Ìæ“¾‚Æ‰ğ•ú‚ğs‚¤•K—v‚ª‚ ‚é
+		//y’ˆÓz’á‘¬ˆ—iƒCƒeƒŒ[ƒ^‚ğˆÚ“®‚·‚é“x‚Éæ“ª‚©‚ç’H‚è’¼‚·‚Ì‚Å‚©‚È‚è’á‘¬j
+		//¦std::forward_list‚É‚È‚¢ƒƒ\ƒbƒh
 		inline const_reverse_iterator crbegin() const
 		{
 			reverse_iterator ite(*this, false);
@@ -2194,80 +2246,134 @@ namespace linked_list
 			reverse_iterator ite(*this, true);
 			return std::move(ite);
 		}
+	#endif//ENABLE_REVERSE_ITERATOR
+
+		//’Ç‰Á^íœŒnƒƒ\ƒbƒh
+		//¦std::forward_list‚ÆˆÙ‚È‚èA’Ç‰Á^íœ‘ÎÛ‚Ìƒm[ƒh‚ğ’¼Úw’è‚µAŒ‹‰Ê‚ğƒ|ƒCƒ“ƒ^‚Åó‚¯æ‚éi¬Œ÷‚µ‚½‚çA’Ç‰Á^íœ‚µ‚½ƒ|ƒCƒ“ƒ^‚ğ•Ô‚·j
+		//¦—v‘f‚Ìƒƒ‚ƒŠŠm•Û^‰ğ•ú‚ğs‚í‚È‚¢“_‚É’ˆÓ
+		//¦assign(), remove_if(), emplace_after(), emprace_front()‚É‚Í”ñ‘Î‰
+		//¦insert_before()‚ğ’Ç‰Á
+		//¦©“®“I‚ÈƒƒbƒNæ“¾‚Ís‚í‚È‚¢‚Ì‚ÅAƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚Å—˜—p‚·‚éÛ‚ÍA
+		//@ˆê˜A‚Ìˆ—ƒuƒƒbƒN‚Ì‘OŒã‚Å”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‚Ìæ“¾‚Æ‰ğ•ú‚ğs‚¤•K—v‚ª‚ ‚é
 		
-		//è¿½åŠ ï¼å‰Šé™¤ç³»ãƒ¡ã‚½ãƒƒãƒ‰
-		//â€»std::listã¨ç•°ãªã‚Šã€è¿½åŠ ï¼å‰Šé™¤å¯¾è±¡ã®ãƒãƒ¼ãƒ‰ã‚’ç›´æ¥æŒ‡å®šã—ã€çµæœã‚’ãƒã‚¤ãƒ³ã‚¿ã§å—ã‘å–ã‚‹ï¼ˆæˆåŠŸã—ãŸã‚‰ã€è¿½åŠ ï¼å‰Šé™¤ã—ãŸãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™ï¼‰
-		//â€»è¦ç´ ã®ãƒ¡ãƒ¢ãƒªç¢ºä¿ï¼è§£æ”¾ã‚’è¡Œã‚ãªã„ç‚¹ã«æ³¨æ„
-		//â€»assign(), remove_if(), emplace(), emplace_front(), emplase_back()ã«ã¯éå¯¾å¿œ
-		//â€»insert_before()ã‚’è¿½åŠ 
-		//â€»è‡ªå‹•çš„ãªãƒ­ãƒƒã‚¯å–å¾—ã¯è¡Œã‚ãªã„ã®ã§ã€ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã§åˆ©ç”¨ã™ã‚‹éš›ã¯ã€
-		//ã€€ä¸€é€£ã®å‡¦ç†ãƒ–ãƒ­ãƒƒã‚¯ã®å‰å¾Œã§æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰ã®å–å¾—ã¨è§£æ”¾ã‚’è¡Œã†å¿…è¦ãŒã‚ã‚‹
-		
-		//å…ˆé ­ã«ãƒãƒ¼ãƒ‰ã‚’æŒ¿å…¥ï¼ˆé€£çµã«è¿½åŠ ï¼‰
+		//æ“ª‚Éƒm[ƒh‚ğ‘}“üi˜AŒ‹‚É’Ç‰Áj
 		inline node_type* push_front(const node_type& node)
 		{
 			return insertNodeBeginning<ope_type>(*const_cast<node_type*>(&node), m_first, m_last);
 		}
-		//æœ«å°¾ã«ãƒãƒ¼ãƒ‰ã‚’æŒ¿å…¥ï¼ˆé€£çµã«è¿½åŠ ï¼‰
+		//––”ö‚Éƒm[ƒh‚ğ‘}“üi˜AŒ‹‚É’Ç‰Áj
+		//¦std::forward_list‚É‚È‚¢ƒƒ\ƒbƒh
 		inline node_type* push_back(const node_type& node)
 		{
 			return insertNodeEnd<ope_type>(*const_cast<node_type*>(&node), m_first, m_last);
 		}
-		//å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ï¼ˆé€£çµè§£é™¤ï¼‰
+		//æ“ªƒm[ƒh‚ğíœi˜AŒ‹‰ğœj
 		inline node_type* pop_front()
 		{
 			if (!m_first)
 				return nullptr;
-			return removeNode<ope_type>(*m_first, m_first, m_last);
+			return removeNode<ope_type>(*m_first, m_first, m_last, nullptr);
 		}
-		//æœ«å°¾ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ï¼ˆé€£çµè§£é™¤ï¼‰
-		inline node_type* pop_back()
+		//––”öƒm[ƒh‚ğíœi˜AŒ‹‰ğœj
+		//y’ˆÓz’á‘¬ˆ—ibackward‚ğw’è‚·‚é‚±‚Æ‚Å‚‘¬‰»‰Â”\j
+		//¦‚à‚µAlast‚Ì’¼‘O‚à‚µ‚­‚Í‚»‚ê‚æ‚è‘O‚Ìƒm[ƒh‚ª•ª‚©‚Á‚Ä‚¢‚é‚È‚çA
+		//@‚»‚ê‚ğ backward ‚Éw’è‚·‚é‚±‚ÅŒŸõ”ÍˆÍ‚ª’Zk‚³‚êAˆ—Œø—¦‚ªŒüã‚·‚éB
+		//@nullptr‚ğw’è‚µ‚½ê‡Afirst‚©‚çlast‚Ü‚Å’H‚éB
+		//¦std::forward_list‚É‚È‚¢ƒƒ\ƒbƒh
+		inline node_type* pop_back(node_type* backward = nullptr)
 		{
 			if (!m_first)
 				return nullptr;
-			return removeNode<ope_type>(*m_last, m_first, m_last);
+			return removeNode<ope_type>(*m_last, m_first, m_last, backward);
 		}
-		//æŒ‡å®šã®ä½ç½®ã®å¾Œã‚ã«ãƒãƒ¼ãƒ‰ã‚’æŒ¿å…¥ï¼ˆé€£çµã«è¿½åŠ ï¼‰
-		//â€»ä½ç½®ã¯ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã§æŒ‡å®š
-		inline node_type* insert(iterator pos, const node_type& node)
+		//w’è‚ÌˆÊ’u‚ÌŒã‚ë‚Éƒm[ƒh‚ğ‘}“üi˜AŒ‹‚É’Ç‰Áj
+		//¦ˆÊ’u‚ÍƒCƒeƒŒ[ƒ^‚Åw’è
+		inline node_type* insert_after(iterator pos, const node_type& node)
 		{
-			if (pos.isNotExist())
+			if (pos.isNotExist() && !pos.isBeforeBegin())
 				return nullptr;
 			return insertNodeAfter<ope_type>(*const_cast<node_type*>(&node), *pos, m_first, m_last);
 		}
-		//æŒ‡å®šã®ä½ç½®ã®å‰ã«ãƒãƒ¼ãƒ‰ã‚’æŒ¿å…¥ï¼ˆé€£çµã«è¿½åŠ ï¼‰
-		//â€»ä½ç½®ã¯ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã§æŒ‡å®š
-		inline node_type* insert_before(iterator pos, const node_type& node)
+		//¦insert_after()‚Æinsert()‚Í“¯‚¶
+		//¦std::forward_list‚É‚È‚¢ƒƒ\ƒbƒh
+		inline node_type* insert(iterator pos, const node_type& node)
+		{
+			if (pos.isNotExist() && !pos.isBeforeBegin())
+				return nullptr;
+			return insertNodeAfter<ope_type>(*const_cast<node_type*>(&node), *pos, m_first, m_last);
+		}
+		//w’è‚ÌˆÊ’u‚Ì‘O‚Éƒm[ƒh‚ğ‘}“üi˜AŒ‹‚É’Ç‰Áj
+		//¦ˆÊ’u‚ÍƒCƒeƒŒ[ƒ^‚Åw’è
+		//y’ˆÓz’á‘¬ˆ—ibackward‚ğw’è‚·‚é‚±‚Æ‚Å‚‘¬‰»‰Â”\j
+		//¦‚à‚µApos‚Ì’¼‘O‚à‚µ‚­‚Í‚»‚ê‚æ‚è‘O‚Ìƒm[ƒh‚ª•ª‚©‚Á‚Ä‚¢‚é‚È‚çA
+		//@‚»‚ê‚ğ backward ‚Éw’è‚·‚é‚±‚ÅŒŸõ”ÍˆÍ‚ª’Zk‚³‚êAˆ—Œø—¦‚ªŒüã‚·‚éB
+		//@nullptr‚ğw’è‚µ‚½ê‡Afirst‚©‚çpos‚Ü‚Å’H‚éB
+		//¦std::forward_list‚É‚È‚¢ƒƒ\ƒbƒh
+		inline node_type* insert_before(iterator pos, const node_type& node, node_type* backward = nullptr)
 		{
 			if (pos.isNotExist())
 				return nullptr;
-			return insertNodeBefore<ope_type>(*const_cast<node_type*>(&node), *pos, m_first, m_last);
+			return insertNodeBefore<ope_type>(*const_cast<node_type*>(&node), *pos, m_first, m_last, backward);
 		}
-		//æŒ‡å®šãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ï¼ˆé€£çµè§£é™¤ï¼‰
-		inline node_type* remove(node_type& node)
+		//w’èƒm[ƒh‚ğíœi˜AŒ‹‰ğœj
+		//y’ˆÓz’á‘¬ˆ—ibackward‚ğw’è‚·‚é‚±‚Æ‚Å‚‘¬‰»‰Â”\j
+		//¦‚à‚µAnode‚Ì’¼‘O‚à‚µ‚­‚Í‚»‚ê‚æ‚è‘O‚Ìƒm[ƒh‚ª•ª‚©‚Á‚Ä‚¢‚é‚È‚çA
+		//@‚»‚ê‚ğ backward ‚Éw’è‚·‚é‚±‚ÅŒŸõ”ÍˆÍ‚ª’Zk‚³‚êAˆ—Œø—¦‚ªŒüã‚·‚éB
+		//@nullptr‚ğw’è‚µ‚½ê‡Afirst‚©‚çnode‚Ü‚Å’H‚éB
+		inline node_type* remove(node_type& node, node_type* backward = nullptr)
 		{
 			if (!m_first)
 				return nullptr;
-			return removeNode<ope_type>(node, m_first, m_last);
+			return removeNode<ope_type>(node, m_first, m_last, backward);
 		}
-		//æŒ‡å®šä½ç½®ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ï¼ˆé€£çµè§£é™¤ï¼‰
-		//â€»ä½ç½®ã¯ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã§æŒ‡å®š
-		inline node_type* erase(iterator pos)
+		//w’èˆÊ’u‚ÌŸ‚Ìƒm[ƒh‚ğíœi˜AŒ‹‰ğœj
+		//¦ˆÊ’u‚ÍƒCƒeƒŒ[ƒ^‚Åw’è
+		inline node_type* erase_after(iterator pos)
 		{
 			if (!m_first || pos.isNotExist())
 				return nullptr;
-			return removeNode<ope_type>(*pos, m_first, m_last);
+			node_type* before = &*pos;
+			node_type& _pos = *const_cast<node_type*>(ope_type::getNext(*pos));
+			return removeNode<ope_type>(_pos, m_first, m_last, before);
 		}
-		//æŒ‡å®šç¯„å›²ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ï¼ˆé€£çµè§£é™¤ï¼‰
-		//â€»ç¯„å›²ã¯ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã§æŒ‡å®š
-		inline node_type* erase(iterator start, iterator end)
+		//w’èˆÊ’u‚ÌŸ‚Ìƒm[ƒh‚©‚ç‚Ì”ÍˆÍ‚Ìƒm[ƒh‚ğíœi˜AŒ‹‰ğœj
+		//¦”ÍˆÍ‚ÍƒCƒeƒŒ[ƒ^‚Åw’è
+		inline node_type* erase_after(iterator start, iterator end)
 		{
 			if (!m_first || start.isNotExist() || end.isNotEnabled())
 				return nullptr;
-			return removeNodes<ope_type>(*start, *end, m_first, m_last);
+			node_type* before = &*start;
+			node_type& _start = *const_cast<node_type*>(ope_type::getNext(*start));
+			return removeNodes<ope_type>(_start, *end, m_first, m_last, before);
 		}
-		//å…¨ãƒãƒ¼ãƒ‰ã‚’ã‚¯ãƒªã‚¢
-		//â€»å…ˆé ­ãƒãƒ¼ãƒ‰ã‚’è¿”ã™
+		//w’èˆÊ’u‚Ìƒm[ƒh‚ğíœi˜AŒ‹‰ğœj
+		//¦ˆÊ’u‚ÍƒCƒeƒŒ[ƒ^‚Åw’è
+		//y’ˆÓz’á‘¬ˆ—ibackward‚ğw’è‚·‚é‚±‚Æ‚Å‚‘¬‰»‰Â”\j
+		//¦‚à‚µApos‚Ì’¼‘O‚à‚µ‚­‚Í‚»‚ê‚æ‚è‘O‚Ìƒm[ƒh‚ª•ª‚©‚Á‚Ä‚¢‚é‚È‚çA
+		//@‚»‚ê‚ğ backward ‚Éw’è‚·‚é‚±‚ÅŒŸõ”ÍˆÍ‚ª’Zk‚³‚êAˆ—Œø—¦‚ªŒüã‚·‚éB
+		//@nullptr‚ğw’è‚µ‚½ê‡Afirst‚©‚çpos‚Ü‚Å’H‚éB
+		//¦std::forward_list‚É‚È‚¢ƒƒ\ƒbƒh
+		inline node_type* erase(iterator pos, node_type* backward = nullptr)
+		{
+			if (!m_first || pos.isNotExist())
+				return nullptr;
+			return removeNode<ope_type>(*pos, m_first, m_last, backward);
+		}
+		//w’è”ÍˆÍ‚Ìƒm[ƒh‚ğíœi˜AŒ‹‰ğœj
+		//¦”ÍˆÍ‚ÍƒCƒeƒŒ[ƒ^‚Åw’è
+		//y’ˆÓz’á‘¬ˆ—ibackward‚ğw’è‚·‚é‚±‚Æ‚Å‚‘¬‰»‰Â”\j
+		//¦‚à‚µAstart‚Ì’¼‘O‚à‚µ‚­‚Í‚»‚ê‚æ‚è‘O‚Ìƒm[ƒh‚ª•ª‚©‚Á‚Ä‚¢‚é‚È‚çA
+		//@‚»‚ê‚ğ backward ‚Éw’è‚·‚é‚±‚ÅŒŸõ”ÍˆÍ‚ª’Zk‚³‚êAˆ—Œø—¦‚ªŒüã‚·‚éB
+		//@nullptr‚ğw’è‚µ‚½ê‡Afirst‚©‚çstart‚Ü‚Å’H‚éB
+		//¦std::forward_list‚É‚È‚¢ƒƒ\ƒbƒh
+		inline node_type* erase(iterator start, iterator end, node_type* backward = nullptr)
+		{
+			if (!m_first || start.isNotExist() || end.isNotEnabled())
+				return nullptr;
+			return removeNodes<ope_type>(*start, *end, m_first, m_last, backward);
+		}
+		//‘Sƒm[ƒh‚ğƒNƒŠƒA
+		//¦æ“ªƒm[ƒh‚ğ•Ô‚·
 		inline node_type* clear()
 		{ 
 			node_type* first = m_first;
@@ -2276,81 +2382,73 @@ namespace linked_list
 			return first;
 		}
 	public:
-		//ã‚½ãƒ¼ãƒˆ
-		//â€»æŒ¿å…¥ã‚½ãƒ¼ãƒˆã‚’ä½¿ç”¨ï¼ˆã‚·ã‚§ãƒ«ã‚½ãƒ¼ãƒˆã§ã¯ã‚ã¾ã‚Šé€Ÿåº¦ãŒä¸ŠãŒã‚‰ãªã„ãŸã‚ï¼‰
-		//â€»ope_type::sort_predicate() ã‚’ä½¿ç”¨ã—ã¦æ¢ç´¢ï¼ˆæ¨™æº–ã§ã¯ã€ãƒ‡ãƒ¼ã‚¿å‹ã® operator<() ã«å¾“ã£ã¦æ¢ç´¢ï¼‰
-		//â€»è‡ªå‹•çš„ãªãƒ­ãƒƒã‚¯å–å¾—ã¯è¡Œã‚ãªã„ã®ã§ã€ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã§åˆ©ç”¨ã™ã‚‹éš›ã¯ã€
-		//ã€€ä¸€é€£ã®å‡¦ç†ãƒ–ãƒ­ãƒƒã‚¯ã®å‰å¾Œã§æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰ã®å–å¾—ã¨è§£æ”¾ã‚’è¡Œã†å¿…è¦ãŒã‚ã‚‹
+		//ƒ\[ƒg
+		//¦‘}“üƒ\[ƒg‚ğg—piƒVƒFƒ‹ƒ\[ƒg‚Å‚Í‚ ‚Ü‚è‘¬“x‚ªã‚ª‚ç‚È‚¢‚½‚ßj
+		//¦ope_type::sort_predicate() ‚ğg—p‚µ‚Ä’Tõi•W€‚Å‚ÍAƒf[ƒ^Œ^‚Ì operator<() ‚É]‚Á‚Ä’Tõj
+		//¦©“®“I‚ÈƒƒbƒNæ“¾‚Ís‚í‚È‚¢‚Ì‚ÅAƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚Å—˜—p‚·‚éÛ‚ÍA
+		//@ˆê˜A‚Ìˆ—ƒuƒƒbƒN‚Ì‘OŒã‚Å”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‚Ìæ“¾‚Æ‰ğ•ú‚ğs‚¤•K—v‚ª‚ ‚é
 		void sort()
 		{
-		#ifdef USE_SHELL_SORT
-			linkedListShellSort<OPE_TYPE>(m_first, m_last, typename ope_type::sort_predicate());
-		#else//USE_SHELL_SORT
-			linkedListInsertionSort<OPE_TYPE>(m_first, m_last, typename ope_type::sort_predicate());
-		#endif//USE_SHELL_SORT
+			singlyLinkedListInsertionSort<OPE_TYPE>(m_first, m_last, typename ope_type::sort_predicate());
 		}
-		//â€»ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°æŒ‡å®šç‰ˆ
+		//¦ƒvƒŒƒfƒBƒP[ƒgŠÖ”w’è”Å
 		template<class PREDICATE>
 		void sort(PREDICATE predicate)
 		{
-		#ifdef USE_SHELL_SORT
-			linkedListShellSort<OPE_TYPE>(m_first, m_last, predicate);
-		#else//USE_SHELL_SORT
-			linkedListInsertionSort<OPE_TYPE>(m_first, m_last, predicate);
-		#endif//USE_SHELL_SORT
+			singlyLinkedListInsertionSort<OPE_TYPE>(m_first, m_last, predicate);
 		}
 	#ifdef ENABLE_STABLE_SORT
-		//å®‰å®šã‚½ãƒ¼ãƒˆ
-		//â€»æŒ¿å…¥ã‚½ãƒ¼ãƒˆã‚’ä½¿ç”¨
-		//â€»ope_type::sort_predicate() ã‚’ä½¿ç”¨ã—ã¦æ¢ç´¢ï¼ˆæ¨™æº–ã§ã¯ã€ãƒ‡ãƒ¼ã‚¿å‹ã® operator<() ã«å¾“ã£ã¦æ¢ç´¢ï¼‰
-		//â€»è‡ªå‹•çš„ãªãƒ­ãƒƒã‚¯å–å¾—ã¯è¡Œã‚ãªã„ã®ã§ã€ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã§åˆ©ç”¨ã™ã‚‹éš›ã¯ã€
-		//ã€€ä¸€é€£ã®å‡¦ç†ãƒ–ãƒ­ãƒƒã‚¯ã®å‰å¾Œã§æ’ä»–ãƒ­ãƒƒã‚¯ï¼ˆãƒ©ã‚¤ãƒˆãƒ­ãƒƒã‚¯ï¼‰ã®å–å¾—ã¨è§£æ”¾ã‚’è¡Œã†å¿…è¦ãŒã‚ã‚‹
+		//ˆÀ’èƒ\[ƒg
+		//¦‘}“üƒ\[ƒg‚ğg—p
+		//¦ope_type::sort_predicate() ‚ğg—p‚µ‚Ä’Tõi•W€‚Å‚ÍAƒf[ƒ^Œ^‚Ì operator<() ‚É]‚Á‚Ä’Tõj
+		//¦©“®“I‚ÈƒƒbƒNæ“¾‚Ís‚í‚È‚¢‚Ì‚ÅAƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚Å—˜—p‚·‚éÛ‚ÍA
+		//@ˆê˜A‚Ìˆ—ƒuƒƒbƒN‚Ì‘OŒã‚Å”r‘¼ƒƒbƒNiƒ‰ƒCƒgƒƒbƒNj‚Ìæ“¾‚Æ‰ğ•ú‚ğs‚¤•K—v‚ª‚ ‚é
 		void stable_sort()
 		{
-			linkedListInsertionSort<OPE_TYPE>(m_first, m_last, typename ope_type::sort_predicate());
+			singlyLinkedListInsertionSort<OPE_TYPE>(m_first, m_last, typename ope_type::sort_predicate());
 		}
-		//â€»ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°æŒ‡å®šç‰ˆ
+		//¦ƒvƒŒƒfƒBƒP[ƒgŠÖ”w’è”Å
 		template<class PREDICATE>
 		void stable_sort(PREDICATE predicate)
 		{
-			linkedListInsertionSort<OPE_TYPE>(m_first, m_last, predicate);
+			singlyLinkedListInsertionSort<OPE_TYPE>(m_first, m_last, predicate);
 		}
 	#endif//ENABLE_STABLE_SORT
-		//ã‚½ãƒ¼ãƒˆæ¸ˆã¿çŠ¶æ…‹ãƒã‚§ãƒƒã‚¯
-		//â€»ope_type::sort_predicate() ã‚’ä½¿ç”¨ã—ã¦æ¢ç´¢ï¼ˆæ¨™æº–ã§ã¯ã€ãƒ‡ãƒ¼ã‚¿å‹ã® operator<() ã«å¾“ã£ã¦æ¢ç´¢ï¼‰
-		//â€»è‡ªå‹•çš„ãªãƒ­ãƒƒã‚¯å–å¾—ã¯è¡Œã‚ãªã„ã®ã§ã€ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã§åˆ©ç”¨ã™ã‚‹éš›ã¯ã€
-		//ã€€ä¸€é€£ã®å‡¦ç†ãƒ–ãƒ­ãƒƒã‚¯ã®å‰å¾Œã§å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰ã®å–å¾—ã¨è§£æ”¾ã‚’è¡Œã†å¿…è¦ãŒã‚ã‚‹
+		//ƒ\[ƒgÏ‚İó‘Ôƒ`ƒFƒbƒN
+		//¦ope_type::sort_predicate() ‚ğg—p‚µ‚Ä’Tõi•W€‚Å‚ÍAƒf[ƒ^Œ^‚Ì operator<() ‚É]‚Á‚Ä’Tõj
+		//¦©“®“I‚ÈƒƒbƒNæ“¾‚Ís‚í‚È‚¢‚Ì‚ÅAƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚Å—˜—p‚·‚éÛ‚ÍA
+		//@ˆê˜A‚Ìˆ—ƒuƒƒbƒN‚Ì‘OŒã‚Å‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‚Ìæ“¾‚Æ‰ğ•ú‚ğs‚¤•K—v‚ª‚ ‚é
 		bool is_ordered() const
 		{
 			return linkedListCalcUnordered<OPE_TYPE>(m_first, typename ope_type::sort_predicate()) == 0;
 		}
-		//â€»ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°æŒ‡å®šç‰ˆ
+		//¦ƒvƒŒƒfƒBƒP[ƒgŠÖ”w’è”Å
 		template<class PREDICATE>
 		bool is_ordered(PREDICATE predicate) const
 		{
 			return linkedListCalcUnordered<OPE_TYPE>(m_first, predicate) == 0;
 		}
 	public:
-		//ç·šå½¢æ¢ç´¢
-		//â€»æ¢ç´¢å€¤æŒ‡å®šç‰ˆ
-		//â€»ope_type::find_predicate() ã‚’ä½¿ç”¨ã—ã¦æ¢ç´¢ï¼ˆæ¨™æº–ã§ã¯ã€ãƒ‡ãƒ¼ã‚¿å‹ã® operator==() ã«å¾“ã£ã¦æ¢ç´¢ï¼‰
-		//â€»è‡ªå‹•çš„ãªå…±æœ‰ãƒ­ãƒƒã‚¯å–å¾—ã¯è¡Œã‚ãªã„ã®ã§ã€ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã§åˆ©ç”¨ã™ã‚‹éš›ã¯ã€
-		//ã€€ä¸€é€£ã®å‡¦ç†ãƒ–ãƒ­ãƒƒã‚¯ã®å‰å¾Œã§å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰ã®å–å¾—ã¨è§£æ”¾ã‚’è¡Œã†å¿…è¦ãŒã‚ã‚‹
+		//üŒ`’Tõ
+		//¦’Tõ’lw’è”Å
+		//¦ope_type::find_predicate() ‚ğg—p‚µ‚Ä’Tõi•W€‚Å‚ÍAƒf[ƒ^Œ^‚Ì operator==() ‚É]‚Á‚Ä’Tõj
+		//¦©“®“I‚È‹¤—LƒƒbƒNæ“¾‚Ís‚í‚È‚¢‚Ì‚ÅAƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚Å—˜—p‚·‚éÛ‚ÍA
+		//@ˆê˜A‚Ìˆ—ƒuƒƒbƒN‚Ì‘OŒã‚Å‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‚Ìæ“¾‚Æ‰ğ•ú‚ğs‚¤•K—v‚ª‚ ‚é
 		template<typename V>
 		iterator find_value(const V& value)
 		{
 			iterator found = iteratorLinearSearchValue(begin(), end(), value, typename ope_type::find_predicate());
 			return std::move(found);
 		}
-		//â€»æ¯”è¼ƒé–¢æ•°ï¼‹å€¤æŒ‡å®šç‰ˆ
+		//¦”äŠrŠÖ”{’lw’è”Å
 		template<typename V, class PREDICATE>
 		iterator find_value(const V& value, PREDICATE predicate)
 		{
 			iterator found = iteratorLinearSearchValue(begin(), end(), value, predicate);
 			return std::move(found);
 		}
-		//â€»æ¯”è¼ƒé–¢æ•°æŒ‡å®šç‰ˆ
-		//â€»å€¤ã®æŒ‡å®šã¯é–¢æ•°ã«å«ã‚“ã§ãŠãï¼ˆã‚¯ãƒ­â€•ã‚¸ãƒ£ã‚’ç”¨ã„ã‚‹ãªã©ã™ã‚‹ï¼‰
+		//¦”äŠrŠÖ”w’è”Å
+		//¦’l‚Ìw’è‚ÍŠÖ”‚ÉŠÜ‚ñ‚Å‚¨‚­iƒNƒ\ƒWƒƒ‚ğ—p‚¢‚é‚È‚Ç‚·‚éj
 		template<class PREDICATE>
 		iterator find(PREDICATE predicate)
 		{
@@ -2358,26 +2456,27 @@ namespace linked_list
 			return std::move(found);
 		}
 	#ifdef ENABLE_BINARY_SEARCH
-		//äºŒåˆ†æ¢ç´¢
-		//â€»æ¢ç´¢å€¤æŒ‡å®šç‰ˆ
-		//â€»ope_type::search_comparison() ã‚’ä½¿ç”¨ã—ã¦æ¢ç´¢ï¼ˆæ¨™æº–ã§ã¯ã€ãƒ‡ãƒ¼ã‚¿å‹ã® operator==() ã¨ operator<() ã«å¾“ã£ã¦æ¢ç´¢ï¼‰
-		//â€»è‡ªå‹•çš„ãªå…±æœ‰ãƒ­ãƒƒã‚¯å–å¾—ã¯è¡Œã‚ãªã„ã®ã§ã€ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ã§åˆ©ç”¨ã™ã‚‹éš›ã¯ã€
-		//ã€€ä¸€é€£ã®å‡¦ç†ãƒ–ãƒ­ãƒƒã‚¯ã®å‰å¾Œã§å…±æœ‰ãƒ­ãƒƒã‚¯ï¼ˆãƒªãƒ¼ãƒ‰ãƒ­ãƒƒã‚¯ï¼‰ã®å–å¾—ã¨è§£æ”¾ã‚’è¡Œã†å¿…è¦ãŒã‚ã‚‹
+		//“ñ•ª’Tõ
+		//¦’Tõ’lw’è”Å
+		//¦ope_type::search_comparison() ‚ğg—p‚µ‚Ä’Tõi•W€‚Å‚ÍAƒf[ƒ^Œ^‚Ì operator==() ‚Æ operator<() ‚É]‚Á‚Ä’Tõj
+		//¦©“®“I‚È‹¤—LƒƒbƒNæ“¾‚Ís‚í‚È‚¢‚Ì‚ÅAƒ}ƒ‹ƒ`ƒXƒŒƒbƒh‚Å—˜—p‚·‚éÛ‚ÍA
+		//@ˆê˜A‚Ìˆ—ƒuƒƒbƒN‚Ì‘OŒã‚Å‹¤—LƒƒbƒNiƒŠ[ƒhƒƒbƒNj‚Ìæ“¾‚Æ‰ğ•ú‚ğs‚¤•K—v‚ª‚ ‚é
+		//y’ˆÓz’á‘¬ˆ—
 		template<typename V>
 		iterator binary_search_value(const V& value)
 		{
 			iterator found = iteratorBinarySearchValue(begin(), end(), value, typename ope_type::search_comparison());
 			return std::move(found);
 		}
-		//â€»æ¯”è¼ƒé–¢æ•°ï¼‹å€¤æŒ‡å®šç‰ˆ
+		//¦”äŠrŠÖ”{’lw’è”Å
 		template<typename V, class COMPARISON>
 		iterator binary_search_value(const V& value, COMPARISON comparison)
 		{
 			iterator found = iteratorBinarySearchValue(begin(), end(), value, comparison);
 			return std::move(found);
 		}
-		//â€»æ¯”è¼ƒé–¢æ•°æŒ‡å®šç‰ˆ
-		//â€»å€¤ã®æŒ‡å®šã¯é–¢æ•°ã«å«ã‚“ã§ãŠãï¼ˆã‚¯ãƒ­â€•ã‚¸ãƒ£ã‚’ç”¨ã„ã‚‹ãªã©ã™ã‚‹ï¼‰
+		//¦”äŠrŠÖ”w’è”Å
+		//¦’l‚Ìw’è‚ÍŠÖ”‚ÉŠÜ‚ñ‚Å‚¨‚­iƒNƒ\ƒWƒƒ‚ğ—p‚¢‚é‚È‚Ç‚·‚éj
 		template<class COMPARISON>
 		iterator binary_search(COMPARISON comparison)
 		{
@@ -2386,38 +2485,39 @@ namespace linked_list
 		}
 	#endif//ENABLE_BINARY_SEARCH
 
-		//ãƒªã‚¹ãƒˆæ“ä½œç³»ãƒ¡ã‚½ãƒƒãƒ‰
-		//â€»merge(), splice(), reverse(), unique()ã«ã¯éå¯¾å¿œ
+		//ƒŠƒXƒg‘€ìŒnƒƒ\ƒbƒh
+		//¦merge(), splice_after(), reverse(), unique()‚É‚Í”ñ‘Î‰
 
 	public:
-		//ãƒ ãƒ¼ãƒ–ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+		//ƒ€[ƒuƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		container(const container&& con) :
 			m_first(con.m_first),
 			m_last(con.m_last)
 		{}
-		//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+		//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		container(const container& con) :
 			m_first(con.m_first),
 			m_last(con.m_last)
 		{}
-		//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+		//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 		container() :
 			m_first(nullptr),
 			m_last(nullptr)
 		{}
-		//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+		//ƒfƒXƒgƒ‰ƒNƒ^
 		~container()
 		{}
 	private:
-		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-		node_type* m_first;//å…ˆé ­ãƒãƒ¼ãƒ‰
-		node_type* m_last;//æœ«å°¾ãƒãƒ¼ãƒ‰
-		mutable lock_type m_lock;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+		//ƒtƒB[ƒ‹ƒh
+		node_type* m_first;//æ“ªƒm[ƒh
+		node_type* m_last;//––”öƒm[ƒh
+		mutable lock_type m_lock;//ƒƒbƒNƒIƒuƒWƒFƒNƒg
 	};
-	//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®ãƒ ãƒ¼ãƒ–ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+#ifdef ENABLE_REVERSE_ITERATOR
+	//ƒCƒeƒŒ[ƒ^‚Ìƒ€[ƒuƒIƒyƒŒ[ƒ^
 	template<class OPE_TYPE>
-	//typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(typename container<OPE_TYPE>::const_reverse_iterator&& rhs)//GCCã¯OK, VC++ã¯NG
-	typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(const typename container<OPE_TYPE>::reverse_iterator&& rhs)//VC++ã‚‚OK
+	//typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(typename container<OPE_TYPE>::const_reverse_iterator&& rhs)//GCC‚ÍOK, VC++‚ÍNG
+	typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(const typename container<OPE_TYPE>::reverse_iterator&& rhs)//VC++‚àOK
 	{
 		m_con = rhs.m_con;
 		m_node = rhs.m_node;
@@ -2433,10 +2533,10 @@ namespace linked_list
 		}
 		return *this;
 	}
-	//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®ã‚³ãƒ”ãƒ¼ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
+	//ƒCƒeƒŒ[ƒ^‚ÌƒRƒs[ƒIƒyƒŒ[ƒ^
 	template<class OPE_TYPE>
-	//typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(typename container<OPE_TYPE>::const_reverse_iterator& rhs)//GCCã¯OK, VC++ã¯NG
-	typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(const typename container<OPE_TYPE>::reverse_iterator& rhs)//VC++ã‚‚OK
+	//typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(typename container<OPE_TYPE>::const_reverse_iterator& rhs)//GCC‚ÍOK, VC++‚ÍNG
+	typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(const typename container<OPE_TYPE>::reverse_iterator& rhs)//VC++‚àOK
 	{
 		m_con = rhs.m_con;
 		m_node = rhs.m_node;
@@ -2452,10 +2552,10 @@ namespace linked_list
 		}
 		return *this;
 	}
-	//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®ãƒ ãƒ¼ãƒ–ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒCƒeƒŒ[ƒ^‚Ìƒ€[ƒuƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	template<class OPE_TYPE>
-	//container<OPE_TYPE>::iterator::iterator(typename container<OPE_TYPE>::const_reverse_iterator&& obj) ://GCCã¯OK, VC++ã¯NG
-	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator&& obj) ://VC++ã‚‚OK
+	//container<OPE_TYPE>::iterator::iterator(typename container<OPE_TYPE>::const_reverse_iterator&& obj) ://GCC‚ÍOK, VC++‚ÍNG
+	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator&& obj) ://VC++‚àOK
 		m_con(obj.m_con),
 		m_node(obj.m_node),
 		m_isEnd(false)
@@ -2470,10 +2570,10 @@ namespace linked_list
 				m_node = const_cast<node_type*>(m_con->m_first);
 		}
 	}
-	//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒCƒeƒŒ[ƒ^‚ÌƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	template<class OPE_TYPE>
-	//container<OPE_TYPE>::iterator::iterator(typename container<OPE_TYPE>::const_reverse_iterator& obj) ://GCCã¯OK, VC++ã¯NG
-	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator& obj) ://VC++ã‚‚OK
+	//container<OPE_TYPE>::iterator::iterator(typename container<OPE_TYPE>::const_reverse_iterator& obj) ://GCC‚ÍOK, VC++‚ÍNG
+	container<OPE_TYPE>::iterator::iterator(const typename container<OPE_TYPE>::reverse_iterator& obj) ://VC++‚àOK
 		m_con(obj.m_con),
 		m_node(obj.m_node),
 		m_isEnd(false)
@@ -2488,22 +2588,23 @@ namespace linked_list
 				m_node = const_cast<node_type*>(m_con->m_first);
 		}
 	}
+#endif//ENABLE_REVERSE_ITERATOR
 	//--------------------
-	//åŸºæœ¬å‹å®šç¾©ãƒã‚¯ãƒ­æ¶ˆå»
+	//Šî–{Œ^’è‹`ƒ}ƒNƒÁ‹
 	#undef DECLARE_OPE_TYPES
-}//namespace linked_list
+}//namespace singly_linked_list
 
 //--------------------------------------------------------------------------------
-//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆãƒ†ã‚¹ãƒˆ
+//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒgƒeƒXƒg
 //--------------------------------------------------------------------------------
 
-#include <algorithm>//std::for_eachç”¨
-#include <chrono>//C++11 æ™‚é–“è¨ˆæ¸¬ç”¨
-#include <list>//std::listç”¨ï¼ˆæ¯”è¼ƒç”¨ï¼‰
-#include <assert.h>//assertç”¨
+#include <algorithm>//std::for_each—p
+#include <chrono>//C++11 ŠÔŒv‘ª—p
+#include <forward_list>//C++11 std::forward_list—pi”äŠr—pj
+#include <assert.h>//assert—p
 
 //----------------------------------------
-//ãƒ†ã‚¹ãƒˆç”¨è£œåŠ©é–¢æ•°
+//ƒeƒXƒg—p•â•ŠÖ”
 #ifdef PRINT_TEST_DATA_DETAIL
 template<typename... Tx>
 inline int printf_detail(const char* fmt, Tx... args)
@@ -2524,35 +2625,32 @@ inline int printf_dbg_search(const char* fmt, ...){ return 0; }
 #endif//PRINT_TEST_DATA_SEARCH
 
 //----------------------------------------
-//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿
+//ƒeƒXƒgƒf[ƒ^
 struct data_t
 {
-	mutable const data_t* m_prev;//å‰ãƒãƒ¼ãƒ‰
-	mutable const data_t* m_next;//æ¬¡ãƒãƒ¼ãƒ‰
+	mutable const data_t* m_next;//Ÿƒm[ƒh
 	
-	int m_key;//ã‚­ãƒ¼
-	int m_val;//å€¤
+	int m_key;//ƒL[
+	int m_val;//’l
 	
-	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	data_t(const int key, const int val) :
 		m_next(nullptr),
-		m_prev(nullptr),
 		m_key(key),
 		m_val(val)
 	{}
 	data_t() :
 		m_next(nullptr),
-		m_prev(nullptr),
 		m_key(0),
 		m_val(0)
 	{}
 
-	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚½ãƒ¼ãƒˆç”¨ã®æ¯”è¼ƒæ¼”ç®—å­ï¼ˆå¿…é ˆã§ã¯ãªã„ï¼‰
+	//ƒfƒtƒHƒ‹ƒg‚Ìƒ\[ƒg—p‚Ì”äŠr‰‰Zqi•K{‚Å‚Í‚È‚¢j
 	inline bool operator<(const data_t& rhs) const
 	{
 		return m_key < rhs.m_key;
 	}
-	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ç·šå½¢ï¼äºŒåˆ†æ¢ç´¢ç”¨ã®æ¯”è¼ƒæ¼”ç®—å­ï¼ˆå¿…é ˆã§ã¯ãªã„ï¼‰
+	//ƒfƒtƒHƒ‹ƒg‚ÌüŒ`^“ñ•ª’Tõ—p‚Ì”äŠr‰‰Zqi•K{‚Å‚Í‚È‚¢j
 	inline bool operator==(const int key) const
 	{
 		return m_key == key;
@@ -2565,7 +2663,7 @@ struct data_t
 #endif//ENABLE_BINARY_SEARCH
 };
 #ifdef ENABLE_BINARY_SEARCH
-//â€»std::binary_searchã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€ã“ã®ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ã‚‚å¿…è¦
+//¦std::binary_search‚ğg—p‚·‚éê‡‚ÍA‚±‚ÌƒIƒyƒŒ[ƒ^‚à•K—v
 static bool operator<(const int key, const data_t& rhs)
 {
 	return key < rhs.m_key;
@@ -2573,30 +2671,25 @@ static bool operator<(const int key, const data_t& rhs)
 #endif//ENABLE_BINARY_SEARCH
 
 //----------------------------------------
-//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿å‘ã‘ãƒãƒ¼ãƒ‰æ“ä½œç”¨ã‚¯ãƒ©ã‚¹ï¼ˆCRTPï¼‰
-struct ope_t : public linked_list::base_ope_t<ope_t, data_t>
+//ƒeƒXƒgƒf[ƒ^Œü‚¯ƒm[ƒh‘€ì—pƒNƒ‰ƒXiCRTPj
+struct ope_t : public singly_linked_list::base_ope_t<ope_t, data_t>
 {
-	//å‰ãƒãƒ¼ãƒ‰ã‚’å–å¾—
-	inline static const node_type* getPrev(const node_type& node){ return node.m_prev; }
-	//å‰ãƒãƒ¼ãƒ‰ã‚’å¤‰æ›´
-	inline static void setPrev(node_type& node, const node_type* prev){ node.m_prev = prev; }
-	
-	//æ¬¡ãƒãƒ¼ãƒ‰ã‚’å–å¾—
+	//Ÿƒm[ƒh‚ğæ“¾
 	inline static const node_type* getNext(const node_type& node){ return node.m_next; }
-	//æ¬¡ãƒãƒ¼ãƒ‰ã‚’å¤‰æ›´
+	//Ÿƒm[ƒh‚ğ•ÏX
 	inline static void setNext(node_type& node, const node_type* next){ node.m_next = next; }
 
-	//ãƒ­ãƒƒã‚¯å‹
-	//â€»ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆï¼ˆdummy_shared_lockï¼‰ã®ã¾ã¾ã¨ã™ã‚‹
-	//typedef shared_spin_lock lock_type;//ãƒ­ãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‹
+	//ƒƒbƒNŒ^
+	//¦ƒfƒtƒHƒ‹ƒgidummy_shared_lockj‚Ì‚Ü‚Ü‚Æ‚·‚é
+	//typedef shared_spin_lock lock_type;//ƒƒbƒNƒIƒuƒWƒFƒNƒgŒ^
 };
 
 //----------------------------------------
-//ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿æ“ä½œã‚¯ãƒ©ã‚¹â‘¡ï¼šã‚½ãƒ¼ãƒˆï¼æ¢ç´¢æ–¹æ³•ã‚’ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‹ã‚‰å¤‰ãˆã‚‹
+//ƒeƒXƒgƒf[ƒ^‘€ìƒNƒ‰ƒX‡AFƒ\[ƒg^’Tõ•û–@‚ğƒfƒtƒHƒ‹ƒg‚©‚ç•Ï‚¦‚é
 struct another_ope_t : public ope_t
 {
-	//ã‚½ãƒ¼ãƒˆç”¨ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
-	//â€»m_valãƒ¡ãƒ³ãƒãƒ¼ã‚’åŸºæº–ã«ã‚½ãƒ¼ãƒˆ
+	//ƒ\[ƒg—pƒvƒŒƒfƒBƒP[ƒgŠÖ”ƒIƒuƒWƒFƒNƒg
+	//¦m_valƒƒ“ƒo[‚ğŠî€‚Éƒ\[ƒg
 	struct sort_predicate{
 		inline bool operator()(const node_type& lhs, const node_type& rhs) const
 		{
@@ -2604,8 +2697,8 @@ struct another_ope_t : public ope_t
 		}
 	};
 
-	//ç·šå½¢æ¢ç´¢ç”¨ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
-	//â€»m_valãƒ¡ãƒ³ãƒãƒ¼ã‚’æ¢ç´¢
+	//üŒ`’Tõ—pƒvƒŒƒfƒBƒP[ƒgŠÖ”ƒIƒuƒWƒFƒNƒg
+	//¦m_valƒƒ“ƒo[‚ğ’Tõ
 	struct find_predicate{
 		inline bool operator()(const node_type& lhs, const int rhs) const
 		{
@@ -2614,8 +2707,8 @@ struct another_ope_t : public ope_t
 	};
 
 #ifdef ENABLE_BINARY_SEARCH
-	//äºŒåˆ†æ¢ç´¢ç”¨æ¯”è¼ƒé–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
-	//â€»m_valãƒ¡ãƒ³ãƒãƒ¼ã‚’æ¯”è¼ƒ
+	//“ñ•ª’Tõ—p”äŠrŠÖ”ƒIƒuƒWƒFƒNƒg
+	//¦m_valƒƒ“ƒo[‚ğ”äŠr
 	struct search_comparison{
 		inline int operator()(const node_type& lhs, const int rhs) const
 		{
@@ -2626,20 +2719,20 @@ struct another_ope_t : public ope_t
 };
 
 //----------------------------------------
-//ãƒ†ã‚¹ãƒˆãƒ¡ã‚¤ãƒ³
+//ƒeƒXƒgƒƒCƒ“
 int main(const int argc, const char* argv[])
 {
 	//--------------------
-	//ãƒ†ã‚¹ãƒˆâ‘ ï¼šåŸºæœ¬ãƒ­ã‚¸ãƒƒã‚¯ãƒ†ã‚¹ãƒˆ
+	//ƒeƒXƒg‡@FŠî–{ƒƒWƒbƒNƒeƒXƒg
 	{
 		printf("--------------------------------------------------------------------------------\n");
-		printf("[Test for linked_list::container(User defined type)]\n");
+		printf("[Test for singly_linked_list::container(User defined type)]\n");
 
-		//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆã‚³ãƒ³ãƒ†ãƒŠç”Ÿæˆ
-		typedef linked_list::container<ope_t> container_t;
+		//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒgƒRƒ“ƒeƒi¶¬
+		typedef singly_linked_list::container<ope_t> container_t;
 		container_t con;
 
-		//ãƒ‡ãƒ¼ã‚¿ã‚’è¡¨ç¤º
+		//ƒf[ƒ^‚ğ•\¦
 		auto printAll = [&con]()
 		{
 			printf("size=%d\n", con.size());
@@ -2656,9 +2749,12 @@ int main(const int argc, const char* argv[])
 			printf("\n");
 		};
 
-		//ãƒ‡ãƒ¼ã‚¿ã‚’é€†é †ã«è¡¨ç¤º
+		//ƒf[ƒ^‚ğ‹t‡‚É•\¦
+		//y’ˆÓz’á‘¬ˆ—
+		//¦std::forward_list‚É‚È‚¢ˆ—
 		auto printReverse = [&con]()
 		{
+		#ifdef ENABLE_REVERSE_ITERATOR
 			printf("size=%d\n", con.size());
 			printf("list(reverse)=");
 			if (con.empty())
@@ -2673,65 +2769,10 @@ int main(const int argc, const char* argv[])
 				}
 			);
 			printf("\n");
+		#endif//ENABLE_REVERSE_ITERATOR
 		};
 
-		//æœ«å°¾ã«é€£ç¶šãƒ—ãƒƒã‚·ãƒ¥(1)
-		auto continuous_push_back = [&con](const int num)
-		{
-			printf("\n");
-			printf("[push_back * %d]\n", num);
-			for (int i = 0; i < num; ++i)
-			{
-				const int key = i;
-				const int val = 100 + i;
-				printf("push_back(%d:%d) ... ", key, val);
-				data_t* data = new data_t(key, val);
-				if (con.push_back(*data))
-					printf("OK\n");
-				else
-				{
-					delete data;
-					printf("NG!\n");
-				}
-			}
-		};
-		continuous_push_back(10);
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		//printReverse();//å…¨ä»¶é€†é †è¡¨ç¤º
-
-		//å…ˆé ­ã‹ã‚‰é€£ç¶šãƒãƒƒãƒ—(1)
-		auto continuous_pop_front = [&con](const int num)
-		{
-			printf("\n");
-			printf("[pop_front * %d]\n", num);
-			for (int i = 0; i < num; ++i)
-			{
-				printf("pop_front() ... ");
-				data_t* data = con.pop_front();
-				if (data)
-				{
-					printf("OK [%d:%d]\n", data->m_key, data->m_val);
-					delete data;
-				}
-				else
-					printf("NG!\n");
-			}
-		};
-		continuous_pop_front(5);
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		//printReverse();//å…¨ä»¶é€†é †è¡¨ç¤º
-
-		//æœ«å°¾ã«é€£ç¶šãƒ—ãƒƒã‚·ãƒ¥(2)
-		continuous_push_back(20);
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		//printReverse();//å…¨ä»¶é€†é †è¡¨ç¤º
-
-		//å…ˆé ­ã‹ã‚‰é€£ç¶šãƒãƒƒãƒ—(2)
-		continuous_pop_front(25);
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		//printReverse();//å…¨ä»¶é€†é †è¡¨ç¤º
-
-		//å…ˆé ­ã«é€£ç¶šãƒ—ãƒƒã‚·ãƒ¥(1)
+		//æ“ª‚É˜A‘±ƒvƒbƒVƒ…(1)
 		auto continuous_push_front = [&con](const int num)
 		{
 			printf("\n");
@@ -2752,10 +2793,69 @@ int main(const int argc, const char* argv[])
 			}
 		};
 		continuous_push_front(10);
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		//printReverse();//å…¨ä»¶é€†é †è¡¨ç¤º
+		printAll();//‘SŒ•\¦
+		//printReverse();//‘SŒ‹t‡•\¦
 
-		//æœ«å°¾ã‹ã‚‰é€£ç¶šãƒãƒƒãƒ—(1)
+		//æ“ª‚©‚ç˜A‘±ƒ|ƒbƒv(1)
+		auto continuous_pop_front = [&con](const int num)
+		{
+			printf("\n");
+			printf("[pop_front * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				printf("pop_front() ... ");
+				data_t* data = con.pop_front();
+				if (data)
+				{
+					printf("OK [%d:%d]\n", data->m_key, data->m_val);
+					delete data;
+				}
+				else
+					printf("NG!\n");
+			}
+		};
+		continuous_pop_front(5);
+		printAll();//‘SŒ•\¦
+		//printReverse();//‘SŒ‹t‡•\¦
+
+		//æ“ª‚É˜A‘±ƒvƒbƒVƒ…(2)
+		continuous_push_front(20);
+		printAll();//‘SŒ•\¦
+		//printReverse();//‘SŒ‹t‡•\¦
+
+		//æ“ª‚©‚ç˜A‘±ƒ|ƒbƒv(2)
+		continuous_pop_front(25);
+		printAll();//‘SŒ•\¦
+		//printReverse();//‘SŒ‹t‡•\¦
+
+		//––”ö‚É˜A‘±ƒvƒbƒVƒ…(1)
+		//¦std::forward_list‚É‚È‚¢ˆ—
+		auto continuous_push_back = [&con](const int num)
+		{
+			printf("\n");
+			printf("[push_back * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				const int key = i;
+				const int val = 100 + i;
+				printf("push_back(%d:%d) ... ", key, val);
+				data_t* data = new data_t(key, val);
+				if (con.push_back(*data))
+					printf("OK\n");
+				else
+				{
+					delete data;
+					printf("NG!\n");
+				}
+			}
+		};
+		continuous_push_back(10);
+		printAll();//‘SŒ•\¦
+		//printReverse();//‘SŒ‹t‡•\¦
+
+		//––”ö‚©‚ç˜A‘±ƒ|ƒbƒv(1)
+		//y’ˆÓz’á‘¬ˆ—
+		//¦std::forward_list‚É‚È‚¢ˆ—
 		auto continuous_pop_back = [&con](const int num)
 		{
 			printf("\n");
@@ -2774,92 +2874,142 @@ int main(const int argc, const char* argv[])
 			}
 		};
 		continuous_pop_back(5);
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		//printReverse();//å…¨ä»¶é€†é †è¡¨ç¤º
+		printAll();//‘SŒ•\¦
+		//printReverse();//‘SŒ‹t‡•\¦
 
-		//å…ˆé ­ã«é€£ç¶šãƒ—ãƒƒã‚·ãƒ¥(2)
-		continuous_push_front(20);
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		//printReverse();//å…¨ä»¶é€†é †è¡¨ç¤º
+		//––”ö‚É˜A‘±ƒvƒbƒVƒ…(2)
+		continuous_push_back(20);
+		printAll();//‘SŒ•\¦
+		//printReverse();//‘SŒ‹t‡•\¦
 
-		//æœ«å°¾ã‹ã‚‰é€£ç¶šãƒãƒƒãƒ—(2)
+		//––”ö‚©‚ç˜A‘±ƒ|ƒbƒv(2)
 		continuous_pop_back(25);
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		//printReverse();//å…¨ä»¶é€†é †è¡¨ç¤º
+		printAll();//‘SŒ•\¦
+		//printReverse();//‘SŒ‹t‡•\¦
 
-		//ãƒ‡ãƒ¼ã‚¿ç™»éŒ²ï¼špush_back()ãƒ¡ã‚½ãƒƒãƒ‰
+		//ƒf[ƒ^“o˜^Fpush_front()ƒƒ\ƒbƒh
 		printf("\n");
-		printf("[push_back(1)]\n");
-		auto push_back = [&con](const int key, const int val)
+		printf("[push_front(1)]\n");
+		auto push_front = [&con](const int key, const int val)
 		{
 			data_t* data = new data_t(key, val);
-			con.push_back(*data);
+			con.push_front(*data);
 		};
-		push_back(5, 101);
-		push_back(8, 102);
-		push_back(3, 103);
-		push_back(1, 104);
-		push_back(7, 105);
-		push_back(4, 106);
-		push_back(13, 107);
-		push_back(10, 108);
-		push_back(5, 109);
+		push_front(5, 101);
+		push_front(8, 102);
+		push_front(3, 103);
+		push_front(1, 104);
+		push_front(7, 105);
+		push_front(4, 106);
+		push_front(13, 107);
+		push_front(10, 108);
+		push_front(5, 109);
 		
-		//ãƒ‡ãƒ¼ã‚¿ã‚’è¡¨ç¤º
+		//ƒf[ƒ^‚ğ•\¦
 		printAll();
 
-		//ãƒ‡ãƒ¼ã‚¿ã‚’é€†é †ã«è¡¨ç¤º
+		//ƒf[ƒ^‚ğ‹t‡‚É•\¦
 		printReverse();
 
-		//ã‚½â€•ãƒˆ
+		//ƒ\\ƒg
 		printf("\n");
 		printf("[sort]\n");
-		con.sort();//é€šå¸¸ã‚½ãƒ¼ãƒˆ
-		//con.stable_sort();//å®‰å®šã‚½ãƒ¼ãƒˆ
-		printAll();//å…¨ä»¶è¡¨ç¤º
+		con.sort();//’Êíƒ\[ƒg
+		//con.stable_sort();//ˆÀ’èƒ\[ƒg
+		printAll();//‘SŒ•\¦
 
-		//é€†é †ã«ã‚½ãƒ¼ãƒˆ â€»ã‚«ã‚¹ã‚¿ãƒ ãƒ—ãƒ¬ãƒ‡ã‚£ã‚±ãƒ¼ãƒˆé–¢æ•°ã‚’ä½¿ç”¨
+		//‹t‡‚Éƒ\[ƒg ¦ƒJƒXƒ^ƒ€ƒvƒŒƒfƒBƒP[ƒgŠÖ”‚ğg—p
 		printf("\n");
 		printf("[custom sort]\n");
 		auto reverse_pred = [](const data_t& lhs, const data_t& rhs) -> bool {return lhs.m_key > rhs.m_key; };
-		con.sort(reverse_pred);//é€šå¸¸ã‚½ãƒ¼ãƒˆ
-		//con.stable_sort(reverse_pred);//å®‰å®šã‚½ãƒ¼ãƒˆ
-		printAll();//å…¨ä»¶è¡¨ç¤º
+		con.sort(reverse_pred);//’Êíƒ\[ƒg
+		//con.stable_sort(reverse_pred);//ˆÀ’èƒ\[ƒg
+		printAll();//‘SŒ•\¦
 
 	#if 0
 		{
 			printf("\n");
 			printf("constructor\n");
+			container_t::iterator ite_bb = con.before_begin();
 			container_t::iterator ite = con.begin();
 			container_t::reverse_iterator rite = con.rbegin();
 			container_t::iterator ite_end = con.end();
 			container_t::reverse_iterator rite_end = con.rend();
 			container_t::iterator ite2 = con.rbegin();
+			container_t::reverse_iterator rite2_bb = con.before_begin();
 			container_t::reverse_iterator rite2 = con.begin();
 			container_t::iterator ite2_end = con.rend();
 			container_t::reverse_iterator rite2_end = con.end();
+			if (ite_bb.isExist()) printf("ite_bb: key=%d, value=%d\n", ite_bb->m_key, ite_bb->m_val);
 			if (ite.isExist()) printf("ite: key=%d, value=%d\n", ite->m_key, ite->m_val);
 			if (rite.isExist()) printf("rite: key=%d, value=%d\n", rite->m_key, rite->m_val);
 			if (ite_end.isExist()) printf("ite_end: key=%d, value=%d\n", ite_end->m_key, ite_end->m_val);
 			if (rite_end.isExist()) printf("rite_end: key=%d, value=%d\n", rite_end->m_key, rite_end->m_val);
 			if (ite2.isExist()) printf("ite2: key=%d, value=%d\n", ite2->m_key, ite2->m_val);
+			if (rite2_bb.isExist()) printf("rite2_bb: key=%d, value=%d\n", rite2_bb->m_key, rite2_bb->m_val);
 			if (rite2.isExist()) printf("rite2: key=%d, value=%d\n", rite2->m_key, rite2->m_val);
 			if (ite2_end.isExist()) printf("ite2_end: key=%d, value=%d\n", ite2_end->m_key, ite2_end->m_val);
 			if (rite2_end.isExist()) printf("rite2_end: key=%d, value=%d\n", rite2_end->m_key, rite2_end->m_val);
 			printf("copy operator\n");
+			ite_bb = con.before_begin();
 			ite = con.begin();
 			rite = con.rbegin();
 			ite_end = con.end();
 			rite_end = con.rend();
 			ite2 = con.rbegin();
+			rite2_bb = con.before_begin();
 			rite2 = con.begin();
 			ite2_end = con.rend();
 			rite2_end = con.end();
+			if (ite_bb.isExist()) printf("ite_bb: key=%d, value=%d\n", ite_bb->m_key, ite_bb->m_val);
 			if (ite.isExist()) printf("ite: key=%d, value=%d\n", ite->m_key, ite->m_val);
 			if (rite.isExist()) printf("rite: key=%d, value=%d\n", rite->m_key, rite->m_val);
 			if (ite_end.isExist()) printf("ite_end: key=%d, value=%d\n", ite_end->m_key, ite_end->m_val);
 			if (rite_end.isExist()) printf("rite_end: key=%d, value=%d\n", rite_end->m_key, rite_end->m_val);
 			if (ite2.isExist()) printf("ite2: key=%d, value=%d\n", ite2->m_key, ite2->m_val);
+			if (rite2_bb.isExist()) printf("rite2_bb: key=%d, value=%d\n", rite2_bb->m_key, rite2_bb->m_val);
+			if (rite2.isExist()) printf("rite2: key=%d, value=%d\n", rite2->m_key, rite2->m_val);
+			if (ite2_end.isExist()) printf("ite2_end: key=%d, value=%d\n", ite2_end->m_key, ite2_end->m_val);
+			if (rite2_end.isExist()) printf("rite2_end: key=%d, value=%d\n", rite2_end->m_key, rite2_end->m_val);
+			printf("++\n");
+			++ite_bb;
+			++ite;
+			++rite;
+			++ite_end;
+			++rite_end;
+			++ite2;
+			++rite2_bb;
+			++rite2;
+			++ite2_end;
+			++rite2_end;
+			if (ite_bb.isExist()) printf("ite_bb: key=%d, value=%d\n", ite_bb->m_key, ite_bb->m_val);
+			if (ite.isExist()) printf("ite: key=%d, value=%d\n", ite->m_key, ite->m_val);
+			if (rite.isExist()) printf("rite: key=%d, value=%d\n", rite->m_key, rite->m_val);
+			if (ite_end.isExist()) printf("ite_end: key=%d, value=%d\n", ite_end->m_key, ite_end->m_val);
+			if (rite_end.isExist()) printf("rite_end: key=%d, value=%d\n", rite_end->m_key, rite_end->m_val);
+			if (ite2.isExist()) printf("ite2: key=%d, value=%d\n", ite2->m_key, ite2->m_val);
+			if (rite2_bb.isExist()) printf("rite2_bb: key=%d, value=%d\n", rite2_bb->m_key, rite2_bb->m_val);
+			if (rite2.isExist()) printf("rite2: key=%d, value=%d\n", rite2->m_key, rite2->m_val);
+			if (ite2_end.isExist()) printf("ite2_end: key=%d, value=%d\n", ite2_end->m_key, ite2_end->m_val);
+			if (rite2_end.isExist()) printf("rite2_end: key=%d, value=%d\n", rite2_end->m_key, rite2_end->m_val);
+			printf("--\n");
+			--ite_bb;
+			--ite;
+			--rite;
+			--ite_end;
+			--rite_end;
+			--ite2;
+			--rite2_bb;
+			--rite2;
+			--ite2_end;
+			--rite2_end;
+			if (ite_bb.isExist()) printf("ite_bb: key=%d, value=%d\n", ite_bb->m_key, ite_bb->m_val);
+			if (ite.isExist()) printf("ite: key=%d, value=%d\n", ite->m_key, ite->m_val);
+			if (rite.isExist()) printf("rite: key=%d, value=%d\n", rite->m_key, rite->m_val);
+			if (ite_end.isExist()) printf("ite_end: key=%d, value=%d\n", ite_end->m_key, ite_end->m_val);
+			if (rite_end.isExist()) printf("rite_end: key=%d, value=%d\n", rite_end->m_key, rite_end->m_val);
+			if (ite2.isExist()) printf("ite2: key=%d, value=%d\n", ite2->m_key, ite2->m_val);
+			if (rite2_bb.isExist()) printf("rite2_bb: key=%d, value=%d\n", rite2_bb->m_key, rite2_bb->m_val);
 			if (rite2.isExist()) printf("rite2: key=%d, value=%d\n", rite2->m_key, rite2->m_val);
 			if (ite2_end.isExist()) printf("ite2_end: key=%d, value=%d\n", ite2_end->m_key, ite2_end->m_val);
 			if (rite2_end.isExist()) printf("rite2_end: key=%d, value=%d\n", rite2_end->m_key, rite2_end->m_val);
@@ -2920,15 +3070,15 @@ int main(const int argc, const char* argv[])
 		}
 	#endif
 
-		//ç·šå½¢æ¢ç´¢
+		//üŒ`’Tõ
 		printf("\n");
 		printf("[find]\n");
-		printAll();//å…¨ä»¶è¡¨ç¤º
+		printAll();//‘SŒ•\¦
 		auto find = [&con](const int key)
 		{
 			printf("find_value(key=%d)=", key);
-			auto ite = con.find_value(key);//ç·šå½¢æ¢ç´¢
-			//auto ite = std::find(con.begin(), con.end(), key);//ç·šå½¢æ¢ç´¢(STLç‰ˆ)
+			auto ite = con.find_value(key);//üŒ`’Tõ
+			//auto ite = std::find(con.begin(), con.end(), key);//üŒ`’Tõ(STL”Å)
 			if (ite.isExist())
 			{
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
@@ -2945,23 +3095,23 @@ int main(const int argc, const char* argv[])
 		find(7);
 
 	#ifdef ENABLE_BINARY_SEARCH
-		//äºŒåˆ†æ¢ç´¢ï¼ˆã‚½ãƒ¼ãƒˆå‰ï¼‰
+		//“ñ•ª’Tõiƒ\[ƒg‘Oj
 		printf("\n");
 		printf("[binary search(before sort)]\n");
-		printAll();//å…¨ä»¶è¡¨ç¤º
+		printAll();//‘SŒ•\¦
 		auto binary_search = [&con](const int key)
 		{
 			printf("binary_search_value(key=%d)=", key);
-			auto ite = con.binary_search_value(key);//äºŒåˆ†æ¢ç´¢
+			auto ite = con.binary_search_value(key);//“ñ•ª’Tõ
 			if (ite.isExist())
 			{
-			//if (std::binary_search(con.begin(), con.end(), key))//äºŒåˆ†æ¢ç´¢(STLç‰ˆ)
+			//if (std::binary_search(con.begin(), con.end(), key))//“ñ•ª’Tõ(STL”Å)
 			//{
 			//	auto ite = std::lower_bound(con.begin(), con.end(), key);
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
-				--ite;
+				++ite;
 				if (ite.isExist())
-					printf(" prev=[%d:%d]", ite->m_key, ite->m_val);
+					printf(" next=[%d:%d]", ite->m_key, ite->m_val);
 			}
 			else
 				printf("(not found)");
@@ -2971,25 +3121,25 @@ int main(const int argc, const char* argv[])
 		binary_search(6);
 		binary_search(7);
 
-		//äºŒåˆ†æ¢ç´¢ï¼ˆã‚½ãƒ¼ãƒˆå¾Œï¼‰
+		//“ñ•ª’Tõiƒ\[ƒgŒãj
 		printf("\n");
 		printf("[binary search(after sort)]\n");
-		con.sort();//ã‚½ãƒ¼ãƒˆæ¸ˆã¿çŠ¶æ…‹ã«ã™ã‚‹
-		printAll();//å…¨ä»¶è¡¨ç¤º
+		con.sort();//ƒ\[ƒgÏ‚İó‘Ô‚É‚·‚é
+		printAll();//‘SŒ•\¦
 		binary_search(5);
 		binary_search(6);
 		binary_search(7);
 	#endif//ENABLE_BINARY_SEARCH
 
 	#if 0
-		con.sort(reverse_pred);//é€šå¸¸ã‚½ãƒ¼ãƒˆ
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		con.sort();//é€šå¸¸ã‚½ãƒ¼ãƒˆ
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		con.stable_sort(reverse_pred);//å®‰å®šã‚½ãƒ¼ãƒˆ
-		printAll();//å…¨ä»¶è¡¨ç¤º
-		con.stable_sort();//å®‰å®šã‚½ãƒ¼ãƒˆ
-		printAll();//å…¨ä»¶è¡¨ç¤º
+		con.sort(reverse_pred);//’Êíƒ\[ƒg
+		printAll();//‘SŒ•\¦
+		con.sort();//’Êíƒ\[ƒg
+		printAll();//‘SŒ•\¦
+		//con.stable_sort(reverse_pred);//ˆÀ’èƒ\[ƒg
+		printAll();//‘SŒ•\¦
+		//con.stable_sort();//ˆÀ’èƒ\[ƒg
+		printAll();//‘SŒ•\¦
 		find(1);
 		find(2);
 		find(3);
@@ -2998,88 +3148,166 @@ int main(const int argc, const char* argv[])
 		binary_search(3);
 	#endif
 
-		//å‰Šé™¤ï¼‘ï¼šå‰Šé™¤ãƒãƒ¼ãƒ‰ã§æŒ‡å®š
+		//íœ‚PFíœƒm[ƒh‚Åw’è
 		printf("\n");
 		printf("[remove]\n");
 		{
 			auto ite = con.begin();
 			ite += 2;
-			data_t* del = con.remove(*ite);//å‰ã‹ã‚‰3ã¤ç›®ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
+			data_t* del = con.remove(*ite);//æ“ª‚©‚ç3‚Â–Ú‚Ìƒm[ƒh‚ğíœ
 			if (del)
 				delete del;
-			printAll();//å…¨ä»¶è¡¨ç¤º
+			printAll();//‘SŒ•\¦
 		}
 
-		//å‰Šé™¤ï¼’ï¼šã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã§æŒ‡å®š
+		//íœ‚QFƒCƒeƒŒ[ƒ^‚Åw’è
 		printf("\n");
-		printf("[erase(1)]\n");
+		printf("[erase_after(1)]\n");
 		{
-			auto ite = con.end();
-			ite -= 4;
-			data_t* del = con.erase(ite);//å¾Œã‚ã‹ã‚‰4ã¤ç›®ã®ä½ç½®ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
+			auto ite = con.begin();
+			ite += 4;
+			data_t* del = con.erase_after(ite);//æ“ª‚©‚ç5‚Â–Ú‚ÌˆÊ’u‚ÌŒã‚ë‚Ìƒm[ƒh‚ğíœ
 			if (del)
 				delete del;
-			printAll();//å…¨ä»¶è¡¨ç¤º
+			printAll();//‘SŒ•\¦
 		}
 
-		//å‰Šé™¤ï¼“ï¼šã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®ç¯„å›²ã§æŒ‡å®š
+		//íœ‚RFƒCƒeƒŒ[ƒ^‚Ì”ÍˆÍ‚Åw’è
 		printf("\n");
-		printf("[erase(2)]\n");
+		printf("[erase_after(2)]\n");
 		{
-			auto start = con.end();
-			start -= 4;
+			auto start = con.begin();
+			start += 3;
 			auto end = start;
-			end += 2;
-			const data_t* del = con.erase(start, end);//å¾Œã‚ã‹ã‚‰4ã¤ç›®ã®ä½ç½®ã‹ã‚‰2ã¤ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
+			end += 3;
+			const data_t* del = con.erase_after(start, end);//æ“ª‚©‚ç4‚Â–Ú‚ÌˆÊ’u‚ÌŒã‚ë‚©‚ç2‚Â‚Ìƒm[ƒh‚ğíœ
 			while (del)
 			{
 				const data_t* next = del->m_next;
 				delete del;
 				del = next;
 			}
-			printAll();//å…¨ä»¶è¡¨ç¤º
+			printAll();//‘SŒ•\¦
 		}
 
-		//å‰Šé™¤ï¼”ï¼šã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã®ç¯„å›²ã§æŒ‡å®šï¼ˆæœ«å°¾ã¾ã§å‰Šé™¤ï¼‰
+		//íœ‚SFƒCƒeƒŒ[ƒ^‚Ì”ÍˆÍ‚Åw’èi––”ö‚Ü‚Åíœj
 		printf("\n");
-		printf("[erase(3)]\n");
+		printf("[erase_after(3)]\n");
 		{
-			auto start = con.end();
-			start -= 2;
+			auto start = con.begin();
+			start += 2;
 			auto end = con.end();
-			const data_t* del = con.erase(start, end);//å¾Œã‚ã‹ã‚‰2ã¤ç›®ã®ä½ç½®ã‹ã‚‰æœ«å°¾ã¾ã§ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤
+			const data_t* del = con.erase_after(start, end);//æ“ª‚©‚ç3‚Â–Ú‚ÌˆÊ’u‚ÌŒã‚ë‚©‚ç––”ö‚Ü‚Å‚Ìƒm[ƒh‚ğíœ
 			while (del)
 			{
 				const data_t* next = del->m_next;
 				delete del;
 				del = next;
 			}
-			printAll();//å…¨ä»¶è¡¨ç¤º
+			printAll();//‘SŒ•\¦
 		}
 
-		//æŒ¿å…¥ï¼‘ï¼šinsert()ãƒ¡ã‚½ãƒƒãƒ‰
+		//‘}“ü‚PFinsert_after()ƒƒ\ƒbƒh
 		printf("\n");
-		printf("[insert]\n");
+		printf("[insert_after]\n");
 		{
 			auto ite = con.begin();
 			++ite;
 			data_t* data = new data_t(99, 999);
-			con.insert(ite, *data);//å…ˆé ­ã‹ã‚‰2ã¤ç›®ã®ä½ç½®ã«æŒ¿å…¥
-			printAll();//å…¨ä»¶è¡¨ç¤º
+			con.insert_after(ite, *data);//æ“ª‚©‚ç2‚Â–Ú‚ÌˆÊ’u‚ÌŒã‚ë‚É‘}“ü
+			printAll();//‘SŒ•\¦
 		}
 
-		//æŒ¿å…¥ï¼’ï¼šinsert_before()ãƒ¡ã‚½ãƒƒãƒ‰
+		//‘}“ü‚QFbefore_begin() + insert_after()ƒƒ\ƒbƒh
+		printf("\n");
+		printf("[before_begin + insert_after]\n");
+		{
+			auto ite = con.before_begin();
+			data_t* data = new data_t(88, 888);
+			con.insert_after(ite, *data);//æ“ª‚É‘}“üipush_front‚Æ“¯‚¶j
+			printAll();//‘SŒ•\¦
+		}
+
+		//‘}“ü‚RFinsert()ƒƒ\ƒbƒh
+		//¦insert_after()‚Æ“¯‚¶“­‚«
+		//¦std::forward_list‚É‚È‚¢ˆ—
+		printf("\n");
+		printf("[insert]\n");
+		{
+			auto ite = con.begin();
+			ite += 3;
+			data_t* data = new data_t(77, 777);
+			con.insert(ite, *data);//æ“ª‚©‚ç4‚Â–Ú‚ÌˆÊ’u‚É‘}“ü
+			printAll();//‘SŒ•\¦
+		}
+
+		//‘}“ü‚SFinsert_before()ƒƒ\ƒbƒh
+		//y’ˆÓz’á‘¬ˆ—
+		//¦std::forward_list‚É‚È‚¢ˆ—
 		printf("\n");
 		printf("[insert_before]\n");
 		{
 			auto ite = con.begin();
-			ite += 3;
-			data_t* data = new data_t(88, 888);
-			con.insert_before(ite, *data);//å…ˆé ­ã‹ã‚‰4ã¤ç›®ã®ä½ç½®ã®å‰ã«æŒ¿å…¥
-			printAll();//å…¨ä»¶è¡¨ç¤º
+			ite += 2;
+			data_t* data = new data_t(66, 666);
+			con.insert_before(ite, *data);//æ“ª‚©‚ç3‚Â–Ú‚ÌˆÊ’u‚Ì‘O‚É‘}“ü
+			printAll();//‘SŒ•\¦
 		}
 
-		//ã‚¯ãƒªã‚¢
+		//íœ‚TFƒCƒeƒŒ[ƒ^‚Åw’è
+		//y’ˆÓz’á‘¬ˆ—
+		//¦std::forward_list‚É‚È‚¢ˆ—
+		printf("\n");
+		printf("[erase(1)]\n");
+		{
+			auto ite = con.begin();
+			ite += 3;
+			data_t* del = con.erase(ite);//æ“ª‚©‚ç4‚Â–Ú‚ÌˆÊ’u‚Ìƒm[ƒh‚ğíœ
+			if (del)
+				delete del;
+			printAll();//‘SŒ•\¦
+		}
+
+		//íœ‚UFƒCƒeƒŒ[ƒ^‚Ì”ÍˆÍ‚Åw’è
+		//y’ˆÓz’á‘¬ˆ—
+		//¦std::forward_list‚É‚È‚¢ˆ—
+		printf("\n");
+		printf("[erase(2)]\n");
+		{
+			auto start = con.begin();
+			start += 3;
+			auto end = start;
+			end += 2;
+			const data_t* del = con.erase(start, end);//æ“ª‚©‚ç4‚Â–Ú‚ÌˆÊ’u‚©‚ç2‚Â‚Ìƒm[ƒh‚ğíœ
+			while (del)
+			{
+				const data_t* next = del->m_next;
+				delete del;
+				del = next;
+			}
+			printAll();//‘SŒ•\¦
+		}
+
+		//íœ‚VFƒCƒeƒŒ[ƒ^‚Ì”ÍˆÍ‚Åw’èi––”ö‚Ü‚Åíœj
+		//y’ˆÓz’á‘¬ˆ—
+		//¦std::forward_list‚É‚È‚¢ˆ—
+		printf("\n");
+		printf("[erase(3)]\n");
+		{
+			auto start = con.begin();
+			start += 2;
+			auto end = con.end();
+			const data_t* del = con.erase(start, end);//æ“ª‚©‚ç3‚Â–Ú‚ÌˆÊ’u‚©‚ç––”ö‚Ü‚Å‚Ìƒm[ƒh‚ğíœ
+			while (del)
+			{
+				const data_t* next = del->m_next;
+				delete del;
+				del = next;
+			}
+			printAll();//‘SŒ•\¦
+		}
+
+		//ƒNƒŠƒA
 		printf("\n");
 		printf("[clear]\n");
 		{
@@ -3090,41 +3318,41 @@ int main(const int argc, const char* argv[])
 				delete del;
 				del = next;
 			}
-			printAll();//å…¨ä»¶è¡¨ç¤º
-			//printReverse();//å…¨ä»¶é€†é †è¡¨ç¤º
+			printAll();//‘SŒ•\¦
+			//printReverse();//‘SŒ‹t‡•\¦
 		}
 	}
 
 	//--------------------
-	//ãƒ†ã‚¹ãƒˆâ‘¡ï¼šã‚½ãƒ¼ãƒˆã€æ¢ç´¢ã®è¨­å®šã‚’å¤‰ãˆã‚‹
+	//ƒeƒXƒg‡AFƒ\[ƒgA’Tõ‚Ìİ’è‚ğ•Ï‚¦‚é
 	{
 		printf("--------------------------------------------------------------------------------\n");
-		printf("[Test for linked_list::container(User defined type with custom operator type)]\n");
+		printf("[Test for singly_linked_list::container(User defined type with custom operator type)]\n");
 
-		//åŒæ–¹å‘é€£çµãƒªã‚¹ãƒˆã‚³ãƒ³ãƒ†ãƒŠç”Ÿæˆ
-		typedef linked_list::container<another_ope_t> container_t;
+		//•Ğ•ûŒü˜AŒ‹ƒŠƒXƒgƒRƒ“ƒeƒi¶¬
+		typedef singly_linked_list::container<another_ope_t> container_t;
 		container_t con;
 
-		//ãƒ‡ãƒ¼ã‚¿ç™»éŒ²ï¼‘ï¼špush_back()ãƒ¡ã‚½ãƒƒãƒ‰
+		//ƒf[ƒ^“o˜^‚PFpush_front()ƒƒ\ƒbƒh
 		printf("\n");
-		printf("[push_back]\n");
-		auto push_back = [&con](const int key, const int val)
+		printf("[push_front]\n");
+		auto push_front = [&con](const int key, const int val)
 		{
 			data_t* data = new data_t(key, val);
-			con.push_back(*data);
+			con.push_front(*data);
 		};
-		push_back(1, 105);
-		push_back(1, 108);
-		push_back(2, 103);
-		push_back(2, 101);
-		push_back(3, 107);
-		push_back(3, 104);
-		push_back(4, 113);
-		push_back(4, 111);
-		push_back(5, 105);
-		push_back(5, 106);
+		push_front(1, 105);
+		push_front(1, 108);
+		push_front(2, 103);
+		push_front(2, 101);
+		push_front(3, 107);
+		push_front(3, 104);
+		push_front(4, 113);
+		push_front(4, 111);
+		push_front(5, 105);
+		push_front(5, 106);
 
-		//ãƒ‡ãƒ¼ã‚¿ã‚’è¡¨ç¤º
+		//ƒf[ƒ^‚ğ•\¦
 		auto printAll = [&con]()
 		{
 			printf("size=%d\n", con.size());
@@ -3142,20 +3370,20 @@ int main(const int argc, const char* argv[])
 		};
 		printAll();
 
-		//ã‚½â€•ãƒˆ
+		//ƒ\\ƒg
 		printf("\n");
 		printf("[sort]\n");
-		con.sort();//é€šå¸¸ã‚½ãƒ¼ãƒˆ
-		//con.stable_sort();//å®‰å®šã‚½ãƒ¼ãƒˆ
-		printAll();//å…¨ä»¶è¡¨ç¤º
+		con.sort();//’Êíƒ\[ƒg
+		//con.stable_sort();//ˆÀ’èƒ\[ƒg
+		printAll();//‘SŒ•\¦
 
-		//ç·šå½¢æ¢ç´¢
+		//üŒ`’Tõ
 		printf("\n");
 		printf("[find]\n");
 		auto find = [&con](const int value)
 		{
 			printf("find_value(value=%d)=", value);
-			auto ite = con.find_value(value);//ç·šå½¢æ¢ç´¢
+			auto ite = con.find_value(value);//üŒ`’Tõ
 			if (ite.isExist())
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
 			else
@@ -3167,13 +3395,14 @@ int main(const int argc, const char* argv[])
 		find(103);
 
 	#ifdef ENABLE_BINARY_SEARCH
-		//äºŒåˆ†æ¢ç´¢
+		//“ñ•ª’Tõ
+		//y’ˆÓz’á‘¬ˆ—
 		printf("\n");
 		printf("[binary search]\n");
 		auto binary_search = [&con](const int value)
 		{
 			printf("binary_search_value(value=%d)=", value);
-			auto ite = con.binary_search_value(value);//äºŒåˆ†æ¢ç´¢
+			auto ite = con.binary_search_value(value);//“ñ•ª’Tõ
 			if (ite.isExist())
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
 			else
@@ -3185,24 +3414,24 @@ int main(const int argc, const char* argv[])
 		binary_search(103);
 	#endif//ENABLE_BINARY_SEARCH
 
-		//ã‚«ã‚¹ã‚¿ãƒ ã‚½ãƒ¼ãƒˆ
+		//ƒJƒXƒ^ƒ€ƒ\[ƒg
 		{
 			printf("\n");
 			printf("[sort with custom predicate]\n");
 			auto predicate = [](const data_t& lhs, const data_t& rhs) -> bool {return lhs.m_key < rhs.m_key ? true : lhs.m_key == rhs.m_key ? lhs.m_val > rhs.m_val : false; };
-			con.sort(predicate);//é€šå¸¸ã‚½ãƒ¼ãƒˆ
-			//con.stable_sort(reverse_pred);//å®‰å®šã‚½ãƒ¼ãƒˆ
-			printAll();//å…¨ä»¶è¡¨ç¤º
+			con.sort(predicate);//’Êíƒ\[ƒg
+			//con.stable_sort(reverse_pred);//ˆÀ’èƒ\[ƒg
+			printAll();//‘SŒ•\¦
 		}
 
-		//ã‚«ã‚¹ã‚¿ãƒ ç·šå½¢æ¢ç´¢(1)
+		//ƒJƒXƒ^ƒ€üŒ`’Tõ(1)
 		printf("\n");
 		printf("[find with custom predicate(1)]\n");
 		auto custom_find1 = [&con](const int key, const int value)
 		{
 			printf("find(key=%d, value=%d)=", key, value);
 			auto predicate = [&key, &value](const data_t& lhs) -> bool { return lhs.m_key == key && lhs.m_val == value; };
-			auto ite = con.find(predicate);//ç·šå½¢æ¢ç´¢
+			auto ite = con.find(predicate);//üŒ`’Tõ
 			if (ite.isExist())
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
 			else
@@ -3214,14 +3443,15 @@ int main(const int argc, const char* argv[])
 		custom_find1(2, 103);
 
 	#ifdef ENABLE_BINARY_SEARCH
-		//ã‚«ã‚¹ã‚¿ãƒ äºŒåˆ†æ¢ç´¢(1)
+		//ƒJƒXƒ^ƒ€“ñ•ª’Tõ(1)
+		//y’ˆÓz’á‘¬ˆ—
 		printf("\n");
 		printf("[binary search with custom comparison(1)]\n");
 		auto custom_binary_search1 = [&con](const int key, const int value)
 		{
 			printf("binary_search_value(key=%d, value=%d)=", key, value);
 			auto comparison = [&key, &value](const data_t& lhs) -> int { return key == lhs.m_key ? lhs.m_val - value : key > lhs.m_key ? 1 : -1; };
-			auto ite = con.binary_search(comparison);//äºŒåˆ†æ¢ç´¢
+			auto ite = con.binary_search(comparison);//“ñ•ª’Tõ
 			if (ite.isExist())
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
 			else
@@ -3233,14 +3463,14 @@ int main(const int argc, const char* argv[])
 		custom_binary_search1(2, 103);
 	#endif//ENABLE_BINARY_SEARCH
 
-		//ã‚«ã‚¹ã‚¿ãƒ ç·šå½¢æ¢ç´¢(2)
+		//ƒJƒXƒ^ƒ€üŒ`’Tõ(2)
 		printf("\n");
 		printf("[find with custom predicate(2)]\n");
 		auto custom_find2 = [&con](const int key)
 		{
 			printf("find(key=%d)=", key);
 			auto predicate = [](const data_t& lhs, const int key) -> bool { return lhs.m_key == key; };
-			auto ite = con.find_value(key, predicate);//ç·šå½¢æ¢ç´¢
+			auto ite = con.find_value(key, predicate);//üŒ`’Tõ
 			if (ite.isExist())
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
 			else
@@ -3252,14 +3482,14 @@ int main(const int argc, const char* argv[])
 		custom_find2(3);
 
 	#ifdef ENABLE_BINARY_SEARCH
-		//ã‚«ã‚¹ã‚¿ãƒ äºŒåˆ†æ¢ç´¢(2)
+		//ƒJƒXƒ^ƒ€“ñ•ª’Tõ(2)
 		printf("\n");
 		printf("[binary search with custom comparison(2)]\n");
 		auto custom_binary_search2 = [&con](const int key)
 		{
 			printf("binary_search_value(key=%d)=", key);
 			auto comparison = [](const data_t& lhs, const int key) -> int { return key - lhs.m_key; };
-			auto ite = con.binary_search_value(key, comparison);//äºŒåˆ†æ¢ç´¢
+			auto ite = con.binary_search_value(key, comparison);//“ñ•ª’Tõ
 			if (ite.isExist())
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
 			else
@@ -3273,12 +3503,12 @@ int main(const int argc, const char* argv[])
 	}
 
 	//--------------------
-	//ãƒ†ã‚¹ãƒˆâ‘¢ï¼šå¤§é‡ç™»éŒ²ãƒ†ã‚¹ãƒˆ
+	//ƒeƒXƒg‡BF‘å—Ê“o˜^ƒeƒXƒg
 	{
-		//çµŒéæ™‚é–“ã‚’è¡¨ç¤º
+		//Œo‰ßŠÔ‚ğ•\¦
 		auto printElapsedTime = [](const std::chrono::system_clock::time_point& prev_time, const bool is_show) -> std::chrono::system_clock::time_point
 		{
-			//æœ€çµ‚çµŒéæ™‚é–“è¡¨ç¤º
+			//ÅIŒo‰ßŠÔ•\¦
 			const auto now_time = std::chrono::system_clock::now();
 			const auto duration = now_time - prev_time;
 			const double elapsed_time = static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count()) / 1000000000.;
@@ -3289,34 +3519,34 @@ int main(const int argc, const char* argv[])
 
 		{
 			printf("--------------------------------------------------------------------------------\n");
-			printf("[Test for performance linked_list]\n");
+			printf("[Test for performance singly_linked_list]\n");
 
 			const std::chrono::system_clock::time_point begin_time = std::chrono::system_clock::now();
 			std::chrono::system_clock::time_point prev_time = begin_time;
 
-			//ãƒ‡ãƒ¼ã‚¿ã‚’åˆæœŸåŒ–
+			//ƒf[ƒ^‚ğ‰Šú‰»
 			printf("\n");
 			printf("[create container]\n");
-			typedef linked_list::container<ope_t> container_t;
-			container_t* con = new container_t;//ã‚³ãƒ³ãƒ†ãƒŠç”Ÿæˆ
+			typedef singly_linked_list::container<ope_t> container_t;
+			container_t* con = new container_t;//ƒRƒ“ƒeƒi¶¬
 			prev_time = printElapsedTime(prev_time, true);
 
-			//ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
+			//ƒf[ƒ^‚ğ“o˜^
 			printf("\n");
-			printf("[push_back() * %d]\n", TEST_DATA_NUM);
+			printf("[push_front() * %d]\n", TEST_DATA_NUM);
 			{
 				int num = 0;
 				for (int i = 0; i < TEST_DATA_NUM; ++i)
 				{
 					data_t* data = new data_t(i, 10000000 + i);
-					con->push_back(*data);
+					con->push_front(*data);
 					++num;
 				}
 				printf("num=%d\n", num);
 			}
 			prev_time = printElapsedTime(prev_time, true);
 
-			//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿(1)
+			//ƒCƒeƒŒ[ƒ^(1)
 			printf("\n");
 			printf("[iterator(1)]\n");
 			{
@@ -3336,7 +3566,7 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 
 		#ifdef ENABLE_SORT_TEST
-			//é€†é †ã‚½ãƒ¼ãƒˆ
+			//‹t‡ƒ\[ƒg
 			printf("\n");
 			printf("[reverse sort]\n");
 			auto reverse_sort = [](const data_t& lhs, const data_t& rhs){return lhs.m_key > rhs.m_key; };
@@ -3345,7 +3575,7 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 		#endif//ENABLE_SORT_TEST
 
-			//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿(2)
+			//ƒCƒeƒŒ[ƒ^(2)
 			printf("\n");
 			printf("[iterator(2)]\n");
 			{
@@ -3366,7 +3596,7 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 
 		#ifdef ENABLE_SORT_TEST
-			//æ­£é †ã‚½ãƒ¼ãƒˆ
+			//³‡ƒ\[ƒg
 			printf("\n");
 			printf("[sort]\n");
 			con->sort();
@@ -3374,7 +3604,10 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 		#endif//ENABLE_SORT_TEST
 
-			//ãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+		#ifdef ENABLE_REVERSE_ITERATOR
+			//ƒŠƒo[ƒXƒCƒeƒŒ[ƒ^
+			//y’ˆÓz’á‘¬ˆ—
+			//¦std::forward_list‚É‚È‚¢ˆ—
 			printf("\n");
 			printf("[reverse_iterator]\n");
 			{
@@ -3393,17 +3626,18 @@ int main(const int argc, const char* argv[])
 				printf("num=%d\n", num);
 			}
 			prev_time = printElapsedTime(prev_time, true);
+		#endif//ENABLE_REVERSE_ITERATOR
 
 		#ifdef ENABLE_SORT_TEST
 		#ifdef ENABLE_STABLE_SORT
-			//é€†é †å®‰å®šã‚½ãƒ¼ãƒˆ
+			//‹t‡ˆÀ’èƒ\[ƒg
 			printf("\n");
 			printf("[reverse stable sort]\n");
 			con->stable_sort(reverse_sort);
 			assert(con->is_ordered(reverse_sort));
 			prev_time = printElapsedTime(prev_time, true);
 
-			//æ­£é †å®‰å®šã‚½ãƒ¼ãƒˆ
+			//³‡ˆÀ’èƒ\[ƒg
 			printf("\n");
 			printf("[stable sort]\n");
 			con->stable_sort();
@@ -3412,7 +3646,7 @@ int main(const int argc, const char* argv[])
 		#endif//ENABLE_STABLE_SORT
 		#endif//ENABLE_SORT_TEST
 
-			//ç·šå½¢æ¢ç´¢
+			//üŒ`’Tõ
 			printf("\n");
 			printf("[find_value]\n");
 			{
@@ -3429,7 +3663,8 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 
 		#ifdef ENABLE_BINARY_SEARCH
-			//äºŒåˆ†æ¢ç´¢
+			//“ñ•ª’Tõ
+			//y’ˆÓz’á‘¬ˆ—
 			printf("\n");
 			printf("[binary_search_value]\n");
 			{
@@ -3446,7 +3681,7 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 		#endif//ENABLE_BINARY_SEARCH
 
-			//ãƒ‡ãƒ¼ã‚¿ã‚’ç ´æ£„
+			//ƒf[ƒ^‚ğ”jŠü
 			printf("\n");
 			printf("[delete container]\n");
 			{
@@ -3458,11 +3693,11 @@ int main(const int argc, const char* argv[])
 					data = next;
 				}
 			}
-			delete con;//ã‚³ãƒ³ãƒ†ãƒŠã‚’ç ´æ£„
+			delete con;//ƒRƒ“ƒeƒi‚ğ”jŠü
 			con = nullptr;
 			prev_time = printElapsedTime(prev_time, true);
 
-			//ç·æ™‚é–“
+			//‘ŠÔ
 			printf("\n");
 			printf("[finish]\n");
 			printElapsedTime(begin_time, true);
@@ -3470,38 +3705,38 @@ int main(const int argc, const char* argv[])
 
 		{
 			printf("--------------------------------------------------------------------------------\n");
-			printf("[Test for performance std::list]\n");
+			printf("[Test for performance std::forward_list]\n");
 
 			const std::chrono::system_clock::time_point begin_time = std::chrono::system_clock::now();
 			std::chrono::system_clock::time_point prev_time = begin_time;
 
-			//ãƒ‡ãƒ¼ã‚¿ã‚’åˆæœŸåŒ–
+			//ƒf[ƒ^‚ğ‰Šú‰»
 			printf("\n");
 			printf("[create container]\n");
-			typedef std::list<data_t> container_t;
-			container_t* con = new container_t();//std::listã‚³ãƒ³ãƒ†ãƒŠã‚’ç”Ÿæˆ
+			typedef std::forward_list<data_t> container_t;
+			container_t* con = new container_t();//std::forward_listƒRƒ“ƒeƒi‚ğ¶¬
 			prev_time = printElapsedTime(prev_time, true);
 
-			//ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
+			//ƒf[ƒ^‚ğ“o˜^
 			printf("\n");
-			printf("[push_back() * %d]\n", TEST_DATA_NUM);
+			printf("[push_front() * %d]\n", TEST_DATA_NUM);
 			{
 				int num = 0;
 				for (int i = 0; i < TEST_DATA_NUM; ++i)
 				{
 					data_t value(i, 10000000 + i);
-					con->push_back(std::move(value));
+					con->push_front(std::move(value));
 					++num;
 				}
 				printf("num=%d\n", num);
 			}
 			prev_time = printElapsedTime(prev_time, true);
 
-			//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿(1)
+			//ƒCƒeƒŒ[ƒ^(1)
 			printf("\n");
 			printf("[iterator(1)]\n");
 			{
-				printf_detail("size=%d, max_size=%d\n", con->size(), con->max_size());
+				printf_detail("max_size=%d\n", con->max_size());
 				printf_detail("array=");
 				if (con->empty())
 					printf_detail("(empty)");
@@ -3517,7 +3752,7 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 
 		#ifdef ENABLE_SORT_TEST
-			//é€†é †ã‚½ãƒ¼ãƒˆ
+			//‹t‡ƒ\[ƒg
 			printf("\n");
 			printf("[reverse sort]\n");
 			auto reverse_sort = [](const data_t& lhs, const data_t& rhs){return lhs.m_key > rhs.m_key; };
@@ -3525,11 +3760,11 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 		#endif//ENABLE_SORT_TEST
 
-			//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿(2)
+			//ƒCƒeƒŒ[ƒ^(2)
 			printf("\n");
 			printf("[iterator(2)]\n");
 			{
-				printf_detail("size=%d, max_size=%d\n", con->size(), con->max_size());
+				printf_detail("max_size=%d\n", con->max_size());
 				printf_detail("array=");
 				if (con->empty())
 					printf_detail("(empty)");
@@ -3546,23 +3781,24 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 
 		#ifdef ENABLE_SORT_TEST
-			//æ­£é †ã‚½ãƒ¼ãƒˆ
+			//³‡ƒ\[ƒg
 			printf("\n");
 			printf("[sort]\n");
 			con->sort();
 			prev_time = printElapsedTime(prev_time, true);
 		#endif//ENABLE_SORT_TEST
 
-			//ãƒªãƒãƒ¼ã‚¹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+		#ifdef ENABLE_REVERSE_ITERATOR
+			//ƒŠƒo[ƒXƒCƒeƒŒ[ƒ^i”ñ‘Î‰j
 			printf("\n");
-			printf("[reverse_iterator]\n");
+			printf("[iterator](has not reverse_iterator)\n");
 			{
-				printf_detail("size=%d, max_size=%d\n", con->size(), con->max_size());
+				printf_detail("max_size=%d\n", con->max_size());
 				printf_detail("array=");
 				if (con->empty())
 					printf_detail("(empty)");
 				int num = 0;
-				std::for_each(con->rbegin(), con->rend(), [&num](const data_t& value)
+				std::for_each(con->begin(), con->end(), [&num](const data_t& value)
 					{
 						printf_detail(" [%d:%d]", value.m_key, value.m_val);
 						++num;
@@ -3572,16 +3808,17 @@ int main(const int argc, const char* argv[])
 				printf("num=%d\n", num);
 			}
 			prev_time = printElapsedTime(prev_time, true);
+		#endif//ENABLE_REVERSE_ITERATOR
 
 		#ifdef ENABLE_SORT_TEST
 		#ifdef ENABLE_STABLE_SORT
-			//é€†é †ã‚½ãƒ¼ãƒˆã€€â€»å®‰å®šã‚½ãƒ¼ãƒˆã®ä»£ã‚ã‚Š
+			//‹t‡ƒ\[ƒg@¦ˆÀ’èƒ\[ƒg‚Ì‘ã‚í‚è
 			printf("\n");
 			printf("[reverse (stable) sort]\n");
 			con->sort(reverse_sort);
 			prev_time = printElapsedTime(prev_time, true);
 
-			//æ­£é †ã‚½ãƒ¼ãƒˆã€€â€»å®‰å®šã‚½ãƒ¼ãƒˆã®ä»£ã‚ã‚Š
+			//³‡ƒ\[ƒg@¦ˆÀ’èƒ\[ƒg‚Ì‘ã‚í‚è
 			printf("\n");
 			printf("[(stable) sort]\n");
 			con->sort();
@@ -3589,7 +3826,7 @@ int main(const int argc, const char* argv[])
 		#endif//ENABLE_STABLE_SORT
 		#endif//ENABLE_SORT_TEST
 
-			//ç·šå½¢æ¢ç´¢
+			//üŒ`’Tõ
 			printf("\n");
 			printf("[find_value]\n");
 			{
@@ -3606,7 +3843,7 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 
 		#ifdef ENABLE_BINARY_SEARCH
-			//äºŒåˆ†æ¢ç´¢
+			//“ñ•ª’Tõ
 			printf("\n");
 			printf("[binary_search_value]\n");
 			{
@@ -3623,14 +3860,14 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 		#endif//ENABLE_BINARY_SEARCH
 
-			//ãƒ‡ãƒ¼ã‚¿ã‚’ç ´æ£„
+			//ƒf[ƒ^‚ğ”jŠü
 			printf("\n");
 			printf("[delete container]\n");
-			delete con;//std::listã‚³ãƒ³ãƒ†ãƒŠã‚’ç ´æ£„
+			delete con;//std::forward_listƒRƒ“ƒeƒi‚ğ”jŠü
 			con = nullptr;
 			prev_time = printElapsedTime(prev_time, true);
 
-			//ç·æ™‚é–“
+			//‘ŠÔ
 			printf("\n");
 			printf("[finish]\n");
 			printElapsedTime(begin_time, true);

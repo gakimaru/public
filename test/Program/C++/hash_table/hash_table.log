@@ -296,7 +296,7 @@ name="Name_000017" ... NG
 name="Name_000018" ... NG
 name="Name_000019" ... NG
 success=0, failure=20
-*elapsed time=0.001002600 sec.
+*elapsed time=0.000000000 sec.
 
 --- Insert Data ---
 name="Name_000000" ... OK
@@ -440,7 +440,7 @@ success=0, failure=20
 
 End
 ============================================================
-*elapsed time=0.001002600 sec.
+*elapsed time=0.001000800 sec.
 
 --------------------------------------------------------------------------------
 [STL] Hash Table Test

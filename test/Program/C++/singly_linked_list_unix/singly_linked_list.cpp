@@ -1,7 +1,7 @@
 //--------------------------------------------------------------------------------
-//双方向連結リストテスト用設定とコンパイラスイッチ
+//片方向連結リストテスト用設定とコンパイラスイッチ
 static const int TEST_DATA_NUM = 10;//大量登録テストデータの登録数
-//static const int TEST_DATA_NUM = 20000;//大量登録テストデータの登録数
+//static const int TEST_DATA_NUM = 50000;//大量登録テストデータの登録数
 
 static const int TEST_DATA_FIND_NUM = 1000;//大量テストの線形探索回数
 static const int TEST_DATA_FIND_STEP = TEST_DATA_NUM > TEST_DATA_FIND_NUM ? TEST_DATA_NUM / TEST_DATA_FIND_NUM : 1;//大量テストの線形実行ステップ
@@ -12,10 +12,14 @@ static const int TEST_DATA_FIND_STEP = TEST_DATA_NUM > TEST_DATA_FIND_NUM ? TEST
 //#define TEST_DATA_WATCH_CONSTRUCTOR//コンストラクタ／デストラクタ／代入演算子の動作を確認する場合、このマクロを有効化する
 
 //--------------------------------------------------------------------------------
-//双方向連結リストのコンパイラスイッチ
-//#define ENABLE_BINARY_SEARCH//二分探索を有効にする
+//片方向連結リストのコンパイラスイッチ
+#define ENABLE_REVERSE_ITERATOR//リバースイテレータを有効化する場合は、このマクロを有効化する【注意】低速処理
+//#define ENABLE_BINARY_SEARCH//二分探索を有効にする ※リバースイテレータ無効化時は無効
 //#define ENABLE_STABLE_SORT//安定ソートを有効にする
-//#define USE_SHELL_SORT//通常ソートにシェルソートを使用する（無効化時は挿入ソートを使用）
+
+#if defined(ENABLE_BINARY_SEARCH) && !defined(ENABLE_REVERSE_ITERATOR)
+#undef ENABLE_BINARY_SEARCH
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -953,7 +957,7 @@ ITERATOR iteratorBinarySearch(ITERATOR begin, ITERATOR end, COMPARISON compariso
 iteratorSearchFuncSetByComparison(iteratorBinarySearch);
 
 //--------------------------------------------------------------------------------
-//双方向連結リスト（double-linked list）
+//片方向連結リスト（double-linked list）
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
@@ -966,7 +970,7 @@ iteratorSearchFuncSetByComparison(iteratorBinarySearch);
 //　処理に汎用性を持たせる。
 //・一切メモリ操作は行わず、ノードのオブジェクトを受け取って操作する
 //　アルゴリズムのみを提供する。
-//・std::listを模したコンテナとイテレータを利用可能とする。
+//・std::forward_listを模したコンテナとイテレータを利用可能とする。
 //　ただし、メモリ管理を行わないため、複製を作るようなメソッドには対応しない。
 //・コンテナは、先頭ノードと末尾ノードのみを保持し、一切メモリ操作しないものとする。
 //--------------------------------------------------------------------------------
@@ -975,19 +979,14 @@ iteratorSearchFuncSetByComparison(iteratorBinarySearch);
 #include <iterator>//std::iterator用
 #include <algorithm>//C++11 std::move用
 
-namespace linked_list
+namespace singly_linked_list
 {
 	//--------------------
-	//双方向連結リストノード操作用基底テンプレートクラス
+	//片方向連結リストノード操作用基底テンプレートクラス
 	//※下記のような派生クラス（CRTP）を定義して使用する
-	//  //struct クラス名 : public linked_list::base_ope_t<クラス名, ノード型>
-	//	struct ope_t : public linked_list::base_ope_t<ope_t, data_t>
+	//  //struct クラス名 : public singly_linked_list::base_ope_t<クラス名, ノード型>
+	//	struct ope_t : public singly_linked_list::base_ope_t<ope_t, data_t>
 	//	{
-	//		//前ノードを取得
-	//		inline static const node_type* getPrev(const node_type& node){ return ???; }
-	//		//前ノードを変更
-	//		inline static void setPrev(node_type& node, const node_type* prev){ ??? = prev; }
-	//
 	//		//次ノードを取得
 	//		inline static const node_type* getNext(const node_type& node){ return ???; }
 	//		//次ノードを変更
@@ -999,7 +998,7 @@ namespace linked_list
 	//			inline bool operator()(const node_type& lhs, const node_type& rhs) const { return lhs.??? < rhs.???; }
 	//		};
 	//
-	//		//探索用プレディケート関数オブジェクト
+	//		//線形探索用プレディケート関数オブジェクト
 	//		//※必要に応じて実装する
 	//		struct find_predicate{
 	//			inline bool operator()(const node_type& lhs, const ???& rhs) const { return lhs.??? == rhs; }
@@ -1024,8 +1023,6 @@ namespace linked_list
 		//　base_ope_tの派生クラスにて、有効な共有ロック型（shared_spin_lock など）を
 		//　lock_type 型として再定義する。
 
-		//前ノードを取得 ※const外し(remove_const)
-		inline static node_type* getPrev_rc(node_type& node){ return const_cast<node_type*>(ope_type::getPrev(const_cast<const node_type&>(node))); }
 		//次ノードを取得 ※const外し(remove_const)
 		inline static node_type* getNext_rc(node_type& node){ return const_cast<node_type*>(ope_type::getNext(const_cast<const node_type&>(node))); }
 
@@ -1035,7 +1032,7 @@ namespace linked_list
 			inline bool operator()(const node_type& lhs, const node_type& rhs) const { return less<node_type>()(lhs, rhs); }
 		};
 
-		//線形探索用プレディケート関数オブジェクト
+		//探索用プレディケート関数オブジェクト
 		//※trueで一致（探索成功）
 		struct find_predicate{
 			template<typename V>
@@ -1043,7 +1040,7 @@ namespace linked_list
 		};
 
 	#ifdef ENABLE_BINARY_SEARCH
-		//二分探索用比較関数オブジェクト
+		//探索用比較関数オブジェクト
 		//※0で一致（探索成功）、1以上でlhsの方が大きい、-1以下でrhsの方が大きい
 		struct search_comparison{
 			template<typename V>
@@ -1065,7 +1062,7 @@ namespace linked_list
 		typedef std::size_t index_type; \
 		typedef typename ope_type::lock_type lock_type;
 	//--------------------
-	//双方向連結リスト操作関数：指定ノードの次ノードを取得
+	//片方向連結リスト操作関数：指定ノードの次ノードを取得
 	template<class OPE_TYPE>
 	const typename OPE_TYPE::node_type* getNextNode(const typename OPE_TYPE::node_type& target)
 	{
@@ -1075,7 +1072,7 @@ namespace linked_list
 		return node;
 	}
 	//--------------------
-	//双方向連結リスト操作関数：指定ノードの後方のノードを取得
+	//片方向連結リスト操作関数：指定ノードの後方のノードを取得
 	template<class OPE_TYPE>
 	const typename OPE_TYPE::node_type* getForwardNode(const typename OPE_TYPE::node_type& target, std::size_t& step)
 	{
@@ -1089,47 +1086,7 @@ namespace linked_list
 		return node;
 	}
 	//--------------------
-	//双方向連結リスト操作関数：指定ノードの前ノードを取得
-	template<class OPE_TYPE>
-	const typename OPE_TYPE::node_type* getPrevNode(const typename OPE_TYPE::node_type& target)
-	{
-		DECLARE_OPE_TYPES(OPE_TYPE);
-		const typename ope_type::node_type* node = &target;
-		node = ope_type::getPrev(*node);
-		return node;
-	}
-	//--------------------
-	//双方向連結リスト操作関数：指定ノードの前方のノードを取得
-	template<class OPE_TYPE>
-	const typename OPE_TYPE::node_type* getBackwardNode(const typename OPE_TYPE::node_type& target, std::size_t& step)
-	{
-		DECLARE_OPE_TYPES(OPE_TYPE);
-		const typename ope_type::node_type* node = &target;
-		while (step > 0 && node)
-		{
-			node = ope_type::getPrev(*node);
-			--step;
-		}
-		return node;
-	}
-	//--------------------
-	//双方向連結リスト操作関数：指定ノードの先頭ノードを取得
-	template<class OPE_TYPE>
-	const typename OPE_TYPE::node_type* getFirstNode(const typename OPE_TYPE::node_type& target)
-	{
-		DECLARE_OPE_TYPES(OPE_TYPE);
-		const typename ope_type::node_type* node = &target;
-		while (true)
-		{
-			const typename ope_type::node_type* prev = ope_type::getPrev(*node);
-			if (!prev)
-				return node;
-			node = prev;
-		}
-		return nullptr;//ダミー
-	}
-	//--------------------
-	//双方向連結リスト操作関数：指定ノードの末尾ノードを取得
+	//片方向連結リスト操作関数：指定ノードの末尾ノードを取得
 	template<class OPE_TYPE>
 	const typename OPE_TYPE::node_type* getLastNode(const typename OPE_TYPE::node_type& target)
 	{
@@ -1145,7 +1102,7 @@ namespace linked_list
 		return nullptr;//ダミー
 	}
 	//--------------------
-	//双方向連結リスト操作関数：指定ノードの数を数える
+	//片方向連結リスト操作関数：指定ノードの数を数える
 	template<class OPE_TYPE>
 	std::size_t countNodes(const typename OPE_TYPE::node_type& target)
 	{
@@ -1163,39 +1120,83 @@ namespace linked_list
 		return 0;//ダミー
 	}
 	//--------------------
-	//双方向連結リスト操作関数：指定ノードの次に連結
+	//片方向連結リスト操作関数：指定ノードの前ノードを取得
+	//【注意】低速処理（backwardを指定することで高速化可能）
+	//※もし、targetの直前もしくはそれより前のノードが分かっているなら、
+	//　それを backward に指定するこで検索範囲が短縮され、処理効率が向上する。
+	//　nullptrを指定した場合、firstからtargetまで辿る。
+	template<class OPE_TYPE>
+	const typename OPE_TYPE::node_type* getPrevNode(const typename OPE_TYPE::node_type& target, const typename OPE_TYPE::node_type* first, const typename OPE_TYPE::node_type* backward = nullptr)
+	{
+		DECLARE_OPE_TYPES(OPE_TYPE);
+		const typename ope_type::node_type* prev = nullptr;
+		const typename ope_type::node_type* node = backward;
+		if (!node)
+			node = first;
+		while (node != &target)
+		{
+			prev = node;
+			node = ope_type::getNext(*node);
+		}
+		return prev;
+	}
+	//--------------------
+	//片方向連結リスト操作関数：指定ノードの前方のノードを取得
+	//【注意】低速処理（backwardを指定することで高速化可能）
+	//※もし、targetの直前もしくはそれより前のノードが分かっているなら、
+	//　それを backward に指定するこで検索範囲が短縮され、処理効率が向上する。
+	//　nullptrを指定した場合、firstからtargetまで辿る。
+	template<class OPE_TYPE>
+	const typename OPE_TYPE::node_type* getBackwardNode(const typename OPE_TYPE::node_type& target, std::size_t& step, const typename OPE_TYPE::node_type* first, const typename OPE_TYPE::node_type* backward = nullptr)
+	{
+		DECLARE_OPE_TYPES(OPE_TYPE);
+		const typename ope_type::node_type* node = &target;
+		while (step > 0 && node)
+		{
+			node = getPrevNode<OPE_TYPE>(*node, first, backward);
+			--step;
+		}
+		return node;
+	}
+	//--------------------
+	//片方向連結リスト操作関数：指定ノードの次に連結
 	template<class OPE_TYPE>
 	typename OPE_TYPE::node_type* insertNodeAfter(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type& target, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
+		if (&target == nullptr)
+		{
+			ope_type::setNext(node, first);
+			first = &node;
+			return &node;
+		}
 		typename ope_type::node_type* next = const_cast<typename ope_type::node_type*>(ope_type::getNext(target));
 		if (!next)
 			last = &node;
-		else
-			ope_type::setPrev(*next, &node);
-		ope_type::setPrev(node, &target);
 		ope_type::setNext(target, &node);
 		ope_type::setNext(node, next);
 		return &node;
 	}
 	//--------------------
-	//双方向連結リスト操作関数：指定ノードの前に連結
+	//片方向連結リスト操作関数：指定ノードの前に連結
+	//【注意】低速処理（backwardを指定することで高速化可能）
+	//※もし、targetの直前もしくはそれより前のノードが分かっているなら、
+	//　それを backward に指定するこで検索範囲が短縮され、処理効率が向上する。
+	//　nullptrを指定した場合、firstからtargetまで辿る。
 	template<class OPE_TYPE>
-	typename OPE_TYPE::node_type* insertNodeBefore(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type& target, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
+	typename OPE_TYPE::node_type* insertNodeBefore(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type& target, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, const typename OPE_TYPE::node_type* backward = nullptr)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(ope_type::getPrev(target));
+		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(getPrevNode<OPE_TYPE>(target, first, backward));
 		if (!prev)
 			first = &node;
 		else
 			ope_type::setNext(*prev, &node);
 		ope_type::setNext(node, &target);
-		ope_type::setPrev(target, &node);
-		ope_type::setPrev(node, prev);
 		return &node;
 	}
 	//--------------------
-	//双方向連結リスト操作関数：先頭に連結
+	//片方向連結リスト操作関数：先頭に連結
 	template<class OPE_TYPE>
 	typename OPE_TYPE::node_type* insertNodeBeginning(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
 	{
@@ -1204,18 +1205,15 @@ namespace linked_list
 		{
 			first = &node;
 			last = &node;
-			ope_type::setPrev(node, nullptr);
 			ope_type::setNext(node, nullptr);
 			return &node;
 		}
 		ope_type::setNext(node, first);
-		ope_type::setPrev(*first, &node);
-		ope_type::setPrev(node, nullptr);
 		first = &node;
 		return &node;
 	}
 	//--------------------
-	//双方向連結リスト操作関数：末尾に連結
+	//片方向連結リスト操作関数：末尾に連結
 	template<class OPE_TYPE>
 	typename OPE_TYPE::node_type* insertNodeEnd(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
 	{
@@ -1224,54 +1222,54 @@ namespace linked_list
 		{
 			first = &node;
 			last = &node;
-			ope_type::setPrev(node, nullptr);
 			ope_type::setNext(node, nullptr);
 			return &node;
 		}
-		ope_type::setPrev(node, last);
 		ope_type::setNext(*last, &node);
 		ope_type::setNext(node, nullptr);
 		last = &node;
 		return &node;
 	}
 	//--------------------
-	//双方向連結リスト操作関数：指定ノードを連結から外す
+	//片方向連結リスト操作関数：指定ノードを連結から外す
+	//【注意】低速処理（backwardを指定することで高速化可能）
+	//※もし、nodeの直前もしくはそれより前のノードが分かっているなら、
+	//　それを backward に指定するこで検索範囲が短縮され、処理効率が向上する。
+	//　nullptrを指定した場合、firstからnodeまで辿る。
 	template<class OPE_TYPE>
-	typename OPE_TYPE::node_type* removeNode(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
+	typename OPE_TYPE::node_type* removeNode(typename OPE_TYPE::node_type& node, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, typename OPE_TYPE::node_type* backward = nullptr)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(ope_type::getPrev(node));
+		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(getPrevNode<OPE_TYPE>(node, first, backward));
 		typename ope_type::node_type* next = const_cast<typename ope_type::node_type*>(ope_type::getNext(node));
 		if (prev)
 			ope_type::setNext(*prev, next);
 		else
 			first = next;
-		if (next)
-			ope_type::setPrev(*next, prev);
-		else
+		if (!next)
 			last = prev;
-		ope_type::setPrev(node, nullptr);
 		ope_type::setNext(node, nullptr);
 		return &node;
 	}
 	//--------------------
-	//双方向連結リスト操作関数：指定ノードの範囲を連結から外す
+	//片方向連結リスト操作関数：指定ノードの範囲を連結から外す
+	//【注意】低速処理（backwardを指定することで高速化可能）
+	//※もし、startの直前もしくはそれより前のノードが分かっているなら、
+	//　それを backward に指定するこで検索範囲が短縮され、処理効率が向上する。
+	//　nullptrを指定した場合、firstからstartまで辿る。
 	template<class OPE_TYPE>
-	typename OPE_TYPE::node_type* removeNodes(typename OPE_TYPE::node_type& start, typename OPE_TYPE::node_type& end, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last)
+	typename OPE_TYPE::node_type* removeNodes(typename OPE_TYPE::node_type& start, typename OPE_TYPE::node_type& end, typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, typename OPE_TYPE::node_type* backward = nullptr)
 	{
 		DECLARE_OPE_TYPES(OPE_TYPE);
-		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(ope_type::getPrev(start));
+		typename ope_type::node_type* prev = const_cast<typename ope_type::node_type*>(getPrevNode<OPE_TYPE>(start, first, backward));
 		typename ope_type::node_type* next = &end;
-		typename ope_type::node_type* _end = next ? const_cast<typename ope_type::node_type*>(ope_type::getPrev(end)) : last;
+		typename ope_type::node_type* _end = next ? const_cast<typename ope_type::node_type*>(getPrevNode<OPE_TYPE>(end, first, &start)) : last;
 		if (prev)
 			ope_type::setNext(*prev, next);
 		else
 			first = next;
-		if (next)
-			ope_type::setPrev(*next, prev);
-		else
+		if (!next)
 			last = prev;
-		ope_type::setPrev(start, nullptr);
 		ope_type::setNext(*_end, nullptr);
 		return &start;
 	}
@@ -1318,7 +1316,7 @@ namespace linked_list
 	//========================================
 
 	//----------------------------------------
-	//アルゴリズム：挿入ソート ※双方向連結リスト対応版
+	//アルゴリズム：変形挿入ソート ※片方向連結リスト対応版
 	//----------------------------------------
 	//・最良計算時間：O(n)
 	//・平均計算時間：O(n^2)
@@ -1326,8 +1324,10 @@ namespace linked_list
 	//・メモリ使用量：O(1)
 	//・安定性：　　　○
 	//----------------------------------------
+	//挿入先の探索を先頭から行う方式
+	//----------------------------------------
 	template<class OPE_TYPE, class PREDICATE>
-	std::size_t linkedListInsertionSort(typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, PREDICATE predicate)
+	std::size_t singlyLinkedListInsertionSort(typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, PREDICATE predicate)
 	{
 		typedef typename OPE_TYPE::node_type node_type;
 		if (!first || !OPE_TYPE::getNext(*first))
@@ -1339,18 +1339,17 @@ namespace linked_list
 		{
 			if (predicate(*next, *now))
 			{
-				node_type* min = now;
-				node_type* prev = const_cast<node_type*>(OPE_TYPE::getPrev(*now));
-				while (prev)
+				node_type* min_before = nullptr;
+				node_type* min = first;
+				while (min != now)
 				{
-					if (predicate(*next, *prev))
-						min = prev;
-					else
+					if (predicate(*next, *min))
 						break;
-					prev = const_cast<node_type*>(OPE_TYPE::getPrev(*prev));
+					min_before = min;
+					min = const_cast<node_type*>(OPE_TYPE::getNext(*min));
 				}
-				removeNode<OPE_TYPE>(*next, first, last);
-				insertNodeBefore<OPE_TYPE>(*next, *min, first, last);
+				removeNode<OPE_TYPE>(*next, first, last, now);
+				insertNodeBefore<OPE_TYPE>(*next, *min, first, last, min_before);
 				++swapped_count;
 				next = const_cast<node_type*>(OPE_TYPE::getNext(*now));
 			}
@@ -1362,83 +1361,12 @@ namespace linked_list
 		}
 		return swapped_count;
 	}
-	linkedListSortFuncSet(linkedListInsertionSort);
+	linkedListSortFuncSet(singlyLinkedListInsertionSort);
 
 	//----------------------------------------
-	//アルゴリズム：シェルソート ※双方向連結リスト対応版
-	//----------------------------------------
-	//・最良計算時間：O(n)
-	//・平均計算時間：O(n log^2 n) or O(n^3/2)
-	//・最悪計算時間：O(n log^2 n)
-	//・メモリ使用量：O(1)
-	//・安定性：　　　×
-	//----------------------------------------
-	template<class OPE_TYPE, class PREDICATE>
-	std::size_t linkedListShellSort(typename OPE_TYPE::node_type*& first, typename OPE_TYPE::node_type*& last, PREDICATE predicate)
-	{
-		typedef typename OPE_TYPE::node_type node_type;
-		if (!first || !OPE_TYPE::getNext(*first))
-			return 0;
-		std::size_t swapped_count = 0;
-		std::size_t size = 0;
-		{
-			const node_type* node = first;
-			while (node)
-			{
-				++size;
-				node = OPE_TYPE::getNext(*node);
-			}
-		}
-		const int h_max = size / 3;
-		int h = 1;
-		while (h <= h_max)
-			h = 3 * h + 1;
-		while (h > 0)
-		{
-			node_type* now = first;
-			node_type* next = now;
-			for (int i = 0; i < h && next; ++i)
-				next = const_cast<node_type*>(OPE_TYPE::getNext(*next));
-			while (next)
-			{
-				if (predicate(*next, *now))
-				{
-					node_type* min = now;
-					node_type* prev = now;
-					for (int i = 0; i < h && prev; ++i)
-						prev = const_cast<node_type*>(OPE_TYPE::getPrev(*prev));
-					while (prev)
-					{
-						if (predicate(*next, *prev))
-							min = prev;
-						else
-							break;
-						for (int i = 0; i < h && prev; ++i)
-							prev = const_cast<node_type*>(OPE_TYPE::getPrev(*prev));
-					}
-					removeNode<OPE_TYPE>(*next, first, last);
-					insertNodeBefore<OPE_TYPE>(*next, *min, first, last);
-					++swapped_count;
-					next = now;
-					for (int i = 0; i < h && next; ++i)
-						next = const_cast<node_type*>(OPE_TYPE::getNext(*next));
-				}
-				else
-				{
-					now = const_cast<node_type*>(OPE_TYPE::getNext(*now));
-					next = const_cast<node_type*>(OPE_TYPE::getNext(*next));
-				}
-			}
-			h = (h - 1) / 3;
-		}
-		return swapped_count;
-	}
-	linkedListSortFuncSet(linkedListShellSort);
-
-	//----------------------------------------
-	//双方向連結リストコンテナ
+	//片方向連結リストコンテナ
 	//※先頭ノードと末尾ノードを持つのみ
-	//※std::listを模した構造
+	//※std::forward_listを模した構造
 	template<class OPE_TYPE>
 	class container
 	{
@@ -1446,18 +1374,25 @@ namespace linked_list
 		//型
 		DECLARE_OPE_TYPES(OPE_TYPE);
 	public:
+		//定数
+		static const std::size_t BEFORE_BEGIN = 0xffffffff;//before_begin識別子
+	public:
 		//--------------------
 		//イテレータ宣言
 		class iterator;
-		class reverse_iterator;
 		typedef const iterator const_iterator;
+	#ifdef ENABLE_REVERSE_ITERATOR
+		class reverse_iterator;
 		typedef const reverse_iterator const_reverse_iterator;
+	#endif//ENABLE_REVERSE_ITERATOR
 		//--------------------
 		//イテレータ
-		class iterator : public std::iterator<std::bidirectional_iterator_tag, node_type>
+		class iterator : public std::iterator<std::forward_iterator_tag, node_type>
 		{
 			friend class container;
+		#ifdef ENABLE_REVERSE_ITERATOR
 			friend class reverse_iterator;
+		#endif//ENABLE_REVERSE_ITERATOR
 		public:
 			//キャストオペレータ
 			inline operator bool() const { return isExist(); }
@@ -1469,7 +1404,7 @@ namespace linked_list
 			inline reference operator*(){ return *getNode(); }
 			inline const_pointer operator->() const { return getNode(); }
 			inline pointer operator->(){ return getNode(); }
-		#if 1//std::bidirectional_iterator_tag には本来必要ではない
+		#if 1//std::forard_iterator_tag には本来必要ではない
 			inline const_iterator operator[](const int index) const
 			{
 				iterator ite(*m_con, false);
@@ -1504,46 +1439,54 @@ namespace linked_list
 				updateNext();
 				return *this;
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline const_iterator& operator--() const
 			{
 				updatePrev();
 				return *this;
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline iterator& operator++()
 			{
 				updateNext();
 				return *this;
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline iterator& operator--()
 			{
 				updatePrev();
 				return *this;
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline const_iterator operator++(int) const
 			{
 				iterator ite(*this);
 				++(*this);
 				return std::move(ite);
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline const_iterator operator--(int) const
 			{
 				iterator ite(*this);
 				--(*this);
 				return  std::move(ite);
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline iterator operator++(int)
 			{
 				iterator ite(*this);
 				++(*this);
 				return  std::move(ite);
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline iterator operator--(int)
 			{
 				iterator ite(*this);
 				--(*this);
 				return  std::move(ite);
 			}
-		#if 1//std::bidirectional_iterator_tag には本来必要ではない
+		#endif//ENABLE_REVERSE_ITERATOR
+		#if 1//std::forward_iterator_tag には本来必要ではない
 			inline const_iterator& operator+=(const typename iterator::difference_type rhs) const
 			{
 				updateForward(rhs);
@@ -1553,6 +1496,7 @@ namespace linked_list
 			{
 				return operator+=(static_cast<typename iterator::difference_type>(rhs));
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline const_iterator& operator-=(const typename iterator::difference_type rhs) const
 			{
 				updateBackward(rhs);
@@ -1562,6 +1506,7 @@ namespace linked_list
 			{
 				return operator-=(static_cast<typename iterator::difference_type>(rhs));
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline iterator& operator+=(const typename iterator::difference_type rhs)
 			{
 				updateForward(rhs);
@@ -1571,6 +1516,7 @@ namespace linked_list
 			{
 				return operator+=(static_cast<typename iterator::difference_type>(rhs));
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline iterator& operator-=(const typename iterator::difference_type rhs)
 			{
 				updateBackward(rhs);
@@ -1580,6 +1526,7 @@ namespace linked_list
 			{
 				return operator-=(static_cast<typename iterator::difference_type>(rhs));
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline const_iterator operator+(const typename iterator::difference_type rhs) const
 			{
 				iterator ite(*this);
@@ -1590,6 +1537,7 @@ namespace linked_list
 			{
 				return std::move(operator+(static_cast<typename iterator::difference_type>(rhs)));
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline const_iterator operator-(const typename iterator::difference_type rhs) const
 			{
 				iterator ite(*this);
@@ -1600,6 +1548,7 @@ namespace linked_list
 			{
 				return std::move(operator-(static_cast<typename iterator::difference_type>(rhs)));
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			inline iterator operator+(const typename iterator::difference_type rhs)
 			{
 				iterator ite(*this);
@@ -1610,6 +1559,7 @@ namespace linked_list
 			{
 				return std::move(operator+(static_cast<typename iterator::difference_type>(rhs)));
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline iterator operator-(const typename iterator::difference_type rhs)
 			{
 				iterator ite(*this);
@@ -1624,6 +1574,7 @@ namespace linked_list
 			//{
 			//	return ???;
 			//}
+		#endif//ENABLE_REVERSE_ITERATOR
 		#endif
 		public:
 			//ムーブオペレータ
@@ -1634,7 +1585,9 @@ namespace linked_list
 				m_isEnd = rhs.m_isEnd;
 				return *this;
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			iterator& operator=(const_reverse_iterator&& rhs);
+		#endif//ENABLE_REVERSE_ITERATOR
 			//コピーオペレータ
 			inline iterator& operator=(const_iterator& rhs)
 			{
@@ -1643,27 +1596,43 @@ namespace linked_list
 				m_isEnd = rhs.m_isEnd;
 				return *this;
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			iterator& operator=(const_reverse_iterator& rhs);
+		#endif//ENABLE_REVERSE_ITERATOR
 		public:
 			//アクセッサ
-			inline bool isExist() const { return m_node != nullptr; }
+			inline bool isExist() const { return m_node != nullptr && m_node != reinterpret_cast<node_type*>(BEFORE_BEGIN); }
 			inline bool isNotExist() const { return !isExist(); }
 			inline bool isEnabled() const { return m_node != nullptr || m_isEnd; }
 			inline bool isNotEnabled() const { return !isEnabled(); }
+			inline bool isBeforeBegin() const { m_node != reinterpret_cast<node_type*>(BEFORE_BEGIN); }
 			inline bool isEnd() const { return m_isEnd; }//終端か？
-			inline const node_type* getNode() const { return m_node; }//現在のノード
-			inline node_type* getNode(){ return m_node; }//現在のノード
+			inline const node_type* getNode() const { return m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN) ? nullptr : m_node; }//現在のノード
+			inline node_type* getNode(){ return m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN) ? nullptr : m_node; }//現在のノード
 		private:
 			//メソッド
 			inline void updateNext() const
 			{
+				if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+				{
+					m_node = m_con->m_first;
+					m_isEnd = (m_con->m_first == nullptr);
+					return;
+				}
 				node_type* prev = m_node;
 				if (m_node)
 					m_node = const_cast<node_type*>(getNextNode<ope_type>(*m_node));
 				m_isEnd = (prev && !m_node);
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			inline void updatePrev() const
 			{
+				if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+				{
+					m_node = nullptr;
+					m_isEnd = false;
+					return;
+				}
 				if (m_isEnd)
 				{
 					m_node = const_cast<node_type*>(m_con->m_last);
@@ -1671,19 +1640,36 @@ namespace linked_list
 					return;
 				}
 				if (m_node)
-					m_node = const_cast<node_type*>(getPrevNode<ope_type>(*m_node));
+					m_node = const_cast<node_type*>(getPrevNode<ope_type>(*m_node, m_con->m_first, nullptr));
 				m_isEnd = false;
 			}
+		#endif//ENABLE_REVERSE_ITERATOR
 			void updateForward(const std::size_t step) const
 			{
+				if (step == 0)
+					return;
 				std::size_t _step = step;
 				node_type* prev = m_node;
+				if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+				{
+					m_node = m_con->m_first;
+					--_step;
+				}
 				if (m_node)
 					m_node = const_cast<node_type*>(getForwardNode<ope_type>(*m_node, _step));
 				m_isEnd = (prev && !m_node && _step == 0);
 			}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			void updateBackward(const std::size_t step) const
 			{
+				if (step == 0)
+					return;
+				if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+				{
+					m_node = nullptr;
+					m_isEnd = false;
+					return;
+				}
 				std::size_t _step = step;
 				if (_step > 0 && m_isEnd)
 				{
@@ -1691,8 +1677,19 @@ namespace linked_list
 					--_step;
 				}
 				if (m_node)
-					m_node = const_cast<node_type*>(getBackwardNode<ope_type>(*m_node, _step));
+					m_node = const_cast<node_type*>(getBackwardNode<ope_type>(*m_node, _step, m_con->m_first, nullptr));
 				m_isEnd = false;
+			}
+		#endif//ENABLE_REVERSE_ITERATOR
+		public:
+			inline void updateBeforeBegin()
+			{
+				m_node = reinterpret_cast<node_type*>(BEFORE_BEGIN);
+				m_isEnd = false;
+			}
+			inline bool isBeforeBegin()
+			{
+				return m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN);
 			}
 		public:
 			//ムーブコンストラクタ
@@ -1701,14 +1698,18 @@ namespace linked_list
 				m_node(obj.m_node),
 				m_isEnd(obj.m_isEnd)
 			{}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			iterator(const_reverse_iterator&& obj);
+		#endif//ENABLE_REVERSE_ITERATOR
 			//コピーコンストラクタ
 			inline iterator(const_iterator& obj) :
 				m_con(obj.m_con),
 				m_node(obj.m_node),
 				m_isEnd(obj.m_isEnd)
 			{}
+		#ifdef ENABLE_REVERSE_ITERATOR
 			iterator(const_reverse_iterator& obj);
+		#endif//ENABLE_REVERSE_ITERATOR
 			//コンストラクタ
 			inline iterator(const container& con, const bool is_end) :
 				m_con(&con),
@@ -1741,10 +1742,11 @@ namespace linked_list
 			mutable node_type* m_node;//現在のノード
 			mutable bool m_isEnd;//終端か？
 		};
+	#ifdef ENABLE_REVERSE_ITERATOR
 		//--------------------
 		//リバースイテレータ
 		//class reverse_iterator : public std::reverse_iterator<iterator>
-		class reverse_iterator : public std::iterator<std::bidirectional_iterator_tag, node_type>
+		class reverse_iterator : public std::iterator<std::forward_iterator_tag, node_type>
 		{
 			friend class container;
 			friend class iterator;
@@ -1932,7 +1934,14 @@ namespace linked_list
 				m_isEnd = false;
 				if (m_node)
 				{
-					++(*this);
+					if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+					{
+						m_node = m_con->m_first;
+						if (!m_node)
+							m_isEnd = true;
+					}
+					else
+						++(*this);
 				}
 				else
 				{
@@ -1956,7 +1965,14 @@ namespace linked_list
 				m_isEnd = false;
 				if (m_node)
 				{
-					++(*this);
+					if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+					{
+						m_node = m_con->m_first;
+						if (!m_node)
+							m_isEnd = true;
+					}
+					else
+						++(*this);
 				}
 				else
 				{
@@ -1980,7 +1996,7 @@ namespace linked_list
 			{
 				node_type* prev = m_node;
 				if (m_node)
-					m_node = const_cast<node_type*>(getPrevNode<ope_type>(*m_node));
+					m_node = const_cast<node_type*>(getPrevNode<ope_type>(*m_node, m_con->m_first, nullptr));
 				m_isEnd = (prev && !m_node);
 			}
 			inline void updatePrev() const
@@ -2000,7 +2016,7 @@ namespace linked_list
 				std::size_t _step = step;
 				node_type* prev = m_node;
 				if (m_node)
-					m_node = const_cast<node_type*>(getBackwardNode<ope_type>(*m_node, _step));
+					m_node = const_cast<node_type*>(getBackwardNode<ope_type>(*m_node, _step, m_con->m_first, nullptr));
 				m_isEnd = (prev && !m_node && _step == 0);
 			}
 			void updateBackward(const std::size_t step) const
@@ -2041,7 +2057,14 @@ namespace linked_list
 			{
 				if (m_node)
 				{
-					++(*this);
+					if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+					{
+						m_node = m_con->m_first;
+						if (!m_node)
+							m_isEnd = true;
+					}
+					else
+						++(*this);
 				}
 				else
 				{
@@ -2062,7 +2085,14 @@ namespace linked_list
 			{
 				if (m_node)
 				{
-					++(*this);
+					if (m_node == reinterpret_cast<node_type*>(BEFORE_BEGIN))
+					{
+						m_node = m_con->m_first;
+						if (!m_node)
+							m_isEnd = true;
+					}
+					else
+						++(*this);
 				}
 				else
 				{
@@ -2102,9 +2132,10 @@ namespace linked_list
 			mutable node_type* m_node;//現在のノード
 			mutable bool m_isEnd;//終端か？
 		};
+	#endif//ENABLE_REVERSE_ITERATOR
 	public:
 		//アクセッサ
-		//※std::listと異なり、ノードのポインタを返す
+		//※std::forward_listと異なり、ノードのポインタを返す
 		const node_type* at(const index_type index) const
 		{
 			return getForwardNode<ope_type>(m_first, index);
@@ -2131,6 +2162,12 @@ namespace linked_list
 		//イテレータを取得
 		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
 		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
+		inline const_iterator cbefore_begin() const
+		{
+			iterator ite(*this, false);
+			ite.updateBeforeBegin();
+			return std::move(ite);
+		}
 		inline const_iterator cbegin() const
 		{
 			iterator ite(*this, false);
@@ -2139,6 +2176,12 @@ namespace linked_list
 		inline const_iterator cend() const
 		{
 			iterator ite(*this, true);
+			return std::move(ite);
+		}
+		inline const_iterator before_begin() const
+		{
+			iterator ite(*this, false);
+			ite.updateBeforeBegin();
 			return std::move(ite);
 		}
 		inline const_iterator begin() const
@@ -2151,6 +2194,12 @@ namespace linked_list
 			iterator ite(*this, true);
 			return std::move(ite);
 		}
+		inline iterator before_begin()
+		{
+			iterator ite(*this, false);
+			ite.updateBeforeBegin();
+			return std::move(ite);
+		}
 		inline iterator begin()
 		{
 			iterator ite(*this, false);
@@ -2161,9 +2210,12 @@ namespace linked_list
 			iterator ite(*this, true);
 			return std::move(ite);
 		}
+	#ifdef ENABLE_REVERSE_ITERATOR
 		//リバースイテレータを取得
 		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
 		//　一連の処理ブロック全体の前後で共有ロック（リードロック）の取得と解放を行う必要がある
+		//【注意】低速処理（イテレータを移動する度に先頭から辿り直すのでかなり低速）
+		//※std::forward_listにないメソッド
 		inline const_reverse_iterator crbegin() const
 		{
 			reverse_iterator ite(*this, false);
@@ -2194,11 +2246,12 @@ namespace linked_list
 			reverse_iterator ite(*this, true);
 			return std::move(ite);
 		}
-		
+	#endif//ENABLE_REVERSE_ITERATOR
+
 		//追加／削除系メソッド
-		//※std::listと異なり、追加／削除対象のノードを直接指定し、結果をポインタで受け取る（成功したら、追加／削除したポインタを返す）
+		//※std::forward_listと異なり、追加／削除対象のノードを直接指定し、結果をポインタで受け取る（成功したら、追加／削除したポインタを返す）
 		//※要素のメモリ確保／解放を行わない点に注意
-		//※assign(), remove_if(), emplace(), emplace_front(), emplase_back()には非対応
+		//※assign(), remove_if(), emplace_after(), emprace_front()には非対応
 		//※insert_before()を追加
 		//※自動的なロック取得は行わないので、マルチスレッドで利用する際は、
 		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
@@ -2209,6 +2262,7 @@ namespace linked_list
 			return insertNodeBeginning<ope_type>(*const_cast<node_type*>(&node), m_first, m_last);
 		}
 		//末尾にノードを挿入（連結に追加）
+		//※std::forward_listにないメソッド
 		inline node_type* push_back(const node_type& node)
 		{
 			return insertNodeEnd<ope_type>(*const_cast<node_type*>(&node), m_first, m_last);
@@ -2218,53 +2272,105 @@ namespace linked_list
 		{
 			if (!m_first)
 				return nullptr;
-			return removeNode<ope_type>(*m_first, m_first, m_last);
+			return removeNode<ope_type>(*m_first, m_first, m_last, nullptr);
 		}
 		//末尾ノードを削除（連結解除）
-		inline node_type* pop_back()
+		//【注意】低速処理（backwardを指定することで高速化可能）
+		//※もし、lastの直前もしくはそれより前のノードが分かっているなら、
+		//　それを backward に指定するこで検索範囲が短縮され、処理効率が向上する。
+		//　nullptrを指定した場合、firstからlastまで辿る。
+		//※std::forward_listにないメソッド
+		inline node_type* pop_back(node_type* backward = nullptr)
 		{
 			if (!m_first)
 				return nullptr;
-			return removeNode<ope_type>(*m_last, m_first, m_last);
+			return removeNode<ope_type>(*m_last, m_first, m_last, backward);
 		}
 		//指定の位置の後ろにノードを挿入（連結に追加）
 		//※位置はイテレータで指定
+		inline node_type* insert_after(iterator pos, const node_type& node)
+		{
+			if (pos.isNotExist() && !pos.isBeforeBegin())
+				return nullptr;
+			return insertNodeAfter<ope_type>(*const_cast<node_type*>(&node), *pos, m_first, m_last);
+		}
+		//※insert_after()とinsert()は同じ
+		//※std::forward_listにないメソッド
 		inline node_type* insert(iterator pos, const node_type& node)
 		{
-			if (pos.isNotExist())
+			if (pos.isNotExist() && !pos.isBeforeBegin())
 				return nullptr;
 			return insertNodeAfter<ope_type>(*const_cast<node_type*>(&node), *pos, m_first, m_last);
 		}
 		//指定の位置の前にノードを挿入（連結に追加）
 		//※位置はイテレータで指定
-		inline node_type* insert_before(iterator pos, const node_type& node)
+		//【注意】低速処理（backwardを指定することで高速化可能）
+		//※もし、posの直前もしくはそれより前のノードが分かっているなら、
+		//　それを backward に指定するこで検索範囲が短縮され、処理効率が向上する。
+		//　nullptrを指定した場合、firstからposまで辿る。
+		//※std::forward_listにないメソッド
+		inline node_type* insert_before(iterator pos, const node_type& node, node_type* backward = nullptr)
 		{
 			if (pos.isNotExist())
 				return nullptr;
-			return insertNodeBefore<ope_type>(*const_cast<node_type*>(&node), *pos, m_first, m_last);
+			return insertNodeBefore<ope_type>(*const_cast<node_type*>(&node), *pos, m_first, m_last, backward);
 		}
 		//指定ノードを削除（連結解除）
-		inline node_type* remove(node_type& node)
+		//【注意】低速処理（backwardを指定することで高速化可能）
+		//※もし、nodeの直前もしくはそれより前のノードが分かっているなら、
+		//　それを backward に指定するこで検索範囲が短縮され、処理効率が向上する。
+		//　nullptrを指定した場合、firstからnodeまで辿る。
+		inline node_type* remove(node_type& node, node_type* backward = nullptr)
 		{
 			if (!m_first)
 				return nullptr;
-			return removeNode<ope_type>(node, m_first, m_last);
+			return removeNode<ope_type>(node, m_first, m_last, backward);
 		}
-		//指定位置のノードを削除（連結解除）
+		//指定位置の次のノードを削除（連結解除）
 		//※位置はイテレータで指定
-		inline node_type* erase(iterator pos)
+		inline node_type* erase_after(iterator pos)
 		{
 			if (!m_first || pos.isNotExist())
 				return nullptr;
-			return removeNode<ope_type>(*pos, m_first, m_last);
+			node_type* before = &*pos;
+			node_type& _pos = *const_cast<node_type*>(ope_type::getNext(*pos));
+			return removeNode<ope_type>(_pos, m_first, m_last, before);
 		}
-		//指定範囲のノードを削除（連結解除）
+		//指定位置の次のノードからの範囲のノードを削除（連結解除）
 		//※範囲はイテレータで指定
-		inline node_type* erase(iterator start, iterator end)
+		inline node_type* erase_after(iterator start, iterator end)
 		{
 			if (!m_first || start.isNotExist() || end.isNotEnabled())
 				return nullptr;
-			return removeNodes<ope_type>(*start, *end, m_first, m_last);
+			node_type* before = &*start;
+			node_type& _start = *const_cast<node_type*>(ope_type::getNext(*start));
+			return removeNodes<ope_type>(_start, *end, m_first, m_last, before);
+		}
+		//指定位置のノードを削除（連結解除）
+		//※位置はイテレータで指定
+		//【注意】低速処理（backwardを指定することで高速化可能）
+		//※もし、posの直前もしくはそれより前のノードが分かっているなら、
+		//　それを backward に指定するこで検索範囲が短縮され、処理効率が向上する。
+		//　nullptrを指定した場合、firstからposまで辿る。
+		//※std::forward_listにないメソッド
+		inline node_type* erase(iterator pos, node_type* backward = nullptr)
+		{
+			if (!m_first || pos.isNotExist())
+				return nullptr;
+			return removeNode<ope_type>(*pos, m_first, m_last, backward);
+		}
+		//指定範囲のノードを削除（連結解除）
+		//※範囲はイテレータで指定
+		//【注意】低速処理（backwardを指定することで高速化可能）
+		//※もし、startの直前もしくはそれより前のノードが分かっているなら、
+		//　それを backward に指定するこで検索範囲が短縮され、処理効率が向上する。
+		//　nullptrを指定した場合、firstからstartまで辿る。
+		//※std::forward_listにないメソッド
+		inline node_type* erase(iterator start, iterator end, node_type* backward = nullptr)
+		{
+			if (!m_first || start.isNotExist() || end.isNotEnabled())
+				return nullptr;
+			return removeNodes<ope_type>(*start, *end, m_first, m_last, backward);
 		}
 		//全ノードをクリア
 		//※先頭ノードを返す
@@ -2283,21 +2389,13 @@ namespace linked_list
 		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
 		void sort()
 		{
-		#ifdef USE_SHELL_SORT
-			linkedListShellSort<OPE_TYPE>(m_first, m_last, typename ope_type::sort_predicate());
-		#else//USE_SHELL_SORT
-			linkedListInsertionSort<OPE_TYPE>(m_first, m_last, typename ope_type::sort_predicate());
-		#endif//USE_SHELL_SORT
+			singlyLinkedListInsertionSort<OPE_TYPE>(m_first, m_last, typename ope_type::sort_predicate());
 		}
 		//※プレディケート関数指定版
 		template<class PREDICATE>
 		void sort(PREDICATE predicate)
 		{
-		#ifdef USE_SHELL_SORT
-			linkedListShellSort<OPE_TYPE>(m_first, m_last, predicate);
-		#else//USE_SHELL_SORT
-			linkedListInsertionSort<OPE_TYPE>(m_first, m_last, predicate);
-		#endif//USE_SHELL_SORT
+			singlyLinkedListInsertionSort<OPE_TYPE>(m_first, m_last, predicate);
 		}
 	#ifdef ENABLE_STABLE_SORT
 		//安定ソート
@@ -2307,13 +2405,13 @@ namespace linked_list
 		//　一連の処理ブロックの前後で排他ロック（ライトロック）の取得と解放を行う必要がある
 		void stable_sort()
 		{
-			linkedListInsertionSort<OPE_TYPE>(m_first, m_last, typename ope_type::sort_predicate());
+			singlyLinkedListInsertionSort<OPE_TYPE>(m_first, m_last, typename ope_type::sort_predicate());
 		}
 		//※プレディケート関数指定版
 		template<class PREDICATE>
 		void stable_sort(PREDICATE predicate)
 		{
-			linkedListInsertionSort<OPE_TYPE>(m_first, m_last, predicate);
+			singlyLinkedListInsertionSort<OPE_TYPE>(m_first, m_last, predicate);
 		}
 	#endif//ENABLE_STABLE_SORT
 		//ソート済み状態チェック
@@ -2363,6 +2461,7 @@ namespace linked_list
 		//※ope_type::search_comparison() を使用して探索（標準では、データ型の operator==() と operator<() に従って探索）
 		//※自動的な共有ロック取得は行わないので、マルチスレッドで利用する際は、
 		//　一連の処理ブロックの前後で共有ロック（リードロック）の取得と解放を行う必要がある
+		//【注意】低速処理
 		template<typename V>
 		iterator binary_search_value(const V& value)
 		{
@@ -2387,7 +2486,7 @@ namespace linked_list
 	#endif//ENABLE_BINARY_SEARCH
 
 		//リスト操作系メソッド
-		//※merge(), splice(), reverse(), unique()には非対応
+		//※merge(), splice_after(), reverse(), unique()には非対応
 
 	public:
 		//ムーブコンストラクタ
@@ -2414,6 +2513,7 @@ namespace linked_list
 		node_type* m_last;//末尾ノード
 		mutable lock_type m_lock;//ロックオブジェクト
 	};
+#ifdef ENABLE_REVERSE_ITERATOR
 	//イテレータのムーブオペレータ
 	template<class OPE_TYPE>
 	//typename container<OPE_TYPE>::iterator& container<OPE_TYPE>::iterator::operator=(typename container<OPE_TYPE>::const_reverse_iterator&& rhs)//GCCはOK, VC++はNG
@@ -2488,18 +2588,19 @@ namespace linked_list
 				m_node = const_cast<node_type*>(m_con->m_first);
 		}
 	}
+#endif//ENABLE_REVERSE_ITERATOR
 	//--------------------
 	//基本型定義マクロ消去
 	#undef DECLARE_OPE_TYPES
-}//namespace linked_list
+}//namespace singly_linked_list
 
 //--------------------------------------------------------------------------------
-//双方向連結リストテスト
+//片方向連結リストテスト
 //--------------------------------------------------------------------------------
 
 #include <algorithm>//std::for_each用
 #include <chrono>//C++11 時間計測用
-#include <list>//std::list用（比較用）
+#include <forward_list>//C++11 std::forward_list用（比較用）
 #include <assert.h>//assert用
 
 //----------------------------------------
@@ -2527,7 +2628,6 @@ inline int printf_dbg_search(const char* fmt, ...){ return 0; }
 //テストデータ
 struct data_t
 {
-	mutable const data_t* m_prev;//前ノード
 	mutable const data_t* m_next;//次ノード
 	
 	int m_key;//キー
@@ -2536,13 +2636,11 @@ struct data_t
 	//コンストラクタ
 	data_t(const int key, const int val) :
 		m_next(nullptr),
-		m_prev(nullptr),
 		m_key(key),
 		m_val(val)
 	{}
 	data_t() :
 		m_next(nullptr),
-		m_prev(nullptr),
 		m_key(0),
 		m_val(0)
 	{}
@@ -2574,13 +2672,8 @@ static bool operator<(const int key, const data_t& rhs)
 
 //----------------------------------------
 //テストデータ向けノード操作用クラス（CRTP）
-struct ope_t : public linked_list::base_ope_t<ope_t, data_t>
+struct ope_t : public singly_linked_list::base_ope_t<ope_t, data_t>
 {
-	//前ノードを取得
-	inline static const node_type* getPrev(const node_type& node){ return node.m_prev; }
-	//前ノードを変更
-	inline static void setPrev(node_type& node, const node_type* prev){ node.m_prev = prev; }
-	
 	//次ノードを取得
 	inline static const node_type* getNext(const node_type& node){ return node.m_next; }
 	//次ノードを変更
@@ -2633,10 +2726,10 @@ int main(const int argc, const char* argv[])
 	//テスト①：基本ロジックテスト
 	{
 		printf("--------------------------------------------------------------------------------\n");
-		printf("[Test for linked_list::container(User defined type)]\n");
+		printf("[Test for singly_linked_list::container(User defined type)]\n");
 
-		//双方向連結リストコンテナ生成
-		typedef linked_list::container<ope_t> container_t;
+		//片方向連結リストコンテナ生成
+		typedef singly_linked_list::container<ope_t> container_t;
 		container_t con;
 
 		//データを表示
@@ -2657,8 +2750,11 @@ int main(const int argc, const char* argv[])
 		};
 
 		//データを逆順に表示
+		//【注意】低速処理
+		//※std::forward_listにない処理
 		auto printReverse = [&con]()
 		{
+		#ifdef ENABLE_REVERSE_ITERATOR
 			printf("size=%d\n", con.size());
 			printf("list(reverse)=");
 			if (con.empty())
@@ -2673,63 +2769,8 @@ int main(const int argc, const char* argv[])
 				}
 			);
 			printf("\n");
+		#endif//ENABLE_REVERSE_ITERATOR
 		};
-
-		//末尾に連続プッシュ(1)
-		auto continuous_push_back = [&con](const int num)
-		{
-			printf("\n");
-			printf("[push_back * %d]\n", num);
-			for (int i = 0; i < num; ++i)
-			{
-				const int key = i;
-				const int val = 100 + i;
-				printf("push_back(%d:%d) ... ", key, val);
-				data_t* data = new data_t(key, val);
-				if (con.push_back(*data))
-					printf("OK\n");
-				else
-				{
-					delete data;
-					printf("NG!\n");
-				}
-			}
-		};
-		continuous_push_back(10);
-		printAll();//全件表示
-		//printReverse();//全件逆順表示
-
-		//先頭から連続ポップ(1)
-		auto continuous_pop_front = [&con](const int num)
-		{
-			printf("\n");
-			printf("[pop_front * %d]\n", num);
-			for (int i = 0; i < num; ++i)
-			{
-				printf("pop_front() ... ");
-				data_t* data = con.pop_front();
-				if (data)
-				{
-					printf("OK [%d:%d]\n", data->m_key, data->m_val);
-					delete data;
-				}
-				else
-					printf("NG!\n");
-			}
-		};
-		continuous_pop_front(5);
-		printAll();//全件表示
-		//printReverse();//全件逆順表示
-
-		//末尾に連続プッシュ(2)
-		continuous_push_back(20);
-		printAll();//全件表示
-		//printReverse();//全件逆順表示
-
-		//先頭から連続ポップ(2)
-		continuous_pop_front(25);
-		printAll();//全件表示
-		//printReverse();//全件逆順表示
 
 		//先頭に連続プッシュ(1)
 		auto continuous_push_front = [&con](const int num)
@@ -2755,7 +2796,66 @@ int main(const int argc, const char* argv[])
 		printAll();//全件表示
 		//printReverse();//全件逆順表示
 
+		//先頭から連続ポップ(1)
+		auto continuous_pop_front = [&con](const int num)
+		{
+			printf("\n");
+			printf("[pop_front * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				printf("pop_front() ... ");
+				data_t* data = con.pop_front();
+				if (data)
+				{
+					printf("OK [%d:%d]\n", data->m_key, data->m_val);
+					delete data;
+				}
+				else
+					printf("NG!\n");
+			}
+		};
+		continuous_pop_front(5);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//先頭に連続プッシュ(2)
+		continuous_push_front(20);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//先頭から連続ポップ(2)
+		continuous_pop_front(25);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
+		//末尾に連続プッシュ(1)
+		//※std::forward_listにない処理
+		auto continuous_push_back = [&con](const int num)
+		{
+			printf("\n");
+			printf("[push_back * %d]\n", num);
+			for (int i = 0; i < num; ++i)
+			{
+				const int key = i;
+				const int val = 100 + i;
+				printf("push_back(%d:%d) ... ", key, val);
+				data_t* data = new data_t(key, val);
+				if (con.push_back(*data))
+					printf("OK\n");
+				else
+				{
+					delete data;
+					printf("NG!\n");
+				}
+			}
+		};
+		continuous_push_back(10);
+		printAll();//全件表示
+		//printReverse();//全件逆順表示
+
 		//末尾から連続ポップ(1)
+		//【注意】低速処理
+		//※std::forward_listにない処理
 		auto continuous_pop_back = [&con](const int num)
 		{
 			printf("\n");
@@ -2777,8 +2877,8 @@ int main(const int argc, const char* argv[])
 		printAll();//全件表示
 		//printReverse();//全件逆順表示
 
-		//先頭に連続プッシュ(2)
-		continuous_push_front(20);
+		//末尾に連続プッシュ(2)
+		continuous_push_back(20);
 		printAll();//全件表示
 		//printReverse();//全件逆順表示
 
@@ -2787,23 +2887,23 @@ int main(const int argc, const char* argv[])
 		printAll();//全件表示
 		//printReverse();//全件逆順表示
 
-		//データ登録：push_back()メソッド
+		//データ登録：push_front()メソッド
 		printf("\n");
-		printf("[push_back(1)]\n");
-		auto push_back = [&con](const int key, const int val)
+		printf("[push_front(1)]\n");
+		auto push_front = [&con](const int key, const int val)
 		{
 			data_t* data = new data_t(key, val);
-			con.push_back(*data);
+			con.push_front(*data);
 		};
-		push_back(5, 101);
-		push_back(8, 102);
-		push_back(3, 103);
-		push_back(1, 104);
-		push_back(7, 105);
-		push_back(4, 106);
-		push_back(13, 107);
-		push_back(10, 108);
-		push_back(5, 109);
+		push_front(5, 101);
+		push_front(8, 102);
+		push_front(3, 103);
+		push_front(1, 104);
+		push_front(7, 105);
+		push_front(4, 106);
+		push_front(13, 107);
+		push_front(10, 108);
+		push_front(5, 109);
 		
 		//データを表示
 		printAll();
@@ -2830,36 +2930,86 @@ int main(const int argc, const char* argv[])
 		{
 			printf("\n");
 			printf("constructor\n");
+			container_t::iterator ite_bb = con.before_begin();
 			container_t::iterator ite = con.begin();
 			container_t::reverse_iterator rite = con.rbegin();
 			container_t::iterator ite_end = con.end();
 			container_t::reverse_iterator rite_end = con.rend();
 			container_t::iterator ite2 = con.rbegin();
+			container_t::reverse_iterator rite2_bb = con.before_begin();
 			container_t::reverse_iterator rite2 = con.begin();
 			container_t::iterator ite2_end = con.rend();
 			container_t::reverse_iterator rite2_end = con.end();
+			if (ite_bb.isExist()) printf("ite_bb: key=%d, value=%d\n", ite_bb->m_key, ite_bb->m_val);
 			if (ite.isExist()) printf("ite: key=%d, value=%d\n", ite->m_key, ite->m_val);
 			if (rite.isExist()) printf("rite: key=%d, value=%d\n", rite->m_key, rite->m_val);
 			if (ite_end.isExist()) printf("ite_end: key=%d, value=%d\n", ite_end->m_key, ite_end->m_val);
 			if (rite_end.isExist()) printf("rite_end: key=%d, value=%d\n", rite_end->m_key, rite_end->m_val);
 			if (ite2.isExist()) printf("ite2: key=%d, value=%d\n", ite2->m_key, ite2->m_val);
+			if (rite2_bb.isExist()) printf("rite2_bb: key=%d, value=%d\n", rite2_bb->m_key, rite2_bb->m_val);
 			if (rite2.isExist()) printf("rite2: key=%d, value=%d\n", rite2->m_key, rite2->m_val);
 			if (ite2_end.isExist()) printf("ite2_end: key=%d, value=%d\n", ite2_end->m_key, ite2_end->m_val);
 			if (rite2_end.isExist()) printf("rite2_end: key=%d, value=%d\n", rite2_end->m_key, rite2_end->m_val);
 			printf("copy operator\n");
+			ite_bb = con.before_begin();
 			ite = con.begin();
 			rite = con.rbegin();
 			ite_end = con.end();
 			rite_end = con.rend();
 			ite2 = con.rbegin();
+			rite2_bb = con.before_begin();
 			rite2 = con.begin();
 			ite2_end = con.rend();
 			rite2_end = con.end();
+			if (ite_bb.isExist()) printf("ite_bb: key=%d, value=%d\n", ite_bb->m_key, ite_bb->m_val);
 			if (ite.isExist()) printf("ite: key=%d, value=%d\n", ite->m_key, ite->m_val);
 			if (rite.isExist()) printf("rite: key=%d, value=%d\n", rite->m_key, rite->m_val);
 			if (ite_end.isExist()) printf("ite_end: key=%d, value=%d\n", ite_end->m_key, ite_end->m_val);
 			if (rite_end.isExist()) printf("rite_end: key=%d, value=%d\n", rite_end->m_key, rite_end->m_val);
 			if (ite2.isExist()) printf("ite2: key=%d, value=%d\n", ite2->m_key, ite2->m_val);
+			if (rite2_bb.isExist()) printf("rite2_bb: key=%d, value=%d\n", rite2_bb->m_key, rite2_bb->m_val);
+			if (rite2.isExist()) printf("rite2: key=%d, value=%d\n", rite2->m_key, rite2->m_val);
+			if (ite2_end.isExist()) printf("ite2_end: key=%d, value=%d\n", ite2_end->m_key, ite2_end->m_val);
+			if (rite2_end.isExist()) printf("rite2_end: key=%d, value=%d\n", rite2_end->m_key, rite2_end->m_val);
+			printf("++\n");
+			++ite_bb;
+			++ite;
+			++rite;
+			++ite_end;
+			++rite_end;
+			++ite2;
+			++rite2_bb;
+			++rite2;
+			++ite2_end;
+			++rite2_end;
+			if (ite_bb.isExist()) printf("ite_bb: key=%d, value=%d\n", ite_bb->m_key, ite_bb->m_val);
+			if (ite.isExist()) printf("ite: key=%d, value=%d\n", ite->m_key, ite->m_val);
+			if (rite.isExist()) printf("rite: key=%d, value=%d\n", rite->m_key, rite->m_val);
+			if (ite_end.isExist()) printf("ite_end: key=%d, value=%d\n", ite_end->m_key, ite_end->m_val);
+			if (rite_end.isExist()) printf("rite_end: key=%d, value=%d\n", rite_end->m_key, rite_end->m_val);
+			if (ite2.isExist()) printf("ite2: key=%d, value=%d\n", ite2->m_key, ite2->m_val);
+			if (rite2_bb.isExist()) printf("rite2_bb: key=%d, value=%d\n", rite2_bb->m_key, rite2_bb->m_val);
+			if (rite2.isExist()) printf("rite2: key=%d, value=%d\n", rite2->m_key, rite2->m_val);
+			if (ite2_end.isExist()) printf("ite2_end: key=%d, value=%d\n", ite2_end->m_key, ite2_end->m_val);
+			if (rite2_end.isExist()) printf("rite2_end: key=%d, value=%d\n", rite2_end->m_key, rite2_end->m_val);
+			printf("--\n");
+			--ite_bb;
+			--ite;
+			--rite;
+			--ite_end;
+			--rite_end;
+			--ite2;
+			--rite2_bb;
+			--rite2;
+			--ite2_end;
+			--rite2_end;
+			if (ite_bb.isExist()) printf("ite_bb: key=%d, value=%d\n", ite_bb->m_key, ite_bb->m_val);
+			if (ite.isExist()) printf("ite: key=%d, value=%d\n", ite->m_key, ite->m_val);
+			if (rite.isExist()) printf("rite: key=%d, value=%d\n", rite->m_key, rite->m_val);
+			if (ite_end.isExist()) printf("ite_end: key=%d, value=%d\n", ite_end->m_key, ite_end->m_val);
+			if (rite_end.isExist()) printf("rite_end: key=%d, value=%d\n", rite_end->m_key, rite_end->m_val);
+			if (ite2.isExist()) printf("ite2: key=%d, value=%d\n", ite2->m_key, ite2->m_val);
+			if (rite2_bb.isExist()) printf("rite2_bb: key=%d, value=%d\n", rite2_bb->m_key, rite2_bb->m_val);
 			if (rite2.isExist()) printf("rite2: key=%d, value=%d\n", rite2->m_key, rite2->m_val);
 			if (ite2_end.isExist()) printf("ite2_end: key=%d, value=%d\n", ite2_end->m_key, ite2_end->m_val);
 			if (rite2_end.isExist()) printf("rite2_end: key=%d, value=%d\n", rite2_end->m_key, rite2_end->m_val);
@@ -2959,9 +3109,9 @@ int main(const int argc, const char* argv[])
 			//{
 			//	auto ite = std::lower_bound(con.begin(), con.end(), key);
 				printf(" [%d:%d]", ite->m_key, ite->m_val);
-				--ite;
+				++ite;
 				if (ite.isExist())
-					printf(" prev=[%d:%d]", ite->m_key, ite->m_val);
+					printf(" next=[%d:%d]", ite->m_key, ite->m_val);
 			}
 			else
 				printf("(not found)");
@@ -2986,9 +3136,9 @@ int main(const int argc, const char* argv[])
 		printAll();//全件表示
 		con.sort();//通常ソート
 		printAll();//全件表示
-		con.stable_sort(reverse_pred);//安定ソート
+		//con.stable_sort(reverse_pred);//安定ソート
 		printAll();//全件表示
-		con.stable_sort();//安定ソート
+		//con.stable_sort();//安定ソート
 		printAll();//全件表示
 		find(1);
 		find(2);
@@ -3004,7 +3154,7 @@ int main(const int argc, const char* argv[])
 		{
 			auto ite = con.begin();
 			ite += 2;
-			data_t* del = con.remove(*ite);//前から3つ目のノードを削除
+			data_t* del = con.remove(*ite);//先頭から3つ目のノードを削除
 			if (del)
 				delete del;
 			printAll();//全件表示
@@ -3012,11 +3162,11 @@ int main(const int argc, const char* argv[])
 
 		//削除２：イテレータで指定
 		printf("\n");
-		printf("[erase(1)]\n");
+		printf("[erase_after(1)]\n");
 		{
-			auto ite = con.end();
-			ite -= 4;
-			data_t* del = con.erase(ite);//後ろから4つ目の位置のノードを削除
+			auto ite = con.begin();
+			ite += 4;
+			data_t* del = con.erase_after(ite);//先頭から5つ目の位置の後ろのノードを削除
 			if (del)
 				delete del;
 			printAll();//全件表示
@@ -3024,13 +3174,13 @@ int main(const int argc, const char* argv[])
 
 		//削除３：イテレータの範囲で指定
 		printf("\n");
-		printf("[erase(2)]\n");
+		printf("[erase_after(2)]\n");
 		{
-			auto start = con.end();
-			start -= 4;
+			auto start = con.begin();
+			start += 3;
 			auto end = start;
-			end += 2;
-			const data_t* del = con.erase(start, end);//後ろから4つ目の位置から2つのノードを削除
+			end += 3;
+			const data_t* del = con.erase_after(start, end);//先頭から4つ目の位置の後ろから2つのノードを削除
 			while (del)
 			{
 				const data_t* next = del->m_next;
@@ -3042,12 +3192,12 @@ int main(const int argc, const char* argv[])
 
 		//削除４：イテレータの範囲で指定（末尾まで削除）
 		printf("\n");
-		printf("[erase(3)]\n");
+		printf("[erase_after(3)]\n");
 		{
-			auto start = con.end();
-			start -= 2;
+			auto start = con.begin();
+			start += 2;
 			auto end = con.end();
-			const data_t* del = con.erase(start, end);//後ろから2つ目の位置から末尾までのノードを削除
+			const data_t* del = con.erase_after(start, end);//先頭から3つ目の位置の後ろから末尾までのノードを削除
 			while (del)
 			{
 				const data_t* next = del->m_next;
@@ -3057,25 +3207,103 @@ int main(const int argc, const char* argv[])
 			printAll();//全件表示
 		}
 
-		//挿入１：insert()メソッド
+		//挿入１：insert_after()メソッド
 		printf("\n");
-		printf("[insert]\n");
+		printf("[insert_after]\n");
 		{
 			auto ite = con.begin();
 			++ite;
 			data_t* data = new data_t(99, 999);
-			con.insert(ite, *data);//先頭から2つ目の位置に挿入
+			con.insert_after(ite, *data);//先頭から2つ目の位置の後ろに挿入
 			printAll();//全件表示
 		}
 
-		//挿入２：insert_before()メソッド
+		//挿入２：before_begin() + insert_after()メソッド
+		printf("\n");
+		printf("[before_begin + insert_after]\n");
+		{
+			auto ite = con.before_begin();
+			data_t* data = new data_t(88, 888);
+			con.insert_after(ite, *data);//先頭に挿入（push_frontと同じ）
+			printAll();//全件表示
+		}
+
+		//挿入３：insert()メソッド
+		//※insert_after()と同じ働き
+		//※std::forward_listにない処理
+		printf("\n");
+		printf("[insert]\n");
+		{
+			auto ite = con.begin();
+			ite += 3;
+			data_t* data = new data_t(77, 777);
+			con.insert(ite, *data);//先頭から4つ目の位置に挿入
+			printAll();//全件表示
+		}
+
+		//挿入４：insert_before()メソッド
+		//【注意】低速処理
+		//※std::forward_listにない処理
 		printf("\n");
 		printf("[insert_before]\n");
 		{
 			auto ite = con.begin();
+			ite += 2;
+			data_t* data = new data_t(66, 666);
+			con.insert_before(ite, *data);//先頭から3つ目の位置の前に挿入
+			printAll();//全件表示
+		}
+
+		//削除５：イテレータで指定
+		//【注意】低速処理
+		//※std::forward_listにない処理
+		printf("\n");
+		printf("[erase(1)]\n");
+		{
+			auto ite = con.begin();
 			ite += 3;
-			data_t* data = new data_t(88, 888);
-			con.insert_before(ite, *data);//先頭から4つ目の位置の前に挿入
+			data_t* del = con.erase(ite);//先頭から4つ目の位置のノードを削除
+			if (del)
+				delete del;
+			printAll();//全件表示
+		}
+
+		//削除６：イテレータの範囲で指定
+		//【注意】低速処理
+		//※std::forward_listにない処理
+		printf("\n");
+		printf("[erase(2)]\n");
+		{
+			auto start = con.begin();
+			start += 3;
+			auto end = start;
+			end += 2;
+			const data_t* del = con.erase(start, end);//先頭から4つ目の位置から2つのノードを削除
+			while (del)
+			{
+				const data_t* next = del->m_next;
+				delete del;
+				del = next;
+			}
+			printAll();//全件表示
+		}
+
+		//削除７：イテレータの範囲で指定（末尾まで削除）
+		//【注意】低速処理
+		//※std::forward_listにない処理
+		printf("\n");
+		printf("[erase(3)]\n");
+		{
+			auto start = con.begin();
+			start += 2;
+			auto end = con.end();
+			const data_t* del = con.erase(start, end);//先頭から3つ目の位置から末尾までのノードを削除
+			while (del)
+			{
+				const data_t* next = del->m_next;
+				delete del;
+				del = next;
+			}
 			printAll();//全件表示
 		}
 
@@ -3099,30 +3327,30 @@ int main(const int argc, const char* argv[])
 	//テスト②：ソート、探索の設定を変える
 	{
 		printf("--------------------------------------------------------------------------------\n");
-		printf("[Test for linked_list::container(User defined type with custom operator type)]\n");
+		printf("[Test for singly_linked_list::container(User defined type with custom operator type)]\n");
 
-		//双方向連結リストコンテナ生成
-		typedef linked_list::container<another_ope_t> container_t;
+		//片方向連結リストコンテナ生成
+		typedef singly_linked_list::container<another_ope_t> container_t;
 		container_t con;
 
-		//データ登録１：push_back()メソッド
+		//データ登録１：push_front()メソッド
 		printf("\n");
-		printf("[push_back]\n");
-		auto push_back = [&con](const int key, const int val)
+		printf("[push_front]\n");
+		auto push_front = [&con](const int key, const int val)
 		{
 			data_t* data = new data_t(key, val);
-			con.push_back(*data);
+			con.push_front(*data);
 		};
-		push_back(1, 105);
-		push_back(1, 108);
-		push_back(2, 103);
-		push_back(2, 101);
-		push_back(3, 107);
-		push_back(3, 104);
-		push_back(4, 113);
-		push_back(4, 111);
-		push_back(5, 105);
-		push_back(5, 106);
+		push_front(1, 105);
+		push_front(1, 108);
+		push_front(2, 103);
+		push_front(2, 101);
+		push_front(3, 107);
+		push_front(3, 104);
+		push_front(4, 113);
+		push_front(4, 111);
+		push_front(5, 105);
+		push_front(5, 106);
 
 		//データを表示
 		auto printAll = [&con]()
@@ -3168,6 +3396,7 @@ int main(const int argc, const char* argv[])
 
 	#ifdef ENABLE_BINARY_SEARCH
 		//二分探索
+		//【注意】低速処理
 		printf("\n");
 		printf("[binary search]\n");
 		auto binary_search = [&con](const int value)
@@ -3215,6 +3444,7 @@ int main(const int argc, const char* argv[])
 
 	#ifdef ENABLE_BINARY_SEARCH
 		//カスタム二分探索(1)
+		//【注意】低速処理
 		printf("\n");
 		printf("[binary search with custom comparison(1)]\n");
 		auto custom_binary_search1 = [&con](const int key, const int value)
@@ -3289,7 +3519,7 @@ int main(const int argc, const char* argv[])
 
 		{
 			printf("--------------------------------------------------------------------------------\n");
-			printf("[Test for performance linked_list]\n");
+			printf("[Test for performance singly_linked_list]\n");
 
 			const std::chrono::system_clock::time_point begin_time = std::chrono::system_clock::now();
 			std::chrono::system_clock::time_point prev_time = begin_time;
@@ -3297,19 +3527,19 @@ int main(const int argc, const char* argv[])
 			//データを初期化
 			printf("\n");
 			printf("[create container]\n");
-			typedef linked_list::container<ope_t> container_t;
+			typedef singly_linked_list::container<ope_t> container_t;
 			container_t* con = new container_t;//コンテナ生成
 			prev_time = printElapsedTime(prev_time, true);
 
 			//データを登録
 			printf("\n");
-			printf("[push_back() * %d]\n", TEST_DATA_NUM);
+			printf("[push_front() * %d]\n", TEST_DATA_NUM);
 			{
 				int num = 0;
 				for (int i = 0; i < TEST_DATA_NUM; ++i)
 				{
 					data_t* data = new data_t(i, 10000000 + i);
-					con->push_back(*data);
+					con->push_front(*data);
 					++num;
 				}
 				printf("num=%d\n", num);
@@ -3374,7 +3604,10 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 		#endif//ENABLE_SORT_TEST
 
+		#ifdef ENABLE_REVERSE_ITERATOR
 			//リバースイテレータ
+			//【注意】低速処理
+			//※std::forward_listにない処理
 			printf("\n");
 			printf("[reverse_iterator]\n");
 			{
@@ -3393,6 +3626,7 @@ int main(const int argc, const char* argv[])
 				printf("num=%d\n", num);
 			}
 			prev_time = printElapsedTime(prev_time, true);
+		#endif//ENABLE_REVERSE_ITERATOR
 
 		#ifdef ENABLE_SORT_TEST
 		#ifdef ENABLE_STABLE_SORT
@@ -3430,6 +3664,7 @@ int main(const int argc, const char* argv[])
 
 		#ifdef ENABLE_BINARY_SEARCH
 			//二分探索
+			//【注意】低速処理
 			printf("\n");
 			printf("[binary_search_value]\n");
 			{
@@ -3470,7 +3705,7 @@ int main(const int argc, const char* argv[])
 
 		{
 			printf("--------------------------------------------------------------------------------\n");
-			printf("[Test for performance std::list]\n");
+			printf("[Test for performance std::forward_list]\n");
 
 			const std::chrono::system_clock::time_point begin_time = std::chrono::system_clock::now();
 			std::chrono::system_clock::time_point prev_time = begin_time;
@@ -3478,19 +3713,19 @@ int main(const int argc, const char* argv[])
 			//データを初期化
 			printf("\n");
 			printf("[create container]\n");
-			typedef std::list<data_t> container_t;
-			container_t* con = new container_t();//std::listコンテナを生成
+			typedef std::forward_list<data_t> container_t;
+			container_t* con = new container_t();//std::forward_listコンテナを生成
 			prev_time = printElapsedTime(prev_time, true);
 
 			//データを登録
 			printf("\n");
-			printf("[push_back() * %d]\n", TEST_DATA_NUM);
+			printf("[push_front() * %d]\n", TEST_DATA_NUM);
 			{
 				int num = 0;
 				for (int i = 0; i < TEST_DATA_NUM; ++i)
 				{
 					data_t value(i, 10000000 + i);
-					con->push_back(std::move(value));
+					con->push_front(std::move(value));
 					++num;
 				}
 				printf("num=%d\n", num);
@@ -3501,7 +3736,7 @@ int main(const int argc, const char* argv[])
 			printf("\n");
 			printf("[iterator(1)]\n");
 			{
-				printf_detail("size=%d, max_size=%d\n", con->size(), con->max_size());
+				printf_detail("max_size=%d\n", con->max_size());
 				printf_detail("array=");
 				if (con->empty())
 					printf_detail("(empty)");
@@ -3529,7 +3764,7 @@ int main(const int argc, const char* argv[])
 			printf("\n");
 			printf("[iterator(2)]\n");
 			{
-				printf_detail("size=%d, max_size=%d\n", con->size(), con->max_size());
+				printf_detail("max_size=%d\n", con->max_size());
 				printf_detail("array=");
 				if (con->empty())
 					printf_detail("(empty)");
@@ -3553,16 +3788,17 @@ int main(const int argc, const char* argv[])
 			prev_time = printElapsedTime(prev_time, true);
 		#endif//ENABLE_SORT_TEST
 
-			//リバースイテレータ
+		#ifdef ENABLE_REVERSE_ITERATOR
+			//リバースイテレータ（非対応）
 			printf("\n");
-			printf("[reverse_iterator]\n");
+			printf("[iterator](has not reverse_iterator)\n");
 			{
-				printf_detail("size=%d, max_size=%d\n", con->size(), con->max_size());
+				printf_detail("max_size=%d\n", con->max_size());
 				printf_detail("array=");
 				if (con->empty())
 					printf_detail("(empty)");
 				int num = 0;
-				std::for_each(con->rbegin(), con->rend(), [&num](const data_t& value)
+				std::for_each(con->begin(), con->end(), [&num](const data_t& value)
 					{
 						printf_detail(" [%d:%d]", value.m_key, value.m_val);
 						++num;
@@ -3572,6 +3808,7 @@ int main(const int argc, const char* argv[])
 				printf("num=%d\n", num);
 			}
 			prev_time = printElapsedTime(prev_time, true);
+		#endif//ENABLE_REVERSE_ITERATOR
 
 		#ifdef ENABLE_SORT_TEST
 		#ifdef ENABLE_STABLE_SORT
@@ -3626,7 +3863,7 @@ int main(const int argc, const char* argv[])
 			//データを破棄
 			printf("\n");
 			printf("[delete container]\n");
-			delete con;//std::listコンテナを破棄
+			delete con;//std::forward_listコンテナを破棄
 			con = nullptr;
 			prev_time = printElapsedTime(prev_time, true);
 

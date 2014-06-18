@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sync_shared_lock", "sync_shared_lock.vcxproj", "{94858260-8787-4077-891F-6C3C55593D78}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94858260-8787-4077-891F-6C3C55593D78}.Debug|Win32.ActiveCfg = Debug|Win32
+		{94858260-8787-4077-891F-6C3C55593D78}.Debug|Win32.Build.0 = Debug|Win32
+		{94858260-8787-4077-891F-6C3C55593D78}.Release|Win32.ActiveCfg = Release|Win32
+		{94858260-8787-4077-891F-6C3C55593D78}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

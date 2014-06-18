@@ -1,0 +1,96 @@
+{2, 5, 9, 14}
+max(1, 2)          = 2
+max(1, 2, 3)       = 3
+max(1, 2, 3, 4)    = 4
+max(1, 2, 3, 4, 5) = 5
+{2, 5, 9, 14, 14, 6, 15}
+int
+int
+short
+int
+short
+char
+{2, 5, 9, 13}
+max2(1, 2)          = 2
+max3(1, 2, 3)       = 3
+max4(1, 2, 3, 4)    = 4
+max4(1, 2, 3, 4, 5) = 5
+max(sizeof(CA), sizeof(CB), sizeof(CC))
+  MAX_CLASS_SIZE1 = 44
+  MAX_CLASS_SIZE2 = 44
+  MAX_CLASS_SIZE3 = 44
+  MAX_CLASS_SIZE4 = 44
+  MAX_CLASS_SIZE5 = 44
+  MAX_CLASS_SIZE6 = 44
+  MAX_CLASS_SIZE7 = 44
+max3(sizeof(CA), sizeof(CB), sizeof(CC))
+  MAX_CLASS_SIZE1x = 44
+  MAX_CLASS_SIZE2x = 44
+  MAX_CLASS_SIZE3x = 44
+  MAX_CLASS_SIZE4x = 44
+  MAX_CLASS_SIZE5x = 44
+  MAX_CLASS_SIZE6x = 44
+  MAX_CLASS_SIZE7x = 44
+LITERAL
+  LITERAL1 = 1
+  LITERAL2 = 2
+  LITERAL3 = 3
+  LITERAL4 = 4
+  LITERAL5 = 5
+  LITERAL6 = 6
+  LITERAL7 = 7
+<BEFORE>
+data1= 1 2 3 39 200 53 8 74 12 (sum=392, avg=43.6)
+data2= 13 6 76 43 23 125 1 (sum=287, avg=41.0)
+<AFTER>
+data1= 10 10 10 39 100 53 10 74 12 (sum=318, avg=35.3)
+data2= 13 10 76 43 23 100 10 (sum=275, avg=39.3)
+<BEFORE>
+data1= 1 2 3 39 200 53 8 74 12 (sum=392, avg=43.6)
+data2= 13 6 76 43 23 125 1 (sum=287, avg=41.0)
+<AFTER>
+data1= 10 10 10 39 100 53 10 74 12 (sum=318, avg=35.3)
+data2= 13 10 76 43 23 100 10 (sum=275, avg=39.3)
+<BEFORE>
+data1= 1 2 3 39 200 53 8 74 12 (sum=392, avg=43.6)
+data2= 13 6 76 43 23 125 1 (sum=287, avg=41.0)
+<AFTER>
+data1= 10 10 10 39 100 53 10 74 12 (sum=318, avg=35.3)
+data2= 13 10 76 43 23 100 10 (sum=275, avg=39.3)
+<BEFORE>
+data1= 1 2 3 39 200 53 8 74 12 (sum=392, avg=43.6)
+data2= 13 6 76 43 23 125 1 (sum=287, avg=41.0)
+<AFTER>
+data1= 10 10 10 39 100 53 10 74 12 (sum=318, avg=35.3)
+data2= 13 10 76 43 23 100 10 (sum=275, avg=39.3)
+<BEFORE>
+data1= 1 2 3 39 200 53 8 74 12 (sum=392, avg=43.6)
+data2= 13 6 76 43 23 125 1 (sum=287, avg=41.0)
+<AFTER>
+data1= 10 10 10 39 100 53 10 74 12 (sum=318, avg=35.3)
+data2= 13 10 76 43 23 100 10 (sum=275, avg=39.3)
+<BEFORE>
+data1= 1 2 3 39 200 53 8 74 12 (sum=392, avg=43.6)
+data2= 13 6 76 43 23 125 1 (sum=287, avg=41.0)
+<AFTER>
+data1= 10 10 10 39 100 53 10 74 12 (sum=318, avg=35.3)
+data2= 13 10 76 43 23 100 10 (sum=275, avg=39.3)
+data= 1 2 3 4 5 6 7 8 9 10
+data= 太郎 次郎 三郎
+data= 101 102 103 104 105 106 107 108 109 110
+static_pow<2, e> = {1, 2, 4, 8, 16}
+power<int, e>(2) = {1, 2, 4, 8, 16}
+power<float, e>(2.f) = {1.0, 2.0, 4.0, 8.0, 16.0}
+minus_power<float, -e>(2.f) = {1.0000, 0.5000, 0.2500, 0.1250, 0.0625}
+p1=(1, 2)
+p2=(1.0, 2.0)
+p3=(1, 2)
+5
+5
+5
+5
+5
+5
+5
+5
+5

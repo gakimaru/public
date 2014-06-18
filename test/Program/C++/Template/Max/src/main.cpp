@@ -192,16 +192,54 @@ enum
 	e2 = max5(1, 2, 3, 4, 5), //OK
 };
 
-//べき乗
-template<int N, int E>
-struct Pow{
-	static const int value = N * Pow<N, E - 1>::value;
+//べき乗（テンプレートクラス版）※指数に負の数を指定するとコンパイルエラー
+//#include <type_traits>//C++11 std::conditional, std:integral_constant用
+template<typename T, T N, int E>
+struct static_pow{
+	static const T value = N * static_pow<T, N, E - 1>::value;
 };
 //べき乗：再帰終点のための特殊化
-template<int N>
-struct Pow<N, 0>{
-	static const int value = 1;
+template<typename T, int N>
+struct static_pow<T, N, 0>{
+	static const T value = 1;
 };
+
+
+//べき乗（テンプレート関数版）※指数に負の数を指定するとコンパイルエラー
+template<typename T, int E>
+T power(const T n){ return n * power<T, E - 1>(n); }
+//べき乗：再帰終点のための特殊化
+//template<typename T>
+//T power<T, 0>(const T n){ return static_cast<T>(1); }
+//※テンプレート関数では部分特殊化を使おうとするとコンパイルエラーとなる
+//　そのため、下記のように各型で展開した特殊化関数を用意する必要がある。
+template<>
+char power<char, 0>(const char n){ return 1; }
+template<>
+unsigned char power<unsigned char, 0>(const unsigned char n){ return 1; }
+template<>
+short power<short, 0>(const short n){ return 1; }
+template<>
+unsigned short power<unsigned short, 0>(const unsigned short n){ return 1; }
+template<>
+int power<int, 0>(const int n){ return 1; }
+template<>
+unsigned int power<unsigned int, 0>(const unsigned int n){ return 1; }
+template<>
+long power<long, 0>(const long n){ return 1; }
+template<>
+unsigned long power<unsigned long, 0>(const unsigned long n){ return 1; }
+template<>
+long long power<long long, 0>(const long long n){ return 1; }
+template<>
+unsigned long long power<unsigned long long, 0>(const unsigned long long n){ return 1; }
+template<>
+float power<float, 0>(const float n){ return 1.f; }
+template<>
+double power<double, 0>(const double n){ return 1.; }
+//負の数の指数用のべき乗（テンプレート関数版）※指数に正の数を指定するとコンパイルエラー
+template<typename T, int E>
+T minus_power(const T n){ return static_cast<T>(1) / power<T, -E>(n); }
 
 //座標型
 template<typename T>
@@ -575,9 +613,9 @@ void test_func4()
 			char* end(){ return m_data + sizeof(m_data) / sizeof(m_data[0]); }
 			char m_data[10];
 		};
-		DATA data = { {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} };
+		DATA data = { { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } };
 		for (auto& elem : data) //begin(), end() がイテレータを返すものならなんにでも使える
-		                        //値を書き戻したければ要素型に & を付けて参照型にする
+			//値を書き戻したければ要素型に & を付けて参照型にする
 		{
 			elem += 100;
 		}
@@ -590,12 +628,34 @@ void test_func4()
 	}
 
 	//べき乗テスト
-	const int n1 = Pow<2, 0>::value;
-	const int n2 = Pow<2, 1>::value;
-	const int n3 = Pow<2, 2>::value;
-	const int n4 = Pow<2, 3>::value;
-	const int n5 = Pow<10, 4>::value;
-	printf("{%d, %d, %d, %d, %d}\n", n1, n2, n3, n4, n5);
+	{
+		const int n0 = static_pow<int, 2, 0>::value;
+		const int n1 = static_pow<int, 2, 1>::value;
+		const int n2 = static_pow<int, 2, 2>::value;
+		const int n3 = static_pow<int, 2, 3>::value;
+		const int n4 = static_pow<int, 2, 4>::value;
+		printf("static_pow<2, e> = {%d, %d, %d, %d, %d}\n", n0, n1, n2, n3, n4);
+	}
+	{
+		const int ni0 = power<int, 0>(2);
+		const int ni1 = power<int, 1>(2);
+		const int ni2 = power<int, 2>(2);
+		const int ni3 = power<int, 3>(2);
+		const int ni4 = power<int, 4>(2);
+		const float nf0 = power<float, 0>(2.f);
+		const float nf1 = power<float, 1>(2.f);
+		const float nf2 = power<float, 2>(2.f);
+		const float nf3 = power<float, 3>(2.f);
+		const float nf4 = power<float, 4>(2.f);
+		const float nfm0 = minus_power<float, 0>(2.f);
+		const float nfm1 = minus_power<float, -1>(2.f);
+		const float nfm2 = minus_power<float, -2>(2.f);
+		const float nfm3 = minus_power<float, -3>(2.f);
+		const float nfm4 = minus_power<float, -4>(2.f);
+		printf("power<int, e>(2) = {%d, %d, %d, %d, %d}\n", ni0, ni1, ni2, ni3, ni4);
+		printf("power<float, e>(2.f) = {%.1f, %.1f, %.1f, %.1f, %.1f}\n", nf0, nf1, nf2, nf3, nf4);
+		printf("minus_power<float, -e>(2.f) = {%.4f, %.4f, %.4f, %.4f, %.4f}\n", nfm0, nfm1, nfm2, nfm3, nfm4);
+	}
 
 	//コンストラクタテンプレートテスト
 	POINT<int> p1(1, 2);

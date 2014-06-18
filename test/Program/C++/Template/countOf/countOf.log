@@ -1,0 +1,50 @@
+
+----- for_define::test_func() -----
+var0
+var1[1](Total=1)
+var2[2][3](Total=6)
+var3[4][5][6](Total=120)
+var4[7][8][9][10](Total=5040)
+sizeof(var0)=    4, extent1of(var0)=   ?, extent2of(var0)=   ?, extent3of(var0)=   ?, extent4of(var0)=   ?, extentof_?d(var0)=   ?
+sizeof(var1)=    4, extent1of(var1)=   1, extent2of(var1)=   ?, extent3of(var1)=   ?, extent4of(var1)=   ?, extentof_1d(var1)=   1
+sizeof(var2)=   24, extent1of(var2)=   2, extent2of(var2)=   3, extent3of(var2)=   ?, extent4of(var2)=   ?, extentof_2d(var2)=   6
+sizeof(var3)=  480, extent1of(var3)=   4, extent2of(var3)=   5, extent3of(var3)=   6, extent4of(var3)=   ?, extentof_3d(var3)= 120
+sizeof(var4)=20160, extent1of(var4)=   7, extent2of(var4)=   8, extent3of(var4)=   9, extent4of(var4)=  10, extentof_4d(var4)=5040
+sizeof(DATA1)=  24, offsetof(DATA1, member_a)=   0, offsetof(DATA1, member_b)=   4, offsetof(DATA1, member_c)=   8, offsetof(DATA1, member_d)=  20
+sizeof(DATA2)=  28, offsetof(DATA2, member_a)=   4, offsetof(DATA2, member_b)=   8, offsetof(DATA2, member_c)=  12, offsetof(DATA2, member_d)=  24
+
+----- for_template::test_func() -----
+arr0_t(Rank=0)
+arr1_t[1](Rank=1)
+arr2_t[2][3](Rank=2)
+arr3_t[4][5][6](Rank=3)
+arr4_t[7][8][9][10](Rank=4)
+*arr0_t[0][0][0][0](Rank=0)
+*arr1_t[1][0][0][0](Rank=1)
+*arr2_t[2][3][0][0](Rank=2)
+*arr3_t[4][5][6][0](Rank=3)
+*arr4_t[7][8][9][10](Rank=4)
+sizeof(arr0_t)=    4, std::extent<arr0_t, 0>::value=   0, std::extent<arr0_t, 1>::value=   0, std::extent<arr0_t, 2>::value=   0, std::extent<arr0_t, 3>::value=   0, std::rank<arr0_t>::value=   0
+sizeof(arr1_t)=    4, std::extent<arr1_t, 0>::value=   1, std::extent<arr1_t, 1>::value=   0, std::extent<arr1_t, 2>::value=   0, std::extent<arr1_t, 3>::value=   0, std::rank<arr1_t>::value=   1
+sizeof(arr2_t)=   24, std::extent<arr2_t, 0>::value=   2, std::extent<arr2_t, 1>::value=   3, std::extent<arr2_t, 2>::value=   0, std::extent<arr2_t, 3>::value=   0, std::rank<arr2_t>::value=   2
+sizeof(arr3_t)=  480, std::extent<arr3_t, 0>::value=   4, std::extent<arr3_t, 1>::value=   5, std::extent<arr3_t, 2>::value=   6, std::extent<arr3_t, 3>::value=   0, std::rank<arr3_t>::value=   3
+sizeof(arr4_t)=20160, std::extent<arr4_t, 0>::value=   7, std::extent<arr4_t, 1>::value=   8, std::extent<arr4_t, 2>::value=   9, std::extent<arr4_t, 3>::value=  10, std::rank<arr4_t>::value=   4
+var0(Rank=0, Total=0, ElemtSize=4)
+var1[1](Rank=1, Total=1, ElemtSize=4)
+var2[2][3](Rank=2, Total=6, ElemtSize=4)
+var3[4][5][6](Rank=3, Total=120, ElemtSize=4)
+var4[7][8][9][10](Rank=4, Total=5040, ElemtSize=4)
+*var0[0][0][0][0](Rank=0, Total=0, ElemtSize=4)
+*var1[1][0][0][0](Rank=1, Total=1, ElemtSize=4)
+*var2[2][3][0][0](Rank=2, Total=6, ElemtSize=4)
+*var3[4][5][6][0](Rank=3, Total=120, ElemtSize=4)
+*var4[7][8][9][10](Rank=4, Total=5040, ElemtSize=4)
+sizeof(var0)=    4, sizeofelemof(var0)=   4, extent1of(var0)=   0, extent2of(var0)=   0, extent3of(var0)=   0, extent4of(var0)=   0, extentof(var0)=   0, rankof(var0)=   0
+sizeof(var1)=    4, sizeofelemof(var1)=   4, extent1of(var1)=   1, extent2of(var1)=   0, extent3of(var1)=   0, extent4of(var1)=   0, extentof(var1)=   1, rankof(var1)=   1
+sizeof(var2)=   24, sizeofelemof(var2)=   4, extent1of(var2)=   2, extent2of(var2)=   3, extent3of(var2)=   0, extent4of(var2)=   0, extentof(var2)=   6, rankof(var2)=   2
+sizeof(var3)=  480, sizeofelemof(var3)=   4, extent1of(var3)=   4, extent2of(var3)=   5, extent3of(var3)=   6, extent4of(var3)=   0, extentof(var3)= 120, rankof(var3)=   3
+sizeof(var4)=20160, sizeofelemof(var4)=   4, extent1of(var4)=   7, extent2of(var4)=   8, extent3of(var4)=   9, extent4of(var4)=  10, extentof(var4)=5040, rankof(var4)=   4
+sizeof(DATA1)=  24, offsetof(DATA1, member_a)=   0, offsetof(DATA1, member_b)=   4, offsetof(DATA1, member_c)=   8, offsetof(DATA1, member_d)=  20
+sizeof(DATA2)=  28, offsetof(DATA2, member_a)=   4, offsetof(DATA2, member_b)=   8, offsetof(DATA2, member_c)=  12, offsetof(DATA2, member_d)=  24
+sizeOf(obj1)=  24, offsetOf(obj1, obj1.member_a)=   0, offsetOf(obj1, obj1.member_b)=   4, offsetOf(obj1, obj1.member_c)=   8, offsetOf(obj1, obj1.member_d)=-875269560
+sizeOf(obj2)=  28, offsetOf(obj2, obj2->member_a)=   4, offsetOf(obj2, obj2->member_b)=   8, offsetOf(obj2, obj2->member_c)=  12, offsetOf(obj2, obj2->member_d)=  24

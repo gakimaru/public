@@ -30,12 +30,51 @@
 //--------------------------------------------------------------------------------
 
 //========================================
-//ソート補助処理
+//ソート／探索補助処理
 //========================================
 
 //----------------------------------------
-//ソート処理オーバーロード関数用マクロ
-#define sortFuncSet(func_name) \
+//ソート用標準プレディケート関数オブジェクト：less
+//※対象オブジェクトが operator<に対応している必要あり
+template<typename T>
+struct less{
+	inline bool operator()(const T& val1, const T& val2) const
+	{
+		return val1 < val2;
+	}
+};
+//----------------------------------------
+//線形探索用標準プレディケート関数オブジェクト：eqal_to
+//※対象オブジェクトが operator==に対応している必要あり
+template<typename T>
+struct equal_to{
+	template<typename V>
+	inline bool operator()(const T& val1, const V& val2) const
+	{
+		return val1 == val2;
+	}
+};
+//----------------------------------------
+//二分探索用標準比較関数オブジェクト：compare_to
+//※対象オブジェクトが operator==, operator<に対応している必要あり
+template<typename T>
+struct compare_to{
+	template<typename V>
+	inline int operator()(const T& val1, const V& val2) const
+	{
+		if (val1 == val2)
+			return 0;
+		else if (val1 < val2)
+			return 1;
+		else//if (val1 > val2)
+			return -1;
+	}
+};
+
+//----------------------------------------
+//比較ソート処理オーバーロード関数用マクロ
+//※プレディケート関数指定版
+#define sortFuncSetByUserPredicate(func_name) \
 	template<class T, std::size_t N, class PREDICATE> \
 	inline std::size_t func_name(T(&array)[N], PREDICATE predicate) \
 	{ \
@@ -44,7 +83,8 @@
 	template<class T, class PREDICATE> \
 	inline std::size_t func_name(T* begin, T* end, PREDICATE predicate) \
 	{ \
-		return func_name(begin, end - begin, predicate); \
+		const std::size_t size = end - begin; \
+		return size == 0 ? 0 : func_name(begin, size, predicate); \
 	} \
 	template<class ITERATOR, class PREDICATE> \
 	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end, PREDICATE predicate) \
@@ -57,36 +97,42 @@
 	{ \
 		std::size_t size = con.size(); \
 		return size == 0 ? 0 : func_name(&(con.at(0)), size, predicate); \
-	} \
+	}
+//※標準プレディケート関数使用版
+#define sortFuncSetByDefaultPredicate(func_name) \
 	template<class T> \
 	inline std::size_t func_name(T* array, const std::size_t size) \
 	{ \
-		return func_name(array, size, std::less<T>()); \
+		return func_name(array, size, less<T>()); \
 	} \
 	template<class T, std::size_t N> \
 	inline std::size_t func_name(T(&array)[N]) \
 	{ \
-		return func_name(array, std::less<T>()); \
+		return func_name(array, less<T>()); \
 	} \
 	template<class T> \
 	inline std::size_t func_name(T* begin, T* end) \
 	{ \
-		return func_name(begin, end, std::less<T>()); \
+		return func_name(begin, end, less<T>()); \
 	} \
 	template<class ITERATOR> \
 	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end) \
 	{ \
-		return func_name(begin, end, std::less<typename ITERATOR::value_type>()); \
+		return func_name(begin, end, less<typename ITERATOR::value_type>()); \
 	} \
 	template<class CONTAINER> \
 	inline std::size_t func_name(CONTAINER& con) \
 	{ \
-		return func_name(con, std::less<typename CONTAINER::value_type>()); \
+		return func_name(con, less<typename CONTAINER::value_type>()); \
 	}
+#define sortFuncSet(func_name) \
+	sortFuncSetByUserPredicate(func_name) \
+	sortFuncSetByDefaultPredicate(func_name)
 
 //----------------------------------------
 //非比較ソート処理オーバーロード関数用マクロ
-#define distributedSortFuncSet(func_name) \
+//※キー取得用関数オブジェクト指定版
+#define distributedSortFuncSetByUserFunctor(func_name) \
 	template<class T, std::size_t N, class GET_KEY_FUNCTOR> \
 	inline std::size_t func_name(T(&array)[N], GET_KEY_FUNCTOR get_key_functor) \
 	{ \
@@ -95,7 +141,8 @@
 	template<class T, class GET_KEY_FUNCTOR> \
 	inline std::size_t func_name(T* begin, T* end, GET_KEY_FUNCTOR get_key_functor) \
 	{ \
-		return func_name(begin, end - begin, get_key_functor); \
+		const std::size_t size = end - begin; \
+		return size == 0 ? 0 : func_name(begin, size, get_key_functor); \
 	} \
 	template<class ITERATOR, class GET_KEY_FUNCTOR> \
 	inline std::size_t func_name(ITERATOR& begin, ITERATOR& end, GET_KEY_FUNCTOR get_key_functor) \
@@ -109,6 +156,343 @@
 		std::size_t size = con.size(); \
 		return size == 0 ? 0 : func_name(&(con.at(0)), size, get_key_functor); \
 	}
+#define distributedSortFuncSet(func_name) \
+	distributedSortFuncSetByUserFunctor(func_name)
+
+//----------------------------------------
+//探索処理オーバーロード関数用マクロ
+#define searchFuncSetByUserFunc(func_name) \
+	template<class T, class PREDICATE_OR_COMPARISON> \
+	inline const T* func_name(const T* array, const std::size_t size, PREDICATE_OR_COMPARISON predicate_or_comparison) \
+	{ \
+		return func_name(const_cast<T*>(array), size, predicate_or_comparison); \
+	} \
+	template<class T, std::size_t N, class PREDICATE_OR_COMPARISON> \
+	inline T* func_name(T(&array)[N], PREDICATE_OR_COMPARISON predicate_or_comparison) \
+	{ \
+		return func_name(array, N, predicate_or_comparison); \
+	} \
+	template<class T, std::size_t N, class PREDICATE_OR_COMPARISON> \
+	inline const T* func_name(const T(&array)[N], PREDICATE_OR_COMPARISON predicate_or_comparison) \
+	{ \
+		return func_name(const_cast<T*>(array), N, predicate_or_comparison); \
+	} \
+	template<class T, class PREDICATE_OR_COMPARISON> \
+	inline T* func_name(T* begin, T* end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		return size == 0 ? nullptr : func_name(begin, size, predicate_or_comparison); \
+	} \
+	template<class T, class PREDICATE_OR_COMPARISON> \
+	inline const T* func_name(const T* begin, const T* end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, predicate_or_comparison); \
+	} \
+	template<class ITERATOR, class PREDICATE_OR_COMPARISON> \
+	inline typename ITERATOR::value_type* func_name(ITERATOR& begin, ITERATOR& end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		return size == 0 ? nullptr : func_name(&begin[0], size, predicate_or_comparison); \
+	} \
+	template<class ITERATOR, class PREDICATE_OR_COMPARISON> \
+	inline const typename ITERATOR::value_type* func_name(const ITERATOR& begin, const ITERATOR& end, PREDICATE_OR_COMPARISON predicate_or_comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, predicate_or_comparison); \
+	} \
+	template<class CONTAINER, class PREDICATE_OR_COMPARISON> \
+	inline typename CONTAINER::value_type* func_name(CONTAINER& con, PREDICATE_OR_COMPARISON predicate_or_comparison) \
+	{ \
+		const std::size_t size = con.size(); \
+		return size == 0 ? nullptr : func_name(&(con.at(0)), size, predicate_or_comparison); \
+	} \
+	template<class CONTAINER, class PREDICATE_OR_COMPARISON> \
+	inline const typename CONTAINER::value_type* func_name(const CONTAINER& con, PREDICATE_OR_COMPARISON predicate_or_comparison) \
+	{ \
+		const std::size_t size = con.size(); \
+		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, predicate_or_comparison); \
+	}
+//※探索値指定版：プレディケート関数と値で比較
+#define searchFuncSetPredicateAndValue(func_name) \
+	template<class T, typename V, class PREDICATE> \
+	inline T* func_name##Value(T* array, const std::size_t size, const V& value, PREDICATE predicate) \
+	{ \
+		auto _equal = [&value, &predicate](T& val1) -> bool { return predicate(val1, value); }; \
+		return func_name(array, size, _equal); \
+	} \
+	template<class T, typename V, class PREDICATE> \
+	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value, PREDICATE predicate) \
+	{ \
+		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
+		return func_name(const_cast<T*>(array), size, _equal); \
+	} \
+	template<class T, std::size_t N, typename V, class PREDICATE> \
+	inline T* func_name##Value(T(&array)[N], const V& value, PREDICATE predicate) \
+	{ \
+		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
+		return func_name(array, N, _equal); \
+	} \
+	template<class T, std::size_t N, typename V, class PREDICATE> \
+	inline const T* func_name##Value(const T(&array)[N], const V& value, PREDICATE predicate) \
+	{ \
+		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
+		return func_name(const_cast<T*>(array), N, _equal); \
+	} \
+	template<class T, typename V, class PREDICATE> \
+	inline T* func_name##Value(T* begin, T* end, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(begin, size, _equal); \
+	} \
+	template<class T, typename V, class PREDICATE> \
+	inline const T* func_name##Value(const T* begin, const T* end, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value, &predicate](const T& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _equal); \
+	} \
+	template<class ITERATOR, typename V, class PREDICATE> \
+	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value, &predicate](const typename ITERATOR::value_type& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&begin[0], size, _equal); \
+	} \
+	template<class ITERATOR, typename V, class PREDICATE> \
+	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value, &predicate](const typename ITERATOR::value_type& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _equal); \
+	} \
+	template<class CONTAINER, typename V, class PREDICATE> \
+	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _equal = [&value, &predicate](const typename CONTAINER::value_type& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _equal); \
+	} \
+	template<class CONTAINER, typename V, class PREDICATE> \
+	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value, PREDICATE predicate) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _equal = [&value, &predicate](const typename CONTAINER::value_type& val1) -> bool { return predicate(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _equal); \
+	}
+//※探索値指定版：標準のプレディケート関数と値で比較
+#define searchFuncSetByDefaultPredicateAndValue(func_name) \
+	template<class T, typename V> \
+	inline T* func_name##Value(T* array, const std::size_t size, const V& value) \
+	{ \
+		auto _equal = [&value](T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return func_name(array, size, _equal); \
+	} \
+	template<class T, typename V> \
+	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value) \
+	{ \
+		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return func_name(const_cast<T*>(array), size, _equal); \
+	} \
+	template<class T, std::size_t N, typename V> \
+	inline T* func_name##Value(T(&array)[N], const V& value) \
+	{ \
+		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return func_name(array, N, _equal); \
+	} \
+	template<class T, std::size_t N, typename V> \
+	inline const T* func_name##Value(const T(&array)[N], const V& value) \
+	{ \
+		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return func_name(const_cast<T*>(array), N, _equal); \
+	} \
+	template<class T, typename V> \
+	inline T* func_name##Value(T* begin, T* end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(begin, size, _equal); \
+	} \
+	template<class T, typename V> \
+	inline const T* func_name##Value(const T* begin, const T* end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value](const T& val1) -> bool { return equal_to<T>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _equal); \
+	} \
+	template<class ITERATOR, typename V> \
+	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value](const typename ITERATOR::value_type& val1) -> bool { return equal_to<typename ITERATOR::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&begin[0], size, _equal); \
+	} \
+	template<class ITERATOR, typename V> \
+	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _equal = [&value](const typename ITERATOR::value_type& val1) -> bool { return equal_to<typename ITERATOR::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _equal); \
+	} \
+	template<class CONTAINER, typename V> \
+	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _equal = [&value](const typename CONTAINER::value_type& val1) -> bool { return equal_to<typename CONTAINER::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _equal); \
+	} \
+	template<class CONTAINER, typename V> \
+	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _equal = [&value](const typename CONTAINER::value_type& val1) -> bool { return equal_to<typename CONTAINER::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _equal); \
+	}
+#define searchFuncSetByPredicate(func_name) \
+	searchFuncSetByUserFunc(func_name) \
+	searchFuncSetPredicateAndValue(func_name) \
+	searchFuncSetByDefaultPredicateAndValue(func_name)
+//※探索値指定版：比較関数と値で比較
+#define searchFuncSetByComparisonAndValue(func_name) \
+	template<class T, typename V, class COMPARISON> \
+	inline T* func_name##Value(T* array, const std::size_t size, const V& value, COMPARISON comparison) \
+	{ \
+		auto _comparison = [&value, &comparison](T& val1) -> int { return comparison(val1, value); }; \
+		return func_name(array, size, _comparison); \
+	} \
+	template<class T, typename V, class COMPARISON> \
+	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value, COMPARISON comparison) \
+	{ \
+		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
+		return func_name(const_cast<T*>(array), size, _comparison); \
+	} \
+	template<class T, std::size_t N, typename V, class COMPARISON> \
+	inline T* func_name##Value(T(&array)[N], const V& value, COMPARISON comparison) \
+	{ \
+		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
+		return func_name(array, N, _comparison); \
+	} \
+	template<class T, std::size_t N, typename V, class COMPARISON> \
+	inline const T* func_name##Value(const T(&array)[N], const V &value, COMPARISON comparison) \
+	{ \
+		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
+		return func_name(const_cast<T*>(array), N, _comparison); \
+	} \
+	template<class T, typename V, class COMPARISON> \
+	inline T* func_name##Value(T* begin, T* end, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(begin, size, _comparison); \
+	} \
+	template<class T, typename V, class COMPARISON> \
+	inline const T* func_name##Value(const T* begin, const T* end, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value, &comparison](const T& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _comparison); \
+	} \
+	template<class ITERATOR, typename V, class COMPARISON> \
+	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value, &comparison](const typename ITERATOR::value_type& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&begin[0], size, _comparison); \
+	} \
+	template<class ITERATOR, typename V, class COMPARISON> \
+	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value, &comparison](const typename ITERATOR::value_type& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _comparison); \
+	} \
+	template<class CONTAINER, typename V, class COMPARISON> \
+	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _comparison = [&value, &comparison](const typename CONTAINER::value_type& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _comparison); \
+	} \
+	template<class CONTAINER, typename V, class COMPARISON> \
+	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value, COMPARISON comparison) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _comparison = [&value, &comparison](const typename CONTAINER::value_type& val1) -> int { return comparison(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _comparison); \
+	}
+//※探索値指定版：標準比較関数と値で比較
+#define searchFuncSetByDefaultComparisonAndValue(func_name) \
+	template<class T, typename V> \
+	inline T* func_name##Value(T* array, const std::size_t size, const V& value) \
+	{ \
+		auto _comparison = [&value](T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return func_name(array, size, _comparison); \
+	} \
+	template<class T, typename V> \
+	inline const T* func_name##Value(const T* array, const std::size_t size, const V& value) \
+	{ \
+		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return func_name(const_cast<T*>(array), size, _comparison); \
+	} \
+	template<class T, std::size_t N, typename V> \
+	inline T* func_name##Value(T(&array)[N], const V& value) \
+	{ \
+		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return func_name(array, N, _comparison); \
+	} \
+	template<class T, std::size_t N, typename V> \
+	inline const T* func_name##Value(const T(&array)[N], const V &value) \
+	{ \
+		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return func_name(const_cast<T*>(array), N, _comparison); \
+	} \
+	template<class T, typename V> \
+	inline T* func_name##Value(T* begin, T* end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(begin, size, _comparison); \
+	} \
+	template<class T, typename V> \
+	inline const T* func_name##Value(const T* begin, const T* end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value](const T& val1) -> int { return compare_to<T>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<T*>(begin), size, _comparison); \
+	} \
+	template<class ITERATOR, typename V> \
+	inline typename ITERATOR::value_type* func_name##Value(ITERATOR& begin, ITERATOR& end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value](const typename ITERATOR::value_type& val1) -> int { return compare_to<typename ITERATOR::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&begin[0], size, _comparison); \
+	} \
+	template<class ITERATOR, typename V> \
+	inline const typename ITERATOR::value_type* func_name##Value(const ITERATOR& begin, const ITERATOR& end, const V& value) \
+	{ \
+		const std::size_t size = end - begin; \
+		auto _comparison = [&value](const typename ITERATOR::value_type& val1) -> int { return compare_to<typename ITERATOR::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(const_cast<typename ITERATOR::value_type*>(&begin[0]), size, _comparison); \
+	} \
+	template<class CONTAINER, typename V> \
+	inline typename CONTAINER::value_type* func_name##Value(CONTAINER& con, const V& value) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _comparison = [&value](const typename CONTAINER::value_type& val1) -> int { return compare_to<typename CONTAINER::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(con.at(0)), size, _comparison); \
+	} \
+	template<class CONTAINER, typename V> \
+	inline const typename CONTAINER::value_type* func_name##Value(const CONTAINER& con, const V& value) \
+	{ \
+		const std::size_t size = con.size(); \
+		auto _comparison = [&value](const typename CONTAINER::value_type& val1) -> int { return compare_to<typename CONTAINER::value_type>()(val1, value); }; \
+		return size == 0 ? nullptr : func_name(&(const_cast<CONTAINER*>(&con)->at(0)), size, _comparison); \
+	}
+#define searchFuncSetByComparison(func_name) \
+	searchFuncSetByUserFunc(func_name) \
+	searchFuncSetByComparisonAndValue(func_name) \
+	searchFuncSetByDefaultComparisonAndValue(func_name)
 
 //----------------------------------------
 //整列状態確認
@@ -172,6 +556,7 @@ struct _swapObjects<T*>{
 		_swapArithmetic<T*>::exec(val1, val2);
 	}
 };
+//データ入れ替え関数（直接使用する関数）
 template<class T>
 inline void swapValues(T& val1, T& val2)
 {
@@ -217,6 +602,16 @@ template<class T>
 struct _rotateObjects{
 	inline static void exec(T* val1, T* val2, int step)
 	{
+	#if 1//ムーブコンストラクタとムーブオペレータを使用して入れ替え
+		T tmp = std::move(*val2);
+		while (val1 != val2)
+		{
+			T* val2_prev = val2 - step;
+			*val2 = std::move(*val2_prev);
+			val2 = val2_prev;
+		}
+		*val1 = std::move(tmp);
+	#else//コンストラクタ／オペレータの呼び出しを避けて単純なメモリコピー
 		char tmp[sizeof(T)];
 		memcpy(tmp, val2, sizeof(T));
 		while (val1 != val2)
@@ -226,6 +621,7 @@ struct _rotateObjects{
 			val2 = val2_prev;
 		}
 		memcpy(val1, tmp, sizeof(T));
+	#endif
 	}
 };
 template<class T>
@@ -235,6 +631,7 @@ struct _rotateObjects<T*>{
 		_rotateArithmetic<T*>::exec(val1, val2, step);
 	}
 };
+//データローテーション関数（直接使用する関数）
 template<class T>
 inline void rotateValues(T* val1, T* val2, int step)
 {
@@ -244,6 +641,144 @@ inline void rotateValues(T* val1, T* val2, int step)
 	>::type::exec(val1, val2, step);
 }
 
+//----------------------------------------
+//イテレータの差（要素数）を返す
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::input_iterator_tag)
+{
+	typename ITERATOR::difference_type size = 0;
+	for (; begin != end; ++begin)
+		++size;
+	return size;
+}
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::output_iterator_tag)
+{
+	typename ITERATOR::difference_type size = 0;
+	for (; begin != end; ++begin)
+		++size;
+	return size;
+}
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::forward_iterator_tag)
+{
+	typename ITERATOR::difference_type size = 0;
+	for (; begin != end; ++begin)
+		++size;
+	return size;
+}
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::bidirectional_iterator_tag)
+{
+	typename ITERATOR::difference_type size = 0;
+	for (; begin != end; ++begin)
+		++size;
+	return size;
+}
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end, std::random_access_iterator_tag)
+{
+	return end - begin;
+}
+template<class ITERATOR>
+inline typename ITERATOR::difference_type iteratorDifference(ITERATOR begin, ITERATOR end)
+{
+	typename ITERATOR::iterator_category category;
+	return iteratorDifference(begin, end, category);
+}
+
+//----------------------------------------
+//for-each
+template<class ITERATOR, class FUNCTOR>
+void forEach(ITERATOR begin, ITERATOR end, FUNCTOR functor)
+{
+	for (; begin != end; ++begin)
+	{
+		functor(*begin);
+	}
+}
+template<class CONTAINER, class FUNCTOR>
+void forEach(CONTAINER container, FUNCTOR functor)
+{
+	typename CONTAINER::iterator begin = container.begin();
+	typename CONTAINER::iterator end = container.end();
+	forEach(begin, end, functor);
+}
+template<typename T, std::size_t N, class FUNCTOR>
+void forEach(T(&array)[N], FUNCTOR functor)
+{
+	T* begin = array;
+	T* end = array + N;
+	forEach(begin, end, functor);
+}
+template<typename T, std::size_t N, class FUNCTOR>
+void forEach(const T(&array)[N], FUNCTOR functor)
+{
+	const T* begin = array;
+	const T* end = array + N;
+	forEach(begin, end, functor);
+}
+template<typename T, class FUNCTOR>
+void forEach(T* array, const std::size_t size, FUNCTOR functor)
+{
+	T* begin = array;
+	T* end = array + size;
+	forEach(begin, end, functor);
+}
+template<typename T, class FUNCTOR>
+void forEach(const T* array, const std::size_t size, FUNCTOR functor)
+{
+	const T* begin = array;
+	const T* end = array + size;
+	forEach(begin, end, functor);
+}
+//----------------------------------------
+//reverse for-each
+template<class ITERATOR, class FUNCTOR>
+void reverseForEach(ITERATOR begin, ITERATOR end, FUNCTOR functor)
+{
+	while (begin != end)
+	{
+		--begin;
+		functor(*begin);
+	}
+}
+template<class CONTAINER, class FUNCTOR>
+void reverseForEach(CONTAINER container, FUNCTOR functor)
+{
+	typename CONTAINER::reverse_iterator rbegin = container.rbegin();
+	typename CONTAINER::reverse_iterator rend = container.rend();
+	forEach(rbegin, rend, functor);//リバースイテレータ＋forEachで処理
+}
+template<typename T, std::size_t N, class FUNCTOR>
+void reverseForEach(T(&array)[N], FUNCTOR functor)
+{
+	T* begin = array + N;
+	T* end = array;
+	reverseForEach(begin, end, functor);
+}
+template<typename T, std::size_t N, class FUNCTOR>
+void reverseForEach(const T(&array)[N], FUNCTOR functor)
+{
+	const T* begin = array + N;
+	const T* end = array;
+	reverseForEach(begin, end, functor);
+}
+template<typename T, class FUNCTOR>
+void reverseForEach(T* array, const std::size_t size, FUNCTOR functor)
+{
+	T* begin = array + size;
+	T* end = array;
+	reverseForEach(begin, end, functor);
+}
+template<typename T, class FUNCTOR>
+void reverseForEach(const T* array, const std::size_t size, FUNCTOR functor)
+{
+	const T* begin = array + size;
+	const T* end = array;
+	reverseForEach(begin, end, functor);
+}
+
 //========================================
 //ソートアルゴリズムの説明
 //========================================
@@ -251,7 +786,7 @@ inline void rotateValues(T* val1, T* val2, int step)
 //・計算時間：
 //    - O(n)       ... データ件数分の時間
 //    - O(n ^ 2)   ... データ件数の２乗分の時間
-//    - O(log n)   ... log2(データ件数)分の時間（4→, 16→4, 1024→10,1048576→20）
+//    - O(log n)   ... log2(データ件数)分の時間（4→2, 16→4, 1024→10,1048576→20）
 //    - O(n log n) ... n×log n 分の時間
 //・メモリ使用量：
 //    - O(1)       ... １件分のメモリが必要
@@ -269,7 +804,8 @@ inline void rotateValues(T* val1, T* val2, int step)
 //----------------------------------------
 //アルゴリズム：バブルソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(n)
+//・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
@@ -309,7 +845,8 @@ sortFuncSet(bubbleSort);
 //----------------------------------------
 //アルゴリズム：シェーカーソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(n)
+//・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
@@ -364,9 +901,10 @@ sortFuncSet(shakerSort);
 //----------------------------------------
 //アルゴリズム：奇遇転置ソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(2n)
+//・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
-//・メモリ使用量：O(1)
+//・メモリ使用量：O(1)×並列処理分
 //・安定性：　　　○
 //----------------------------------------
 //※OpenMPを使用し、並列化で最適化する。
@@ -410,9 +948,10 @@ sortFuncSet(oddEvenSort);
 //----------------------------------------
 //アルゴリズム：シェアソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(n^1.5)
+//・平均計算時間：O(n^1.5)
 //・最悪計算時間：O(n^1.5)
-//・メモリ使用量：O(1)
+//・メモリ使用量：O(1)×並列処理分
 //・安定性：　　　×
 //----------------------------------------
 //※OpenMPを使用し、並列化で最適化する。
@@ -589,6 +1128,7 @@ sortFuncSet(shearSort);
 //----------------------------------------
 //アルゴリズム：コムソート
 //----------------------------------------
+//・最良計算時間：O(n)
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
@@ -629,7 +1169,8 @@ sortFuncSet(combSort);
 //----------------------------------------
 //アルゴリズム：ノームソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(n)
+//・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
@@ -669,12 +1210,17 @@ std::size_t gnomeSort(T* array, const std::size_t size, PREDICATE predicate)
 }
 sortFuncSet(gnomeSort);
 
+//========================================
+//ソートアルゴリズム分類：分割交換ソート
+//========================================
+
 //----------------------------------------
 //アルゴリズム：クイックソート
 //----------------------------------------
+//・最良計算時間：O(n log n)
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n^2)
-//・メモリ使用量：O(log n) ※再帰処理を使用しなければ O(1)
+//・メモリ使用量：O(log n)～O(n) ※ループ処理版は O(32*2)
 //・安定性：　　　×
 //----------------------------------------
 //※再帰処理を使用せず、スタックを使用したループ処理にして最適化する。
@@ -693,21 +1239,21 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 	const T* term = array + size;
 	T* begin = array;
 	T* end = array + size - 1;
-	//中央値を決定
-	const T* med = array + (size >> 1);
+	//軸を決定
+	const T* mid = array + (size >> 1);
 	const T* pivot =
-		predicate(*begin, *med) ?
-			predicate(*med, *end) ?
-				med :
+		predicate(*begin, *mid) ?
+			predicate(*mid, *end) ?
+				mid :
 				predicate(*end, *begin) ?
 					begin :
 					end :
-			predicate(*end, *med) ?
-				med :
+			predicate(*end, *mid) ?
+				mid :
 				predicate(*begin, *end) ?
 					begin :
 					end;
-	//中央値未満の配列と中央値以上の配列に二分
+	//軸未満の配列と軸以上の配列に二分
 	while (true)
 	{
 		while (predicate(*begin, *pivot))
@@ -717,14 +1263,14 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 		if (begin >= end)
 			break;
 		swapValues(*begin, *end);
-		pivot = pivot == begin ? end : pivot == end ? begin : pivot;//中央値の位置調整（中央値の位置も入れ替わるため）
+		pivot = pivot == begin ? end : pivot == end ? begin : pivot;//軸の位置調整（軸の位置も入れ替わるため）
 		++swapped_count;
 		++begin;
 		--end;
 	}
 	//再帰処理
-	swapped_count += _quickSort(array, begin - array, predicate);//中央値未満の配列
-	swapped_count += _quickSort(end + 1, term - end - 1, predicate);//中央値以上の配列
+	swapped_count += _quickSort(array, begin - array, predicate);//軸未満の配列
+	swapped_count += _quickSort(end + 1, term - end - 1, predicate);//軸以上の配列
 	return swapped_count;
 #else//QUICK_SORT_NO_USE_RECURSIVE_CALL
 #ifndef QUICK_SORT_USE_OPENMP
@@ -753,21 +1299,21 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 		const T* term = _array + _size;
 		T* begin = _array;
 		T* end = _array + _size - 1;
-		//中央値を決定
-		const T* med = _array + (_size >> 1);
+		//軸を決定
+		const T* mid = _array + (_size >> 1);
 		const T* pivot =
-			predicate(*begin, *med) ?
-				predicate(*med, *end) ?
-					med :
+			predicate(*begin, *mid) ?
+				predicate(*mid, *end) ?
+					mid :
 					predicate(*end, *begin) ?
 						begin :
 						end :
-				predicate(*end, *med) ?
-					med :
+				predicate(*end, *mid) ?
+					mid :
 					predicate(*begin, *end) ?
 						begin :
 						end;
-		//中央値未満の配列と中央値以上の配列に二分
+		//軸未満の配列と軸以上の配列に二分
 		while (true)
 		{
 			while (predicate(*begin, *pivot))
@@ -777,13 +1323,13 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 			if (begin >= end)
 				break;
 			swapValues(*begin, *end);
-			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//中央値の位置調整（中央値の位置も入れ替わるため）
+			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//軸の位置調整（軸の位置も入れ替わるため）
 			++swapped_count;
 			++begin;
 			--end;
 		}
-		//recursive = 0 : 中央値未満の配列をプッシュ
-		//            1 : 中央値以上の配列をプッシュ
+		//recursive = 0 : 軸未満の配列をプッシュ
+		//            1 : 軸以上の配列をプッシュ
 		for (int recursive = 0; recursive < 2; ++recursive)
 		{
 			T* new_array = recursive == 0 ? _array : end + 1;
@@ -824,7 +1370,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 	const T* term;
 	T* begin;
 	T* end;
-	const T* med;
+	const T* mid;
 	const T* pivot;
 	int recursive;
 	T* new_array;
@@ -834,7 +1380,7 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 		queue_read_tmp = queue_read;
 		queue_write_tmp = queue_write;
 		const int loop_count = queue_write_tmp > queue_read_tmp ? queue_write_tmp - queue_read_tmp : size - queue_write_tmp + queue_read_tmp;
-	#pragma omp parallel for reduction(+:swapped_count) private(queue_p, _array, _size, term, begin, end, med, pivot, recursive, new_array, new_size, queue_read_tmp, queue_write_tmp)
+	#pragma omp parallel for reduction(+:swapped_count) private(queue_p, _array, _size, term, begin, end, mid, pivot, recursive, new_array, new_size, queue_read_tmp, queue_write_tmp)
 		for (int loop = 0; loop < loop_count; ++loop)
 		{
 		#pragma omp critical
@@ -849,21 +1395,21 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 				term = _array + _size;
 				begin = _array;
 				end = _array + _size - 1;
-				//中央値を決定
-				med = _array + (_size >> 1);
+				//軸を決定
+				mid = _array + (_size >> 1);
 				pivot =
-					predicate(*begin, *med) ?
-						predicate(*med, *end) ?
-							med :
+					predicate(*begin, *mid) ?
+						predicate(*mid, *end) ?
+							mid :
 							predicate(*end, *begin) ?
 								begin :
 								end :
-						predicate(*end, *med) ?
-							med :
+						predicate(*end, *mid) ?
+							mid :
 							predicate(*begin, *end) ?
 								begin :
 								end;
-				//中央値未満の配列と中央値以上の配列に二分
+				//軸未満の配列と軸以上の配列に二分
 				while (true)
 				{
 					while (predicate(*begin, *pivot))
@@ -873,13 +1419,13 @@ std::size_t _quickSort(T* array, const std::size_t size, PREDICATE predicate)
 					if (begin >= end)
 						break;
 					swapValues(*begin, *end);
-					pivot = pivot == begin ? end : pivot == end ? begin : pivot;//中央値の位置調整（中央値の位置も入れ替わるため）
+					pivot = pivot == begin ? end : pivot == end ? begin : pivot;//軸の位置調整（軸の位置も入れ替わるため）
 					++swapped_count;
 					++begin;
 					--end;
 				}
-				//recursive = 0 : 中央値未満の配列をプッシュ
-				//            1 : 中央値以上の配列をプッシュ
+				//recursive = 0 : 軸未満の配列をプッシュ
+				//            1 : 軸以上の配列をプッシュ
 				for (recursive = 0; recursive < 2; ++recursive)
 				{
 					new_array = recursive == 0 ? _array : end + 1;
@@ -918,6 +1464,7 @@ sortFuncSet(quickSort);
 //----------------------------------------
 //アルゴリズム：選択ソート
 //----------------------------------------
+//・最良計算時間：O(n^2)
 //・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
@@ -954,6 +1501,7 @@ sortFuncSet(selectionSort);
 //----------------------------------------
 //アルゴリズム：ヒープソート
 //----------------------------------------
+//・最良計算時間：O(n log n)
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n log n)
 //・メモリ使用量：O(1)
@@ -1029,7 +1577,8 @@ sortFuncSet(heapSort);
 //----------------------------------------
 //アルゴリズム：挿入ソート
 //----------------------------------------
-//・平均計算時間：O(n + d) ※d = O(n^2)
+//・最良計算時間：O(n)
+//・平均計算時間：O(n^2)
 //・最悪計算時間：O(n^2)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
@@ -1070,7 +1619,8 @@ sortFuncSet(insertionSort);
 //----------------------------------------
 //アルゴリズム：シェルソート
 //----------------------------------------
-//・平均計算時間：-
+//・最良計算時間：O(n)
+//・平均計算時間：O(n log^2 n) or O(n^3/2)
 //・最悪計算時間：O(n log^2 n)
 //・メモリ使用量：O(1)
 //・安定性：　　　×
@@ -1082,8 +1632,8 @@ std::size_t shellSort(T* array, const std::size_t size, PREDICATE predicate)
 		return 0;
 	std::size_t swapped_count = 0;
 	const T* end = array + size;
-	std::size_t h = 1;
 	const std::size_t h_max = size / 3;
+	std::size_t h = 1;
 	while (h <= h_max)
 		h = 3 * h + 1;
 	while (h > 0)
@@ -1119,8 +1669,9 @@ sortFuncSet(shellSort);
 //----------------------------------------
 //アルゴリズム：インプレースマージソート
 //----------------------------------------
-//・平均計算時間：-
-//・最悪計算時間：O(n log n)
+//・最良計算時間：O(n log2 n)
+//・平均計算時間：O(n log2 n)
+//・最悪計算時間：O(n log2 n)
 //・メモリ使用量：O(1)
 //・安定性：　　　○
 //----------------------------------------
@@ -1287,9 +1838,10 @@ sortFuncSet(inplaceMergeSort);
 //----------------------------------------
 //アルゴリズム：イントロソート
 //----------------------------------------
+//・最良計算時間：O(n log n)
 //・平均計算時間：O(n log n)
 //・最悪計算時間：O(n log n)
-//・メモリ使用量：O(n log n) ※クイックソートで再帰処理を使用しなければ O(1)
+//・メモリ使用量：O(n log n) ※ループ処理版は O(32*2)
 //・安定性：　　　×
 //----------------------------------------
 //※クイックソートの再帰レベルが log n に達したら、
@@ -1343,21 +1895,21 @@ std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 		const T* term = _array + _size;
 		T* begin = _array;
 		T* end = _array + _size - 1;
-		//中央値を決定
-		const T* med = _array + (_size >> 1);
+		//軸を決定
+		const T* mid = _array + (_size >> 1);
 		const T* pivot =
-			predicate(*begin, *med) ?
-				predicate(*med, *end) ?
-					med :
+			predicate(*begin, *mid) ?
+				predicate(*mid, *end) ?
+					mid :
 					predicate(*end, *begin) ?
 						begin :
 						end :
-				predicate(*end, *med) ?
-					med :
+				predicate(*end, *mid) ?
+					mid :
 					predicate(*begin, *end) ?
 						begin :
 						end;
-		//中央値未満の配列と中央値以上の配列に二分
+		//軸未満の配列と軸以上の配列に二分
 		while (true)
 		{
 			while (predicate(*begin, *pivot))
@@ -1367,13 +1919,13 @@ std::size_t _introSort(T* array, const std::size_t size, PREDICATE predicate)
 			if (begin >= end)
 				break;
 			swapValues(*begin, *end);
-			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//中央値の位置調整（中央値の位置も入れ替わるため）
+			pivot = pivot == begin ? end : pivot == end ? begin : pivot;//軸の位置調整（軸の位置も入れ替わるため）
 			++swapped_count;
 			++begin;
 			--end;
 		}
-		//recursive = 0 : 中央値未満の配列をプッシュ
-		//            1 : 中央値以上の配列をプッシュ
+		//recursive = 0 : 軸未満の配列をプッシュ
+		//            1 : 軸以上の配列をプッシュ
 		for (int recursive = 0; recursive < 2; ++recursive)
 		{
 			T* new_array = recursive == 0 ? _array : end + 1;
@@ -1418,15 +1970,16 @@ inline std::size_t introSort(T* array, const std::size_t size, PREDICATE predica
 sortFuncSet(introSort);
 
 //========================================
-//ソートアルゴリズム分類：非比較ソート
+//ソートアルゴリズム分類：分布ソート
 //========================================
 
 //----------------------------------------
 //アルゴリズム：基数ソート
 //----------------------------------------
-//・平均計算時間：O(nk/s)
-//・最悪計算時間：O(nk/s)
-//・メモリ使用量：O(n) ※実際は O(n * 2) のキー情報(12 bytes) + O(16 * 16) のキー分布情報(4 bytes) + O(16) のスタック情報（4 bytes）
+//・最良計算時間：O(n*k/d) ※k=キーの範囲、d=基数(256)
+//・平均計算時間：O(n*k/d)
+//・最悪計算時間：O(n*k/d)
+//・メモリ使用量：O(n) ※実際は O(n * 2) のキー情報(12 bytes) + O(256 * 256) のキー分布情報(4 bytes) + O(1～8) のスタック情報（4 bytes）
 //・安定性：　　　○
 //----------------------------------------
 #include <climits>//***_MAX用
@@ -1683,7 +2236,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 	std::size_t swapped_count = 0;
 
 	//#define RADIX_IS_16//基数を16にする場合は、このマクロを有効化する（無効化時の基数は256)
-	//※基数は256の方が速い
+	//※基数は、256の方が速いが、16の方が所用メモリ量を抑えられる
 
 	typedef typename GET_KEY_FUNCTOR::key_type KEY_TYPE;//キー型
 	typedef typename std::make_unsigned<KEY_TYPE>::type KEY_TYPE_U;//符号なしキー型
@@ -1723,7 +2276,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 	}
 	//キーの最大値から最大の長さを算出
 	const index_type KEY_LEN = (
-#ifndef RADIX_IS_16//基数が256(8bit)の場合の計算
+	#ifndef RADIX_IS_16//基数が256(8bit)の場合の計算
 		(key_max & 0xff00000000000000llu) != 0llu ? 8 :
 		(key_max & 0x00ff000000000000llu) != 0llu ? 7 :
 		(key_max & 0x0000ff0000000000llu) != 0llu ? 6 :
@@ -1732,7 +2285,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		(key_max & 0x0000000000ff0000u)   != 0u   ? 3 :
 		(key_max & 0x000000000000ff00u)   != 0u   ? 2 :
 		(key_max & 0x00000000000000ffu)   != 0u   ? 1 :
-#else//RADIX_IS_16//基数が16(4bit)の場合の計算
+	#else//RADIX_IS_16//基数が16(4bit)の場合の計算
 		(key_max & 0xf000000000000000llu) != 0llu ? 16 :
 		(key_max & 0x0f00000000000000llu) != 0llu ? 15 :
 		(key_max & 0x00f0000000000000llu) != 0llu ? 14 :
@@ -1749,7 +2302,7 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 		(key_max & 0x0000000000000f00u)   != 0u   ?  3 :
 		(key_max & 0x00000000000000f0u)   != 0u   ?  2 :
 		(key_max & 0x000000000000000fu)   != 0u   ?  1 :
-#endif//RADIX_IS_16
+	#endif//RADIX_IS_16
 		0);
 	if (KEY_LEN == 0)//キーの桁数が 0 ならこの時点で終了
 	{
@@ -1814,14 +2367,16 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 	const key_t** sorted_key_tbl = new const key_t*[size];//ソート済みキー情報
 	bucket_set_t* bucket_tbl_set = new bucket_set_t[KEY_LEN];//分布情報セット
 	stack_t* stack = new stack_t[KEY_LEN];//スタック
-	if (!sorted_key_tbl)//メモリ確保に失敗したら終了
+	if (!sorted_key_tbl || !bucket_tbl_set || !stack)//メモリ確保に失敗したら終了
 	{
 		if (key_tbl)
 			delete[] key_tbl;//メモリ破棄
-		if (bucket_tbl_set)
+		if (sorted_key_tbl)
 			delete[] sorted_key_tbl;//メモリ破棄
 		if (bucket_tbl_set)
 			delete[] bucket_tbl_set;//メモリ破棄
+		if (stack)
+			delete[] stack;//メモリ破棄
 		return 0;
 	}
 
@@ -1951,6 +2506,76 @@ inline std::size_t radixSort(T* array, const std::size_t size, GET_KEY_FUNCTOR g
 }
 distributedSortFuncSet(radixSort);
 
+//========================================
+//探索アルゴリズム
+//========================================
+
+//----------------------------------------
+//アルゴリズム：線形探索
+//----------------------------------------
+//・最良計算時間：O(1)
+//・平均計算時間：O(n/2)
+//・最悪計算時間：O(n)
+//・探索失敗時：  O(n)
+//----------------------------------------
+template<class T, class PREDICATE>
+T* linearSearch(T* array, const std::size_t size, PREDICATE predicate)
+{
+	if (!array || size == 0)
+		return nullptr;
+	T* now = array;
+	for (std::size_t i = 0; i < size; ++i, ++now)//順次探索
+	{
+		if (predicate(*now))//探索キーと一致したら終了
+			return now;
+	}
+	return nullptr;//探索失敗
+}
+searchFuncSetByPredicate(linearSearch);
+
+//----------------------------------------
+//アルゴリズム：二分探索
+//----------------------------------------
+//・最良計算時間：O(1)
+//・平均計算時間：O(log n)
+//・最悪計算時間：O(log n)
+//・探索失敗時：  O(log n)
+//----------------------------------------
+template<class T, class COMPARISON>
+T* binarySearch(T* array, const std::size_t size, COMPARISON comparison)
+{
+	if (!array || size == 0)
+		return nullptr;
+	std::size_t range = size;
+	T* begin = array;
+	T* found = nullptr;
+	while (true)
+	{
+		const std::size_t range_half = range / 2;//探索範囲の半分の範囲
+		T* mid = begin + range_half;//探索範囲の中心要素
+		const int comp = comparison(*mid);//中心要素を探索キーと比較
+		if (comp == 0)//中心要素が探索キーと一致
+			found = mid;//発見した場所を記憶 ※見つかった位置の先頭を発見するため、探索を続行する
+		if (range_half == 0)//探索範囲が残っていなければ探索終了
+			break;
+		if (comp <= 0)//探索キーが中心要素より小さいか同じだった場合、次に中心より前の範囲に絞って探索する
+			range = range_half;
+		else//if (comp > 0)//探索キーが中心要素より大きかった場合、次に中心より後の範囲に絞って探索する
+		{
+			begin = mid + 1;
+			range -= (range_half + 1);
+		}
+	}
+	if (found && found != begin)//見つかった地点が先頭でなければ、一つ前を調べる
+	{
+		T* found_prev = found - 1;
+		if (comparison(*found_prev) == 0)//一つ前が一致するならそれを返す
+			found = found_prev;
+	}
+	return found;
+}
+searchFuncSetByComparison(binarySearch);
+
 //--------------------------------------------------------------------------------
 //各種ソートアルゴリズムテスト
 //--------------------------------------------------------------------------------
@@ -2008,9 +2633,13 @@ auto predicate_lambda = [](const data_t& lhs, const data_t& rhs) -> bool
 };
 //二項比較オペレータ
 //※sort関数に比較関数の指定を省略した場合、このオペレータが使用される
-inline bool operator <(const data_t& lhs, const data_t& rhs){ return lhs.m_key < rhs.m_key; }
+inline bool operator<(const data_t& lhs, const data_t& rhs){ return lhs.m_key < rhs.m_key; }
 //※sort関数にstd::greater<T>()を指定した場合、このオペレータが使用される
-inline bool operator >(const data_t& lhs, const data_t& rhs){ return lhs.m_key > rhs.m_key; }
+inline bool operator>(const data_t& lhs, const data_t& rhs){ return lhs.m_key > rhs.m_key; }
+//※linearSearch関数／binarySearch関数に比較関数の指定を省略した場合、このオペレータが使用される
+inline bool operator==(const data_t& lhs, const int rhs){ return lhs.m_key == rhs; }
+//※binarySearch関数に比較関数の指定を省略した場合、このオペレータが使用される
+inline bool operator<(const data_t& lhs, const int rhs){ return lhs.m_key < rhs; }
 
 //デフォルト
 //#define predicate_default predicate_func
@@ -2139,16 +2768,16 @@ int main(const int argc, const char* argv[])
 				std::mt19937 random_engine(type);
 				const std::size_t size = array->size();
 				const std::size_t top = 0;
-				const std::size_t med = size >> 1;
+				const std::size_t mid = size >> 1;
 				const std::size_t btm = size - 1;
 				(*array)[top].m_key = nextKey();
 				if(size >= 3)
-					(*array)[med].m_key = nextKey();
+					(*array)[mid].m_key = nextKey();
 				if (size >= 2)
 					(*array)[btm].m_key = nextKey();
 				if (size > 4)
 				{
-					data_t* obj_begin = &(*array)[med + 1];
+					data_t* obj_begin = &(*array)[mid + 1];
 					data_t* obj_end = &(*array)[size - 1];
 					for (data_t* obj = obj_begin; obj <= obj_end; ++obj)
 						obj->m_key = nextKey();
@@ -2157,7 +2786,7 @@ int main(const int argc, const char* argv[])
 				if (size > 3)
 				{
 					data_t* obj_begin = &(*array)[top + 1];
-					data_t* obj_end = &(*array)[med];
+					data_t* obj_end = &(*array)[mid];
 					for (data_t* obj = obj_begin; obj < obj_end; ++obj)
 						obj->m_key = nextKey();
 					std::shuffle(obj_begin, obj_end, random_engine);
@@ -2500,21 +3129,6 @@ int main(const int argc, const char* argv[])
 	auto bubble_sort = [](array_t* array) -> std::size_t
 	{
 		return bubbleSort(*array, predicate_default);
-		
-		//その他のソート指定方法
-		//return bubbleSort(&array->at(0), array->size(), predicate_default);
-		//return bubbleSort(array->_Elems, predicate_default);
-		//return bubbleSort(&array->at(0), &array->at(array->size() - 1) + 1, predicate_default);
-		//return bubbleSort(array->begin(), array->end(), predicate_default);
-		//return bubbleSort(*array, predicate_default);
-		//比較関数を省略する方法 ※ operator<(const T&, const T&) が定義されている必要あり
-		//return bubbleSort(&array->at(0), array->size());
-		//return bubbleSort(array->_Elems);
-		//return bubbleSort(&array->at(0), &array->at(array->size() - 1) + 1);
-		//return bubbleSort(array->begin(), array->end());
-		//return bubbleSort(*array);
-		//専用の比較関数を設けず、比較を逆転する方法 ※ operator>(const T&, const T&) が定義されている必要あり
-		//return bubbleSort(*array, std::greater<data_t>());
 	};
 	const sum_t sum_bubble = measureAll("Bubble sort", bubble_sort);
 	printf("\n");
@@ -2710,6 +3324,8 @@ int main(const int argc, const char* argv[])
 	printLine("Shear sort:", sum_shear);
 	printLine("Comb sort:", sum_comb);
 	printLine("Gnome sort<S>:", sum_gnome);
+	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
+	printf("[Partition-exchange sorts]\n");
 	printLine("Quick sort:", sum_quick);
 	printf("--------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("[Selection sorts]\n");
@@ -2733,6 +3349,169 @@ int main(const int argc, const char* argv[])
 	printf("* <S> ... Stable sort algorithm.\n");
 	printf("\n");
 
+#if 0
+	//----------------------------------------
+	//バリエーションテスト
+
+#if 1
+	//----------------------------------------
+	//ソートのバリエーション
+	{
+		//コンテナを直接渡してソートする方法
+		array_t& arr = *array_shuffle1;
+		const std::size_t reuslt = bubbleSort(arr, predicate_default);
+		//その他のソート指定方法
+		const std::size_t reuslt1 = bubbleSort(&arr.at(0), arr.size(), predicate_default);
+		//const std::size_t reuslt2 = bubbleSort(arr._Elems, predicate_default);//VC++
+		const std::size_t reuslt3 = bubbleSort(&arr.at(0), &arr.at(arr.size() - 1) + 1, predicate_default);
+		const std::size_t reuslt4 = bubbleSort(arr.begin(), arr.end(), predicate_default);
+		const std::size_t reuslt5 = bubbleSort(arr, predicate_default);
+		//比較関数を省略する方法 ※ operator<(const T&, const T&) が定義されている必要あり
+		const std::size_t reuslt6 = bubbleSort(&arr.at(0), arr.size());
+		//const std::size_t reuslt7 = bubbleSort(arr._Elems);//VC++
+		const std::size_t reuslt8 = bubbleSort(&arr.at(0), &arr.at(arr.size() - 1) + 1);
+		const std::size_t reuslt9 = bubbleSort(arr.begin(), arr.end());
+		const std::size_t reuslt10 = bubbleSort(arr);
+		//専用の比較関数を設けず、比較を逆転する方法 ※ operator>(const T&, const T&) が定義されている必要あり
+		const std::size_t reuslt11 = bubbleSort(arr, std::greater<data_t>());
+	}
+#endif
+	
+#if 1
+	//----------------------------------------
+	//探索テスト
+#if 1
+	//線形探索
+	{
+		for (int target = -1; target < 40; ++target)
+		{
+			const data_t* data_def = linearSearchValue(*array_shuffle1, target);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1_def = linearSearchValue(arr, target);
+				const data_t* data2_def = linearSearchValue(const_arr, target);
+				const data_t* data3_def = linearSearchValue(arr.begin(), arr.end(), target);
+				const data_t* data4_def = linearSearchValue(arr.cbegin(), arr.cend(), target);
+				const data_t* data5_def = linearSearchValue(const_arr.begin(), const_arr.end(), target);
+				//const data_t* data6_def = linearSearchValue(arr._Elems, target);//VC++
+				//const data_t* data7_def = linearSearchValue(const_arr._Elems, target);//VC++
+				const data_t* data8_def = linearSearchValue(&arr.at(0), arr.size(), target);
+				const data_t* data9_def = linearSearchValue(&const_arr.at(0), const_arr.size(), target);
+				const data_t* data10_def = linearSearchValue(&arr.at(0), &arr.at(0) + arr.size(), target);
+				const data_t* data11_def = linearSearchValue(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), target);
+			}
+			auto search_predicate = [&target](const data_t& data) -> bool { return data.m_key == target; };
+			const data_t* data = linearSearch(*array_shuffle1, search_predicate);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1 = linearSearch(arr, search_predicate);
+				const data_t* data2 = linearSearch(const_arr, search_predicate);
+				const data_t* data3 = linearSearch(arr.begin(), arr.end(), search_predicate);
+				const data_t* data4 = linearSearch(arr.cbegin(), arr.cend(), search_predicate);
+				const data_t* data5 = linearSearch(const_arr.begin(), const_arr.end(), search_predicate);
+				//const data_t* data6 = linearSearch(arr._Elems, search_predicate);//VC++
+				//const data_t* data7 = linearSearch(const_arr._Elems, search_predicate);//VC++
+				const data_t* data8 = linearSearch(&arr.at(0), arr.size(), search_predicate);
+				const data_t* data9 = linearSearch(&const_arr.at(0), const_arr.size(), search_predicate);
+				const data_t* data10 = linearSearch(&arr.at(0), &arr.at(0) + arr.size(), search_predicate);
+				const data_t* data11 = linearSearch(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), search_predicate);
+			}
+			auto search_predicate_val = [](const data_t& data, const int target) -> bool { return data.m_key == target; };
+			const data_t* data_val = linearSearchValue(*array_shuffle1, target, search_predicate_val);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1_val = linearSearchValue(arr, target, search_predicate_val);
+				const data_t* data2_val = linearSearchValue(const_arr, target, search_predicate_val);
+				const data_t* data3_val = linearSearchValue(arr.begin(), arr.end(), target, search_predicate_val);
+				const data_t* data4_val = linearSearchValue(arr.cbegin(), arr.cend(), target, search_predicate_val);
+				const data_t* data5_val = linearSearchValue(const_arr.begin(), const_arr.end(), target, search_predicate_val);
+				//const data_t* data6_val = linearSearchValue(arr._Elems, target, search_predicate_val);//VC++
+				//const data_t* data7_val = linearSearchValue(const_arr._Elems, target, search_predicate_val);//VC++
+				const data_t* data8_val = linearSearchValue(&arr.at(0), arr.size(), target, search_predicate_val);
+				const data_t* data9_val = linearSearchValue(&const_arr.at(0), const_arr.size(), target, search_predicate_val);
+				const data_t* data10_val = linearSearchValue(&arr.at(0), &arr.at(0) + arr.size(), target, search_predicate_val);
+				const data_t* data11_val = linearSearchValue(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), target, search_predicate_val);
+			}
+
+			if (data_def)
+				printf("target=%d, linearSearch=[%d, %d]\n", target, data_def->m_key, data_def->m_seqNo);
+			else
+				printf("target=%d, linearSearch=nullptr\n", target);
+		}
+	}
+#endif
+
+#if 1
+	//二分探索
+	{
+		auto sort_pred = [](const data_t& lhs, const data_t& rhs) -> bool { return lhs.m_key < rhs.m_key; };
+		introSort(*array_shuffle1, sort_pred);
+		for (int target = -1; target < 40; ++target)
+		{
+			const data_t* data_def = binarySearchValue(*array_shuffle1, target);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1_def = binarySearchValue(arr, target);
+				const data_t* data2_def = binarySearchValue(const_arr, target);
+				const data_t* data3_def = binarySearchValue(arr.begin(), arr.end(), target);
+				const data_t* data4_def = binarySearchValue(arr.cbegin(), arr.cend(), target);
+				const data_t* data5_def = binarySearchValue(const_arr.begin(), const_arr.end(), target);
+				//const data_t* data6_def = binarySearchValue(arr._Elems, target);//VC++
+				//const data_t* data7_def = binarySearchValue(const_arr._Elems, target);//VC++
+				const data_t* data8_def = binarySearchValue(&arr.at(0), arr.size(), target);
+				const data_t* data9_def = binarySearchValue(&const_arr.at(0), const_arr.size(), target);
+				const data_t* data10_def = binarySearchValue(&arr.at(0), &arr.at(0) + arr.size(), target);
+				const data_t* data11_def = binarySearchValue(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), target);
+			}
+			auto search_comparison = [&target](const data_t& data) -> int { return target - data.m_key; };
+			const data_t* data = binarySearch(*array_shuffle1, search_comparison);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1 = binarySearch(arr, search_comparison);
+				const data_t* data2 = binarySearch(const_arr, search_comparison);
+				const data_t* data3 = binarySearch(arr.begin(), arr.end(), search_comparison);
+				const data_t* data4 = binarySearch(arr.cbegin(), arr.cend(), search_comparison);
+				const data_t* data5 = binarySearch(const_arr.begin(), const_arr.end(), search_comparison);
+				//const data_t* data6 = binarySearch(arr._Elems, search_comparison);//VC++
+				//const data_t* data7 = binarySearch(const_arr._Elems, search_comparison);//VC++
+				const data_t* data8 = binarySearch(&arr.at(0), arr.size(), search_comparison);
+				const data_t* data9 = binarySearch(&const_arr.at(0), const_arr.size(), search_comparison);
+				const data_t* data10 = binarySearch(&arr.at(0), &arr.at(0) + arr.size(), search_comparison);
+				const data_t* data11 = binarySearch(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), search_comparison);
+			}
+			auto search_comparison_val = [](const data_t& data, const int target) -> int { return target - data.m_key; };
+			const data_t* data_val = binarySearch(*array_shuffle1, search_comparison);
+			{
+				array_t& arr = *array_shuffle1;
+				const array_t& const_arr = *array_shuffle1;
+				const data_t* data1_val = binarySearchValue(arr, target, search_comparison_val);
+				const data_t* data2_val = binarySearchValue(const_arr, target, search_comparison_val);
+				const data_t* data3_val = binarySearchValue(arr.begin(), arr.end(), target, search_comparison_val);
+				const data_t* data4_val = binarySearchValue(arr.cbegin(), arr.cend(), target, search_comparison_val);
+				const data_t* data5_val = binarySearchValue(const_arr.begin(), const_arr.end(), target, search_comparison_val);
+				//const data_t* data6_val = binarySearchValue(arr._Elems, target, search_comparison_val);//VC++
+				//const data_t* data7_val = binarySearchValue(const_arr._Elems, target, search_comparison_val);//VC++
+				const data_t* data8_val = binarySearchValue(&arr.at(0), arr.size(), target, search_comparison_val);
+				const data_t* data9_val = binarySearchValue(&const_arr.at(0), const_arr.size(), target, search_comparison_val);
+				const data_t* data10_val = binarySearchValue(&arr.at(0), &arr.at(0) + arr.size(), target, search_comparison_val);
+				const data_t* data11_val = binarySearchValue(&const_arr.at(0), &const_arr.at(0) + const_arr.size(), target, search_comparison_val);
+			}
+
+			if (data_def)
+				printf("target=%d, binarySearch=[%d, %d]\n", target, data_def->m_key, data_def->m_seqNo);
+			else
+				printf("target=%d, binarySearch=nullptr\n", target);
+		}
+	}
+#endif
+#endif
+#endif
+
 	//----------------------------------------
 	//測定終了
 	printf("============================================================\n");
@@ -2746,7 +3525,7 @@ int main(const int argc, const char* argv[])
 	printf("============================================================\n");
 	printElapsedTime(begin_time, true);//処理時間表示
 
-#if 1
+#if 0
 	//ポインタ変数のソート処理動作確認
 	{
 		printf("\n");
@@ -2781,7 +3560,7 @@ int main(const int argc, const char* argv[])
 		printf("--- End ---\n");
 	}
 #endif
-
+	
 	return EXIT_SUCCESS;
 }
 

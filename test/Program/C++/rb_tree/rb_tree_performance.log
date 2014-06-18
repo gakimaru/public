@@ -1,0 +1,55 @@
+--- Make table ---
+1000000 registered.
+*elapsed_time=0.606572400 sec
+--- Show tree (count=1000000) ---
+depth_max=28 (limit for showing=4)
+*elapsed_time=0.058056600 sec
+--- Show nodes count (count=1000000) ---
+depth_max=28, width_max=268435456
+*elapsed_time=0.059056200 sec
+--- Show nodes ascending (count=1000000) ---
+*elapsed_time=0.061058000 sec
+--- Show nodes descending (count=1000000) ---
+*elapsed_time=0.063060100 sec
+--- Search node ---
+*elapsed_time=0.100095500 sec
+--- Search nearest node for smaller ---
+*elapsed_time=0.048045100 sec
+--- Search nearest node for larger ---
+*elapsed_time=0.050047700 sec
+--- Remove nodes ---
+250000 removed.
+*elapsed_time=0.247234100 sec
+--- Show tree (count=750000) ---
+depth_max=27 (limit for showing=4)
+*elapsed_time=0.045043000 sec
+--- Show nodes count (count=750000) ---
+depth_max=27, width_max=134217728
+*elapsed_time=0.044041900 sec
+--- Show nodes ascending (count=750000) ---
+*elapsed_time=0.046043700 sec
+--- Remove each-key nodes ---
+98115 removed.
+*elapsed_time=0.060061800 sec
+--- Show tree (count=651885) ---
+depth_max=25 (limit for showing=4)
+*elapsed_time=0.038032200 sec
+--- Show nodes count (count=651885) ---
+depth_max=25, width_max=33554432
+*elapsed_time=0.038036300 sec
+--- Show nodes ascending (count=651885) ---
+*elapsed_time=0.040039000 sec
+--- Remove all nodes ---
+651885 removed.
+*elapsed_time=0.221208500 sec
+--- Show tree (count=0) ---
+depth_max=-1 (limit for showing=4)
+*elapsed_time=0.000000000 sec
+--- Show nodes count (count=0) ---
+depth_max=-1, width_max=0
+*elapsed_time=0.000000000 sec
+--- Show nodes ascending (count=0) ---
+(nothing)
+*elapsed_time=0.000000000 sec
+--- end ---
+*elapsed_time=1.825732100 sec

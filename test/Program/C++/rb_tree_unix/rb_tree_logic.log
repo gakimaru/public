@@ -1,0 +1,122 @@
+--- Make table ---
+[ 6] [ 6] [ 8] [ 9] [ 7] [ 9] [ 6] [ 9] [ 5] [ 7] [ 7] [ 4] [ 5] [ 3] [ 9] [ 1] [10] [ 3] [ 4] [ 5] 
+20 registered.
+*elapsed_time=0.000065000 sec
+--- Show tree (count=20) ---
+depth_max=4 (limit for showing=4)
+                      .----------------------{ 7:B}----------------------.                      
+          .----------{ 5:R}----------.                    .----------{ 9:B}----------.          
+    .----{ 3:B}----.        .----{ 6:B}----.        .----{ 7:R}----.        .----{ 9:R}----.    
+   [ 1:B]    .-{ 4:B}-.  .-{ 5:R}-.    [ 6:B]      [ 7:B]      [ 8:B]      [ 9:B]      [ 9:B}-. 
+            [ 3:R][ 4:R][ 5:B][ 6:B]                                                      [10:R]
+*elapsed_time=0.000096000 sec
+--- Show nodes count (count=20) ---
+depth_max=4, width_max=16
+    0:[ 1] blacks=3, reds=1, total=4 (illegal=0)
+    2:[ 3] blacks=3, reds=2, total=5 (illegal=0)
+    3:[ 4] blacks=3, reds=2, total=5 (illegal=0)
+    4:[ 5] blacks=3, reds=2, total=5 (illegal=0)
+    5:[ 6] blacks=3, reds=2, total=5 (illegal=0)
+    6:[ 6] blacks=3, reds=1, total=4 (illegal=0)
+    8:[ 7] blacks=3, reds=1, total=4 (illegal=0)
+   10:[ 8] blacks=3, reds=1, total=4 (illegal=0)
+   12:[ 9] blacks=3, reds=1, total=4 (illegal=0)
+   14:[ 9] blacks=3, reds=1, total=4 (illegal=0)
+   15:[10] blacks=3, reds=2, total=5 (illegal=0)
+max: blacks=3, reds=2, total=5
+min: blacks=3, reds=1, total=4
+diff:blacks=0, reds=1, total=1 (illegal=0)
+*elapsed_time=0.000021000 sec
+--- Show nodes ascending (count=20) ---
+[ 1] [ 3] [ 3] [ 4] [ 4] [ 5] [ 5] [ 5] [ 6] [ 6] [ 6] [ 7] [ 7] [ 7] [ 8] [ 9] [ 9] [ 9] [ 9] [10] 
+*elapsed_time=0.000013000 sec
+--- Show nodes descending (count=20) ---
+[10] [ 9] [ 9] [ 9] [ 9] [ 8] [ 7] [ 7] [ 7] [ 6] [ 6] [ 6] [ 5] [ 5] [ 5] [ 4] [ 4] [ 3] [ 3] [ 1] 
+*elapsed_time=0.000013000 sec
+--- Search node ---
+ 1(1):[ 1] 
+ 3(2):[ 3] [ 3] 
+ 4(2):[ 4] [ 4] 
+ 5(3):[ 5] [ 5] [ 5] 
+ 6(3):[ 6] [ 6] [ 6] 
+ 7(3):[ 7] [ 7] [ 7] 
+ 8(1):[ 8] 
+ 9(4):[ 9] [ 9] [ 9] [ 9] 
+10(1):[10] 
+*elapsed_time=0.000019000 sec
+--- Search nearest node for smaller ---
+ 2:[ 1] [ 3] [ 3] [ 4] 
+*elapsed_time=0.000008000 sec
+--- Search nearest node for larger ---
+ 2:[ 3] [ 3] [ 4] [ 4] 
+*elapsed_time=0.000008000 sec
+--- Remove nodes ---
+[ 5] [10] [ 8] [ 1] [ 4] 5 removed.
+*elapsed_time=0.000013000 sec
+--- Show tree (count=15) ---
+depth_max=4 (limit for showing=4)
+                      .----------------------{ 7:B}----------------------.                      
+          .----------{ 5:R}----------.                    .----------{ 9:B}----------.          
+    .----{ 4:B}----.        .----{ 6:B}----.        .----{ 7:B]             .----{ 9:R}----.    
+ .-{ 3:B]      [ 5:B]      [ 6:B]      [ 6:B]      [ 7:R]                  [ 9:B]      [ 9:B]   
+[ 3:R]                                                                                          
+*elapsed_time=0.000081000 sec
+--- Show nodes count (count=15) ---
+depth_max=4, width_max=16
+    0:[ 3] blacks=3, reds=2, total=5 (illegal=0)
+    1:[ 3] blacks=3, reds=1, total=4 (illegal=0)
+    2:[ 5] blacks=3, reds=1, total=4 (illegal=0)
+    4:[ 6] blacks=3, reds=1, total=4 (illegal=0)
+    6:[ 6] blacks=3, reds=1, total=4 (illegal=0)
+    8:[ 7] blacks=3, reds=1, total=4 (illegal=0)
+   10:[ 7] blacks=3, reds=0, total=3 (illegal=0)
+   12:[ 9] blacks=3, reds=1, total=4 (illegal=0)
+   14:[ 9] blacks=3, reds=1, total=4 (illegal=0)
+max: blacks=3, reds=2, total=5
+min: blacks=3, reds=0, total=3
+diff:blacks=0, reds=2, total=2 (illegal=0)
+*elapsed_time=0.000017000 sec
+--- Show nodes ascending (count=15) ---
+[ 3] [ 3] [ 4] [ 5] [ 5] [ 6] [ 6] [ 6] [ 7] [ 7] [ 7] [ 9] [ 9] [ 9] [ 9] 
+*elapsed_time=0.000011000 sec
+--- Remove each-key nodes ---
+[ 3] [ 4] [ 5] [ 6] [ 7] [ 9] 6 removed.
+*elapsed_time=0.000009000 sec
+--- Show tree (count=9) ---
+depth_max=3 (limit for showing=4)
+          .----------{ 6:B}----------.          
+    .----{ 5:B}----.        .----{ 9:B}----.    
+   [ 3:B]      [ 6:B]    .-{ 7:B}-.    [ 9:B]   
+                        [ 7:R][ 9:R]            
+*elapsed_time=0.000034000 sec
+--- Show nodes count (count=9) ---
+depth_max=3, width_max=8
+    0:[ 3] blacks=3, reds=0, total=3 (illegal=0)
+    2:[ 6] blacks=3, reds=0, total=3 (illegal=0)
+    4:[ 7] blacks=3, reds=1, total=4 (illegal=0)
+    5:[ 9] blacks=3, reds=1, total=4 (illegal=0)
+    6:[ 9] blacks=3, reds=0, total=3 (illegal=0)
+max: blacks=3, reds=1, total=4
+min: blacks=3, reds=0, total=3
+diff:blacks=0, reds=1, total=1 (illegal=0)
+*elapsed_time=0.000013000 sec
+--- Show nodes ascending (count=9) ---
+[ 3] [ 5] [ 6] [ 6] [ 7] [ 7] [ 9] [ 9] [ 9] 
+*elapsed_time=0.000008000 sec
+--- Remove all nodes ---
+[ 3] [ 5] [ 6] [ 6] [ 7] [ 7] [ 9] [ 9] [ 9] 9 removed.
+*elapsed_time=0.000011000 sec
+--- Show tree (count=0) ---
+depth_max=-1 (limit for showing=4)
+*elapsed_time=0.000006000 sec
+--- Show nodes count (count=0) ---
+depth_max=-1, width_max=0
+max: blacks=0, reds=0, total=0
+min: blacks=0, reds=0, total=0
+diff:blacks=0, reds=0, total=0 (illegal=0)
+*elapsed_time=0.000007000 sec
+--- Show nodes ascending (count=0) ---
+(nothing)
+*elapsed_time=0.000005000 sec
+--- end ---
+*elapsed_time=0.000463000 sec

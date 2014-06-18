@@ -1,0 +1,43 @@
+frames per second = 30, elapsed time per frame = 0.033
+ 0: now=1.000, begin=1.000, end=0.500, time=1.500, t=0.000, isGoal()=false
+ 1: now=0.989, begin=1.000, end=0.500, time=1.500, t=0.022, isGoal()=false
+ 2: now=0.978, begin=1.000, end=0.500, time=1.500, t=0.044, isGoal()=false
+ 3: now=0.967, begin=1.000, end=0.500, time=1.500, t=0.067, isGoal()=false
+ 4: now=0.956, begin=1.000, end=0.500, time=1.500, t=0.089, isGoal()=false
+ 5: now=0.944, begin=1.000, end=0.500, time=1.500, t=0.111, isGoal()=false
+ 6: now=0.933, begin=1.000, end=0.500, time=1.500, t=0.133, isGoal()=false
+ 7: now=0.922, begin=1.000, end=0.500, time=1.500, t=0.156, isGoal()=false
+ 8: now=0.911, begin=1.000, end=0.500, time=1.500, t=0.178, isGoal()=false
+ 9: now=0.900, begin=1.000, end=0.500, time=1.500, t=0.200, isGoal()=false
+10: now=0.889, begin=1.000, end=0.500, time=1.500, t=0.222, isGoal()=false
+11: now=0.878, begin=1.000, end=0.500, time=1.500, t=0.244, isGoal()=false
+12: now=0.867, begin=1.000, end=0.500, time=1.500, t=0.267, isGoal()=false
+13: now=0.856, begin=1.000, end=0.500, time=1.500, t=0.289, isGoal()=false
+14: now=0.844, begin=1.000, end=0.500, time=1.500, t=0.311, isGoal()=false
+15: now=0.833, begin=1.000, end=0.500, time=1.500, t=0.333, isGoal()=false
+16: now=0.822, begin=1.000, end=0.500, time=1.500, t=0.356, isGoal()=false
+17: now=0.811, begin=1.000, end=0.500, time=1.500, t=0.378, isGoal()=false
+18: now=0.800, begin=1.000, end=0.500, time=1.500, t=0.400, isGoal()=false
+19: now=0.789, begin=1.000, end=0.500, time=1.500, t=0.422, isGoal()=false
+20: now=0.778, begin=0.500, end=1.000, time=1.500, t=0.556, isGoal()=false
+21: now=0.789, begin=0.500, end=1.000, time=1.500, t=0.578, isGoal()=false
+22: now=0.800, begin=0.500, end=1.000, time=1.500, t=0.600, isGoal()=false
+23: now=0.811, begin=0.500, end=1.000, time=1.500, t=0.622, isGoal()=false
+24: now=0.822, begin=0.500, end=1.000, time=1.500, t=0.644, isGoal()=false
+25: now=0.833, begin=0.500, end=1.000, time=1.500, t=0.667, isGoal()=false
+26: now=0.844, begin=0.500, end=1.000, time=1.500, t=0.689, isGoal()=false
+27: now=0.856, begin=0.500, end=1.000, time=1.500, t=0.711, isGoal()=false
+28: now=0.867, begin=0.500, end=1.000, time=1.500, t=0.733, isGoal()=false
+29: now=0.878, begin=0.500, end=1.000, time=1.500, t=0.756, isGoal()=false
+30: now=0.889, begin=0.500, end=1.000, time=1.500, t=0.778, isGoal()=false
+31: now=0.900, begin=0.500, end=1.000, time=1.500, t=0.800, isGoal()=false
+32: now=0.911, begin=0.500, end=1.000, time=1.500, t=0.822, isGoal()=false
+33: now=0.922, begin=0.500, end=1.000, time=1.500, t=0.844, isGoal()=false
+34: now=0.933, begin=0.500, end=1.000, time=1.500, t=0.867, isGoal()=false
+35: now=0.944, begin=0.500, end=1.000, time=1.500, t=0.889, isGoal()=false
+36: now=0.956, begin=0.500, end=1.000, time=1.500, t=0.911, isGoal()=false
+37: now=0.967, begin=0.500, end=1.000, time=1.500, t=0.933, isGoal()=false
+38: now=0.978, begin=0.500, end=1.000, time=1.500, t=0.956, isGoal()=false
+39: now=0.989, begin=0.500, end=1.000, time=1.500, t=0.978, isGoal()=false
+40: now=1.000, begin=0.500, end=1.000, time=1.500, t=1.000, isGoal()=false
+41: now=1.000, begin=0.500, end=1.000, time=1.500, t=1.000, isGoal()=true

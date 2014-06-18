@@ -1,0 +1,235 @@
+
+- プリミティブ型 -
+int var_i = 0;
+int* var_p = nullptr;
+typeid(int).name()    = "int"
+typeid(int*).name()   = "int *"
+typeid(var_i).name()  = "int"
+typeid(var_p).name()  = "int *"
+typeid(*var_p).name() = "int"
+
+- （非仮想）クラス型 -
+sizeof(CBase)      = 4
+sizeof(CDerived)   = 8
+sizeof(CBaseA)     = 4
+sizeof(CBaseB)     = 4
+sizeof(CDerivedAB) = 12
+sizeof(CDerivedC)  = 16
+CDerived* derived     = new CDerived;
+CBase* base           = new CBase;
+CBase* base_poly      = derived;
+CDerivedC* derivedC   = new CDerivedC;
+CDerivedAB* derivedAB = new CDerivedAB;
+CBaseA* baseA         = new CBaseA;
+CBaseA* baseA_poly    = derivedAB;
+CBaseB* baseB         = new CBaseB;
+CBaseB* baseB_poly    = derivedAB;
+typeid(derived).name()     = "class CDerived *"
+typeid(base).name()        = "class CBase *"
+typeid(base_poly).name()   = "class CBase *"
+typeid(derivedAB).name()   = "class CDerivedAB *"
+typeid(baseA).name()       = "class CBaseA *"
+typeid(baseA_poly).name()  = "class CBaseA *"
+typeid(baseB).name()       = "class CBaseB *"
+typeid(baseB_poly).name()  = "class CBaseB *"
+typeid(*derived).name()    = "class CDerived"
+typeid(*base).name()       = "class CBase"
+typeid(*base_poly).name()  = "class CBase"
+typeid(*derivedAB).name()  = "class CDerivedAB"
+typeid(*baseA).name()      = "class CBaseA"
+typeid(*baseA_poly).name() = "class CBaseA"
+typeid(*baseB).name()      = "class CBaseB"
+typeid(*baseB_poly).name() = "class CBaseB"
+(typeid(*base)       == typeid(*derived))   = false
+(typeid(*base_poly)  == typeid(*derived))   = false
+(typeid(*base_poly)  == typeid(CDerived))   = false
+(typeid(*baseA)      == typeid(*derivedAB)) = false
+(typeid(*baseA_poly) == typeid(*derivedAB)) = false
+(typeid(*baseB)      == typeid(*derivedAB)) = false
+(typeid(*baseB_poly) == typeid(*derivedAB)) = false
+derived->print();    ... CDerived
+base->print();       ... CBase
+base_poly->print();  ... CBase
+derivedC->print();   ... CDerivedAB
+derivedAB->print();  ... CDerivedAB
+baseA->print();      ... CBaseA
+baseA_poly->print(); ... CBaseA
+baseB->print();      ... CBaseB
+baseB_poly->print(); ... CBaseB
+derived                                   = 00829E88
+reinterpret_cast<CBase*>(derived)         = 00829E88
+static_cast<CBase*>(derived)              = 00829E88
+dynamic_cast<CBase*>(derived)             = 00829E88
+reinterpret_cast<COther*>(derived)        = 00829E88
+//static_cast<COther*>(derived)           = 00000000
+//dynamic_cast<COther*>(derived)          = 00000000
+base                                      = 00829EC0
+reinterpret_cast<CDerived*>(base)         = 00829EC0
+static_cast<CDerived*>(base)              = 00829EC0
+//dynamic_cast<CDerived*>(base)           = 00000000
+reinterpret_cast<COther*>(base)           = 00829EC0
+//static_cast<COther*>(base)              = 00000000
+//dynamic_cast<COther*>(base)             = 00000000
+derivedAB                                 = 00829F30
+reinterpret_cast<CBaseA*>(derivedAB)      = 00829F30
+static_cast<CBaseA*>(derivedAB)           = 00829F30
+dynamic_cast<CBaseA*>(derivedAB)          = 00829F30
+reinterpret_cast<CBaseB*>(derivedAB)      = 00829F30
+static_cast<CBaseB*>(derivedAB)           = 00829F34
+dynamic_cast<CBaseB*>(derivedAB)          = 00829F34
+reinterpret_cast<COther*>(derivedAB)      = 00829F30
+//static_cast<COther*>(derivedAB)         = 00000000
+//dynamic_cast<COther*>(derivedAB)        = 00000000
+baseA                                     = 00829F68
+reinterpret_cast<CDerivedAB*>(baseA)      = 00829F68
+static_cast<CDerivedAB*>(baseA)           = 00829F68
+//dynamic_cast<CDerivedAB*>(baseA)        = 00000000
+reinterpret_cast<CBaseB*>(baseA)          = 00829F68
+//static_cast<CBaseB*>(baseA)             = 00000000
+//dynamic_cast<CBaseB*>(baseA)            = 00000000
+reinterpret_cast<COther*>(baseA)          = 00829F68
+//static_cast<COther*>(baseA)             = 00000000
+//dynamic_cast<COther*>(baseA)            = 00000000
+baseA_poly                                = 00829F30
+reinterpret_cast<CDerivedAB*>(baseA_poly) = 00829F30
+static_cast<CDerivedAB*>(baseA_poly)      = 00829F30
+//dynamic_cast<CDerivedAB*>(baseA_poly)   = 00000000
+reinterpret_cast<CBaseB*>(baseA_poly)     = 00829F30
+//static_cast<CBaseB*>(baseA_poly)        = 00000000
+//dynamic_cast<CBaseB*>(baseA_poly)       = 00000000
+reinterpret_cast<COther*>(baseA_poly)     = 00829F30
+//static_cast<COther*>(baseA_poly)        = 00000000
+//dynamic_cast<COther*>(baseA_poly)       = 00000000
+baseB                                     = 00829F98
+reinterpret_cast<CDerivedAB*>(baseB)      = 00829F98
+static_cast<CDerivedAB*>(baseB)           = 00829F94
+//dynamic_cast<CDerivedAB*>(baseB)        = 00000000
+reinterpret_cast<CBaseA*>(baseB)          = 00829F98
+//static_cast<CBaseA*>(baseB)             = 00000000
+//dynamic_cast<CBaseA*>(baseB)            = 00000000
+reinterpret_cast<COther*>(baseB)          = 00829F98
+//static_cast<COther*>(baseB)             = 00000000
+//dynamic_cast<COther*>(baseB)            = 00000000
+baseB_poly                                = 00829F34
+reinterpret_cast<CDerivedAB*>(baseB_poly) = 00829F34
+static_cast<CDerivedAB*>(baseB_poly)      = 00829F30
+//dynamic_cast<CDerivedAB*>(baseB_poly)   = 00000000
+reinterpret_cast<CBaseA*>(baseB_poly)     = 00829F34
+//static_cast<CBaseA*>(baseB_poly)        = 00000000
+//dynamic_cast<CBaseA*>(baseB_poly)       = 00000000
+reinterpret_cast<COther*>(baseB_poly)     = 00829F34
+//static_cast<COther*>(baseB_poly)        = 00000000
+//dynamic_cast<COther*>(baseB_poly)       = 00000000
+
+- 仮想クラス型 -
+sizeof(CVBase)      = 8
+sizeof(CVDerived)   = 12
+sizeof(CVBaseA)     = 8
+sizeof(CVBaseB)     = 8
+sizeof(CVDerivedAB) = 20
+sizeof(CVDerivedC)  = 24
+CVDerived* derived     = new CVDerived;
+CVBase* base           = new CVBase;
+CVBase* base_poly      = derived;
+CVDerivedC* derivedC   = new CVDerivedC;
+CVDerivedAB* derivedAB = new CVDerivedAB;
+CVBaseA* baseA         = new CVBaseA;
+CVBaseA* baseA_poly    = derivedAB;
+CVBaseB* baseB         = new CVBaseB;
+CVBaseB* baseB_poly    = derivedAB;
+typeid(derived).name()     = "class CVDerived *"
+typeid(base).name()        = "class CVBase *"
+typeid(base_poly).name()   = "class CVBase *"
+typeid(derivedAB).name()   = "class CVDerivedAB *"
+typeid(baseA).name()       = "class CVBaseA *"
+typeid(baseA_poly).name()  = "class CVBaseA *"
+typeid(baseB).name()       = "class CVBaseB *"
+typeid(baseB_poly).name()  = "class CVBaseB *"
+typeid(*derived).name()    = "class CVDerived"
+typeid(*base).name()       = "class CVBase"
+typeid(*base_poly).name()  = "class CVDerived"
+typeid(*derivedAB).name()  = "class CVDerivedAB"
+typeid(*baseA).name()      = "class CVBaseA"
+typeid(*baseA_poly).name() = "class CVDerivedAB"
+typeid(*baseB).name()      = "class CVBaseB"
+typeid(*baseB_poly).name() = "class CVDerivedAB"
+(typeid(*base)       == typeid(*derived))   = false
+(typeid(*base_poly)  == typeid(*derived))   = true
+(typeid(*base_poly)  == typeid(CVDerived))  = true
+(typeid(*baseA)      == typeid(*derivedAB)) = false
+(typeid(*baseA_poly) == typeid(*derivedAB)) = true
+(typeid(*baseB)      == typeid(*derivedAB)) = false
+(typeid(*baseB_poly) == typeid(*derivedAB)) = true
+derived->print();    ... CVDerived
+base->print();       ... CVBase
+base_poly->print();  ... CVDerived
+derivedC->print();   ... CVDerivedC
+derivedAB->print();  ... CVDerivedAB
+baseA->print();      ... CVBaseA
+baseA_poly->print(); ... CVDerivedAB
+baseB->print();      ... CVBaseB
+baseB_poly->print(); ... CVDerivedAB
+derived                                    = 0082A180
+reinterpret_cast<CVBase*>(derived)         = 0082A180
+static_cast<CVBase*>(derived)              = 0082A180
+dynamic_cast<CVBase*>(derived)             = 0082A180
+reinterpret_cast<COther*>(derived)         = 0082A180
+//static_cast<COther*>(derived)            = 00000000
+dynamic_cast<COther*>(derived)             = 00000000
+base                                       = 00829E88
+reinterpret_cast<CVDerived*>(base)         = 00829E88
+static_cast<CVDerived*>(base)              = 00829E88
+dynamic_cast<CVDerived*>(base)             = 00000000
+reinterpret_cast<COther*>(base)            = 00829E88
+//static_cast<COther*>(base)               = 00000000
+dynamic_cast<COther*>(base)                = 00000000
+derivedAB                                  = 00829F08
+reinterpret_cast<CVBaseA*>(derivedAB)      = 00829F08
+static_cast<CVBaseA*>(derivedAB)           = 00829F08
+dynamic_cast<CVBaseA*>(derivedAB)          = 00829F08
+reinterpret_cast<CVBaseB*>(derivedAB)      = 00829F08
+static_cast<CVBaseB*>(derivedAB)           = 00829F10
+dynamic_cast<CVBaseB*>(derivedAB)          = 00829F10
+reinterpret_cast<COther*>(derivedAB)       = 00829F08
+//static_cast<COther*>(derivedAB)          = 00000000
+dynamic_cast<COther*>(derivedAB)           = 00000000
+baseA                                      = 00829F48
+reinterpret_cast<CVDerivedAB*>(baseA)      = 00829F48
+static_cast<CVDerivedAB*>(baseA)           = 00829F48
+dynamic_cast<CVDerivedAB*>(baseA)          = 00000000
+reinterpret_cast<CVBaseB*>(baseA)          = 00829F48
+//static_cast<CVBaseB*>(baseA)             = 00000000
+dynamic_cast<CVBaseB*>(baseA)              = 00000000
+reinterpret_cast<COther*>(baseA)           = 00829F48
+//static_cast<COther*>(baseA)              = 00000000
+//dynamic_cast<COther*>(baseA)             = 00000000
+baseA_poly                                 = 00829F08
+reinterpret_cast<CVDerivedAB*>(baseA_poly) = 00829F08
+static_cast<CVDerivedAB*>(baseA_poly)      = 00829F08
+dynamic_cast<CVDerivedAB*>(baseA_poly)     = 00829F08
+reinterpret_cast<CVBaseB*>(baseA_poly)     = 00829F08
+//static_cast<CVBaseB*>(baseA_poly)        = 00000000
+dynamic_cast<CVBaseB*>(baseA_poly)         = 00829F10
+reinterpret_cast<COther*>(baseA_poly)      = 00829F08
+//static_cast<COther*>(baseA_poly)         = 00000000
+//dynamic_cast<COther*>(baseA_poly)        = 00000000
+baseB                                      = 00829F80
+reinterpret_cast<CVDerivedAB*>(baseB)      = 00829F80
+static_cast<CVDerivedAB*>(baseB)           = 00829F78
+dynamic_cast<CVDerivedAB*>(baseB)          = 00000000
+reinterpret_cast<CVBaseA*>(baseB)          = 00829F80
+//static_cast<CVBaseA*>(baseB)             = 00000000
+dynamic_cast<CVBaseA*>(baseB)              = 00000000
+reinterpret_cast<COther*>(baseB)           = 00829F80
+//static_cast<COther*>(baseB)              = 00000000
+//dynamic_cast<COther*>(baseB)             = 00000000
+baseB_poly                                 = 00829F10
+reinterpret_cast<CVDerivedAB*>(baseB_poly) = 00829F10
+static_cast<CVDerivedAB*>(baseB_poly)      = 00829F08
+dynamic_cast<CVDerivedAB*>(baseB_poly)     = 00829F08
+reinterpret_cast<CVBaseA*>(baseB_poly)     = 00829F10
+//static_cast<CVBaseA*>(baseB_poly)        = 00000000
+dynamic_cast<CVBaseA*>(baseB_poly)         = 00829F08
+reinterpret_cast<COther*>(baseB_poly)      = 00829F10
+//static_cast<COther*>(baseB_poly)         = 00000000
+//dynamic_cast<COther*>(baseB_poly)        = 00000000

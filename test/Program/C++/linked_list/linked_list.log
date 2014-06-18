@@ -1,0 +1,322 @@
+--------------------------------------------------------------------------------
+[Test for linked_list::container(User defined type)]
+
+[push_back * 10]
+push_back(0:100) ... OK
+push_back(1:101) ... OK
+push_back(2:102) ... OK
+push_back(3:103) ... OK
+push_back(4:104) ... OK
+push_back(5:105) ... OK
+push_back(6:106) ... OK
+push_back(7:107) ... OK
+push_back(8:108) ... OK
+push_back(9:109) ... OK
+size=10
+list= [0:100] [1:101] [2:102] [3:103] [4:104] [5:105] [6:106] [7:107] [8:108] [9:109]
+
+[pop_front * 5]
+pop_front() ... OK [0:100]
+pop_front() ... OK [1:101]
+pop_front() ... OK [2:102]
+pop_front() ... OK [3:103]
+pop_front() ... OK [4:104]
+size=5
+list= [5:105] [6:106] [7:107] [8:108] [9:109]
+
+[push_back * 20]
+push_back(0:100) ... OK
+push_back(1:101) ... OK
+push_back(2:102) ... OK
+push_back(3:103) ... OK
+push_back(4:104) ... OK
+push_back(5:105) ... OK
+push_back(6:106) ... OK
+push_back(7:107) ... OK
+push_back(8:108) ... OK
+push_back(9:109) ... OK
+push_back(10:110) ... OK
+push_back(11:111) ... OK
+push_back(12:112) ... OK
+push_back(13:113) ... OK
+push_back(14:114) ... OK
+push_back(15:115) ... OK
+push_back(16:116) ... OK
+push_back(17:117) ... OK
+push_back(18:118) ... OK
+push_back(19:119) ... OK
+size=25
+list= [5:105] [6:106] [7:107] [8:108] [9:109] [0:100] [1:101] [2:102] [3:103] [4:104] [5:105] [6:106] [7:107] [8:108] [9:109] [10:110] [11:111] [12:112] [13:113] [14:114] [15:115] [16:116] [17:117] [18:118] [19:119]
+
+[pop_front * 25]
+pop_front() ... OK [5:105]
+pop_front() ... OK [6:106]
+pop_front() ... OK [7:107]
+pop_front() ... OK [8:108]
+pop_front() ... OK [9:109]
+pop_front() ... OK [0:100]
+pop_front() ... OK [1:101]
+pop_front() ... OK [2:102]
+pop_front() ... OK [3:103]
+pop_front() ... OK [4:104]
+pop_front() ... OK [5:105]
+pop_front() ... OK [6:106]
+pop_front() ... OK [7:107]
+pop_front() ... OK [8:108]
+pop_front() ... OK [9:109]
+pop_front() ... OK [10:110]
+pop_front() ... OK [11:111]
+pop_front() ... OK [12:112]
+pop_front() ... OK [13:113]
+pop_front() ... OK [14:114]
+pop_front() ... OK [15:115]
+pop_front() ... OK [16:116]
+pop_front() ... OK [17:117]
+pop_front() ... OK [18:118]
+pop_front() ... OK [19:119]
+size=0
+list=(empty)
+
+[push_front * 10]
+push_front(1000:100) ... OK
+push_front(1001:101) ... OK
+push_front(1002:102) ... OK
+push_front(1003:103) ... OK
+push_front(1004:104) ... OK
+push_front(1005:105) ... OK
+push_front(1006:106) ... OK
+push_front(1007:107) ... OK
+push_front(1008:108) ... OK
+push_front(1009:109) ... OK
+size=10
+list= [1009:109] [1008:108] [1007:107] [1006:106] [1005:105] [1004:104] [1003:103] [1002:102] [1001:101] [1000:100]
+
+[pop_back * 5]
+pop_back() ... OK [1000:100]
+pop_back() ... OK [1001:101]
+pop_back() ... OK [1002:102]
+pop_back() ... OK [1003:103]
+pop_back() ... OK [1004:104]
+size=5
+list= [1009:109] [1008:108] [1007:107] [1006:106] [1005:105]
+
+[push_front * 20]
+push_front(1000:100) ... OK
+push_front(1001:101) ... OK
+push_front(1002:102) ... OK
+push_front(1003:103) ... OK
+push_front(1004:104) ... OK
+push_front(1005:105) ... OK
+push_front(1006:106) ... OK
+push_front(1007:107) ... OK
+push_front(1008:108) ... OK
+push_front(1009:109) ... OK
+push_front(1010:110) ... OK
+push_front(1011:111) ... OK
+push_front(1012:112) ... OK
+push_front(1013:113) ... OK
+push_front(1014:114) ... OK
+push_front(1015:115) ... OK
+push_front(1016:116) ... OK
+push_front(1017:117) ... OK
+push_front(1018:118) ... OK
+push_front(1019:119) ... OK
+size=25
+list= [1019:119] [1018:118] [1017:117] [1016:116] [1015:115] [1014:114] [1013:113] [1012:112] [1011:111] [1010:110] [1009:109] [1008:108] [1007:107] [1006:106] [1005:105] [1004:104] [1003:103] [1002:102] [1001:101] [1000:100] [1009:109] [1008:108] [1007:107] [1006:106] [1005:105]
+
+[pop_back * 25]
+pop_back() ... OK [1005:105]
+pop_back() ... OK [1006:106]
+pop_back() ... OK [1007:107]
+pop_back() ... OK [1008:108]
+pop_back() ... OK [1009:109]
+pop_back() ... OK [1000:100]
+pop_back() ... OK [1001:101]
+pop_back() ... OK [1002:102]
+pop_back() ... OK [1003:103]
+pop_back() ... OK [1004:104]
+pop_back() ... OK [1005:105]
+pop_back() ... OK [1006:106]
+pop_back() ... OK [1007:107]
+pop_back() ... OK [1008:108]
+pop_back() ... OK [1009:109]
+pop_back() ... OK [1010:110]
+pop_back() ... OK [1011:111]
+pop_back() ... OK [1012:112]
+pop_back() ... OK [1013:113]
+pop_back() ... OK [1014:114]
+pop_back() ... OK [1015:115]
+pop_back() ... OK [1016:116]
+pop_back() ... OK [1017:117]
+pop_back() ... OK [1018:118]
+pop_back() ... OK [1019:119]
+size=0
+list=(empty)
+
+[push_back(1)]
+size=9
+list= [5:101] [8:102] [3:103] [1:104] [7:105] [4:106] [13:107] [10:108] [5:109]
+size=9
+list(reverse)= [5:109] [10:108] [13:107] [4:106] [7:105] [1:104] [3:103] [8:102] [5:101]
+
+[sort]
+size=9
+list= [1:104] [3:103] [4:106] [5:101] [5:109] [7:105] [8:102] [10:108] [13:107]
+
+[custom sort]
+size=9
+list= [13:107] [10:108] [8:102] [7:105] [5:101] [5:109] [4:106] [3:103] [1:104]
+
+[find]
+size=9
+list= [13:107] [10:108] [8:102] [7:105] [5:101] [5:109] [4:106] [3:103] [1:104]
+find_value(key=5)= [5:101] next=[5:109]
+find_value(key=6)=(not found)
+find_value(key=7)= [7:105] next=[5:101]
+
+[remove]
+size=8
+list= [13:107] [10:108] [7:105] [5:101] [5:109] [4:106] [3:103] [1:104]
+
+[erase(1)]
+size=7
+list= [13:107] [10:108] [7:105] [5:101] [4:106] [3:103] [1:104]
+
+[erase(2)]
+size=5
+list= [13:107] [10:108] [7:105] [3:103] [1:104]
+
+[erase(3)]
+size=3
+list= [13:107] [10:108] [7:105]
+
+[insert]
+size=4
+list= [13:107] [10:108] [99:999] [7:105]
+
+[insert_before]
+size=5
+list= [13:107] [10:108] [99:999] [88:888] [7:105]
+
+[clear]
+size=0
+list=(empty)
+--------------------------------------------------------------------------------
+[Test for linked_list::container(User defined type with custom operator type)]
+
+[push_back]
+size=10
+list= [1:105] [1:108] [2:103] [2:101] [3:107] [3:104] [4:113] [4:111] [5:105] [5:106]
+
+[sort]
+size=10
+list= [2:101] [2:103] [3:104] [1:105] [5:105] [5:106] [3:107] [1:108] [4:111] [4:113]
+
+[find]
+find_value(value=101)= [2:101]
+find_value(value=110)=(not found)
+find_value(value=103)= [2:103]
+
+[sort with custom predicate]
+size=10
+list= [1:108] [1:105] [2:103] [2:101] [3:107] [3:104] [4:113] [4:111] [5:106] [5:105]
+
+[find with custom predicate(1)]
+find(key=2, value=101)= [2:101]
+find(key=2, value=102)=(not found)
+find(key=2, value=103)= [2:103]
+
+[find with custom predicate(2)]
+find(key=2)= [2:103]
+find(key=7)=(not found)
+find(key=3)= [3:107]
+--------------------------------------------------------------------------------
+[Test for performance linked_list]
+
+[create container]
+*elapsed_time=0.000000000 sec
+
+[push_back() * 10]
+num=10
+*elapsed_time=0.000000000 sec
+
+[iterator(1)]
+size=10
+list= [0:10000000] [1:10000001] [2:10000002] [3:10000003] [4:10000004] [5:10000005] [6:10000006] [7:10000007] [8:10000008] [9:10000009]
+num=10
+*elapsed_time=0.000000000 sec
+
+[reverse sort]
+*elapsed_time=0.000000000 sec
+
+[iterator(2)]
+size=10
+list= [9:10000009] [8:10000008] [7:10000007] [6:10000006] [5:10000005] [4:10000004] [3:10000003] [2:10000002] [1:10000001] [0:10000000]
+num=10
+*elapsed_time=0.000000000 sec
+
+[sort]
+*elapsed_time=0.000000000 sec
+
+[reverse_iterator]
+size=10
+list= [9:10000009] [8:10000008] [7:10000007] [6:10000006] [5:10000005] [4:10000004] [3:10000003] [2:10000002] [1:10000001] [0:10000000]
+num=10
+*elapsed_time=0.000000000 sec
+
+[find_value]
+ [0:10000000] [1:10000001] [2:10000002] [3:10000003] [4:10000004] [5:10000005] [6:10000006] [7:10000007] [8:10000008] [9:10000009]
+num=10
+*elapsed_time=0.000000000 sec
+
+[delete container]
+*elapsed_time=0.000000000 sec
+
+[finish]
+*elapsed_time=0.000000000 sec
+--------------------------------------------------------------------------------
+[Test for performance std::list]
+
+[create container]
+*elapsed_time=0.000000000 sec
+
+[push_back() * 10]
+num=10
+*elapsed_time=0.000000000 sec
+
+[iterator(1)]
+size=10, max_size=178956970
+array= [0:10000000] [1:10000001] [2:10000002] [3:10000003] [4:10000004] [5:10000005] [6:10000006] [7:10000007] [8:10000008] [9:10000009]
+num=10
+*elapsed_time=0.000000000 sec
+
+[reverse sort]
+*elapsed_time=0.000000000 sec
+
+[iterator(2)]
+size=10, max_size=178956970
+array= [9:10000009] [8:10000008] [7:10000007] [6:10000006] [5:10000005] [4:10000004] [3:10000003] [2:10000002] [1:10000001] [0:10000000]
+num=10
+*elapsed_time=0.000000000 sec
+
+[sort]
+*elapsed_time=0.000000000 sec
+
+[reverse_iterator]
+size=10, max_size=178956970
+array= [9:10000009] [8:10000008] [7:10000007] [6:10000006] [5:10000005] [4:10000004] [3:10000003] [2:10000002] [1:10000001] [0:10000000]
+num=10
+*elapsed_time=0.000000000 sec
+
+[find_value]
+ [0:10000000] [1:10000001] [2:10000002] [3:10000003] [4:10000004] [5:10000005] [6:10000006] [7:10000007] [8:10000008] [9:10000009]
+num=10
+*elapsed_time=0.000000000 sec
+
+[delete container]
+*elapsed_time=0.000000000 sec
+
+[finish]
+*elapsed_time=0.000000000 sec
+
+- end -

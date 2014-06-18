@@ -4,9 +4,9 @@
 #ifndef __BASIC_H
 #define __BASIC_H
 
-#define USE_GCC//GCCを使用
+#define USE_GCC//GCC使用時はこのマクロを有効化する
 
-//アラインメント属性
+//アラインメント属性（C++11互換）
 #ifdef USE_GCC
 //#define alignas(n) __attribute__((aligned(n)))//for GCC
 //#define alignof(T) __alignof__(T)//for GCC

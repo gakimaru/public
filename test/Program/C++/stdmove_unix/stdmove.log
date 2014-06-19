@@ -1,0 +1,848 @@
+---------- -O3 ----------
+- notes -
+[a**]   ... type_a
+[b**]   ... type_b
+[*p*]   ... Initialize by constructor parameter.
+[*s*]   ... Initialize by substitute.
+[**x]   ... Initialize from fixed value.
+[**f]   ... Initialize from function.
+[**v]   ... Initialize from function with std::move.
+[***_v] ... Initialize with std::move.
+
+[fixed value]
+type_a fixed(9999);
+                    type_a(const int v)          : var=   9999, this=0x28ac08
+
+[apx]
+type_a apx(fix);
+                    type_a(const type_a& obj)    : var=2009999(   9999+2000000), this=0x28ac0c, &obj=0x28ac08
+apx = fix; (&apx=0x28ac0c)
+                    operator=(const type_a& rhs) : var=1009999(   9999+1000000), this=0x28ac0c, &rhs=0x28ac08
+[apx:end]
+                    ~type_a()                    : var=1009999, this=0x28ac0c
+
+[apx_v]
+type_a apx_v(std::move(fix));
+                    type_a(const type_a& obj)    : var=2009999(   9999+2000000), this=0x28ac0c, &obj=0x28ac08
+apx_v = std::move(fix); (&apx_v=0x28ac0c)
+                    operator=(const type_a& rhs) : var=1009999(   9999+1000000), this=0x28ac0c, &rhs=0x28ac08
+[apx_v:end]
+                    ~type_a()                    : var=1009999, this=0x28ac0c
+
+[asx]
+type_a asx = fix;
+                    type_a(const type_a& obj)    : var=2009999(   9999+2000000), this=0x28ac0c, &obj=0x28ac08
+asx = fix; (&asx=0x28ac0c)
+                    operator=(const type_a& rhs) : var=1009999(   9999+1000000), this=0x28ac0c, &rhs=0x28ac08
+[asx:end]
+                    ~type_a()                    : var=1009999, this=0x28ac0c
+
+[asx_v]
+type_a asx_v = std::move(fix);
+                    type_a(const type_a& obj)    : var=2009999(   9999+2000000), this=0x28ac0c, &obj=0x28ac08
+asx_v = std::move(fix); (&asx_v=0x28ac0c)
+                    operator=(const type_a& rhs) : var=1009999(   9999+1000000), this=0x28ac0c, &rhs=0x28ac08
+[asx_v:end]
+                    ~type_a()                    : var=1009999, this=0x28ac0c
+[fixed value:end]
+                    ~type_a()                    : var=   9999, this=0x28ac08
+
+[apf]
+type_a apf(getA(11100));
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ac08
+    x.var = v; (&x=0x28ac08)
+    return x;
+apf = getA(11101); (&apf=0x28ac08)
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    operator=(const type_a& rhs) : var=1011101(  11101+1000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_a()                    : var=  11101, this=0x28ac0c
+[apf:end]
+                    ~type_a()                    : var=1011101, this=0x28ac08
+
+[apf_v]
+type_a apf_v(std::move(getA(11110)));
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    type_a(const type_a& obj)    : var=2011110(  11110+2000000), this=0x28ac08, &obj=0x28ac0c
+                    ~type_a()                    : var=  11110, this=0x28ac0c
+apf_v = std::move(getA(11111)); (&apf_v=0x28ac08)
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    operator=(const type_a& rhs) : var=1011111(  11111+1000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_a()                    : var=  11111, this=0x28ac0c
+[apf_v:end]
+                    ~type_a()                    : var=1011111, this=0x28ac08
+
+[asf]
+type_a asf = getA(12100);
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ac08
+    x.var = v; (&x=0x28ac08)
+    return x;
+asf = getA(12101); (&asf=0x28ac08)
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    operator=(const type_a& rhs) : var=1012101(  12101+1000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_a()                    : var=  12101, this=0x28ac0c
+[asf:end]
+                    ~type_a()                    : var=1012101, this=0x28ac08
+
+[asf_v]
+type_a asf_v = std::move(getA(12110));
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    type_a(const type_a& obj)    : var=2012110(  12110+2000000), this=0x28ac08, &obj=0x28ac0c
+                    ~type_a()                    : var=  12110, this=0x28ac0c
+asf_v = std::move(getA(12111)); (&asf_v=0x28ac08)
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    operator=(const type_a& rhs) : var=1012111(  12111+1000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_a()                    : var=  12111, this=0x28ac0c
+[asf_v:end]
+                    ~type_a()                    : var=1012111, this=0x28ac08
+
+[apv]
+type_a apv(getA_v(11200));
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2011200(  11200+2000000), this=0x28ac08, &obj=0x28abdc
+                    ~type_a()                    : var=  11200, this=0x28abdc
+apv = getA_v(11201); (&apv=0x28ac08)
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2011201(  11201+2000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_a()                    : var=  11201, this=0x28abdc
+                    operator=(const type_a& rhs) : var=3011201(2011201+1000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_a()                    : var=2011201, this=0x28ac0c
+[apv:end]
+                    ~type_a()                    : var=3011201, this=0x28ac08
+
+[apv_v]
+type_a apv_v(std::move(getA_v(11210)));
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2011210(  11210+2000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_a()                    : var=  11210, this=0x28abdc
+                    type_a(const type_a& obj)    : var=4011210(2011210+2000000), this=0x28ac08, &obj=0x28ac0c
+                    ~type_a()                    : var=2011210, this=0x28ac0c
+apv_v = std::move(getA_v(11211)); (&apv_v=0x28ac08)
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2011211(  11211+2000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_a()                    : var=  11211, this=0x28abdc
+                    operator=(const type_a& rhs) : var=3011211(2011211+1000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_a()                    : var=2011211, this=0x28ac0c
+[apv_v:end]
+                    ~type_a()                    : var=3011211, this=0x28ac08
+
+[asv]
+type_a asv = getA_v(12200);
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2012200(  12200+2000000), this=0x28ac08, &obj=0x28abdc
+                    ~type_a()                    : var=  12200, this=0x28abdc
+asv = getA_v(12201); (&asv=0x28ac08)
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2012201(  12201+2000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_a()                    : var=  12201, this=0x28abdc
+                    operator=(const type_a& rhs) : var=3012201(2012201+1000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_a()                    : var=2012201, this=0x28ac0c
+[asv:end]
+                    ~type_a()                    : var=3012201, this=0x28ac08
+
+[asv_v]
+type_a asv_v = std::move(getA_v(12210));
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2012210(  12210+2000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_a()                    : var=  12210, this=0x28abdc
+                    type_a(const type_a& obj)    : var=4012210(2012210+2000000), this=0x28ac08, &obj=0x28ac0c
+                    ~type_a()                    : var=2012210, this=0x28ac0c
+asv_v = std::move(getA_v(12211)); (&asv_v=0x28ac08)
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2012211(  12211+2000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_a()                    : var=  12211, this=0x28abdc
+                    operator=(const type_a& rhs) : var=3012211(2012211+1000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_a()                    : var=2012211, this=0x28ac0c
+[asv_v:end]
+                    ~type_a()                    : var=3012211, this=0x28ac08
+
+[fixed value]
+type_b fixed(9999);
+                    type_b(const int v)          : var=   9999, this=0x28ac08
+
+[bpx]
+type_b bpx(fix);
+                    type_b(const type_b& obj)    : var=2009999(   9999+2000000), this=0x28ac0c, &obj=0x28ac08
+bpx = fix; (&apxbpxp)
+                    operator=(const type_b& rhs) : var=1009999(   9999+1000000), this=0x28ac0c, &rhs=0x28ac08
+[bpx:end]
+                    ~type_b()                    : var=1009999, this=0x28ac0c
+
+[bpx_v]
+type_b bpx_v(std::move(fix));
+                    type_b(type_b&& obj)         : var=4009999(   9999+4000000), this=0x28ac0c, &obj=0x28ac08
+bpx_v = std::move(fix); (&bpx_v=0x28ac0c)
+                    operator=(type_b&& rhs)      : var=3009999(   9999+3000000), this=0x28ac0c, &rhs=0x28ac08
+[bpx_v:end]
+                    ~type_b()                    : var=3009999, this=0x28ac0c
+
+[bsx]
+type_b bsx = fix;
+                    type_b(const type_b& obj)    : var=2009999(   9999+2000000), this=0x28ac0c, &obj=0x28ac08
+bsx = fix; (&bsx=0x28ac0c)
+                    operator=(const type_b& rhs) : var=1009999(   9999+1000000), this=0x28ac0c, &rhs=0x28ac08
+[bsx:end]
+                    ~type_b()                    : var=1009999, this=0x28ac0c
+
+[bsx_v]
+type_b bsx_v = std::move(fix);
+                    type_b(type_b&& obj)         : var=4009999(   9999+4000000), this=0x28ac0c, &obj=0x28ac08
+bsx_v = std::move(fix); (&bsx_v=0x28ac0c)
+                    operator=(type_b&& rhs)      : var=3009999(   9999+3000000), this=0x28ac0c, &rhs=0x28ac08
+[bsx_v:end]
+                    ~type_b()                    : var=3009999, this=0x28ac0c
+[fixed value:end]
+                    ~type_b()                    : var=   9999, this=0x28ac08
+
+[bpf]
+type_b bpf(getB(21100));
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ac08
+    x.var = v; (&x=0x28ac08)
+    return x;
+bpf = getB(21101); (&bpf=0x28ac08)
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    operator=(type_b&& rhs)      : var=3021101(  21101+3000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_b()                    : var=  21101, this=0x28ac0c
+[bpf:end]
+                    ~type_b()                    : var=3021101, this=0x28ac08
+
+[bpf_v]
+type_b bpf_v(std::move(getB(21110)));
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    type_b(type_b&& obj)         : var=4021110(  21110+4000000), this=0x28ac08, &obj=0x28ac0c
+                    ~type_b()                    : var=  21110, this=0x28ac0c
+bpf_v = std::move(getB(21111)); (&bpf_v=0x28ac08)
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    operator=(type_b&& rhs)      : var=3021111(  21111+3000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_b()                    : var=  21111, this=0x28ac0c
+[bpf_v:end]
+                    ~type_b()                    : var=3021111, this=0x28ac08
+
+[bsf]
+type_b bsf = getB(22100);
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ac08
+    x.var = v; (&x=0x28ac08)
+    return x;
+bsf = getB(22101); (&bsf=0x28ac08)
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    operator=(type_b&& rhs)      : var=3022101(  22101+3000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_b()                    : var=  22101, this=0x28ac0c
+[bsf:end]
+                    ~type_b()                    : var=3022101, this=0x28ac08
+
+[bsf_v]
+type_b bsf_v = std::move(getB(22110));
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    type_b(type_b&& obj)         : var=4022110(  22110+4000000), this=0x28ac08, &obj=0x28ac0c
+                    ~type_b()                    : var=  22110, this=0x28ac0c
+bsf_v = std::move(getB(22111)); (&bsf_v=0x28ac08)
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ac0c
+    x.var = v; (&x=0x28ac0c)
+    return x;
+                    operator=(type_b&& rhs)      : var=3022111(  22111+3000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_b()                    : var=  22111, this=0x28ac0c
+[bsf_v:end]
+                    ~type_b()                    : var=3022111, this=0x28ac08
+
+[bpv]
+type_b bpv(getB_v(21200));
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4021200(  21200+4000000), this=0x28ac08, &obj=0x28abdc
+                    ~type_b()                    : var=  21200, this=0x28abdc
+bpv = getB_v(21201); (&bpv=0x28ac08)
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4021201(  21201+4000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_b()                    : var=  21201, this=0x28abdc
+                    operator=(type_b&& rhs)      : var=7021201(4021201+3000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_b()                    : var=4021201, this=0x28ac0c
+[bpv:end]
+                    ~type_b()                    : var=7021201, this=0x28ac08
+
+[bpv_v]
+type_b bpv_v(std::move(getB_v(21210)));
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4021210(  21210+4000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_b()                    : var=  21210, this=0x28abdc
+                    type_b(type_b&& obj)         : var=8021210(4021210+4000000), this=0x28ac08, &obj=0x28ac0c
+                    ~type_b()                    : var=4021210, this=0x28ac0c
+bpv_v = std::move(getB_v(21211)); (&bpv_v=0x28ac08)
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4021211(  21211+4000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_b()                    : var=  21211, this=0x28abdc
+                    operator=(type_b&& rhs)      : var=7021211(4021211+3000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_b()                    : var=4021211, this=0x28ac0c
+[bpv_v:end]
+                    ~type_b()                    : var=7021211, this=0x28ac08
+
+[bsv]
+type_b bsv = getB_v(22200);
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4022200(  22200+4000000), this=0x28ac08, &obj=0x28abdc
+                    ~type_b()                    : var=  22200, this=0x28abdc
+bsv = getB_v(22201); (&bsv=0x28ac08)
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4022201(  22201+4000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_b()                    : var=  22201, this=0x28abdc
+                    operator=(type_b&& rhs)      : var=7022201(4022201+3000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_b()                    : var=4022201, this=0x28ac0c
+[bsv:end]
+                    ~type_b()                    : var=7022201, this=0x28ac08
+
+[bsv_v]
+type_b bsv_v = std::move(getB_v(22210));
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4022210(  22210+4000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_b()                    : var=  22210, this=0x28abdc
+                    type_b(type_b&& obj)         : var=8022210(4022210+4000000), this=0x28ac08, &obj=0x28ac0c
+                    ~type_b()                    : var=4022210, this=0x28ac0c
+bsv_v = std::move(getB_v(22211)); (&bsv_v=0x28ac08)
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abdc
+    x.var = v; (&x=0x28abdc)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4022211(  22211+4000000), this=0x28ac0c, &obj=0x28abdc
+                    ~type_b()                    : var=  22211, this=0x28abdc
+                    operator=(type_b&& rhs)      : var=7022211(4022211+3000000), this=0x28ac08, &rhs=0x28ac0c
+                    ~type_b()                    : var=4022211, this=0x28ac0c
+[bsv_v:end]
+                    ~type_b()                    : var=7022211, this=0x28ac08
+
+[end]
+---------- -O0 ----------
+- notes -
+[a**]   ... type_a
+[b**]   ... type_b
+[*p*]   ... Initialize by constructor parameter.
+[*s*]   ... Initialize by substitute.
+[**x]   ... Initialize from fixed value.
+[**f]   ... Initialize from function.
+[**v]   ... Initialize from function with std::move.
+[***_v] ... Initialize with std::move.
+
+[fixed value]
+type_a fixed(9999);
+                    type_a(const int v)          : var=   9999, this=0x28abbc
+
+[apx]
+type_a apx(fix);
+                    type_a(const type_a& obj)    : var=2009999(   9999+2000000), this=0x28abb8, &obj=0x28abbc
+apx = fix; (&apx=0x28abb8)
+                    operator=(const type_a& rhs) : var=1009999(   9999+1000000), this=0x28abb8, &rhs=0x28abbc
+[apx:end]
+                    ~type_a()                    : var=1009999, this=0x28abb8
+
+[apx_v]
+type_a apx_v(std::move(fix));
+                    type_a(const type_a& obj)    : var=2009999(   9999+2000000), this=0x28abb4, &obj=0x28abbc
+apx_v = std::move(fix); (&apx_v=0x28abb4)
+                    operator=(const type_a& rhs) : var=1009999(   9999+1000000), this=0x28abb4, &rhs=0x28abbc
+[apx_v:end]
+                    ~type_a()                    : var=1009999, this=0x28abb4
+
+[asx]
+type_a asx = fix;
+                    type_a(const type_a& obj)    : var=2009999(   9999+2000000), this=0x28abb0, &obj=0x28abbc
+asx = fix; (&asx=0x28abb0)
+                    operator=(const type_a& rhs) : var=1009999(   9999+1000000), this=0x28abb0, &rhs=0x28abbc
+[asx:end]
+                    ~type_a()                    : var=1009999, this=0x28abb0
+
+[asx_v]
+type_a asx_v = std::move(fix);
+                    type_a(const type_a& obj)    : var=2009999(   9999+2000000), this=0x28abac, &obj=0x28abbc
+asx_v = std::move(fix); (&asx_v=0x28abac)
+                    operator=(const type_a& rhs) : var=1009999(   9999+1000000), this=0x28abac, &rhs=0x28abbc
+[asx_v:end]
+                    ~type_a()                    : var=1009999, this=0x28abac
+[fixed value:end]
+                    ~type_a()                    : var=   9999, this=0x28abbc
+
+[apf]
+type_a apf(getA(11100));
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28aba8
+    x.var = v; (&x=0x28aba8)
+    return x;
+apf = getA(11101); (&apf=0x28aba8)
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abc0
+    x.var = v; (&x=0x28abc0)
+    return x;
+                    operator=(const type_a& rhs) : var=1011101(  11101+1000000), this=0x28aba8, &rhs=0x28abc0
+                    ~type_a()                    : var=  11101, this=0x28abc0
+[apf:end]
+                    ~type_a()                    : var=1011101, this=0x28aba8
+
+[apf_v]
+type_a apf_v(std::move(getA(11110)));
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abc4
+    x.var = v; (&x=0x28abc4)
+    return x;
+                    type_a(const type_a& obj)    : var=2011110(  11110+2000000), this=0x28aba4, &obj=0x28abc4
+                    ~type_a()                    : var=  11110, this=0x28abc4
+apf_v = std::move(getA(11111)); (&apf_v=0x28aba4)
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abc8
+    x.var = v; (&x=0x28abc8)
+    return x;
+                    operator=(const type_a& rhs) : var=1011111(  11111+1000000), this=0x28aba4, &rhs=0x28abc8
+                    ~type_a()                    : var=  11111, this=0x28abc8
+[apf_v:end]
+                    ~type_a()                    : var=1011111, this=0x28aba4
+
+[asf]
+type_a asf = getA(12100);
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28aba0
+    x.var = v; (&x=0x28aba0)
+    return x;
+asf = getA(12101); (&asf=0x28aba0)
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abcc
+    x.var = v; (&x=0x28abcc)
+    return x;
+                    operator=(const type_a& rhs) : var=1012101(  12101+1000000), this=0x28aba0, &rhs=0x28abcc
+                    ~type_a()                    : var=  12101, this=0x28abcc
+[asf:end]
+                    ~type_a()                    : var=1012101, this=0x28aba0
+
+[asf_v]
+type_a asf_v = std::move(getA(12110));
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abd0
+    x.var = v; (&x=0x28abd0)
+    return x;
+                    type_a(const type_a& obj)    : var=2012110(  12110+2000000), this=0x28ab9c, &obj=0x28abd0
+                    ~type_a()                    : var=  12110, this=0x28abd0
+asf_v = std::move(getA(12111)); (&asf_v=0x28ab9c)
+    [type_a getA(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28abd4
+    x.var = v; (&x=0x28abd4)
+    return x;
+                    operator=(const type_a& rhs) : var=1012111(  12111+1000000), this=0x28ab9c, &rhs=0x28abd4
+                    ~type_a()                    : var=  12111, this=0x28abd4
+[asf_v:end]
+                    ~type_a()                    : var=1012111, this=0x28ab9c
+
+[apv]
+type_a apv(getA_v(11200));
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2011200(  11200+2000000), this=0x28ab98, &obj=0x28ab2c
+                    ~type_a()                    : var=  11200, this=0x28ab2c
+apv = getA_v(11201); (&apv=0x28ab98)
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2011201(  11201+2000000), this=0x28abd8, &obj=0x28ab2c
+                    ~type_a()                    : var=  11201, this=0x28ab2c
+                    operator=(const type_a& rhs) : var=3011201(2011201+1000000), this=0x28ab98, &rhs=0x28abd8
+                    ~type_a()                    : var=2011201, this=0x28abd8
+[apv:end]
+                    ~type_a()                    : var=3011201, this=0x28ab98
+
+[apv_v]
+type_a apv_v(std::move(getA_v(11210)));
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2011210(  11210+2000000), this=0x28abdc, &obj=0x28ab2c
+                    ~type_a()                    : var=  11210, this=0x28ab2c
+                    type_a(const type_a& obj)    : var=4011210(2011210+2000000), this=0x28ab94, &obj=0x28abdc
+                    ~type_a()                    : var=2011210, this=0x28abdc
+apv_v = std::move(getA_v(11211)); (&apv_v=0x28ab94)
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2011211(  11211+2000000), this=0x28abe0, &obj=0x28ab2c
+                    ~type_a()                    : var=  11211, this=0x28ab2c
+                    operator=(const type_a& rhs) : var=3011211(2011211+1000000), this=0x28ab94, &rhs=0x28abe0
+                    ~type_a()                    : var=2011211, this=0x28abe0
+[apv_v:end]
+                    ~type_a()                    : var=3011211, this=0x28ab94
+
+[asv]
+type_a asv = getA_v(12200);
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2012200(  12200+2000000), this=0x28ab90, &obj=0x28ab2c
+                    ~type_a()                    : var=  12200, this=0x28ab2c
+asv = getA_v(12201); (&asv=0x28ab90)
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2012201(  12201+2000000), this=0x28abe4, &obj=0x28ab2c
+                    ~type_a()                    : var=  12201, this=0x28ab2c
+                    operator=(const type_a& rhs) : var=3012201(2012201+1000000), this=0x28ab90, &rhs=0x28abe4
+                    ~type_a()                    : var=2012201, this=0x28abe4
+[asv:end]
+                    ~type_a()                    : var=3012201, this=0x28ab90
+
+[asv_v]
+type_a asv_v = std::move(getA_v(12210));
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2012210(  12210+2000000), this=0x28abe8, &obj=0x28ab2c
+                    ~type_a()                    : var=  12210, this=0x28ab2c
+                    type_a(const type_a& obj)    : var=4012210(2012210+2000000), this=0x28ab8c, &obj=0x28abe8
+                    ~type_a()                    : var=2012210, this=0x28abe8
+asv_v = std::move(getA_v(12211)); (&asv_v=0x28ab8c)
+    [type_a getA_v(const int v)]
+    type_a x;
+                    type_a()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_a(const type_a& obj)    : var=2012211(  12211+2000000), this=0x28abec, &obj=0x28ab2c
+                    ~type_a()                    : var=  12211, this=0x28ab2c
+                    operator=(const type_a& rhs) : var=3012211(2012211+1000000), this=0x28ab8c, &rhs=0x28abec
+                    ~type_a()                    : var=2012211, this=0x28abec
+[asv_v:end]
+                    ~type_a()                    : var=3012211, this=0x28ab8c
+
+[fixed value]
+type_b fixed(9999);
+                    type_b(const int v)          : var=   9999, this=0x28ab88
+
+[bpx]
+type_b bpx(fix);
+                    type_b(const type_b& obj)    : var=2009999(   9999+2000000), this=0x28ab84, &obj=0x28ab88
+bpx = fix; (&apxbpxp)
+                    operator=(const type_b& rhs) : var=1009999(   9999+1000000), this=0x28ab84, &rhs=0x28ab88
+[bpx:end]
+                    ~type_b()                    : var=1009999, this=0x28ab84
+
+[bpx_v]
+type_b bpx_v(std::move(fix));
+                    type_b(type_b&& obj)         : var=4009999(   9999+4000000), this=0x28ab80, &obj=0x28ab88
+bpx_v = std::move(fix); (&bpx_v=0x28ab80)
+                    operator=(type_b&& rhs)      : var=3009999(   9999+3000000), this=0x28ab80, &rhs=0x28ab88
+[bpx_v:end]
+                    ~type_b()                    : var=3009999, this=0x28ab80
+
+[bsx]
+type_b bsx = fix;
+                    type_b(const type_b& obj)    : var=2009999(   9999+2000000), this=0x28ab7c, &obj=0x28ab88
+bsx = fix; (&bsx=0x28ab7c)
+                    operator=(const type_b& rhs) : var=1009999(   9999+1000000), this=0x28ab7c, &rhs=0x28ab88
+[bsx:end]
+                    ~type_b()                    : var=1009999, this=0x28ab7c
+
+[bsx_v]
+type_b bsx_v = std::move(fix);
+                    type_b(type_b&& obj)         : var=4009999(   9999+4000000), this=0x28ab78, &obj=0x28ab88
+bsx_v = std::move(fix); (&bsx_v=0x28ab78)
+                    operator=(type_b&& rhs)      : var=3009999(   9999+3000000), this=0x28ab78, &rhs=0x28ab88
+[bsx_v:end]
+                    ~type_b()                    : var=3009999, this=0x28ab78
+[fixed value:end]
+                    ~type_b()                    : var=   9999, this=0x28ab88
+
+[bpf]
+type_b bpf(getB(21100));
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ab74
+    x.var = v; (&x=0x28ab74)
+    return x;
+bpf = getB(21101); (&bpf=0x28ab74)
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abf0
+    x.var = v; (&x=0x28abf0)
+    return x;
+                    operator=(type_b&& rhs)      : var=3021101(  21101+3000000), this=0x28ab74, &rhs=0x28abf0
+                    ~type_b()                    : var=  21101, this=0x28abf0
+[bpf:end]
+                    ~type_b()                    : var=3021101, this=0x28ab74
+
+[bpf_v]
+type_b bpf_v(std::move(getB(21110)));
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abf4
+    x.var = v; (&x=0x28abf4)
+    return x;
+                    type_b(type_b&& obj)         : var=4021110(  21110+4000000), this=0x28ab70, &obj=0x28abf4
+                    ~type_b()                    : var=  21110, this=0x28abf4
+bpf_v = std::move(getB(21111)); (&bpf_v=0x28ab70)
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abf8
+    x.var = v; (&x=0x28abf8)
+    return x;
+                    operator=(type_b&& rhs)      : var=3021111(  21111+3000000), this=0x28ab70, &rhs=0x28abf8
+                    ~type_b()                    : var=  21111, this=0x28abf8
+[bpf_v:end]
+                    ~type_b()                    : var=3021111, this=0x28ab70
+
+[bsf]
+type_b bsf = getB(22100);
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ab6c
+    x.var = v; (&x=0x28ab6c)
+    return x;
+bsf = getB(22101); (&bsf=0x28ab6c)
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28abfc
+    x.var = v; (&x=0x28abfc)
+    return x;
+                    operator=(type_b&& rhs)      : var=3022101(  22101+3000000), this=0x28ab6c, &rhs=0x28abfc
+                    ~type_b()                    : var=  22101, this=0x28abfc
+[bsf:end]
+                    ~type_b()                    : var=3022101, this=0x28ab6c
+
+[bsf_v]
+type_b bsf_v = std::move(getB(22110));
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ac00
+    x.var = v; (&x=0x28ac00)
+    return x;
+                    type_b(type_b&& obj)         : var=4022110(  22110+4000000), this=0x28ab68, &obj=0x28ac00
+                    ~type_b()                    : var=  22110, this=0x28ac00
+bsf_v = std::move(getB(22111)); (&bsf_v=0x28ab68)
+    [type_b getB(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ac04
+    x.var = v; (&x=0x28ac04)
+    return x;
+                    operator=(type_b&& rhs)      : var=3022111(  22111+3000000), this=0x28ab68, &rhs=0x28ac04
+                    ~type_b()                    : var=  22111, this=0x28ac04
+[bsf_v:end]
+                    ~type_b()                    : var=3022111, this=0x28ab68
+
+[bpv]
+type_b bpv(getB_v(21200));
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4021200(  21200+4000000), this=0x28ab64, &obj=0x28ab2c
+                    ~type_b()                    : var=  21200, this=0x28ab2c
+bpv = getB_v(21201); (&bpv=0x28ab64)
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4021201(  21201+4000000), this=0x28ac08, &obj=0x28ab2c
+                    ~type_b()                    : var=  21201, this=0x28ab2c
+                    operator=(type_b&& rhs)      : var=7021201(4021201+3000000), this=0x28ab64, &rhs=0x28ac08
+                    ~type_b()                    : var=4021201, this=0x28ac08
+[bpv:end]
+                    ~type_b()                    : var=7021201, this=0x28ab64
+
+[bpv_v]
+type_b bpv_v(std::move(getB_v(21210)));
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4021210(  21210+4000000), this=0x28ac0c, &obj=0x28ab2c
+                    ~type_b()                    : var=  21210, this=0x28ab2c
+                    type_b(type_b&& obj)         : var=8021210(4021210+4000000), this=0x28ab60, &obj=0x28ac0c
+                    ~type_b()                    : var=4021210, this=0x28ac0c
+bpv_v = std::move(getB_v(21211)); (&bpv_v=0x28ab60)
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4021211(  21211+4000000), this=0x28ac10, &obj=0x28ab2c
+                    ~type_b()                    : var=  21211, this=0x28ab2c
+                    operator=(type_b&& rhs)      : var=7021211(4021211+3000000), this=0x28ab60, &rhs=0x28ac10
+                    ~type_b()                    : var=4021211, this=0x28ac10
+[bpv_v:end]
+                    ~type_b()                    : var=7021211, this=0x28ab60
+
+[bsv]
+type_b bsv = getB_v(22200);
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4022200(  22200+4000000), this=0x28ab5c, &obj=0x28ab2c
+                    ~type_b()                    : var=  22200, this=0x28ab2c
+bsv = getB_v(22201); (&bsv=0x28ab5c)
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4022201(  22201+4000000), this=0x28ac14, &obj=0x28ab2c
+                    ~type_b()                    : var=  22201, this=0x28ab2c
+                    operator=(type_b&& rhs)      : var=7022201(4022201+3000000), this=0x28ab5c, &rhs=0x28ac14
+                    ~type_b()                    : var=4022201, this=0x28ac14
+[bsv:end]
+                    ~type_b()                    : var=7022201, this=0x28ab5c
+
+[bsv_v]
+type_b bsv_v = std::move(getB_v(22210));
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4022210(  22210+4000000), this=0x28ac18, &obj=0x28ab2c
+                    ~type_b()                    : var=  22210, this=0x28ab2c
+                    type_b(type_b&& obj)         : var=8022210(4022210+4000000), this=0x28ab58, &obj=0x28ac18
+                    ~type_b()                    : var=4022210, this=0x28ac18
+bsv_v = std::move(getB_v(22211)); (&bsv_v=0x28ab58)
+    [type_a getB_v(const int v)]
+    type_b x;
+                    type_b()                     : var=      0, this=0x28ab2c
+    x.var = v; (&x=0x28ab2c)
+    return std::move(x);
+                    type_b(type_b&& obj)         : var=4022211(  22211+4000000), this=0x28ac1c, &obj=0x28ab2c
+                    ~type_b()                    : var=  22211, this=0x28ab2c
+                    operator=(type_b&& rhs)      : var=7022211(4022211+3000000), this=0x28ab58, &rhs=0x28ac1c
+                    ~type_b()                    : var=4022211, this=0x28ac1c
+[bsv_v:end]
+                    ~type_b()                    : var=7022211, this=0x28ab58
+
+[end]

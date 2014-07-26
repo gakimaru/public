@@ -3906,8 +3906,8 @@ int testOpt08_Type5_After2(const int value)
 inline int countBits2(const int value)
 {
 	unsigned int bits = static_cast<unsigned int>(value);
-	bits = bits - ((bits >> 1) & 0x55555555);//2ビットずつ16個の減算
-	bits = ((bits >> 2) & 0x33333333) + (bits & 0x33333333);//2ビットずつ8個の加算 ※1ビットのずつ加算と同じ結果になる
+	bits = bits - ((bits >> 1) & 0x55555555);//2ビットずつ16個の減算 ※1ビットずつ16個の加算と同じ結果になる
+	bits = ((bits >> 2) & 0x33333333) + (bits & 0x33333333);//2ビットずつ8個の加算
 	bits = (((bits >> 4) + bits) & 0x0f0f0f0f);//4ビットずつ4個の加算 ※加算の繰り上げが隣の値まで及ばないのでマスクなしで加算可能
 	bits *= 0x01010101;//8ビットずつ4個の値をまとめて加算
 	                   //※上位から8ビットごとに [ 4個の加算値, 3個の加算値, 2個の加算値, 1個の値 ] という値ができ上がる

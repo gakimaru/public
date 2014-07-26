@@ -957,7 +957,7 @@ ITERATOR iteratorBinarySearch(ITERATOR begin, ITERATOR end, COMPARISON compariso
 iteratorSearchFuncSetByComparison(iteratorBinarySearch);
 
 //--------------------------------------------------------------------------------
-//片方向連結リスト（double-linked list）
+//片方向連結リスト（singly-linked list）
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------

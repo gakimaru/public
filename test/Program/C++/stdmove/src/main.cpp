@@ -250,6 +250,26 @@ int main(const int argc, const char* argv[])
 		bsv_v = std::move(getB_v(22211));
 		printf("[bsv_v:end]\n");
 	}
+	
+	printf("\n");
+	printf("--------------------------------------------------------------------------------\n");
+	printf("[ Test for perfect-forwarding (std::forward) ]\n");
+	printf("\n");
+
+	{
+		int fixed_val = 1;
+		auto right_val = []() -> int { return 2; };
+		forPerfectForward obj1;
+		forPerfectForward obj2;
+		initForPerfectForward(obj1, fixed_val, fixed_val);
+		initForPerfectForward(obj1, right_val(), right_val());
+		initForPerfectForward(obj1, fixed_val, right_val());
+		initForPerfectForward(obj1, right_val(), fixed_val);
+		initForPerfectForward(obj1, 3, 4);
+		initForPerfectForward(obj2, obj1);
+		initForPerfectForward(obj2, std::move(obj1));
+	}
+
 	printf("\n");
 	printf("[end]\n");
 	

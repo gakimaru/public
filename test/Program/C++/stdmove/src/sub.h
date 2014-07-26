@@ -32,4 +32,33 @@ type_b getB(const int v);
 //パターンＢ②：戻り値をstd::move()で返す
 type_b getB_v(const int v);
 
+//--------------------------------------------------------------------------------
+//完全な受け渡しテスト
+
+//Perfectforward（完全な受け渡し）テスト用構造体
+struct forPerfectForward
+{
+	int m_val1;
+	int m_val2;
+
+	//ムーブコンストラクタ
+	forPerfectForward(const forPerfectForward&& obj);
+	//コピーコンストラクタ
+	forPerfectForward(const forPerfectForward& obj);
+	//コンストラクタ（初期値を右辺値参照渡し）
+	forPerfectForward(const int&& val1, const int&& val2);
+	//コンストラクタ（初期値を参照渡し）
+	forPerfectForward(const int& val1, const int& val2);
+	//デフォルトコンストラクタ
+	forPerfectForward();
+};
+//初期化用関数
+#include <new>//配置new
+#include <utility>//std::forward()
+template<typename... Tx>
+void initForPerfectForward(forPerfectForward& obj, Tx&&... args)
+{
+	new(&obj)forPerfectForward(std::forward<Tx>(args)...);
+}
+
 // End of file

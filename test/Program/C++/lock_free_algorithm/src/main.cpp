@@ -494,7 +494,7 @@ public:
 				{
 					recyclable_pool->m_next_index.store(DIRTY_INDEX);//再利用プールの連結インデックスを削除
 				#ifndef USE_SAFE_ALLOC_LF_POOL_ALLOCATOR
-					m_using[recyclable_index].fetch_sub(1);//インデックスを使用中状態にする
+					m_using[recyclable_index].fetch_add(1);//インデックスを使用中状態にする
 				#endif//USE_SAFE_ALLOC_LF_POOL_ALLOCATOR
 				//	m_usingCount.fetch_add(1);//使用中の数を増やす（デバッグ用）
 				//	m_allocCount[recyclable_index].fetch_add(1);//アロケート回数をカウントアップ（デバッグ用）

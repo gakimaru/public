@@ -127,4 +127,43 @@ type_b getB_v(const int v)
 	return std::move(x);
 }
 
+//--------------------------------------------------------------------------------
+//完全な受け渡しテスト
+
+//Perfectforward（完全な受け渡し）テスト用構造体
+
+//ムーブコンストラクタ
+forPerfectForward::forPerfectForward(const forPerfectForward&& obj) :
+	m_val1(obj.m_val1),
+	m_val2(obj.m_val2)
+{
+	printf("move constructor (val1=%d, val2=%d)\n", m_val1, m_val2);
+}
+//コピーコンストラクタ
+forPerfectForward::forPerfectForward(const forPerfectForward& obj) :
+	m_val1(obj.m_val1),
+	m_val2(obj.m_val2)
+{
+	printf("copy constructor (val1=%d, val2=%d)\n", m_val1, m_val2);
+}
+//コンストラクタ（初期値を右辺値参照渡し）
+forPerfectForward::forPerfectForward(const int&& val1, const int&& val2) :
+	m_val1(val1),
+	m_val2(val2)
+{
+	printf("constructor[right value reference] (val1=%d, val2=%d)\n", m_val1, m_val2);
+}
+//コンストラクタ（初期値を参照渡し）
+forPerfectForward::forPerfectForward(const int& val1, const int& val2) :
+	m_val1(val1),
+	m_val2(val2)
+{
+	printf("constructor[value referecnc] (val1=%d, val2=%d)\n", m_val1, m_val2);
+}
+//デフォルトコンストラクタ
+forPerfectForward::forPerfectForward() :
+	m_val1(0),
+	m_val2(0)
+{}
+
 // End of file
